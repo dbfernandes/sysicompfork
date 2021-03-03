@@ -10,17 +10,23 @@ const morgan = require('morgan')
 
 app.engine('hbs', exphbs({
     defaultLayout: 'main',
-    extname: '.hbs'
+    extname: '.hbs',
+    partialsDir: __dirname+'/views/partials/',
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'));
-
-const router = require('./routes/index')
-app.use('/', router)
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
+
+app.use(
+    '/script-adminlte',
+    express.static(path.join(__dirname, '/../node_modules/admin-lte/'))
+);
+
+const router = require('./routes/index')
+app.use('/', router)
 
 module.exports = app
