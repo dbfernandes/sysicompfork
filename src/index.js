@@ -25,6 +25,10 @@ app.use(
     '/script-adminlte',
     express.static(path.join(__dirname, '/../node_modules/admin-lte/'))
 );
+app.use(
+    '/public',
+    express.static(path.join(__dirname, '/public/'))
+);
 
 const router = require('./routes/index')
 app.use('/', router)
