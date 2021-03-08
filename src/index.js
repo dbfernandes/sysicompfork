@@ -9,12 +9,12 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
 app.engine('hbs', exphbs({
-    defaultLayout: 'main',
+    defaultLayout: 'home',
     extname: '.hbs',
     partialsDir: __dirname+'/views/partials/',
 }))
 app.set('view engine', 'hbs')
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/views'));
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
