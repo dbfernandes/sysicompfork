@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
 app.engine('hbs', exphbs({
-    defaultLayout: 'home',
+    defaultLayout: 'layout',
     extname: '.hbs',
     partialsDir: __dirname+'/views/partials/',
 }))
