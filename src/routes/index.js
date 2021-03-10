@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
-const helloWorldRoutes = require('./home/home')
+const homeRoutes = require('./home')
+router.use('/home', homeRoutes)
 
-router.use('/home', helloWorldRoutes)
+const usuariosRoutes = require('./usuarios')
+router.use('/usuarios', usuariosRoutes)
 
 module.exports = router

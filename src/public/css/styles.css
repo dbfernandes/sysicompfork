@@ -5,3 +5,11 @@
 .nav-treeview {
     margin-left: 15px;
 }
+
+.color-white {
+    color: white;
+}
+
+.background-warning {
+    background-color: #f39c12;
+}
