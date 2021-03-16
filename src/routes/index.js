@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const homeRoutes = require('./home')
-router.use('/home', homeRoutes)
+const inicioRoutes = require('./inicio')
+router.use('/', inicioRoutes)
 
 const usuariosRoutes = require('./usuarios')
 router.use('/usuarios', usuariosRoutes)

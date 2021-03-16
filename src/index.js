@@ -11,7 +11,8 @@ const morgan = require('morgan')
 app.engine('hbs', exphbs({
     defaultLayout: 'layout',
     extname: '.hbs',
-    partialsDir: __dirname+'/views/partials/',
+    partialsDir: `${__dirname}/views/partials/`,
+    helpers: require(`${__dirname}/views/helpers/helpers.js`)
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '/views'));

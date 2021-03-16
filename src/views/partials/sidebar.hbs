@@ -23,7 +23,7 @@
         <!-- Add icons to the links using the .nav-icon class
               with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+          <a href="/inicio" class="nav-link">
             <i class="nav-icon fas fa-home"></i>
             <p>
               Início
@@ -31,8 +31,8 @@
           </a>
         </li>
         <li class="nav-header">Administração</li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
+        <li class="nav-item {{#ifEqual module 'usuarios'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'usuarios'}}active{{/ifEqual}}">
             <i class="nav-icon fas fa-user-cog"></i>
             <p>
               Usuários
@@ -41,13 +41,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/usuarios/adicionar" class="nav-link">
+              <a href="/usuarios/adicionar" class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}}">
                 <i class="fas fa-user-plus nav-icon"></i>
                 <p>Adicionar Usuário</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="/usuarios/listar" class="nav-link">
+              <a href="/usuarios/listar" class="nav-link {{#ifEqual page 'usuarios-listar'}}active{{/ifEqual}}">
                 <i class="fas fa-table nav-icon"></i>
                 <p>Listar Usuários</p>
               </a>
