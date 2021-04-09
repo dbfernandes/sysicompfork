@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.js' --exec 'node src/server.js'",
+    "start:dev": "nodemon --watch 'src/**/*.js' --exec 'NODE_ENV=dev node src/server.js'",
     "test": "jest"
   },
   "repository": {
@@ -35,10 +36,7 @@
     "jest": "^26.6.3",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7",
-    "sequelize": "^6.5.0",
-    "sequelize-auto": "^0.8.2",
-    "supertest": "^6.1.3"
+    "nodemon": "^2.0.7"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -49,5 +47,10 @@
     "testRegex": ".spec.js$",
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "sequelize": "^6.6.2",
+    "sequelize-auto": "^0.8.2",
+    "sequelize-cli": "^6.2.0"
   }
 }
