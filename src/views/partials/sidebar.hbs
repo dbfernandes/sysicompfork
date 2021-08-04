@@ -54,6 +54,29 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-list-ul"></i>
+            <p>
+              Projetos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/projetos/adicionar" class="nav-link {{#ifEqual page 'projetos-adicionar'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-search-plus nav-icon"></i>
+                <p>Adicionar Projeto</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/projetos/listar" class="nav-link {{#ifEqual page 'projetos-listar'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Listar Projetos</p>
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-search"></i>

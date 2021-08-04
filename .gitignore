@@ -1,1 +1,7 @@
 node_modules
+
+#Removing the database credentials
+src/config/database.js
+
+#Removing the mail credentials
+src/config/mail.json

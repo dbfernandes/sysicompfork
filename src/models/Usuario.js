@@ -200,5 +200,19 @@ module.exports = (sequelize, DataTypes) => {
     ]
   })
 
+  //Constroi a String de Perfis do Usuario
+  User.prototype.perfis = function () {
+    let perfis = ''
+    if(this.administrador === '1') perfis += ' Administrador |'
+    if(this.coordenador === '1') perfis += ' Coordenador |'
+    if(this.professor === '1') perfis += ' Professor |'
+    if(this.secretaria === '1') perfis += ' Secretaria'
+
+    if(perfis.endsWith(' |'))
+        perfis = perfis.substring(0, perfis.length-2)
+
+    return perfis
+  }
+
   return User
 }

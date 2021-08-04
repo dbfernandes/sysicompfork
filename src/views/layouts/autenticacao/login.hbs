@@ -1,0 +1,62 @@
+<style>
+  .error {
+    color: red
+  }
+  .success {
+    color: green;
+  }
+</style>
+<div class="login-box container card border-0 shadow rounded-3 my-5">
+  
+  <div class="login-box-body card-body p-4 p-sm-5">
+    <div class="login-logo">
+        <a href="#"><b>ICOMP</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <p class="login-box-msg">Insira suas credenciais para realizar login</p>
+    {{#if message}}
+      <div class="alert alert-{{type}}">
+        {{{message}}}
+      </div>
+    {{/if}}
+
+    <form action="/login" method="post">
+        <div class="input-group mb-3">
+          <input id="email" name="email" type="email" class="form-control" placeholder="E-mail">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input id="password" name="password" type="password" class="form-control" placeholder="Senha">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="checkbox icheck">
+                <label>
+                <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
+                </label>
+            </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+            </div>
+            <!-- /.col -->
+        </div>
+    </form>
+
+    <a href="/recuperar-senha">Esqueci minha senha</a><br>
+    <a href="/registrar" class="text-center">Registre-se</a>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->

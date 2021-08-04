@@ -36,5 +36,15 @@
     <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="/script-adminlte/dist/js/demo.js"></script>
+
+    <!-- InputMask -->
+  <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
+  <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+  <script>
+  $(function () {
+    //Datemask dd/mm/yyyy
+    $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+  })
+</script>
 </body>
 </html>
