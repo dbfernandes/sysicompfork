@@ -6,7 +6,6 @@ router.get('/adicionar', (req, res) => {
 })
 
 router.post('/adicionar', (req, res) => {
-    console.log(req.body)
     return res.render('layouts/projetos/projetos-adicionar')
 })
 

@@ -1,9 +1,9 @@
 {{> header}}
 {{> sidebar module='usuarios' page='usuarios-listar'}}
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
@@ -17,13 +17,13 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-1">
+                <div class="col-sm-3 col-md-2 col-lg-1 min-width-button">
                     <button type="button" class="btn btn-block btn-secondary">
                         <i class="fa fa-arrow-left color-white"></i>
                         Voltar
                     </button>
                 </div>
-                <div class="col-sm-4 col-md-3 col-lg-2">
+                <div class="col-sm-4 col-md-3 col-lg-2 min-width-button">
                     <a type="button" class="btn btn-block btn-primary" href="/usuarios/adicionar">
                         <i class="fas fa-user-plus color-white"></i>
                         Adicionar Usuário
@@ -31,55 +31,55 @@
                 </div>
             </div>
         </div><!-- /.container-fluid -->
-        </section>
+    </section>
 
-        <!-- Main content -->
-        <section class="content">
+    <!-- Main content -->
+    <section class="content">
         <div class="container-fluid">
             <div class="row">
-            <div class="col-12">
-                <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Usuários</h3>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Usuários</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>CPF</th>
+                                        <th>Email</th>
+                                        <th>Telefones</th>
+                                        <th>Perfil(s)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each usuarios}}
+                                    <tr>
+                                        <td> {{nome}} </td>
+                                        <td> {{username}} </td>
+                                        <td> {{email}} </td>
+                                        <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
+                                        <td>
+                                            {{perfis}}
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Email</th>
-                            <th>Telefones</th>
-                            <th>Perfil(s)</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {{#each usuarios}}
-                        <tr>
-                            <td> {{nome}} </td>
-                            <td> {{username}} </td>
-                            <td> {{email}} </td>
-                            <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
-                            <td> 
-                                {{perfis}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.col -->
+                <!-- /.col -->
             </div>
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-    </div>
+    </section>
+    <!-- /.content -->
+</div>
 {{> footer}}

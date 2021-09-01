@@ -11,10 +11,10 @@ router.get('/login', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { cpf, password } = req.body;
 
     const user = await Usuario.findOne({
-        where: { email },
+        where: { cpf },
         attributes: { 
             exclude: [
                 'password_reset_token', 

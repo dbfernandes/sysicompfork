@@ -13,3 +13,11 @@
 .background-warning {
     background-color: #f39c12;
 }
+
+.min-width-button {
+    min-width: fit-content !important;
+}
+
+.space-between {
+    justify-content: space-between !important;
+}
