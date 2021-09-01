@@ -8,4 +8,5 @@ RUN npm i
 
 COPY . .
 
-CMD npm start
+# alterar para npm run start quando o sistema entrar em produção
+CMD npm run start:dev
