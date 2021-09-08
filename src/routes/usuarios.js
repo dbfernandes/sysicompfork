@@ -4,7 +4,9 @@ const { Usuario } = require('../models')
 //const { construirStringPerfisDeUsuario } = require('../utils/index')
 
 router.get('/adicionar', async (req, res) => {
-    return res.render('layouts/usuarios/usuarios-adicionar')
+    return res.render('layouts/usuarios/usuarios-adicionar', { 
+        nome: req.session.nome
+    })
 })
 
 router.get('/listar', async (req, res) => {
@@ -15,7 +17,8 @@ router.get('/listar', async (req, res) => {
                 ...usuario.get(),
                 perfis: usuario.perfis()
             }
-        })
+        }),
+        nome: req.session.nome
     })
 })
 

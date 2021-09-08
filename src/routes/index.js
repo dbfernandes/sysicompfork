@@ -1,5 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
+
+router.use('/', isUsuarioAutenticado)
 
 const inicioRoutes = require('./inicio')
 router.use('/', inicioRoutes)

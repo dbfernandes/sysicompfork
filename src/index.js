@@ -1,5 +1,7 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
+const uuid = require('uuid')
 
 const app = express()
 
@@ -17,6 +19,14 @@ app.engine('hbs', exphbs({
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '/views'));
 
+app.use(session({
+    genid: (req) => {
+        return uuid.v4() // usamos UUIDs para gerar os SESSID
+    },
+    secret: 'sysicomp1234',
+    resave: false,
+    saveUninitialized: true
+}));
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
