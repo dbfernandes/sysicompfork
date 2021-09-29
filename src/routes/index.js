@@ -1,19 +1,16 @@
 const express = require('express')
-const router = express.Router()
-const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
-
-router.use('/', isUsuarioAutenticado)
-
 const inicioRoutes = require('./inicio')
-router.use('/', inicioRoutes)
-
 const autenticacaoRoutes = require('./autenticacao')
-router.use('/', autenticacaoRoutes)
-
 const usuariosRoutes = require('./usuarios')
-router.use('/usuarios', usuariosRoutes)
+import projetosRoutes from './projetos'
+//const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
 
-const projetosRoutes = require('./projetos')
+const router = express.Router()
+
+//router.use('/', isUsuarioAutenticado)
+router.use('/', inicioRoutes)
+router.use('/', autenticacaoRoutes)
+router.use('/usuarios', usuariosRoutes)
 router.use('/projetos', projetosRoutes)
 
 module.exports = router

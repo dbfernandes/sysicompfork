@@ -1,22 +1,10 @@
-const express = require('express')
+import express from "express"
+import projetosController from "../controllers/projetos"
+
 const router = express.Router()
 
-router.get('/adicionar', (req, res) => {
-    return res.render('layouts/projetos/projetos-adicionar', { 
-        nome: req.session.nome
-    })
-})
+router.get('/adicionar', projetosController.adicionar);
+router.post('/adicionar', projetosController.adicionar);
+router.get('/listar', projetosController.listar)
 
-router.post('/adicionar', (req, res) => {
-    return res.render('layouts/projetos/projetos-adicionar', { 
-        nome: req.session.nome
-    })
-})
-
-router.get('/listar', (req, res) => {
-    return res.render('layouts/projetos/projetos-listar', { 
-        nome: req.session.nome
-    })
-})
-
-module.exports = router
+export default router

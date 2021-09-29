@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const mailer = require('../modules/mailer');
 
 router.get('/login', async (req, res) => {
-    return res.render('layouts/autenticacao/login', {})
+    return res.render('autenticacao/login', {})
 })
 
 router.post('/login', async (req, res) => {
@@ -17,13 +17,13 @@ router.post('/login', async (req, res) => {
     })
 
     if (!usuario)
-        return res.render('layouts/autenticacao/login', {
+        return res.render('autenticacao/login', {
             message: "Usuário não cadastrado", type: 'danger'
         })
 
     let isSenhaCorreta = await bcrypt.compare(senha, usuario.password_hash)
     if (!isSenhaCorreta)
-        return res.render('layouts/autenticacao/login', {
+        return res.render('autenticacao/login', {
             message: "Senha inválida", type: 'danger'
         })
 
@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/recuperar-senha', async (req, res) => {
-    return res.render('layouts/autenticacao/recuperar-senha')
+    return res.render('autenticacao/recuperar-senha')
 })
 
 router.post('/recuperar-senha', async (req, res) => {
@@ -43,7 +43,7 @@ router.post('/recuperar-senha', async (req, res) => {
         const user = await Usuario.findOne({ where: { email } })
 
         if (!user)
-            return res.render('layouts/autenticacao/recuperar-senha', {
+            return res.render('autenticacao/recuperar-senha', {
                 message: "Usuário não encontrado", type: 'danger'
             })
 
@@ -68,19 +68,19 @@ router.post('/recuperar-senha', async (req, res) => {
             context: { token },
         }, (err) => {
             if (err)
-                return res.render('layouts/autenticacao/recuperar-senha', {
+                return res.render('autenticacao/recuperar-senha', {
                     message: "Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde",
                     type: 'danger'
                 })
 
-            return res.render('layouts/autenticacao/recuperar-senha', {
+            return res.render('autenticacao/recuperar-senha', {
                 message: "Token enviado para o e-mail cadastrado", type: 'success'
             })
         })
 
     } catch (err) {
         console.log(err)
-        return res.render('layouts/autenticacao/recuperar-senha', {
+        return res.render('autenticacao/recuperar-senha', {
             message: "Erro durante a recuperação de senha, tente novamente.",
             type: 'danger'
         })
