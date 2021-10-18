@@ -1,14 +1,9 @@
-const express = require('express')
+import express from 'express';
+import inicioController from '../controllers/inicio'
 const router = express.Router()
 
-router.get('/inicio', async (req, res) => {
-    return res.render('inicio/inicio', { 
-        nome: req.session.nome
-    })
-})
+router.get('/inicio',inicioController.adicionar)
 
-router.get('/', async (req, res) => {
-    return res.redirect('/inicio')
-})
+router.get('/', inicioController.inicio)
 
-module.exports = router
+export default router;

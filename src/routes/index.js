@@ -1,7 +1,7 @@
-const express = require('express')
-const inicioRoutes = require('./inicio')
-const autenticacaoRoutes = require('./autenticacao')
-const usuariosRoutes = require('./usuarios')
+import express from 'express'
+import inicioRoutes from './inicio'
+import autenticacaoRoutes from './autenticacao'
+import usuariosRoutes from './usuarios'
 import projetosRoutes from './projetos'
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
 
