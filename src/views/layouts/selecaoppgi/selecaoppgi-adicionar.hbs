@@ -1,17 +1,17 @@
 {{> header}}
 {{> sidebar module='projetos' page='projetos-adicionar'}}
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Adicionar novo projeto</h1>
+                    <h1>Adicionar nova Seleção</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Projetos</a></li>
+                        <li class="breadcrumb-item"><a href="#">Seleção</a></li>
                         <li class="breadcrumb-item active">Adicionar</li>
                     </ol>
                 </div>
@@ -25,77 +25,173 @@
                 </div>
             </div>
         </div><!-- /.container-fluid -->
-        </section>
+    </section>
 
-        <!-- Main content -->
-        <section class="content">
-        <div class="row">
-            <div class="col">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Dados do Projeto</h3>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados da selecao PPGI</h3>
                     </div>
-                </div>
-                <div class="card-body">
-                    <form action="/projetos/adicionar" method="POST">
-                        <div class="form-group">
-                            <label for="inputNomeProjeto">Nome do Projeto</label>
-                            <input type="text" id="inputNomeProjeto" name="inputNomeProjeto" class="form-control">
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label>Data de Início do Projeto:</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="col-md-12">
+
+
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                            <label>Nome</label>
+                                            <input type="text" class="form-control" placeholder="Nome" required>
+
+                                        </div>
                                     </div>
-                                    <input id="dateInicioProjeto" name="dateInicioProjeto" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
-                                </div>
-                                <!-- /.input group -->
-                            </div>
-                            <!-- /.Data Início -->
-                            <div class="form-group col-md-6">
-                                <label>Data de Término do Projeto:</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+
+
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                            <label for="URL">
+                                                URL
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-globe"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control" id="URL" placeholder="URL"
+                                                    required>
+                                            </div>
+                                        </div>
                                     </div>
-                                <input id="dateFimProjeto" name="dateFimProjeto" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
-                                </div>
-                                <!-- /.input group -->
+
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                            <!------data de inicio------------>
+                                            <div class="col-sm-6">
+                                                <label>Data de Início</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="date" class="form-control" placeholder="Data de Início"
+                                                        required>
+                                                </div>
+                                            </div>
+
+                                            <!------data de fim------------>
+                                            <div class="col-sm-6">
+                                                <label>Data de Fim</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="date" class="form-control" placeholder="Data de Fim"
+                                                        required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+
+                                        <div class="form-group">
+                                            <label> Carta de Recomendação?</label>
+                                            <select class="custom-select">
+                                                <option selected></option>
+                                                <option value="1">Sim</option>
+                                                <option value="2">Não</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> Carta Orientador?</label>
+                                            <select class="custom-select">
+                                                <option selected></option>
+                                                <option value="1">Sim</option>
+                                                <option value="2">Não</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> Mestado?</label>
+                                        <select class="custom-select">
+                                            <option selected></option>
+                                            <option value="1">Sim</option>
+                                            <option value="2">Não</option>
+                                        </select>
+
+                                        <div class="form-row">
+                                            <div class="col-sm-6">
+
+                                                <label> Vagas Regulares para Mestrado:</label>
+                                                <input type="number" class="form-control "
+                                                    placeholder="Vagas Regulares para Mestado" required>
+                                            </div>
+
+                                            <div class="col-sm-6">
+
+                                                <label> Vagas Suplementares para Mestado:</label>
+                                                <input type="number" class="form-control "
+                                                    placeholder="Vagas Regulares para Mestado" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label> Doutarado?</label>
+                                        <select class="custom-select">
+                                            <option selected></option>
+                                            <option value="1">Sim</option>
+                                            <option value="2">Não</option>
+                                        </select>
+                                        
+                                        <div class="form-row">
+                                            <div class="col-sm-6">
+                                                <label> Vagas Regulares para Doutarado:</label>
+                                                <input type="number" class="form-control "
+                                                    placeholder="Vagas Regulares para Doutorado" required>
+                                            </div>
+
+                                            <div class="col-sm-6">
+
+                                                <label> Vagas Suplementares para Doutorado:</label>
+                                                <input type="number" class="form-control "
+                                                    placeholder="Vagas Regulares para Doutorado" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="card-footer">
+                                        <div class="col">
+                                            <input type="reset" value="Redefinir" class="btn btn-secondary" />
+                                            <input type="submit" value="Criar novo Projeto"
+                                                class="btn btn-success float-right">
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <!-- /.Data Fim -->
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="inputConvenioProjeto">Número de Convênio com a Instituição</label>
-                                <input type="text" id="inputConvenioProjeto" name="inputConvenioProjeto" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputContaBancariaProjeto">Conta Bancária do Projeto</label>
-                                <input type="text" id="inputContaBancariaProjeto" name="inputContaBancariaProjeto" class="form-control">
-                            </div>
-                        </div>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-            <div class="card-footer">
-                    <div class="col">
-                    <input type="reset" value="Redefinir" class="btn btn-secondary" />
-                    <input type="submit" value="Criar novo Projeto" class="btn btn-success float-right">
-                    </div>
-                </div>
-                </form>
-            </div>
-            <!-- /.col -->
-        </div>
-        </section>
-        <!-- /.content -->
-    </div>
+                            <!-- /.col -->
+
+    </section>
+    <!-- /.content -->
+</div>
 {{> footer}}
