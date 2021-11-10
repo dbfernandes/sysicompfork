@@ -1,0 +1,96 @@
+<style>
+    .begin-page{
+        height: 100vh;
+        display: flex;
+        background-color: #d2d6de;
+        overflow-y: hidden;
+    }
+    .begin-page .box{
+        width: 360px;
+        margin: auto;
+        margin-top: 7%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .begin-page .box .title{
+        font-size: 24px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .begin-page .box .line{
+        width: 100%;
+        height: 1px;
+        background-color: #fff;
+        margin: 10px 0 20px 0;
+    }
+
+    .begin-page .box .card{
+        width: 100%;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    }
+    .begin-page .box .card .card-body{
+        padding: 20px;
+    }
+    .begin-page .box .card .card-body .info{
+        margin: 20px 0;
+        color: #666;
+        font-size: 14px;
+    }
+    .begin-page .box .card .card-body .info h2{
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .begin-page .box .card .card-body .options .btn{
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .begin-page .box .card .card-body .options .btn-primary{
+        background-color: #3c8dbc;
+    }
+</style>
+<div class="begin-page">
+    <div class="box">
+        <h1 class="title">
+            Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
+        </h1>
+
+        <div class="line"></div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="info">
+                    <h2>Candidato, clique em:</h2>
+                    <li><b>Nova Inscrição:</b> caso você ainda não tenha iniciado a inscrição. Lembrando que para cada edital do PPGI deve ser realizada uma inscrição independente.</li>
+                    <li><b>Continuar Inscrição:</b> caso você já tenha iniciado a inscrição, porém ainda não a finalizou.</li>
+                
+                </div>
+                <div class="options row row-cols-2">
+                    <div class="col-sm-6">
+                        <a name="nova-inscricao" id="" 
+                            class="btn btn-primary btn-block btn-flat" 
+                            href="/inscricao/cadastro" role="button">
+                            Nova Inscrição
+                        </a>
+                        <br/>
+                    </div>
+                    <div class="col-sm-6">
+                        <a name="nova-inscricao" id="" 
+                            class="btn btn-block btn-flat bg-green" 
+                            href="#" role="button">
+                            Continuar Inscrição
+                        </a>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Your code here
+</script>
