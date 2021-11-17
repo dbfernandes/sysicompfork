@@ -40,6 +40,9 @@ const listar = (req, res) => {
       return res.render('layouts/selecaoppgi/selecaoppgi-listar', {
          nome: req.session.nome
       })
+      
+
+
    } else {
       console.log("cadastrar no banco")
    }
