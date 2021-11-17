@@ -1,6 +1,6 @@
 const adicionar = async (req, res) => {
     if (req.method === 'GET') {
-        return res.render('layouts/usuarios/usuarios-adicionar', {
+        return res.render('usuarios/usuarios-adicionar', {
             nome: req.session.nome
         })
 

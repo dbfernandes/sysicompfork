@@ -99,61 +99,61 @@
                                     <div class="form-group">
 
                                         <div class="form-group">
-                                            <label> Carta de Recomendação?</label>
-                                            <select class="custom-select">
-                                                <option selected></option>
-                                                <option value="1">Sim</option>
-                                                <option value="2">Não</option>
-                                            </select>
+                                            <div class="form-row">
+                                                <label for="Mestrado"> Carta de Recomendação? </label>
+                                            </div>
+                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não">
                                         </div>
 
                                         <div class="form-group">
-                                            <label> Carta Orientador?</label>
-                                            <select class="custom-select">
-                                                <option selected></option>
-                                                <option value="1">Sim</option>
-                                                <option value="2">Não</option>
-                                            </select>
+                                            <div class="form-row">
+                                                <label for="Mestrado"> Carta Orientador? </label>
+                                            </div>
+                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não">
                                         </div>
 
                                     </div>
 
 
                                     <div class="form-group">
-                                        <label> Mestado?</label>
-                                        <select class="custom-select">
-                                            <option selected></option>
-                                            <option value="1">Sim</option>
-                                            <option value="2">Não</option>
-                                        </select>
-
                                         <div class="form-row">
-                                            <div class="col-sm-6">
-
-                                                <label> Vagas Regulares para Mestrado:</label>
-                                                <input type="number" class="form-control "
-                                                    placeholder="Vagas Regulares para Mestado" required>
-                                            </div>
-
-                                            <div class="col-sm-6">
-
-                                                <label> Vagas Suplementares para Mestado:</label>
-                                                <input type="number" class="form-control "
-                                                    placeholder="Vagas Regulares para Mestado" required>
-                                            </div>
+                                            <label for="Mestrado"> Mestrado? </label>
                                         </div>
+                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                            data-off-text="Não">
                                     </div>
 
 
+                                    <div class="form-row">
+                                        <div class="col-sm-6">
+
+                                            <label> Vagas Regulares para Mestrado:</label>
+                                            <input type="number" class="form-control "
+                                                placeholder="Vagas Regulares para Mestrado" required>
+                                        </div>
+
+                                        <div class="col-sm-6">
+
+                                            <label> Vagas Suplementares para Mestrado:</label>
+                                            <input type="number" class="form-control "
+                                                placeholder="Vagas Regulares para Mestrado" required>
+                                        </div>
+                                    </div>
 
                                     <div class="form-group">
-                                        <label> Doutarado?</label>
-                                        <select class="custom-select">
-                                            <option selected></option>
-                                            <option value="1">Sim</option>
-                                            <option value="2">Não</option>
-                                        </select>
-                                        
+                                        <div class="form-row">
+                                            <label for="Mestrado"> Doutorado? </label>
+                                        </div>
+
+                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                            data-off-text="Não">
+
                                         <div class="form-row">
                                             <div class="col-sm-6">
                                                 <label> Vagas Regulares para Doutarado:</label>
@@ -174,7 +174,6 @@
 
                                     <div class="card-footer">
                                         <div class="col">
-                                            <input type="reset" value="Redefinir" class="btn btn-secondary" />
                                             <input type="submit" value="Criar novo Projeto"
                                                 class="btn btn-success float-right">
                                         </div>
@@ -186,4 +185,21 @@
     </section>
     <!-- /.content -->
 </div>
+
+
+
+<script>
+    function usuariosAdicionarPage() {
+
+
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+
+        });
+    }
+</script>
+
+
+
+
 {{> footer}}
