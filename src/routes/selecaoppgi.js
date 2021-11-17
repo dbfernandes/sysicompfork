@@ -7,6 +7,7 @@ router.get('/adicionar', selecaoppgiRoutes.adicionar);
 router.post('/adicionar',selecaoppgiRoutes.adicionar);
 
 router.get('/listar',selecaoppgiRoutes.listar)
+router.post('/listar',selecaoppgiRoutes.listar)
 
 
 
