@@ -8,4 +8,13 @@ const adicionar = (req, res) => {
     }
  }
 
- export default { adicionar}
+ const listar = (req, res) => {
+   if (req.method === "GET") {
+      return res.render('layouts/selecaoppgi/selecaoppgi-listar', { 
+         nome: req.session.nome
+     })
+   } else {
+      console.log("cadastrar no banco")
+   }
+}
+ export default { adicionar , listar}
