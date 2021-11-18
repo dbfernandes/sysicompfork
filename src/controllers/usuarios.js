@@ -3,7 +3,6 @@ const adicionar = async (req, res) => {
         return res.render('usuarios/usuarios-adicionar', {
             nome: req.session.nome
         })
-
     }
 }
 
