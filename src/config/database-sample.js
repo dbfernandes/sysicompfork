@@ -1,3 +1,5 @@
+const { underscoredIf } = require("sequelize/types/lib/utils");
+
 module.exports = {
     dev: {
       username: 'user',
@@ -5,6 +7,10 @@ module.exports = {
       database: 'db',
       host: 'localhost',
       dialect: 'mysql',
-      timezone: "-04:00"
+      timezone: "-04:00",
+      define: {
+        timestamps: true,
+        underscored: true
+      }
     }
-  }
+}

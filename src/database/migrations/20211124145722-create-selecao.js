@@ -3,10 +3,14 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Selecao', {
-      numero_Primaria: {
+      id:{
+        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+      },
+      numero_Primaria: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       vaga_Doutorado: {
@@ -36,6 +40,14 @@ module.exports = {
       documento:{
       allowNull : false,
       type : Sequelize.STRING
+      },
+      data_Inicio:{
+        allowNull : false,
+        type : Sequelize.DATE
+      },
+      data_Fim:{
+        allowNull : false,
+        type : Sequelize.DATE
       },
       curso:{
         allowNull : false,
