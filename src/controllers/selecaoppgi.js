@@ -8,7 +8,7 @@ const locals = {
 const begin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/begin', locals);
+			return res.render('selecaoppgi/begin', {...locals});
 		case 'POST':
 			return res.send('Erro 400');
 	}
@@ -17,7 +17,7 @@ const begin = async(req, res) => {
 const signin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/signin', locals);
+			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list()});
 		case 'POST':
 			return res.send('Erro 400');
 	}
@@ -26,7 +26,7 @@ const signin = async(req, res) => {
 const login = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/login', locals);
+			return res.render('selecaoppgi/login', {...locals});
 		case 'POST':
 			return res.send('Erro 400');
 	}
