@@ -1,6 +1,4 @@
-import Model from 'sequelize';
-import { DataTypes } from 'sequelize/types';
-
+import  {Model , DataTypes} from 'sequelize';
 class Selecao extends Model {
     static init(sequelize) {
         super.init({
@@ -16,11 +14,9 @@ class Selecao extends Model {
             data_Fim: DataTypes.DATE,
             curso: DataTypes.STRING,
             status: DataTypes.STRING,
-
         },{
             sequelize,
-            tableName: 'selecao',
-
+            tableName: 'Selecao',
         })
     }
 }

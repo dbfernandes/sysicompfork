@@ -1,4 +1,3 @@
-const { underscoredIf } = require("sequelize/types/lib/utils");
 
 module.exports = {
     dev: {

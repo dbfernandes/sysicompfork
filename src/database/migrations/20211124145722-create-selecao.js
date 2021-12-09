@@ -9,31 +9,31 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      numero_Primaria: {
+      numeroPrimaria: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      vaga_Doutorado: {
+      vagaDoutorado: {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      cotas_Doutorado: {
+      cotasDoutorado: {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      vaga_Mestrado: {
+      vagaMestrado: {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      cotas_Mestrado: {
+      cotasMestrado: {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      carta_Orientador:{
+      cartaOrientador:{
         allowNull : false,
         type: Sequelize.STRING
       },
-      carta_Recomendacao:{
+      cartaRecomendacao:{
         allowNull : false,
         type : Sequelize.STRING
       },
@@ -41,11 +41,11 @@ module.exports = {
       allowNull : false,
       type : Sequelize.STRING
       },
-      data_Inicio:{
+      dataInicio:{
         allowNull : false,
         type : Sequelize.DATE
       },
-      data_Fim:{
+      dataFim:{
         allowNull : false,
         type : Sequelize.DATE
       },
@@ -55,7 +55,8 @@ module.exports = {
       },
       status:{
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.STRING,
+        defaultValue:0,
       },
       createdAt: {
         allowNull: false,
