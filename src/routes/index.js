@@ -5,7 +5,7 @@ import autenticacaoRoutes from './autenticacao'
 import usuariosRoutes from './usuarios'
 import projetosRoutes from './projetos'
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
-import inscricaoRouter from './inscricao';
+//import inscricaoRouter from './inscricao';
 
 const router = express.Router()
 
