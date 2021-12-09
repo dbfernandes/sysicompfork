@@ -134,10 +134,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       cotas: {
-        allowNull:false,
+        allowNull:true,
+        type: Sequelize.STRING
       },
       status: {
         allowNull:false,
+        type: Sequelize.STRING,
+        defaultValue: '0'
       }
     });
   },

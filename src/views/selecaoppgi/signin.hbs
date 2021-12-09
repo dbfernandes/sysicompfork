@@ -1,0 +1,74 @@
+<style>
+   .signin-page{
+        height: 100vh;
+        display: flex;
+        background-color: #d2d6de;
+        overflow-y: hidden;
+    }
+
+    .signin-page .box{
+        width: 70%;
+        margin: auto;
+        margin-top: 7%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .signin-page .box .title{
+        font-size: 24px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .signin-page .box .line{
+        width: 100%;
+        height: 1px;
+        background-color: rgb(16, 1, 36);
+        margin: 10px 0 10px 0;
+    }
+
+    .signin-page .box .card{
+        width: 100%;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    }
+    .signin-page .box .card .card-body{
+        padding: 20px;
+        color: #666;
+    }
+
+    .signin-page .box .card .card-body .erro{
+       color:rgb(255, 0, 0);
+       font-weight: bold;
+    }
+</style>
+<div class="signin-page">
+    <div class="box">
+        <h1 class="title">
+            Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
+        </h1>
+
+        <div class="card">
+            <div class="card-body">
+                <h3><b>Instruções:</b></h3>
+                <ul>
+                    <li>Preencha os campos <b>e-mail, senha, repetir senha e escolha um edital</b> para cadastrar um novo candidato.</li>
+                    <li>O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo <b>Senha</b>.</li>
+                    <li>O e-mail de cadastro não pode ser repetido para um mesmo edital. Caso tenha iniciado sua inscrição em um edital, acesse a opção Continuar Inscrição, acessando o botão <b>Voltar</b>.</li>
+                    <li>Após confirmar o cadastro, você será direcionado ao formulário de inscrição.</li>
+                </ul>
+
+                <div class="line"></div>
+
+                <span class="erro">
+                    Não há editais disponíveis nesta presente data.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Your code here
+</script>
