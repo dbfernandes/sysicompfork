@@ -1,6 +1,6 @@
 const {Candidate} = require('../models')
 
-class Candidate{
+class CandidateService{
     async create({email, password, editalNumber}){
         const candidate = await Candidate.create({
             email,
@@ -14,4 +14,4 @@ class Candidate{
     }
 }
 
-export default new Candidate();
+export default new CandidateService();
