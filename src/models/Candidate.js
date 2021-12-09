@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Candidate.init({
-    id: DataTypes.INTEGER,
+    id: {
+      type:DataTypes.INTEGER,
+      primaryKey: true,
+    },
     email: DataTypes.STRING,
     password: DataTypes.VIRTUAL,
     password_hash: DataTypes.STRING,

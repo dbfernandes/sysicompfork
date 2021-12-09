@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   CandidatePublications.init({
-    id: DataTypes.INTEGER,
+    id: {
+      type:DataTypes.INTEGER,
+      primaryKey: true,
+    },
     idCandidate: DataTypes.INTEGER,
     titulo: DataTypes.STRING,
     ano: DataTypes.INTEGER,

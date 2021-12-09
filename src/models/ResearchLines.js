@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   ResearchLines.init({
-    id: DataTypes.INTEGER,
+    id: {
+      type:DataTypes.INTEGER,
+      primaryKey: true,
+    },
     name: DataTypes.STRING,
     icone: DataTypes.STRING,
     initials: DataTypes.STRING,
