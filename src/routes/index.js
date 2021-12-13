@@ -15,6 +15,6 @@ router.use('/', inicioRoutes)
 router.use('/', autenticacaoRoutes)
 router.use('/usuarios', usuariosRoutes)
 router.use('/projetos', projetosRoutes)
-router.use('/inscricao', inscricaoRouter);
+//router.use('/inscricao', inscricaoRouter);
 
 export default router
