@@ -35,6 +35,41 @@ function isNameModuleValid(nomeDoModulo) {
 
 const nomeDoModulo = getArgs()
 
+const newIndexHBS = [
+    "<style>",
+    "\t/* Style your page here  */",
+    "</style>",
+    "<div>",
+    "\t<!-- Page body here  -->",
+    "</div>",
+    "<script>",
+    "\t// Your code here",
+    "</script>",
+].join('\n');
+
+const newRouter = (nomeDoModulo)=>[
+    "import express from 'express';" ,
+    `import ${nomeDoModulo}Controller from \'../controllers/${nomeDoModulo}\';`,
+    "const router = express.Router()\n" ,
+    "/* TODO - Add routes */\n",
+    "export default router;"
+].join('\n');
+
+const newControler = (nomeDoModulo)=>[
+    "const locals = {",
+    "\t//layout:'layout'",
+    "}\n",
+    "const control = async(req, res) => {" ,
+    `\tswitch (req.method) {`,
+    "\t\tcase 'GET':",
+    `\t\t\treturn res.render('${nomeDoModulo}/index', locals);`,
+    "\t\tcase 'POST':",
+    "\t\t\treturn res.json({message: 'cant post here'});",
+    "\t}",
+    "}\n" ,
+    "export default {control};"
+].join('\n');
+
 const criarArquivos = async (nomeDoModulo) => {
     if(!isNameModuleValid(nomeDoModulo)){
         console.log('Erro: Informe o nome do módulo válido')
@@ -51,21 +86,9 @@ const criarArquivos = async (nomeDoModulo) => {
     
     fs.mkdirSync(`./src/views/${nomeDoModulo}`, { recursive: true })
     
-    fs.writeFileSync(`./src/views/${nomeDoModulo}/${nomeDoModulo}-adicionar.hbs`, '')
-    fs.writeFileSync(`./src/views/${nomeDoModulo}/${nomeDoModulo}-listar.hbs`, '')
-    fs.writeFileSync(`./src/routes/${nomeDoModulo}.js`,
-        "import express from 'express';\n" +
-        `import ${nomeDoModulo}Controller from \'../controllers/${nomeDoModulo}\';\n`+
-        "const router = express.Router()\n\n" +
-        "/* TODO - Add routes */\n\n"+
-        "export default router;"
-    )
-    fs.writeFileSync(`./src/controllers/${nomeDoModulo}.js`,
-        "const control = async(req, res) => {\n" +
-        `\t// code control example\n`+
-        "}\n\n" +
-        "export default {control};"
-    )
+    fs.writeFileSync(`./src/views/${nomeDoModulo}/index.hbs`, newIndexHBS)
+    fs.writeFileSync(`./src/routes/${nomeDoModulo}.js`, newRouter(nomeDoModulo))
+    fs.writeFileSync(`./src/controllers/${nomeDoModulo}.js`,newControler(nomeDoModulo))
 
     const routerIndex = fs.readFileSync('./src/routes/index.js').toString()
 
