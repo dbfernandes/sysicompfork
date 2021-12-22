@@ -1,5 +1,5 @@
 import express from 'express';
-import inicioController from '../controllers/inicio'
+import inicioController from '../controllers/Inicio/inicio'
 const router = express.Router()
 
 router.get('/inicio',inicioController.adicionar)
