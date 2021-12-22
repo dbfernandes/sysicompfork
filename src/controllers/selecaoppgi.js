@@ -17,11 +17,25 @@ const begin = async(req, res) => {
 const signin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list()});
+			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list(), errorSignin: null});
 		case 'POST':
 			const {email, senha, edital} = req.body;
-			const candidate = await CandidateService.create({email, password: senha, editalNumber: edital});
-			console.log(candidate);
+			
+			if(!email || !senha || !edital){
+				return res.status(400).json({error: 'Dados incompletos ou mal formatados'});
+			}
+
+			let responseError = null;
+			const candidate = await CandidateService
+				.create({email, password: senha, editalNumber: edital})
+				.catch((err)=>{
+					responseError = err;
+				});
+				
+				console.log(candidate);
+			if(!candidate){		
+					return res.status(400).json({error: responseError.message});
+			}
 			return res.status(200).redirect('/selecaoppgi');
 		default:
 			return res.status(404).send();

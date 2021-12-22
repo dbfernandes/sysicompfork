@@ -66,13 +66,25 @@
         border-bottom: solid 1px #555555;
         margin-bottom: 8px;
     }
-    .signin-page button a {
+    .signin-page button {
+        color: #fff;
+        text-decoration: none;
+    }
+    .signin-page button:hover {
         color: #fff;
         text-decoration: none;
     }
 </style>
 <div class="signin-page">
     <div class="box">
+        {{#if errorSignin}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{errorSignin}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {{/if}}
         <h1 class="title">
             Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
         </h1>
@@ -125,34 +137,35 @@
 
                         <div class="col-md-7 col-xs-12">
                             <h1>Formulário de Inscrição</h1>
-                            <form method="post">
+                            <form id="subscription" onsubmit="return false;">
                                 <div class="form-group">
                                     <label for="email">E-mail</label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
                                     {{!-- <div class="help-block">
                                         "E-mail" é obrigatório.
                                     </div> --}}
                                 </div>
                                 <div class="form-group">
                                     <label for="senha">Senha</label>
-                                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
+                                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
                                 </div>
                                 <div class="form-group">
                                     <label for="repetir_senha">Repetir Senha</label>
-                                    <input type="password" class="form-control" id="repetir_senha" name="repetir_senha" placeholder="Repetir Senha" required>
+                                    <input type="password" class="form-control" id="repetir_senha" name="repetir_senha" placeholder="Repetir Senha">
                                 </div>
                                 <div class="form-group">
                                     <label for="edital">Edital</label>
-                                    <select class="form-control" id="edital" name="edital" required>
+                                    <select class="form-control" id="edital" name="edital">
                                         <option value="">Selecione um edital</option>
                                         {{#each editais}}
                                             <option value="{{numero}}">{{numero}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
+                                <spam class="erro"></spam>
                                 <div class="row actions">
-                                    <button type="submit" class="btn btn-success col-md-5 col-xs-12">Salvar Candidato</button>
-                                    <button class="btn btn-warning col-md-5 col-xs-12"><a href="/selecaoppgi/">Voltar</a></button>
+                                    <button onclick="signin()" class="btn btn-success col-md-5 col-xs-12">Salvar Candidato</button>
+                                    <button onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
                                 </div>
                             </form>
                         </div>      
@@ -163,4 +176,64 @@
     </div>
 </div>
 <script>
+
+    function back(){
+        window.location.href = "{{url}}/selecaoppgi";
+    }
+
+    function signin(){
+        var email = $("#email").val();
+        var senha = $("#senha").val();
+        var repetir_senha = $("#repetir_senha").val();
+        var edital = $("#edital").val();
+
+        if(email == ""){
+            $(".erro").html("O campo <b>E-mail</b> é obrigatório.");
+            return false;
+        }
+
+        if(senha == ""){
+            $(".erro").html("O campo <b>Senha</b> é obrigatório.");
+            return false;
+        }
+
+        if(repetir_senha == ""){
+            $(".erro").html("O campo <b>Repetir Senha</b> é obrigatório.");
+            return false;
+        }
+
+        if(senha.length < 6){
+            $(".erro").html("O campo <b>Senha</b> precisa ter no mínimo 6 caracteres.");
+            return false;
+        }
+
+        if(senha != repetir_senha){
+            $(".erro").html("O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo <b>Senha</b>.");
+            return false;
+        }
+
+        if(edital == ""){
+            $(".erro").html("O campo <b>Edital</b> é obrigatório.");
+            return false;
+        }
+
+        $.ajax({
+            url: "{{url}}/selecaoppgi/cadastro",
+            type: "POST",
+            data: {
+                email: email,
+                senha: senha,
+                edital: edital
+            },
+            success: function(data){
+                    window.location.href = "{{url}}/selecaoppgi/+";
+            },
+            error: function(res, status, error) {
+                console.log("Entrou no erro")
+                const err = res.responseJSON
+                errorSignin = err.error
+                window.alert(errorSignin)
+            }
+        });
+    }
 </script>

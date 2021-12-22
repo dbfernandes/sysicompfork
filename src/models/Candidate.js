@@ -3,6 +3,10 @@ const {
   Model
 } = require('sequelize');
 
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
+
 module.exports = (sequelize, DataTypes) => {
   class Candidate extends Model {
     /**
@@ -17,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   Candidate.init({
     id: {
       type:DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     email: DataTypes.STRING,
@@ -32,5 +37,16 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     timestamps: false,
   });
+
+  Candidate.beforeSave(async (candidate, options) => {
+    if (candidate.password) {
+      candidate.passwordHash = await bcrypt.hash(candidate.password, saltRounds);
+    }
+  });
+
+  Candidate.prototype.validPassword = function(password) {
+    return bcrypt.compare(password, this.passwordHash);
+  };
+
   return Candidate;
 };
