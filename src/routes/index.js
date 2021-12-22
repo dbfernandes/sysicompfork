@@ -17,6 +17,7 @@ const router = express.Router()
 
 // router.use('/', autenticacaoRoutes)
 //router.use('/inscricao', inscricaoRouter);
+
 router.use('/', inicioRoutes)
 router.use('/usuarios', usuariosRoutes)
 router.use('/projetos', projetosRoutes)

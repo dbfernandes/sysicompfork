@@ -1,5 +1,5 @@
 import express from "express"
-import selecaoppgiRoutes from "../controllers/Selecao/selecaoPpgi"
+import selecaoppgiRoutes from "../controllers/Selecao/SelecaoController"
 
 const router = express.Router()
 
@@ -7,7 +7,7 @@ router.get('/adicionar', selecaoppgiRoutes.adicionarView);
 router.get('/listar',selecaoppgiRoutes.listarView)
 
 router.post('/adicionar',selecaoppgiRoutes.adicionar);
-router.post('/listar',selecaoppgiRoutes.listar)
+router.get('/listarselecao',selecaoppgiRoutes.listar)
 
 
 

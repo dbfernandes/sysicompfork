@@ -3,6 +3,7 @@
 const {
     Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
     class Selecao extends Model {
 
@@ -10,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
 
         }
     };
+
     Selecao.init({
         numero_Primaria: DataTypes.STRING,
         vaga_Doutorado: DataTypes.INTEGER,
@@ -27,5 +29,6 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Selecao',
     });
+    
     return Selecao;
 };
