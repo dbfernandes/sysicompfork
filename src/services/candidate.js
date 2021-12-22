@@ -2,7 +2,6 @@ const {Candidate} = require('../models')
 
 class CandidateService{
     async create({email, password, editalNumber}){
-        console.log(email, password, editalNumber);
         let candidate = await Candidate.findOne({where: {email, editalId:editalNumber}}).catch(err => {
             console.log(err);
             throw new Error("Não foi possivel criar o candidato");
@@ -36,6 +35,22 @@ class CandidateService{
             throw new Error("Não foi possivel listar o candidato");
         })
         return candidates;
+    }
+
+    async auth({email, password, editalNumber}){
+        const candidate = await Candidate.findOne({
+            where:{email, editalId: editalNumber}
+        })
+
+        if(!candidate){
+            throw new Error("Usuário não encontrado")
+        }
+
+        if(!(await candidate.validPassword(password))){
+            throw new Error("Usuário ou senha incorretos")
+        }
+
+        return true;
     }
 }
 

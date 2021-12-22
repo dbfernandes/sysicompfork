@@ -47,7 +47,27 @@ const login = async(req, res) => {
 		case 'GET':
 			return res.render('selecaoppgi/login', {...locals, editais: await EditalService.list()});
 		case 'POST':
-			return res.send('Erro 400');
+			const {email, senha, edital} = req.body;
+
+			console.log({email, senha, edital})
+
+			if(!email || !senha || !edital){
+				return res.status(400).json({error: 'Dados incompletos ou mal formatados'});
+			}
+
+			let responseError = null;
+			const isPasswordAuthenticate = await CandidateService
+				.auth({email, password: senha, editalNumber: edital})
+				.catch((err)=>{
+					responseError = err;
+				});
+			
+			if(!isPasswordAuthenticate){		
+				return res.status(400).json({error: responseError.message});
+			}
+			return res.status(200).redirect('/selecaoppgi');
+		default:
+			return res.status(404).send();
 	}
 }
 
@@ -56,6 +76,7 @@ const forms = async(req, res) => {
 		case 'GET':
 			return res.render('selecaoppgi/forms', {...locals});
 		case 'POST':
+			
 			return res.send('Erro 400');
 	}
 }

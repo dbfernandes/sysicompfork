@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="form-group">
-                  <select class="form-control" name="" id="">
+                  <select class="form-control" name="" id="edital">
                     <option value="">Selecione um edital</option>
                     {{#each editais}}
                         <option value="{{numero}}">{{numero}}</option>
@@ -98,20 +98,50 @@
                   </select>
                 </div>
 
-                <a name="logar" id="" 
+                <button name="logar" id="" 
+                    onclick="login()"
                     class="btn btn-primary btn-block btn-flat" 
-                    href="/selecaoppgi/" role="button">
+                    role="button">
                     Continuar Inscrição
-                </a>
-                <a name="voltar" id="" 
-                    class="btn btn-block btn-flat btn-default" 
-                    href="/selecaoppgi/" role="button">
+                </button>
+                <button name="voltar" id="" 
+                    onclick="back()"
+                    class="btn btn-block btn-flat btn-default"
+                    role="button">
                     Voltar
-                </a>
+                </button>
             </div>
         </div>
     </div>
 </div>
 <script>
-    // Your code here
+    function back(){
+        window.location.href = "{{url}}/selecaoppgi";
+    }
+
+    function login(){
+        var email = $("#email").val();
+        var senha = $("#password").val();
+        var edital = $("#edital").val();
+
+
+        $.ajax({
+            url: "{{url}}/selecaoppgi/entrar",
+            type: "POST",
+            data: {
+                email: email,
+                senha: senha,
+                edital: edital
+            },
+            success: function(data){
+                    window.location.href = "{{url}}/selecaoppgi/";
+            },
+            error: function(res, status, error) {
+                console.log("Entrou no erro")
+                const err = res.responseJSON
+                errorSignin = err.error
+                window.alert(errorSignin)
+            }
+        });
+    }
 </script>
