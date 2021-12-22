@@ -20,14 +20,17 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     email: DataTypes.STRING,
+    editalId: DataTypes.STRING,
     password: DataTypes.VIRTUAL,
-    password_hash: DataTypes.STRING,
+    passwordHash: DataTypes.STRING,
     currentStep: DataTypes.INTEGER,
     status: DataTypes.STRING,
 
   }, {
     sequelize,
     modelName: 'Candidate',
+    freezeTableName: true,
+    timestamps: false,
   });
   return Candidate;
 };

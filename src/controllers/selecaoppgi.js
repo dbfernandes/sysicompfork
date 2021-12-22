@@ -19,17 +19,40 @@ const signin = async(req, res) => {
 		case 'GET':
 			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list()});
 		case 'POST':
-			return res.send('Erro 400');
+			const {email, senha, edital} = req.body;
+			const candidate = await CandidateService.create({email, password: senha, editalNumber: edital});
+			console.log(candidate);
+			return res.status(200).redirect('/selecaoppgi');
+		default:
+			return res.status(404).send();
 	}
 }
 
 const login = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/login', {...locals});
+			return res.render('selecaoppgi/login', {...locals, editais: await EditalService.list()});
 		case 'POST':
 			return res.send('Erro 400');
 	}
 }
 
-export default {begin, signin, login};
+const forms = async(req, res) => {
+	switch (req.method){
+		case 'GET':
+			return res.render('selecaoppgi/forms', {...locals});
+		case 'POST':
+			return res.send('Erro 400');
+	}
+}
+
+const candidates = async(req, res) => {
+	switch (req.method){
+		case 'GET':
+			return res.json({candidates: await CandidateService.list()});
+		default:
+			return res.status(400).send();
+	}
+}
+
+export default {begin, signin, login, forms, candidates};

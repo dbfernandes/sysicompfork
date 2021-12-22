@@ -2,7 +2,18 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Recommendations', {});
+    await queryInterface.createTable('Recommendations', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      name: { 
+        allowNull: false,
+        type: Sequelize.STRING
+      }
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
