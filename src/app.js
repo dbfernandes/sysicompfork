@@ -1,20 +1,19 @@
-const express = require('express')
-const exphbs = require('express-handlebars')
-const session = require('express-session')
-const router = require('./routes/index')
+import express from 'express';
+import exphbs from 'express-handlebars';
+import session from 'express-session';
+import router from './routes';
+import dotenv from 'dotenv';
+import * as uuid from 'uuid';
+import cors from 'cors';
+import * as path from 'path';
+import * as bodyParser from 'body-parser';
+import morgan from 'morgan';
 
-require("dotenv").config()  
-
-const uuid = require('uuid')
+dotenv.config();
 const app = express()
 
-const cors = require('cors')
-const path = require('path')
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
-
 app.engine('hbs', exphbs({
-    defaultLayout: 'layout',
+    defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: `${__dirname}/views/partials/`,
     helpers: require(`${__dirname}/views/helpers/helpers.js`)
