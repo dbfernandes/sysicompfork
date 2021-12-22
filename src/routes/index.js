@@ -9,7 +9,7 @@ import selecaoppgiRoutes from './selecaoppgi.routes'
 const router = express.Router()
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
-//import inscricaoRouter from './inscricao';
+import selecaoppgiRouter from './selecaoppgi';
 
 
 /* Add routes */
