@@ -1,9 +1,8 @@
 import Edital from "../models/Edital";
 
 
+const curso = "Curso";
 class EditalService {
-
-
     async create({
         number,
         url,
@@ -11,46 +10,32 @@ class EditalService {
         data_fim,
         carta_recomendacao,
         carta_orientador,
-        mestrado,
         vaga_regular_mestrado,
-        vaga_suplementar_mestrado,
-        Doutorado,
         vaga_regular_doutorado,
+        vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
-        // criar novos editais
-
-        let edital = await Edital.findOne({
-            where: {
-                editalId: number
-            }
-        }).catch(err => {
-            console.log(err);
-            throw new Error("Não foi possivel criar o edital");
-        });
-        if (edital) {
-            throw new Error("Edital já existe");
-        }
-
-        edital = await Edital.create({
-            editalId: nome,
-            vaga_Doutorado : Doutorado,
-            vaga_Mestrado: mestrado,
-            cotas_Doutorado: vaga_regular_doutorado,
-            cotas_Mestrado: vaga_regular_mestrado,
-            carta_Orietador  : carta_orientador,
-            carta_Rencomedacao : carta_recomendacao,
-            documento: url,
-            data_Inicio:  data_inicio,
-            data_Fim: data_fim,
-            curso: DataTypes.STRING,
+        //TO-DO Verificar se o numero do edital já existe
+        const edital = await Edital.create({
+            number: number,
+            url: url,
+            data_inicio: data_inicio,
+            data_fim: data_fim,
+            carta_recomendacao: carta_recomendacao,
+            carta_orientador: carta_orientador,
+            vaga_regular_mestrado: vaga_regular_mestrado,
+            vaga_regular_doutorado: vaga_regular_doutorado,
+            vaga_suplementar_mestrado: vaga_suplementar_mestrado,
+            vaga_suplementar_doutorado: vaga_suplementar_doutorado
         }).catch(err => {
             console.log(`[ERROR] Criar de Edital: ${err}`)
             throw new Error("Não foi possivel criar o Edital");
-        })
+        });
 
         return edital;
     }
+
+    async update() {}
 
     async list() { // listagem dos editais
 

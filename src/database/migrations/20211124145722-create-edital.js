@@ -43,11 +43,11 @@ module.exports = {
       },
       dataInicio:{
         allowNull : false,
-        type : Sequelize.DATE
+        type : Sequelize.STRING
       },
       dataFim:{
         allowNull : false,
-        type : Sequelize.DATE
+        type : Sequelize.STRING
       },
       curso:{
         allowNull : false,
