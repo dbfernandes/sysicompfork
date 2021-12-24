@@ -32,7 +32,6 @@ const signin = async(req, res) => {
 					responseError = err;
 				});
 				
-				console.log(candidate);
 			if(!candidate){		
 					return res.status(400).json({error: responseError.message});
 			}

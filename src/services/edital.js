@@ -1,7 +1,7 @@
 import Edital from "../models/Edital";
 
 
-const curso = "Curso";
+
 class EditalService {
     async create({
         number,
@@ -15,27 +15,41 @@ class EditalService {
         vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
+
+        let edital = await Edital.findOne({where: {editalId: number}}).catch(err => {
+            console.log(err);
+            throw new Error("Não foi possivel criar o candidato");
+        });
+
+        if(edital){
+            throw new Error("Candidato já existe");
+        }
+
         //TO-DO Verificar se o numero do edital já existe
-        const edital = await Edital.create({
-            number: number,
-            url: url,
-            data_inicio: data_inicio,
-            data_fim: data_fim,
-            carta_recomendacao: carta_recomendacao,
-            carta_orientador: carta_orientador,
-            vaga_regular_mestrado: vaga_regular_mestrado,
-            vaga_regular_doutorado: vaga_regular_doutorado,
-            vaga_suplementar_mestrado: vaga_suplementar_mestrado,
-            vaga_suplementar_doutorado: vaga_suplementar_doutorado
-        }).catch(err => {
+        edital = await Edital.create({
+            editalId: number,
+            vagaDoutorado: vaga_regular_doutorado,
+            vagaMestrado: vaga_regular_mestrado,
+            cotasDoutorado: vaga_suplementar_doutorado,
+            cotasMestrado: vaga_suplementar_mestrado,
+            cartaOrietador: carta_orientador,
+            cartaRencomedacao: carta_recomendacao,
+            documento: url,
+            dataInicio: data_inicio,
+            dataFim: data_fim,
+            curso: "1",
+            status: "created",
+        })
+        .catch(err => {
             console.log(`[ERROR] Criar de Edital: ${err}`)
-            throw new Error("Não foi possivel criar o Edital");
+            return err;
+            
         });
 
         return edital;
     }
 
-    async update() {}
+    async update() {console.log("update")}
 
     async list() { // listagem dos editais
 

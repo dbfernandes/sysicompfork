@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         cartaOrietador: DataTypes.STRING,
         cartaRencomedacao: DataTypes.STRING,
         documento: DataTypes.STRING,
-        dataInicio: DataTypes.DATE,
-        dataFim: DataTypes.DATE,
+        dataInicio: DataTypes.STRING,
+        dataFim: DataTypes.STRING,
         curso: DataTypes.STRING,
-        status: DataTypes.STRING,
+        status: DataTypes.STRING
     }, {
         sequelize,
         modelName: 'Edital',
