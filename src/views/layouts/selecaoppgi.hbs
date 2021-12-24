@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/script-adminlte/plugins/fontawesome-free/css/all.min.css">
+  <!-- IonIcons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
+
+  <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+
+<body >
+
+  {{{ body }}}
+
+  <!-- jQuery -->
+  <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
+
+  <!-- jquery-validation -->
+  <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
+  <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
+
+  <!-- Bootstrap 4 -->
+  <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(function () {
+      try {
+        masks();
+      } catch { }
+
+      try {
+        usuariosAdicionarPage();
+      } catch { }
+
+      try {
+        loginPage();
+      } catch { }
+    });
+
+    function masks() {
+      //Datemask dd/mm/yyyy
+      $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+      $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
+      $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
+    }
+  </script>
+
+</body>
+
+</html>
