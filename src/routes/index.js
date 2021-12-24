@@ -5,7 +5,7 @@ import autenticacaoRoutes from './autenticacao'
 import usuariosRoutes from './usuarios'
 import projetosRoutes from './projetos'
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
-//import inscricaoRouter from './inscricao';
+import selecaoppgiRouter from './selecaoppgi';
 
 const router = express.Router()
 
@@ -15,6 +15,6 @@ router.use('/', inicioRoutes)
 router.use('/', autenticacaoRoutes)
 router.use('/usuarios', usuariosRoutes)
 router.use('/projetos', projetosRoutes)
-router.use('/inscricao', inscricaoRouter);
+router.use('/selecaoppgi', selecaoppgiRouter);
 
 export default router
