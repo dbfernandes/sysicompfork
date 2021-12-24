@@ -1,11 +1,11 @@
 /* Import routes */
 import express from 'express'
-import inicioRoutes from './inicio'
-import autenticacaoRoutes from './autenticacao'
-import usuariosRoutes from './usuarios'
-import projetosRoutes from './projetos'
+import inicioRoutes from './inicio.routes'
+import autenticacaoRoutes from './autenticacao.routes'
+import usuariosRoutes from './usuarios.routes'
+import projetosRoutes from './projetos.routes'
 import editalRouter from './edital.routes'
-import selecaoppgiRouter from './selecaoppgi';
+import selecaoppgiRouter from './selecaoppgi.routes';
 
 const router = express.Router()
 
