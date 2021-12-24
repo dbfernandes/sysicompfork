@@ -18,7 +18,7 @@ const signin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
 			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list(), errorSignin: null});
-			case 'GET':
+		case 'POST':
 			const {email, senha, edital} = req.body;
 			
 			if(!email || !senha || !edital){

@@ -3,8 +3,8 @@ import EditalService from '../services/edital';
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
       
-
       case 'GET':
+         console.log(req.session.nome);
          return res.render('edital/addNewSelecao', {
             nome: req.session.nome
          })
