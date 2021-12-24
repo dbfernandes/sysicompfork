@@ -1,6 +1,6 @@
-{{> header}}
-{{> sidebar module='usuarios' page='usuarios-adicionar' this }}
-<!-- Content Wrapper. Contains page content -->
+ {{> header}}
+{{> sidebar module='usuarios' page='usuarios-adicionar' }}
+    !-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -94,12 +94,14 @@
                             <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
                         </div>
                         <div class="row space-between">
+                            
                             <div>
                                 <label for="administrador"> Administrador </label>
                                 <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
                                     data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                     data-off-text="Não">
                             </div>
+
                             <div>
                                 <label for="coordenador"> Coordenador </label>
                                 <input type="checkbox" name="coordenador" unchecked data-bootstrap-switch
@@ -187,6 +189,7 @@
                                     <option>Vespertino e Noturno</option>
                                 </select>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
