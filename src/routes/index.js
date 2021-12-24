@@ -18,11 +18,19 @@ import selecaoppgiRouter from './selecaoppgi';
 // router.use('/', autenticacaoRoutes)
 //router.use('/inscricao', inscricaoRouter);
 
+
+
 router.use('/', inicioRoutes)
+router.use('/', autenticacaoRoutes)
 router.use('/usuarios', usuariosRoutes)
 router.use('/projetos', projetosRoutes)
-router.use('/selecaoppgi', selecaoppgiRouter)
+router.use('/selecaoppgi', selecaoppgiRouter);
 router.use('/edital', selecaoppgiRoutes)
 
 
 export default router
+
+
+
+
+
