@@ -38,8 +38,7 @@ class EditalService {
             dataFim: data_fim,
             curso: "1",
             status: "created",
-        })
-        .catch(err => {
+        }).catch(err => {
             console.log(`[ERROR] Criar de Edital: ${err}`)
             throw new Error("Não foi possivel criar o candidato");
         });

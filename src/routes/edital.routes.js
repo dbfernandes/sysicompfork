@@ -1,5 +1,5 @@
 import express from "express"
-import selecaoppgiRoutes from "../controllers/selecaoppgiBackendController"
+import selecaoppgiRoutes from "../controllers/editalController"
 
 const router = express.Router()
 

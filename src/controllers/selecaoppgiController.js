@@ -1,5 +1,5 @@
-import EditalService from '../services/edital'
-import CandidateService from '../services/candidate'
+import EditalService from '../services/editalService'
+import CandidateService from '../services/candidateService'
 
 const locals = { 
 	layout: 'selecaoppgi' 
