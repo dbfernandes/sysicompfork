@@ -3,12 +3,10 @@ import selecaoppgiController from '../controllers/selecaoppgi';
 const router = express.Router()
 
 /* TODO - Add routes */
-router.get('/', selecaoppgiController.begin);
-router.get('/cadastro', selecaoppgiController.signin);
-router.post('/cadastro', selecaoppgiController.signin);
-router.get('/entrar', selecaoppgiController.login)
-router.post('/entrar', selecaoppgiController.login)
-router.get('/formulario', selecaoppgiController.forms)
-router.get('/candidates', selecaoppgiController.candidates)
+router.all('/', selecaoppgiController.begin);
+router.all('/cadastro', selecaoppgiController.signin);
+router.all('/entrar', selecaoppgiController.login)
+router.all('/formulario', selecaoppgiController.forms)
+router.all('/candidates', selecaoppgiController.candidates)
 
 export default router;

@@ -65,7 +65,7 @@ const login = async(req, res) => {
 			if(!isPasswordAuthenticate){		
 				return res.status(400).json({error: responseError.message});
 			}
-			return res.status(200).redirect('/selecaoppgi');
+			return res.status(200).send();
 		default:
 			return res.status(404).send();
 	}
