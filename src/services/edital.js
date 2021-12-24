@@ -1,13 +1,27 @@
 class EditalService {
 
-    async create(){ // criar novos editais
 
+
+    async create({
+        nome,
+        url,
+        data_inicio,
+        data_fim,
+        carta_recomendacao,
+        carta_orientador,
+        mestrado,
+        vaga_regular_mestrado,
+        vaga_suplementar_mestrado,
+        Doutorado,
+        vaga_regular_doutorado,
+        vaga_suplementar_doutorado
+    }) { // criar novos editais
+        
     }
 
-    async list(){ // listagem dos editais
+    async list() { // listagem dos editais
 
-        const editais = [
-            {
+        const editais = [{
                 numero: '021-2021',
                 dataInicio: '01/01/2020',
                 dataFim: '01/01/2021',

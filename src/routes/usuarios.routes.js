@@ -1,5 +1,5 @@
 import express from 'express'
-import usurarioRouter from '../controllers/Usuario/usuarios'
+import usurarioRouter from '../controllers/usuarios'
 const router = express.Router()
 const { Usuario } = require('../models')
 //const { construirStringPerfisDeUsuario } = require('../utils/index')
