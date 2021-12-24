@@ -1,8 +1,4 @@
-import Selecao from "../models/Selecao";
-
-const selecoes = [];
-
-
+import EditalService from '../services/edital';
 
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
@@ -10,7 +6,6 @@ const addEditalSelecao = async (req, res) => {
          return res.render('selecaoppgi/addNewSelecao', {
             nome: req.session.nome
          })
-
       case 'POST':
          const {
             nome,
@@ -27,7 +22,7 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          } = await req.body
 
-         const selecao = {
+         const selecao =  await EditalService.create({
             nome,
             url,
             data_inicio,
@@ -40,9 +35,16 @@ const addEditalSelecao = async (req, res) => {
             Doutorado,
             vaga_regular_doutorado,
             vaga_suplementar_doutorado
-         }
-         selecoes.push(selecao);
-         return res.status(201).send(selecao);
+         })
+
+         return res.status(201).send(selecao)
+
+         default:
+			return res.status(404).send();
+
+
+         
+        
    }
 }
 
