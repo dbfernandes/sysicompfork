@@ -1,10 +1,7 @@
-{{> sidebar module='linhasDePesquisa' page='listaLinhasDePesquisa'}}
+{{> header}}
+{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
 <style>
 	/* Style your page here  */
-	.color-field {
-		background-color: red;
-	}
-
 </style>
 
 <main class="content-wrapper">
@@ -17,7 +14,7 @@
 				</div>
 				<div class="col-sm-3">
 					<ol class="breadcrumb float-sm-right">
-						<li class="breadcrumb-item"><a href="#">Linhas de Pesquisa</a></li>
+						<li class="breadcrumb-item">Linhas de Pesquisa</li>
 						<li class="breadcrumb-item active">Listar</li>
 					</ol>
 				</div>
@@ -45,7 +42,7 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
-					<div class="card">
+					<div class="card card-primary">
 						<div class="card-header">
 							<h3 class="card-title">Linhas de Pesquisa Existentes</h3>
 						</div>
@@ -83,6 +80,17 @@
 		window.location.href = "{{url}}/inicio";
 	}
 
-	function 
+	function defineColor() {
+		const colorFields = document.querySelectorAll('.color-field');
+
+		colorFields.forEach((element) => {
+			const color = element.classList.item(1);
+
+			element.style.backgroundColor = color;
+		});
+	}
+
+	window.onload =	defineColor;
 
 </script>
+{{> footer}}
