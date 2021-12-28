@@ -12,7 +12,7 @@ const addEditalSelecao = async (req, res) => {
       case 'POST':
          const {
             number,
-            url,
+            documento,
             data_inicio,
             data_fim,
             carta_recomendacao,
@@ -23,9 +23,11 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          } = await req.body
 
+         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
+
          const selecao = await EditalService.create({
             number,
-            url,
+            documento,
             data_inicio,
             data_fim,
             carta_recomendacao,
@@ -35,7 +37,21 @@ const addEditalSelecao = async (req, res) => {
             vaga_regular_doutorado,
             vaga_suplementar_doutorado
          }).catch((err) => {
-            responseError = err;
+            return res.status(400).json({
+               error: err.message,
+               body: {
+                  number,
+                  documento,
+                  data_inicio,
+                  data_fim,
+                  carta_recomendacao,
+                  carta_orientador,
+                  vaga_regular_mestrado,
+                  vaga_suplementar_mestrado,
+                  vaga_regular_doutorado,
+                  vaga_suplementar_doutorado
+               }
+            })
          });
 
          if (!selecao) {
@@ -43,7 +59,7 @@ const addEditalSelecao = async (req, res) => {
                error: responseError.message
             });
          }
-         return res.status(200).redirect('/selecaoppgi');
+         return res.status(200).send(selecao);
 
       case 'PUT':
 

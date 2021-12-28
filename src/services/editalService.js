@@ -1,11 +1,11 @@
-import Edital from "../models/Edital";
-
-
+var {
+    Edital
+} = require('../models');
 
 class EditalService {
     async create({
         number,
-        url,
+        documento,
         data_inicio,
         data_fim,
         carta_recomendacao,
@@ -15,16 +15,24 @@ class EditalService {
         vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
-        let edital = await Edital.findOne({where: {editalId: number}}).catch(err => {
-            console.log(err);
-            throw new Error("Não foi possivel criar o edital erro no find one");
-        });
 
-        if(edital){
-            throw new Error("Candidato já existe");
-        }
+        // let edital = await Edital.findOne({
+        //     where: {
+        //         editalId: number
+        //     }
+        // }).catch(err => {
+        //     console.log(err);
+        //     throw new Error("Não foi possivel criar o edital erro no find one");
+        // });
 
+        // if (edital) {
+        //     throw new Error("Candidato já existe");
+        // }
+
+        
         //TO-DO Verificar se o numero do edital já existe
+
+
         edital = await Edital.create({
             editalId: number,
             vagaDoutorado: vaga_regular_doutorado,
@@ -33,20 +41,22 @@ class EditalService {
             cotasMestrado: vaga_suplementar_mestrado,
             cartaOrietador: carta_orientador,
             cartaRencomedacao: carta_recomendacao,
-            documento: url,
+            documento: documento,
             dataInicio: data_inicio,
             dataFim: data_fim,
             curso: "1",
             status: "created",
         }).catch(err => {
             console.log(`[ERROR] Criar de Edital: ${err}`)
-            throw new Error("Não foi possivel criar o candidato");
+            throw new Error("Não foi possivel criar o Edital");
         });
 
         return edital;
     }
 
-    async update() {console.log("update")}
+    async update() {
+        console.log("update")
+    }
 
     async list() { // listagem dos editais
 
