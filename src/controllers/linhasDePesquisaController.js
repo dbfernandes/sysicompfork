@@ -9,43 +9,43 @@ const lines = [
     id: 1,
     nome: 'Banco de Dados e Recuperacao de Informacao',
     sigla: 'BD e RI',
-    cor: 'yellow',
+    cor: 'rgb(1,68,248)',
   },
   {
     id: 2,
     nome: 'Sistemas Embarcados e Engenharia de Software',
     sigla: 'SE&ES',
-    cor: 'blue',
+    cor: 'rgb(211,236,40)',
   },
   {
     id: 3,
     nome: 'Inteligencia Artificial',
     sigla: 'IA',
-    cor: 'pink',
+    cor: 'rgb(254,216,244)',
   },
   {
     id: 4,
     nome: 'Visao Computacional e Robotica',
     sigla: 'Visao',
-    cor: 'green',
+    cor: 'rgb(202,56,176)',
   },
   {
     id: 5,
     nome: 'Redes e Telecomunicacoes',
     sigla: 'Redes',
-    cor: 'magenta',
+    cor: 'rgb(69,94,35)',
   },
   {
     id: 6,
     nome: 'Otimizacao, Alg. e Complexidade Computacional',
     sigla: 'Otim.',
-    cor: 'red',
+    cor: 'rgb(48,173,165)',
   },
   {
     id: 7,
     nome: 'Software, Interacao e Aplicacoes',
     sigla: 'SIA',
-    cor: 'violet',
+    cor: 'rgb(56,205,28)',
   },
 ];
 
@@ -58,7 +58,7 @@ const listar = async (req, res) => {
 
       return res
         .status(200)
-        .render("linhasDePesquisa/listaLinhasDePesquisa", { linhaDePesquisa: lines, ...locals });
+        .render("linhasDePesquisa/linhasDePesquisa-listar", { linhaDePesquisa: lines, ...locals });
     }
 
     case "POST":
