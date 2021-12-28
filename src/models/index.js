@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development'; 
+const env = process.env.NODE_ENV || 'development';
 const config = require("../config/database.json");
 const db = {};
 
@@ -13,9 +13,18 @@ const db = {};
 const sequelize = new Sequelize('db', 'user', 'password', {
   host: 'localhost',
   dialect: 'mysql',
-  port: 3327
-
+  port: 3327,
 });
+
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 fs
   .readdirSync(__dirname)

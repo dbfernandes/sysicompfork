@@ -38,19 +38,7 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          }).catch((err) => {
             return res.status(400).json({
-               error: err.message,
-               body: {
-                  number,
-                  documento,
-                  data_inicio,
-                  data_fim,
-                  carta_recomendacao,
-                  carta_orientador,
-                  vaga_regular_mestrado,
-                  vaga_suplementar_mestrado,
-                  vaga_regular_doutorado,
-                  vaga_suplementar_doutorado
-               }
+               error: err.message
             })
          });
 
