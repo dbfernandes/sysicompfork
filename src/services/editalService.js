@@ -1,4 +1,6 @@
-import Edital from "../models/Edital";
+const {
+    Edital
+} = require("../models");
 
 
 
@@ -15,12 +17,16 @@ class EditalService {
         vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
-        let edital = await Edital.findOne({where: {editalId: number}}).catch(err => {
+        let edital = await Edital.findOne({
+            where: {
+                editalId: number
+            }
+        }).catch(err => {
             console.log(err);
             throw new Error("Não foi possivel criar o edital erro no find one");
         });
 
-        if(edital){
+        if (edital) {
             throw new Error("Candidato já existe");
         }
 
@@ -46,7 +52,9 @@ class EditalService {
         return edital;
     }
 
-    async update() {console.log("update")}
+    async update() {
+        console.log("update")
+    }
 
     async list() { // listagem dos editais
 
