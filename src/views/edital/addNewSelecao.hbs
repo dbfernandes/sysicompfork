@@ -192,7 +192,7 @@
                                         <div class="col">
                                             <input type="submit" value="Criar novo Edital"
                                                 class="btn btn-success float-right"
-                                                onclick="getValueFromForm" >
+                                                onclick="getValueFromForm()" >
                                         </div>
                                     </div>
                                 </form>
@@ -218,13 +218,13 @@
 
         $("#usuariosAdicionar").modal("show");
     }
-     function getValueFromForm() {
+    function getValueFromForm() {
            const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
             ...acc,[input.id]: input.value
             }),{})
             
-            console.log(dataFromForm)
-        }
+        console.log(dataFromForm)
+    }
 
 </script>
 
