@@ -12,14 +12,15 @@
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "127.0.0.1",
+      "host": "localhost",
       "dialect": "mysql"
     },
     "production": {
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "127.0.0.1",
-      "dialect": "mysql"
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3327
     }
   }
