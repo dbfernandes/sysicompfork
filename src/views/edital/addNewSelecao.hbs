@@ -142,7 +142,7 @@
                                             <input type="number" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
                                                 id="vagas_regulares_mestrado">
-                                                >
+                                                
                                         </div>
 
                                         <div class="col-sm-6">
@@ -151,7 +151,7 @@
                                             <input type="number" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
                                                 id="vaga_suplementar_mestrado">
-                                                >
+                                                
                                         </div>
                                     </div>
 
@@ -164,7 +164,7 @@
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não"
                                             id="doutorado">
-                                            >
+                                            
 
                                         <div class="form-row">
                                             <div class="col-sm-6">
@@ -181,7 +181,7 @@
                                                 <input type="number" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
                                                     id="vaga_suplementar_doutordo"
-                                                    >
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -191,7 +191,8 @@
                                     <div class="card-footer">
                                         <div class="col">
                                             <input type="submit" value="Criar novo Edital"
-                                                class="btn btn-success float-right" >
+                                                class="btn btn-success float-right"
+                                                onclick="getValueFromForm" >
                                         </div>
                                     </div>
                                 </form>
@@ -212,17 +213,19 @@
 
         });
 
-        function getValueFromForm() {
-           Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
-            ...acc,[input.id]: input.value
-            }),{})
-            
-        }
-
+       
         //To-do call backend to add User
 
         $("#usuariosAdicionar").modal("show");
     }
+     function getValueFromForm() {
+           const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
+            ...acc,[input.id]: input.value
+            }),{})
+            
+            console.log(dataFromForm)
+        }
+
 </script>
 
 
