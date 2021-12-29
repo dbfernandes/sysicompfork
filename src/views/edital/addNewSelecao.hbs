@@ -192,7 +192,7 @@
                                         <div class="col">
                                             <input type="submit" value="Criar novo Edital"
                                                 class="btn btn-success float-right"
-                                                onclick="getValueFromForm()" >
+                                                onclick="submitForm()" >
                                         </div>
                                     </div>
                                 </form>
@@ -222,8 +222,27 @@
            const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
             ...acc,[input.id]: input.value
             }),{})
-            
-        console.log(dataFromForm)
+
+        return dataFromForm;    
+    }
+
+    function submitForm() {
+        const dataFromForm = getValueFromForm();
+        return fetch('http://localhost:3000/edital/addEdital', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataFromForm)
+        }).then(response => {
+            if (response.status === 200) {
+                $("#usuariosAdicionar").modal("hide");
+                console.log("Edital criado com sucesso!");
+                
+            } else {
+                console.log("Erro ao criar Edital!");
+            }
+        });
     }
 
 </script>
