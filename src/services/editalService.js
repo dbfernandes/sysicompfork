@@ -16,24 +16,24 @@ class EditalService {
         vaga_suplementar_doutorado
     }) {
 
-        // let edital = await Edital.findOne({
-        //     where: {
-        //         editalId: number
-        //     }
-        // }).catch(err => {
-        //     console.log(err);
-        //     throw new Error("Não foi possivel criar o edital erro no find one");
-        // });
+        let edital = await Edital.findOne({
+            where: {
+                editalId: number
+            }
+        }).catch(err => {
+            console.log(err);
+            throw new Error("Não foi possivel criar o edital erro no find one");
+        });
 
-        // if (edital) {
-        //     throw new Error("Candidato já existe");
-        // }
+        if (edital) {
+            throw new Error("Candidato já existe");
+        }
 
         
         //TO-DO Verificar se o numero do edital já existe
 
 
-        edital = await Edital.create({
+        candidate = await Edital.create({
             editalId: number,
             vagaDoutorado: vaga_regular_doutorado,
             vagaMestrado: vaga_regular_mestrado,
@@ -51,7 +51,7 @@ class EditalService {
             throw new Error("Não foi possivel criar o Edital");
         });
 
-        return edital;
+        return candidate;
     }
 
     async update() {

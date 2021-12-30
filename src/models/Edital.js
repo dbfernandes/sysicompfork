@@ -6,7 +6,6 @@ const {
 
 module.exports = (sequelize, DataTypes) => {
     class Edital extends Model {
-
         static associate(models) {
 
         }
@@ -28,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Edital',
+        freezeTableName: true,
+        timestamps: false,
     });
     
     return Edital;

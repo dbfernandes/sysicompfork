@@ -1,4 +1,4 @@
-const { Edital } = require("../models");
+const { Candidate } = require("../models");
 
 class CandidateService {
     async create({

@@ -11,7 +11,7 @@ const db = {};
 
 
 const sequelize = new Sequelize('db', 'user', 'password', {
-  host: 'localhost',
+  host: "localhost",
   dialect: 'mysql',
   port: 3327,
 });
@@ -41,7 +41,7 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
-
+console.log(db);
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
