@@ -18,22 +18,7 @@ services:
       - '3327:3306'
     expose:
       - '3327'
-
-  sysicomp:
-    build:
-      context: ./
-    ports: 
-      - 3000:3000
-    working_dir: /app
-    volumes: 
-      - ./:/app
-    networks: 
-      - sysicomp-network
-      
-    links:
-      - db
-    depends_on: 
-      - db
+      # Where our data will be persisted
 
 #Docker Networks
 networks:
