@@ -3,15 +3,12 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Edital', {
-      id:{
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
+  
       editalId: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        primaryKey: true,
+        unique: true,
       },
       vagaDoutorado: {
         allowNull: true,

@@ -61,14 +61,19 @@ const addEditalSelecao = async (req, res) => {
    }
 }
 
-const listEditalSelecao = (req, res) => {
+const listEditalSelecao = async (req, res) => {
    switch (req.method) {
       case 'GET':
          return res.render('edital/listSelecao', {
             nome: req.session.nome
          })
       case 'POST':
-         return res.status(200).send(selecao);
+         const editais =  await EditalService.listEditalSelecao().catch((err) => {
+            return res.status(400).json({
+               error: err.message
+            })
+         });
+         return res.status(200).send(editais);
    }
 }
 
