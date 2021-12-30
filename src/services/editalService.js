@@ -53,7 +53,7 @@ class EditalService {
     }
 
 
-    async listEditalSelecao() { 
+    async listEdital() { 
         // listagem dos editais
         const editais = await Edital.findAll().catch(err => {
             console.log(`[ERROR] Listar Candidatos: ${err}`)

@@ -39,14 +39,11 @@ const addEditalSelecao = async (req, res) => {
          }).catch((err) => {
             return res.status(400).json({
                error: err.message
+               
             })
          });
 
-         if (!selecao) {
-            return res.status(400).json({
-               error: responseError.message
-            });
-         }
+        
          return res.status(200).send(selecao);
 
       case 'PUT':
@@ -68,7 +65,7 @@ const listEditalSelecao = async (req, res) => {
             nome: req.session.nome
          })
       case 'POST':
-         const editais =  await EditalService.listEditalSelecao().catch((err) => {
+         const editais =  await EditalService.listEdital().catch((err) => {
             return res.status(400).json({
                error: err.message
             })
