@@ -1,15 +1,95 @@
 <style>
 .forms-page{
     height: 100vh;
-    display: flex;
+    display: block;
     justify-content: center;
     align-items: center;
     background-color: #d2d6de;
     overflow-y: auto;
 }
+
+.forms-page header{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 72px;
+    background-color: #953030;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    padding: 10px 15px;
+}
+.forms-page header .options{
+    display: flex;
+    align-items: center;
+}
+.forms-page nav{
+    width: 90%;
+    height: 250px;
+    margin: auto;
+    margin-top: 100px;
+    background-color: #8fb625;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.forms-page section{
+    width: 90%;
+    margin: auto;
+    margin-top: 2%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(13, 9, 66);
+    overflow-y: auto;
+    color: #fff;
+}
+
+.forms-page footer{
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+}
 </style>
 <div class="forms-page">
-    <h1 class="title">Página do Formulário</h1>
+    <header>
+        <h1>PPGI</h1>
+        <div class="options">
+            <button>Início</button>
+            <button>Sair</button>
+        </div>
+    </header>
+    <nav>
+        <h1>Barra de Progresso</h1>
+    </nav>
+    <section class="dados-pessoais">
+        <h1>Dados Pessoais</h1>
+    </section>
+    <section class="historico">
+        <h1>Histórico Acadêmico/Profissional</h1>
+    </section>
+    <section class="proposta">
+        <h1>Proposta de Trabalho e Documentos</h1>
+    </section>
+    <section class="confirmacao">
+        <h1>Tela de Confirmação</h1>
+    </section>
+    <footer>
+        <h1>Rodapé</h1>
+    </footer>
 </div>
 <script>
 </script>
