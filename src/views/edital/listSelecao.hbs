@@ -86,17 +86,22 @@
         <!-- /.content -->
     </div>
 <script>
-    $(function () {
-        $("#example1").DataTable();
-        $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
+    function listar() {
+        
+        $.ajax({
+            url: '{{url}}/edital/listEdital',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
         });
-    });
+    }
+    listar();
+    
 </script>
 
 {{> footer}}
