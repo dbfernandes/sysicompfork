@@ -40,7 +40,7 @@
                                     <div class="form-group">
                                         <div class="form-row">
                                             <font color="#FF0000">*</font>  <label> Número do edital:</label>
-                                            <input type="text" class="form-control" placeholder="Número do edital" id="numero_edital" required>
+                                            <input type="text" class="form-control" placeholder="Número do edital" id="number" required>
                                         </div>
                                     </div>
 
@@ -56,7 +56,7 @@
                                                         <i class="fa fa-globe"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control" id="URL" placeholder="URL"
+                                                <input type="text" class="form-control" id="documento" placeholder="URL"
                                                     required>
                                             </div>
                                         </div>
@@ -75,7 +75,7 @@
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Início"
                                                         required
-                                                        id="DataInicio">
+                                                        id="data_inicio">
                                                 </div>
                                             </div>
 
@@ -90,7 +90,7 @@
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Fim"
                                                         required
-                                                        id="dataFim">
+                                                        id="data_fim">
                                                 </div>
                                             </div>
                                         </div>
@@ -141,7 +141,7 @@
                                            <font color="#FF0000">*</font>  <label> Vagas Regulares para Mestrado:</label>
                                             <input type="number" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
-                                                id="vagas_regulares_mestrado">
+                                                id="vaga_regular_mestrado">
                                                 
                                         </div>
 
@@ -157,10 +157,12 @@
 
                                     <div class="form-group">
                                         <div class="form-row">
-                                          <font color="#FF0000">*</font>   <label for="Mestrado"> Doutorado? </label>
+                                          <font color="#FF0000">*</font> 
+                                            <label for="Mestrado"> Doutorado? </label>
                                         </div>
 
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                        <input type="checkbox" 
+                                        name="administrador" unchecked data-bootstrap-switch
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não"
                                             id="doutorado">
@@ -168,10 +170,11 @@
 
                                         <div class="form-row">
                                             <div class="col-sm-6">
-                                               <font color="#FF0000">*</font>  <label> Vagas Regulares para Doutarado:</label>
+                                               <font color="#FF0000">*</font> 
+                                                <label> Vagas Regulares para Doutarado:</label>
                                                 <input type="number" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
-                                                    id="vagas_regulares_doutorado"
+                                                    id="vaga_regular_doutorado"
                                                     >
                                             </div>
 
@@ -180,8 +183,8 @@
                                                <font color="#FF0000">*</font>  <label> Vagas Suplementares para Doutorado:</label>
                                                 <input type="number" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
-                                                    id="vaga_suplementar_doutordo"
-                                                />
+                                                    id="vaga_suplementar_doutorado"
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -206,44 +209,43 @@
 
 <script>
     function usuariosAdicionarPage() {
-
-
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
 
         });
-
-       
         //To-do call backend to add User
 
         $("#usuariosAdicionar").modal("show");
     }
+
     function getValueFromForm() {
            const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
             ...acc,[input.id]: input.value
-            }),{})
-
+            }),{});
         return dataFromForm;    
     }
 
     function submitForm() {
+        
         const dataFromForm = getValueFromForm();
-        return fetch('http://localhost:3000/edital/addEdital', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        console.log(dataFromForm);
+        $.ajax({
+            url: '{{url}}/edital/addEdital',
+            type: 'POST',
+            data: dataFromForm,
+            success: function (data) {
+                console.log(data);
+                $("#editalAdicionar").modal("hide");
+                $("#editalAdicionar").on("hidden.bs.modal", function () {
+                    location.reload();
+                });
             },
-            body: JSON.stringify(dataFromForm)
-        }).then(response => {
-            if (response.status === 200) {
-                $("#usuariosAdicionar").modal("hide");
-                console.log("Edital criado com sucesso!");
-                
-            } else {
-                console.log("Erro ao criar Edital!");
+            error: function (data) {
+                console.log(data);
             }
         });
     }
+
 
 </script>
 

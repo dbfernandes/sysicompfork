@@ -16,7 +16,6 @@ class EditalService {
         vaga_suplementar_doutorado
     }) {
 
-        console.log({number, documento, data_inicio, data_fim, carta_recomendacao, carta_orientador, vaga_regular_mestrado, vaga_regular_doutorado, vaga_suplementar_mestrado, vaga_suplementar_doutorado})
 
         let edital = await Edital.findOne({
             where: {
@@ -53,13 +52,20 @@ class EditalService {
     }
 
 
-    async listEdital() { 
+    async listEdital() {
         // listagem dos editais
         const editais = await Edital.findAll().catch(err => {
             console.log(`[ERROR] Listar Candidatos: ${err}`)
             throw new Error("Não foi possivel listar o candidato");
         })
         return editais;
+    }
+    async delete(id) {
+        await Edital.destroy({
+            where: {
+                editalId:id
+            },
+        });
     }
 }
 

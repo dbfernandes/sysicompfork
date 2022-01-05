@@ -7,6 +7,14 @@
       "dialect": "mysql",
       "port": 3327
     },
+    "dev": {
+      "username": "user",
+      "password": "password",
+      "database": "db",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3327
+    },
     "test": {
       "username": "user",
       "password": "password",
