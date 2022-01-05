@@ -12,7 +12,7 @@ const addEditalSelecao = async (req, res) => {
       case 'POST':
          const {
             number,
-            url,
+            documento,
             data_inicio,
             data_fim,
             carta_recomendacao,
@@ -23,9 +23,11 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          } = await req.body
 
+         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
+
          const selecao = await EditalService.create({
             number,
-            url,
+            documento,
             data_inicio,
             data_fim,
             carta_recomendacao,
@@ -35,15 +37,14 @@ const addEditalSelecao = async (req, res) => {
             vaga_regular_doutorado,
             vaga_suplementar_doutorado
          }).catch((err) => {
-            responseError = err;
+            return res.status(400).json({
+               error: err.message
+               
+            })
          });
 
-         if (!selecao) {
-            return res.status(400).json({
-               error: responseError.message
-            });
-         }
-         return res.status(200).redirect('/selecaoppgi');
+        
+         return res.status(200).send(selecao);
 
       case 'PUT':
 
@@ -57,14 +58,19 @@ const addEditalSelecao = async (req, res) => {
    }
 }
 
-const listEditalSelecao = (req, res) => {
+const listEditalSelecao = async (req, res) => {
    switch (req.method) {
       case 'GET':
          return res.render('edital/listSelecao', {
             nome: req.session.nome
          })
       case 'POST':
-         return res.status(200).send(selecao);
+         const editais =  await EditalService.listEdital().catch((err) => {
+            return res.status(400).json({
+               error: err.message
+            })
+         });
+         return res.status(200).send(editais);
    }
 }
 

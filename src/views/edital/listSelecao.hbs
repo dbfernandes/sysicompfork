@@ -85,4 +85,23 @@
         </section>
         <!-- /.content -->
     </div>
+<script>
+    function listar() {
+        
+        $.ajax({
+            url: '{{url}}/edital/listEdital',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+    listar();
+    
+</script>
+
 {{> footer}}

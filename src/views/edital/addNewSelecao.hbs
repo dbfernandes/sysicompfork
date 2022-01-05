@@ -21,6 +21,7 @@
 
     <!-- Main content -->
     <section class="content">
+        
         <div class="container-fluid">
 
             <div class="col-md-12">
@@ -35,16 +36,16 @@
 
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <form role="form" id="adicionarSelecaoForm">
+                                <form role="form" id="adicionarSelecaoForm" >
                                     <div class="form-group">
                                         <div class="form-row">
                                             <font color="#FF0000">*</font>  <label> Número do edital:</label>
-                                            <input type="text" class="form-control" placeholder="Número do edital" id="numero_edital" required>
+                                            <input type="text" class="form-control" placeholder="Número do edital" id="number" required>
                                         </div>
                                     </div>
 
 
-                                    <div class="form-group">
+                                    <div class="form-group" >
                                         <div class="form-row">
                                             <font color="#FF0000">*</font>  <label for="URL">
                                                 URL
@@ -55,7 +56,7 @@
                                                         <i class="fa fa-globe"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control" id="URL" placeholder="URL"
+                                                <input type="text" class="form-control" id="documento" placeholder="URL"
                                                     required>
                                             </div>
                                         </div>
@@ -73,7 +74,8 @@
                                                         </span>
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Início"
-                                                        required>
+                                                        required
+                                                        id="data_inicio">
                                                 </div>
                                             </div>
 
@@ -87,7 +89,8 @@
                                                         </span>
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Fim"
-                                                        required>
+                                                        required
+                                                        id="data_fim">
                                                 </div>
                                             </div>
                                         </div>
@@ -103,16 +106,18 @@
                                             </div>
                                             <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                data-off-text="Não">
+                                                data-off-text="Não"
+                                                id="carta_recomendacao">
                                         </div>
 
                                         <div class="form-group">
                                             <div class="form-row">
-                                              <font color="#FF0000">*</font>   <label for="Mestrado"> Carta Orientadorcod? </label>
+                                              <font color="#FF0000">*</font>   <label for="Mestrado"> Carta Orientador? </label>
                                             </div>
                                             <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                data-off-text="Não">
+                                                data-off-text="Não"
+                                                id="carta_orientador">
                                         </div>
 
                                     </div>
@@ -124,7 +129,9 @@
                                         </div>
                                         <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não">
+                                            data-off-text="Não"
+                                            id="Mestrado">
+                                            
                                     </div>
 
 
@@ -133,38 +140,51 @@
 
                                            <font color="#FF0000">*</font>  <label> Vagas Regulares para Mestrado:</label>
                                             <input type="number" class="form-control "
-                                                placeholder="Vagas Regulares para Mestrado" required>
+                                                placeholder="Vagas Regulares para Mestrado" required
+                                                id="vaga_regular_mestrado">
+                                                
                                         </div>
 
                                         <div class="col-sm-6">
 
                                           <font color="#FF0000">*</font>   <label> Vagas Suplementares para Mestrado:</label>
                                             <input type="number" class="form-control "
-                                                placeholder="Vagas Regulares para Mestrado" required>
+                                                placeholder="Vagas Regulares para Mestrado" required
+                                                id="vaga_suplementar_mestrado">
+                                                
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <div class="form-row">
-                                          <font color="#FF0000">*</font>   <label for="Mestrado"> Doutorado? </label>
+                                          <font color="#FF0000">*</font> 
+                                            <label for="Mestrado"> Doutorado? </label>
                                         </div>
 
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                        <input type="checkbox" 
+                                        name="administrador" unchecked data-bootstrap-switch
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não">
+                                            data-off-text="Não"
+                                            id="doutorado">
+                                            
 
                                         <div class="form-row">
                                             <div class="col-sm-6">
-                                               <font color="#FF0000">*</font>  <label> Vagas Regulares para Doutarado:</label>
+                                               <font color="#FF0000">*</font> 
+                                                <label> Vagas Regulares para Doutarado:</label>
                                                 <input type="number" class="form-control "
-                                                    placeholder="Vagas Regulares para Doutorado" required>
+                                                    placeholder="Vagas Regulares para Doutorado" required
+                                                    id="vaga_regular_doutorado"
+                                                    >
                                             </div>
 
                                             <div class="col-sm-6">
 
                                                <font color="#FF0000">*</font>  <label> Vagas Suplementares para Doutorado:</label>
                                                 <input type="number" class="form-control "
-                                                    placeholder="Vagas Regulares para Doutorado" required>
+                                                    placeholder="Vagas Regulares para Doutorado" required
+                                                    id="vaga_suplementar_doutorado"
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -173,8 +193,9 @@
 
                                     <div class="card-footer">
                                         <div class="col">
-                                            <input type="submit" value="Criar novo Projeto"
-                                                class="btn btn-success float-right">
+                                            <input type="submit" value="Criar novo Edital"
+                                                class="btn btn-success float-right"
+                                                onclick="submitForm()" >
                                         </div>
                                     </div>
                                 </form>
@@ -188,13 +209,44 @@
 
 <script>
     function usuariosAdicionarPage() {
-
-
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
 
         });
+        //To-do call backend to add User
+
+        $("#usuariosAdicionar").modal("show");
     }
+
+    function getValueFromForm() {
+           const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc,input)=>({
+            ...acc,[input.id]: input.value
+            }),{});
+        return dataFromForm;    
+    }
+
+    function submitForm() {
+        
+        const dataFromForm = getValueFromForm();
+        console.log(dataFromForm);
+        $.ajax({
+            url: '{{url}}/edital/addEdital',
+            type: 'POST',
+            data: dataFromForm,
+            success: function (data) {
+                console.log(data);
+                $("#editalAdicionar").modal("hide");
+                $("#editalAdicionar").on("hidden.bs.modal", function () {
+                    location.reload();
+                });
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+
 </script>
 
 

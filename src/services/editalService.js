@@ -1,11 +1,11 @@
-import Edital from "../models/Edital";
-
-
+var {
+    Edital
+} = require('../models');
 
 class EditalService {
     async create({
         number,
-        url,
+        documento,
         data_inicio,
         data_fim,
         carta_recomendacao,
@@ -15,68 +15,58 @@ class EditalService {
         vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
-        let edital = await Edital.findOne({where: {editalId: number}}).catch(err => {
+
+
+        let edital = await Edital.findOne({
+            where: {
+                editalId: number
+            }
+        }).catch(err => {
             console.log(err);
             throw new Error("Não foi possivel criar o edital erro no find one");
         });
 
-        if(edital){
+        if (edital) {
             throw new Error("Candidato já existe");
         }
 
-        //TO-DO Verificar se o numero do edital já existe
-        edital = await Edital.create({
+        candidate = await Edital.create({
             editalId: number,
             vagaDoutorado: vaga_regular_doutorado,
             vagaMestrado: vaga_regular_mestrado,
             cotasDoutorado: vaga_suplementar_doutorado,
             cotasMestrado: vaga_suplementar_mestrado,
-            cartaOrietador: carta_orientador,
-            cartaRencomedacao: carta_recomendacao,
-            documento: url,
+            cartaOrientador: carta_orientador,
+            cartaRecomendacao: carta_recomendacao,
+            documento: documento,
             dataInicio: data_inicio,
             dataFim: data_fim,
             curso: "1",
             status: "created",
         }).catch(err => {
             console.log(`[ERROR] Criar de Edital: ${err}`)
-            throw new Error("Não foi possivel criar o candidato");
+            throw new Error("Não foi possivel criar o Edital");
         });
 
-        return edital;
+        return candidate;
     }
 
-    async update() {console.log("update")}
 
-    async list() { // listagem dos editais
-
-        const editais = [{
-                numero: '021-2021',
-                dataInicio: '01/01/2020',
-                dataFim: '01/01/2021',
-                cursos: 'Mestrado e Doutorado',
-                vagasMestradoRegular: '10',
-                vagasMestradoSuplementares: '10',
-                vagasDoutoradoRegular: '10',
-                vagasDoutoradoSuplementares: '10',
-                url: 'http://www.propesp.ufam.edu.br/teste'
-            },
-            {
-                numero: '022-2021',
-                dataInicio: '01/01/2020',
-                dataFim: '01/01/2021',
-                cursos: 'Mestrado e Doutorado',
-                vagasMestradoRegular: '10',
-                vagasMestradoSuplementares: '10',
-                vagasDoutoradoRegular: '10',
-                vagasDoutoradoSuplementares: '10',
-                url: 'http://www.propesp.ufam.edu.br/teste'
-            }
-        ]
-
+    async listEdital() {
+        // listagem dos editais
+        const editais = await Edital.findAll().catch(err => {
+            console.log(`[ERROR] Listar Candidatos: ${err}`)
+            throw new Error("Não foi possivel listar o candidato");
+        })
         return editais;
     }
-
+    async delete(id) {
+        await Edital.destroy({
+            where: {
+                editalId:id
+            },
+        });
+    }
 }
 
 export default new EditalService;

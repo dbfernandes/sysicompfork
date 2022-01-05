@@ -6,7 +6,6 @@ const {
 
 module.exports = (sequelize, DataTypes) => {
     class Edital extends Model {
-
         static associate(models) {
 
         }
@@ -18,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
         vagaMestrado: DataTypes.INTEGER,
         cotasDoutorado: DataTypes.INTEGER,
         cotasMestrado: DataTypes.INTEGER,
-        cartaOrietador: DataTypes.STRING,
-        cartaRencomedacao: DataTypes.STRING,
+        cartaOrientador: DataTypes.STRING,
+        cartaRecomendacao: DataTypes.STRING,
         documento: DataTypes.STRING,
         dataInicio: DataTypes.STRING,
         dataFim: DataTypes.STRING,
@@ -28,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Edital',
+        freezeTableName: true,
+        timestamps: false,
     });
     
     return Edital;
