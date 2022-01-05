@@ -41,7 +41,8 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/usuarios/adicionar" class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
+              <a href="/usuarios/adicionar"
+                class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-user-plus nav-icon"></i>
                 <p>Adicionar Usuário</p>
               </a>
@@ -54,6 +55,7 @@
             </li>
           </ul>
         </li>
+
         <li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
             <i class="nav-icon fas fa-list-ul"></i>
@@ -64,7 +66,8 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/projetos/adicionar" class="nav-link {{#ifEqual page 'projetos-adicionar'}}active{{/ifEqual}} text-sm">
+              <a href="/projetos/adicionar"
+                class="nav-link {{#ifEqual page 'projetos-adicionar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-search-plus nav-icon"></i>
                 <p>Adicionar Projeto</p>
               </a>
@@ -77,8 +80,34 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
+
+        <li class="nav-item {{#ifEqual module 'selecaoppgi'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'selecaoppgi'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-list-ul"></i>
+            <p>
+              Seleção PPGI
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/edital/addEdital"
+                class="nav-link {{#ifEqual page 'selecaoppgi-adicionar'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-search-plus nav-icon "></i>
+                <p>Adicionar Seleção</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/edital/listEdital" class="nav-link {{#ifEqual page 'selecaoppgi-listar'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Listar Seleção</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item {{#ifEqual module 'linhasDePesquisa'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'linhasDePesquisa'}}active{{/ifEqual}}">
             <i class="nav-icon fas fa-search"></i>
             <p>
               Linhas de Pesquisa
@@ -87,13 +116,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/script-adminlte/index.html" class="nav-link text-sm">
+              <a href="/linhasdepesquisa/adicionar" class="nav-link text-sm">
                 <i class="fas fa-search-plus nav-icon"></i>
                 <p>Adicionar Linha de Pesquisa</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="/script-adminlte/index2.html" class="nav-link text-sm">
+              <a href="/linhasdepesquisa/listar" class="nav-link {{#ifEqual page 'linhasDePesquisa-listar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-table nav-icon"></i>
                 <p>Listar Linhas de Pesquisa</p>
               </a>

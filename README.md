@@ -78,3 +78,12 @@ npm run start:dev
 ```
 npm run criar-modulo nome-modulo
 ```
+
+### Rodando as Migrations e Seeds
+Para atualizar as tabelas e popular o banco, utilize os seguintes comandos:
+
+```
+npx sequelize db:migrate && sequelize db:seed:all
+```
+
+
