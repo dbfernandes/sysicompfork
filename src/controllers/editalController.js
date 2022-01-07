@@ -1,7 +1,7 @@
 import EditalService from '../services/editalService';
 
 const locals = { 
-	layout: 'selecaoppgi' 
+	layout: 'main' 
 }
 
 const addEditalSelecao = async (req, res) => {
@@ -44,7 +44,6 @@ const addEditalSelecao = async (req, res) => {
          }).catch((err) => {
             return res.status(400).json({
                error: err.message
-               
             })
          });
 
@@ -52,7 +51,6 @@ const addEditalSelecao = async (req, res) => {
          return res.status(200).send(selecao);
 
       case 'PUT':
-
          return res.status(200).send({
             message: 'TO-DO'
          });
@@ -70,6 +68,7 @@ const listEditalSelecao = async (req, res) => {
             nome: req.session.nome,
             ...locals
          })
+         
       case 'POST':
          const editais =  await EditalService.listEdital().catch((err) => {
             return res.status(400).json({

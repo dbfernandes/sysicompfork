@@ -1,5 +1,5 @@
 {{> header}}
-{{> sidebar module='projetos' page='projetos-listar'}}
+{{> sidebar module='edital' page='edital-listar'}}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -87,7 +87,6 @@
     </div>
 <script>
     function listar() {
-        
         $.ajax({
             url: '{{url}}/edital/listEdital',
             type: 'POST',
@@ -96,7 +95,7 @@
                 console.log(data);
             },
             error: function (data) {
-                console.log(data);
+                console.log("nao foi possivel adquirir os dados");
             }
         });
     }
