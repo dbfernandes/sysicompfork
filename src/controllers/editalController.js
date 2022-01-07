@@ -1,12 +1,17 @@
 import EditalService from '../services/editalService';
 
+const locals = { 
+	layout: 'selecaoppgi' 
+}
+
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
 
       case 'GET':
          console.log(req.session.nome);
          return res.render('edital/addNewSelecao', {
-            nome: req.session.nome
+            nome: req.session.nome,
+            ...locals
          })
 
       case 'POST':
@@ -62,7 +67,8 @@ const listEditalSelecao = async (req, res) => {
    switch (req.method) {
       case 'GET':
          return res.render('edital/listSelecao', {
-            nome: req.session.nome
+            nome: req.session.nome,
+            ...locals
          })
       case 'POST':
          const editais =  await EditalService.listEdital().catch((err) => {
