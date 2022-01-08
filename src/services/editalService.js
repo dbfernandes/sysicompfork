@@ -58,8 +58,11 @@ class EditalService {
             console.log(`[ERROR] Listar Candidatos: ${err}`)
             throw new Error("Não foi possivel listar o candidato");
         })
+
+        console.log(editais)
         return editais;
     }
+
     async delete(id) {
         await Edital.destroy({
             where: {

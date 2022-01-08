@@ -12,6 +12,7 @@ const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
 
+
 /* Add routes */
 //router.use('/', isUsuarioAutenticado)
 // router.use('/', autenticacaoRoutes)

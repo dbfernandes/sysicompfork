@@ -1,4 +1,12 @@
+
+    
+
+
 {{> header}}
+
+
+
+
 {{> sidebar module='edital' page='edital-listar'}}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -7,11 +15,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Lista de Projetos</h1>
+                    <h1>Lista de Selecoes</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Projetos</a></li>
+                        <li class="breadcrumb-item"><a href="#">Selecoes</a></li>
                         <li class="breadcrumb-item active">Listar</li>
                     </ol>
                 </div>
@@ -58,19 +66,21 @@
 
                         </tr>
                     </thead>
-                    <tbody>
-                    {{#each usuarios}}
-                        <tr>
-                            <td> {{nome}} </td>
-                            <td> {{username}} </td>
-                            <td> {{email}} </td>
-                            <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
-                            <td> 
-                                {{perfis}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    </tbody>
+                        <tbody>
+                        {{#each editais}}
+                            <tr>
+                                <td > {{dataValues.editalId}} </td>
+                                <td> {{dataValues.dataInicio}} </td>
+                                <td> {{dataValues.dataFim}} </td>
+                                <td> {{dataValues.documento}} </td>
+
+                                <td> {{dataValues.dataFim}} </td>
+                                <td> {{dataValues.vagaMestrado}} </td>
+                                <td> {{dataValues.vagaDoutorado}} </td>
+
+                            </tr>
+                        {{/each}}
+                        </tbody>
                     </table>
                 </div>
                 <!-- /.card-body -->
@@ -85,22 +95,11 @@
         </section>
         <!-- /.content -->
     </div>
+
 <script>
-    function listar() {
-        $.ajax({
-            url: '{{url}}/edital/listEdital',
-            type: 'POST',
-            dataType: 'json',
-            success: function(data) {
-                console.log(data);
-            },
-            error: function (data) {
-                console.log("nao foi possivel adquirir os dados");
-            }
-        });
-    }
-    listar();
-    
+
+
+  
 </script>
 
 {{> footer}}
