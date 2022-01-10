@@ -23,14 +23,14 @@ class EditalService {
             }
         }).catch(err => {
             console.log(err);
-            throw new Error("Não foi possivel criar o edital erro no find one");
+            throw new Error("Não foi possivel criar o edital erro na busca");
         });
 
         if (edital) {
             throw new Error("Candidato já existe");
         }
 
-        candidate = await Edital.create({
+        edital = await Edital.create({
             editalId: number,
             vagaDoutorado: vaga_regular_doutorado,
             vagaMestrado: vaga_regular_mestrado,
@@ -48,18 +48,16 @@ class EditalService {
             throw new Error("Não foi possivel criar o Edital");
         });
 
-        return candidate;
+        return edital;
     }
 
 
     async listEdital() {
         // listagem dos editais
         const editais = await Edital.findAll().catch(err => {
-            console.log(`[ERROR] Listar Candidatos: ${err}`)
-            throw new Error("Não foi possivel listar o candidato");
+            console.log(`[ERROR] Listar Editais: ${err}`)
+            throw new Error("Não foi possivel listar o edital");
         })
-
-        console.log(editais)
         return editais;
     }
 

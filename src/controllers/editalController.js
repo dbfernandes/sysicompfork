@@ -43,11 +43,10 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          }).catch((err) => {
             return res.status(400).json({
-               error: err.message
+               error: err.message,
+               req: req.body
             })
          });
-
-        
          return res.status(200).send(selecao);
 
       case 'PUT':
