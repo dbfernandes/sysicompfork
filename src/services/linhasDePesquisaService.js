@@ -2,11 +2,15 @@ const { LinhasDePesquisa } = require('../models');
 
 // CRUD da pagina de linhas de pesquisa
 
+const formatDbAnswer = (array) => array.map((linha) => (linha.dataValues));
+
 export default new class LinhasDePesquisaService {
   async list() {
-    const allResearchLines = await LinhasDePesquisa.findAll();
+    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla', 'icone', 'cor']});
 
-    return allResearchLines;
+    const formatedAnswer = formatDbAnswer(allResearchLines);
+
+    return formatedAnswer;
   }
 
   async findById(id) {
