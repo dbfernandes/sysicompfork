@@ -6,11 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 
   LinhasDePesquisa.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
       nome: DataTypes.STRING,
       sigla: DataTypes.STRING,
       icone: DataTypes.STRING,
