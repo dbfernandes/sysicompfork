@@ -2,7 +2,22 @@ const { LinhasDePesquisa } = require('../models');
 
 // CRUD da pagina de linhas de pesquisa
 
-const formatDbAnswer = (array) => array.map((linha) => (linha.dataValues));
+const formatDbAnswer = (object) => {
+  const array = Array.isArray(object);
+
+  switch(array) {
+  case (true): {
+    return object.map((linha) => (linha.dataValues));
+  };
+
+  case (false): {
+    return object.dataValues;
+  };
+
+  default:
+    return object.dataValues;
+  };
+};
 
 export default new class LinhasDePesquisaService {
   async list() {
@@ -16,7 +31,9 @@ export default new class LinhasDePesquisaService {
   async findById(id) {
     const researchLine = await LinhasDePesquisa.findByPk(id);
 
-    return researchLine;
+    const formatedAnswer = formatDbAnswer(researchLine);
+
+    return formatedAnswer;
   }
 
   async create(newResearchLine) {
@@ -53,4 +70,4 @@ export default new class LinhasDePesquisaService {
       where: { id },
     });
   }
-}
+};
