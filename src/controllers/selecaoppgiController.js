@@ -17,7 +17,8 @@ const begin = async(req, res) => {
 const signin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.list(), errorSignin: null});
+			const editais = await EditalService.listEdital();
+			return res.render('selecaoppgi/signin', {...locals, editais, errorSignin: null});
 		case 'POST':
 			const {email, senha, edital} = req.body;
 			
@@ -44,7 +45,7 @@ const signin = async(req, res) => {
 const login = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
-			return res.render('selecaoppgi/login', {...locals, editais: await EditalService.list()});
+			return res.render('selecaoppgi/login', {...locals, editais: await EditalService.listEdital()});
 		case 'POST':
 			const {email, senha, edital} = req.body;
 

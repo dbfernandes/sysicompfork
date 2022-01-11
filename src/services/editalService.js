@@ -54,10 +54,13 @@ class EditalService {
 
     async listEdital() {
         // listagem dos editais
-        const editais = await Edital.findAll().catch(err => {
+        let editais = await Edital.findAll().catch(err => {
             console.log(`[ERROR] Listar Candidatos: ${err}`)
             throw new Error("Não foi possivel listar o candidato");
         })
+
+        editais  = JSON.parse(JSON.stringify(editais));
+
         return editais;
     }
     async delete(id) {

@@ -44,7 +44,7 @@ const addEditalSelecao = async (req, res) => {
          });
 
         
-         return res.status(200).send(selecao);
+         return res.status(200).json(selecao);
 
       case 'PUT':
 
@@ -70,7 +70,7 @@ const listEditalSelecao = async (req, res) => {
                error: err.message
             })
          });
-         return res.status(200).send(editais);
+         return res.status(200).json(editais);
    }
 }
 
