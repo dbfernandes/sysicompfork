@@ -47,13 +47,7 @@ const addEditalSelecao = async (req, res) => {
                req: req.body
             })
          });
-<<<<<<< HEAD
-
-        
-         return res.status(200).json(selecao);
-=======
          return res.status(200).send(selecao);
->>>>>>> 8ae7c579feb0b2ba3c19d4f2731c07af0f0020be
 
       case 'PUT':
          return res.status(200).send({
