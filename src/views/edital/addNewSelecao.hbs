@@ -169,7 +169,6 @@
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não" id="doutorado">
 
-
                                         <div class="form-row">
                                             <div class="col-sm-6">
                                                 <font color="#FF0000">*</font>
@@ -196,7 +195,7 @@
                                         <div class="col">
                                             <input type="submit" value="Criar novo Edital"
                                                 class="btn btn-success float-right" onclick="submitForm()">
-                                            
+
                                         </div>
                                     </div>
                                 </form>
@@ -209,44 +208,19 @@
 
 
 <script>
-    function test(){
-        var data_inicio = document.getElementById("data_inicio").value;
-        var data_fim = document.getElementById("data_fim").value;
-        var data_inicio_mestrado = document.getElementById("data_inicio_mestrado").value;
-        var data_fim_mestrado = document.getElementById("data_fim_mestrado").value;
-        var data_inicio_doutorado = document.getElementById("data_inicio_doutorado").value;
-        var data_fim_doutorado = document.getElementById("data_fim_doutorado").value;
-
-        if(data_inicio > data_fim){
-            alert("A data de início não pode ser maior que a data de fim");
-            return false;
-        }
-
-        if(data_inicio_mestrado > data_fim_mestrado){
-            alert("A data de início não pode ser maior que a data de fim");
-            return false;
-        }
-
-        if(data_inicio_doutorado > data_fim_doutorado){
-            alert("A data de início não pode ser maior que a data de fim");
-            return false;
-        }
-
-        return true;
-    }
-
+    
 
 
     function usuariosAdicionarPage() {
+        $.validator.addMethod("data-teste", function (el) {
+            return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
+        })
+
+
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
-            console.log(this)
-            // $("input[doutorado-input]").prop('disabled', true);
-            
-
+            // console.log(this)
         });
-        
-        
         $("#usuariosAdicionar").modal("show");
     }
 
