@@ -79,8 +79,65 @@ const listEditalSelecao = async (req, res) => {
    }
 }
 
+const viewEdital = async (req, res) => {
+   switch (req.method) {
+      case 'GET':
+         const { id } = req.params
+         const edital = await EditalService.getEdital(id).catch((err) => {
+            return res.status(400).json({
+               error: err.message
+            })
+         });
+         return res.render('edital/editSelecao/'+id, {
+            nome: req.session.nome,
+            ...locals,
+            edital: edital
+         })
+   }
+}
 
+const editSelecao = async (req, res) => {
+   switch (req.method) {
+      case 'PUT':
+         const { id } = req.params
+         const {
+            number,
+            documento,
+            data_inicio,
+            data_fim,
+            carta_recomendacao,
+            carta_orientador,
+            vaga_regular_mestrado,
+            vaga_suplementar_mestrado,
+            vaga_regular_doutorado,
+            vaga_suplementar_doutorado
+         } = await req.body
 
+         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
+
+         const selecao = await EditalService.update(id, {
+            number,
+            documento,
+            data_inicio,
+            data_fim,
+            carta_recomendacao,
+            carta_orientador,
+            vaga_regular_mestrado,
+            vaga_suplementar_mestrado,
+            vaga_regular_doutorado,
+            vaga_suplementar_doutorado
+         }).catch((err) => {
+            return res.status(400).json({
+               error: err.message,
+               req: req.body
+            })
+         });
+         return res.status(200).send(selecao);
+
+      default:
+         return res.status(404).send();
+   }
+}
 export default {
    listEditalSelecao,
    addEditalSelecao

@@ -55,7 +55,7 @@
                             <th>	#Inscrições Encerradas</th>
                             <th>	Vagas Mestrado</th>
                             <th>	Vagas Doutorado</th>
-                            <th>	</th>
+
 
                         </tr>
                     </thead>
@@ -69,14 +69,6 @@
                                 <td> {{dataValues.dataFim}} </td>
                                 <td> {{dataValues.vagaMestrado}} </td>
                                 <td> {{dataValues.vagaDoutorado}} </td>
-                                <td>
-                                    <a href="/edital/editar/{{dataValues.editalId}}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="/edital/excluir/{{dataValues.editalId}}" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
 
                             </tr>
                         {{/each}}
