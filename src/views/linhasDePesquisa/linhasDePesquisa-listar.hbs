@@ -2,6 +2,10 @@
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
 <style>
 	/* Style your page here  */
+  .links-container {
+    display: flex;
+    justify-content: space-around;
+  }
 </style>
 
 <main class="content-wrapper">
@@ -28,7 +32,7 @@
 					</button>
 				</div>
 				<div class="col-sm-4 col-md-3 col-lg-2">
-					<a type="button" class="btn btn-block btn-primary" href="/linhasdepesquisa/adicionar">
+					<a type="button" class="btn btn-block btn-primary" href="/linhasdepesquisa/criar">
 						<i class="fas fa-plus color-white"></i>
 						Adicionar Linha de Pesquisa
 					</a>
@@ -53,7 +57,7 @@
 										<th>#</th>
 										<th>Nome</th>
 										<th>Sigla</th>
-										<th>Cor</th>
+										<th>Ícone/Cor</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -62,7 +66,23 @@
 										<td>{{id}}</td>
 										<td>{{nome}}</td>
 										<td>{{sigla}}</td>
-										<td class="color-field {{cor}}">{{cor}}</td>
+										<td class="color-field {{cor}}">
+                      <span class="{{icone}}"></span>
+                    </td>
+                    <td class='links-container'>
+                      <a
+                        href='/linhasdepesquisa/busca/{{id}}'
+                        class='fa fa-solid fa-eye'
+                      />
+                      <a
+                        href='/linhasdepesquisa/remover/{{id}}'
+                        class='fa fa-solid fa-trash'
+                      />
+                      <a
+                        href='/linhasdepesquisa/editar/{{id}}'
+                          class='fa fa-solid fa-pen'
+                      />
+                    </td>
 									</tr>
 									{{/each}}
 								</tbody>
@@ -75,7 +95,6 @@
 	</section>
 </main>
 <script>
-	// Your code here
 	function goHome() {
 		window.location.href = "{{url}}/inicio";
 	}
