@@ -1,14 +1,14 @@
-import app from "./app"
+import app from "./app";
 import dotenv from 'dotenv';
 
 
-dotenv.config()
+dotenv.config();
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 const server = app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-    console.log(`http://localhost:3000/`)
+    console.log(`Server is running on port ${port}`);
+    console.log(`http://localhost:${port}/`);
 })
 
-export default server
+export default server;
