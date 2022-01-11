@@ -1,12 +1,17 @@
 import EditalService from '../services/editalService';
 
+const locals = { 
+	layout: 'selecaoppgi' 
+}
+
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
 
       case 'GET':
          console.log(req.session.nome);
          return res.render('edital/addNewSelecao', {
-            nome: req.session.nome
+            nome: req.session.nome,
+            ...locals
          })
 
       case 'POST':
@@ -38,16 +43,19 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          }).catch((err) => {
             return res.status(400).json({
-               error: err.message
-               
+               error: err.message,
+               req: req.body
             })
          });
+<<<<<<< HEAD
 
         
          return res.status(200).json(selecao);
+=======
+         return res.status(200).send(selecao);
+>>>>>>> 8ae7c579feb0b2ba3c19d4f2731c07af0f0020be
 
       case 'PUT':
-
          return res.status(200).send({
             message: 'TO-DO'
          });
@@ -62,8 +70,11 @@ const listEditalSelecao = async (req, res) => {
    switch (req.method) {
       case 'GET':
          return res.render('edital/listSelecao', {
-            nome: req.session.nome
+            nome: req.session.nome,
+            ...locals,
+            editais: await EditalService.listEdital()
          })
+         
       case 'POST':
          const editais =  await EditalService.listEdital().catch((err) => {
             return res.status(400).json({

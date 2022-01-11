@@ -17,8 +17,12 @@ const begin = async(req, res) => {
 const signin = async(req, res) => {
 	switch (req.method) {
 		case 'GET':
+<<<<<<< HEAD
 			const editais = await EditalService.listEdital();
 			return res.render('selecaoppgi/signin', {...locals, editais, errorSignin: null});
+=======
+			return res.render('selecaoppgi/signin', {...locals, editais: await EditalService.listEdital(), errorSignin: null});
+>>>>>>> 8ae7c579feb0b2ba3c19d4f2731c07af0f0020be
 		case 'POST':
 			const {email, senha, edital} = req.body;
 			
