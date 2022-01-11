@@ -1,12 +1,11 @@
 import EditalService from '../services/editalService';
 
-const locals = { 
-	layout: 'selecaoppgi' 
+const locals = {
+   layout: 'selecaoppgi'
 }
 
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
-
       case 'GET':
          console.log(req.session.nome);
          return res.render('edital/addNewSelecao', {
@@ -56,7 +55,6 @@ const addEditalSelecao = async (req, res) => {
 
       default:
          return res.status(404).send();
-
    }
 }
 
@@ -68,27 +66,51 @@ const listEditalSelecao = async (req, res) => {
             ...locals,
             editais: await EditalService.listEdital()
          })
-         
+
       case 'POST':
-         const editais =  await EditalService.listEdital().catch((err) => {
+         const editais = await EditalService.listEdital().catch((err) => {
             return res.status(400).json({
                error: err.message
             })
          });
          return res.status(200).json(editais);
+      default:
+         return res.status(404).send();
    }
 }
+
+const deleteEdital = async (req, res) => {
+   switch (req.method) {
+      case 'DELETE':
+         const {
+            id
+         } = req.params
+         const edital = await EditalService.delete(id).catch((err) => {
+            return res.status(400).json({
+               error: err.message
+            })
+         });
+
+         return res.status(200).send(edital);
+
+      default:
+         return res.status(404).send();
+   }
+}
+
 
 const viewEdital = async (req, res) => {
    switch (req.method) {
       case 'GET':
-         const { id } = req.params
+         const {
+            id
+         } = req.params
          const edital = await EditalService.getEdital(id).catch((err) => {
             return res.status(400).json({
                error: err.message
             })
          });
-         return res.render('edital/editSelecao/'+id, {
+         return res.render('edital/viewSelecao/', {
             nome: req.session.nome,
             ...locals,
             edital: edital
@@ -96,10 +118,28 @@ const viewEdital = async (req, res) => {
    }
 }
 
-const editSelecao = async (req, res) => {
+const updateEdital = async (req, res) => {
    switch (req.method) {
+      case 'GET':
+         const {
+            id
+         } = req.params
+         const edital = await EditalService.getEdital(id).catch((err) => {
+            return res.status(400).json({
+               error: err.message
+            })
+         });
+         return res.render('edital/editSelecao/', {
+            nome: req.session.nome,
+            ...locals,
+            edital: edital
+         })
+
       case 'PUT':
-         const { id } = req.params
+         const {
+            id_update
+         } = req.params
+
          const {
             number,
             documento,
@@ -113,7 +153,6 @@ const editSelecao = async (req, res) => {
             vaga_suplementar_doutorado
          } = await req.body
 
-         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
 
          const selecao = await EditalService.update(id, {
             number,
@@ -140,5 +179,8 @@ const editSelecao = async (req, res) => {
 }
 export default {
    listEditalSelecao,
-   addEditalSelecao
+   addEditalSelecao,
+   deleteEdital,
+   viewEdital,
+   updateEdital
 }

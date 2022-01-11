@@ -64,11 +64,29 @@ class EditalService {
     }
 
     async delete(id) {
+        const edital = await Edital.findOne({
+            where: {
+                editalId: id
+            }
+        }).catch(err => {
+            console.log(`[ERROR] Buscar Edital: ${err}`)
+            throw new Error("Não foi possivel buscar o edital");
+        })
+
+        if (!edital) {
+            throw new Error("Edital não encontrado");
+        }
+
         await Edital.destroy({
             where: {
-                editalId:id
-            },
-        });
+                editalId : id
+            }
+        }).catch(err => {
+            console.log(`[ERROR] Deletar Edital: ${err}`)
+            throw new Error("Não foi possivel deletar o edital");
+        })
+
+        return edital;
     }
 
     async getEdital(id) {
