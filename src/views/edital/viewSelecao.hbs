@@ -1,14 +1,14 @@
 {{> header}}
 
 {{> sidebar module='edital' page='edital-listar'}}
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Lista de Selecoes</h1>
+                    <h1>Edital: {{edital}} </h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
@@ -30,68 +30,131 @@
                         Adicionar Seleção
                     </a>
                 </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
+                        <i class="fas fa-plus color-white"></i>
+                        Lista de Inscritos
+                    </a>
+                </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
+                        <i class="fas fa-plus color-white"></i>
+                        Planilha Excel para Avaliação (Excel)
+                    </a>
+                </div>
+
             </div>
         </div><!-- /.container-fluid -->
-        </section>
+    </section>
 
-        <!-- Main content -->
-        <section class="content">
+    <!-- Main content -->
+    <section class="content">
         <div class="container-fluid">
             <div class="row">
-            <div class="col-12">
-                <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Projetos</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nº edital</th>
-                            <th>Início inscrições</th>
-                            <th>	Término inscrições</th>
-                            <th>#Inscrições Iniciadas</th>
-                            <th>	#Inscrições Encerradas</th>
-                            <th>	Vagas Mestrado</th>
-                            <th>	Vagas Doutorado</th>
+                <div class="col-12">
+                    <div class="card">
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+                                
+                                </thead>
+                                <tbody>
+                                   
+                                    <tr>
+                                        <td>Nº edital</td>
+                                        <td>{{edital}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Data início</td>
+                                        <td>{{dataInicio}}TESTE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data fim</td>
+                                        <td>{{dataFim}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nº de Inscrições Iniciadas</td>
+                                        <td>{{inscricoesIniciadas}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Nº de Inscrições Encerradas</td>
+
+                                        <td>{{inscricoesEncerradas}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Carta de Recomendação</td>
+
+                                        <td>{{cartaRecomendacao}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Carta do Orientador</td>
+
+                                        <td>{{cartaOrientador}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Curso</td>
+
+                                        <td>{{curso}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Vagas para Mestrado</td>
+
+                                        <td>{{vagasMestrado}}</td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td>Vagas para Doutorado</td>
+
+                                        <td>{{vagasDoutorado}}</td>
+
+                                    </tr>
+                                    <td>Vagas para Doutorado</td>
+
+                                    <td>{{vagasPosDoutorado}}</td>
+                                    <tr>
+                                        <td>{{vagasPosDoutorado}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Baixar</td>
+
+                                        <td>
+                                            <a href="/edital/{{edital}}/selecao/baixar" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
 
 
-                        </tr>
-                    </thead>
-                        <tbody>
-                        {{#each editais}}
-                            <tr>
-                                <td > {{dataValues.editalId}} </td>
-                                <td> {{dataValues.dataInicio}} </td>
-                                <td> {{dataValues.dataFim}} </td>
-                                <td> {{dataValues.documento}} </td>
-                                <td> {{dataValues.dataFim}} </td>
-                                <td> {{dataValues.vagaMestrado}} </td>
-                                <td> {{dataValues.vagaDoutorado}} </td>
 
-                            </tr>
-                        {{/each}}
-                        </tbody>
-                    </table>
+
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.col -->
+                <!-- /.col -->
             </div>
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-    </div>
+    </section>
+    <!-- /.content -->
+</div>
 
 <script>
 
 
-  
+
 </script>
 
 {{> footer}}

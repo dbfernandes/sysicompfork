@@ -110,7 +110,7 @@ const viewEdital = async (req, res) => {
                error: err.message
             })
          });
-         return res.render('edital/viewSelecao/', {
+         return res.render('edital/viewSelecao', {
             nome: req.session.nome,
             ...locals,
             edital: edital
