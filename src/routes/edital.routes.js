@@ -7,7 +7,7 @@ router.all('/addEdital', selecaoppgiRoutes.addEditalSelecao);
 router.all('/listEdital',selecaoppgiRoutes.listEditalSelecao);
 router.all('/deleteEdital/:id',selecaoppgiRoutes.deleteEdital);
 router.all('/listEdital/:id',selecaoppgiRoutes.viewEdital);
-router.all('/updateEdital/:id',selecaoppgiRoutes.updateEdital);	
+router.all('/updateEdital/:id_update',selecaoppgiRoutes.updateEdital);	
 
 
 export default router

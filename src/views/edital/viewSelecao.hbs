@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Edital: {{edital}} </h1>
+                    <h1>Edital: {{edital.editalId}} </h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
@@ -25,28 +25,28 @@
                     </button>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
-                        <i class="fas fa-plus color-white"></i>
+                    <a type="button" class="btn btn-block btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
+                        <i class="fas fa-edit color-white"></i>
                         Editar
                     </a>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
+                    <a type="button" class="btn btn-block btn-danger" href="/edital/deleteEdital/">
                         <i class="fas fa-trash-alt color-white"></i>
-                        <i class=""></i>
+                     
                         Excluir
                     </a>
                 </div>
-                <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
-                        <i class="fas fa-plus color-white"></i>
+                <div class="col-sm-5 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-info" href="/edital/adicionar">
+                        <i class="fas fa-list color-white"></i>
                         Lista de Inscritos
                     </a>
                 </div>
 
-                <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
-                        <i class="fas fa-plus color-white"></i>
+                <div class="col-sm-4 col-md-6 col-lg-2 ">
+                    <a type="button" class="btn btn-block bg-success" href="/edital/adicionar">
+                        <i class="fas fa-file-csv color-white"></i>
                         Planilha Excel para Avaliação (Excel)
                     </a>
                 </div>
@@ -71,64 +71,64 @@
                                    
                                     <tr>
                                         <td>Nº edital</td>
-                                        <td>{{edital}}</td>
+                                        <td>{{edital.editalId}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Data início</td>
-                                        <td>{{dataInicio}}TESTE</td>
+                                        <td>{{edital.dataInicio}}TESTE</td>
                                     </tr>
                                     <tr>
                                         <td>Data fim</td>
-                                        <td>{{dataFim}}</td>
+                                        <td>{{edital.dataFim}}</td>
                                     </tr>
                                     <tr>
                                         <td>Nº de Inscrições Iniciadas</td>
-                                        <td>{{inscricoesIniciadas}}</td>
+                                        <td>{{edital.inscricoesIniciadas}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Nº de Inscrições Encerradas</td>
 
-                                        <td>{{inscricoesEncerradas}}</td>
+                                        <td>{{edital.inscricoesEncerradas}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Carta de Recomendação</td>
 
-                                        <td>{{cartaRecomendacao}}</td>
+                                        <td>{{edital.cartaRecomendacao}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Carta do Orientador</td>
 
-                                        <td>{{cartaOrientador}}</td>
+                                        <td>{{edital.cartaOrientador}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Curso</td>
 
-                                        <td>{{curso}}</td>
+                                        <td>{{edital.curso}}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Vagas para Mestrado</td>
 
-                                        <td>{{vagasMestrado}}</td>
+                                        <td>{{edital.vagasMestrado}}</td>
 
                                     </tr>
 
                                     <tr>
                                         <td>Vagas para Doutorado</td>
 
-                                        <td>{{vagasDoutorado}}</td>
+                                        <td>{{edital.vagasDoutorado}}</td>
 
                                     </tr>
                                     <td>Vagas para Doutorado</td>
 
-                                    <td>{{vagasPosDoutorado}}</td>
+                                    <td>{{edital.vagasPosDoutorado}}</td>
                                     <tr>
-                                        <td>{{vagasPosDoutorado}}</td>
+                                        <td>{{edital.vagasPosDoutorado}}</td>
 
                                     </tr>
                                     <tr>
@@ -160,7 +160,9 @@
 </div>
 
 <script>
-
+$(document).ready(function(){
+  console.log('Ready disparado');
+});
 
 
 </script>

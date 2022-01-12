@@ -98,11 +98,13 @@ class EditalService {
             console.log(`[ERROR] Buscar Edital: ${err}`)
             throw new Error("Não foi possivel buscar o edital");
         })
+        
+
 
         return edital;
     }
 
-    async update(id, {
+    async update(id_update, {
         number,
         documento,
         data_inicio,
@@ -114,12 +116,14 @@ class EditalService {
         vaga_suplementar_mestrado,
         vaga_suplementar_doutorado
     }) {
+
         const edital = await Edital.findOne({
             where: {
-                editalId: id
+                editalId: id_update
             }
         }).catch(err => {
             console.log(`[ERROR] Buscar Edital: ${err}`)
+            console.log('{this.id_update}', id_update)
             throw new Error("Não foi possivel buscar o edital");
         })
 

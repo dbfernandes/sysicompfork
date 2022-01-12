@@ -74,6 +74,7 @@ const listEditalSelecao = async (req, res) => {
             })
          });
          return res.status(200).json(editais);
+         
       default:
          return res.status(404).send();
    }
@@ -113,32 +114,30 @@ const viewEdital = async (req, res) => {
          return res.render('edital/viewSelecao', {
             nome: req.session.nome,
             ...locals,
-            edital: edital
+            edital: edital.dataValues
          })
    }
 }
 
 const updateEdital = async (req, res) => {
+   const {
+      id_update
+   } = req.params
    switch (req.method) {
       case 'GET':
-         const {
-            id
-         } = req.params
-         const edital = await EditalService.getEdital(id).catch((err) => {
+         
+         const edital = await EditalService.getEdital(id_update).catch((err) => {
             return res.status(400).json({
                error: err.message
             })
          });
-         return res.render('edital/editSelecao/', {
+         return res.render('edital/editSelecao', {
             nome: req.session.nome,
             ...locals,
             edital: edital
          })
 
       case 'PUT':
-         const {
-            id_update
-         } = req.params
 
          const {
             number,
@@ -153,8 +152,8 @@ const updateEdital = async (req, res) => {
             vaga_suplementar_doutorado
          } = await req.body
 
-
-         const selecao = await EditalService.update(id, {
+         console.log(req.params);
+         const edital_update = await EditalService.update(id_update, {
             number,
             documento,
             data_inicio,
@@ -167,11 +166,10 @@ const updateEdital = async (req, res) => {
             vaga_suplementar_doutorado
          }).catch((err) => {
             return res.status(400).json({
-               error: err.message,
-               req: req.body
+               error: err.message
             })
          });
-         return res.status(200).send(selecao);
+         return res.status(200).send(edital_update);
 
       default:
          return res.status(404).send();

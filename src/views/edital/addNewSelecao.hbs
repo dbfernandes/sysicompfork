@@ -106,7 +106,7 @@
                                                 <font color="#FF0000">*</font> <label for="Mestrado"> Carta de
                                                     Recomendação? </label>
                                             </div>
-                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_recomendacao">
                                         </div>
@@ -116,7 +116,7 @@
                                                 <font color="#FF0000">*</font> <label for="Mestrado"> Carta Orientador?
                                                 </label>
                                             </div>
-                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_orientador">
                                         </div>
@@ -128,7 +128,7 @@
                                         <div class="form-row">
                                             <font color="#FF0000">*</font> <label for="Mestrado"> Mestrado? </label>
                                         </div>
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                        <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não" id="Mestrado">
 
@@ -165,7 +165,7 @@
                                             <label for="Mestrado"> Doutorado? </label>
                                         </div>
 
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                        <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não" id="doutorado">
 
@@ -221,15 +221,55 @@
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
             // console.log(this)
         });
+        $("input[data-bootstrap-switch-doutorado]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            $(this).bootstrapSwitch('onSwitchChange', () => {
+                var input = document.getElementById("vaga_regular_doutorado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+                var input = document.getElementById("vaga_suplementar_doutorado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+            })
+        });
+
+        $("input[data-bootstrap-switch-mestrado]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            $(this).bootstrapSwitch('onSwitchChange', () => {
+                var input = document.getElementById("vaga_regular_mestrado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+                var input = document.getElementById("vaga_suplementar_mestrado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+            })
+        });
         $("#usuariosAdicionar").modal("show");
     }
 
-    function getValueFromForm() {
+     function getValueFromForm() {
         const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc, input) =>
             ({
                 ...acc,
                 [input.id]: input.value
             }), {});
+
+            dataFromForm.Mestrado = $('#Mestrado').is(':checked');
+            dataFromForm.Doutorado = $('#Doutorado').is(':checked');
+            dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
+            dataFromForm.carta_orientador = $('#carta_orientador').is(':checked');
         return dataFromForm;
     }
 

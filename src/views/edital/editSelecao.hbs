@@ -106,7 +106,7 @@
                                                 <font color="#FF0000">*</font> <label for="Mestrado"> Carta de
                                                     Recomendação? </label>
                                             </div>
-                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_recomendacao">
                                         </div>
@@ -116,7 +116,7 @@
                                                 <font color="#FF0000">*</font> <label for="Mestrado"> Carta Orientador?
                                                 </label>
                                             </div>
-                                            <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                            <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_orientador">
                                         </div>
@@ -128,9 +128,10 @@
                                         <div class="form-row">
                                             <font color="#FF0000">*</font> <label for="Mestrado"> Mestrado? </label>
                                         </div>
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
-                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não" id="Mestrado">
+                                        <input type="checkbox" name="administrador" checked
+                                            data-bootstrap-switch-mestrado data-off-color="danger"
+                                            data-on-color="success" data-on-text="Sim" data-off-text="Não"
+                                            id="Mestrado">
 
 
                                     </div>
@@ -165,9 +166,10 @@
                                             <label for="Mestrado"> Doutorado? </label>
                                         </div>
 
-                                        <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
-                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não" id="doutorado">
+                                        <input type="checkbox" name="administrador" checked
+                                            data-bootstrap-switch-doutorado data-off-color="danger"
+                                            data-on-color="success" data-on-text="Sim" data-off-text="Não"
+                                            id="Doutorado" >
 
                                         <div class="form-row">
                                             <div class="col-sm-6">
@@ -208,18 +210,52 @@
 
 
 <script>
-    
-
+   
 
     function usuariosAdicionarPage() {
         $.validator.addMethod("data-teste", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
         })
 
-
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
             // console.log(this)
+        });
+
+        $("input[data-bootstrap-switch-doutorado]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            $(this).bootstrapSwitch('onSwitchChange', () => {
+                var input = document.getElementById("vaga_regular_doutorado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+                var input = document.getElementById("vaga_suplementar_doutorado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+            })
+        });
+
+        $("input[data-bootstrap-switch-mestrado]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            $(this).bootstrapSwitch('onSwitchChange', () => {
+                var input = document.getElementById("vaga_regular_mestrado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+                var input = document.getElementById("vaga_suplementar_mestrado");
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                } else {
+                    input.disabled = true;
+                }
+            })
         });
         $("#usuariosAdicionar").modal("show");
     }
@@ -230,6 +266,11 @@
                 ...acc,
                 [input.id]: input.value
             }), {});
+
+        dataFromForm.Mestrado = $('#Mestrado').is(':checked');
+        dataFromForm.Doutorado = $('#Doutorado').is(':checked');
+        dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
+        dataFromForm.carta_orientador = $('#carta_orientador').is(':checked');
         return dataFromForm;
     }
 
@@ -239,13 +280,13 @@
         console.log(dataFromForm);
         $.ajax({
             url: '{{url}}/edital/addEdital',
-            type: 'POST',
+            type: 'PUT',
             data: dataFromForm,
             success: function (data) {
 
                 $.validator.setDefaults({
                     submitHandler: function () {
-                        alert("Form successful submitted!");
+                        alert("Form successful update!");
                     },
                     onfocusout: function (el) {
                         this.element(el);
