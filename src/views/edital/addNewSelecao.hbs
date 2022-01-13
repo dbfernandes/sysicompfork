@@ -208,9 +208,6 @@
 
 
 <script>
-    
-
-
     function usuariosAdicionarPage() {
         $.validator.addMethod("data-teste", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
@@ -265,7 +262,6 @@
                 ...acc,
                 [input.id]: input.value
             }), {});
-
             dataFromForm.Mestrado = $('#Mestrado').is(':checked');
             dataFromForm.Doutorado = $('#Doutorado').is(':checked');
             dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
@@ -293,8 +289,6 @@
                 });
             },
             error: function (data) {
-
-
             }
         });
     }

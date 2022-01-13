@@ -42,7 +42,7 @@
                                             <font color="#FF0000">*</font>
                                             <label> Número do edital:</label>
                                             <input type="text" class="form-control edital" id="number"
-                                                placeholder="Insira o numero de Edital" required>
+                                                placeholder="Insira o numero de Edital" value={{edital.editalId}} disabled required>
                                         </div>
                                     </div>
 
@@ -60,7 +60,7 @@
                                                     </span>
                                                 </div>
                                                 <input type="text" class="form-control" id="documento" placeholder="URL"
-                                                    required>
+                                                    value= "{{edital.documento}}"required>
                                             </div>
                                         </div>
                                     </div>
@@ -79,7 +79,7 @@
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Início"
                                                         data-inputmask-inputformat="dd/mm/yyyy" required
-                                                        id="data_inicio">
+                                                        id="data_inicio" value="{{edital.dataInicio}}">
                                                 </div>
                                             </div>
 
@@ -93,7 +93,7 @@
                                                         </span>
                                                     </div>
                                                     <input type="date" class="form-control" placeholder="Data de Fim"
-                                                        required id="data_fim">
+                                                        required id="data_fim" value="{{edital.dataFim}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -108,7 +108,7 @@
                                             </div>
                                             <input type="checkbox" name="administrador" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                data-off-text="Não" id="carta_recomendacao">
+                                                data-off-text="Não" id="carta_recomendacao" value="" >
                                         </div>
 
                                         <div class="form-group">
@@ -131,7 +131,7 @@
                                         <input type="checkbox" name="administrador" checked
                                             data-bootstrap-switch-mestrado data-off-color="danger"
                                             data-on-color="success" data-on-text="Sim" data-off-text="Não"
-                                            id="Mestrado">
+                                            id="Mestrado" value="">
 
 
                                     </div>
@@ -145,7 +145,7 @@
                                                 Mestrado:</label>
                                             <input type="number" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_regular_mestrado" min="0">
+                                                id="vaga_regular_mestrado" min="0" value="{{edital.vagaMestrado}}">
 
                                         </div>
 
@@ -155,7 +155,7 @@
                                                 Mestrado:</label>
                                             <input type="number" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_suplementar_mestrado" min="0">
+                                                id="vaga_suplementar_mestrado" min="0" value="{{edital.cotasMestrado}}">
 
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@
                                                 <label> Vagas Regulares para Doutarado:</label>
                                                 <input type="number" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
-                                                    id="vaga_regular_doutorado" min="0">
+                                                    id="vaga_regular_doutorado" min="0" value="{{edital.vagaDoutorado}}">
                                             </div>
 
                                             <div class="col-sm-6">
@@ -186,7 +186,7 @@
                                                     Doutorado:</label>
                                                 <input type="number" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
-                                                    id="vaga_suplementar_doutorado" min="0" doutorado-input>
+                                                    id="vaga_suplementar_doutorado" min="0"  value="{{edital.cotasDoutorado}}" doutorado-input>
                                             </div>
                                         </div>
                                     </div>

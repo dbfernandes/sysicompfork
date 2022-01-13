@@ -134,7 +134,7 @@ const updateEdital = async (req, res) => {
          return res.render('edital/editSelecao', {
             nome: req.session.nome,
             ...locals,
-            edital: edital
+            edital: edital.dataValues
          })
 
       case 'PUT':
