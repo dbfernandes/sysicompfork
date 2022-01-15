@@ -43,6 +43,10 @@
                                             <label> Número do edital:</label>
                                             <input type="text" class="form-control edital" id="number"
                                                 placeholder="Insira o numero de Edital" required>
+                                            <div class="hint-block">
+                                                Ex.: 001-2022, sendo o
+                                                <b>'001'</b> o número do
+                                                edital e <b>'2022'</b> o ano</div>
                                         </div>
                                     </div>
 
@@ -62,6 +66,7 @@
                                                 <input type="text" class="form-control" id="documento" placeholder="URL"
                                                     required>
                                             </div>
+                                            <div class="hint-block">Ex.: http://www.propesp.ufam.edu.br</div>
                                         </div>
                                     </div>
 
@@ -128,9 +133,10 @@
                                         <div class="form-row">
                                             <font color="#FF0000">*</font> <label for="Mestrado"> Mestrado? </label>
                                         </div>
-                                        <input type="checkbox" name="administrador" checked data-bootstrap-switch
-                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não" id="Mestrado">
+                                        <input type="checkbox" name="administrador" checked
+                                            data-bootstrap-switch-mestrado data-off-color="danger"
+                                            data-on-color="success" data-on-text="Sim" data-off-text="Não"
+                                            id="Mestrado">
 
 
                                     </div>
@@ -165,9 +171,10 @@
                                             <label for="Mestrado"> Doutorado? </label>
                                         </div>
 
-                                        <input type="checkbox" name="administrador" checked data-bootstrap-switch
-                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não" id="doutorado">
+                                        <input type="checkbox" name="administrador" checked
+                                            data-bootstrap-switch-doutorado data-off-color="danger"
+                                            data-on-color="success" data-on-text="Sim" data-off-text="Não"
+                                            id="doutorado">
 
                                         <div class="form-row">
                                             <div class="col-sm-6">
@@ -193,7 +200,7 @@
 
                                     <div class="card-footer">
                                         <div class="col">
-                                            <input type="submit" value="Criar novo Edital"
+                                                <input type="submit" value="Criar novo Edital"
                                                 class="btn btn-success float-right" onclick="submitForm()">
 
                                         </div>
@@ -209,6 +216,7 @@
 
 <script>
     function usuariosAdicionarPage() {
+
         $.validator.addMethod("data-teste", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
         })
@@ -216,7 +224,6 @@
 
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
-            // console.log(this)
         });
         $("input[data-bootstrap-switch-doutorado]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -234,62 +241,91 @@
                     input.disabled = true;
                 }
             })
+
+            if (this.checked) {
+                var input = document.getElementById("vaga_regular_doutorado");
+                input.disabled = false;
+                var input = document.getElementById("vaga_suplementar_doutorado");
+                input.disabled = false;
+            }
         });
 
         $("input[data-bootstrap-switch-mestrado]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
             $(this).bootstrapSwitch('onSwitchChange', () => {
                 var input = document.getElementById("vaga_regular_mestrado");
+                
                 if ($(this).prop('checked')) {
                     input.disabled = false;
                 } else {
                     input.disabled = true;
                 }
                 var input = document.getElementById("vaga_suplementar_mestrado");
+                
+
                 if ($(this).prop('checked')) {
                     input.disabled = false;
                 } else {
                     input.disabled = true;
                 }
             })
+
         });
+
+        function verificar() {
+            let Mestrado = $("input[data-bootstrap-switch-mestrado]").prop('checked')
+            let Doutorado = $("input[data-bootstrap-switch-doutorado]").prop('checked')
+
+            if (!Mestrado) {
+                var input = document.getElementById("vaga_regular_mestrado");
+                input.value = "0";
+                input.disabled = true;
+                var input = document.getElementById("vaga_suplementar_mestrado");
+                input.value = "0";
+                input.disabled = true;
+            }
+
+            if (!Doutorado) {
+                var input = document.getElementById("vaga_regular_doutorado");
+                input.value = "0";
+                input.disabled = true;
+                var input = document.getElementById("vaga_suplementar_doutorado");
+                input.value = "0";
+                input.disabled = true;
+            }
+        }
+        verificar();
         $("#usuariosAdicionar").modal("show");
     }
 
-     function getValueFromForm() {
+    function getValueFromForm() {
         const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc, input) =>
             ({
                 ...acc,
                 [input.id]: input.value
             }), {});
-            dataFromForm.Mestrado = $('#Mestrado').is(':checked');
-            dataFromForm.Doutorado = $('#Doutorado').is(':checked');
-            dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
-            dataFromForm.carta_orientador = $('#carta_orientador').is(':checked');
+        dataFromForm.Mestrado = $('#Mestrado').is(':checked');
+        dataFromForm.Doutorado = $('#Doutorado').is(':checked');
+        dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
+        dataFromForm.carta_orientador = $('#carta_orientador').is(':checked');
         return dataFromForm;
     }
 
     function submitForm() {
 
         const dataFromForm = getValueFromForm();
-        console.log(dataFromForm);
         $.ajax({
             url: '{{url}}/edital/addEdital',
             type: 'POST',
             data: dataFromForm,
             success: function (data) {
-
                 $.validator.setDefaults({
                     submitHandler: function () {
                         alert("Form successful submitted!");
-                    },
-                    onfocusout: function (el) {
-                        this.element(el);
-                    },
+                    }
                 });
             },
-            error: function (data) {
-            }
+            error: function (data) {}
         });
     }
 </script>

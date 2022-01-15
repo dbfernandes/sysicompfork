@@ -195,7 +195,7 @@
 
                                     <div class="card-footer">
                                         <div class="col">
-                                            <input type="submit" value="Criar novo Edital"
+                                            <input type="submit" value="Editar Edital"
                                                 class="btn btn-success float-right" onclick="submitForm()">
 
                                         </div>
@@ -219,7 +219,6 @@
 
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
-            // console.log(this)
         });
 
         $("input[data-bootstrap-switch-doutorado]").each(function () {
@@ -275,15 +274,14 @@
     }
 
     function submitForm() {
-
         const dataFromForm = getValueFromForm();
-        console.log(dataFromForm);
+        
         $.ajax({
-            url: '{{url}}/edital/addEdital',
+            url: '{{url}}/edital/updateEdital/{{edital.editalId}} ',
             type: 'PUT',
             data: dataFromForm,
             success: function (data) {
-
+                
                 $.validator.setDefaults({
                     submitHandler: function () {
                         alert("Form successful update!");
@@ -294,7 +292,7 @@
                 });
             },
             error: function (data) {
-
+                alert("Error");
 
             }
         });
