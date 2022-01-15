@@ -83,8 +83,7 @@
                                                 </a>
                                             </div>
                                             <div class="col-6">
-                                                <a href="/edital/deleteEdital/{{dataValues.editalId}}"
-                                                    class="btn btn-danger btn-sm">
+                                                <a class="btn btn-danger btn-sm" onclick="deleteEdital()" >
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </div>
@@ -116,6 +115,23 @@
 
 <script>
 
+ function deleteEdital(){
+
+    let r = confirm("Deseja realmente excluir o edital?");
+    if(r == true){
+        var id = $(this).attr('editalId');
+        console.log($(this))
+        var url = '/edital/deleteEdital/'+id;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function(result){
+                console.log(result);
+                window.location.href = '/edital/listEdital';
+            }
+        });
+    }
+ }
 
 
 </script>

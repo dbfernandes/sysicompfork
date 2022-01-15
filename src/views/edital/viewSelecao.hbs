@@ -31,9 +31,9 @@
                     </a>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-danger" href="/edital/deleteEdital/">
+                    <a type="button" class="btn btn-block btn-danger" href="/edital/listEdital" onclick="deleteEdital()">
                         <i class="fas fa-trash-alt color-white"></i>
-                     
+
                         Excluir
                     </a>
                 </div>
@@ -65,10 +65,10 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example2" class="table table-bordered table-hover">
-                                
+
                                 </thead>
                                 <tbody>
-                                   
+
                                     <tr>
                                         <td>Nº edital</td>
                                         <td>{{edital.editalId}}</td>
@@ -76,7 +76,7 @@
                                     </tr>
                                     <tr>
                                         <td>Data início</td>
-                                        <td>{{edital.dataInicio}}TESTE</td>
+                                        <td>{{edital.dataInicio}}</td>
                                     </tr>
                                     <tr>
                                         <td>Data fim</td>
@@ -114,22 +114,28 @@
                                     <tr>
                                         <td>Vagas para Mestrado</td>
 
-                                        <td>{{edital.vagasMestrado}}</td>
+                                        <td>{{edital.vagaMestrado}}</td>
 
                                     </tr>
 
                                     <tr>
+                                        <td>Vagas suplementares para Mestrado</td>
+
+                                        <td>{{edital.cotasMestrado}}</td>
+
+                                    </tr>
+                                    <tr>
+
                                         <td>Vagas para Doutorado</td>
 
-                                        <td>{{edital.vagasDoutorado}}</td>
+                                        <td>{{edital.vagaDoutorado}}</td>
 
                                     </tr>
-                                    <td>Vagas para Doutorado</td>
-
-                                    <td>{{edital.vagasPosDoutorado}}</td>
                                     <tr>
-                                        <td>{{edital.vagasPosDoutorado}}</td>
-
+                                            
+                                            <td>Vagas para Suplementares Doutorado</td>
+    
+                                            <td>{{edital.cotasDoutorado}}</td>
                                     </tr>
                                     <tr>
                                         <td>Baixar</td>
@@ -140,9 +146,6 @@
                                             </a>
                                         </td>
                                     </tr>
-
-
-
 
                             </table>
                         </div>
@@ -160,10 +163,30 @@
 </div>
 
 <script>
-$(document).ready(function(){
-  console.log('Ready disparado');
-});
+  
 
+    function deleteEdital(){
+        var r = confirm("Deseja realmente excluir o edital?");
+        if (r == true) {
+        
+        
+        $.ajax({
+            url: '/edital/deleteEdital/{{edital.editalId}}',
+            type: 'DELETE',
+            data: {},
+            success: function(data) {
+                if (data.errors) {
+                    toastr.error('Validação', 'Erro ao excluir edital');
+                } else {
+                    toastr.success('Sucesso', 'Edital excluido com sucesso');
+                    window.location = "/edital/listar";
+                }
+            }
+        });
+            
+        }
+         
+    }
 
 </script>
 
