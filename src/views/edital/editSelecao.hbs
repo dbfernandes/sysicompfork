@@ -282,9 +282,11 @@
             data: dataFromForm,
             success: function (data) {
                 
+                alert("Form successful update!");
+                location.reload();
+                
                 $.validator.setDefaults({
                     submitHandler: function () {
-                        alert("Form successful update!");
                     },
                     onfocusout: function (el) {
                         this.element(el);
@@ -292,8 +294,8 @@
                 });
             },
             error: function (data) {
-                alert("Error");
-
+                alert("Erro ao atualizar edital!");
+                console.log(data);
             }
         });
     }

@@ -200,8 +200,12 @@
 
                                     <div class="card-footer">
                                         <div class="col">
-                                                <input type="submit" value="Criar novo Edital"
-                                                class="btn btn-success float-right" onclick="submitForm()">
+                                            <!-- <input type="submit" value="Criar novo Edital"
+                                                class="btn btn-success float-right" onclick="submitForm()"> -->
+                                            <button type="submit" class="btn btn-success float-right"
+                                                onclick="submitForm()">
+                                                Criar novo Edital
+                                            </button>
 
                                         </div>
                                     </div>
@@ -254,35 +258,48 @@
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
             $(this).bootstrapSwitch('onSwitchChange', () => {
                 var input = document.getElementById("vaga_regular_mestrado");
-                
-                if ($(this).prop('checked')) {
-                    input.disabled = false;
-                } else {
-                    input.disabled = true;
-                }
-                var input = document.getElementById("vaga_suplementar_mestrado");
-                
 
                 if ($(this).prop('checked')) {
                     input.disabled = false;
+                    input.value = 0;
                 } else {
                     input.disabled = true;
+                    input.value = 0;
+                }
+                var input = document.getElementById("vaga_suplementar_mestrado");
+
+
+                if ($(this).prop('checked')) {
+                    input.disabled = false;
+                    input.value = 0;
+                } else {
+                    input.disabled = true;
+                    input.value = 0;
                 }
             })
 
         });
 
-        function verificar() {
+        function verificarSwitch() {
             let Mestrado = $("input[data-bootstrap-switch-mestrado]").prop('checked')
             let Doutorado = $("input[data-bootstrap-switch-doutorado]").prop('checked')
+            var input = document.getElementById("vaga_regular_mestrado");
+            input.value = "0";
+            var input = document.getElementById("vaga_suplementar_mestrado");
+            input.value = "0";
+            var input = document.getElementById("vaga_suplementar_doutorado");
+            input.value = "0";
+            var input = document.getElementById("vaga_regular_doutorado");
+            input.value = "0";
+
 
             if (!Mestrado) {
                 var input = document.getElementById("vaga_regular_mestrado");
-                input.value = "0";
                 input.disabled = true;
+                input.value = "0";
                 var input = document.getElementById("vaga_suplementar_mestrado");
-                input.value = "0";
                 input.disabled = true;
+                input.value = "0";
             }
 
             if (!Doutorado) {
@@ -294,7 +311,7 @@
                 input.disabled = true;
             }
         }
-        verificar();
+        verificarSwitch();
         $("#usuariosAdicionar").modal("show");
     }
 
@@ -311,22 +328,55 @@
         return dataFromForm;
     }
 
+    function verificarEntradaForm() {
+        let Mestrado = $("input[data-bootstrap-switch-mestrado]").prop('checked')
+        let Doutorado = $("input[data-bootstrap-switch-doutorado]").prop('checked')
+        if (!Mestrado && !Doutorado) {
+            alert("Selecione pelo menos um tipo de curso");
+            return false;
+        }
+
+        let dataFromForm = getValueFromForm();
+        if (dataFromForm.vaga_regular_mestrado == 0 && dataFromForm.vaga_suplementar_mestrado == 0 && Mestrado ==
+            true) {
+            alert("Selecione pelo menos uma vaga para o curso de mestrado");
+            return false;
+        }
+        if (dataFromForm.vaga_regular_doutorado == 0 && dataFromForm.vaga_suplementar_doutorado == 0 && Doutorado ==
+            true) {
+            alert("Selecione pelo menos uma vaga para o curso de doutorado");
+            return false;
+        }
+
+        //verificar se nenhum input ficou vazio
+        if (dataFromForm.number == "" || dataFromForm.documento == "" || dataFromForm.data_inicio == "" || dataFromForm
+            .data_fim == "") {
+            alert("Preencha todos os campos");
+            return false;
+        }
+        return true;
+
+    }
+
     function submitForm() {
 
         const dataFromForm = getValueFromForm();
-        $.ajax({
-            url: '{{url}}/edital/addEdital',
-            type: 'POST',
-            data: dataFromForm,
-            success: function (data) {
-                $.validator.setDefaults({
-                    submitHandler: function () {
-                        alert("Form successful submitted!");
-                    }
-                });
-            },
-            error: function (data) {}
-        });
+        if (verificarEntradaForm()) {
+            $.ajax({
+                url: '{{url}}/edital/addEdital',
+                type: 'POST',
+                data: dataFromForm,
+                success: function (data) {
+                    $.validator.setDefaults({
+                        submitHandler: function () {
+                            alert("Form successful submitted!");
+                        }
+                    });
+                },
+                error: function (data) {}
+            });
+        }
+
     }
 </script>
 

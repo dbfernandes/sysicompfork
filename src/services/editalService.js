@@ -122,6 +122,7 @@ class EditalService {
                 editalId: id_update
             }
         }).catch(err => {
+
             console.log(`[ERROR] Buscar Edital: ${err}`)
             console.log('{this.id_update}', id_update)
             throw new Error("Não foi possivel buscar o edital");
@@ -146,7 +147,7 @@ class EditalService {
             status: "created",
         }, {
             where: {
-                editalId: id
+                editalId: id_update
             }
         }).catch(err => {
             console.log(`[ERROR] Atualizar Edital: ${err}`)
