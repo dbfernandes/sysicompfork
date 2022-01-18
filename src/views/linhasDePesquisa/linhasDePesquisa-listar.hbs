@@ -51,7 +51,7 @@
 							<h3 class="card-title">Linhas de Pesquisa Existentes</h3>
 						</div>
 						<div class="card-body">
-							<table id="data-table" class="table table-bordered table-hover display">
+							<table id="example2" class="table table-bordered table-hovers">
 								<thead>
 									<tr>
 										<th>#</th>
@@ -70,19 +70,18 @@
                       <span class="{{icone}}"></span>
                     </td>
                     <td class='links-container'>
-                      <a href='/linhasdepesquisa/busca/{{id}}'>
-                        <i class='fa fa-solid fa-eye'></i>
-                      </a>
                       <a
-                        href=""
-                        data-toggle="modal"
-                        data-target="#modal-danger-{{id}}"
-                      >
-                        <i class='fa fa-solid fa-trash'></i>
-                      </a>
-                      <a href='/linhasdepesquisa/editar/{{id}}'>
-                        <i class='fa fa-solid fa-pen'></i>
-                      </a>
+                        href='/linhasdepesquisa/busca/{{id}}'
+                        class='fa fa-solid fa-eye'
+                      />
+                      <a
+                        href='/linhasdepesquisa/remover/{{id}}'
+                        class='fa fa-solid fa-trash'
+                      />
+                      <a
+                        href='/linhasdepesquisa/editar/{{id}}'
+                          class='fa fa-solid fa-pen'
+                      />
                     </td>
 									</tr>
 									{{/each}}
@@ -93,37 +92,9 @@
 				</div>
 			</div>
 		</div>
-      {{#each linhaDePesquisa}}
-      <div class="modal fade" id="modal-danger-{{id}}">
-        <div class="modal-dialog">
-          <div class="modal-content bg-danger">
-            <div class="modal-header">
-              <h4 class="modal-title">Deseja continuar ?</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <span>Remover "{{nome}}"?</span>
-            </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-outline-light" data-dismiss="modal">Fechar</button>
-              <a
-                type="button"
-                class="btn btn-outline-light"
-                href="/linhasdepesquisa/listar/{{id}}"
-              >
-                Salvar Mudanças
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/each}}
 	</section>
 </main>
 <script>
-
 	function goHome() {
 		window.location.href = "{{url}}/inicio";
 	}
@@ -140,16 +111,5 @@
 
 	window.onload =	defineColor;
 
-  $(document).ready(function () {
-    $('#data-table').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
 </script>
 {{> footer}}
