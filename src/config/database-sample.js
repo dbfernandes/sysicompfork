@@ -1,8 +1,8 @@
 module.exports = {
   dev: {
-    username: 'user',
-    password: 'password',
-    database: 'db',
+    username: 'alexandre',
+    password: '24L11a*19R97b',
+    database: 'sysicomp',
     host: 'localhost',
     dialect: 'mysql',
     timezone: "-04:00"
