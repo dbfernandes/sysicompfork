@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     Edital.init({
-        editalId: DataTypes.STRING,
+        editalId: {
+            type: DataTypes.STRING,
+            primaryKey: true
+        },
         vagaDoutorado: DataTypes.INTEGER,
         vagaMestrado: DataTypes.INTEGER,
         cotasDoutorado: DataTypes.INTEGER,
