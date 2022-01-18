@@ -1,23 +1,25 @@
 {
-    "development": {
-      "username": "alexandre",
-      "password": "24L11a*19R97b",
-      "database": "sysicomp",
+    "dev": {
+      "username": "user",
+      "password": "password",
+      "database": "db",
       "host": "localhost",
-      "dialect": "mysql"
+      "dialect": "mysql",
+      "port": 3327
     },
     "test": {
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "127.0.0.1",
+      "host": "localhost",
       "dialect": "mysql"
     },
     "production": {
-      "username": "alexandre",
-      "password": "24L11a*19R97b",
-      "database": "sysicomp",
-      "host": "127.0.0.1",
-      "dialect": "mysql"
+      "username": "user",
+      "password": "password",
+      "database": "db",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3327
     }
   }

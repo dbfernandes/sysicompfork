@@ -1,0 +1,193 @@
+{{> header}}
+
+{{> sidebar module='edital' page='edital-listar'}}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Edital: {{edital.editalId}} </h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Selecoes</a></li>
+                        <li class="breadcrumb-item active">Listar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 col-md-2 col-lg-1">
+                    <button type="button" class="btn btn-block btn-secondary">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </button>
+                </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
+                        <i class="fas fa-edit color-white"></i>
+                        Editar
+                    </a>
+                </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-danger" href="/edital/listEdital" onclick="deleteEdital()">
+                        <i class="fas fa-trash-alt color-white"></i>
+
+                        Excluir
+                    </a>
+                </div>
+                <div class="col-sm-5 col-md-3 col-lg-2">
+                    <a type="button" class="btn btn-block btn-info" href="/edital/adicionar">
+                        <i class="fas fa-list color-white"></i>
+                        Lista de Inscritos
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-6 col-lg-2 ">
+                    <a type="button" class="btn btn-block bg-success" href="/edital/adicionar">
+                        <i class="fas fa-file-csv color-white"></i>
+                        Planilha Excel para Avaliação (Excel)
+                    </a>
+                </div>
+
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>Nº edital</td>
+                                        <td>{{edital.editalId}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Data início</td>
+                                        <td>{{edital.dataInicio}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data fim</td>
+                                        <td>{{edital.dataFim}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nº de Inscrições Iniciadas</td>
+                                        <td>{{edital.inscricoesIniciadas}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Nº de Inscrições Encerradas</td>
+
+                                        <td>{{edital.inscricoesEncerradas}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Carta de Recomendação</td>
+
+                                        <td>{{edital.cartaRecomendacao}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Carta do Orientador</td>
+
+                                        <td>{{edital.cartaOrientador}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Curso</td>
+
+                                        <td>{{edital.curso}}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Vagas para Mestrado</td>
+
+                                        <td>{{edital.vagaMestrado}}</td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td>Vagas suplementares para Mestrado</td>
+
+                                        <td>{{edital.cotasMestrado}}</td>
+
+                                    </tr>
+                                    <tr>
+
+                                        <td>Vagas para Doutorado</td>
+
+                                        <td>{{edital.vagaDoutorado}}</td>
+
+                                    </tr>
+                                    <tr>
+                                            
+                                            <td>Vagas para Suplementares Doutorado</td>
+    
+                                            <td>{{edital.cotasDoutorado}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Baixar</td>
+
+                                        <td>
+                                            <a href="/edital/{{edital}}/selecao/baixar" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<script>
+  
+
+    function deleteEdital(){
+        var r = confirm("Deseja realmente excluir o edital?");
+        if (r == true) {
+        
+        
+        $.ajax({
+            url: '/edital/deleteEdital/{{edital.editalId}}',
+            type: 'DELETE',
+            data: {},
+            success: function(data) {
+                if (data.errors) {
+                    toastr.error('Validação', 'Erro ao excluir edital');
+                } else {
+                    toastr.success('Sucesso', 'Edital excluido com sucesso');
+                    window.location = "/edital/listar";
+                }
+            }
+        });
+            
+        }
+         
+    }
+
+</script>
+
+{{> footer}}

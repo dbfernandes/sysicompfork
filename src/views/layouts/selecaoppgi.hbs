@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="utf-8">
@@ -17,27 +17,33 @@
   <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
 
   <link rel="stylesheet" href="/public/css/styles.css">
-
+  
 </head>
 
 <body >
 
-  {{{ body }}}
 
-  <!-- jQuery -->
+<!-- jQuery -->
   <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
   <!-- jquery-validation -->
   <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
   <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
 
-    <!-- Bootstrap 4 -->
+  <!-- Bootstrap 4 -->
   <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- Bootstrap Switch -->
   <script src="/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
   <!-- AdminLTE App -->
   <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/script-adminlte/dist/js/demo.js"></script>
 
+  <!-- InputMask -->
+  <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
+  <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+
+  {{{ body }}}
 
   <script>
     $(function () {
@@ -55,11 +61,12 @@
     });
 
     function masks() {
-      //Datemask dd/mm/yyyy
       $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
       $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
       $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
+      $('.edital').inputmask('999-9999', { 'placeholder': '001-2022' })
     }
+    
   </script>
 
 </body>

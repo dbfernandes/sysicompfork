@@ -111,7 +111,7 @@
                                 {{#each editais}}
                                     <div class="edital-item">
                                         <div class="edital-item-body">
-                                            <b>Numero do Edital:</b> {{numero}}<br>
+                                            <b>Numero do Edital:</b> {{editalId}}<br>
                                             <b>Período das Inscrições:</b><br>
                                             <ul>
                                                 <li><b>Início:</b> {{dataInicio}}</li>
@@ -120,15 +120,15 @@
                                             <b>Cursos:</b> {{cursos}}<br>
                                             <b>Vagas para Mestrado:</b><br>
                                             <ul>
-                                                <li><b>Vagas Regulares:</b> {{vagasMestradoRegular}}</li>
-                                                <li><b>Vagas Suplementares:</b> {{vagasMestradoSuplementares}}</li>
+                                                <li><b>Vagas Regulares:</b> {{vagaMestrado}}</li>
+                                                <li><b>Vagas Suplementares:</b> {{cotasMestrado}}</li>
                                             </ul>
                                             <b>Vagas para Doutorado:</b><br>
                                             <ul>
-                                                <li><b>Vagas Regulares:</b> {{vagasDoutoradoRegular}}</li>
-                                                <li><b>Vagas Suplementares:</b> {{vagasDoutoradoSuplementares}}</li>
+                                                <li><b>Vagas Regulares:</b> {{vagaDoutorado}}</li>
+                                                <li><b>Vagas Suplementares:</b> {{cotasDoutorado}}</li>
                                             </ul>
-                                            <b>Baixe o edital:</b> <a href="{{url}}" target="_blank">Clique aqui</a>
+                                            <b>Baixe o edital:</b> <a href="{{documento}}" target="_blank">Clique aqui</a>
                                         </div>
                                     </div>
                                 {{/each}}
@@ -158,7 +158,7 @@
                                     <select class="form-control" id="edital" name="edital">
                                         <option value="">Selecione um edital</option>
                                         {{#each editais}}
-                                            <option value="{{numero}}">{{numero}}</option>
+                                            <option value="{{editalId}}">{{editalId}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -226,7 +226,7 @@
                 edital: edital
             },
             success: function(data){
-                    window.location.href = "{{url}}/selecaoppgi/+";
+                    window.location.href = "{{url}}/selecaoppgi/formulario";
             },
             error: function(res, status, error) {
                 console.log("Entrou no erro")

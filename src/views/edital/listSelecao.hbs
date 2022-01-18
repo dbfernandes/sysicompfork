@@ -1,17 +1,18 @@
 {{> header}}
-{{> sidebar module='projetos' page='projetos-listar'}}
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
+
+{{> sidebar module='edital' page='edital-listar'}}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Lista de Projetos</h1>
+                    <h1>Lista de Selecoes</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Projetos</a></li>
+                        <li class="breadcrumb-item"><a href="#">Selecoes</a></li>
                         <li class="breadcrumb-item active">Listar</li>
                     </ol>
                 </div>
@@ -31,58 +32,111 @@
                 </div>
             </div>
         </div><!-- /.container-fluid -->
-        </section>
+    </section>
 
-        <!-- Main content -->
-        <section class="content">
+    <!-- Main content -->
+    <section class="content">
         <div class="container-fluid">
             <div class="row">
-            <div class="col-12">
-                <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Projetos</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nº edital</th>
-                            <th>Início inscrições</th>
-                            <th>	Término inscrições</th>
-                            <th>#Inscrições Iniciadas</th>
-                            <th>	#Inscrições Encerradas</th>
-                            <th>	Vagas Mestrado</th>
-                            <th>	Vagas Doutorado</th>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Projetos</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nº edital</th>
+                                        <th>Início inscrições</th>
+                                        <th> Término inscrições</th>
+                                        <th>#Inscrições Iniciadas</th>
+                                        <th> #Inscrições Encerradas</th>
+                                        <th> Vagas Mestrado</th>
+                                        <th> Vagas Doutorado</th>
+                                        <th> </th>
 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each editais}}
+                                    <tr>
+                                        <td> {{dataValues.editalId}} </td>
+                                        <td> {{dataValues.dataInicio}} </td>
+                                        <td> {{dataValues.dataFim}} </td>
+                                        <td>  </td>
+                                        <td>  </td>
+                                        <td> REG:{{dataValues.vagaMestrado}} SUP:{{dataValues.cotasMestrado}} </td>
+                                        <td> REG:{{dataValues.vagaDoutorado}} SUP:{{dataValues.cotasDoutorado}} </td>
+                                        <td>
+                                            <div class="col-6">
+                                                <a href="">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="/edital/updateEdital/{{dataValues.editalId}}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                    
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a class="btn btn-danger btn-sm" onclick="deleteEdital({{dataValues.editalId}})" >
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="/edital/listEdital/{{dataValues.editalId}}"
+                                                    class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {{#each usuarios}}
-                        <tr>
-                            <td> {{nome}} </td>
-                            <td> {{username}} </td>
-                            <td> {{email}} </td>
-                            <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
-                            <td> 
-                                {{perfis}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    </tbody>
-                    </table>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.col -->
+                <!-- /.col -->
             </div>
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-    </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+<script>
+
+ function deleteEdital(id){
+    let r = confirm("Deseja realmente excluir o edital?");
+     console.log(id);
+    if(r == true){
+        
+        var url = '/edital/deleteEdital/'+id;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function(result){
+                alert('Edital excluido com sucesso!');
+                location.reload();
+            },
+            error: function(result){
+                alert('Erro ao excluir edital!');
+            }
+            
+        });
+    }
+ }
+
+
+</script>
+
 {{> footer}}
