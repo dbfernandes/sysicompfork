@@ -1,19 +1,19 @@
-import EditalService from '../services/editalService';
+import EditalService from "../services/editalService";
 
 const locals = {
-   layout: 'selecaoppgi'
-}
+   layout: "selecaoppgi",
+};
 
 const addEditalSelecao = async (req, res) => {
    switch (req.method) {
-      case 'GET':
+      case "GET":
          console.log(req.session.nome);
-         return res.render('edital/addNewSelecao', {
+         return res.render("edital/addNewSelecao", {
             nome: req.session.nome,
-            ...locals
-         })
+            ...locals,
+         });
 
-      case 'POST':
+      case "POST":
          const {
             number,
             documento,
@@ -24,8 +24,8 @@ const addEditalSelecao = async (req, res) => {
             vaga_regular_mestrado,
             vaga_suplementar_mestrado,
             vaga_regular_doutorado,
-            vaga_suplementar_doutorado
-         } = await req.body
+            vaga_suplementar_doutorado,
+         } = await req.body;
 
          // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
 
@@ -39,57 +39,57 @@ const addEditalSelecao = async (req, res) => {
             vaga_regular_mestrado,
             vaga_suplementar_mestrado,
             vaga_regular_doutorado,
-            vaga_suplementar_doutorado
+            vaga_suplementar_doutorado,
          }).catch((err) => {
             return res.status(400).json({
                error: err.message,
-               req: req.body
-            })
+               req: req.body,
+            });
          });
          return res.status(200).send(selecao);
 
-      case 'PUT':
+      case "PUT":
          return res.status(200).send({
-            message: 'TO-DO'
+            message: "TO-DO",
          });
 
       default:
          return res.status(404).send();
    }
-}
+};
 
 const listEditalSelecao = async (req, res) => {
    switch (req.method) {
-      case 'GET':
-         return res.render('edital/listSelecao', {
+      case "GET":
+         return res.render("edital/listSelecao", {
             nome: req.session.nome,
             ...locals,
-            editais: await EditalService.listEdital()
-         })
+            editais: await EditalService.listEdital(),
+         });
 
-      case 'POST':
+      case "POST":
          const editais = await EditalService.listEdital().catch((err) => {
             return res.status(400).json({
-               error: err.message
-            })
+               error: err.message,
+            });
          });
          return res.status(200).json(editais);
-         
+
       default:
          return res.status(404).send();
    }
-}
+};
 
 const deleteEdital = async (req, res) => {
    switch (req.method) {
-      case 'DELETE':
+      case "DELETE":
          const {
             id
-         } = req.params
+         } = req.params;
          const edital = await EditalService.delete(id).catch((err) => {
             return res.status(400).json({
-               error: err.message
-            })
+               error: err.message,
+            });
          });
 
          return res.status(200).send(edital);
@@ -97,48 +97,45 @@ const deleteEdital = async (req, res) => {
       default:
          return res.status(404).send();
    }
-}
-
+};
 
 const viewEdital = async (req, res) => {
    switch (req.method) {
-      case 'GET':
+      case "GET":
          const {
             id
-         } = req.params
+         } = req.params;
          const edital = await EditalService.getEdital(id).catch((err) => {
             return res.status(400).json({
-               error: err.message
-            })
+               error: err.message,
+            });
          });
-         return res.render('edital/viewSelecao', {
+         return res.render("edital/viewSelecao", {
             nome: req.session.nome,
             ...locals,
-            edital: edital.dataValues
-         })
+            edital: edital.dataValues,
+         });
    }
-}
+};
 
 const updateEdital = async (req, res) => {
    const {
       id_update
-   } = req.params
+   } = req.params;
    switch (req.method) {
-      case 'GET':
-         
+      case "GET":
          const edital = await EditalService.getEdital(id_update).catch((err) => {
             return res.status(400).json({
-               error: err.message
-            })
+               error: err.message,
+            });
          });
-         return res.render('edital/editSelecao', {
+         return res.render("edital/editSelecao", {
             nome: req.session.nome,
             ...locals,
-            edital: edital.dataValues
-         })
+            edital: edital.dataValues,
+         });
 
-      case 'PUT':
-
+      case "PUT":
          const {
             number,
             documento,
@@ -149,10 +146,9 @@ const updateEdital = async (req, res) => {
             vaga_regular_mestrado,
             vaga_suplementar_mestrado,
             vaga_regular_doutorado,
-            vaga_suplementar_doutorado
-         } = await req.body
+            vaga_suplementar_doutorado,
+         } = await req.body;
 
-         console.log(req.params);
          const edital_update = await EditalService.update(id_update, {
             number,
             documento,
@@ -163,22 +159,57 @@ const updateEdital = async (req, res) => {
             vaga_regular_mestrado,
             vaga_suplementar_mestrado,
             vaga_regular_doutorado,
-            vaga_suplementar_doutorado
+            vaga_suplementar_doutorado,
          }).catch((err) => {
             return res.status(400).json({
-               error: err.message
-            })
+               error: err.message,
+            });
          });
          return res.status(200).send(edital_update);
 
       default:
          return res.status(404).send();
    }
+};
+
+const listCandidatesEdital = async (req, res) => {
+   switch (req.method) {
+      case "GET":
+         const {
+            id
+         } = req.params;
+         const edital = await EditalService.getEdital(id).catch((err) => {
+            return res.status(400).json({
+               error: err.message,
+            });
+         });
+         return res.render("edital/listCandidates", {
+            nome: req.session.nome,
+            ...locals,
+            edital: edital.dataValues,
+         });
+         
+      case "POST":
+         const {
+            id_edital
+         } = req.params;
+         const candidates = await EditalService.listCandidates(id_edital).catch(
+            (err) => {
+               return res.status(400).json({
+                  error: err.message,
+               });
+            }
+         );
+         return res.status(200).json(candidates);
+   }
 }
+
+
 export default {
    listEditalSelecao,
    addEditalSelecao,
    deleteEdital,
    viewEdital,
-   updateEdital
-}
+   listCandidatesEdital,
+   updateEdital,
+};

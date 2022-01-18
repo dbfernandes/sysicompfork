@@ -1,3 +1,5 @@
+import Candidate from '../models/Candidate';
+
 var {
     Edital
 } = require('../models');
@@ -168,6 +170,18 @@ class EditalService {
         })
 
         return edital;
+    }
+
+    async listCandidates(id){
+        const candidates= await Candidate.findAll({
+            where:{
+                editalId:id
+            }
+        }).catch(err=>{
+            console.log(`[ERROR] Buscar candidatos: ${err}`);
+            throw new Error("Não foi possivel buscar candidatos");
+
+        })
     }
 }
 
