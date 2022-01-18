@@ -52,8 +52,44 @@
   <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="/script-adminlte/dist/js/demo.js"></script>
-  <!-- Layout specific script -->
+  <!-- Page specific script -->
   <script>
+    $(function () {
+      try {
+        masks();
+      } catch { }
+
+      try {
+        usuariosAdicionarPage();
+      } catch { }
+
+      try {
+        loginPage();
+      } catch { }
+
+      try {
+        dataTable();
+      } catch { }
+    });
+
+    function masks() {
+      //Datemask dd/mm/yyyy
+      $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+      $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
+      $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
+    }
+
+    function dataTable() {
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+    }
   </script>
 </body>
 </html>

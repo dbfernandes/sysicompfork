@@ -37,24 +37,24 @@ export default new class LinhasDePesquisaService {
   }
 
   async create(newResearchLine) {
-    const { nome, icone, sigla, cor } = newResearchLine;
+    const { nome, icone, iniciais, cor } = newResearchLine;
 
     await LinhasDePesquisa.create({
       nome,
       icone,
-      sigla,
+      iniciais,
       cor,
     });
   }
 
   async update(id, newInfo) {
-    const { nome, icone, sigla, cor } = newInfo;
+    const { nome, icone, iniciais, cor } = newInfo;
 
     await LinhasDePesquisa.update(
       {
         nome,
         icone,
-        sigla,
+        iniciais,
         cor,
       },
       {
@@ -65,7 +65,7 @@ export default new class LinhasDePesquisaService {
     );
   }
 
-  async remove(id) {
+  async delete(id) {
     await LinhasDePesquisa.destroy({
       where: { id },
     });

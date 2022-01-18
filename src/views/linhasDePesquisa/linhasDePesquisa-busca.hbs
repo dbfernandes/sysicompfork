@@ -2,20 +2,17 @@
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-busca'}}
 <style>
 	/* Style your page here  */
-  .card {
-    max-width: 1000px;
-  }
 </style>
 
 <main class="content-wrapper">
 	<section class="content-header">
 		<div class="container-fluid">
 
-			<div class="row mb-3">
-				<div class="col-sm-7">
+			<div class="row mb-2">
+				<div class="col-sm-9">
 					<h1>{{nome}}</h1>
 				</div>
-				<div class="col-sm-5">
+				<div class="col-sm-3">
 					<ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item">Página Inicial</li>
 						<li class="breadcrumb-item">Linhas de Pesquisa</li>
@@ -24,21 +21,6 @@
 				</div>
 			</div>
 
-<<<<<<< HEAD
-			<div class="btn-group row mb-3 col-sm-3" role="group">
-        <button type="button" class="btn btn-secondary" onclick="goHome()">
-          <i class="fa fa-arrow-left color-white"></i>
-          Voltar
-        </button>
-        <button type="button" class="btn btn-primary" onclick="goEdit({{id}})">
-          <i class="fas fa-edit color-white"></i>
-          Editar
-        </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-danger">
-          <i class="fas fa-times color-white"></i>
-          Remover
-        </button>
-=======
 			<div class="btn-group" role="group">
 				<button type="button" class="btn btn-secondary" onclick="goHome()">
 					<i class="fa fa-arrow-left color-white"></i>
@@ -52,7 +34,6 @@
 					<i class="fas fa-times color-white"></i>
 					Remover
 				</button>
->>>>>>> ecaf214adf122feaea891f8d626036d3f37fce7f
 			</div>
 
 		</div>
@@ -66,7 +47,7 @@
 						<div class="card-header">
 							<h3 class="card-title">Dados da Linha de Pesquisa</h3>
 						</div>
-						<div class="card-body table-responsive-sm">
+						<div class="card-body">
 							<table id="dataTable2" class="table table-bordered table-hovers">
 								<tbody>
 									<tr>
@@ -92,34 +73,11 @@
 				</div>
 			</div>
 		</div>
-    <div class="modal fade" id="modal-danger">
-        <div class="modal-dialog">
-          <div class="modal-content bg-danger">
-            <div class="modal-header">
-              <h4 class="modal-title">Danger Modal</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p>One fine body&hellip;</p>
-            </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-outline-light">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
 	</section>
 </main>
 <script>
 	function goHome() {
 		window.location.href = "{{url}}/linhasdepesquisa/listar";
 	}
-
-  function goEdit(id) {
-    window.location.href = "{{url}}/linhasdepesquisa/editar/" + {{id}};
-  }
 </script>
 {{> footer}}
