@@ -1,0 +1,100 @@
+{{> header}}
+{{> sidebar module='salas' page='salas-editar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Editar Sala</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Salas</a></li>
+                        <li class="breadcrumb-item active">Editar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-block btn-secondary" href="/salas/gerenciar">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="col-md-6">
+                <div class="card card-light">
+                    <form role="form" id="editSalaForm">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="nomeSalaInput">
+                                    <font color="#FF0000">*</font> Nome:
+                                </label>
+                                <input type="text" class="form-control" id="nomeSalaInput" name="nomeSalaInput" placeholder="Insira o nome da sala" value="{{fields_sala.nome}}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="numSalaInput">
+                                    Número:
+                                </label>
+                                <input type="number" class="form-control" id="numSalaInput" name="numSalaInput" placeholder="Ex. 1241" value="{{fields_sala.numero}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="locSalaInput">
+                                    <font color="#FF0000">*</font> Localização:
+                                </label>
+                                <input type="text" class="form-control" id="locSalaInput" name="locSalaInput" placeholder="Ex. 1o Andar IComp" value="{{fields_sala.localizacao}}" required> 
+                            </div>
+                          
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <input type="button" class="btn btn-primary" onclick="submitForm()" value="Submit" />
+                        </div>
+                    </form>
+                </div> 
+        </div>
+        <!-- /.card -->
+    </section>
+</div>
+
+<script>
+    
+    function submitForm() {
+        const dataFromForm = $('#editSalaForm').serializeArray();
+      
+        $.ajax({
+            url: '{{url}}/salas/edit/{{fields_sala.id}}',
+            type: 'PUT',
+            data: dataFromForm,
+            success: function (data) {
+                
+                alert("Form successful update!");
+                location.reload();
+                
+                $.validator.setDefaults({
+                    submitHandler: function () {
+                    },
+                    onfocusout: function (el) {
+                        this.element(el);
+                    },
+                });
+            },
+            error: function (data) {
+                alert("Erro ao atualizar sala!");
+                console.log(data);
+            }
+        });
+        
+    }
+
+</script>
+{{> footer}}
