@@ -161,6 +161,30 @@
             </p>
           </a>
         </li>
+        <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
+          <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
+            <i class="nav-icon far fa-clipboard "></i>
+            <p>
+              Reserva de Sala
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/salas/gerenciar" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}}  text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Gerenciar Salas</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Gerenciar Reservas</p>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

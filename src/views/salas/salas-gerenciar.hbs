@@ -1,0 +1,110 @@
+{{> header}}
+{{> sidebar module='salas' page='salas-gerenciar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Lista de Salas</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Salas</a></li>
+                        <li class="breadcrumb-item active">Listar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-3 col-lg-2 min-width-button">
+                    <a type="button" class="btn btn-block btn-primary" href="/salas/adicionar">
+                        <i class="fas fa-user-plus color-white"></i>
+                        Adicionar Sala
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Salas</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Número</th>
+                                        <th>Localização</th>
+                                        <th style="width: 6%;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each salas}}
+                                    <tr>
+                                        <td> {{nome}} </td>
+                                        <td> {{numero}} </td>
+                                        <td> {{localizacao}} </td>
+                                        <td style="text-align: center;"> 
+
+                                            <a class="btn btn-light btn-sm" href="/salas/edit/{{id}}">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+
+                                            <a class="btn btn-light btn-sm"
+                                                onclick="deleteSala({{id}})">
+                                                <i class="fas fa-trash"></i>
+                                            </a>                                          
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<script>
+    //$(document).ready(function () {
+    //   $('#ViewEdital').DataTable();
+    //});
+
+    function deleteSala(id) {
+        let r = confirm("Deseja realmente excluir esta sala?");
+        if (r == true) {
+            var url = '{{url}}/salas/excluir/' + id;
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function (result) {
+                    alert('Sala excluida com sucesso!');
+                    location.reload();
+                },
+                error: function (result) {
+                    alert('Erro ao excluir sala!');
+                }
+
+            });
+        }
+    }
+</script>
+
+{{> footer}}

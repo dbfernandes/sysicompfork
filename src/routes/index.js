@@ -7,6 +7,7 @@ import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
+import salasRoutes from './salas';
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.use("/projetos", projetosRoutes);
 router.use("/selecaoppgi", selecaoppgiRouter);
 router.use("/edital", editalRouter);
 router.use("/linhasdepesquisa", linhasDePesquisaRouter);
+router.use('/salas', salasRoutes);
 
 export default router;
