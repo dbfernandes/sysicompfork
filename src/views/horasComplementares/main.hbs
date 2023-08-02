@@ -1,0 +1,76 @@
+{{> header}}
+{{> sidebar module='horasComplementares' page='main'}}
+
+<style>
+    .link { padding: 8px }
+</style>
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Atividades Complementares</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/inicio">Inicio</a></li>   
+                        <li class="breadcrumb-item active">Atividades complementares</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Solicitações</h3>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card-body">
+                              <table id="atividades" class="table table-bordered table-hovers">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Descrição</th>
+										<th>Atividade Relacionada</th>
+										<th>Inicio</th>
+                                        <th>Término</th>
+                                        <th>Carga horária solicitada</th>
+                                        <th>Carga horária aprovada</th>
+                                        <th>Status da solicitação</th>
+                                        <th></th>
+									</tr>
+								</thead>
+								<tbody>
+									{{#each atividadesRealizadas}}
+									<tr>
+										<td>{{id}}</td>
+										<td>{{descricao}}</td>
+										<td>{{atividade}}</td>
+                                        <td>{{data_inicio}}</td>
+                                        <td>{{data_termino}}</td>
+                                        <td>{{horaTotal}}</td>
+                                        <td>{{horaAprovada}}</td>
+                                        <td>{{status}}</td>
+                                        <td>
+                                            <a href="" class="link" title="Ver"><i class="fas fa-light fa-eye"  style="color: #00700d;"></i></a>
+                                            <a href="" class="link" title="Editar"><i class="fas fa-light fa-pen"></i></a>
+                                            <a href="" class="link" title="Deletar"><i class="fas fa-solid fa-trash" style="color: #f74b4b;"></i></a>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{{> footer}}

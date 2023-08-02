@@ -185,6 +185,30 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item {{#ifEqual module 'horasComplementares'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'horasComplementares'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-list-ul"></i>
+            <p>
+              Horas Complementares
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/horasComplementares/adicionar"
+                class="nav-link {{#ifEqual page 'adicionar-atividade'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-regular fa-plus nav-icon"></i>
+                <p>Adicionar Atividade</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/horasComplementares/listar" class="nav-link {{#ifEqual page 'main'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Listar Atividades</p>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->
