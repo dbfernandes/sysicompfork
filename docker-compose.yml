@@ -32,18 +32,6 @@ services:
     depends_on: 
       - db
 
-  sysicomp:
-    build: .
-    env_file:
-      - src/.env
-    ports: 
-      - 3001:3000
-    working_dir: /app
-    volumes:
-      - .:/app
-      - /app/node_modules
-    depends_on:
-      - db
 #Docker Networks
 networks:
   sysicomp-network:
