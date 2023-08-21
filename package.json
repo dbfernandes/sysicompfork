@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.js' --exec 'node -r esm src/server.js'",
-    "start:dev": "nodemon --watch 'src/**/*.js' --exec 'NODE_ENV=dev node -r esm src/server.js'",
+    "start:dev": "nodemon -L 'src/**/*.js' --exec 'NODE_ENV=dev node -r esm src/server.js'",
     "criar-modulo": "node src/utils/criar-novo-modulo.js",
     "test": "jest"
   },
