@@ -28,6 +28,6 @@
       "database": "db",
       "host": "db",
       "dialect": "mysql",
-      "port": 3327
+      "port": 3306
     }
   }
