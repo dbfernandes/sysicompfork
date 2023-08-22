@@ -8,27 +8,44 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Lista de Selecoes</h1>
+                    <h1>Editais de Seleção do PPGI</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Selecoes</a></li>
-                        <li class="breadcrumb-item active">Listar</li>
+                        <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
+                        <li class="breadcrumb-item active">Editais de Seleção do PPGI</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-sm-3 col-md-2 col-lg-1">
-                    <button type="button" class="btn btn-block btn-secondary">
-                        <i class="fa fa-arrow-left color-white"></i>
+                    <button type="button" class="btn btn-block btn-warning" id="voltarBtn">
+                        <i class="fa fa-arrow-left"></i>
                         Voltar
                     </button>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/adicionar">
+                    <a type="button" class="btn btn-block btn-primary" href="/edital/addEdital">
                         <i class="fas fa-plus color-white"></i>
-                        Adicionar Seleção
+                        Novo Edital
                     </a>
+                </div>
+                <div class="col-sm-5 col-md-7 col-lg-9">
+                    <div class="legenda-table float-right">
+                        <table class="table table-bordered" style="border-color: black;">
+                            <tr style="background-color: #dcdcdc;">
+                                <td colspan="2" style="text-align: center; font-size: 15px; padding: 0px 50px; border-color: black;">Legenda</td>
+                            </tr>
+                            <tr style="background-color: #a0c6e4;">
+                                <td style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">REG</td>
+                                <td style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">Vagas Regulares</td>
+                            </tr>
+                            <tr style="background-color: #8fdf7b;">
+                                <td style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">SUP</td>
+                                <td style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">Vagas Suplementares</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -41,7 +58,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Projetos</h3>
+                            <h3 class="card-title">Editais</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -70,24 +87,24 @@
                                         <td> REG:{{dataValues.vagaMestrado}} SUP:{{dataValues.cotasMestrado}} </td>
                                         <td> REG:{{dataValues.vagaDoutorado}} SUP:{{dataValues.cotasDoutorado}} </td>
                                         <td>
-                                            <div class="col-6">
+                                            <div class="col-1">
                                                 <a href="">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-1">
                                                 <a href="/edital/updateEdital/{{dataValues.editalId}}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                     
                                                 </a>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-1">
                                                 <a class="btn btn-danger btn-sm" onclick="deleteEdital({{dataValues.editalId}})" >
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-1">
                                                 <a href="/edital/listEdital/{{dataValues.editalId}}"
                                                     class="btn btn-danger btn-sm">
                                                     <i class="fas fa-eye"></i>
@@ -135,6 +152,10 @@
         });
     }
  }
+
+ document.getElementById("voltarBtn").addEventListener("click", function() {
+        window.history.back();
+    });
 
 
 </script>
