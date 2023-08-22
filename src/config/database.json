@@ -3,9 +3,9 @@
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "db",
+      "host": "localhost",
       "dialect": "mysql",
-      "port": 3306
+      "port": 3327
     },
     "dev": {
       "username": "user",
