@@ -10,11 +10,26 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Projeto.init({
-    nome_projeto: DataTypes.STRING,
-    convenio_projeto: DataTypes.STRING,
-    conta_bancaria_projeto: DataTypes.STRING,
-    inicio_projeto: DataTypes.DATE,
-    fim_projeto: DataTypes.DATE
+    nome_projeto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    convenio_projeto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    conta_bancaria_projeto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    inicio_projeto: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    fim_projeto: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Projeto',

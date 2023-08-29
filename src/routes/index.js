@@ -8,6 +8,8 @@ import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas';
+import autenticacaoController from '../controllers/auntenticacaoController';
+
 import horasComplementaresRoutes from './horasComplementares.routes'
 const router = express.Router();
 
@@ -19,8 +21,24 @@ const router = express.Router();
 // router.use('/', autenticacaoRoutes)
 //router.use('/inscricao', inscricaoRouter);
 
-router.use("/", inicioRoutes);
-router.use("/", autenticacaoRoutes);
+
+// ROTAS DE AUTENTICAÇÃO 
+
+router.get('/login', autenticacaoController.login)
+router.post('/login', autenticacaoController.login)
+router.get('/recuperar-senha',autenticacaoController.recuperar_senha )
+router.post('/recuperar-senha',autenticacaoController.recuperar_senha)
+router.get('/logout', autenticacaoController.logout)
+
+router.use(autenticacaoController.verificar)
+//
+
+router.use('//', (req, res) => res.redirect('/inicio'));
+router.use("/inicio", inicioRoutes);
+
+
+//router.use("/", autenticacaoRoutes);
+
 router.use("/usuarios", usuariosRoutes);
 router.use("/projetos", projetosRoutes);
 router.use("/selecaoppgi", selecaoppgiRouter);

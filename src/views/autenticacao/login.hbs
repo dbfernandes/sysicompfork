@@ -26,6 +26,7 @@
     {{/if}}
 
     <form action="/login" method="post" id="loginForm">
+      <input type="hidden" name="_csrf" value="{{csrfToken}}">
       <div class="form-group">
         <label for="cpfInput">CPF</label>
         <input id="cpfInput" name="cpf" type="text" class="form-control cpf" placeholder="___.___.___-__">

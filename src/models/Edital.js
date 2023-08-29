@@ -16,17 +16,50 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             primaryKey: true
         },
-        vagaDoutorado: DataTypes.INTEGER,
-        vagaMestrado: DataTypes.INTEGER,
-        cotasDoutorado: DataTypes.INTEGER,
-        cotasMestrado: DataTypes.INTEGER,
-        cartaOrientador: DataTypes.STRING,
-        cartaRecomendacao: DataTypes.STRING,
-        documento: DataTypes.STRING,
-        dataInicio: DataTypes.STRING,
-        dataFim: DataTypes.STRING,
-        curso: DataTypes.STRING,
-        status: DataTypes.STRING
+        vagaDoutorado: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        vagaMestrado: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        cotasDoutorado: {
+            type:DataTypes.INTEGER,
+            allowNull: false
+        },
+        cotasMestrado: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        cartaOrientador: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        cartaRecomendacao: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        documento: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        dataInicio: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        dataFim: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        curso: {
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        status: {
+            type:DataTypes.STRING,
+            allowNull: false
+        }
     }, {
         sequelize,
         modelName: 'Edital',
