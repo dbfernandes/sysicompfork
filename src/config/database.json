@@ -19,14 +19,14 @@
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "localhost",
+      "host": "db",
       "dialect": "mysql"
     },
     "production": {
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "localhost",
+      "host": "db",
       "dialect": "mysql",
       "port": 3306
     }

@@ -10,6 +10,7 @@ import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas';
 import autenticacaoController from '../controllers/auntenticacaoController';
 
+import horasComplementaresRoutes from './horasComplementares.routes'
 const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
@@ -44,5 +45,5 @@ router.use("/selecaoppgi", selecaoppgiRouter);
 router.use("/edital", editalRouter);
 router.use("/linhasdepesquisa", linhasDePesquisaRouter);
 router.use('/salas', salasRoutes);
-
+router.use("/horascomplementares", horasComplementaresRoutes)
 export default router;
