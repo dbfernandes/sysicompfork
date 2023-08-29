@@ -19,10 +19,22 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
       primaryKey: true,
     },
-    idCandidate: DataTypes.INTEGER,
-    instituicao: DataTypes.STRING,
-    atividade: DataTypes.STRING,
-    periodo: DataTypes.STRING
+    idCandidate: {
+      type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    instituicao: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    atividade: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    periodo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'CandidateAcademicExperience',

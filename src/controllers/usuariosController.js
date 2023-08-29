@@ -1,3 +1,6 @@
+const {Usuario} = require('../models');
+
+
 const adicionar = async (req, res) => {
     if (req.method === 'GET') {
         return res.render('usuarios/usuarios-adicionar', {
@@ -9,7 +12,7 @@ const adicionar = async (req, res) => {
 const listar = async (req, res) => {
     if (req.method === 'GET') {
         const usuarios = await Usuario.findAll()
-        res.render('layouts/usuarios/usuarios-listar', {
+        res.render('usuarios/usuarios-listar', {
             usuarios: usuarios.map(usuario => {
                 return {
                     ...usuario.get(),

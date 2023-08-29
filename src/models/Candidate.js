@@ -24,12 +24,30 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    email: DataTypes.STRING,
-    editalId: DataTypes.STRING,
-    password: DataTypes.VIRTUAL,
-    passwordHash: DataTypes.STRING,
-    currentStep: DataTypes.INTEGER,
-    status: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    editalId: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type:DataTypes.VIRTUAL,
+      allowNull: false,
+    },
+    passwordHash: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    currentStep: {
+      type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
 
   }, {
     sequelize,

@@ -6,10 +6,22 @@ module.exports = (sequelize, DataTypes) => {
 
   LinhasDePesquisa.init(
     {
-      nome: DataTypes.STRING,
-      sigla: DataTypes.STRING,
-      icone: DataTypes.STRING,
-      cor: DataTypes.STRING,
+      nome: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sigla: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      icone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      cor: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,

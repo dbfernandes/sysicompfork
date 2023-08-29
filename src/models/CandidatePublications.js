@@ -19,13 +19,34 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
       primaryKey: true,
     },
-    idCandidate: DataTypes.INTEGER,
-    titulo: DataTypes.STRING,
-    ano: DataTypes.INTEGER,
-    local: DataTypes.STRING,
-    tipo: DataTypes.STRING,
-    natureza: DataTypes.STRING,
-    autores: DataTypes.STRING
+    idCandidate: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    titulo: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    ano: {
+      type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    local: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    tipo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    natureza: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    autores: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'CandidatePublications',

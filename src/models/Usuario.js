@@ -1,6 +1,17 @@
 const Sequelize = require('sequelize')
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('Usuario', {
+  class Usuario extends Model {
+    
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Usuario.init({
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -42,14 +53,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.SMALLINT,
       allowNull: false,
       defaultValue: 10
-    },
-    created_at: {
-      type: DataTypes.STRING(10),
-      allowNull: false
-    },
-    updated_at: {
-      type: DataTypes.STRING(10),
-      allowNull: false
     },
     visualizacao_candidatos: {
       type: DataTypes.DATE,
@@ -159,10 +162,19 @@ module.exports = (sequelize, DataTypes) => {
     cargo: {
       type: DataTypes.STRING(32),
       allowNull: true
-    }
-  }, {
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },{
     sequelize,
     tableName: 'Usuario',
+    modelName: 'Usuario',
     timestamps: false,
     indexes: [
       {
@@ -198,10 +210,9 @@ module.exports = (sequelize, DataTypes) => {
         ]
       },
     ]
-  })
+  });
 
-  //Constroi a String de Perfis do Usuario
-  User.prototype.perfis = function () {
+  Usuario.prototype.perfis = function () {
     let perfis = ''
     if(this.administrador === '1') perfis += ' Administrador |'
     if(this.coordenador === '1') perfis += ' Coordenador |'
@@ -214,5 +225,8 @@ module.exports = (sequelize, DataTypes) => {
     return perfis
   }
 
-  return User
+  return Usuario;
 }
+ 
+
+

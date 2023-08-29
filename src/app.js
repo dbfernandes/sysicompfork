@@ -8,6 +8,9 @@ import cors from 'cors';
 import * as path from 'path';
 import * as bodyParser from 'body-parser';
 import morgan from 'morgan';
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
+
 
 dotenv.config();
 const app = express()
@@ -22,6 +25,8 @@ app.engine('hbs', exphbs({
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '/views'));
 
+app.use(cookieParser());
+
 app.use(session({
     genid: (req) => {
         return uuid.v4() // usamos UUIDs para gerar os SESSID
@@ -29,13 +34,13 @@ app.use(session({
     secret: "eb9ac99d8a53fbfae6cae8e7a48c5b45",
     resave: true,
     saveUninitialized: true,
-    cookie: { expires: 60 * 60, httpOnly: true }
 }));
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
+app.use(csrf({ cookie: true }));
 
 app.use(
     '/script-adminlte',

@@ -1,28 +1,45 @@
+//import { Usuario } from '../models';
+const {Usuario} = require('../models');
+const bcrypt = require('bcrypt');
+
 const login = async (req, res) => {
+
+      
     if (req.method === 'GET') {
-        return res.render('autenticacao/login', {})
+        if (req.session.uid) return res.redirect('/');
+        return res.render('autenticacao/login', {
+            csrfToken: req.csrfToken(),
+        });
     }
     else if (req.method === 'POST') {
-
-        const { cpf, senha } = await req.body;
-        const usuario = await Usuario.findOne({
-            where: { username: cpf }
-        })
-
-        if (!usuario)
-            return res.render('autenticacao/login', {
-                message: "Usuário não cadastrado", type: 'danger'
+        try{
+            const { cpf, senha } = await req.body;
+            const usuario = await Usuario.findOne({
+                where: { username: cpf }
             })
-
-        let isSenhaCorreta = await bcrypt.compare(senha, usuario.password_hash)
-        if (!isSenhaCorreta)
-            return res.render('autenticacao/login', {
-                message: "Senha inválida", type: 'danger'
-            })
-
-        req.session.uid = usuario.id
-        req.session.nome = `${usuario.nome.split(' ')[0]} ${usuario.nome.split(' ')[usuario.nome.split(' ').length - 1]}`
-        return res.redirect('/inicio')
+    
+            if (!usuario){
+                console.log("teste");
+    
+                return res.render('autenticacao/login', {
+                    csrfToken: req.csrfToken(),
+                    message: "Usuário não cadastrado", type: 'danger'
+                })
+            }
+            let isSenhaCorreta = await bcrypt.compare(senha, usuario.password_hash)
+            if (!isSenhaCorreta){
+                console.log("testeoi")
+                return res.render('autenticacao/login', {
+                    csrfToken: req.csrfToken(),
+                    message: "Senha inválida", type: 'danger'
+                })
+            }
+            req.session.uid = usuario.id
+            req.session.nome = `${usuario.nome.split(' ')[0]} ${usuario.nome.split(' ')[usuario.nome.split(' ').length - 1]}`
+            return res.redirect('/inicio')
+        }catch(err){
+            console.log(err);
+        }
     }
 }
 
@@ -94,4 +111,8 @@ const logout = async (req, res) => {
     }
 }
 
-export default { logout, recuperar_senha, login }
+const verificar = async (req, res,next) => {
+    if (!req.session.uid) return res.redirect('/login');
+    next();
+}
+export default { logout, recuperar_senha, login , verificar }
