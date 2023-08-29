@@ -18,19 +18,17 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-1">
-                    <button type="button" class="btn btn-block btn-warning" id="voltarBtn">
+                <div class="col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </button>
-                </div>
-                <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/addEdital">
-                        <i class="fas fa-plus color-white"></i>
-                        Novo Edital
                     </a>
+                    <a class="btn btn-primary color-white" href="/edital/addEdital">
+                        <i class="fas fa-plus"></i>
+                        Novo Edital
+                    </a>      
                 </div>
-                <div class="col-sm-5 col-md-7 col-lg-9">
+                <div class="col-sm-5 col-md-7 col-lg-10">
                     <div class="legenda-table float-right">
                         <table class="table table-bordered" style="border-color: black;">
                             <tr style="background-color: #dcdcdc;">
@@ -65,11 +63,12 @@
                             <table id="example2" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Nº edital</th>
-                                        <th>Início inscrições</th>
+                                        <th> # </th>
+                                        <th> Nº edital</th>
+                                        <th> Início inscrições</th>
                                         <th> Término inscrições</th>
-                                        <th>#Inscrições Iniciadas</th>
-                                        <th> #Inscrições Encerradas</th>
+                                        <th> Inscrições Iniciadas</th>
+                                        <th> Inscrições Encerradas</th>
                                         <th> Vagas Mestrado</th>
                                         <th> Vagas Doutorado</th>
                                         <th> </th>
@@ -79,6 +78,7 @@
                                 <tbody>
                                     {{#each editais}}
                                     <tr>
+                                        <td>{{add @index 1}}</td>
                                         <td> {{dataValues.editalId}} </td>
                                         <td> {{dataValues.dataInicio}} </td>
                                         <td> {{dataValues.dataFim}} </td>
@@ -86,32 +86,21 @@
                                         <td>  </td>
                                         <td> REG:{{dataValues.vagaMestrado}} SUP:{{dataValues.cotasMestrado}} </td>
                                         <td> REG:{{dataValues.vagaDoutorado}} SUP:{{dataValues.cotasDoutorado}} </td>
-                                        <td>
-                                            <div class="col-1">
-                                                <a href="">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                            </div>
-                                            <div class="col-1">
-                                                <a href="/edital/updateEdital/{{dataValues.editalId}}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                    
-                                                </a>
-                                            </div>
-                                            <div class="col-1">
-                                                <a class="btn btn-danger btn-sm" onclick="deleteEdital({{dataValues.editalId}})" >
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </div>
-                                            <div class="col-1">
-                                                <a href="/edital/listEdital/{{dataValues.editalId}}"
-                                                    class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            </div>
+                                        <td class="project-actions text-left">
+                                            <a class="btn btn-secondary btn-sm" href="#">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            <a class="btn btn-primary btn-sm" href="/edital/listEdital/{{dataValues.editalId}}">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            <a class="btn btn-danger btn-sm" onclick="deleteEdital({{dataValues.editalId}})">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            <a href="/edital/updateEdital/{{dataValues.editalId}}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
                                         </td>
-
                                     </tr>
                                     {{/each}}
                                 </tbody>
