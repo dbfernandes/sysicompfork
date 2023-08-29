@@ -10,4 +10,8 @@ const getJsonContext = (data, options) => {
     return options.fn(JSON.parse(data));
 };
 
-module.exports = { ifEqual }
+const add = (a, b) => {
+    return a + b;
+};
+
+module.exports = { ifEqual, add }
