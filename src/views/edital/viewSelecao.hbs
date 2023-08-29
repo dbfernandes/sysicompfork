@@ -18,39 +18,30 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-1">
-                    <button type="button" class="btn btn-block btn-secondary">
-                        <i class="fa fa-arrow-left color-white"></i>
+
+                <div class="col-sm-12 col-md-12 col-lg-12 mt-12">
+                    <a class="btn btn-warning color-white" id="voltarBtnView">
+                        <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </button>
-                </div>
-                <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
+                    </a>
+                    <a class="btn btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
                         <i class="fas fa-edit color-white"></i>
                         Editar
                     </a>
-                </div>
-                <div class="col-sm-4 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-danger" href="/edital/listEdital" onclick="deleteEdital()">
+                    <a class="btn btn-danger" href="/edital/listEdital" onclick="deleteEdital()">
                         <i class="fas fa-trash-alt color-white"></i>
 
                         Excluir
                     </a>
-                </div>
-                <div class="col-sm-5 col-md-3 col-lg-2">
-                    <a type="button" class="btn btn-block btn-info" href="/edital/adicionar">
+                    <a class="btn btn-info" href="/edital/adicionar">
                         <i class="fas fa-list color-white"></i>
                         Lista de Inscritos
                     </a>
-                </div>
-
-                <div class="col-sm-4 col-md-6 col-lg-2 ">
-                    <a type="button" class="btn btn-block bg-success" href="/edital/adicionar">
+                    <a class="btn bg-success" href="/edital/adicionar">
                         <i class="fas fa-file-csv color-white"></i>
                         Planilha Excel para Avaliação (Excel)
-                    </a>
+                    </a>     
                 </div>
-
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -64,7 +55,7 @@
 
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example2" class="table table-striped table-bordered table-hover">
 
                                 </thead>
                                 <tbody>
@@ -72,74 +63,60 @@
                                     <tr>
                                         <td>Nº edital</td>
                                         <td>{{edital.editalId}}</td>
-
                                     </tr>
+
                                     <tr>
                                         <td>Data início</td>
                                         <td>{{edital.dataInicio}}</td>
                                     </tr>
+
                                     <tr>
                                         <td>Data fim</td>
                                         <td>{{edital.dataFim}}</td>
                                     </tr>
+
                                     <tr>
                                         <td>Nº de Inscrições Iniciadas</td>
                                         <td>{{edital.inscricoesIniciadas}}</td>
-
                                     </tr>
-                                    <tr>
+                                    
+                                    <tr>                                
                                         <td>Nº de Inscrições Encerradas</td>
-
                                         <td>{{edital.inscricoesEncerradas}}</td>
-
                                     </tr>
+
                                     <tr>
                                         <td>Carta de Recomendação</td>
-
                                         <td>{{edital.cartaRecomendacao}}</td>
-
                                     </tr>
+
                                     <tr>
                                         <td>Carta do Orientador</td>
-
                                         <td>{{edital.cartaOrientador}}</td>
-
                                     </tr>
+
                                     <tr>
                                         <td>Curso</td>
-
                                         <td>{{edital.curso}}</td>
-
                                     </tr>
+
                                     <tr>
                                         <td>Vagas para Mestrado</td>
-
-                                        <td>{{edital.vagaMestrado}}</td>
-
+                                        <td>REG: {{edital.vagaMestrado}} / SUP: {{edital.cotasMestrado}}</td>
                                     </tr>
 
                                     <tr>
-                                        <td>Vagas suplementares para Mestrado</td>
-
-                                        <td>{{edital.cotasMestrado}}</td>
-
-                                    </tr>
-                                    <tr>
-
                                         <td>Vagas para Doutorado</td>
-
-                                        <td>{{edital.vagaDoutorado}}</td>
-
+                                        <td>REG: {{edital.vagaDoutorado}} / SUP: {{edital.cotasDoutorado}}</td>
                                     </tr>
+
                                     <tr>
-                                            
-                                            <td>Vagas para Suplementares Doutorado</td>
-    
-                                            <td>{{edital.cotasDoutorado}}</td>
+                                        <td>Data da Criação no sistema</td>
+                                        <td> </td>
                                     </tr>
+                                        
                                     <tr>
                                         <td>Baixar</td>
-
                                         <td>
                                             <a href="/edital/{{edital}}/selecao/baixar" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-download"></i>
@@ -163,10 +140,10 @@
 </div>
 
 <script>
-  
+ 
 
     function deleteEdital(){
-        var r = confirm("Deseja realmente excluir o edital?");
+        var r = confirm("Deseja realmente excluir o edital com ID {{edital.editalId}} ?");
         if (r == true) {
         
         
@@ -187,6 +164,10 @@
         }
          
     }
+
+    document.getElementById("voltarBtnView").addEventListener("click", function() {
+        window.history.back();
+    });
 
 </script>
 

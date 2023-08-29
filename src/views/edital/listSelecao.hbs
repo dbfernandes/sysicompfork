@@ -84,8 +84,8 @@
                                         <td> {{dataValues.dataFim}} </td>
                                         <td>  </td>
                                         <td>  </td>
-                                        <td> REG:{{dataValues.vagaMestrado}} SUP:{{dataValues.cotasMestrado}} </td>
-                                        <td> REG:{{dataValues.vagaDoutorado}} SUP:{{dataValues.cotasDoutorado}} </td>
+                                        <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
+                                        <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
                                         <td class="project-actions text-left">
                                             <a class="btn btn-secondary btn-sm" href="#">
                                                 <i class="fas fa-download"></i>
@@ -94,7 +94,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            <a class="btn btn-danger btn-sm" onclick="deleteEdital({{dataValues.editalId}})">
+                                            <a class="btn btn-danger btn-sm" data-editalId="{{dataValues.editalId}}" onclick="deleteEdital(this)">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                             <a href="/edital/updateEdital/{{dataValues.editalId}}" class="btn btn-info btn-sm">
@@ -121,26 +121,27 @@
 
 <script>
 
- function deleteEdital(id){
-    let r = confirm("Deseja realmente excluir o edital?");
-     console.log(id);
-    if(r == true){
-        
-        var url = '/edital/deleteEdital/'+id;
+
+ function deleteEdital(element){
+    var editalId = element.getAttribute("data-editalId");
+    console.log(editalId);
+    let r = confirm("Deseja realmente excluir o edital com ID " + editalId + "?");
+    if (r == true) {
+        var url = '/edital/deleteEdital/' + editalId;
         $.ajax({
             url: url,
             type: 'DELETE',
             success: function(result){
-                alert('Edital excluido com sucesso!');
+                alert('Edital excluído com sucesso!');
                 location.reload();
             },
             error: function(result){
                 alert('Erro ao excluir edital!');
             }
-            
         });
     }
- }
+}
+
 
  document.getElementById("voltarBtn").addEventListener("click", function() {
         window.history.back();
