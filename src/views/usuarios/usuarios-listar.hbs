@@ -11,20 +11,19 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Usuários</a></li>
-                        <li class="breadcrumb-item active">Listar</li>
+                        <li class="breadcrumb-item active">Usuários</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-sm-3 col-md-2 col-lg-1 min-width-button">
-                    <button type="button" class="btn btn-block btn-secondary">
+                    <button type="button" class="btn btn-secondary" onclick="history.go(-1);">
                         <i class="fa fa-arrow-left color-white"></i>
                         Voltar
                     </button>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2 min-width-button">
-                    <a type="button" class="btn btn-block btn-primary" href="/usuarios/adicionar">
+                    <a type="button" class="btn btn-primary" href="/usuarios/adicionar">
                         <i class="fas fa-user-plus color-white"></i>
                         Adicionar Usuário
                     </a>
@@ -58,12 +57,34 @@
                                 <tbody>
                                     {{#each usuarios}}
                                     <tr>
-                                        <td> {{nome}} </td>
-                                        <td> {{username}} </td>
+                                        <td> {{nomeCompleto}} </td>
+                                        <td> {{cpf}} </td>
                                         <td> {{email}} </td>
-                                        <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                {{#if telcelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular" title="{{telcelular}}"></i>{{/if}}     
+                                                {{#if telresidencial}} <i id="{{id}}f" class="fa fa-phone fa-lg fixo" title="{{telresidencial}}"></i>{{/if}}
+                                            </div>
+                                        </td>
                                         <td>
                                             {{perfis}}
+                                        </td>
+                                        <td class='links-container'>
+                                            <div class="d-flex justify-content-between">
+
+                                                <a  style="margin-right: 2px"
+                                                    href='/usuarios/{{id}}'
+                                                    class='fa fa-solid fa-eye'
+                                                /></a>
+                                                <a  style="margin-right: 2px"
+                                                    href='/usuarios/remover/{{id}}'
+                                                    class='fa fa-solid fa-trash'
+                                                ></a>
+                                                <a  style="margin-right: 2px"
+                                                    href='/linhasdepesquisa/editar/{{id}}'
+                                                    class='fa fa-solid fa-pen'
+                                                /></a>
+                                            </div>
                                         </td>
                                     </tr>
                                     {{/each}}
@@ -82,4 +103,14 @@
     </section>
     <!-- /.content -->
 </div>
+
+<script>
+    // Adiciona margem entre os icones de telefone caso haja 2 números de contato
+    const celulares = document.getElementsByClassName("celular")
+    for (let cel of celulares) {
+        const id = cel.id.slice(0,-1)
+        if (document.getElementById(id+"f")) cel.className = cel.className + " mr-2"
+    }
+    
+</script>
 {{> footer}}

@@ -11,20 +11,20 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Usuários</a></li>
+                        <li class="breadcrumb-item"><a href="/usuarios/listar">Usuários</a></li>
                         <li class="breadcrumb-item active">Adicionar</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-sm-3 col-md-2 col-lg-1 min-width-button">
-                    <button type="button" class="btn btn-block btn-secondary">
+                    <button type="button" class="btn btn-secondary" onclick="history.go(-1);">
                         <i class="fa fa-arrow-left color-white"></i>
                         Voltar
                     </button>
                 </div>
                 <div class="col-sm-4 col-md-3 col-lg-2 min-width-button">
-                    <a type="button" class="btn btn-block btn-primary" href="/usuarios/listar">
+                    <a type="button" class="btn btn-primary" href="/usuarios/listar">
                         <i class="fa fa-list color-white"></i>
                         Listar Usuários
                     </a>
@@ -34,172 +34,190 @@
     </section>
 
     <section class="content">
-        <form id="adicionarUsuarioForm">
-            <div class="card card-secondary">
-                <div class="card-header">
-                    <h3 class="card-title">Dados da Conta</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="nomeCompletoInput">
-                            <font color="#FF0000">*</font> Nome Completo:
-                        </label>
-                        <input type="text" name="nomeCompleto" class="form-control" id="nomeCompletoInput"
-                            placeholder="Nome Completo...">
-                    </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                <label for="cpfInput">
-                                    <font color="#FF0000">*</font> CPF:
-                                </label>
-                                <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
-                                    placeholder="000.000.000-00">
-                            </div>
-
-                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                <label for="emailInput">
-                                    <font color="#FF0000">*</font> E-mail:
-                                </label>
-                                <input type="email" name="email" class="form-control" id="emailInput"
-                                    placeholder="E-mail">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                <label for="senhaInput">
-                                    <font color="#FF0000">*</font> Senha:
-                                </label>
-                                <input type="password" name="senha" class="form-control" id="senhaInput"
-                                    placeholder="Senha...">
-                            </div>
-
-                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                <label for="repetirSenhaInput">
-                                    <font color="#FF0000">*</font> Repetir senha:
-                                </label>
-                                <input type="password" name="repetirSenha" class="form-control" id="repetirSenhaInput"
-                                    placeholder="Repetir senha">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
-                        </div>
-                        <div class="row space-between">
-                            
-                            <div>
-                                <label for="administrador"> Administrador </label>
-                                <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
-                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                    data-off-text="Não">
-                            </div>
-
-                            <div>
-                                <label for="coordenador"> Coordenador </label>
-                                <input type="checkbox" name="coordenador" unchecked data-bootstrap-switch
-                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                    data-off-text="Não">
-                            </div>
-                            <div>
-                                <label for="secretaria"> Secretaria </label>
-                                <input type="checkbox" name="secretaria" unchecked data-bootstrap-switch
-                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                    data-off-text="Não">
-                            </div>
-                            <div>
-                                <label for="professor"> Professor </label>
-                                <input type="checkbox" name="professor" unchecked data-bootstrap-switch
-                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                    data-off-text="Não">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
+        <div class="container-fluid">
+            <div style="text-align:left">
+                <font color="#FF0000">*</font> Campos Obrigatórios
             </div>
-
-            <div class="card card-secondary">
-                <div class="card-header">
-                    <h3 class="card-title">Dados Pessoais</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="enderecoInput">Endereço:</label>
-                        <input type="text" name="endereco" class="form-control" id="enderecoInput"
-                            placeholder="Rua, Avenida...">
+            <form action="/usuarios/adicionar" method="post" id="adicionarUsuarioForm">
+                <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados da Conta</h3>
                     </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="nomeCompletoInput">
+                                <font color="#FF0000">*</font> Nome Completo:
+                            </label>
+                            <input type="text" name="nomeCompleto" class="form-control" id="nomeCompletoInput"
+                                placeholder="Nome Completo...">
+                        </div>
 
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="telefoneResidencialInput">Telefone Residencial:</label>
-                                <input type="text" name="telefoneResidencial" class="form-control telefone"
-                                    id="telefoneResidencialInput" placeholder="(99)9999-9999">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="cpfInput">
+                                        <font color="#FF0000">*</font> CPF:
+                                    </label>
+                                    <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
+                                        placeholder="000.000.000-00">
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="emailInput">
+                                        <font color="#FF0000">*</font> E-mail:
+                                    </label>
+                                    <input type="email" name="email" class="form-control" id="emailInput"
+                                        placeholder="E-mail">
+                                </div>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="telefoneCelularInput">Telefone Celular:</label>
-                                <input type="text" name="telefoneCelular" class="form-control telefone"
-                                    id="telefoneCelularInput" placeholder="(99)99999-99909">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="senhaInput">
+                                        <font color="#FF0000">*</font> Senha:
+                                    </label>
+                                    <input type="password" name="senha" class="form-control" id="senhaInput"
+                                        placeholder="Senha...">
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="repetirSenhaInput">
+                                        <font color="#FF0000">*</font> Repetir senha:
+                                    </label>
+                                    <input type="password" name="repetirSenha" class="form-control" id="repetirSenhaInput"
+                                        placeholder="Repetir senha">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="margin-bottom: 20px;">
+                                <label for="">
+                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
+                                </label>
+                            </div>
+                            <div class="row space-between" style="padding-left: 10px; padding-right: 9px">
+                                
+                                <div>
+                                    <label for="administrador"> Administrador </label>
+                                    <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+
+                                <div>
+                                    <label for="coordenador"> Coordenador </label>
+                                    <input type="checkbox" name="coordenador" unchecked data-bootstrap-switch
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                                <div>
+                                    <label for="secretaria"> Secretaria </label>
+                                    <input type="checkbox" name="secretaria" unchecked data-bootstrap-switch
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                                <div>
+                                    <label for="professor"> Professor </label>
+                                    <input type="checkbox" name="professor" unchecked data-bootstrap-switch
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados Pessoais</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="enderecoInput">Endereço:</label>
+                            <input type="text" name="endereco" class="form-control" id="enderecoInput"
+                                placeholder="Rua, Avenida...">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="telefoneResidencialInput">Telefone Residencial:</label>
+                                    <input type="text" name="telefoneResidencial" class="form-control telefone"
+                                        id="telefoneResidencialInput" placeholder="(99)9999-9999">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="telefoneCelularInput">Telefone Celular:</label>
+                                    <input type="text" name="telefoneCelular" class="form-control telefone"
+                                        id="telefoneCelularInput" placeholder="(99)99999-99909">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card card-secondary">
-                <div class="card-header">
-                    <h3 class="card-title">Dados Profissionais</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="siapeInput">SIAPE:</label>
-                                <input type="text" name="siape" class="form-control" id="siapeInput">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados Profissionais</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="siapeInput">SIAPE:</label>
+                                    <input type="text" name="siape" class="form-control" id="siapeInput">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="dateDeIngressoInput">Data de Ingresso:</label>
+                                    <input type="text" name="dateDeIngresso" class="form-control datemask"
+                                        id="dateDeIngressoInput" data-inputmask-alias="datetime"
+                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy">
+                                </div>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="dateDeIngressoInput">Data de Ingresso:</label>
-                                <input type="text" name="dateDeIngresso" class="form-control datemask"
-                                    id="dateDeIngressoInput" data-inputmask-alias="datetime"
-                                    data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="unidadeInput">Unidade:</label>
+                                    <input type="text" name="unidade" class="form-control" id="unidadeInput">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="turnoInput">Turno:</label>
+                                    <select name="turno" class="form-control" id="turnoInput">
+                                        <option value="Sem turno selecionado">Selecione o turno</option>
+                                        <option>Matutino e Vespertino</option>
+                                        <option>Matutino e Noturno</option>
+                                        <option>Vespertino e Noturno</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div >
+                            <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success float-right">
+                                    Adicionar Usuário
+                                </button>
+
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="unidadeInput">Unidade:</label>
-                                <input type="text" name="unidade" class="form-control" id="unidadeInput">
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-6">
-                                <label for="turnoInput">Turno:</label>
-                                <select name="turno" class="form-control" id="turnoInput">
-                                    <option>Selecione o turno</option>
-                                    <option>Matutino e Vespertino</option>
-                                    <option>Matutino e Noturno</option>
-                                    <option>Vespertino e Noturno</option>
-                                </select>
-                            </div>
-                            
-                        </div>
-                    </div>
+                    
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
         <!-- /.card -->
     </section>
 </div>
 
 <script>
+
     function usuariosAdicionarPage() {
         $.validator.addMethod("repetirSenha", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
@@ -209,15 +227,6 @@
             const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
             return cpfValue.length === 11
         })
-
-        $.validator.setDefaults({
-            submitHandler: function () {
-                alert("Form successful submitted!");
-            },
-            onfocusout: function (el) {
-                this.element(el);
-            },
-        });
 
         $('#adicionarUsuarioForm').validate({
             rules: {
@@ -284,5 +293,7 @@
 
         });
     }
+
+    
 </script>
 {{> footer}}

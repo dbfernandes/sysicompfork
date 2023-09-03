@@ -3,8 +3,7 @@ import usurarioRouter from '../controllers/usuariosController'
 const router = express.Router()
 const { Usuario } = require('../models')
 
-router.get('/adicionar', usurarioRouter.adicionar)
-
+router.all('/adicionar', usurarioRouter.adicionar)
 router.get('/listar', usurarioRouter.listar) 
 
 export default router

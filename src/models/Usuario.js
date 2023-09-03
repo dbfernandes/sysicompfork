@@ -18,31 +18,27 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
-    nome: {
+    nomeCompleto: {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    username: {
+    cpf: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: "username"
+      unique: "cpf"
     },
-    shortname: {
-      type: DataTypes.STRING(40),
-      allowNull: true
-    },
-    auth_key: {
-      type: DataTypes.STRING(32),
-      allowNull: false
-    },
-    password_hash: {
+    senhaHash: {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    password_reset_token: {
+    tokenResetSenha: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      unique: "password_reset_token"
+      unique: "tokenResetSenha"
+    },
+    validadeTokenResetSenha: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING(255),
@@ -53,19 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.SMALLINT,
       allowNull: false,
       defaultValue: 10
-    },
-    visualizacao_candidatos: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: "0000-00-00 00:00:00"
-    },
-    visualizacao_candidatos_finalizados: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    visualizacao_cartas_respondidas: {
-      type: DataTypes.DATE,
-      allowNull: false
     },
     administrador: {
       type: DataTypes.CHAR(1),
@@ -80,14 +63,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     professor: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
-    },
-    suporte: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
-    },
-    aluno: {
       type: DataTypes.CHAR(1),
       allowNull: true
     },
@@ -115,22 +90,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(60),
       allowNull: true
     },
-    titulacao: {
-      type: DataTypes.STRING(15),
-      allowNull: true
-    },
-    classe: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    nivel: {
-      type: DataTypes.STRING(6),
-      allowNull: true
-    },
-    regime: {
-      type: DataTypes.STRING(10),
-      allowNull: true
-    },
     turno: {
       type: DataTypes.STRING(32),
       allowNull: true
@@ -139,36 +98,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: true
     },
-    formacao: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    resumo: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    alias: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    ultimaAtualizacao: {
-      type: DataTypes.STRING(10),
-      allowNull: true
-    },
-    idRH: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    cargo: {
-      type: DataTypes.STRING(32),
-      allowNull: true
-    },
     createdAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
     },
     updatedAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
     },
   },{
@@ -186,11 +123,11 @@ module.exports = (sequelize, DataTypes) => {
         ]
       },
       {
-        name: "username",
+        name: "cpf",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "username" },
+          { name: "cpf" },
         ]
       },
       {
@@ -202,11 +139,11 @@ module.exports = (sequelize, DataTypes) => {
         ]
       },
       {
-        name: "password_reset_token",
+        name: "tokenResetSenha",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "password_reset_token" },
+          { name: "tokenResetSenha" },
         ]
       },
     ]
