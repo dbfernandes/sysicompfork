@@ -19,9 +19,15 @@ const begin = async (req, res) => {
 const signin = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
+			const editais = await EditalService.listEdital();
 			return res.render('selecaoppgi/signin', {
+				csrfToken: req.csrfToken(),
 				...locals,
-				editais: await EditalService.listEdital(),
+				editais: editais.map((edital) => {
+					return{
+						...edital.get(),
+					};
+				}),
 				errorSignin: null
 			});
 		case 'POST':
@@ -36,9 +42,10 @@ const signin = async (req, res) => {
 			}
 
 			let responseError = null;
+
 			const candidate = await CandidateService
 				.create({
-					email,
+					email: email,
 					password: senha,
 					editalNumber: edital
 				})
@@ -60,9 +67,15 @@ const signin = async (req, res) => {
 const login = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
+			const editais = await EditalService.listEdital();
 			return res.render('selecaoppgi/login', {
+				csrfToken: req.csrfToken(),
 				...locals,
-				editais: await EditalService.listEdital()
+				editais: editais.map((edital) => {
+					return{
+						...edital.get(),
+					};
+				}),
 			});
 		case 'POST':
 			const {
@@ -111,9 +124,9 @@ const forms = async (req, res) => {
 			});
 		case 'POST':
 
-			return res.send('Erro 400');
+			return res.send('Erro 400 begin');
 	}
-}
+} 
 
 const candidates = async (req, res) => {
 	switch (req.method) {

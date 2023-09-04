@@ -18,14 +18,13 @@ class EditalService {
         vaga_suplementar_doutorado
     }) {
 
-
         let edital = await Edital.findOne({
             where: {
                 editalId: number
             }
         }).catch(err => {
             console.log(err);
-            throw new Error("Não foi possivel criar o edital erro na busca");
+            throw new Error("Não foi possivel criar o edital erro na buscaaaaaa");
         });
 
         if (edital) {
