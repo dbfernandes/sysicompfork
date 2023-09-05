@@ -71,6 +71,8 @@ const gerenciar = async (req, res) => {
     res.render('salas/salas-gerenciar', { 
         salas: salas.map(sala => sala.toJSON()),
         nome: req.session.nome,
+        toke: req.session.token,
+        csrf: req.csrfToken(),  
       
     })
 }

@@ -1,7 +1,7 @@
 //import { Usuario } from '../models';
 const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const login = async (req, res) => {
 
       
@@ -34,8 +34,27 @@ const login = async (req, res) => {
                     message: "Senha inválida", type: 'danger'
                 })
             }
-            req.session.uid = usuario.id
+            
+            const payload = { user: 'seu-usuario' };
+            const chaveSecreta = 'sua-chave-secreta';
+
+            // Configurar o tempo de expiração para 1 hora
+            const tempoExpiracao = '1h';
+
+            jwt.sign(payload, chaveSecreta, { expiresIn: tempoExpiracao }, (err, token) => {
+            if (err) {
+                console.error('Erro ao criar o token:', err);
+            } else {
+                req.session.token = token
+                console.log('Token JWT:', token);
+            }
+            });
+
             req.session.nome = `${usuario.nome.split(' ')[0]} ${usuario.nome.split(' ')[usuario.nome.split(' ').length - 1]}`
+           
+        
+            req.session.uid = usuario.id
+           
             return res.redirect('/inicio')
         }catch(err){
             console.log(err);

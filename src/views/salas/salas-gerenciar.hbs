@@ -61,10 +61,9 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a> 
                                                                                           
-                                               <a data-id="{{id}}" data-bloco="{{bloco}}"  data-andar="{{andar}}"  class="btn btn-danger btn-sm" onclick="deleteSala(this)">
+                                               <a data-id="{{id}}" data-bloco="{{bloco}}"  data-andar="{{andar}}" data-csrf="{{csrf}}" data-token="{{token}}" class="btn btn-danger btn-sm" onclick="deleteSala(this)">
                                                 <i class="fas fa-trash"></i>
                                             </a>
-
                                                                               
                                     </tr>
 
@@ -91,13 +90,19 @@
 <script>
 function deleteSala(element){
     var salaId = element.getAttribute("data-id");
-    console.log(salaId);
+    var token  = element.getAttribute("data-token");
+    var csrf  = element.getAttribute("data-csrf");
+
+ 
     let r = confirm("Deseja realmente excluir a sala " + element.getAttribute('data-andar') + " do bloco " + element.getAttribute('data-bloco') + "?");
     if (r == true) {
         var url = '/salas/excluir/' + salaId;
         $.ajax({
             url: url,
             type: 'DELETE',
+            headers: {
+        'csrf-token': csrf // Inclua o token CSRF como um cabeçalho personalizado
+  },
             success: function(result){
                 alert('Sala excluído com sucesso!');
                 location.reload();
