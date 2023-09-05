@@ -10,7 +10,7 @@ const adicionar = async (req, res) => {
     }else if( req.method === 'POST'){
         try{
             const {
-                andar, bloco,
+                andar, bloco, nome,
             } = req.body;
 
             if (!andar || !bloco) {
@@ -18,11 +18,18 @@ const adicionar = async (req, res) => {
                     error: 'Dados incompletos ou mal formatados'
                 });
             }
-
+     
+            let numero = parseInt(!req.body.numero == ''? 0 : req.body.numero,10)
+            let capacidade = parseInt(!req.body.capacidade == ''? 0 : req.body.capacidade,10)
             let responseError = null;
+        
             const sala = await Salas
                 .create({
-                    ...req.body,
+                    nome,
+                    bloco,
+                    andar,
+                    numero,
+                    capacidade
                 })
                 .catch((err) => {
                     responseError = err;
@@ -35,9 +42,7 @@ const adicionar = async (req, res) => {
                 });
             }
 
-            res.render('salas/salas-gerenciar', { 
-                nome: req.session.nome,
-            })
+            res.redirect('/salas/gerenciar')
         }catch(e){
             console.log(e)
             res.status(500).send({error: e});
@@ -54,7 +59,7 @@ const excluir = async (req, res) => {
 
         const sala_apagada = await Salas.destroy({where: {id: id}});
         res.status(200).json({sala_apagada,message:'Sala removido com sucesso!'});  
-
+      
     }catch(e){
         console.log(e);
         res.status(500).json({error: e});
@@ -81,6 +86,7 @@ const editar = async (req, res) => {
 
             res.render('salas/salas-editar', { 
                 sala: sala.toJSON(),
+                csrf: req.csrfToken(),  
                 nome: req.session.nome,
               
             })
@@ -88,17 +94,14 @@ const editar = async (req, res) => {
         } catch (error) {
             res.status(500).send({ message: error.message })
         }
-    }else if( req.method === 'PUT'){
+    }else if( req.method === 'POST'){
+        console.log("innn")
         try{
             const sala = await Salas.update({
                 ...req.body
             }, {where : {id: req.params.id}});
 
-            res.render('salas/salas-editar', { 
-                sala: sala.toJSON(),
-                nome: req.session.nome,
-               
-            })
+            res.redirect('/salas/gerenciar')
 
         }catch (error) {
             res.status(500).send({ message: error.message })

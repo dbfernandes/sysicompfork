@@ -6,13 +6,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-3">
                 <div class="col-sm-9">
                     <h1>Adicionar Sala</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Salas</a></li>
+                        <li class="breadcrumb-item"><a href="/salas/gerenciar">Salas</a></li>
                         <li class="breadcrumb-item active">Adicionar</li>
                     </ol>
                 </div>
@@ -29,14 +29,14 @@
     </section>
 
     <section class="content">
-        <div class="col-md-6">
+        <div class="col-md-8 ">
                 <div class="card card-secondary">
                 <div class="card-header">
                 <h3 class="card-title">Nova Sala</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                    <form method="POST" action="/salas/adicionar">
+                    <form id ="formAdicionarSala" method="POST" action="/salas/adicionar">
                      <input type="hidden" name="_csrf" value="{{csrf}}"/> 
                         <div class="card-body">
                             <div class="form-group">
@@ -72,7 +72,7 @@
                                 <label for="capSalaInput">
                                     <font color="#FF0000"></font> Capacidade:
                                 </label>
-                                <input type="number" class="form-control" id="capacidade" name="capacidade" placeholder="Ex. 10 "> 
+                                <input type="number" class="form-control" id="capacidade" name="capacidade" placeholder="10"> 
 
                             </div>
                           
@@ -87,4 +87,6 @@
         <!-- /.card -->
     </section>
 </div>
+
+
 {{> footer}}

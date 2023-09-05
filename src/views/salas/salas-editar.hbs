@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Salas</a></li>
+                        <li class="breadcrumb-item"><a href="/salas/gerenciar">Salas</a></li>
                         <li class="breadcrumb-item active">Editar</li>
                     </ol>
                 </div>
@@ -29,35 +29,53 @@
     </section>
 
     <section class="content">
-        <div class="col-md-6">
+        <div class="col-md-8">
                 <div class="card card-light">
-                    <form role="form" id="editSalaForm">
+                    <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
+                        <input type="hidden" name="_csrf" value="{{csrf}}"/> 
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="nomeSalaInput">
-                                    <font color="#FF0000">*</font> Nome:
+                                    <font color="#FF0000"></font> Nome:
                                 </label>
-                                <input type="text" class="form-control" id="nomeSalaInput" name="nomeSalaInput" placeholder="Insira o nome da sala" value="{{fields_sala.nome}}" required>
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome da sala" value="{{sala.nome}}" >
                             </div>
 
                             <div class="form-group">
                                 <label for="numSalaInput">
                                     Número:
                                 </label>
-                                <input type="number" class="form-control" id="numSalaInput" name="numSalaInput" placeholder="Ex. 1241" value="{{fields_sala.numero}}">
+                                <input type="number" class="form-control" id="numero" name="numero" placeholder="Ex. 1241" value="{{sala.numero}}" >
                             </div>
 
+                            
                             <div class="form-group">
-                                <label for="locSalaInput">
-                                    <font color="#FF0000">*</font> Localização:
+                                <label for="blocSalaInput">
+                                    <font color="#FF0000">*</font> Bloco:
                                 </label>
-                                <input type="text" class="form-control" id="locSalaInput" name="locSalaInput" placeholder="Ex. 1o Andar IComp" value="{{fields_sala.localizacao}}" required> 
+                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1"  value="{{sala.bloco}}" required> 
+                            </div>
+
+                           <div class="form-group">
+                                <label for="andarSalaInput">
+                                    <font color="#FF0000">*</font> Andar:
+                                </label>
+                                <input type="number" class="form-control" id="andar" name="andar" placeholder="Ex. 3" value="{{sala.andar}}" required> 
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="capSalaInput">
+                                    <font color="#FF0000"></font> Capacidade:
+                                </label>
+                                <input type="number" class="form-control" id="capacidade" name="capacidade" value="{{sala.capacidade}}"  placeholder="10"> 
+
                             </div>
                           
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">
-                            <input type="button" class="btn btn-primary" onclick="submitForm()" value="Submit" />
+                            <input type="submit" class="btn btn-primary" value="Salvar" />
                         </div>
                     </form>
                 </div> 
@@ -66,19 +84,21 @@
     </section>
 </div>
 
+
+
 <script>
     
-    function submitForm() {
+    function submitForm(id) {
         const dataFromForm = $('#editSalaForm').serializeArray();
       
         $.ajax({
-            url: '{{url}}/salas/edit/{{fields_sala.id}}',
+            url: "salas/editar/" + id,
             type: 'PUT',
             data: dataFromForm,
             success: function (data) {
                 
                 alert("Form successful update!");
-                location.reload();
+                window.location.href = '/salas/gereniar'
                 
                 $.validator.setDefaults({
                     submitHandler: function () {
