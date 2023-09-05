@@ -61,7 +61,7 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a> 
                                                                                           
-                                               <a data-editalId="{{id}}" data-bloco="{{bloco}}"  data-andar="{{andar}}"  class="btn btn-danger btn-sm" data-editalId="{{id}}" onclick="deleteSala(this)">
+                                               <a data-id="{{id}}" data-bloco="{{bloco}}"  data-andar="{{andar}}"  class="btn btn-danger btn-sm" onclick="deleteSala(this)">
                                                 <i class="fas fa-trash"></i>
                                             </a>
 
@@ -90,7 +90,7 @@
 
 <script>
 function deleteSala(element){
-    var salaId = element.getAttribute("data-editalId");
+    var salaId = element.getAttribute("data-id");
     console.log(salaId);
     let r = confirm("Deseja realmente excluir a sala " + element.getAttribute('data-andar') + " do bloco " + element.getAttribute('data-bloco') + "?");
     if (r == true) {

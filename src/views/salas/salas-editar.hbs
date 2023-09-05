@@ -29,34 +29,32 @@
     </section>
 
     <section class="content">
-        <div class="col-md-8">
+        <div class="col-md-7">
                 <div class="card card-light">
                     <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
                         <input type="hidden" name="_csrf" value="{{csrf}}"/> 
                         <div class="card-body">
-                            <div class="form-group">
+                              <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                           
                                 <label for="nomeSalaInput">
                                     <font color="#FF0000"></font> Nome:
                                 </label>
                                 <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome da sala" value="{{sala.nome}}" >
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="numSalaInput">
                                     Número:
                                 </label>
                                 <input type="number" class="form-control" id="numero" name="numero" placeholder="Ex. 1241" value="{{sala.numero}}" >
                             </div>
 
-                            
-                            <div class="form-group">
-                                <label for="blocSalaInput">
-                                    <font color="#FF0000">*</font> Bloco:
-                                </label>
-                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1"  value="{{sala.bloco}}" required> 
                             </div>
+                           
 
-                           <div class="form-group">
+                           <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="andarSalaInput">
                                     <font color="#FF0000">*</font> Andar:
                                 </label>
@@ -64,12 +62,20 @@
                             </div>
 
 
-                            <div class="form-group">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="capSalaInput">
                                     <font color="#FF0000"></font> Capacidade:
                                 </label>
                                 <input type="number" class="form-control" id="capacidade" name="capacidade" value="{{sala.capacidade}}"  placeholder="10"> 
 
+                            </div>
+                            </div>
+
+                             <div class="form-group">
+                                <label for="blocSalaInput">
+                                    <font color="#FF0000">*</font> Bloco:
+                                </label>
+                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1"  value="{{sala.bloco}}" required> 
                             </div>
                           
                         </div>

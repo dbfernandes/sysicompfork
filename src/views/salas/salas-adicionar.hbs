@@ -29,7 +29,7 @@
     </section>
 
     <section class="content">
-        <div class="col-md-8 ">
+        <div class="col-md-7 ">
                 <div class="card card-secondary">
                 <div class="card-header">
                 <h3 class="card-title">Nova Sala</h3>
@@ -38,44 +38,47 @@
                 <!-- form start -->
                     <form id ="formAdicionarSala" method="POST" action="/salas/adicionar">
                      <input type="hidden" name="_csrf" value="{{csrf}}"/> 
-                        <div class="card-body">
-                            <div class="form-group">
+                        <div class="card-body ">
+                              <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="nomeSalaInput">
                                     <font color="#FF0000"></font> Nome:
                                 </label>
                                 <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex. Auditório 1" >
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
                                 <label for="numSalaInput">
                                     Número:
                                 </label>
                                 <input type="number" class="form-control" id="numero" name="numero" placeholder="Ex. 1241">
                             </div>
-
-                            <div class="form-group">
-                                <label for="blocSalaInput">
-                                    <font color="#FF0000">*</font> Bloco:
-                                </label>
-                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1" required> 
                             </div>
+                            
+                        
 
-                           <div class="form-group">
+                           <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="andarSalaInput">
                                     <font color="#FF0000">*</font> Andar:
                                 </label>
                                 <input type="number" class="form-control" id="andar" name="andar" placeholder="Ex. 3" required> 
                             </div>
-
-
-                            <div class="form-group">
+                            
+                            <div class="form-group c  ol-sm-12 col-md-6 col-lg-5">
                                 <label for="capSalaInput">
                                     <font color="#FF0000"></font> Capacidade:
                                 </label>
                                 <input type="number" class="form-control" id="capacidade" name="capacidade" placeholder="10"> 
 
                             </div>
-                          
+                           </div>
+                               <div class="form-group">
+                                <label for="blocSalaInput">
+                                    <font color="#FF0000">*</font> Bloco:
+                                </label>
+                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1" required> 
+                            </div>
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">
