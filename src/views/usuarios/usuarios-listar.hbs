@@ -78,14 +78,14 @@
                                             <div class="d-flex justify-content-between">
 
                                                 <a  style="margin-right: 2px"
-                                                    href='/usuarios/{{id}}'
+                                                    href='/usuarios/dados/{{id}}'
                                                     class='fa fa-solid fa-eye'
                                                 /></a>
                                                 <a class="fa fa-solid fa-trash" id="removerUser_{{nomeCompleto}}_{{id}}"
                                                 data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)" href="#">
                                                 </a>
                                                 <a  style="margin-right: 2px"
-                                                    href='/linhasdepesquisa/editar/{{id}}'
+                                                    href='/usuarios/editar/{{id}}'
                                                     class='fa fa-solid fa-pen'
                                                 /></a>
                                             </div>
@@ -113,7 +113,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="tituloModal">Deseja realmente excluir o usuário </h5>
+                        <h5 class="modal-title" id="tituloModal"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -157,7 +157,7 @@
     function addLink(event) {
         const [nomeCompleto, id] = event.target.id.split("_").slice(1);
         const nome = `${nomeCompleto.split(' ')[0]} ${nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1]}`
-        document.getElementById("tituloModal").innerHTML = document.getElementById("tituloModal").innerHTML + nome + "?";
+        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir o usuário " + nome + "?";
         const formDelete = document.getElementById("postDelete")
         formDelete.setAttribute('action', `/usuarios/deletar/${id}`);
     }
