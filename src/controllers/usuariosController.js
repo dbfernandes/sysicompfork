@@ -110,4 +110,32 @@ const listar = async (req, res) => {
         })
     }
 }
-export default { adicionar, listar, deletar}
+
+const visualizar = async (req, res) => {
+    try {
+        const usuario = await Usuario.findByPk(req.params.id, {
+            atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape", 
+            "dataIngresso", "endereco", "telcelular", "telresidencial", "unidade", 
+            "turno", "idLattes", "createdAt"]
+        })
+        const usuarioDict = usuario.get()
+        usuarioDict["perfil"] = usuario.perfis()
+        usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
+            timeZone: 'America/Manaus',
+        }).slice(0,10);
+        return res.render("usuarios/usuario-visualizar", {
+            usuario: usuarioDict,
+            csrfToken: req.csrfToken(),
+            nome: req.session.nome
+        })
+    } catch (error) { 
+        console.log(error)
+        return res.redirect(
+            criarURL('/usuarios/listar', {
+                message: 'Não foi possível visualizar este usuário.',
+                type: 'danger',
+            })
+          );
+    }
+}
+export default { adicionar, listar, deletar, visualizar}

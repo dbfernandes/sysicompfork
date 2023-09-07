@@ -6,5 +6,6 @@ const { Usuario } = require('../models')
 router.all('/adicionar', usurarioRouter.adicionar)
 router.get('/listar', usurarioRouter.listar) 
 router.all('/deletar/:id', usurarioRouter.deletar)
+router.get('/dados/:id', usurarioRouter.visualizar)
 
 export default router

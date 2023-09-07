@@ -1,0 +1,160 @@
+{{> header}}
+
+{{> sidebar module='usuarios' page='usuarios-dados' }}
+
+<div class="content-wrapper">
+
+
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col">
+          <ol class="breadcrumb float-md-right">
+            <li class="breadcrumb-item">
+              <a href="/usuarios/listar">Usuários</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Dados
+            </li>
+          </ol>
+          <h1>{{usuario.nomeCompleto}}</h1>
+        </div>
+      </div>
+      <div class="row mb-4">
+          <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+              <a class="btn btn-warning color-white" href="/usuarios/listar">
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar
+              </a>
+              <a type="button" class="btn btn-success" href="/usuarios/editar/{{usuario.id}}">
+                  <i class="fa fa-solid fa-pen color-white"></i>
+                  Editar Usuário
+              </a>
+          </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-info-circle"></i>
+            Dados do Usuário
+          </h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="example2" class="table table-bordered table-hover">
+            <tbody>
+              <tr>
+                <th class="col-3">Nome Completo</th>
+                <td>{{usuario.nomeCompleto}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">CPF</th>
+                <td>{{usuario.cpf}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Email</th>
+                <td>{{usuario.email}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Perfil(s)</th>
+                <td>{{usuario.perfil}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Data de Criação</th>
+                <td>{{usuario.createdAt}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-info-circle"></i>
+            Dados Pessoais
+          </h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="example2" class="table table-bordered table-hover">
+            <tbody>
+              <tr>
+                <th class="col-3">Endereço</th>
+                <td>{{usuario.endereco}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Telefone Residencial</th>
+                <td>{{usuario.telresidencial}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Telefone Celular</th>
+                <td>{{usuario.telcelular}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-info-circle"></i>
+            Dados Profissionais
+          </h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="example2" class="table table-bordered table-hover">
+            <tbody>
+              <tr>
+                <th class="col-3">SIAPE</th>
+                <td>{{usuario.siape}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Data de Ingresso</th>
+                <td>{{usuario.dataIngresso}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Unidade</th>
+                <td>{{usuario.unidade}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Turno</th>
+                <td>{{usuario.turno}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+
+  
+  </section>
+</div>
+
+
+{{> footer}}
