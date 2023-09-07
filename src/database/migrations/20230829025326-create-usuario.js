@@ -17,7 +17,7 @@ module.exports = {
       cpf: {
         type: Sequelize.STRING(255),
         allowNull: false,
-        unique: "cpf"
+        unique: true
       },
       senhaHash: {
         type: Sequelize.STRING(255),
@@ -26,7 +26,7 @@ module.exports = {
       tokenResetSenha: {
         type: Sequelize.STRING(255),
         allowNull: true,
-        unique: "tokenResetSenha"
+        unique: true
       },
       validadeTokenResetSenha: {
         type: Sequelize.DATE,
@@ -35,12 +35,12 @@ module.exports = {
       email: {
         type: Sequelize.STRING(255),
         allowNull: false,
-        unique: "email"
+        unique: true
       },
       status: {
         type: Sequelize.SMALLINT,
         allowNull: false,
-        defaultValue: 10
+        defaultValue: 1
       },
       administrador: {
         type: Sequelize.CHAR(1),

@@ -20,21 +20,33 @@ module.exports = (sequelize, DataTypes) => {
     },
     nomeCompleto: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
     cpf: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: "cpf"
+      unique: { msg: 'Número de CPF já cadastrado' },
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
     senhaHash: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
     tokenResetSenha: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      unique: "tokenResetSenha"
+      unique: true
     },
     validadeTokenResetSenha: {
       type: DataTypes.DATE,
@@ -43,12 +55,16 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: "email"
+      unique: { msg: 'E-mail já cadastrado' },
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 10
+      defaultValue: 1,
     },
     administrador: {
       type: DataTypes.CHAR(1),

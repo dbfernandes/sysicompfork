@@ -15,18 +15,16 @@
                     </ol>
                 </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-1 min-width-button">
-                    <button type="button" class="btn btn-secondary" onclick="history.go(-1);">
-                        <i class="fa fa-arrow-left color-white"></i>
+            <div class="row mb-4">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </button>
-                </div>
-                <div class="col-sm-4 col-md-3 col-lg-2 min-width-button">
-                    <a type="button" class="btn btn-primary" href="/usuarios/adicionar">
-                        <i class="fas fa-user-plus color-white"></i>
-                        Adicionar Usuário
                     </a>
+                    <a class="btn btn-primary color-white" href="/usuarios/adicionar">
+                        <i class="fas fa-plus"></i>
+                        Adicionar
+                    </a>      
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -35,15 +33,20 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+            {{#if message}}
+                <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
+                    {{message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {{/if}}
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Usuários</h3>
-                        </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example2" class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -56,6 +59,7 @@
                                 </thead>
                                 <tbody>
                                     {{#each usuarios}}
+                                    {{#if status}} 
                                     <tr>
                                         <td> {{nomeCompleto}} </td>
                                         <td> {{cpf}} </td>
@@ -64,6 +68,7 @@
                                             <div class="d-flex justify-content-center">
                                                 {{#if telcelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular" title="{{telcelular}}"></i>{{/if}}     
                                                 {{#if telresidencial}} <i id="{{id}}f" class="fa fa-phone fa-lg fixo" title="{{telresidencial}}"></i>{{/if}}
+                                                
                                             </div>
                                         </td>
                                         <td>
@@ -76,10 +81,9 @@
                                                     href='/usuarios/{{id}}'
                                                     class='fa fa-solid fa-eye'
                                                 /></a>
-                                                <a  style="margin-right: 2px"
-                                                    href='/usuarios/remover/{{id}}'
-                                                    class='fa fa-solid fa-trash'
-                                                ></a>
+                                                <a class="fa fa-solid fa-trash" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)" href="#">
+                                                </a>
                                                 <a  style="margin-right: 2px"
                                                     href='/linhasdepesquisa/editar/{{id}}'
                                                     class='fa fa-solid fa-pen'
@@ -87,6 +91,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    {{/if}}
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -103,7 +108,33 @@
     </section>
     <!-- /.content -->
 </div>
+<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal">Deseja realmente excluir o usuário </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+                    </div>
+                    <form name="postDelete" id="postDelete" method="POST">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    </form>
+                </div>
+            </div>
+        </div>
+<head>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
+  <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+</head>
 <script>
     // Adiciona margem entre os icones de telefone caso haja 2 números de contato
     const celulares = document.getElementsByClassName("celular")
@@ -111,6 +142,25 @@
         const id = cel.id.slice(0,-1)
         if (document.getElementById(id+"f")) cel.className = cel.className + " mr-2"
     }
-    
+    document.addEventListener("DOMContentLoaded", function(event) {
+         $("#example2").DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            },
+         });
+    });
+
+    function deleteUser(){
+        document.postDelete.submit();
+    }
+
+    function addLink(event) {
+        const [nomeCompleto, id] = event.target.id.split("_").slice(1);
+        const nome = `${nomeCompleto.split(' ')[0]} ${nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1]}`
+        document.getElementById("tituloModal").innerHTML = document.getElementById("tituloModal").innerHTML + nome + "?";
+        const formDelete = document.getElementById("postDelete")
+        formDelete.setAttribute('action', `/usuarios/deletar/${id}`);
+    }
+
 </script>
 {{> footer}}
