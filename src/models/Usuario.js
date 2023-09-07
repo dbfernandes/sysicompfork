@@ -67,20 +67,24 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 1,
     },
     administrador: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     coordenador: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     secretaria: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     professor: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     siape: {
       type: DataTypes.STRING(10),
@@ -94,11 +98,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    telcelular: {
+    telCelular: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    telresidencial: {
+    telResidencial: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
@@ -167,10 +171,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Usuario.prototype.perfis = function () {
     let perfis = ''
-    if(this.administrador === '1') perfis += ' Administrador |'
-    if(this.coordenador === '1') perfis += ' Coordenador |'
-    if(this.professor === '1') perfis += ' Professor |'
-    if(this.secretaria === '1') perfis += ' Secretaria'
+    if(this.administrador === 1) perfis += ' Administrador |'
+    if(this.coordenador === 1) perfis += ' Coordenador |'
+    if(this.professor === 1) perfis += ' Professor |'
+    if(this.secretaria === 1) perfis += ' Secretaria'
 
     if(perfis.endsWith(' |'))
         perfis = perfis.substring(0, perfis.length-2)

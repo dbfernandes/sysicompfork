@@ -259,6 +259,9 @@
                     repetirSenha: true,
                     minlength: 6,
                 },
+                siape: {
+                    maxlength: 10,
+                }
             },
             messages: {
                 nomeCompleto: {
@@ -281,7 +284,10 @@
                     required: '"Senha" não pode ficar em branco',
                     repetirSenha: '"Repetir senha" deve ser igual ao campo "Senha"',
                     minlength: '"Senha" deve conter pelo menos 6 caracteres',
-                }
+                }, 
+                siape: {
+                    maxlength: '"Siape" deve conter no máximo 10 caracteres',
+                }, 
             },
             errorElement: 'span',
             errorPlacement: function (error, element) {

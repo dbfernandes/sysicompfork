@@ -43,20 +43,24 @@ module.exports = {
         defaultValue: 1
       },
       administrador: {
-        type: Sequelize.CHAR(1),
-        allowNull: true
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: 0
       },
       coordenador: {
-        type: Sequelize.CHAR(1),
-        allowNull: true
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: 0
       },
       secretaria: {
-        type: Sequelize.CHAR(1),
-        allowNull: true
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: 0
       },
       professor: {
-        type: Sequelize.CHAR(1),
-        allowNull: true
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: 0
       },
       siape: {
         type: Sequelize.STRING(10),
@@ -70,11 +74,11 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true
       },
-      telcelular: {
+      telCelular: {
         type: Sequelize.STRING(20),
         allowNull: true
       },
-      telresidencial: {
+      telResidencial: {
         type: Sequelize.STRING(20),
         allowNull: true
       },
