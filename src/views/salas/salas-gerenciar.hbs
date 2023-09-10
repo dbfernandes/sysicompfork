@@ -37,13 +37,14 @@
                      
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example2" class="table table-striped table-bordered table-hover">
                                 <thead>
                                      <tr style="text-align: center;"> 
                                         <th>Nome</th>
                                         <th>Número</th>
                                         <th>Bloco</th>
                                         <th>Andar</th>
+                                        <th>Capacidade</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -54,16 +55,18 @@
                                         <td> {{numero}} </td>
                                         <td> {{bloco}} </td>
                                         <td> {{andar}} </td>
+                                         <td> {{capacidade}} </td>
                                         <td style="text-align: center;"> 
                                            
 
-                                              <a class="btn btn-primary btn-sm" href="/salas/editar/{{id}}">
-                                                <i class="fas fa-pencil-alt"></i>
+                                              <a  class='fa fa-solid fa-pen' style="color: blue;"  href="/salas/editar/{{id}}">
+                                            
+                                             </a> &nbsp
+                                              <a class="fa fa-solid fa-trash"  id="{{id}}"
+                                                data-toggle="modal" style="color: red;" data-target="#removerUsuario" onclick="addLink(event)" href="#">
+                                               
                                             </a> 
                                                                                           
-                                               <a data-id="{{id}}" data-bloco="{{bloco}}"  data-andar="{{andar}}" data-csrf="{{csrf}}" data-token="{{token}}" class="btn btn-danger btn-sm" onclick="deleteSala(this)">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
                                                                               
                                     </tr>
 
@@ -84,35 +87,43 @@
         <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+
+    <div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+                    </div>
+                    <form name="postDelete" id="postDelete" method="POST">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    </form>
+                </div>
+            </div>
+        </div>
 </div>
 
 
 <script>
-function deleteSala(element){
-    var salaId = element.getAttribute("data-id");
-    var token  = element.getAttribute("data-token");
-    var csrf  = element.getAttribute("data-csrf");
-
- 
-    let r = confirm("Deseja realmente excluir a sala " + element.getAttribute('data-andar') + " do bloco " + element.getAttribute('data-bloco') + "?");
-    if (r == true) {
-        var url = '/salas/excluir/' + salaId;
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            headers: {
-        'csrf-token': csrf // Inclua o token CSRF como um cabeçalho personalizado
-  },
-            success: function(result){
-                alert('Sala excluído com sucesso!');
-                location.reload();
-            },
-            error: function(result){
-                alert('Erro ao excluir sala!');
-            }
-        });
+ function deleteUser(){
+        document.postDelete.submit();
     }
-}
+
+    function addLink(event) {
+        const id = event.target.id
+        console.log(id)
+        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Sala";
+        const formDelete = document.getElementById("postDelete")
+        formDelete.setAttribute('action', `/salas/excluir/${id}`);
+    }
+
      
 </script>
 

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Salas.init({
     nome: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     capacidade: {
       type: DataTypes.INTEGER,

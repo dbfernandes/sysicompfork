@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.all('/adicionar', salasController.adicionar);
 
-router.delete('/excluir/:id', salasController.excluir);
+router.post('/excluir/:id', salasController.excluir);
 
 router.get('/gerenciar', salasController.gerenciar);
 

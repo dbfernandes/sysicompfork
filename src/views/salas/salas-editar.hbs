@@ -33,51 +33,52 @@
                 <div class="card card-light">
                     <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
                         <input type="hidden" name="_csrf" value="{{csrf}}"/> 
-                        <div class="card-body">
+                        <div class="card-body ">
                               <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                           
-                                <label for="nomeSalaInput">
-                                    <font color="#FF0000"></font> Nome:
+                                <label for="nome">
+                                    <font color="#FF0000">*</font> Nome:
                                 </label>
-                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome da sala" value="{{sala.nome}}" >
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex. Auditório 1" value="{{sala.nome}}" required>
                             </div>
 
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                                <label for="numSalaInput">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
+                                <label for="numero">
                                     Número:
                                 </label>
-                                <input type="number" class="form-control" id="numero" name="numero" placeholder="Ex. 1241" value="{{sala.numero}}" >
+                                <input type="number" class="form-control" id="numero" name="numero"  min="0" max = '100' value="{{sala.numero}}" placeholder="Ex. 12">
                             </div>
-
                             </div>
-                           
+                            
+                        
 
                            <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                                <label for="andarSalaInput">
+                                <label for="andar">
                                     <font color="#FF0000">*</font> Andar:
                                 </label>
-                                <input type="number" class="form-control" id="andar" name="andar" placeholder="Ex. 3" value="{{sala.andar}}" required> 
+                            <input type="number" class="form-control" id="andar" name="andar"  min="1" max = '3'value="{{sala.andar}}"   value="1"> 
+
                             </div>
-
-
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                                <label for="capSalaInput">
+                            
+                            <div class="form-group c  ol-sm-12 col-md-6 col-lg-5">
+                                <label for="capacidade">
                                     <font color="#FF0000"></font> Capacidade:
                                 </label>
-                                <input type="number" class="form-control" id="capacidade" name="capacidade" value="{{sala.capacidade}}"  placeholder="10"> 
+                                <input type="number" class="form-control" id="capacidade" name="capacidade" min="0" max = '100' value="{{sala.capacidade}}"  placeholder="Ex. 30"> 
 
                             </div>
-                            </div>
-
-                             <div class="form-group">
-                                <label for="blocSalaInput">
+                           </div>
+                               <div class="form-group">
+                                <label for="bloco">
                                     <font color="#FF0000">*</font> Bloco:
                                 </label>
-                                <input type="text" class="form-control" id="bloco" name="bloco" placeholder="Ex. IComp 1"  value="{{sala.bloco}}" required> 
-                            </div>
-                          
+                                <select class="form-control" id="bloco" name="bloco"  required>
+                                    <option  value="Icomp Tech">Icomp Tech </option>
+                                    <option value="IComp 1">IComp 1</option>
+                                    <option value="IComp 2">IComp 1</option>
+                                    <option value="IComp 3">IComp 3</option>
+                                </select>                            </div>
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">

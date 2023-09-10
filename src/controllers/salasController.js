@@ -9,18 +9,20 @@ const adicionar = async (req, res) => {
 
     }else if( req.method === 'POST'){
         try{
-            const {
-                andar, bloco, nome,
+            let {
+                andar, bloco, nome, numero, capacidade
             } = req.body;
 
-            if (!andar || !bloco) {
+            if (!andar || !bloco || !nome) {
                 return res.status(400).json({
                     error: 'Dados incompletos ou mal formatados'
                 });
             }
-     
-            let numero = parseInt(!req.body.numero == ''? 0 : req.body.numero,10)
-            let capacidade = parseInt(!req.body.capacidade == ''? 0 : req.body.capacidade,10)
+            
+            console.log(numero)
+            console.log(capacidade)
+            numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
+            capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
             let responseError = null;
         
             const sala = await Salas
@@ -58,8 +60,8 @@ const excluir = async (req, res) => {
             throw new Error('Sala não encontrado!');
 
         const sala_apagada = await Salas.destroy({where: {id: id}});
-        res.status(200).json({sala_apagada,message:'Sala removido com sucesso!'});  
-      
+        res.redirect('/salas/gerenciar')
+     
     }catch(e){
         console.log(e);
         res.status(500).json({error: e});
@@ -71,8 +73,7 @@ const gerenciar = async (req, res) => {
     res.render('salas/salas-gerenciar', { 
         salas: salas.map(sala => sala.toJSON()),
         nome: req.session.nome,
-        toke: req.session.token,
-        csrf: req.csrfToken(),  
+        csrfToken: req.csrfToken(),  
       
     })
 }
