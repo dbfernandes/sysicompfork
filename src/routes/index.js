@@ -30,6 +30,8 @@ router.get('/recuperar-senha',autenticacaoController.recuperar_senha )
 router.post('/recuperar-senha',autenticacaoController.recuperar_senha)
 router.get('/logout', autenticacaoController.logout)
 
+router.use("/selecaoppgi", selecaoppgiRouter);
+
 router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
@@ -37,7 +39,6 @@ router.use("/inicio", inicioRoutes);
 
 router.use("/usuarios", usuariosRoutes);
 router.use("/projetos", projetosRoutes);
-router.use("/selecaoppgi", selecaoppgiRouter);
 router.use("/edital", editalRouter);
 router.use("/linhasdepesquisa", linhasDePesquisaRouter);
 router.use('/salas', salasRoutes);

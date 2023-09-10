@@ -1,3 +1,5 @@
+import { genSalt, hash } from "bcrypt";
+
 const { Candidate } = require("../models");
 
 class CandidateService {
@@ -6,6 +8,12 @@ class CandidateService {
         password,
         editalNumber
     }) {
+
+        const step = 0;
+        const salt = await genSalt(10);
+        const passwordHash = await hash(password, salt);
+
+
         let candidate = await Candidate.findOne({
             where: {
                 email,
@@ -23,11 +31,13 @@ class CandidateService {
         candidate = await Candidate.create({
             email: email,
             password: password,
+            passwordHash: passwordHash,
             editalId: editalNumber,
+            currentStep: step,
             status: "created"
         }).catch(err => {
             console.log(`[ERROR] Criar de candidato: ${err}`)
-            throw new Error("Não foi possivel criar o candidato");
+            throw new Error("Não foi possivel criar o candidato erro no create");
         })
 
         delete candidate.password

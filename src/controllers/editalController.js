@@ -9,8 +9,10 @@ const addEditalSelecao = async (req, res) => {
       case "GET":
          console.log(req.session.nome);
          return res.render("edital/addNewSelecao", {
+            csrfToken: req.csrfToken(),
             nome: req.session.nome,
             ...locals,
+             
          });
 
       case "POST":
@@ -28,7 +30,10 @@ const addEditalSelecao = async (req, res) => {
          } = await req.body;
 
          // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
-
+         console.log("----------------------------------------------")
+         console.log(req.body);
+         
+         console.log("----------------------------------------------")
          const selecao = await EditalService.create({
             number,
             documento,

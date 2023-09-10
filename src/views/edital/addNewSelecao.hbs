@@ -36,17 +36,19 @@
 
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <form role="form" id="adicionarSelecaoForm">
+                                <form role="form" action="/edital/addEdital" method="post"  id="adicionarSelecaoForm">
+                                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                                     <div class="form-group">
                                         <div class="form-row">
                                             <font color="#FF0000">*</font>
                                             <label> Número do edital:</label>
                                             <input type="text" class="form-control edital" id="number"
-                                                placeholder="Insira o numero de Edital" required>
+                                                placeholder="Insira o numero de Edital" name="number" required>
                                             <div class="hint-block">
                                                 Ex.: 001-2022, sendo o
                                                 <b>'001'</b> o número do
-                                                edital e <b>'2022'</b> o ano</div>
+                                                edital e <b>'2022'</b> o ano
+                                            </div>
                                         </div>
                                     </div>
 
@@ -63,7 +65,7 @@
                                                         <i class="fa fa-globe"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control" id="documento" placeholder="URL"
+                                                <input type="text" class="form-control" id="documento" name="documento" placeholder="URL"
                                                     required>
                                             </div>
                                             <div class="hint-block">Ex.: http://www.propesp.ufam.edu.br</div>
@@ -82,7 +84,7 @@
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
                                                     </div>
-                                                    <input type="date" class="form-control" placeholder="Data de Início"
+                                                    <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
                                                         data-inputmask-inputformat="dd/mm/yyyy" required
                                                         id="data_inicio">
                                                 </div>
@@ -97,7 +99,7 @@
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
                                                     </div>
-                                                    <input type="date" class="form-control" placeholder="Data de Fim"
+                                                    <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
                                                         required id="data_fim">
                                                 </div>
                                             </div>
@@ -148,7 +150,7 @@
                                             <font color="#FF0000">*</font>
                                             <label> Vagas Regulares para
                                                 Mestrado:</label>
-                                            <input type="number" class="form-control "
+                                            <input type="number" name="vaga_regular_mestrado" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
                                                 id="vaga_regular_mestrado" min="0">
 
@@ -158,7 +160,7 @@
 
                                             <font color="#FF0000">*</font> <label> Vagas Suplementares para
                                                 Mestrado:</label>
-                                            <input type="number" class="form-control "
+                                            <input type="number" class="form-control " name="vaga_suplementar_mestrado"
                                                 placeholder="Vagas Regulares para Mestrado" required
                                                 id="vaga_suplementar_mestrado" min="0">
 
@@ -180,7 +182,7 @@
                                             <div class="col-sm-6">
                                                 <font color="#FF0000">*</font>
                                                 <label> Vagas Regulares para Doutarado:</label>
-                                                <input type="number" class="form-control "
+                                                <input type="number" name="vaga_regular_doutorado" class="form-control "
                                                     placeholder="Vagas Regulares para Doutorado" required
                                                     id="vaga_regular_doutorado" min="0">
                                             </div>
@@ -189,7 +191,7 @@
 
                                                 <font color="#FF0000">*</font> <label> Vagas Suplementares para
                                                     Doutorado:</label>
-                                                <input type="number" class="form-control "
+                                                <input type="number" class="form-control " name="vaga_suplementar_doutorado"
                                                     placeholder="Vagas Regulares para Doutorado" required
                                                     id="vaga_suplementar_doutorado" min="0" doutorado-input>
                                             </div>
@@ -317,10 +319,10 @@
 
     function getValueFromForm() {
         const dataFromForm = Array.from(document.querySelectorAll('#adicionarSelecaoForm input')).reduce((acc, input) =>
-            ({
-                ...acc,
-                [input.id]: input.value
-            }), {});
+        ({
+            ...acc,
+            [input.id]: input.value
+        }), {});
         dataFromForm.Mestrado = $('#Mestrado').is(':checked');
         dataFromForm.Doutorado = $('#Doutorado').is(':checked');
         dataFromForm.carta_recomendacao = $('#carta_recomendacao').is(':checked');
@@ -373,7 +375,7 @@
                         }
                     });
                 },
-                error: function (data) {}
+                error: function (data) { }
             });
         }
 
