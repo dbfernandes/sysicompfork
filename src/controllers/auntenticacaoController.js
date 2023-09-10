@@ -1,7 +1,6 @@
 //import { Usuario } from '../models';
 const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 
 const login = async (req, res) => {
 
@@ -35,8 +34,7 @@ const login = async (req, res) => {
                     message: "Senha inválida", type: 'danger'
                 })
             }
-            req.session.uid = usuario.id
-            req.session.nome = `${usuario.nomeCompleto.split(' ')[0]} ${usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1]}`
+
             return res.redirect('/inicio')
         }catch(err){
             console.log(err);

@@ -7,7 +7,7 @@ import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
-import salasRoutes from './salas';
+import salasRoutes from './salas.routes';
 import autenticacaoController from '../controllers/auntenticacaoController';
 
 import horasComplementaresRoutes from './horasComplementares.routes'
@@ -33,13 +33,9 @@ router.get('/logout', autenticacaoController.logout)
 router.use("/selecaoppgi", selecaoppgiRouter);
 
 router.use(autenticacaoController.verificar)
-//
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);
-
-
-//router.use("/", autenticacaoRoutes);
 
 router.use("/usuarios", usuariosRoutes);
 router.use("/projetos", projetosRoutes);

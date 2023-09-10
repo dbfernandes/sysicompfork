@@ -12,6 +12,7 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 
 
+
 dotenv.config();
 const app = express()
 
@@ -39,7 +40,7 @@ app.use(session({
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(morgan('combined'))
+//app.use(morgan('combined'))
 app.use(csrf({ cookie: true }));
 
 app.use(
