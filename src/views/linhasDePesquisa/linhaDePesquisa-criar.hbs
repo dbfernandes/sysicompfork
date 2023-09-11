@@ -1,0 +1,71 @@
+{{> header}}
+{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
+<style>
+	/* Style your page here  */
+  .links-container {
+    display: flex;
+    justify-content: space-around;
+  }
+</style>
+
+<main class="content-wrapper">
+	<section class="content-header">
+		<div class="container-fluid">
+
+			<div class="row mb-2">
+				<div class="col-sm-9">
+					<h1>Linhas de Pesquisa</h1>
+				</div>
+				<div class="col-sm-3">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item">Linhas de Pesquisa</li>
+						<li class="breadcrumb-item active">Listar</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3 col-md-2 col-lg-1">
+					<buttontype="button" class="btn btn-block btn-secondary" onclick="goHome()">
+						<i class="fa fa-arrow-left color-white"></i>
+						Voltar
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card card-primary">
+						<div class="card-header">
+							<h3 class="card-title">Linhas de Pesquisa Existentes</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+{{!-- <script>
+	function goHome() {
+		window.location.href = "{{url}}/inicio";
+	}
+
+	function defineColor() {
+		const colorFields = document.querySelectorAll('.color-field');
+
+		colorFields.forEach((element) => {
+			const color = element.classList.item(1);
+
+			element.style.backgroundColor = color;
+		});
+	}
+
+	window.onload =	defineColor;
+
+</script> --}}
+{{> footer}}
