@@ -14,7 +14,7 @@ const listar = async (_req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle, ...locals });
+    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle});
 };
 
 const buscar = async (req, res) => {
@@ -28,7 +28,18 @@ const buscar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle, ...locals });
+    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle});
 };
 
-export default { listar, buscar };
+const criar = async (req, res) => {
+  
+  const { nome, sigla, icone, cor } = req.body;
+
+  const result = await linhasDePesquisaService.create({ nome, icone, sigla, cor });
+
+  if (!result) return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
+
+  return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar', { nome, sigla, icone, cor, pageTitle });
+};
+
+export default { listar, buscar, criar};
