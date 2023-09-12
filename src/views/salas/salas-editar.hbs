@@ -92,36 +92,4 @@
 </div>
 
 
-
-<script>
-    
-    function submitForm(id) {
-        const dataFromForm = $('#editSalaForm').serializeArray();
-      
-        $.ajax({
-            url: "salas/editar/" + id,
-            type: 'PUT',
-            data: dataFromForm,
-            success: function (data) {
-                
-                alert("Form successful update!");
-                window.location.href = '/salas/gereniar'
-                
-                $.validator.setDefaults({
-                    submitHandler: function () {
-                    },
-                    onfocusout: function (el) {
-                        this.element(el);
-                    },
-                });
-            },
-            error: function (data) {
-                alert("Erro ao atualizar sala!");
-                console.log(data);
-            }
-        });
-        
-    }
-
-</script>
 {{> footer}}

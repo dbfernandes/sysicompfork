@@ -34,6 +34,10 @@ const login = async (req, res) => {
                     message: "Senha inválida", type: 'danger'
                 })
             }
+            req.session.nome = `${usuario.nomeCompleto.split(' ')[0]} ${usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1]}`
+
+
+            req.session.uid = usuario.id
 
             return res.redirect('/inicio')
         }catch(err){

@@ -1,0 +1,121 @@
+{{> header}}
+{{> sidebar module='reservas' page='reservas-adicionar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-3">
+                <div class="col-sm-9">
+                    <h1>Adicionar Reserva</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a
+                                href="/reservas/gerenciar">Reservas</a></li>
+                        <li class="breadcrumb-item active">Adicionar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-block btn-secondary"
+                        href="/reservas/gerenciar">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="col-md-7 ">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Nova Sala</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form id="formAdicionarSala" method="POST"
+                    action="/reservas/adicionar">
+                    <input type="hidden" name="_csrf" value="{{csrf}}" />
+                    <input type="hidden" name="idSolicitante" value="{{id}}" />
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-8">
+                                <label for="idSala">
+                                    <font color="#FF0000">*</font> Sala:
+                                </label>
+                                <select class="form-control" id="idSala"
+                                    name="idSala" required>
+                                    {{#each salas}}
+                                        <option value="{{id}}">{{nome}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-8">
+                                <label for="atividade">
+                                    <font color="#FF0000">*</font> Atividade:
+                                </label>
+                                <input type="text" class="form-control"
+                                    id="atividade" name="atividade" required
+                                    placeholder="Aula">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                                <label for="dataInicio">
+                                    <font color="#FF0000">*</font> Data Inicio:
+                                </label>
+                                <input type="date" class="form-control"
+                                    id="dataInicio" name="dataInicio" required>
+
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                                <label for="horaInicio">
+                                    <font color="#FF0000">*</font> Hora Inicio:
+                                </label>
+                                <input type="time" class="form-control"
+                                    id="horaInicio" name="horaInicio" required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                                <label for="dataTermino">
+                                    <font color="#FF0000">*</font> Data Termino:
+                                </label>
+                                <input type="date" class="form-control"
+                                    id="dataTermino" name="dataTermino" required>
+
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                                <label for="horaTermino">
+                                    <font color="#FF0000">*</font> Hora Termino:
+                                </label>
+                                <input type="time" class="form-control"
+                                    id="horaTermino" name="horaTermino" required>
+
+                            </div> </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Adiconar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.card -->
+    </section>
+</div>
+
+{{> footer}}
