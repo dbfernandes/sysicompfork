@@ -32,14 +32,16 @@ const buscar = async (req, res) => {
 };
 
 const criar = async (req, res) => {
+  if (req.method === 'GET') {
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ pageTitle, csrfToken: req.csrfToken() });
+  } else {
+    const { nome, sigla, icone, cor } = req.body;
   
-  const { nome, sigla, icone, cor } = req.body;
-
-  const result = await linhasDePesquisaService.create({ nome, icone, sigla, cor });
-
-  if (!result) return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
-
-  return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar', { nome, sigla, icone, cor, pageTitle });
+    const result = await linhasDePesquisaService.create({ nome, icone, sigla, cor });
+    
+    if (!result) return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ nome, icone, sigla, cor, pageTitle });
+  }
 };
 
 export default { listar, buscar, criar};
