@@ -6,6 +6,7 @@ router.get('/listar', linhasDePesquisaController.listar);
 
 router.get('/busca/:id', linhasDePesquisaController.buscar);
 
+router.get('/criar', linhasDePesquisaController.criar);
 router.post('/criar', linhasDePesquisaController.criar);
 
 export default router;
