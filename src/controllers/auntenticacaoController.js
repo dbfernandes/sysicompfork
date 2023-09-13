@@ -25,7 +25,13 @@ const login = async (req, res) => {
                     csrfToken: req.csrfToken(),
                     message: "Usuário não cadastrado", type: 'danger'
                 })
+            }else if(usuario.status == 0){
+                return res.render('autenticacao/login', {
+                    csrfToken: req.csrfToken(),
+                    message: "Usuário bloqueado. Contate a administração.", type: 'danger'
+                })
             }
+
             let isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash)
             if (!isSenhaCorreta){
                 console.log("testeoi")
@@ -34,7 +40,9 @@ const login = async (req, res) => {
                     message: "Senha inválida", type: 'danger'
                 })
             }
-            req.session.nome = `${usuario.nomeCompleto.split(' ')[0]} ${usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1]}`
+            req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1 ? 
+            " "+usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1] : 
+            ""}`
 
 
             req.session.uid = usuario.id

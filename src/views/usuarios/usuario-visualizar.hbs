@@ -82,6 +82,10 @@
                 <th class="col-3">Data de Criação</th>
                 <td>{{usuario.createdAt}}</td>
               </tr>
+              <tr>
+                <th class="col-3">Status</th>
+                <td><span class="{{#if usuario.status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
