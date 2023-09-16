@@ -236,6 +236,24 @@
             return cpfValue.length === 11
         })
 
+        $.validator.addMethod("cpfVerificador", function (el){
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')    
+            var result = true
+            const arr = [9, 10]
+            arr.forEach(function(j){
+                var soma = 0, r, rep
+                rep = true
+                cpfValue.split("").splice(0,j).forEach(function(e, i){
+                    if(cpfValue.charAt(0) != e) rep = false 
+                    soma += parseInt(e) * ((j+2)-(i+1))
+                });
+                r = soma % 11
+                r = (r <2)?0:11-r
+                if(r != cpfValue.substring(j, j+1) || rep) result = false
+            });
+            return result
+        })
+
         $('#adicionarUsuarioForm').validate({
             rules: {
                 nomeCompleto: {
@@ -245,6 +263,7 @@
                 cpf: {
                     required: true,
                     cpfLength: true,
+                    cpfVerificador: true,
                 },
                 email: {
                     required: true,
@@ -271,6 +290,7 @@
                 cpf: {
                     required: '"CPF (Digite somente números)" não pode ficar em branco.',
                     cpfLength: '"CPF" deve ter 11 dígitos.',
+                    cpfVerificador: 'Insira um CPF válido.'
                 },
                 email: {
                     required: '"E-mail" não pode ficar em branco.',
@@ -308,6 +328,5 @@
         });
     }
 
-    
 </script>
 {{> footer}}

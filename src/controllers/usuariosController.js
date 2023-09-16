@@ -52,7 +52,7 @@ const adicionar = async (req, res) => {
                 csrfToken: req.csrfToken(),
                 errors: error.errors,
                 message:
-                'Não foi possível criar este usuário. Verifique os erros e tente novamente.',
+                'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
                 type: 'danger',
             });
 
@@ -76,7 +76,7 @@ const deletar = async (req, res)=> {
             })
             return res.redirect(
                 criarURL('/usuarios/listar', {
-                  message: 'Usuário excluído com sucesso!',
+                  message: 'Usuário bloqueado com sucesso!',
                   type: 'success',
                 })
               );
@@ -85,7 +85,37 @@ const deletar = async (req, res)=> {
             console.log(error)
             return res.redirect(
                 criarURL('/usuarios/listar', {
-                    message: 'Não foi possível excluir este usuário.',
+                    message: 'Não foi possível bloquear este usuário.',
+                    type: 'danger',
+                })
+              );
+        }
+    }
+
+    
+    
+
+}
+
+const restaurar = async (req, res)=> {
+    if (req.method === 'POST') {
+        try {
+            const usuario = await Usuario.findByPk(req.params.id)
+            await usuario.update({ 
+                status: 1,
+            })
+            return res.redirect(
+                criarURL('/usuarios/listar', {
+                  message: 'Usuário desbloqueado com sucesso!',
+                  type: 'success',
+                })
+              );
+            
+        }catch(error){
+            console.log(error)
+            return res.redirect(
+                criarURL('/usuarios/listar', {
+                    message: 'Não foi possível desbloquear este usuário.',
                     type: 'danger',
                 })
               );
@@ -215,7 +245,7 @@ const editar = async (req, res) => {
                     usuario: dados,
                     csrfToken: req.csrfToken(),
                     nome: req.session.nome,
-                    message: 'Não foi possível editar este usuário. Verifique os erros e tente novamente.',
+                    message: 'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
                     type: 'danger',
                     errors: error.errors,
                 })
@@ -230,7 +260,7 @@ const editar = async (req, res) => {
             ));
         }
     }
-export default { adicionar, listar, deletar, visualizar, editar}
+export default { adicionar, listar, deletar, visualizar, editar, restaurar}
 
 
 

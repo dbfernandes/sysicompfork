@@ -22,9 +22,25 @@
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
+                    {{#if usuario.status}}
+                    <a class="btn btn-danger color-white" href="#"  id="removerUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
+                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
+                        <i class="fas fa-user-lock"></i>
+                        Bloquear
+                    </a>
+                    {{else}}
+                    <a class="btn btn-success color-white" href="#"  id="desbloquearUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
+                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
+                        <i class="fas fa-unlock"></i>
+                        Desbloquear
+                    </a>
+                    {{/if}}
                 </div>
             </div>
         </div><!-- /.container-fluid -->
+        <form name="postDeleteOnEdit" id="postDeleteOnEdit" method="POST">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        </form>
     </section>
 
     <section class="content">
@@ -239,7 +255,26 @@
         <!-- /.card -->
     </section>
 </div>
-
+<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal2"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+                    </div>
+                    <form name="postDelete" id="postDelete" method="POST">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    </form>
+                </div>
+            </div>
+        </div>
 <script>
 
     function usuariosAdicionarPage() {
@@ -252,6 +287,24 @@
             return cpfValue.length === 11
         })
 
+         $.validator.addMethod("cpfVerificador", function (el){
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')    
+            var result = true
+            const arr = [9, 10]
+            arr.forEach(function(j){
+                var soma = 0, r, rep
+                rep = true
+                cpfValue.split("").splice(0,j).forEach(function(e, i){
+                    if(cpfValue.charAt(0) != e) rep = false 
+                    soma += parseInt(e) * ((j+2)-(i+1))
+                });
+                r = soma % 11
+                r = (r <2)?0:11-r
+                if(r != cpfValue.substring(j, j+1) || rep) result = false
+            });
+            return result
+        })
+
         $('#editarUsuarioForm').validate({
             rules: {
                 nomeCompleto: {
@@ -261,6 +314,7 @@
                 cpf: {
                     required: true,
                     cpfLength: true,
+                    cpfVerificador: true,
                 },
                 email: {
                     required: true,
@@ -326,6 +380,19 @@
 
         }
     });
+    function deleteUser(){
+        document.postDeleteOnEdit.submit();
+    }
+
+    function addLink(event) {
+        const [tipo, nomeCompleto, id] = event.target.id.split("_");
+        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " "+nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
+        const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
+        document.getElementById("tituloModal2").innerHTML =  prefixo + nome + "?";
+        const formDelete = document.getElementById("postDeleteOnEdit")
+        const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
+        formDelete.setAttribute('action', url);
+    }
     
 </script>
 {{> footer}}
