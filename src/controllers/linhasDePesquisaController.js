@@ -24,23 +24,23 @@ const buscar = async (req, res) => {
 
   if (!result) return res.status(400).json({ message: 'Linha de Pesquisa Não Encontrada!'});
 
-  const { nome, sigla, icone, cor } = result;
+  const { nome, sigla } = result;
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle});
+    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, pageTitle});
 };
 
 const criar = async (req, res) => {
   if (req.method === 'GET') {
     return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ pageTitle, csrfToken: req.csrfToken() });
   } else {
-    const { nome, sigla, icone, cor } = req.body;
+    const { nome, sigla } = req.body;
   
-    const result = await linhasDePesquisaService.create({ nome, icone, sigla, cor });
+    const result = await linhasDePesquisaService.create({ nome, sigla });
     
     if (!result) return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
-    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ nome, icone, sigla, cor, pageTitle });
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ nome, sigla, pageTitle });
   }
 };
 

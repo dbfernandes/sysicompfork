@@ -21,7 +21,7 @@ const formatDbAnswer = (object) => {
 
 export default new class LinhasDePesquisaService {
   async list() {
-    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla', 'icone', 'cor']});
+    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla']});
 
     const formatedAnswer = formatDbAnswer(allResearchLines);
 
@@ -37,25 +37,21 @@ export default new class LinhasDePesquisaService {
   }
 
   async create(newResearchLine) {
-    const { nome, icone, iniciais, cor } = newResearchLine;
+    const { nome, iniciais} = newResearchLine;
 
     await LinhasDePesquisa.create({
       nome,
-      icone,
       iniciais,
-      cor,
     });
   }
 
   async update(id, newInfo) {
-    const { nome, icone, iniciais, cor } = newInfo;
+    const { nome, iniciais } = newInfo;
 
     await LinhasDePesquisa.update(
       {
         nome,
-        icone,
         iniciais,
-        cor,
       },
       {
         where: {
