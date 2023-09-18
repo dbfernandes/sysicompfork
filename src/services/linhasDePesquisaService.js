@@ -37,21 +37,21 @@ export default new class LinhasDePesquisaService {
   }
 
   async create(newResearchLine) {
-    const { nome, iniciais} = newResearchLine;
+    const { nome, sigla} = newResearchLine;
 
     await LinhasDePesquisa.create({
       nome,
-      iniciais,
+      sigla,
     });
   }
 
   async update(id, newInfo) {
-    const { nome, iniciais } = newInfo;
+    const { nome, sigla } = newInfo;
 
     await LinhasDePesquisa.update(
       {
         nome,
-        iniciais,
+        sigla,
       },
       {
         where: {

@@ -1,5 +1,5 @@
 {{> header}}
-{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
+{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-adicionar'}}
 <style>
 	/* Style your page here  */
   .links-container {
@@ -14,7 +14,7 @@
 
 			<div class="row mb-2">
 				<div class="col-sm-9">
-					<h1>Linhas de Pesquisa</h1>
+					<h1>Adicionar Linhas de Pesquisa</h1>
 				</div>
 				<div class="col-sm-3">
 					<ol class="breadcrumb float-sm-right">
@@ -37,38 +37,40 @@
 	</section>
 
 	<section class="content">
-		<div class="card-body">
-			<form action="/linhasDePesquisa/criar" method="POST">
-				<input type="hidden" name="_csrf" value="{{csrfToken}}">
-				<div class="form-group">
-					<label for="nome">Nome</label>
-					<input type="text" id="nome" name="nome" class="form-control">
-					<div class="form-group">
-						<label for="sigla">Sigla</label>
-						<input type="text" id="sigla" name="sigla" class="form-control">
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group">
-						<label for="icone">Ícone</label>
-						<input type="text" id="icone" name="icone" class="form-control">
-					</div>
-					<div class="form-group">
-						<label for="cor">Cor</label>
-						<input type="text" id="cor" name="cor" class="form-control">
-					</div>
-				</div>
-		</div>
-	</section>
-	<div class="card-footer">
+		<div class="row">
 			<div class="col">
-			<input type="reset" value="Redefinir" class="btn btn-secondary" />
-			<input type="submit" value="Criar novo Projeto" class="btn btn-success float-right">
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Dados da Linha de Pesquisa</h3>
+					</div>
+
+					<div class="card-body">
+						<form action="/linhasDePesquisa/criar" method="POST">
+							<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+							<div class="form-group">
+								<label for="inputNome">Nome da Pesquisa</label>
+								<input type="text" id="nome" name="nome" class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="inputSigla">Siglas da Pesquisa</label>
+								<input type="text" id="sigla" name="sigla" class="form-control">
+							</div>
+						
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="col">
+						<input type="reset" value="Redefinir" class="btn btn-secondary" />
+						<input type="submit" value="Criar novo Projeto" class="btn btn-success float-right">
+					</div>
+					</form>
+				</div>
 			</div>
 		</div>
-		</form>
-	</div>
+	</section>
+
 </main>
+
 <script>
 	function goHome() {
 		window.location.href = "{{url}}/inicio";

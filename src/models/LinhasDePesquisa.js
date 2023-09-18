@@ -14,14 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      icone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      cor: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
     },
     {
       sequelize,

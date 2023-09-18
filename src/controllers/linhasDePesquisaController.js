@@ -35,12 +35,19 @@ const criar = async (req, res) => {
   if (req.method === 'GET') {
     return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ pageTitle, csrfToken: req.csrfToken() });
   } else {
-    const { nome, sigla } = req.body;
-  
-    const result = await linhasDePesquisaService.create({ nome, sigla });
+    try {
+      const nome = req.body.nome;
+      const sigla = req.body.sigla;
+      console.log(nome)
+      console.log(sigla)
+      await linhasDePesquisaService.create({ nome, sigla });  
+
+    } catch (error ){
+      console.log(error)
+      return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
+    }
     
-    if (!result) return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
-    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ nome, sigla, pageTitle });
+    return res.redirect(200,'/linhasDePesquisa/listar');
   }
 };
 
