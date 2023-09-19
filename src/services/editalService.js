@@ -40,8 +40,7 @@ class EditalService {
                 cartaRecomendacao: carta_recomendacao,
                 documento: documento,
                 dataInicio: data_inicio,
-                dataFim: data_fim,
-                curso: "1",
+                dataFim: data_fim,                
                 status: "1"
             });
         

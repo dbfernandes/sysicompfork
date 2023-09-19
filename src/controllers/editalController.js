@@ -29,12 +29,6 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado,
          } = await req.body;
 
-         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
-         console.log("----------------------------------------------")
-         console.log(req.body);
-         
-         console.log("----------------------------------------------")
-
          try {
             await EditalService.criarEdital({
                 num_edital,

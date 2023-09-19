@@ -270,6 +270,7 @@
 
     let camposIncorretos = true;
 
+    //verifica se pelo menos um dos quatro campos tem valor maior que 0
     function verificarCampos() {
         const vaga_regular_mestrado = parseInt($('#vaga_regular_mestrado').val());
         const vaga_suplementar_mestrado = parseInt($('#vaga_suplementar_mestrado').val());
@@ -323,13 +324,14 @@
         });
         //--
         
+        //se o switch estiver desabilitado, bloqueia o campo correspondente e altera o valor pra 0
         function toggleFields() {
             var mestradoChecked = $("#mestrado").prop('checked');
             var doutoradoChecked = $("#doutorado").prop('checked');
 
             var vagaRegularMestrado = $("#vaga_regular_mestrado");
             vagaRegularMestrado.prop('disabled', !mestradoChecked);
-            vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');
+            vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');     //se unchecked, valor=0
 
             var vagaSuplementarMestrado = $("#vaga_suplementar_mestrado");
             vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
@@ -351,7 +353,7 @@
             toggleFields();
         });
 
-        // Pelo menos um dos campos sempre deve estar habilitado
+        // Pelo menos um dos campos (Mestrado ou Doutorado)sempre deve estar habilitado
         $("#mestrado, #doutorado").on('switchChange.bootstrapSwitch', function (event, state) {
             if (!state) {
                 var mestradoChecked = $("#mestrado").prop('checked');
@@ -368,7 +370,7 @@
     });
     
 
-
+    //metodo adicional para comparação de data
     $.validator.addMethod('comparaData', function (value, element, params) {
         var dataInicio = $('#data_inicio').val();
         var dataFim = $('#data_fim').val();
@@ -380,9 +382,8 @@
         return new Date(dataInicio) < new Date(dataFim);
     });
 
-
+    //validação dos campos do formulário
     $('#adicionarSelecaoForm').validate({ 
-
         rules: {
             vaga_regular_mestrado: {
                 required: true,
@@ -498,8 +499,7 @@
     });
 
 
-    function pegaDados() {
-        // Obter valores dos campos
+    function pegaDados() {       
         const vaga_regular_mestrado = parseInt($("#vaga_regular_mestrado").val(), 10);
         const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
         const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
@@ -530,23 +530,20 @@
         const dados = pegaDados();
 
         if (dados) {
-            // Adicione o token CSRF ao seu objeto de dados
             dados._csrf = $("#_csrf").val();
 
             $.ajax({
             url: '/edital/addEdital',
             type: 'POST',
             data: dados,
-            success: function (data) {
-                // Mostrar a mensagem de sucesso no modal
+            success: function (data) {                
                 $('#responseModalBody').html('Edital cadastrado com sucesso!');
                 $('#responseModal').modal('show');
                 setTimeout(function() {
                     window.location.href = '/edital/listEdital';
                 }, 2000);
             },
-            error: function (data) {
-                // Mostrar a mensagem de erro no modal
+            error: function (data) {                
                 $('#responseModalBody').html('Erro: ' + data.responseJSON.error);
                 $('#responseModal').modal('show');
             }
