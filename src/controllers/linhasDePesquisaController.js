@@ -77,6 +77,7 @@ const editar = async (req, res) => {
       return res.status(400).json({ message: 'Não foi possível editar a linha de pesquisa!'});
     }
   }
+  return res.redirect('/linhasDePesquisa/listar');
 };
 
 export default { listar, buscar, criar, remover, editar};

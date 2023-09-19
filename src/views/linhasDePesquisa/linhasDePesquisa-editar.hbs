@@ -39,35 +39,40 @@
 	<section class="content">
 		<div class="row">
 			<div class="col">
+				
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Dados da Linha de Pesquisa</h3>
+						<h3 class="card-title">Dados de pesquisas atual</h3>
 					</div>
 
 					<div class="card-body">
-						<form>
-							<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
-							<div class="form-group">
-								<label for="inputNome">Nome da Pesquisa</label>
-								<input type="text" id="nome" name="nome" class="form-control">
-							</div>
-							<div class="form-group">
-								<label for="inputSigla">Siglas da Pesquisa</label>
-								<input type="text" id="sigla" name="sigla" class="form-control">
-							</div>
-						</form>
+						<div class="card-header">
+							<h2 class="card-title">{{linhaPesquisa.nome}}</h3>							
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="card-header">
+							<h2 class="card-title">{{linhaPesquisa.sigla}}</h3>							
+						</div>
+					</div>
+				</div>
+
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Novo dados da Linha de Pesquisa</h3>
 					</div>
 
+
 					<div class="card-body">
-						<form action="/linhasDePesquisa/criar" method="POST">
+						<form action="/linhasDePesquisa/editar/{{linhaPesquisa.id}}" method="POST">
 							<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 							<div class="form-group">
 								<label for="inputNome">Nome da Pesquisa</label>
-								<input type="text" id="nome" name="nome" class="form-control">
+								<input type="text" id="nome" name="nome" class="form-control" value="{{linhaPesquisa.nome}}">
 							</div>
 							<div class="form-group">
 								<label for="inputSigla">Siglas da Pesquisa</label>
-								<input type="text" id="sigla" name="sigla" class="form-control">
+								<input type="text" id="sigla" name="sigla" class="form-control" value="{{linhaPesquisa.sigla}}">
 							</div>
 						
 					</div>
@@ -75,7 +80,7 @@
 				<div class="card-footer">
 					<div class="col">
 						<input type="reset" value="Redefinir" class="btn btn-secondary" />
-						<input type="submit" value="Criar novo Projeto" class="btn btn-success float-right">
+						<input type="submit" value="Editar Linha de Pesquisa" class="btn btn-success float-right">
 					</div>
 					</form>
 				</div>
