@@ -45,11 +45,7 @@ module.exports = {
       dataFim:{
         allowNull : false,
         type : Sequelize.STRING
-      },
-      curso:{
-        allowNull : false,
-        type : Sequelize.STRING
-      },
+      },      
       status:{
         allowNull : false,
         type : Sequelize.STRING,

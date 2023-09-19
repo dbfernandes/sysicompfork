@@ -51,11 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         dataFim: {
             type:DataTypes.STRING,
             allowNull: false
-        },
-        curso: {
-            type:DataTypes.STRING,
-            allowNull: false
-        },
+        },        
         status: {
             type:DataTypes.STRING,
             allowNull: false
