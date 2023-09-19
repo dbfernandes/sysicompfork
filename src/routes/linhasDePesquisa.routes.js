@@ -8,5 +8,7 @@ router.get('/busca/:id', linhasDePesquisaController.buscar);
 
 router.get('/criar', linhasDePesquisaController.criar);
 router.post('/criar', linhasDePesquisaController.criar);
+router.get('/remover/:id', linhasDePesquisaController.remover);
+router.post('/editar/:id', linhasDePesquisaController.editar);
 
 export default router;

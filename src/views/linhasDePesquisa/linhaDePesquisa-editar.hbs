@@ -1,0 +1,106 @@
+{{> header}}
+{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-adicionar'}}
+<style>
+	/* Style your page here  */
+  .links-container {
+    display: flex;
+    justify-content: space-around;
+  }
+</style>
+
+<main class="content-wrapper">
+	<section class="content-header">
+		<div class="container-fluid">
+
+			<div class="row mb-2">
+				<div class="col-sm-9">
+					<h1>Editar Linhas de Pesquisa</h1>
+				</div>
+				<div class="col-sm-3">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item">Linhas de Pesquisa</li>
+						<li class="breadcrumb-item active">Listar</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3 col-md-2 col-lg-1">
+					<buttontype="button" class="btn btn-block btn-secondary" onclick="goHome()">
+						<i class="fa fa-arrow-left color-white"></i>
+						Voltar
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<section class="content">
+		<div class="row">
+			<div class="col">
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Dados da Linha de Pesquisa</h3>
+					</div>
+
+					<div class="card-body">
+						<form>
+							<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+							<div class="form-group">
+								<label for="inputNome">Nome da Pesquisa</label>
+								<input type="text" id="nome" name="nome" class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="inputSigla">Siglas da Pesquisa</label>
+								<input type="text" id="sigla" name="sigla" class="form-control">
+							</div>
+						</form>
+					</div>
+
+					<div class="card-body">
+						<form action="/linhasDePesquisa/criar" method="POST">
+							<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+							<div class="form-group">
+								<label for="inputNome">Nome da Pesquisa</label>
+								<input type="text" id="nome" name="nome" class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="inputSigla">Siglas da Pesquisa</label>
+								<input type="text" id="sigla" name="sigla" class="form-control">
+							</div>
+						
+					</div>
+				</div>
+				<div class="card-footer">
+					<div class="col">
+						<input type="reset" value="Redefinir" class="btn btn-secondary" />
+						<input type="submit" value="Criar novo Projeto" class="btn btn-success float-right">
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</main>
+
+<script>
+	function goHome() {
+		window.location.href = "{{url}}/inicio";
+	}
+
+	function defineColor() {
+		const colorFields = document.querySelectorAll('.color-field');
+
+		colorFields.forEach((element) => {
+			const color = element.classList.item(1);
+
+			element.style.backgroundColor = color;
+		});
+	}
+
+	window.onload =	defineColor;
+
+</script>
+{{> footer}}

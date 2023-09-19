@@ -47,8 +47,36 @@ const criar = async (req, res) => {
       return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
     }
     
-    return res.redirect(200,'/linhasDePesquisa/listar');
+    return res.redirect('/linhasDePesquisa/listar');
   }
 };
 
-export default { listar, buscar, criar};
+const remover = async (req, res) => {
+  if (req.method == 'GET') {
+    try {
+      linhasDePesquisaService.delete(req.params.id);
+    } catch (error) {
+      console.log(error)
+      return res.redirect('/linhasDePesquisa/listar')
+    }
+  }
+  return res.redirect('/linhasDePesquisa/listar');
+};
+
+const editar = async (req, res) => {
+  if (req.method === 'GET') {
+    const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id);
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', { linhaPesquisa, pageTitle, csrfToken: req.csrfToken() });
+  } else {
+    try {
+      const nome = req.body.nome;
+      const sigla = req.body.sigla;
+      await linhasDePesquisaService.update(req.params.id, { nome, sigla });
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({ message: 'Não foi possível editar a linha de pesquisa!'});
+    }
+  }
+};
+
+export default { listar, buscar, criar, remover, editar};
