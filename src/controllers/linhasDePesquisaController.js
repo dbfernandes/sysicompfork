@@ -38,8 +38,9 @@ const criar = async (req, res) => {
     try {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
-      console.log(nome)
-      console.log(sigla)
+      // Depois fazer para voltar para a página de criação com os dados preenchidos
+      if (!nome || !sigla) return res.status(400).json({ message: 'Nome e sigla são obrigatórios!'});
+
       await linhasDePesquisaService.create({ nome, sigla });  
 
     } catch (error ){
