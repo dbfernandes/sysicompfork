@@ -48,4 +48,16 @@
   </div>
   <!-- /.content-wrapper -->
 
+{{#if message}}
+  <script>
+      $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-{{type}}",
+          autohide: true,
+          delay: 10000,
+          title: '{{messageTitle}}',
+          body: '{{message}}'
+          })
+  </script>
+{{/if}}
 {{> footer}}
