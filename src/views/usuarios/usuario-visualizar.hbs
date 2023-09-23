@@ -39,14 +39,6 @@
 
   <section class="content">
     <div class="container-fluid">
-      {{#if message}}
-          <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
-              {{message}}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-      {{/if}}
       <div class="card card-primary">
         <div class="card-header">
           <h3 class="card-title">
@@ -168,5 +160,16 @@
   </section>
 </div>
 
-
+{{#if message}}
+  <script>
+      $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-{{type}}",
+          autohide: true,
+          delay: 10000,
+          title: '{{messageTitle}}',
+          body: '{{message}}'
+          })
+  </script>
+{{/if}}
 {{> footer}}

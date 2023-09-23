@@ -45,22 +45,14 @@
 
     <section class="content">
         <div class="container-fluid">
-        {{#if message}}
-        <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
-            {{message}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        {{/if}}
             <div style="text-align:left">
                 <font color="#FF0000">*</font> Campos Obrigatórios
             </div>
             <form action="/usuarios/editar/{{usuario.id}}" method="post" id="editarUsuarioForm">
                 <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
-                <div class="card card-primary">
+                <div class="card card-light">
                     <div class="card-header">
-                        <h3 class="card-title">Dados da Conta</h3>
+                        <h3 class="card-title"><b>Dados da Conta</b></h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -173,9 +165,9 @@
                     <!-- /.card-body -->
                 </div>
 
-                <div class="card card-primary">
+                <div class="card card-light">
                     <div class="card-header">
-                        <h3 class="card-title">Dados Pessoais</h3>
+                        <h3 class="card-title"><b>Dados Pessoais</b></h3>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -201,9 +193,9 @@
                     </div>
                 </div>
 
-                <div class="card card-primary">
+                <div class="card card-light">
                     <div class="card-header">
-                        <h3 class="card-title">Dados Profissionais</h3>
+                        <h3 class="card-title"><b>Dados Profissionais</b></h3>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -239,7 +231,7 @@
                                 
                             </div>
                         </div>
-                        <div >
+                        <div class="card-footer pr-0">
                             <div style="margin-right: auto;" class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success float-right">
                                     Editar Usuário
@@ -252,6 +244,7 @@
                 </div>
             </form>
         </div>
+        
         <!-- /.card -->
     </section>
 </div>
@@ -336,6 +329,7 @@
                 cpf: {
                     required: '"CPF (Digite somente números)" não pode ficar em branco.',
                     cpfLength: '"CPF" deve ter 11 dígitos.',
+                    cpfVerificador: 'Insira um CPF válido.'
                 },
                 email: {
                     required: '"E-mail" não pode ficar em branco.',
@@ -393,6 +387,16 @@
         const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
         formDelete.setAttribute('action', url);
     }
-    
+    if("{{message}}"){
+        $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-{{type}}",
+            autohide: true,
+            delay: 10000,
+            title: '{{messageTitle}}',
+            body: '{{message}}'
+            })
+
+    }
 </script>
 {{> footer}}
