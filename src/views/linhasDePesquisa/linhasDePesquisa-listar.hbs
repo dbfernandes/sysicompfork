@@ -12,46 +12,45 @@
 	<section class="content-header">
 		<div class="container-fluid">
 
-			<div class="row mb-2">
-				<div class="col-sm-9">
-					<h1>Linhas de Pesquisa</h1>
-				</div>
-				<div class="col-sm-3">
-					<ol class="breadcrumb float-sm-right">
-						<li class="breadcrumb-item">Linhas de Pesquisa</li>
-						<li class="breadcrumb-item active">Listar</li>
-					</ol>
-				</div>
-			</div>
-
-			<div class="row mb-2">
-				<div class="col-sm-3 col-md-2 col-lg-1">
-					<buttontype="button" class="btn btn-block btn-secondary" onclick="goHome()">
-						<i class="fa fa-arrow-left color-white"></i>
-						Voltar
-					</button>
-				</div>
-				<div class="col-sm-4 col-md-3 col-lg-2">
-					<a type="button" class="btn btn-block btn-primary" href="/linhasdepesquisa/criar">
-						<i class="fas fa-plus color-white"></i>
-						Adicionar Linha de Pesquisa
-					</a>
-				</div>
-			</div>
+			<section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Lista de linhas de Pesquisas </h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">linhasDePesquisa</li>
+                        <li class="breadcrumb-item active">listar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                    <a class="btn btn-primary color-white" href="/linhasDePesquisa/criar">
+                        <i class="fas fa-plus"></i>
+                        Adicionar
+                    </a>      
+                </div>
+            </div>
 
 		</div>
 	</section>
-
+	
+	<!-- Main content -->
 	<section class="content">
 		<div class="container-fluid">
+			{{!-- Colocar aqui uma condição para exibir a mensagem de alerta. --}}
+			
 			<div class="row">
 				<div class="col-12">
-					<div class="card card-primary">
-						<div class="card-header">
-							<h3 class="card-title">Linhas de Pesquisa Existentes</h3>
-						</div>
-						<div class="card-body">
-							<table id="example2" class="table table-bordered table-hovers">
+					<div class="card">
+						<div class="card-body" style="overflow-x:auto;">
+							<table id="example2" class="table table-hover w-100">
 								<thead>
 									<tr>
 										<th>#</th>
@@ -66,21 +65,36 @@
 										<td>{{nome}}</td>
 										<td>{{sigla}}</td>
 
-                    </td>
-                    <td class='links-container'>
-                      <a
-                        href='/linhasdepesquisa/busca/{{id}}'
-                        class='fa fa-solid fa-eye'
-                      />
-                      <a
-                        href='/linhasDePesquisa/remover/{{id}}'
-                        class='fa fa-solid fa-trash'
-                      />
-                      <a
-                        href='/linhasDePesquisa/editar/{{id}}'
-                          class='fa fa-solid fa-pen'
-                      />
-                    </td>
+										<td class='links-container'>
+											<div class="d-flex justify-content-between">
+												<a  style="margin-right: 2px"
+														href='/linhasDePesquisa/buscar/{{id}}'
+														class='fa fa-solid fa-eye'
+														title="Visualizar" 
+												/></a>
+												{{#if status}}
+													<a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
+														data-toggle="modal" data-target="#removerUsuario"
+														title="Bloquear" 
+														onclick="addLink(event)" href="#"
+														
+														>
+													</a>
+												{{else}}
+												<a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+												data-toggle="modal" data-target="#removerUsuario"
+												title="Desbloquear" 
+												onclick="addLink(event)" href="#"
+													>
+												</a>
+												{{/if}}
+												<a  style="margin-right: 2px"
+													href='/linhasDePesquisa/editar/{{id}}'
+													class='fa fa-solid fa-pen'
+													title="Editar"
+												/></a>
+											</div>
+										</td>
 									</tr>
 									{{/each}}
 								</tbody>
