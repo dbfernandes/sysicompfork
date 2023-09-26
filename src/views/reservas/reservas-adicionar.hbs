@@ -41,15 +41,15 @@
                 <form id="formAdicionarSala" method="POST"
                     action="/reservas/adicionar">
                     <input type="hidden" name="_csrf" value="{{csrf}}" />
-                    <input type="hidden" name="idSolicitante" value="{{id}}" />
+                    <input type="hidden" name="UsuarioId" value="{{UsuarioId}}" />
                     <div class="card-body ">
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-8">
                                 <label for="idSala">
                                     <font color="#FF0000">*</font> Sala:
                                 </label>
-                                <select class="form-control" id="idSala"
-                                    name="idSala" required>
+                                <select class="form-control" id="SalaId"
+                                    name="SalaId" required>
                                     {{#each salas}}
                                         <option value="{{id}}">{{nome}}</option>
                                     {{/each}}
@@ -73,7 +73,7 @@
                                     <font color="#FF0000">*</font> Data Inicio:
                                 </label>
                                 <input type="date" class="form-control"
-                                    id="dataInicio" name="dataInicio" required>
+                                    pattern="\d{4}-\d{2}-\d{2}" id="dataInicio" name="dataInicio" required>
 
                             </div>
 
@@ -94,7 +94,7 @@
                                     <font color="#FF0000">*</font> Data Termino:
                                 </label>
                                 <input type="date" class="form-control"
-                                    id="dataTermino" name="dataTermino" required>
+                                    pattern="\d{4}-\d{2}-\d{2}" id="dataTermino" name="dataTermino" required>
 
                             </div>
 

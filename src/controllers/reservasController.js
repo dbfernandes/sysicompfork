@@ -1,15 +1,24 @@
 const {ReservaSala} = require('../models');
 const {Salas} = require('../models');
+const {Usuario} = require('../models');
 
 const adicionar = async (req, res) => {
     if (req.method === 'GET') {
-        const salas = await Salas.findAll()
-        const reservas = await ReservaSala.findAll()
-        let salas_livres = salas.filter( sala => !reservas.includes(sala ) );
+        const salas = await Salas.findAll();
+        const reservas = await ReservaSala.findAll();
+        
+        // Extract the IDs from the reservations
+        const reservaIds = reservas.map((reserva) => reserva.SalaId);
+        
+        // Filter out rooms that have reservations
+        const salasLivres = salas.filter((sala) => !reservaIds.includes(sala.id));
+        
+        console.log(salasLivres.length);
         res.render('reservas/reservas-adicionar', { 
-            salas: salas_livres.map(sala => sala.toJSON()),
+            salas: salasLivres.map(sala => sala.toJSON()),
             nome: req.session.nome,
-            id:   req.session.uid,
+            UsuarioId:  1,
+            //UsuarioId: req.session.uid
             csrf: req.csrfToken(),   
         })
 
@@ -17,6 +26,7 @@ const adicionar = async (req, res) => {
         try{
             
             let responseError = null;
+            console.log({...req.body})
         
             const reserva = await ReservaSala
                 .create({
@@ -58,7 +68,16 @@ const excluir = async (req, res) => {
 };
 
 const gerenciar = async (req, res) => {
-    const reservas = await ReservaSala.findAll()
+    const reservas = await ReservaSala.findAll({
+        include: [
+          {
+            model: Salas, // Include the associated "Post" model
+            as: 'salas', // Alias for the posts association (if defined in the User model)   
+          }
+        ],
+    })
+    console.log(reservas)
+    
     res.render('reservas/reservas-gerenciar', { 
         reservas: reservas.map(reservas => reservas.toJSON()),
         nome: req.session.nome,
@@ -73,12 +92,20 @@ const editar = async (req, res) => {
             const reserva = await ReservaSala.findOne({
                 where: { 
                     id: req.params.id 
-                }
+                },
+                include: [
+                    {
+                      model: Salas, // Include the associated "Post" model
+                      as: 'salas', // Alias for the posts association (if defined in the User model)   
+                    }
+                  ],
             })
 
             const salas = await Salas.findAll()
             const reservas = await ReservaSala.findAll()
-            let salas_livres = salas.filter( sala => !reservas.includes(sala ) );
+            let salas_livres = salas.filter( sala => !reservas.includes(sala)  );
+            console.log(reservas)
+
             res.render('reservas/reservas-editar', { 
                 salas: salas_livres.map(sala => sala.toJSON()),
                 reserva: reserva.toJSON(),

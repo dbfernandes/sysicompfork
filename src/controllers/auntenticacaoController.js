@@ -17,7 +17,7 @@ const login = async (req, res) => {
             const usuario = await Usuario.findOne({
                 where: { cpf: cpf }
             })
-    
+       
             if (!usuario){
                 console.log("teste");
     
@@ -28,15 +28,12 @@ const login = async (req, res) => {
             }
             let isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash)
             if (!isSenhaCorreta){
-                console.log("testeoi")
                 return res.render('autenticacao/login', {
                     csrfToken: req.csrfToken(),
                     message: "Senha inválida", type: 'danger'
                 })
             }
             req.session.nome = `${usuario.nomeCompleto.split(' ')[0]} ${usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1]}`
-
-
             req.session.uid = usuario.id
 
             return res.redirect('/inicio')

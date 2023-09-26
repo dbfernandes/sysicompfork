@@ -12,7 +12,8 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/reservas/gerenciar">Reservas</a></li>
+                        <li class="breadcrumb-item"><a
+                                href="/reservas/gerenciar">Reservas</a></li>
                         <li class="breadcrumb-item active">Editar</li>
                     </ol>
                 </div>
@@ -35,29 +36,29 @@
                 <form method="POST" action="/reservas/editar/{{sala.id}}"
                     id="editSalaForm">
                     <input type="hidden" name="_csrf" value="{{csrf}}" />
-                     <input type="hidden" name="idSolicitante" value="{{reservas.id}}" />
+                    <input type="hidden" name="UsuarioId"
+                        value="{{reservas.id}}" />
                     <div class="card-body ">
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-8">
                                 <label for="idSala">
                                     <font color="#FF0000">*</font> Sala:
                                 </label>
-                                <select class="form-control" id="idSala"
-                                    name="idSala" required>
-                                    <option value="Icomp Tech">Icomp Tech</option>
-                                    <option value="IComp 1">IComp 1</option>
-                                    <option value="IComp 2">IComp 1</option>
-                                    <option value="IComp 3">IComp 3</option>
+                                <select class="form-control" id="SalaId"
+                                    name="SalaId" required>
+                                  
+                                    <option selected value="{{reserva.salas.id}}">{{reserva.salas.nome}}</option>
+                                    
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-8">
                                 <label for="atividade">
-                                    Atividade:
+                                    <font color="#FF0000">*</font> Atividade:
                                 </label>
                                 <input type="text" class="form-control"
-                                    id="atividade" name="atividade" required
+                                    id="atividade" name="atividade"  value = {{reserva.atividade}} required
                                     placeholder="Aula">
                             </div>
                         </div>
@@ -68,7 +69,7 @@
                                     <font color="#FF0000">*</font> Data Inicio:
                                 </label>
                                 <input type="date" class="form-control"
-                                    id="dataInicio" name="dataInicio" required>
+                                     pattern="\d{4}-\d{2}-\d{2}" id="dataInicio" name="dataInicio" value = {{reserva.dataInicio}} required>
 
                             </div>
 
@@ -77,7 +78,7 @@
                                     <font color="#FF0000">*</font> Hora Inicio:
                                 </label>
                                 <input type="time" class="form-control"
-                                    id="horaInicio" name="horaInicio" required>
+                                    id="horaInicio" name="horaInicio" value = {{reserva.horaInicio}} required>
 
                             </div>
 
@@ -85,20 +86,20 @@
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="dataFim">
-                                    <font color="#FF0000"></font> Data Fim:
+                                <label for="dataTermino">
+                                    <font color="#FF0000">*</font> Data Termino:
                                 </label>
                                 <input type="date" class="form-control"
-                                    id="dataFim" name="dataFim" required>
+                                    pattern="\d{4}-\d{2}-\d{2}"  id="dataTermino" name="dataTermino" value = {{reserva.dataTermino}} required>
 
                             </div>
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="horaFim">
-                                    <font color="#FF0000"></font> Hora Fim:
+                                <label for="horaTermino">
+                                    <font color="#FF0000">*</font> Hora Termino:
                                 </label>
                                 <input type="time" class="form-control"
-                                    id="horaFim" name="horaFim" required>
+                                    id="horaTermino" name="horaTermino" value = {{reserva.horaTermino}} required>
 
                             </div> </div>
                     </div>
