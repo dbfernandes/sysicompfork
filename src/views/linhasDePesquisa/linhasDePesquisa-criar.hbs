@@ -26,10 +26,16 @@
 
 			<div class="row mb-2">
 				<div class="col-sm-3 col-md-2 col-lg-1">
-					<buttontype="button" class="btn btn-block btn-secondary" onclick="goHome()">
-						<i class="fa fa-arrow-left color-white"></i>
-						Voltar
-					</button>
+					<div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+						<a class="btn btn-warning color-white" onclick="history.go(-1);">
+							<i class="fa fa-arrow-left"></i>
+							Voltar
+						</a>
+						<a type="button" class="btn btn-primary" href="/linhasDePesquisa/listar">
+							<i class="fa fa-list color-white"></i>
+							Listar Usuários
+						</a>
+                	</div>
 				</div>
 			</div>
 
@@ -40,21 +46,29 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
+					<div style="text-align:left">
+						<font color="#FF0000">*</font> Campos Obrigatórios
+					</div>						
 					<div class="card card-primary">
 						<div class="card-header">
 							<h3 class="card-title">Dados da Linha de Pesquisa</h3>
 						</div>
-
 						<div class="card-body">
-							<form action="/linhasDePesquisa/criar" method="POST">
+							<form action="/linhasDePesquisa/criar" method="POST" id="linhaDePesquisaForm">
 								<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 								<div class="form-group">
-									<label for="inputNome">Nome da Pesquisa</label>
-									<input type="text" id="nome" name="nome" class="form-control">
+									<label for="inputNome">
+                                		<font color="#FF0000">*</font> Nome da Pesquisa:
+                            		</label>
+                           			<input type="text" name="nome" class="form-control" id="nome"
+                                		placeholder="Nome da Linha de Pesquisa...">
 								</div>
 								<div class="form-group">
-									<label for="inputSigla">Siglas da Pesquisa</label>
-									<input type="text" id="sigla" name="sigla" class="form-control">
+									<label for="inputSigla">
+                                	<font color="#FF0000">*</font> Siglas da Pesquisa:
+                            	</label>
+                           		<input type="text" name="sigla" class="form-control" id="sigla"
+                                	placeholder="Siglas...">
 								</div>
 							
 						</div>
@@ -62,7 +76,7 @@
 							<div class="col">
 								<input type="submit" value="Criar nova Pesquisa" class="btn btn-success float-right">
 							</div>
-					</div>
+						</div>
 						</form>
 					</div>
 				</div>
@@ -73,9 +87,6 @@
 </main>
 
 <script>
-	function goHome() {
-		window.location.href = "{{url}}/inicio";
-	}
 
 	function defineColor() {
 		const colorFields = document.querySelectorAll('.color-field');
@@ -88,6 +99,39 @@
 	}
 
 	window.onload =	defineColor;
+
+    function pesquisaCriarPage() {
+
+        $('#linhaDePesquisaForm').validate({
+            rules: {
+                nome: {
+                    required: true,
+                },
+                sigla: {
+                    required: true,
+                },
+            },
+            messages: {
+                nome: {
+                    required: '"Nome de Pesquisa" não pode ficar em branco."'
+                },
+                sigla: {
+                    required: '"Siglas da Pesquisa" não pode ficar em branco.'
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('div').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    }
 
 </script>
 {{> footer}}

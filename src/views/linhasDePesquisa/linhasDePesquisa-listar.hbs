@@ -1,18 +1,9 @@
 {{> header}}
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
-<style>
-	/* Style your page here  */
-  .links-container {
-    display: flex;
-    justify-content: space-around;
-  }
-</style>
 
 <main class="content-wrapper">
-	<section class="content-header">
-		<div class="container-fluid">
 
-			<section class="content-header">
+	<section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
@@ -40,88 +31,146 @@
 
 		</div>
 	</section>
-	
-	<!-- Main content -->
-	<section class="content">
-		<div class="container-fluid">
-			{{!-- Colocar aqui uma condição para exibir a mensagem de alerta. --}}
-			
-			<div class="row">
-				<div class="col-12">
-					<div class="card">
-						<div class="card-body" style="overflow-x:auto;">
-							<table id="example2" class="table table-hover w-100">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>Nome</th>
-										<th>Sigla</th>
-									</tr>
-								</thead>
-								<tbody>
-									{{#each linhaDePesquisa}}
-									<tr>
-										<td>{{id}}</td>
-										<td>{{nome}}</td>
-										<td>{{sigla}}</td>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            {{#if message}}
+                <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
+                    {{message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {{/if}}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <!-- /.card-header -->
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="example2" class="table table-hover w-100">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nome</th>
+                                        <th>Sigla</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each linhaDePesquisa}}
+                                    <tr>
+                                        <td> {{id}} </td>
+                                        <td> {{nome}} </td>
+                                        <td> {{sigla}} </td>
 
-										<td class='links-container'>
-											<div class="d-flex justify-content-between">
-												<a  style="margin-right: 2px"
-														href='/linhasDePesquisa/buscar/{{id}}'
-														class='fa fa-solid fa-eye'
-														title="Visualizar" 
-												/></a>
-												{{#if status}}
-													<a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
-														data-toggle="modal" data-target="#removerUsuario"
-														title="Bloquear" 
-														onclick="addLink(event)" href="#"
-														
-														>
-													</a>
-												{{else}}
-												<a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
-												data-toggle="modal" data-target="#removerUsuario"
-												title="Desbloquear" 
-												onclick="addLink(event)" href="#"
-													>
-												</a>
-												{{/if}}
-												<a  style="margin-right: 2px"
-													href='/linhasDePesquisa/editar/{{id}}'
-													class='fa fa-solid fa-pen'
-													title="Editar"
-												/></a>
-											</div>
-										</td>
-									</tr>
-									{{/each}}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
+                                        <td class='links-container'>
+                                            <div class="d-flex justify-content-end" style="gap: 10px">
+                                                <a  style="margin-right: 2px"
+                                                    href='/linhasDePesquisa/buscar/{{id}}'
+                                                    class='fa fa-solid fa-eye '
+                                                    title="buscar" 
+                                                /></a>
+                                                <a class="fa fa-solid fa-trash " id="removerLdP_{{nome}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerLdP"
+                                                    title="remover" 
+                                                    onclick="addLink(event)" href="#"
+                                                    >
+                                                </a>
+                                                <a  style="margin-right: 2px"
+                                                    href='/linhasDePesquisa/editar/{{id}}'
+                                                    class='fa fa-solid fa-pen  '
+                                                    title="Editar"
+
+                                                /></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<div class="modal fade" id="removerLdP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarLdP()">Sim</a>
+                    </div>
+                    <form name="postDelete" id="postDelete" method="POST">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<head>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+  <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet">
+
+  <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+  <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
+</head>
 <script>
-	function goHome() {
-		window.location.href = "{{url}}/inicio";
-	}
 
-	function defineColor() {
-		const colorFields = document.querySelectorAll('.color-field');
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var datatable = $("#example2").DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+        },
+        responsive: true,
+        columns: [
+            { responsivePriority: 1 },
+            { responsivePriority: 2 },
+            { responsivePriority: 3 },
+            { responsivePriority: 4 },
+        ],
+        columnDefs: [ {
+            "targets": [2,3],
+            "orderable": false
+        } ]
+        });
+    });
 
-		colorFields.forEach((element) => {
-			const color = element.classList.item(1);
+    function deletarLdP(event){
+        console.log ("as")
 
-			element.style.backgroundColor = color;
-		});
-	}
+        // document.postDelete.submit();
+        var form = document.getElementById("postDelete");
+        console.log(form)
+        form.submit();
+    }
 
-	window.onload =	defineColor;
+    function addLink(event) {
+        const [a, nome, id] = event.target.id.split("_");
+        document.getElementById("tituloModal").innerHTML =  "Deseja excluir " + nome + "?";
+        console.log("AddLink- aqui")
+        const formDelete = document.getElementById("postDelete")
+        console.log("AddLink- aqui2")
+        formDelete.setAttribute('action', `/linhasDePesquisa/remover/${id}`);
+    }
 
 </script>
 {{> footer}}

@@ -6,7 +6,7 @@ const locals = {
 
 const pageTitle = 'Linhas De Pesquisa';
 
-const listar = async (_req, res) => {
+const listar = async (req, res) => {
   const linhaDePesquisa = await linhasDePesquisaService.list();
   const doesNotExists = !linhaDePesquisa || linhaDePesquisa.length === 0;
 
@@ -14,7 +14,7 @@ const listar = async (_req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle});
+    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle, csrfToken: req.csrfToken()});
 };
 
 const buscar = async (req, res) => {
@@ -38,7 +38,12 @@ const criar = async (req, res) => {
     try {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
-      // Depois fazer para voltar para a página de criação com os dados preenchidos
+      
+      if (await linhasDePesquisaService.findByName(nome)) 
+        return res.status(400).json({ message: 'Linha de Pesquisa já cadastrada!'});
+      if (await linhasDePesquisaService.findBySigla(sigla)) 
+        return res.status(400).json({ message: 'Sigla já cadastrada!'});
+
       if (!nome || !sigla) return res.status(400).json({ message: 'Nome e sigla são obrigatórios!'});
 
       await linhasDePesquisaService.create({ nome, sigla });  
@@ -53,13 +58,17 @@ const criar = async (req, res) => {
 };
 
 const remover = async (req, res) => {
-  if (req.method == 'GET') {
+  if (req.method == 'POST') {
     try {
       linhasDePesquisaService.delete(req.params.id);
     } catch (error) {
       console.log(error)
       return res.redirect('/linhasDePesquisa/listar')
     }
+  }
+  else
+  {
+    console.log('Não foi possível remover a linha de pesquisa!')
   }
   return res.redirect('/linhasDePesquisa/listar');
 };
@@ -72,6 +81,12 @@ const editar = async (req, res) => {
     try {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
+
+      if (await linhasDePesquisaService.findByName(nome)) 
+        return res.status(400).json({ message: 'Linha de Pesquisa já cadastrada!'});
+      if (await linhasDePesquisaService.findBySigla(sigla)) 
+        return res.status(400).json({ message: 'Sigla já cadastrada!'});
+      
       await linhasDePesquisaService.update(req.params.id, { nome, sigla });
     } catch (error) {
       console.log(error)

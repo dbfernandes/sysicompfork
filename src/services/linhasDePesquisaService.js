@@ -36,6 +36,22 @@ export default new class LinhasDePesquisaService {
     return formatedAnswer;
   }
 
+  async findByName(name) {
+    const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name }});
+
+    const formatedAnswer = formatDbAnswer(researchLine);
+
+    return formatedAnswer;
+  }
+
+  async findBySigla(sigla) {
+    const researchLine = await LinhasDePesquisa.findOne({ where: { sigla }});
+
+    const formatedAnswer = formatDbAnswer(researchLine);
+
+    return formatedAnswer;
+  }
+
   async create(newResearchLine) {
     const { nome, sigla} = newResearchLine;
 
