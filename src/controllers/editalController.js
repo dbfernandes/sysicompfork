@@ -11,13 +11,13 @@ const addEditalSelecao = async (req, res) => {
          return res.render("edital/addNewSelecao", {
             csrfToken: req.csrfToken(),
             nome: req.session.nome,
-            ...locals,
-             
+            ...locals,             
          });
+
 
       case "POST":
          const {
-            number,
+            num_edital,
             documento,
             data_inicio,
             data_fim,
@@ -29,29 +29,27 @@ const addEditalSelecao = async (req, res) => {
             vaga_suplementar_doutorado,
          } = await req.body;
 
-         // TO-DO: Validar dados, verificar se nao tem nenhum dado faltando
-         console.log("----------------------------------------------")
-         console.log(req.body);
-         
-         console.log("----------------------------------------------")
-         const selecao = await EditalService.create({
-            number,
-            documento,
-            data_inicio,
-            data_fim,
-            carta_recomendacao,
-            carta_orientador,
-            vaga_regular_mestrado,
-            vaga_suplementar_mestrado,
-            vaga_regular_doutorado,
-            vaga_suplementar_doutorado,
-         }).catch((err) => {
+         try {
+            await EditalService.criarEdital({
+                num_edital,
+                documento,
+                data_inicio,
+                data_fim,
+                carta_recomendacao,
+                carta_orientador,
+                vaga_regular_mestrado,
+                vaga_suplementar_mestrado,
+                vaga_regular_doutorado,
+                vaga_suplementar_doutorado
+            });     
+        } catch (error) {
             return res.status(400).json({
-               error: err.message,
-               req: req.body,
+                csrfToken: req.csrfToken(),
+                error: error.message,
+                req: req.body
             });
-         });
-         return res.status(200).send(selecao);
+        }
+        
 
       case "PUT":
          return res.status(200).send({

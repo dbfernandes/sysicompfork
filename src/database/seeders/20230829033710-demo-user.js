@@ -92,9 +92,7 @@ module.exports = {
     for (let i = 0; i < 50; i++) {
       usuarios.push( await createUser());
     }
-    console.log(usuarios)
-    return queryInterface.bulkInsert('Usuario', usuarios
-    );
+    return queryInterface.bulkInsert('Usuario', usuarios);
   },
 
   down: async (queryInterface, Sequelize) => {

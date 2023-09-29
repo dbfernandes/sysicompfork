@@ -5,8 +5,8 @@ var {
 } = require('../models');
 
 class EditalService {
-    async create({
-        number,
+    async criarEdital({
+        num_edital,
         documento,
         data_inicio,
         data_fim,
@@ -18,38 +18,39 @@ class EditalService {
         vaga_suplementar_doutorado
     }) {
 
-        let edital = await Edital.findOne({
+        const edital = await Edital.findOne({
             where: {
-                editalId: number
+                editalId: num_edital
             }
-        }).catch(err => {
-            console.log(err);
-            throw new Error("Não foi possivel criar o edital erro na buscaaaaaa");
         });
 
         if (edital) {
-            throw new Error("Candidato já existe");
+            console.log("edital ja existe");
+            throw new Error(`Edital de número ${num_edital} já existe`);
         }
 
-        edital = await Edital.create({
-            editalId: number,
-            vagaDoutorado: vaga_regular_doutorado,
-            vagaMestrado: vaga_regular_mestrado,
-            cotasDoutorado: vaga_suplementar_doutorado,
-            cotasMestrado: vaga_suplementar_mestrado,
-            cartaOrientador: carta_orientador,
-            cartaRecomendacao: carta_recomendacao,
-            documento: documento,
-            dataInicio: data_inicio,
-            dataFim: data_fim,
-            curso: "1",
-            status: "created",
-        }).catch(err => {
-            console.log(`[ERROR] Criar de Edital: ${err}`)
-            throw new Error("Não foi possivel criar o Edital");
-        });
-
-        return edital;
+        try {
+            const novo_edital = await Edital.create({
+                editalId: num_edital,
+                vagaDoutorado: vaga_regular_doutorado,
+                vagaMestrado: vaga_regular_mestrado,
+                cotasDoutorado: vaga_suplementar_doutorado,
+                cotasMestrado: vaga_suplementar_mestrado,
+                cartaOrientador: carta_orientador,
+                cartaRecomendacao: carta_recomendacao,
+                documento: documento,
+                dataInicio: data_inicio,
+                dataFim: data_fim,                
+                status: "1"
+            });
+        
+            return novo_edital;
+        } catch (error) {
+            console.log(`[ERROR] Criar Edital: ${error}`);
+            throw new Error("Não foi possível criar o Edital");
+        }
+      
+        
     }
 
 
