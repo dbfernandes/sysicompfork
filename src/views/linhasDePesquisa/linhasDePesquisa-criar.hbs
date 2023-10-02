@@ -1,12 +1,6 @@
 {{> header}}
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-criar'}}
-<style>
-	/* Style your page here  */
-  .links-container {
-    display: flex;
-    justify-content: space-around;
-  }
-</style>
+
 
 <main class="content-wrapper">
 	<section class="content-header">
@@ -53,6 +47,13 @@
 						<div class="card-header">
 							<h3 class="card-title">Dados da Linha de Pesquisa</h3>
 						</div>
+						{{#if error}}
+						<div class="alert alert-danger alert-dismissible" id="error-messages">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+							{{error}}
+						</div>
+						{{/if}}
 						<div class="card-body">
 							<form action="/linhasDePesquisa/criar" method="POST" id="linhaDePesquisaForm">
 								<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
@@ -61,14 +62,14 @@
                                 		<font color="#FF0000">*</font> Nome da Pesquisa:
                             		</label>
                            			<input type="text" name="nome" class="form-control" id="nome"
-                                		placeholder="Nome da Linha de Pesquisa...">
+                                		placeholder="Nome da Linha de Pesquisa..." required>
 								</div>
 								<div class="form-group">
 									<label for="inputSigla">
                                 	<font color="#FF0000">*</font> Siglas da Pesquisa:
                             	</label>
                            		<input type="text" name="sigla" class="form-control" id="sigla"
-                                	placeholder="Siglas...">
+                                	placeholder="Siglas..." required>
 								</div>
 							
 						</div>

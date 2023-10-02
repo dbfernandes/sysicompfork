@@ -1,12 +1,5 @@
 {{> header}}
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-adicionar'}}
-<style>
-	/* Style your page here  */
-  .links-container {
-    display: flex;
-    justify-content: space-around;
-  }
-</style>
 
 <main class="content-wrapper">
 	<section class="content-header">
@@ -49,7 +42,14 @@
 						<div class="card-header">
 							<h3 class="card-title">Novo dados da Linha de Pesquisa</h3>
 						</div>
-
+						
+						{{#if error}}
+						<div class="alert alert-danger alert-dismissible" id="error-messages">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+							{{error}}
+						</div>
+						{{/if}}
 
 						<div class="card-body">
 							<form action="/linhasDePesquisa/editar/{{linhaPesquisa.id}}" method="POST" id="linhaDePesquisaForm">

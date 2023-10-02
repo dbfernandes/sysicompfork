@@ -33,24 +33,34 @@ const buscar = async (req, res) => {
 
 const criar = async (req, res) => {
   if (req.method === 'GET') {
-    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar',{ pageTitle, csrfToken: req.csrfToken() });
+    return res.status(200).
+    render('linhasDePesquisa/linhasDePesquisa-criar',{ 
+      pageTitle, csrfToken: req.csrfToken() 
+    });
   } else {
     try {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
       
       if (await linhasDePesquisaService.findByName(nome)) 
-        return res.status(400).json({ message: 'Linha de Pesquisa já cadastrada!'});
-      if (await linhasDePesquisaService.findBySigla(sigla)) 
-        return res.status(400).json({ message: 'Sigla já cadastrada!'});
+        return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
+        pageTitle, csrfToken: req.csrfToken(),error: 'Linha de Pesquisa já cadastrada!'
+      });
 
-      if (!nome || !sigla) return res.status(400).json({ message: 'Nome e sigla são obrigatórios!'});
+      if (await linhasDePesquisaService.findBySigla(sigla)) 
+        return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
+          pageTitle, csrfToken: req.csrfToken(),error: 'Sigla já cadastrada!'
+      });
+
+      if (!nome || !sigla) return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
+        pageTitle, csrfToken: req.csrfToken(), error: 'Nome e sigla são obrigatórios!'
+      });
 
       await linhasDePesquisaService.create({ nome, sigla });  
 
     } catch (error ){
       console.log(error)
-      return res.status(400).json({ message: 'Não foi possível criar a linha de pesquisa!'});
+      return res.render('linhasDePesquisa/linhasDePesquisa-criar', {pageTitle, csrfToken: req.csrfToken(), error: 'Não foi possível criar a linha de pesquisa!'});
     }
     
     return res.redirect('/linhasDePesquisa/listar');
@@ -83,9 +93,14 @@ const editar = async (req, res) => {
       const sigla = req.body.sigla;
 
       if (await linhasDePesquisaService.findByName(nome)) 
-        return res.status(400).json({ message: 'Linha de Pesquisa já cadastrada!'});
+        return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
+        pageTitle, csrfToken: req.csrfToken(),error: 'Linha de Pesquisa já cadastrada!'
+      });
+      
       if (await linhasDePesquisaService.findBySigla(sigla)) 
-        return res.status(400).json({ message: 'Sigla já cadastrada!'});
+        return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
+          pageTitle, csrfToken: req.csrfToken(),error: 'Sigla já cadastrada!'
+      });
       
       await linhasDePesquisaService.update(req.params.id, { nome, sigla });
     } catch (error) {

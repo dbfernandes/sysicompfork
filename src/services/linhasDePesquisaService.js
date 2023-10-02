@@ -30,26 +30,41 @@ export default new class LinhasDePesquisaService {
 
   async findById(id) {
     const researchLine = await LinhasDePesquisa.findByPk(id);
-
+    
     const formatedAnswer = formatDbAnswer(researchLine);
 
     return formatedAnswer;
   }
 
   async findByName(name) {
-    const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name }});
+    try{
+      const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name }});
+      
+      if (!researchLine) return null;
 
-    const formatedAnswer = formatDbAnswer(researchLine);
+      const formatedAnswer = formatDbAnswer(researchLine);
+  
+      return formatedAnswer;
 
-    return formatedAnswer;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findBySigla(sigla) {
-    const researchLine = await LinhasDePesquisa.findOne({ where: { sigla }});
+    try {
+      const researchLine = await LinhasDePesquisa.findOne({ where: { sigla }});
+  
+      if (!researchLine) return null;
+      
+      const formatedAnswer = formatDbAnswer(researchLine);
+      
 
-    const formatedAnswer = formatDbAnswer(researchLine);
-
-    return formatedAnswer;
+      return formatedAnswer;
+      
+    } catch (error) {
+      throw error;
+    }
   }
 
   async create(newResearchLine) {
