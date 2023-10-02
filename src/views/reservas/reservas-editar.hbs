@@ -6,22 +6,20 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-3">
                 <div class="col-sm-9">
                     <h1>Editar Reserva</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a
-                                href="/reservas/gerenciar">Reservas</a></li>
+                        <li class="breadcrumb-item"><a href="/reservas/gerenciar">Reservas</a></li>
                         <li class="breadcrumb-item active">Editar</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
-                    <a type="button" class="btn btn-block btn-secondary"
-                        href="/reservas/gerenciar">
+                    <a type="button" class="btn btn-block btn-secondary" href="/reservas/gerenciar">
                         <i class="fa fa-arrow-left color-white"></i>
                         Voltar
                     </a>
@@ -32,23 +30,21 @@
 
     <section class="content">
         <div class="col-md-7">
+            
             <div class="card card-light">
-                <form method="POST" action="/reservas/editar/{{sala.id}}"
-                    id="editSalaForm">
+                <form method="POST" action="/reservas/editar/{{sala.id}}" id="editSalaForm">
                     <input type="hidden" name="_csrf" value="{{csrf}}" />
-                    <input type="hidden" name="UsuarioId"
-                        value="{{reservas.id}}" />
+                    <input type="hidden" name="UsuarioId" value="{{reservas.id}}" />
                     <div class="card-body ">
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-8">
                                 <label for="idSala">
                                     <font color="#FF0000">*</font> Sala:
                                 </label>
-                                <select class="form-control" id="SalaId"
-                                    name="SalaId" required>
-                                  
+                                <select class="form-control" id="SalaId" name="SalaId" required>
+
                                     <option selected value="{{reserva.salas.id}}">{{reserva.salas.nome}}</option>
-                                    
+
                                 </select>
                             </div>
                         </div>
@@ -57,9 +53,8 @@
                                 <label for="atividade">
                                     <font color="#FF0000">*</font> Atividade:
                                 </label>
-                                <input type="text" class="form-control"
-                                    id="atividade" name="atividade"  value = {{reserva.atividade}} required
-                                    placeholder="Aula">
+                                <input type="text" class="form-control" id="atividade" name="atividade"
+                                    value={{reserva.atividade}} required placeholder="Aula">
                             </div>
                         </div>
 
@@ -68,8 +63,8 @@
                                 <label for="dataInicio">
                                     <font color="#FF0000">*</font> Data Inicio:
                                 </label>
-                                <input type="date" class="form-control"
-                                     pattern="\d{4}-\d{2}-\d{2}" id="dataInicio" name="dataInicio" value = {{reserva.dataInicio}} required>
+                                <input type="date" class="form-control" pattern="\d{4}-\d{2}-\d{2}" id="dataInicio"
+                                    name="dataInicio" value={{reserva.dataInicio}} required>
 
                             </div>
 
@@ -77,8 +72,8 @@
                                 <label for="horaInicio">
                                     <font color="#FF0000">*</font> Hora Inicio:
                                 </label>
-                                <input type="time" class="form-control"
-                                    id="horaInicio" name="horaInicio" value = {{reserva.horaInicio}} required>
+                                <input type="time" class="form-control" id="horaInicio" name="horaInicio"
+                                    value={{reserva.horaInicio}} required>
 
                             </div>
 
@@ -89,8 +84,8 @@
                                 <label for="dataTermino">
                                     <font color="#FF0000">*</font> Data Termino:
                                 </label>
-                                <input type="date" class="form-control"
-                                    pattern="\d{4}-\d{2}-\d{2}"  id="dataTermino" name="dataTermino" value = {{reserva.dataTermino}} required>
+                                <input type="date" class="form-control" pattern="\d{4}-\d{2}-\d{2}" id="dataTermino"
+                                    name="dataTermino" value={{reserva.dataTermino}} required>
 
                             </div>
 
@@ -98,15 +93,15 @@
                                 <label for="horaTermino">
                                     <font color="#FF0000">*</font> Hora Termino:
                                 </label>
-                                <input type="time" class="form-control"
-                                    id="horaTermino" name="horaTermino" value = {{reserva.horaTermino}} required>
+                                <input type="time" class="form-control" id="horaTermino" name="horaTermino"
+                                    value={{reserva.horaTermino}} required>
 
-                            </div> </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <input type="submit" class="btn btn-primary"
-                            value="Salvar" />
+                        <input type="submit" class="btn btn-primary" value="Salvar" />
                     </div>
                 </form>
             </div>
