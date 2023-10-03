@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     
     static associate(models) {
-      // define association here
+      this.hasMany(models.ReservaSala);
     }
   }
 

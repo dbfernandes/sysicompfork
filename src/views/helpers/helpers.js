@@ -6,6 +6,12 @@ const ifEqual = (a, b, options) => {
 }
 
 
+const checked = (a, b) => {
+  if (a == b)
+      return 'selected'
+  return ''
+}
+
 const getJsonContext = (data, options) => {
     return options.fn(JSON.parse(data));
 };
@@ -26,4 +32,4 @@ const add = (a, b) => {
     return a + b;
 };
 
-module.exports = { ifEqual, add, showError }
+module.exports = { ifEqual, checked, add, showError }

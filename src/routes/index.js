@@ -9,7 +9,7 @@ import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas.routes';
 import autenticacaoController from '../controllers/auntenticacaoController';
-
+import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get('/logout', autenticacaoController.logout)
 
 router.use("/selecaoppgi", selecaoppgiRouter);
 
-router.use(autenticacaoController.verificar)
+//router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);
@@ -42,5 +42,6 @@ router.use("/projetos", projetosRoutes);
 router.use("/edital", editalRouter);
 router.use("/linhasdepesquisa", linhasDePesquisaRouter);
 router.use('/salas', salasRoutes);
+router.use('/reservas', reservasRoutes);
 router.use("/horascomplementares", horasComplementaresRoutes)
 export default router;
