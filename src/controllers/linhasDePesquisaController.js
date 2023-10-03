@@ -42,25 +42,18 @@ const criar = async (req, res) => {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
       
-      if (await linhasDePesquisaService.findByName(nome)) 
-        return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
-        pageTitle, csrfToken: req.csrfToken(),error: 'Linha de Pesquisa já cadastrada!'
-      });
+      if (await linhasDePesquisaService.findByName(nome)) throw new Error('Linha de Pesquisa já cadastrada!');
 
-      if (await linhasDePesquisaService.findBySigla(sigla)) 
-        return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
-          pageTitle, csrfToken: req.csrfToken(),error: 'Sigla já cadastrada!'
-      });
-
-      if (!nome || !sigla) return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
-        pageTitle, csrfToken: req.csrfToken(), error: 'Nome e sigla são obrigatórios!'
-      });
+      if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
 
       await linhasDePesquisaService.create({ nome, sigla });  
 
     } catch (error ){
       console.log(error)
-      return res.render('linhasDePesquisa/linhasDePesquisa-criar', {pageTitle, csrfToken: req.csrfToken(), error: 'Não foi possível criar a linha de pesquisa!'});
+      return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
+        pageTitle, csrfToken: req.csrfToken(), 
+        error: error.message || 'Não foi possível criar a linha de pesquisa!'
+      });
     }
     
     return res.redirect('/linhasDePesquisa/listar');
@@ -84,28 +77,29 @@ const remover = async (req, res) => {
 };
 
 const editar = async (req, res) => {
+  const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id);
   if (req.method === 'GET') {
-    const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id);
-    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', { linhaPesquisa, pageTitle, csrfToken: req.csrfToken() });
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', { 
+      linhaPesquisa, pageTitle, csrfToken: req.csrfToken() 
+    });
+
   } else {
     try {
       const nome = req.body.nome;
       const sigla = req.body.sigla;
 
-      if (await linhasDePesquisaService.findByName(nome)) 
-        return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
-        pageTitle, csrfToken: req.csrfToken(),error: 'Linha de Pesquisa já cadastrada!'
-      });
+      if (await linhasDePesquisaService.findByName(nome)) throw new Error('Linha de Pesquisa já cadastrada!');
       
-      if (await linhasDePesquisaService.findBySigla(sigla)) 
-        return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
-          pageTitle, csrfToken: req.csrfToken(),error: 'Sigla já cadastrada!'
-      });
+      if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
       
       await linhasDePesquisaService.update(req.params.id, { nome, sigla });
+      
     } catch (error) {
       console.log(error)
-      return res.status(400).json({ message: 'Não foi possível editar a linha de pesquisa!'});
+      return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
+        pageTitle, linhaPesquisa, csrfToken: req.csrfToken(), 
+        error: error.message || 'Não foi possível editar a linha de pesquisa!'
+      });
     }
   }
   return res.redirect('/linhasDePesquisa/listar');

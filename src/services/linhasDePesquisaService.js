@@ -78,18 +78,21 @@ export default new class LinhasDePesquisaService {
 
   async update(id, newInfo) {
     const { nome, sigla } = newInfo;
-
-    await LinhasDePesquisa.update(
-      {
-        nome,
-        sigla,
-      },
-      {
-        where: {
-          id,
+    try {
+      await LinhasDePesquisa.update(
+        {
+          nome,
+          sigla,
         },
-      }
-    );
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async delete(id) {

@@ -1,9 +1,6 @@
 {{> header}}
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-criar'}}
 
-<head>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-</head>
 
 <main class="content-wrapper">
 	<section class="content-header">
@@ -20,7 +17,14 @@
 					</ol>
 				</div>
 			</div>
-
+			{{#if error}}
+				<div id="toastsContainerTopRight" class="toasts-top-right fixed">
+					<div class="toast bg-danger fade show" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="toast-header"><strong class="mr-auto">Alerta</strong></div>
+						<div class="toast-body">{{error}}</div>
+					</div>
+				</div>
+			{{/if}}
 			<div class="row mb-2">
 				<div class="col-sm-3 col-md-2 col-lg-1">
 					<div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
@@ -50,13 +54,6 @@
 						<div class="card-header">
 							<h3 class="card-title">Dados da Linha de Pesquisa</h3>
 						</div>
-						{{#if error}}
-						<div class="alert alert-danger alert-dismissible" id="error-messages">
-							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-							<h5><i class="icon fas fa-ban"></i> Alerta!</h5>
-							{{error}}
-						</div>
-						{{/if}}
 						<div class="card-body">
 							<form action="/linhasDePesquisa/criar" method="POST" id="linhaDePesquisaForm">
 								<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
@@ -87,7 +84,7 @@
 			</div>
 		</div>
 	</section>
-
+	
 </main>
 
 <script>
@@ -136,6 +133,10 @@
             }
         });
     }
-
+	$(document).ready(function () {
+    	setTimeout(function () {
+    		$('.toast').removeClass('show');
+    	}, 7000);
+    });
 </script>
 {{> footer}}
