@@ -1,18 +1,71 @@
+const { faker } = require('@faker-js/faker');
+const bcrypt = require('bcrypt')
 'use strict';
+
+function gerarCpf() {
+  const num1 = aleatorio();
+  const num2 = aleatorio();
+  const num3 = aleatorio();
+  const dig1 = dig(num1, num2, num3);
+  const dig2 = dig(num1, num2, num3, dig1); 
+  return `${num1}.${num2}.${num3}-${dig1}${dig2}`;
+}
+
+function dig(n1, n2, n3, n4) { 
+  
+  const nums = n1.split("").concat(n2.split(""), n3.split(""));
+  if (n4 !== undefined) nums[9] = n4
+  let x = 0;
+  for (let i = (n4 !== undefined ? 11:10), j = 0; i >= 2; i--, j++) {
+    x += parseInt(nums[j]) * i;
+  }
+  const y = x % 11;
+  return y < 2 ? 0 : 11 - y; 
+}
+
+function aleatorio() {
+  const aleat = Math.floor(Math.random() * 999);
+  return ("" + aleat).padStart(3, '0'); 
+}
+
+async function createUser(){
+  const nomeCompleto = [faker.person.firstName(), faker.person.lastName()].join(" ");
+  const unidades = ["ICB", "ICE", "IFCHS", "ICOMP", "FCA", "EEM", "FM", "FCF", "FAO", "FD", "FES", "FEFF", "FACED", "FT", 
+  "FAPSI", "FIC", "FAARTES", "FLET"]
+  const turnos = ["Matutino e Vespertino", "Matutino e Noturno", "Vespertino e Noturno", "Sem turno selecionado"] 
+  let salt = await bcrypt.genSalt(12);
+  let senhaHash = await bcrypt.hash("senha123", salt);
+  const user = {
+    nomeCompleto,
+    cpf: gerarCpf(),
+    senhaHash,
+    tokenResetSenha: null,
+    validadeTokenResetSenha: null,
+    email: faker.internet.email({firstName: nomeCompleto.split(" ")[0] , lastName: nomeCompleto.split(" ")[1]}),
+    status: 1,
+    administrador: faker.number.int({ min: 0, max: 1 }),
+    coordenador: faker.number.int({ min: 0, max: 1 }),
+    secretaria: faker.number.int({ min: 0, max: 1 }),
+    professor: faker.number.int({ min: 0, max: 1 }),
+    siape: faker.string.numeric({ length: 9, allowLeadingZeros: false }),
+    dataIngresso: faker.date.past().toLocaleString("pt-BR", {
+        timeZone: 'America/Manaus',
+    }).slice(0,10),
+    endereco: [faker.location.streetAddress({ useFullAddress: true }), faker.location.city(), faker.location.country()].join(" "),
+    telCelular: faker.phone.number("(92) 9####-####"),
+    telResidencial: faker.phone.number("(92) 3####-####"),
+    unidade: unidades[faker.number.int({ min: 0, max: 17 })],
+    turno: turnos[faker.number.int({ min: 0, max: 3 })],
+    idLattes: faker.number.int({ min: 10000000000, max: 99999999999 }),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }
+  return user
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
-
-    return queryInterface.bulkInsert('Usuario', [{
+    const usuarios = [{
       nomeCompleto: 'Usuario de teste inicial',
       cpf: '111.111.111-11',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
@@ -35,244 +88,11 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
 
-    },
-    {
-      nomeCompleto: 'Administrador',
-      cpf: '222.222.222-22',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'admin@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 1,
-      coordenador: 0,
-      secretaria: 0,
-      professor: 0,
-      siape: '534623',
-      dataIngresso: '30/11/1969',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 12345-0000',
-      telResidencial: '(92) 54321-0000',
-      unidade: 'IComp',
-      turno: 'Matutino e Noturno',
-      idLattes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'Coordenador',
-      cpf: '333.333.333-33',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'coord@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 1,
-      secretaria: 0,
-      professor: 0,
-      siape: '0434354',
-      dataIngresso: '12/10/1976',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 00000-1234',
-      telResidencial: '(92) 00000-4231',
-      unidade: 'Faculdade de Tecnologia',
-      turno: 'Vespertino e Noturno',
-      idLattes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'Secretaria',
-      cpf: '444.444.444-44',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'secret@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 0,
-      secretaria: 1,
-      professor: 0,
-      siape: '044114',
-      dataIngresso: '27/03/2001',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 02340-0000',
-      telResidencial: '(92) 00856-0000',
-      unidade: 'IComp',
-      turno: 'Sem turno selecionado',
-      idLattes: 1234567891011121,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'Professor',
-      cpf: '555.555.555-55',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'prof@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 0,
-      secretaria: 0,
-      professor: 1,
-      siape: '04120784',
-      dataIngresso: '27/11/2010',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 00042-0000',
-      telResidencial: '(92) 00000-0000',
-      unidade: 'Faculdade de Tecnologia',
-      turno: 'Matutino e Noturno',
-      idLattes: 1234567891011121,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'Eduardo Dias Castro',
-      cpf: '666.666.666-66',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'eduardo@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 0,
-      secretaria: 0,
-      professor: 0,
-      siape: '0401254',
-      dataIngresso: '27/11/2004',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 07850-0000',
-      telResidencial: '(92) 00000-0040',
-      unidade: 'IComp',
-      turno: 'Vespertino e Noturno',
-      idLattes: 45465723265788,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'João Antonio Pereira',
-      cpf: '777.777.777-77',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'joao@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 1,
-      secretaria: 0,
-      professor: 1,
-      siape: '0498514',
-      dataIngresso: '04/11/1999',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 05000-0400',
-      telResidencial: '(92) 78000-0060',
-      unidade: 'IComp',
-      turno: 'Sem turno selecionado',
-      idLattes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },
-    {
-      nomeCompleto: 'Marco Braga Nakamura Uchôa',
-      cpf: '888.888.888-88',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'marco@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 1,
-      coordenador: 1,
-      secretaria: 1,
-      professor: 1,
-      siape: '0745114',
-      dataIngresso: '15/11/1984',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 00650-0000',
-      telResidencial: '(92) 00010-0000',
-      unidade: 'Faculdade de Tecnologia',
-      turno: 'Vespertino e Noturno',
-      idLattes: 1234567433542624,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },{
-      nomeCompleto: 'Moisés Harada Bastos',
-      cpf: '999.999.999-99',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'moises@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 1,
-      secretaria: 1,
-      professor: 0,
-      siape: '0454114',
-      dataIngresso: '27/11/1989',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 00000-0000',
-      telResidencial: '(92) 00000-0000',
-      unidade: 'IComp',
-      turno: 'Matutino e Noturno',
-      idLattes: 1234567891011121,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },{
-      nomeCompleto: 'José Caldas Freitas',
-      cpf: '121.212.121-21',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'jose@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 0,
-      secretaria: 1,
-      professor: 1,
-      siape: '04314114',
-      dataIngresso: '27/10/1981',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 06000-0000',
-      telResidencial: '(92) 00200-0000',
-      unidade: 'IComp',
-      turno: 'Vespertino e Noturno',
-      idLattes: 1264533421011121,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    },{
-      nomeCompleto: 'Vicente Luiz Hughes Azevedo',
-      cpf: '123.123.123-12',
-      senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetSenha: null,
-      validadeTokenResetSenha: null,
-      email: 'vicente@icomp.ufam.edu.br',
-      status: 1,
-      administrador: 0,
-      coordenador: 1,
-      secretaria: 1,
-      professor: 1,
-      siape: '6524114',
-      dataIngresso: '27/11/1998',
-      endereco: 'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
-      telCelular: '(92) 00000-0000',
-      telResidencial: '(92) 00000-0000',
-      unidade: 'IComp',
-      turno: 'Matutino e Vespertino',
-      idLattes: 1234567891011121,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-
-    }]);
+    }]
+    for (let i = 0; i < 50; i++) {
+      usuarios.push( await createUser());
+    }
+    return queryInterface.bulkInsert('Usuario', usuarios);
   },
 
   down: async (queryInterface, Sequelize) => {

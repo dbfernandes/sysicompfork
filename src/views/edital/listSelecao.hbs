@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-2 mt-4">
+                <div class="col-sm-5 col-md-4 col-lg-4 col-xl-3 mt-4">
                     <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
@@ -28,8 +28,9 @@
                         Novo Edital
                     </a>      
                 </div>
-                <div class="col-sm-5 col-md-7 col-lg-10">
-                    <div class="legenda-table float-right">
+
+                <div class="col-sm-7 col-md-8 col-lg-8 d-flex justify-content-end">
+                    <div class="legenda-table">
                         <table class="table table-bordered" style="border-color: black;">
                             <tr style="background-color: #dcdcdc;">
                                 <td colspan="2" style="text-align: center; font-size: 15px; padding: 0px 50px; border-color: black;">Legenda</td>
@@ -45,6 +46,7 @@
                         </table>
                     </div>
                 </div>
+               
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -86,21 +88,47 @@
                                         <td>  </td>
                                         <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
                                         <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
-                                        <td class="project-actions text-left">
-                                            <a class="btn btn-secondary btn-sm" href="#">
-                                                <i class="fas fa-download"></i>
-                                            </a>
-                                            <a class="btn btn-primary btn-sm" href="/edital/listEdital/{{dataValues.editalId}}">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            
+                                        <td class='links-container'>
+                                            <div class="d-flex justify-content-between">
+
+                                                <a  style="margin-right: 2px"
+                                                    href='#'
+                                                    class='fa fa-solid fa-download'/>
+                                                </a>
+
+                                                <a  style="margin-right: 2px"
+                                                    href='/edital/listEdital/{{dataValues.editalId}}'
+                                                    class='fa fa-solid fa-eye'/>
+                                                </a>
+
+                                                <a  class="fa fa-solid fa-trash" data-editalId="{{dataValues.editalId}}" onclick="deleteEdital(this)"
+                                                data-toggle="modal" data-target="#removerEdital" onclick="addLink(event)" href="#">
+                                                </a>
+
+                                                <a  style="margin-right: 2px"
+                                                    href='/edital/updateEdital/{{dataValues.editalId}}'
+                                                    class='fa fa-solid fa-pen'/>
+                                                </a>
+
+                                            </div>
+                                        </td>                                            
+                                        
+                                            <!-- 
+                                                implementado
+                                                <a class="fa fa-solid fa-trash" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)" href="#">
+                                                </a>
+
+
+
                                             <a class="btn btn-danger btn-sm" data-editalId="{{dataValues.editalId}}" onclick="deleteEdital(this)">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                             <a href="/edital/updateEdital/{{dataValues.editalId}}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
-                                        </td>
+                                            -->
+                                      
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -141,6 +169,13 @@
         });
     }
 }
+
+    function addLink(event) {
+        const [nomeCompleto, id] = event.target.id.split("_").slice(1);
+        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir o edital " + nome + "?";
+        const formDelete = document.getElementById("postDelete")
+        formDelete.setAttribute('action', `/usuarios/deletar/${id}`);
+    }
 
 
  document.getElementById("voltarBtn").addEventListener("click", function() {

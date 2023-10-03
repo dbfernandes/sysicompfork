@@ -1,5 +1,4 @@
-const {Usuario} = require('../models');
-import bcrypt from "bcrypt";
+import UsuarioService from "../services/usuarioService";
 
 function criarURL(root, params = {}) {
     if (root instanceof URL) root = root.href;
@@ -15,35 +14,47 @@ const adicionar = async (req, res) => {
             csrfToken: req.csrfToken()
         })
     } else if(req.method === 'POST'){
-        console.log("Chegou", req.body)
        try{
-            let salt = await bcrypt.genSalt(12);
-            let senhaHash = await bcrypt.hash(req.body.senha, salt);
-
-            const administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0;
-            const coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0;;
-            const secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0;;
-            const professor = req.body.professor && req.body.professor == 'on' ? 1 : 0;;
-            
-            await Usuario.create({
-                nomeCompleto: req.body.nomeCompleto,
-                cpf: req.body.cpf,
-                email: req.body.email,
-                senhaHash,
-                status: 1,
+            var {
+                nomeCompleto,
+                cpf,
+                email,
                 administrador,
                 coordenador,
                 secretaria,
                 professor,
-                endereco: req.body.endereco,
-                telResidencial: req.body.telefoneResidencial,
-                telCelular: req.body.telefoneCelular,
-                siape: req.body.siape,
-                dataIngresso: req.body.dateDeIngresso,
-                unidade: req.body.unidade,
-                turno: req.body.turno,
-                idLattes: null,
-            }, {})
+                senha,
+                endereco,
+                telefoneResidencial,
+                telefoneCelular,
+                siape,
+                dateDeIngresso,
+                unidade,
+                turno,
+            } = req.body
+
+            administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0;
+            coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0;;
+            secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0;;
+            professor = req.body.professor && req.body.professor == 'on' ? 1 : 0;;
+            
+            await UsuarioService.adicionar(
+                nomeCompleto,
+                cpf,
+                email,
+                senha,
+                administrador,
+                coordenador,
+                secretaria,
+                professor,
+                endereco,
+                telefoneResidencial,
+                telefoneCelular,
+                siape,
+                dateDeIngresso,
+                unidade,
+                turno
+            )
     
        }catch(error){
             console.log(error)
@@ -52,15 +63,17 @@ const adicionar = async (req, res) => {
                 csrfToken: req.csrfToken(),
                 errors: error.errors,
                 message:
-                'Não foi possível criar este usuário. Verifique os erros e tente novamente.',
+                'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
                 type: 'danger',
+                messageTitle: 'Criação de usuário indisponível!',
             });
 
        }
 
        return res.redirect(
         criarURL('/usuarios/listar', {
-            message: 'Usuário criado com sucesso!',
+            messageTitle: 'Criação de usuário bem-sucedida!',
+            message: 'Usuário adicionado no sistema com sucesso.',
             type: 'success',
         }
        ));
@@ -70,14 +83,14 @@ const adicionar = async (req, res) => {
 const deletar = async (req, res)=> {
     if (req.method === 'POST') {
         try {
-            const usuario = await Usuario.findByPk(req.params.id)
-            await usuario.update({ 
+            await UsuarioService.alterar(req.params.id, { 
                 status: 0,
             })
             return res.redirect(
                 criarURL('/usuarios/listar', {
-                  message: 'Usuário excluído com sucesso!',
+                  message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
                   type: 'success',
+                  messageTitle: 'Bloqueio de usuário bem-sucedido!',
                 })
               );
             
@@ -85,8 +98,40 @@ const deletar = async (req, res)=> {
             console.log(error)
             return res.redirect(
                 criarURL('/usuarios/listar', {
-                    message: 'Não foi possível excluir este usuário.',
+                    messageTitle: 'Bloqueio de usuário indisponível!',
+                    message: 'Não foi possível bloquear este usuário.',
                     type: 'danger',
+                })
+              );
+        }
+    }
+
+    
+    
+
+}
+
+const restaurar = async (req, res)=> {
+    if (req.method === 'POST') {
+        try {
+            await UsuarioService.alterar(req.params.id, { 
+                status: 1,
+            })
+            return res.redirect(
+                criarURL('/usuarios/listar', {
+                  message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
+                  type: 'success',
+                  messageTitle: 'Desbloqueio de usuário bem-sucedido!',
+                })
+              );
+            
+        }catch(error){
+            console.log(error)
+            return res.redirect(
+                criarURL('/usuarios/listar', {
+                    message: 'Não foi possível desbloquear este usuário.',
+                    type: 'danger',
+                    messageTitle: 'Desbloqueio de usuário indisponível!',
                 })
               );
         }
@@ -99,42 +144,42 @@ const deletar = async (req, res)=> {
 
 const listar = async (req, res) => {
     if (req.method === 'GET') {
-        const { message, type } = req.query;
-        const usuarios = await Usuario.findAll()
-        res.render('usuarios/usuarios-listar', {
-            usuarios: usuarios.map(usuario => {
-                return {
-                    ...usuario.get(),
-                    perfis: usuario.perfis()
-                }
-            }),
-            csrfToken: req.csrfToken(),
-            nome: req.session.nome,
-            message, 
-            type
-        })
+        try {
+            const { message, type, messageTitle } = req.query;
+            const usuarios = await  UsuarioService.listarTodos()
+            return res.render('usuarios/usuarios-listar', {
+                usuarios,
+                csrfToken: req.csrfToken(),
+                nome: req.session.nome,
+                message, 
+                type,
+                messageTitle
+            })
+        } catch (error) {
+            console.log(error)
+            return res.redirect(
+                criarURL('/inicio', {
+                    message: 'Não foi possível listar os usuários.',
+                    type: 'danger',
+                    messageTitle: 'Listagem de usuários indisponível!',
+                })
+              );
+        }
     }
 }
 
 const visualizar = async (req, res) => {
     try {
-        const { message, type } = req.query;
-        const usuario = await Usuario.findByPk(req.params.id, {
-            atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape", 
-            "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
-            "turno", "idLattes", "createdAt"]
-        })
-        const usuarioDict = usuario.get()
-        usuarioDict["perfil"] = usuario.perfis()
-        usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
-            timeZone: 'America/Manaus',
-        }).slice(0,10);
+        const { message, type, messageTitle } = req.query;
+        
+        const usuario = await UsuarioService.listarUm(req.params.id)
         return res.render("usuarios/usuario-visualizar", {
-            usuario: usuarioDict,
+            usuario,
             csrfToken: req.csrfToken(),
             nome: req.session.nome,
             message, 
-            type
+            type,
+            messageTitle
         })
     } catch (error) { 
         console.log(error)
@@ -142,6 +187,7 @@ const visualizar = async (req, res) => {
             criarURL('/usuarios/listar', {
                 message: 'Não foi possível visualizar este usuário.',
                 type: 'danger',
+                messageTitle: 'Visualização do usuário indisponível!',
             })
           );
     }
@@ -150,20 +196,15 @@ const visualizar = async (req, res) => {
 const editar = async (req, res) => {
     if(req.method == "GET"){
         try {
-            const { message, type } = req.query;
-            const usuario = await Usuario.findByPk(req.params.id, {
-                atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape",
-                "administrador", "secretaria", "professor", "coordenador",   
-                "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
-                "turno", "idLattes", "createdAt"]
-            })
-            const usuarioDict = usuario.get()
+            const { message, type, messageTitle } = req.query;
+            const usuario = await UsuarioService.listarUm(req.params.id)
             return res.render("usuarios/usuarios-editar", {
-                usuario: usuarioDict,
+                usuario,
                 csrfToken: req.csrfToken(),
                 nome: req.session.nome,
                 message, 
-                type
+                type,
+                messageTitle
             })
         } catch (error) { 
             console.log(error)
@@ -171,11 +212,11 @@ const editar = async (req, res) => {
                 criarURL('/usuarios/listar', {
                     message: 'Não foi possível abrir formulário de edição para este usuário.',
                     type: 'danger',
+                    messageTitle: 'Edição de usuário indisponível!'
                 })
                 );
             }
         }else if(req.method == "POST"){
-            console.log("Chegou", req.body)
             const administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0;
             const coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0;;
             const secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0;;
@@ -184,6 +225,7 @@ const editar = async (req, res) => {
                 nomeCompleto: req.body.nomeCompleto,
                 cpf: req.body.cpf,
                 email: req.body.email,
+                senha: req.body.senha,
                 administrador,
                 coordenador,
                 secretaria,
@@ -196,27 +238,19 @@ const editar = async (req, res) => {
                 unidade: req.body.unidade,
                 turno: req.body.turno,
             }
-            if(req.body.senha != ""){
-                let salt = await bcrypt.genSalt(12);
-                let senhaHash = await bcrypt.hash(req.body.senha, salt);
-                dados["senhaHash"] = senhaHash
-            }
             try{
-            
-            
-                const usuario = await Usuario.findByPk(req.params.id)
-                await usuario.update(dados)
-
-                
+                await UsuarioService.alterar(req.params.id, dados)
                 
             }catch(error){
+                console.log(error)
                 dados["id"] = req.params.id
                 return res.render("usuarios/usuarios-editar", {
                     usuario: dados,
                     csrfToken: req.csrfToken(),
                     nome: req.session.nome,
-                    message: 'Não foi possível editar este usuário. Verifique os erros e tente novamente.',
+                    message: 'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
                     type: 'danger',
+                    messageTitle: 'Edição de usuário indisponível!',
                     errors: error.errors,
                 })
     
@@ -226,11 +260,12 @@ const editar = async (req, res) => {
             criarURL(`/usuarios/dados/${req.params.id}`, {
                 message: 'Dados alterados com sucesso!',
                 type: 'success',
+                messageTitle: 'Edição de usuário bem-sucedida!'
             }
             ));
         }
     }
-export default { adicionar, listar, deletar, visualizar, editar}
+export default { adicionar, listar, deletar, visualizar, editar, restaurar}
 
 
 

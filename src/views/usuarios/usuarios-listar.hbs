@@ -33,20 +33,12 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            {{#if message}}
-                <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
-                    {{message}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {{/if}}
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example2" class="table table-hover">
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="example2" class="table table-hover w-100">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -54,12 +46,12 @@
                                         <th>Email</th>
                                         <th>Telefones</th>
                                         <th>Perfil(s)</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {{#each usuarios}}
-                                    {{#if status}} 
                                     <tr>
                                         <td> {{nomeCompleto}} </td>
                                         <td> {{cpf}} </td>
@@ -74,24 +66,41 @@
                                         <td>
                                             {{perfis}}
                                         </td>
+                                        <td>
+                                            <span class="{{#if status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span>
+                                        </td>
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-between">
-
                                                 <a  style="margin-right: 2px"
                                                     href='/usuarios/dados/{{id}}'
                                                     class='fa fa-solid fa-eye'
+                                                    title="Visualizar" 
                                                 /></a>
-                                                <a class="fa fa-solid fa-trash" id="removerUser_{{nomeCompleto}}_{{id}}"
-                                                data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)" href="#">
+                                                {{#if status}}
+                                                <a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerUsuario"
+                                                    title="Bloquear" 
+                                                    onclick="addLink(event)" href="#"
+                                                    
+                                                    >
                                                 </a>
+                                                {{else}}
+                                                <a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+                                                data-toggle="modal" data-target="#removerUsuario"
+                                                title="Desbloquear" 
+                                                onclick="addLink(event)" href="#"
+                                                    >
+                                                </a>
+                                                {{/if}}
                                                 <a  style="margin-right: 2px"
                                                     href='/usuarios/editar/{{id}}'
                                                     class='fa fa-solid fa-pen'
+                                                    title="Editar"
+
                                                 /></a>
                                             </div>
                                         </td>
                                     </tr>
-                                    {{/if}}
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -128,13 +137,6 @@
                 </div>
             </div>
         </div>
-<head>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-
-  <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-</head>
 <script>
     // Adiciona margem entre os icones de telefone caso haja 2 números de contato
     const celulares = document.getElementsByClassName("celular")
@@ -143,11 +145,25 @@
         if (document.getElementById(id+"f")) cel.className = cel.className + " mr-2"
     }
     document.addEventListener("DOMContentLoaded", function(event) {
-         $("#example2").DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-            },
-         });
+        var datatable = $("#example2").DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+        },
+        responsive: true,
+        columns: [
+            { responsivePriority: 1 },
+            { responsivePriority: 6 },
+            { responsivePriority: 3 },
+            { responsivePriority: 4 },
+            { responsivePriority: 5 },
+            { responsivePriority: 7 },
+            { responsivePriority: 2 },
+        ],
+        columnDefs: [ {
+            "targets": [3,6],
+            "orderable": false
+        } ]
+        });
     });
 
     function deleteUser(){
@@ -155,11 +171,24 @@
     }
 
     function addLink(event) {
-        const [nomeCompleto, id] = event.target.id.split("_").slice(1);
-        const nome = `${nomeCompleto.split(' ')[0]} ${nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1]}`
-        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir o usuário " + nome + "?";
+        const [tipo, nomeCompleto, id] = event.target.id.split("_");
+        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " "+nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
+        const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
+        document.getElementById("tituloModal").innerHTML =  prefixo + nome + "?";
         const formDelete = document.getElementById("postDelete")
-        formDelete.setAttribute('action', `/usuarios/deletar/${id}`);
+        const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
+        formDelete.setAttribute('action', url);
+    }
+    if("{{message}}"){
+        $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-{{type}}",
+            autohide: true,
+            delay: 10000,
+            title: '{{messageTitle}}',
+            body: '{{message}}'
+            })
+
     }
 
 </script>
