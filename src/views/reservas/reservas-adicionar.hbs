@@ -46,7 +46,7 @@
                                 <label for="atividade">
                                     <font color="#FF0000">*</font> Atividade:
                                 </label>
-                                <input type="text" class="form-control" id="atividade" name="atividade" required
+                                <input type="text" value = class="form-control" id="atividade" name="atividade" required
                                     placeholder="">
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                         <div class="row">
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-10">
-                                <label for="idSala">
+                                <label for="SalaId">
                                     <font color="#FF0000">*</font> Sala:
                                 </label>
                                 <select class="form-control" id="SalaId" name="SalaId" required>
@@ -81,11 +81,11 @@
                         <div class="row">
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-10">
-                                <input class="form-check-input ml-3 " type="radio" name="radioOption" id="option1"
-                                    value="option1">
+                                <input class="form-check-input ml-3 " type="radio" name="semanal" id="option1"
+                                    value="unica">
                                 <label class="control-label pl-3 ml-4  mr-5" for="option1">Reserva Única</label>
-                                <input class="form-check-input" checked type="radio" name="radioOption" id="option2"
-                                    value="option2">
+                                <input class="form-check-input" checked type="radio" name="semanal" id="option2"
+                                    value="semanal">
                                 <label class="control-label" for="option2">Reserva Semanal</label>
                             </div>
                         </div>
@@ -98,24 +98,24 @@
                                 </label>
                                 <div>
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption1" value="Segunda"> Segunda
+                                        <input type="checkbox" id="checkboxOption1" name="dia" value="Segunda"> Segunda
                                     </label>
 
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption2" value="Terça"> Terça
+                                        <input type="checkbox" id="checkboxOption2" name="dia" value="Terça"> Terça
                                     </label>
 
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption3" value="Quarta"> Quarta
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Quarta"> Quarta
                                     </label>
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption3" value="Quinta"> Quinta
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Segunda" value="Quinta"> Quinta
                                     </label>
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption3" value="Sexta"> Sexta
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Sexta"> Sexta
                                     </label>
                                     <label class="checkbox-inline ml-3">
-                                        <input type="checkbox" id="checkboxOption3" value="Sábado"> Sábado
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Sábado"> Sábado
                                     </label>
                                 </div>
                             </div>
@@ -203,7 +203,7 @@
 
 <script>
 
-    const radioOption = document.querySelectorAll('input[name="radioOption"]');
+    const radioOption = document.querySelectorAll('input[name="semanal"]');
     const conditionalInput = document.getElementById('conditionalInput');
     const conditionalInput2 = document.getElementById('conditionalInput2');
     radioOption.forEach(radio => {

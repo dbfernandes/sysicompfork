@@ -33,69 +33,144 @@
             
             <div class="card card-light">
                 <form method="POST" action="/reservas/editar/{{sala.id}}" id="editSalaForm">
-                    <input type="hidden" name="_csrf" value="{{csrf}}" />
-                    <input type="hidden" name="UsuarioId" value="{{reservas.id}}" />
+                        <input type="hidden" name="_csrf" value="{{csrf}}" />
+                    <input type="hidden" name="UsuarioId" value="{{UsuarioId}}" />
                     <div class="card-body ">
+
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-8">
-                                <label for="idSala">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-10">
+                                <label for="atividade">
+                                    <font color="#FF0000">*</font> Atividade:
+                                </label>
+                                <input type="text" class="form-control"  value = {{reserva.atividade}} id="atividade" name="atividade" required
+                                    placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-10">
+                                <label for="bloco">
+                                    <font color="#FF0000">*</font> Tipo:
+                                </label>
+                                <select class="form-control" id="tipo" name="tipo" required>
+                                    <option {{checked reserva.tipo 'Aula' }} value="Aula">Aula</option>
+                                    <option {{checked reserva.tipo 'Defesa' }}value="Defesa">Defesa</option>
+                                    <option {{checked reserva.tipo 'Exame' }}value="Exame">Exame</option>
+                                    <option {{checked reserva.tipo 'Reunião' }} value="Reunião">Reunião</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-10">
+                                <label for="SalaId">
                                     <font color="#FF0000">*</font> Sala:
                                 </label>
                                 <select class="form-control" id="SalaId" name="SalaId" required>
-
-                                    <option selected value="{{reserva.salas.id}}">{{reserva.salas.nome}}</option>
-
+                                   
+                                    <option value = {{reserva.salas.id}}> {{reserva.salas.nome}} - {{reserva.salas.bloco}}</option>
+                           
                                 </select>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-8">
-                                <label for="atividade">
-                                    <font color="#FF0000">*</font> Atividade:
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-10">
+                                <input class="form-check-input ml-3 " {{checked reserva.semanal 0 }}type="radio" name="semanal" id="option1"
+                                    value="unica">
+                                <label class="control-label pl-3 ml-4  mr-5" for="option1">Reserva Única</label>
+                                <input class="form-check-input" {{checked reserva.semanal 1 }} type="radio" name="semanal" id="option2"
+                                    value="semanal">
+                                <label class="control-label" for="option2">Reserva Semanal</label>
+                            </div>
+                        </div>
+                        <div class="row" id="conditionalInput" tyle="display: none;">
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-12">
+                                <label class="control-label" for="candidato-nome">
+                                    <font color="#FF0000"></font>
+                                    <b>Dias da semana:</b>
                                 </label>
-                                <input type="text" class="form-control" id="atividade" name="atividade"
-                                    value={{reserva.atividade}} required placeholder="Aula">
+                                <div>
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption1" name="dia" value="Segunda"> Segunda
+                                    </label>
+
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption2" name="dia" value="Terça"> Terça
+                                    </label>
+
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Quarta"> Quarta
+                                    </label>
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Segunda" value="Quinta"> Quinta
+                                    </label>
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Sexta"> Sexta
+                                    </label>
+                                    <label class="checkbox-inline ml-3">
+                                        <input type="checkbox" id="checkboxOption3" name="dia" value="Sábado"> Sábado
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="conditionalInput2" style="display: none;">
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
+                                <label for="dataInicio">Data Inicial:</label>
+                                <div class="input-group date" id="dataInicio" data-target-input="nearest">
+                                    <div class="input-group-append" data-target="#dataInicio"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    <input type="text" value = {{reserva.dataInicio}} class="form-control datetimepicker-input"
+                                        data-target="#dataInicio" name="dataInicio" placeholder="DD-MM-YYYY">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
+                                <label for="dataTermino">Data Término:</label>
+                                <div class="input-group date" id="dataTermino" data-target-input="nearest">
+                                    <div class="input-group-append" data-target="#dataTermino"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    <input type="text" value = {{reserva.dataTermino}} class="form-control datetimepicker-input"
+                                        data-target="#dataTermino" name="dataTermino" placeholder="DD-MM-YYYY">
+
+                                </div>
+
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="dataInicio">
-                                    <font color="#FF0000">*</font> Data Inicio:
-                                </label>
-                                <input type="date" class="form-control" pattern="\d{4}-\d{2}-\d{2}" id="dataInicio"
-                                    name="dataInicio" value={{reserva.dataInicio}} required>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
+                                <label for="horaInicio">Hora Inicio:</label>
+                                <div class="input-group date" id="horaInicio" data-target-input="nearest">
+                                    <div class="input-group-append" data-target="#horaInicio"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                    <input type="text" value = {{reserva.horaInicio}} class="form-control datetimepicker-input"
+                                        data-target="#horaInicio" name="horaInicio" placeholder='HH:mm'>
 
+                                </div>
                             </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
+                                <label for="horaTermino">Hora Término:</label>
+                                <div class="input-group date" id="horaTermino" data-target-input="nearest">
+                                    <div class="input-group-append" data-target="#horaTermino"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                    <input type="text" value = {{reserva.horaTermino}} valueclass="form-control  datetimepicker-input"
+                                        data-target="#horaTermino" name="horaTermino" placeholder='HH:mm'>
 
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="horaInicio">
-                                    <font color="#FF0000">*</font> Hora Inicio:
-                                </label>
-                                <input type="time" class="form-control" id="horaInicio" name="horaInicio"
-                                    value={{reserva.horaInicio}} required>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="dataTermino">
-                                    <font color="#FF0000">*</font> Data Termino:
-                                </label>
-                                <input type="date" class="form-control" pattern="\d{4}-\d{2}-\d{2}" id="dataTermino"
-                                    name="dataTermino" value={{reserva.dataTermino}} required>
-
-                            </div>
-
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                                <label for="horaTermino">
-                                    <font color="#FF0000">*</font> Hora Termino:
-                                </label>
-                                <input type="time" class="form-control" id="horaTermino" name="horaTermino"
-                                    value={{reserva.horaTermino}} required>
-
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,3 +185,60 @@
     </section>
 </div>
 {{> footer}}
+<!-- Add Bootstrap JS and jQuery (required) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Add Moment.js (required by Datetimepicker) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<!-- Add Bootstrap Datetimepicker JS -->
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script>
+
+    const radioOption = document.querySelectorAll('input[name="semanal"]');
+    const conditionalInput = document.getElementById('conditionalInput');
+    const conditionalInput2 = document.getElementById('conditionalInput2');
+    radioOption.forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.id === 'option2' && this.checked) {
+                conditionalInput.style.display = 'block';
+                conditionalInput2.style.display = 'none';
+            } else {
+                conditionalInput.style.display = 'none';
+                conditionalInput2.style.display = 'block';
+            }
+        });
+    });
+    // Initialize date and time pickers
+    $('#dataTermino,#dataInicio').datetimepicker({
+        format: 'DD-MM-YYYY',
+        icons: {
+            time: 'fa fa-calendar',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-calendar-check-o',
+            clear: 'fa fa-trash',
+            close: 'fa fa-times'
+        }
+    });
+
+    $('#horaInicio,#horaTermino').datetimepicker({
+        format: 'HH:mm',
+        icons: {
+            time: 'fa fa-clock',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-calendar-check-o',
+            clear: 'fa fa-trash',
+            close: 'fa fa-times'
+        }
+    });
+</script>   

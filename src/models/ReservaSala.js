@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Salas, { as: 'salas', foreignKey: 'SalaId' });
-      this.belongsTo(models.Salas, { as: 'usuario', foreignKey: 'UsuarioId' });
+      this.belongsTo(models.Usuario, { as: 'usuario', foreignKey: 'UsuarioId' });
     }
   };
   ReservaSala.init({
@@ -29,13 +29,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    dataInicio: { 
-      type: DataTypes.DATE,
+    tipo:{
+      type: DataTypes.STRING,
       allowNull: false
     },
+    dias:{
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    semanal: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    dataInicio: { 
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
     dataTermino:{ 
-      type: DataTypes.DATE,
-      allowNull: false
+      type: DataTypes.DATEONLY,
+      allowNull: true
     },
     horaInicio:{ 
       type: DataTypes.TIME,

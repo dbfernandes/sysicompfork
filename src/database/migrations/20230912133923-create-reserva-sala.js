@@ -17,11 +17,20 @@ module.exports = {
       atividade: {
         type: Sequelize.STRING
       },
+      tipo:{
+        type: Sequelize.STRING
+      },
+      dias:{
+        type: Sequelize.STRING
+      },
+      semanal: {
+        type: Sequelize.BOOLEAN
+      },
       dataInicio: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       dataTermino: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       horaInicio: {
         type: Sequelize.TIME
