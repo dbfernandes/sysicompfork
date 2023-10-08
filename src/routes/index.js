@@ -32,7 +32,7 @@ router.get('/logout', autenticacaoController.logout)
 
 router.use("/selecaoppgi", selecaoppgiRouter);
 
-//router.use(autenticacaoController.verificar)
+router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);

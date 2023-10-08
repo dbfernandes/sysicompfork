@@ -23,9 +23,6 @@ module.exports = {
       dias:{
         type: Sequelize.STRING
       },
-      semanal: {
-        type: Sequelize.BOOLEAN
-      },
       dataInicio: {
         type: Sequelize.DATEONLY
       },

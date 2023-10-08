@@ -44,25 +44,27 @@
                                         <th>Solicitante</th>
                                         <th>Atividade</th>
                                         <th>Tipo</th>
-                                        <th>Dias</th>
-                                        <th>Hora de Inicio</th>
-                                        <th>Hora de Fim</th>
+                                        <th>Data</th>
+                                        <th>Horário</th>
+                                        <th>Dias da semana</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {{#each reservas}}
                                     <tr style="text-align: center;">
-                                        <td> {{salas.nome}} - {{salas.bloco}} </td>
+                                        <td> {{salas.nome}} - {{salas.bloco}} - {{salas.andar}} andar </td>
                                         <td> {{usuario.nomeCompleto}} </td>
                                         <td> {{atividade}} </td>
                                         <td> {{tipo}} </td>
-                                        {{#if semanal}}
-                                         <td> {{dias}} </td>
+                                        <td> {{dataInicio}} - {{dataTermino}} </td>
+                                        <td> {{horaInicio}} - {{horaTermino}} </td>
+                                        {{#if dias}}
+
+                                        <td>{{dias}}</td>
                                         {{else}}
-                                         <td> {{dataInicio}} - {{dataTermino}} </td>
+                                        <td> - </td>
                                         {{/if}}
-                                        <td> {{horaInicio}} </td>
-                                        <td> {{horaTermino}} </td>
+
                                         <td style="text-align: center;">
 
 

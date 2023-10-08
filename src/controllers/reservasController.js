@@ -3,6 +3,7 @@ const {Salas} = require('../models');
 const {Usuario} = require('../models');
 
 const adicionar = async (req, res) => {
+    console.log("in")
     if (req.method === 'GET') {
         const salas = await Salas.findAll();
         
@@ -15,20 +16,20 @@ const adicionar = async (req, res) => {
         })
 
     }else if( req.method === 'POST'){
+
+
         try{
-            
             let responseError = null;
-            let semanal = req.body.semanal == 'semanal' ? 1: 0 
-            let dias = semanal ? req.body.dia.join(', ') : ""
-          
-            if(semanal){
+        
+            if(req.body.dataTermino == ""){
+                req.body.dataTermino = req.body.dataInicio
+               
+            }else{
+                let dias = req.body.dia ? req.body.dia.join(', ') : ""
                 req.body.dias = dias
-                delete req.body.dia;
-                delete req.body.dataInicio;
-                delete req.body.dataTermino;
             }
 
-            req.body.semanal = semanal
+           
             console.log({...req.body})
             const reserva = await ReservaSala
                 .create({
