@@ -44,7 +44,12 @@ const login = async (req, res) => {
             req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1 ? 
             " "+usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1] : 
             ""}`
-
+            req.session.tipoUsuario = {
+                administrador: usuario.administrador,
+                coordenador: usuario.coordenador,
+                secretaria: usuario.secretaria,
+                professor: usuario.professor
+            }
             req.session.uid = usuario.id
             return res.redirect('/inicio')
         }catch(err){

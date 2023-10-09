@@ -10,6 +10,7 @@ const addEditalSelecao = async (req, res) => {
          console.log(req.session.nome);
          return res.render("edital/addNewSelecao", {
             csrfToken: req.csrfToken(),
+            tipoUsuario: req.session.tipoUsuario,
             nome: req.session.nome,
             ...locals,             
          });
@@ -68,6 +69,7 @@ const listEditalSelecao = async (req, res) => {
             nome: req.session.nome,
             ...locals,
             editais: await EditalService.listEdital(),
+            tipoUsuario: req.session.tipoUsuario
          });
 
       case "POST":
@@ -117,6 +119,7 @@ const viewEdital = async (req, res) => {
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
    }
 };
@@ -136,6 +139,7 @@ const updateEdital = async (req, res) => {
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
 
       case "PUT":
@@ -190,6 +194,7 @@ const listCandidatesEdital = async (req, res) => {
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
          
       case "POST":

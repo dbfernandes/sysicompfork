@@ -13,7 +13,8 @@ const inicio = (req, res) => {
             nome: req.session.nome,
             message,
             type,
-            messageTitle
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario
         })
     }
 }

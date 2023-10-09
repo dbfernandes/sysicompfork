@@ -4,7 +4,6 @@
   <a href="/inicio" class="brand-link">
     <span class="brand-text">SYSICOMP</span>
   </a>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
@@ -30,6 +29,7 @@
             </p>
           </a>
         </li>
+        {{#if (autorizarUsuario tipoUsuario "administrador")}}
         <li class="nav-header">Administração</li>
         <li class="nav-item {{#ifEqual module 'usuarios'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'usuarios'}}active{{/ifEqual}}">
@@ -54,8 +54,9 @@
               </a>
             </li>
           </ul>
+        {{/if}}
         </li>
-
+        {{#if (autorizarUsuario tipoUsuario "coordenador")}}
         <li class="nav-header">Coordenação PPGI</li>
         <!--<li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
@@ -130,6 +131,8 @@
             </li>
           </ul>
         </li>
+         {{/if}}
+         {{#if (autorizarUsuario tipoUsuario "professor")}}
         <li class="nav-header">Professor</li>
         <!--<li class="nav-item">
           <a href="/script-adminlte/pages/widgets.html" class="nav-link">
@@ -211,6 +214,7 @@
             </li>
           </ul>
         </li>
+        {{/if}}
       </ul>
     </nav>
     <!-- /.sidebar-menu -->
