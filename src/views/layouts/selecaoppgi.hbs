@@ -17,13 +17,15 @@
   <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
 
   <link rel="stylesheet" href="/public/css/styles.css">
-  
+
+  <link rel="stylesheet"
+    href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 </head>
 
-<body >
+<body>
 
 
-<!-- jQuery -->
+  <!-- jQuery -->
   <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
   <!-- jquery-validation -->
@@ -43,6 +45,10 @@
   <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
   <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
 
+  <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
+
+
   {{{ body }}}
 
   <script>
@@ -54,7 +60,9 @@
       try {
         usuariosAdicionarPage();
       } catch { }
-
+      try {
+        FormAdicionarPage();
+      } catch { }
       try {
         loginPage();
       } catch { }
@@ -66,7 +74,7 @@
       $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
       $('.edital').inputmask('999-9999', { 'placeholder': '001-2022' })
     }
-    
+
   </script>
 
 </body>

@@ -7,6 +7,7 @@ router.all('/', selecaoppgiController.begin);
 router.all('/cadastro', selecaoppgiController.signin);
 router.all('/entrar', selecaoppgiController.login)
 router.all('/formulario', selecaoppgiController.forms)
+router.all('/formulario/1' ,selecaoppgiController.form1)
 router.all('/candidates', selecaoppgiController.candidates)
 
 export default router;

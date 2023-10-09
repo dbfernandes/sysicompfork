@@ -120,13 +120,25 @@ const forms = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
 			return res.render('selecaoppgi/forms', {
-				...locals
+				...locals,
+				csrfToken: req.csrfToken()
 			});
 		case 'POST':
 
 			return res.send('Erro 400 begin');
 	}
 } 
+
+const form1 = async (req, res) => {
+	switch (req.method) {
+		case 'GET':
+			res.send("oi")
+		case 'POST':
+			console.log("asdasdasdasdasdasdasdasdasdasdasdasdfsvsdfgsjkgnaurbweflabwefa______________________")
+			console.log(req.body)
+			return res.send('Erro 400 begin');
+	}
+}
 
 const candidates = async (req, res) => {
 	switch (req.method) {
@@ -144,5 +156,6 @@ export default {
 	signin,
 	login,
 	forms,
+	form1,
 	candidates
 };
