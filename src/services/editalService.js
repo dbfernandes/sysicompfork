@@ -66,12 +66,40 @@ class EditalService {
     }
 
     async delete(id) {
+        try {
+            const edital = await Edital.findOne({
+                where: {
+                    editalId: id
+                }
+            });
+    
+            if (!edital) {
+                console.log("Edital não existe");
+                throw new Error(`Não existe edital de número ${id}`);
+            }
+    
+            edital.status = 0;
+            await edital.save();
+    
+            return edital;
+        } catch (error) {
+            console.error("Erro ao arquivar edital:", error);
+            throw new Error(error);
+        }
+    }
+
+    async arquivar(id_edital, {
+        status
+    }) {
+
         const edital = await Edital.findOne({
             where: {
-                editalId: id
+                editalId: id_edital
             }
         }).catch(err => {
+
             console.log(`[ERROR] Buscar Edital: ${err}`)
+            console.log('{this.id_update}', id_edital)
             throw new Error("Não foi possivel buscar o edital");
         })
 
@@ -79,17 +107,20 @@ class EditalService {
             throw new Error("Edital não encontrado");
         }
 
-        await Edital.destroy({
+        await Edital.update({
+            status
+        }, {
             where: {
-                editalId : id
+                editalId: id_edital
             }
         }).catch(err => {
-            console.log(`[ERROR] Deletar Edital: ${err}`)
-            throw new Error("Não foi possivel deletar o edital");
+            console.log(`[ERROR] Atualizar Edital: ${err}`)
+            throw new Error("Não foi possivel alterar o status do edital");
         })
 
         return edital;
     }
+    
 
     async getEdital(id) {
         const edital = await Edital.findOne({
@@ -107,7 +138,7 @@ class EditalService {
     }
 
     async update(id_update, {
-        number,
+        num_edital,
         documento,
         data_inicio,
         data_fim,
@@ -135,7 +166,7 @@ class EditalService {
         }
 
         await Edital.update({
-            editalId: number,
+            editalId: num_edital,
             vagaDoutorado: vaga_regular_doutorado,
             vagaMestrado: vaga_regular_mestrado,
             cotasDoutorado: vaga_suplementar_doutorado,
@@ -145,8 +176,7 @@ class EditalService {
             documento: documento,
             dataInicio: data_inicio,
             dataFim: data_fim,
-            curso: "1",
-            status: "created",
+            status: "1",
         }, {
             where: {
                 editalId: id_update
