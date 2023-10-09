@@ -4,7 +4,7 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="container-fluid">
+        <div class="container-fluid ml-2">
             <div class="row">
                 <div class="col-sm-9">
                     <h1>Criar Novo Edital de Seleção para o PPGI</h1>
@@ -42,15 +42,13 @@
                 <form action="/edital/addEdital" method="post"  id="adicionarSelecaoForm">
                     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 
-                    <div class="card card-light">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Dados do Edital</b></h3>
                         </div>
                         
                         <div class="card-body">
                             <div class="col-md-12">
-                            
-
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -116,15 +114,14 @@
                     </div>
 
 
-                    <div class="card card-light">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
                         <div class="card-body">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <div class="form-row">
-                                        
+                                    <div class="form-row">                                        
                                         <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
                                             <div class="form-group">
                                                 <div class="form-row">                                                
@@ -147,11 +144,6 @@
                                             </div>   
                                         </div>
 
-                                        <div class="col-sm-4 alert alert-warning alert-dismissible d-none">
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i> Atenção!</h5>
-                                            Pelo menos um das vagas deve ter um valor maior que zero.
-                                        </div>
                                     </div>
 
                                 </div>
@@ -159,8 +151,7 @@
 
                                 <div class="form-group">                            
                                     <div class="form-row">
-                                        <div class="col-sm-3 col-md-2 col-lg-2 col-xl-2">
-
+                                        <div class="col-sm-3 col-md-2">
                                             <div class="form-group">
                                                 <div class="form-row">            
                                                     <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
@@ -168,18 +159,17 @@
                                                 <input type="checkbox" name="mestrado" checked data-bootstrap-switch
                                                     data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                     data-off-text="Não" id="mestrado">
-                                            </div> 
-                                            
+                                            </div>                                            
                                         </div>
 
-                                        <div class="col-sm-4 col-md-5 col-lg-5 col-xl-4">                                                
+                                        <div class="col-sm-4">                                                
                                             <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
                                             <input type="number" name="vaga_regular_mestrado" class="form-control "
                                                 placeholder="Vagas Regulares para Mestrado" required
                                                 id="vaga_regular_mestrado" value="0" min="0">
                                         </div>
 
-                                        <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+                                        <div class="col-sm-5 col-md-6">
                                             <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
                                             <input type="number" class="form-control " name="vaga_suplementar_mestrado"
                                                 placeholder="Vagas Regulares para Mestrado" required
@@ -190,8 +180,7 @@
 
                                 <div class="form-group">                            
                                     <div class="form-row">
-                                        <div class="col-sm-3 col-md-2 col-lg-2 col-xl-2">
-
+                                        <div class="col-sm-3 col-md-2">
                                             <div class="form-group">
                                                 <div class="form-row">            
                                                     <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
@@ -200,17 +189,16 @@
                                                     data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                     data-off-text="Não" id="doutorado">
                                             </div> 
-                                
                                         </div>
 
-                                        <div class="col-sm-4 col-md-5 col-lg-5 col-xl-4">                                                
+                                        <div class="col-sm-4">                                                
                                             <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
                                             <input type="number" name="vaga_regular_doutorado" class="form-control "
                                                 placeholder="Vagas Regulares para Doutorado" required
                                                 id="vaga_regular_doutorado" value="0" min="0">
                                         </div>
 
-                                        <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+                                        <div class="col-sm-5 col-md-6">
                                             <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
                                             <input type="number" class="form-control" name="vaga_suplementar_doutorado"
                                                 placeholder="Vagas Regulares para Doutorado" required
@@ -218,40 +206,22 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-footer">                        
-                        <div class="text-left">
-                        <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
-                            <i class="fas fa-check-circle"></i>
-                            Criar Edital
-                        </button>
-                    </div>
-                        
-                    </div>
-
-                        
-                </form>
-
-                <div id="responseModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="responseModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="responseModalLabel">Resposta</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body" id="responseModalBody">
-                                <!-- mensagem -->                            
-                            </div>                        
-                        </div>
-                    </div>
-                </div>
 
                                 
+
+                            </div>
+                            
+                        </div>
+                        <div class="card-footer form-row d-flex justify-content-end mt-5">                     
+                                    <div class="text-end">
+                                        <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
+                                            <i class="fas fa-check-circle"></i>
+                                            Criar Edital
+                                        </button>
+                                    </div>                        
+                                </div>
+                    </div>      
+                </form>        
             </div>
         </div>
 
@@ -283,10 +253,8 @@
             vaga_regular_doutorado > 0 ||
             vaga_suplementar_doutorado > 0
         ) {
-            $('.alert').addClass('d-none');     // Esconde o alerta
             camposIncorretos = false;             
         } else {
-            $('.alert').removeClass('d-none');  // Mostra o alerta
             camposIncorretos = true;          
         }
 
@@ -353,7 +321,7 @@
             toggleFields();
         });
 
-        // Pelo menos um dos campos (Mestrado ou Doutorado)sempre deve estar habilitado
+        // Pelo menos um dos campos (Mestrado ou Doutorado) sempre deve estar habilitado
         $("#mestrado, #doutorado").on('switchChange.bootstrapSwitch', function (event, state) {
             if (!state) {
                 var mestradoChecked = $("#mestrado").prop('checked');
@@ -370,7 +338,7 @@
     });
     
 
-    //metodo adicional para comparação de data
+    //metodo para comparação de data
     $.validator.addMethod('comparaData', function (value, element, params) {
         var dataInicio = $('#data_inicio').val();
         var dataFim = $('#data_fim').val();
@@ -379,7 +347,7 @@
             return true;
         }
 
-        return new Date(dataInicio) < new Date(dataFim);
+        return new Date(dataInicio) <= new Date(dataFim);
     });
 
     //validação dos campos do formulário
@@ -504,8 +472,8 @@
         const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
         const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
         const vaga_suplementar_doutorado = parseInt($("#vaga_suplementar_doutorado").val(), 10);
-        const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? 'on' : 'off';
-        const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? 'on' : 'off';
+        const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
+        const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
         const data_inicio = $("#data_inicio").val();
@@ -533,27 +501,38 @@
             dados._csrf = $("#_csrf").val();
 
             $.ajax({
-            url: '/edital/addEdital',
-            type: 'POST',
-            data: dados,
-            success: function (data) {                
-                $('#responseModalBody').html('Edital cadastrado com sucesso!');
-                $('#responseModal').modal('show');
-                setTimeout(function() {
-                    window.location.href = '/edital/listEdital';
-                }, 2000);
-            },
-            error: function (data) {                
-                $('#responseModalBody').html('Erro: ' + data.responseJSON.error);
-                $('#responseModal').modal('show');
-            }
+                url: '/edital/addEdital',
+                type: 'POST',
+                data: dados,
+                success: function (data) {                               
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Sucesso!',
+                        body: 'Edital adicionado no sistema com sucesso'
+                    })
+                
+                    setTimeout(function() {
+                        window.location.href = '/edital/listEdital';
+                    }, 3000);
+                },
+                error: function (data) {                
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    })
+
+                }
             });
         }
     }
-
-
 </script>
-
 
 
 {{> footer}}
