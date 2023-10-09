@@ -1,0 +1,126 @@
+{{> header}}
+{{> sidebar module='afastamentoTemporario' page='solicitar-afastamento'}}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Criar Pedido de Afastamento</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/inicio">Inicio</a></li>
+                        <li class="breadcrumb-item active">Criar Pedido de Afastamento</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-4">
+                    <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                        <a class="btn btn-warning color-white" href="/inicio">
+                            <i class="fa fa-arrow-left"></i>
+                            Voltar
+                        </a>   
+                    </div>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div style="text-align:left">
+						<font color="#FF0000">*</font> Campos Obrigatórios
+					</div>						
+					<div class="card card-primary">
+						<div class="card-header">
+							<h3 class="card-title">Informações sobre o Pedido de Afastamento</h3>
+						</div>
+						<div class="card-body">
+							<form action="/afastamentoTemporario/criar" method="POST" id="afastamentoTemporarioForm">
+								<input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+								<div class="form-group col-sm-3">
+									<label for="inputLocal">
+                                		<font color="#FF0000">*</font> Local de Viagem:
+                            		</label>
+                           			<input type="text" name="localViagem" class="form-control" id="localViagem"
+                                		placeholder="Local que o professor viajará..." required>
+								</div>
+								
+                                <div class="col" style="padding-bottom: 10px;">
+                                    <label for="inputTipoViagem" style="margin-right: 100px;">
+                                        <font color="#FF0000">*</font> Tipo de Viagem
+                                    </label>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inputTipoViagem">
+                                            <label class="form-check-label">Nacional</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inputTipoViagem">
+                                            <label class="form-check-label">Internacional</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label for="dateSaida" style="margin-right: 40px;">
+                                            <font color="#FF0000">*</font>Data de Saída:
+                                        </label>
+                                        
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input id="dateSaida" name="dateSaida" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask
+                                            placeholder="Selecione a Data de Saída..." required>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                    <!-- /.Data Início -->
+                                    <div class="form-group col-md-3">
+                                        <label for="dateRetorno" style="margin-right: 40px;">
+                                            <font color="#FF0000">*</font>Data de Retorno:
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                        <input id="dateRetorno" name="dateRetorno" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask
+                                        placeholder="Selecione a Data de Retorno..." required>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                    <!-- /.Data Fim -->
+                                </div>
+                                <div class="form-group col-sm-5">
+                                    <label for="inputJustificativa" style="margin-right: 40px;">
+                                        <font color="#FF0000">*</font> Justificativa:
+                                    </label>
+                                    <textarea class="form-control" rows="3" placeholder="Enter ..." name="inputJustificativa" id="inputJustificativa"></textarea>
+                                </div>
+                                <div class="form-group col-sm-5">
+                                    <label for="inputPlanoReposicao" style="margin-right: 40px;">
+                                        <font color="#FF0000">*</font> Plano de Reposição de Aulas:
+                                    </label>
+                                    <textarea class="form-control" rows="3" placeholder="Enter ..." name="inputPlanoReposicao" id="inputPlanoReposicao"></textarea>
+                                </div>
+						</div>
+						<div class="card-footer">
+							<div class="col">
+								<input type="submit" value="Enviar" class="btn btn-success float-right">
+							</div>
+						</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+{{> footer}}

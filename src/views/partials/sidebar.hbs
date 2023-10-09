@@ -131,6 +131,30 @@
           </ul>
         </li>
         <li class="nav-header">Professor</li>
+        <li class="nav-item {{#ifEqual module 'afastamentoTemporario'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'afastamentoTemporario'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-list-ul"></i>
+            <p>
+              Afastamento Temporario
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/afastamentoTemporario/criar"
+                class="nav-link {{#ifEqual page 'solicitar-afastamento'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-regular fa-plus nav-icon"></i>
+                <p>Solicitar Afastamento</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/afastamentoTemporario/listar" class="nav-link {{#ifEqual page 'pedidos-afastamento'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Listar Afastamentos</p>
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item">
           <a href="/script-adminlte/pages/widgets.html" class="nav-link">
             <i class="nav-icon fas fa-file-alt"></i>
