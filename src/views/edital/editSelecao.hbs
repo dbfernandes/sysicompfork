@@ -87,9 +87,9 @@
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
-                                            <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
-                                                data-inputmask-inputformat="dd/mm/yyyy" value="{{edital.dataInicio}}" required
-                                                id="data_inicio">
+                                                <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
+                                                    data-inputmask-inputformat="dd/mm/yyyy" required
+                                                    id="data_inicio">
                                         </div>
                                     </div>
 
@@ -103,7 +103,7 @@
                                                 </span>
                                             </div>
                                             <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
-                                                required value="{{edital.dataFim}}" id="data_fim">
+                                                required id="data_fim">
                                         </div>
                                     </div>
                                 </div>
@@ -203,9 +203,8 @@
                                     </div>
                                 </div>
 
-
-                                <div class="card-footer form-row d-flex justify-content-end mt-5">                     
-                                    <div class="text-end">
+                                <div class="card-footer pr-0">
+                                    <div style="margin-right: auto;" class="d-flex justify-content-end">
                                         <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
                                             <i class="fas fa-check-circle"></i>
                                             Alterar Edital
@@ -240,7 +239,6 @@
     document.getElementById("voltarBtn").addEventListener("click", function() {
         window.history.back();
     });
-   
 
     let camposIncorretos = false;
 
@@ -277,9 +275,28 @@
              $('#botaoSubmit').prop('disabled', true);
         }
     }
-    
+
+
+     function formatarData(data) {
+        const partesData = data.split("/");
+        const dia = partesData[0];
+        const mes = partesData[1];
+        const ano = partesData[2];
+
+        const dataFormatada = `${ano}-${mes}-${dia}`;
+        return dataFormatada;
+    }
+
 
     $(document).ready(function () {
+
+        const dataInicio = "{{edital.dataInicio}}";
+        const dataFim = "{{edital.dataFim}}";
+
+        document.getElementById("data_inicio").value = formatarData(dataInicio);
+        document.getElementById("data_fim").value = formatarData(dataFim);
+
+    
         $('#botaoSubmit').prop('disabled', false);
      
         //fica monitorando sempre que uma dessas variáveis mudar
@@ -493,8 +510,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#data_inicio").val();
-        const data_fim = $("#data_fim").val();
+        const data_inicio = moment($("#data_inicio").val()).format('DD/MM/YYYY');
+        const data_fim = moment($("#data_fim").val()).format('DD/MM/YYYY');
 
         return {
             vaga_regular_mestrado,
@@ -526,7 +543,7 @@
                         icon: 'success',
                         class: "bg-success",
                         autohide: true,
-                        delay: 10000,
+                        delay: 3000,
                         title: 'Sucesso!',
                         body: 'Edital atualizado no sistema com sucesso'
                     })
