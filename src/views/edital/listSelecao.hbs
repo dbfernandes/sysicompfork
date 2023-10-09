@@ -210,10 +210,10 @@
 
                 if (status == '1') {
                     $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
-                    $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Arquivado');
+                    $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Encerrado');
                 } else {
                     $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
-                    $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Ativo');
+                    $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Aberto');
                 }
 
                 setTimeout(function() {
