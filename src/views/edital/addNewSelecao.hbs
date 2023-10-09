@@ -4,7 +4,7 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="container-fluid">
+        <div class="container-fluid ml-2">
             <div class="row">
                 <div class="col-sm-9">
                     <h1>Criar Novo Edital de Seleção para o PPGI</h1>
@@ -42,15 +42,13 @@
                 <form action="/edital/addEdital" method="post"  id="adicionarSelecaoForm">
                     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 
-                    <div class="card card-light">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Dados do Edital</b></h3>
                         </div>
                         
                         <div class="card-body">
                             <div class="col-md-12">
-                            
-
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -116,7 +114,7 @@
                     </div>
 
 
-                    <div class="card card-light">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
@@ -209,8 +207,12 @@
                                     </div>
                                 </div>
 
+                                
 
-                                <div class="form-row d-flex justify-content-end mt-5">                     
+                            </div>
+                            
+                        </div>
+                        <div class="card-footer form-row d-flex justify-content-end mt-5">                     
                                     <div class="text-end">
                                         <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
                                             <i class="fas fa-check-circle"></i>
@@ -218,9 +220,6 @@
                                         </button>
                                     </div>                        
                                 </div>
-
-                            </div>
-                        </div>
                     </div>      
                 </form>        
             </div>
@@ -473,8 +472,8 @@
         const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
         const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
         const vaga_suplementar_doutorado = parseInt($("#vaga_suplementar_doutorado").val(), 10);
-        const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? 'on' : 'off';
-        const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? 'on' : 'off';
+        const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
+        const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
         const data_inicio = $("#data_inicio").val();
@@ -502,34 +501,34 @@
             dados._csrf = $("#_csrf").val();
 
             $.ajax({
-            url: '/edital/addEdital',
-            type: 'POST',
-            data: dados,
-            success: function (data) {                               
-                $(document).Toasts('create', {
-                    icon: 'success',
-                    class: "bg-success",
-                    autohide: true,
-                    delay: 10000,
-                    title: 'Sucesso!',
-                    body: 'Edital adicionado no sistema com sucesso'
-                })
-               
-                setTimeout(function() {
-                    window.location.href = '/edital/listEdital';
-                }, 3000);
-            },
-            error: function (data) {                
+                url: '/edital/addEdital',
+                type: 'POST',
+                data: dados,
+                success: function (data) {                               
                     $(document).Toasts('create', {
-                    icon: 'error',
-                    class: "bg-danger",
-                    autohide: true,
-                    delay: 3000,
-                    title: 'Erro!',
-                    body: 'Erro: ' + data.responseJSON.error
-                })
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Sucesso!',
+                        body: 'Edital adicionado no sistema com sucesso'
+                    })
+                
+                    setTimeout(function() {
+                        window.location.href = '/edital/listEdital';
+                    }, 3000);
+                },
+                error: function (data) {                
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    })
 
-            }
+                }
             });
         }
     }
