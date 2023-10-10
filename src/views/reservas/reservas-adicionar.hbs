@@ -93,37 +93,40 @@
 
                                 <div class="form-group " id="conditionalInput">
 
-                                    <label class="control-label" for="candidato-nome">
+                                    <label class="control-label" id="dia" for="candidato-nome">
                                         <font color="#FF0000"> &nbsp&nbsp</font>
                                         <b>Dias da semana:</b>
                                     </label>
 
                                     <label class="checkbox-inline ml-2 ">
-                                        <input type="checkbox" id="dia1" name="dia" value="Segunda">
+                                        <input type="checkbox" id="segunda" name="dia" value="Segunda">
                                         Segunda
                                     </label>
 
                                     <label class="checkbox-inline ml-4 ">
-                                        <input type="checkbox" id="dia2" name="dia" value="Terça">
+                                        <input type="checkbox" id="terca" name="dia" value="Terça">
                                         Terça
                                     </label>
 
                                     <label class="checkbox-inline ml-4">
-                                        <input type="checkbox" id="dia3" name="dia" value="Quarta">
+                                        <input type="checkbox" id="quarta" name="dia" value="Quarta">
                                         Quarta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input type="checkbox" id="dia4" name="dia" value="Segunda" value="Quinta">
+                                        <input type="checkbox" id="quinta" name="dia" value="Quinta">
                                         Quinta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input type="checkbox" id="dia5" name="dia" value="Sexta">
+                                        <input type="checkbox" id="sexta" name="dia" value="Sexta">
                                         Sexta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input type="checkbox" id="dia6" name="dia" value="Sábado">
+                                        <input type="checkbox" id="sabado" name="dia" value="Sábado">
                                         Sábado
                                     </label>
+                                    <div class="invalid-feedback" id="diaErro">Escolha os dias da semana. Por
+                                        favo,</div>
+
                                 </div>
 
 
@@ -247,24 +250,44 @@
         });
     });
 
+    function diasSemana() {
+        let dias = ""
+        dias += $("#segunda").prop("checked") ? "Segunda" : ""
+        dias += $("#terca").prop("checked") ? "Terça" : ""
+        dias += $("#quarta").prop("checked") ? "Quarta" : ""
+        dias += $("#quinta").prop("checked") ? "Quinta" : ""
+        dias += $("#sexta").prop("checked") ? "Sexta" : ""
+        dias += $("#sabado").prop("checked") ? "Sábado" : ""
 
-    function pegaDados() {       
-        const num_edital = $("#num_edital").val();
-        const documento = $("#documento").val();
-        const data_inicio = $("#data_inicio").val();
-        const data_fim = $("#data_fim").val();
+        return dias
+    }
+
+    function pegaDados() {
+
+        const unica = $("#unica").prop("checked"); ''
+        const SalaId = $("#unica").val();
+        const dataInicio = $("#dataInicio").val();
+        const dataTermino = unica ? dataInicio : $("#dataTermino").val();
+        const horaInicio = $("#horaInicio").val() + ":00";
+        const horaTermino = $("#horaTermino").val() + ":00";
+        let dias = diasSemana()
+
+        //verificacao do caso data unica
+        if (unica) {
+            const data = new Date(document.getElementById("dataInicio").value);
+            const diaDaSemana = data.getDay();
+            const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+            dias = nomesDosDias[diaDaSemana];
+        }
 
         return {
-            vaga_regular_mestrado,
-            vaga_suplementar_mestrado,
-            vaga_regular_doutorado,
-            vaga_suplementar_doutorado,
-            carta_recomendacao,
-            carta_orientador,
-            num_edital,
-            documento,
-            data_inicio,
-            data_fim
+            unica,
+            SalaId,
+            dataInicio,
+            dataTermino,
+            horaInicio,
+            horaTermino,
+            dias
         };
     }
 
@@ -282,24 +305,52 @@
         }
     }
 
-    function verificaConflitoComReservasnovaReserva(reserva, reservasExistente) {
+    function verificaConflitoComReservas(novaReserva, reservasExistente) {
+        for (const reserva of reservasExistente) {
+            console.log(reserva)
+            // Verifica se a nova reserva está dentro do período de alguma reserva existente
+            if (novaReserva.dataInicio <= reserva.dataTermino && novaReserva.dataTermino >= reserva.dataInicio) {
 
-        return false; // Não há conflito
+                //verificacao do caso data unica
+                if (reserva.dataInicio == reserva.dataTermino) {
+                    const data = new Date(reserva.dataInicio);
+                    const diaDaSemana = data.getDay(); // Obtém o dia da semana (0 a 6)
+
+                    // Mapeia o número do dia da semana para o nome do dia
+                    const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+                    dias = nomesDosDias[diaDaSemana];
+                }
+
+                const diasEmComum = reserva.dias.split(', ').some(dia => novaReserva.dias.includes(dia));
+
+                // Verifica se há sobreposição nas horas
+                if (diasEmComum && novaReserva.horaInicio < reserva.horaTermino && novaReserva.horaTermino > reserva.horaInicio) {
+
+                    return true; // Conflito encontrado
+                }
+            } else {
+
+            }
+        }
+
+        // Não há conflito
+        return false;
     }
 
     document.getElementById("formAdicionarSala").addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        // Obtém as datas inseridas
         const dataInicio = new Date(document.getElementById("dataInicio").value);
         let dataFim = new Date(document.getElementById("dataTermino").value);
         const horaInicio = document.getElementById("horaInicio").value
         const horaTermino = document.getElementById("horaTermino").value
-        const unica = document.getElementById("unica").value;
+        const unica = $("#unica").prop("checked");
+        const dias = diasSemana()
 
         // Verifica se as datas termino
         if (isNaN(dataFim.getTime())) {
-            if (unica == '1') {
+            console.log('1')
+            if (unica) {
                 dataFim = dataInicio
             } else {
                 document.getElementById("dataTerminoError").textContent = "Por favor, insira uma data.";
@@ -313,6 +364,7 @@
 
         // Verifica se a data de início é anterior à data de fim
         if (dataInicio > dataFim) {
+            console.log('2')
             document.getElementById("dataTerminoError").textContent = "A data de termino deve ser posterior à data de inicio.";
             document.getElementById("dataTermino").classList.add("is-invalid");
             return;
@@ -321,8 +373,9 @@
             document.getElementById("dataTermino").classList.remove("is-invalid");
         }
 
-        // Verifica se a data de início é anterior à data de fim
+        // Verifica se a hora de início é anterior à hora de fim
         if (horaInicio >= horaTermino) {
+            console.log('3')
             document.getElementById("horaTerminoError").textContent = "A hora de termino deve ser posterior à hora de inicio.";
             document.getElementById("horaTermino").classList.add("is-invalid");
             return;
@@ -331,24 +384,49 @@
             document.getElementById("horaTermino").classList.remove("is-invalid");
         }
 
+        // Verifica se dias da semana está selecionado
 
-        alert("Formulário enviado com sucesso!");
-        return;
-        const reservas = await buscarReservas();
-        console.log(reservas.reservas)
-
-        // Verificar se a nova reserva entra em conflito com as reservas existentes
-        const conflito = verificaConflitoComReservasnovaReserva(reservas, reservas);
-
-        if (conflito) {
-            alert("Existe um conflito com as reservas existentes.");
+        if (!unica & dias == "") {
+            console.log('4')
+            document.getElementById("diaErro").textContent = "Escolha os dias da semana. Por favor.";
+            document.getElementById("dia").classList.add("is-invalid");
+            return;
         } else {
-            alert("A reserva foi feita com sucesso.");
+            document.getElementById("diaErro").textContent = "";
+            document.getElementById("dia").classList.remove("is-invalid");
         }
 
-        // Se as datas são válidas e não há conflito com as reservas existentes, você pode prosseguir com o envio do formulário.
-        alert("Formulário enviado com sucesso!");
-        return;
+
+        const reservas = await buscarReservas();
+        reserva = pegaDados()
+
+        console.log(reservas.reservas)
+        console.log(reserva)
+
+        // Verificar se a nova reserva entra em conflito com as reservas existentes
+        const conflito = verificaConflitoComReservas(reserva, reservas.reservas);
+
+        if (conflito) {
+            console.log('5')
+            document.getElementById("dataInicioError").textContent = "Existe um conflito com as reservas existente nesse horário";
+            document.getElementById("dataInicio").classList.add("is-invalid");
+            document.getElementById("dataTermino").classList.add("is-invalid");
+            document.getElementById("horaInicio").classList.add("is-invalid");
+            document.getElementById("horaTermino").classList.add("is-invalid");
+
+            return;
+
+        } else {
+            document.getElementById("dataInicioError").textContent = "";
+            document.getElementById("dataInicio").classList.remove("is-invalid");
+            document.getElementById("dataTermino").classList.remove("is-invalid");
+            document.getElementById("horaInicio").classList.remove("is-invalid");
+            document.getElementById("horaTermino").classList.remove("is-invalid");
+        }
+
+        const form = document.getElementById("formAdicionarSala");
+        form.submit();
+
     });
 
 </script>

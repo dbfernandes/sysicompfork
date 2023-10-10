@@ -24,7 +24,7 @@ const adicionar = async (req, res) => {
 
     }else if( req.method === 'POST'){
 
-        console.log("in")
+       
         try{
             let responseError = null;
         
@@ -38,7 +38,7 @@ const adicionar = async (req, res) => {
 
            
             console.log({...req.body})
-            return res.status(200)
+            
             const reserva = await ReservaSala
                 .create({
                     ...req.body,

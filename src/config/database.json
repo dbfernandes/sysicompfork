@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
+    "username": "user",
     "password": "password",
-    "database": "syscomp",
-    "host": "127.0.0.1",
+    "database": "db",
+    "host": "db",
     "dialect": "mysql",
     "port": 3306
   },
