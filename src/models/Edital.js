@@ -55,11 +55,21 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type:DataTypes.STRING,
             allowNull: false
-        }
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+            allowNull: false,
+          },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+            allowNull: false,
+        },
     }, {
         sequelize,
+        tableName: 'Edital',
         modelName: 'Edital',
-        freezeTableName: true,
         timestamps: false,
     });
     

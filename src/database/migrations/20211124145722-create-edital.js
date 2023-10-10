@@ -51,6 +51,14 @@ module.exports = {
         type : Sequelize.STRING,
         defaultValue:0,
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

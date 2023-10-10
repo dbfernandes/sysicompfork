@@ -41,7 +41,9 @@ class EditalService {
                 documento: documento,
                 dataInicio: data_inicio,
                 dataFim: data_fim,                
-                status: "1"
+                status: "1",
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
         
             return novo_edital;
@@ -56,6 +58,7 @@ class EditalService {
 
     async listEdital() {
         // listagem dos editais
+        console.log('ta listado')
         const editais = await Edital.findAll().catch(err => {
             console.log(`[ERROR] Listar Editais: ${err}`)
             throw new Error("Não foi possivel listar o edital");
@@ -108,7 +111,8 @@ class EditalService {
         }
 
         await Edital.update({
-            status
+            status,
+            updatedAt: new Date(),
         }, {
             where: {
                 editalId: id_edital
@@ -177,6 +181,7 @@ class EditalService {
             dataInicio: data_inicio,
             dataFim: data_fim,
             status: "1",
+            updatedAt: new Date(),
         }, {
             where: {
                 editalId: id_update
