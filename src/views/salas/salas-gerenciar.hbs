@@ -6,7 +6,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-3">
                 <div class="col-sm-9">
                     <h1>Lista de Salas</h1>
                 </div>
@@ -45,7 +45,7 @@
                                         <th>Bloco</th>
                                         <th>Andar</th>
                                         <th>Capacidade</th>
-                                        <th>Ações</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,12 +118,10 @@
 
     function addLink(event) {
         const id = event.target.id
-        console.log(id)
-        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Sala";
+        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Sala?";
         const formDelete = document.getElementById("postDelete")
         formDelete.setAttribute('action', `/salas/excluir/${id}`);
     }
-
      
 </script>
 

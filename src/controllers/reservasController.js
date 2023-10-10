@@ -2,34 +2,43 @@ const {ReservaSala} = require('../models');
 const {Salas} = require('../models');
 const {Usuario} = require('../models');
 
+
+const listar = async (req, res) => {
+    const reservas = await ReservaSala.findAll();
+    res.json( {reservas: reservas.map(sala => sala.toJSON())} )
+}
+
 const adicionar = async (req, res) => {
+  
     if (req.method === 'GET') {
         const salas = await Salas.findAll();
-        
+        //const reservas = await ReservaSala.findAll();
+        var reservas = ['teste1', 'teste2']
         res.render('reservas/reservas-adicionar', { 
             salas: salas.map(sala => sala.toJSON()),
+            reservas: reservas,
             nome: req.session.nome,
-            //UsuarioId:  1,
             UsuarioId: req.session.uid,
             csrf: req.csrfToken(),   
         })
 
     }else if( req.method === 'POST'){
+
+       
         try{
-            
             let responseError = null;
-            let semanal = req.body.semanal == 'semanal' ? 1: 0 
-            let dias = semanal ? req.body.dia.join(', ') : ""
-          
-            if(semanal){
+        
+            if(req.body.dataTermino == ""){
+                req.body.dataTermino = req.body.dataInicio
+               
+            }else{
+                let dias = req.body.dia ? req.body.dia.join(', ') : ""
                 req.body.dias = dias
-                delete req.body.dia;
-                delete req.body.dataInicio;
-                delete req.body.dataTermino;
             }
 
-            req.body.semanal = semanal
+           
             console.log({...req.body})
+            
             const reserva = await ReservaSala
                 .create({
                     ...req.body,
@@ -132,4 +141,4 @@ const editar = async (req, res) => {
     }       
 }
 
-export default { adicionar, excluir, gerenciar , editar }
+export default { adicionar, excluir, gerenciar , editar, listar }
