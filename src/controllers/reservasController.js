@@ -2,22 +2,29 @@ const {ReservaSala} = require('../models');
 const {Salas} = require('../models');
 const {Usuario} = require('../models');
 
+
+const listar = async (req, res) => {
+    const reservas = await ReservaSala.findAll();
+    res.json( {reservas: reservas.map(sala => sala.toJSON())} )
+}
+
 const adicionar = async (req, res) => {
-    console.log("in")
+  
     if (req.method === 'GET') {
         const salas = await Salas.findAll();
-        
+        //const reservas = await ReservaSala.findAll();
+        var reservas = ['teste1', 'teste2']
         res.render('reservas/reservas-adicionar', { 
             salas: salas.map(sala => sala.toJSON()),
+            reservas: reservas,
             nome: req.session.nome,
-            //UsuarioId:  1,
             UsuarioId: req.session.uid,
             csrf: req.csrfToken(),   
         })
 
     }else if( req.method === 'POST'){
 
-
+        console.log("in")
         try{
             let responseError = null;
         
@@ -31,6 +38,7 @@ const adicionar = async (req, res) => {
 
            
             console.log({...req.body})
+            return res.status(200)
             const reserva = await ReservaSala
                 .create({
                     ...req.body,
@@ -133,4 +141,4 @@ const editar = async (req, res) => {
     }       
 }
 
-export default { adicionar, excluir, gerenciar , editar }
+export default { adicionar, excluir, gerenciar , editar, listar }
