@@ -50,9 +50,9 @@
             </div>
             <form action="/usuarios/editar/{{usuario.id}}" method="post" id="editarUsuarioForm">
                 <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
-                <div class="card card-light">
+                <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><b>Dados da Conta</b></h3>
+                        <h3 class="card-title">Dados da Conta</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -165,9 +165,9 @@
                     <!-- /.card-body -->
                 </div>
 
-                <div class="card card-light">
+                <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><b>Dados Pessoais</b></h3>
+                        <h3 class="card-title">Dados Pessoais</h3>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -193,9 +193,9 @@
                     </div>
                 </div>
 
-                <div class="card card-light">
+                <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><b>Dados Profissionais</b></h3>
+                        <h3 class="card-title">Dados Profissionais</h3>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -231,16 +231,16 @@
                                 
                             </div>
                         </div>
-                        <div class="card-footer pr-0">
+                        
+                    </div>
+                    <div class="card-footer">
                             <div style="margin-right: auto;" class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success float-right">
                                     Editar Usuário
                                 </button>
 
                             </div>
-                        </div>
                     </div>
-                    
                 </div>
             </form>
         </div>

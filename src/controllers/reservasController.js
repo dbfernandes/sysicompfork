@@ -20,6 +20,7 @@ const adicionar = async (req, res) => {
             nome: req.session.nome,
             UsuarioId: req.session.uid,
             csrf: req.csrfToken(),   
+            tipoUsuario: req.session.tipoUsuario
         })
 
     }else if( req.method === 'POST'){
@@ -96,6 +97,7 @@ const gerenciar = async (req, res) => {
         reservas: reservas.map(reservas => reservas.toJSON()),
         nome: req.session.nome,
         csrfToken: req.csrfToken(),  
+        tipoUsuario: req.session.tipoUsuario
       
     })
 }
@@ -120,7 +122,7 @@ const editar = async (req, res) => {
                 reserva: reserva.toJSON(),
                 csrf: req.csrfToken(),  
                 nome: req.session.nome,
-              
+                tipoUsuario: req.session.tipoUsuario
             })
     
         } catch (error) {
