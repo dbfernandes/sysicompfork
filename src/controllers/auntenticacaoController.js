@@ -2,6 +2,22 @@
 const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
 
+
+const autorizarAdmin = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria) next();
+    else return res.redirect('/');
+}
+const autorizarCoord = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.coordenador) next();
+    else return res.redirect('/');
+}
+const autorizarProf = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.professor) next();
+    else return res.redirect('/');
+}
+
 const login = async (req, res) => {
 
       
@@ -136,4 +152,4 @@ const verificar = async (req, res,next) => {
     if (!req.session.uid) return res.redirect('/login');
     next();
 }
-export default { logout, recuperar_senha, login , verificar }
+export default { logout, recuperar_senha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }
