@@ -35,8 +35,8 @@ module.exports = {
         type : Sequelize.STRING
       },
       documento:{
-      allowNull : false,
-      type : Sequelize.STRING
+        allowNull : false,
+        type : Sequelize.STRING
       },
       dataInicio:{
         allowNull : false,
@@ -52,11 +52,11 @@ module.exports = {
         defaultValue:0,
       },
       createdAt: {
-        type: Sequelize.DATE,
+        type : Sequelize.STRING,
         allowNull: false,
       },
       updatedAt: {
-        type: Sequelize.DATE,
+        type : Sequelize.STRING,
         allowNull: false,
       },
     });

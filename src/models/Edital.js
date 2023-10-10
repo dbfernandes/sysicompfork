@@ -57,12 +57,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         createdAt: {
-            type: DataTypes.DATE,
+            type:DataTypes.STRING,
             defaultValue: new Date(),
             allowNull: false,
           },
         updatedAt: {
-            type: DataTypes.DATE,
+            type:DataTypes.STRING,
             defaultValue: new Date(),
             allowNull: false,
         },
