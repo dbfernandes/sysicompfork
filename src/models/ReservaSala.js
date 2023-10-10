@@ -37,17 +37,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    semanal: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true
-    },
     dataInicio: { 
       type: DataTypes.DATEONLY,
-      allowNull: true
+      allowNull: false
     },
     dataTermino:{ 
       type: DataTypes.DATEONLY,
-      allowNull: true
+      allowNull: false
     },
     horaInicio:{ 
       type: DataTypes.TIME,

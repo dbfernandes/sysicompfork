@@ -5,6 +5,7 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
@@ -17,7 +18,7 @@
                     </ol>
                 </div>
             </div>
-            <div class="row mb-2">
+            <div class="row mb-2" style="display: flex; justify-content: space-between;">
                 <div class="col-sm-5 col-md-4 col-lg-4 col-xl-3 mt-4">
                     <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
@@ -56,13 +57,13 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Editais</h3>
+                            <h3 class="card-title"><b>Editais</b></h3>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="tableEdital" class="table table-hover w-100">
                                 <thead>
                                     <tr>
                                         <th> # </th>
@@ -73,6 +74,7 @@
                                         <th> Inscrições Encerradas</th>
                                         <th> Vagas Mestrado</th>
                                         <th> Vagas Doutorado</th>
+                                        <th>Status</th>
                                         <th> </th>
 
                                     </tr>
@@ -88,11 +90,15 @@
                                         <td>  </td>
                                         <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
                                         <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
+                                        <td>
+                                            <span id="badge-{{dataValues.editalId}}" class="{{#ifEqual dataValues.status '1'}}badge bg-success">Aberto{{else}}badge bg-danger">Encerrado{{/ifEqual}}</span>
+                                        </td>
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-between">
 
                                                 <a  style="margin-right: 2px"
-                                                    href='#'
+                                                    target="_blank"
+                                                    href='{{dataValues.documento}}'
                                                     class='fa fa-solid fa-download'/>
                                                 </a>
 
@@ -101,10 +107,15 @@
                                                     class='fa fa-solid fa-eye'/>
                                                 </a>
 
-                                                <a  class="fa fa-solid fa-trash" data-editalId="{{dataValues.editalId}}" onclick="deleteEdital(this)"
-                                                data-toggle="modal" data-target="#removerEdital" onclick="addLink(event)" href="#">
+                                                <a class="fa fa-solid {{#ifEqual dataValues.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
+                                                    id="icone-{{dataValues.editalId}}"
+                                                    data-editalId="{{editalId}}"
+                                                    onclick="abrirModal('{{dataValues.editalId}}', '{{dataValues.status}}')"
+                                                    data-toggle="modal"
+                                                    data-target="#removerEdital"
+                                                    onclick="addLink(event)">
                                                 </a>
-
+                                               
                                                 <a  style="margin-right: 2px"
                                                     href='/edital/updateEdital/{{dataValues.editalId}}'
                                                     class='fa fa-solid fa-pen'/>
@@ -113,22 +124,7 @@
                                             </div>
                                         </td>                                            
                                         
-                                            <!-- 
-                                                implementado
-                                                <a class="fa fa-solid fa-trash" id="removerUser_{{nomeCompleto}}_{{id}}"
-                                                data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)" href="#">
-                                                </a>
-
-
-
-                                            <a class="btn btn-danger btn-sm" data-editalId="{{dataValues.editalId}}" onclick="deleteEdital(this)">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                            <a href="/edital/updateEdital/{{dataValues.editalId}}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            -->
-                                      
+                    
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -141,47 +137,133 @@
                 <!-- /.col -->
             </div>
             <!-- /.row -->
-        </div>
+
+            <div id="modalArquivar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalArquivarLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalArquivarLabel">Deletar Edital</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalArquivarBody">
+                            <!-- mensagem -->                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="confirmButton" onclick="arquivarEdital()">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
 </div>
 
 <script>
+    
+    let csrfToken = "{{csrfToken}}";
+    let editalId;
+    let status;
+
+    function abrirModal(id, statusCorrente) {
+        editalId = id;
+        status = statusCorrente;
+
+        if (status == '1') {
+            $('#modalArquivarBody').html("Você realmente deseja arquivar o edital com ID " + editalId + "?");
+            $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+        } else {
+            $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + editalId + "?");
+            $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
+        }
+        
+        $('#modalArquivar').modal('show');
+    } 
 
 
- function deleteEdital(element){
-    var editalId = element.getAttribute("data-editalId");
-    console.log(editalId);
-    let r = confirm("Deseja realmente excluir o edital com ID " + editalId + "?");
-    if (r == true) {
-        var url = '/edital/deleteEdital/' + editalId;
+    function arquivarEdital() {
+        const dataFromForm = {
+            status: status == '1'? '0' : '1',
+            _csrf: csrfToken
+        };
+
         $.ajax({
-            url: url,
-            type: 'DELETE',
-            success: function(result){
-                alert('Edital excluído com sucesso!');
-                location.reload();
+            url: `/edital/arquivarEdital/${editalId}`,
+            type: 'PUT',
+            data: dataFromForm,
+            success: function (data) {
+                $(document).Toasts('create', {
+                    icon: 'success',
+                    class: "bg-success",
+                    autohide: true,
+                    delay: 3000,
+                    title: 'Sucesso!',
+                    body: 'Status do Edital alterado no sistema com sucesso'
+                });
+                
+                // Fechar o modal
+                $('#modalArquivar').modal('hide');
+
+                if (status == '1') {
+                    $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
+                    $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Arquivado');
+                } else {
+                    $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
+                    $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Ativo');
+                }
+
+                setTimeout(function() {
+                    window.location.href = '/edital/listEdital';
+                }, 3000);
+
             },
-            error: function(result){
-                alert('Erro ao excluir edital!');
+            error: function (data) {
+                $(document).Toasts('create', {
+                    icon: 'error',
+                    class: "bg-danger",
+                    autohide: true,
+                    delay: 3000,
+                    title: 'Erro!',
+                    body: 'Erro: ' + data.responseJSON.error
+                });
             }
         });
     }
-}
-
-    function addLink(event) {
-        const [nomeCompleto, id] = event.target.id.split("_").slice(1);
-        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir o edital " + nome + "?";
-        const formDelete = document.getElementById("postDelete")
-        formDelete.setAttribute('action', `/usuarios/deletar/${id}`);
-    }
 
 
- document.getElementById("voltarBtn").addEventListener("click", function() {
-        window.history.back();
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var datatable = $("#tableEdital").DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            },
+            responsive: true,
+            columns: [
+                { responsivePriority: 4 },
+                { responsivePriority: 1 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+                { responsivePriority: 6 },
+                { responsivePriority: 6 },
+                { responsivePriority: 5 },
+                { responsivePriority: 5 },
+                { responsivePriority: 5 },
+                { responsivePriority: 2 },
+            ],
+            columnDefs: [ {
+                "targets": [9],
+                "orderable": false
+            } ]
+        });
+
+        document.getElementById("voltarBtn").addEventListener("click", function() {
+            window.history.back();
+        });
     });
-
 
 </script>
 
