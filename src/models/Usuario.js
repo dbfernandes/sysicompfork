@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     
     static associate(models) {
-      // define association here
+      this.hasMany(models.ReservaSala);
     }
   }
 
@@ -18,78 +18,73 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
-    nome: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    username: {
+    nomeCompleto: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: "username"
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
-    shortname: {
-      type: DataTypes.STRING(40),
-      allowNull: true
-    },
-    auth_key: {
-      type: DataTypes.STRING(32),
-      allowNull: false
-    },
-    password_hash: {
+    cpf: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
+      unique: { msg: 'Número de CPF já cadastrado' },
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
-    password_reset_token: {
+    senhaHash: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
+    },
+    tokenResetSenha: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      unique: "password_reset_token"
+      unique: true
+    },
+    validadeTokenResetSenha: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: "email"
+      unique: { msg: 'E-mail já cadastrado' },
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' },
+      },
     },
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 10
-    },
-    visualizacao_candidatos: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: "0000-00-00 00:00:00"
-    },
-    visualizacao_candidatos_finalizados: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    visualizacao_cartas_respondidas: {
-      type: DataTypes.DATE,
-      allowNull: false
+      defaultValue: 1,
     },
     administrador: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     coordenador: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     secretaria: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     professor: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
-    },
-    suporte: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
-    },
-    aluno: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     siape: {
       type: DataTypes.STRING(10),
@@ -103,32 +98,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    telcelular: {
+    telCelular: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    telresidencial: {
+    telResidencial: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
     unidade: {
       type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    titulacao: {
-      type: DataTypes.STRING(15),
-      allowNull: true
-    },
-    classe: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    nivel: {
-      type: DataTypes.STRING(6),
-      allowNull: true
-    },
-    regime: {
-      type: DataTypes.STRING(10),
       allowNull: true
     },
     turno: {
@@ -139,36 +118,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: true
     },
-    formacao: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    resumo: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    alias: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    ultimaAtualizacao: {
-      type: DataTypes.STRING(10),
-      allowNull: true
-    },
-    idRH: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    cargo: {
-      type: DataTypes.STRING(32),
-      allowNull: true
-    },
     createdAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
     },
     updatedAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
     },
   },{
@@ -186,11 +143,11 @@ module.exports = (sequelize, DataTypes) => {
         ]
       },
       {
-        name: "username",
+        name: "cpf",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "username" },
+          { name: "cpf" },
         ]
       },
       {
@@ -202,11 +159,11 @@ module.exports = (sequelize, DataTypes) => {
         ]
       },
       {
-        name: "password_reset_token",
+        name: "tokenResetSenha",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "password_reset_token" },
+          { name: "tokenResetSenha" },
         ]
       },
     ]
@@ -214,10 +171,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Usuario.prototype.perfis = function () {
     let perfis = ''
-    if(this.administrador === '1') perfis += ' Administrador |'
-    if(this.coordenador === '1') perfis += ' Coordenador |'
-    if(this.professor === '1') perfis += ' Professor |'
-    if(this.secretaria === '1') perfis += ' Secretaria'
+    if(this.administrador === 1) perfis += ' Administrador |'
+    if(this.coordenador === 1) perfis += ' Coordenador |'
+    if(this.professor === 1) perfis += ' Professor |'
+    if(this.secretaria === 1) perfis += ' Secretaria'
 
     if(perfis.endsWith(' |'))
         perfis = perfis.substring(0, perfis.length-2)

@@ -1,0 +1,141 @@
+{{> header}}
+{{> sidebar module='reservas' page='reservas-gerenciar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Lista de Reservas</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Reservas</a></li>
+                        <li class="breadcrumb-item active">Listar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-3 col-lg-2 min-width-button">
+                    <a type="button" class="btn btn-block btn-primary" href="/reservas/adicionar">
+                        <i class="fas fa-user-plus color-white"></i>
+                        Reservar Sala
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr style="text-align: center;">
+                                        <th>Sala</th>
+                                        <th>Solicitante</th>
+                                        <th>Atividade</th>
+                                        <th>Tipo</th>
+                                        <th>Data</th>
+                                        <th>Horário</th>
+                                        <th>Dias da semana</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each reservas}}
+                                    <tr style="text-align: center;">
+                                        <td> {{salas.nome}} - {{salas.bloco}} - {{salas.andar}} andar </td>
+                                        <td> {{usuario.nomeCompleto}} </td>
+                                        <td> {{atividade}} </td>
+                                        <td> {{tipo}} </td>
+                                        <td> {{dataInicio}} - {{dataTermino}} </td>
+                                        <td> {{horaInicio}} - {{horaTermino}} </td>
+                                        {{#if dias}}
+
+                                        <td>{{dias}}</td>
+                                        {{else}}
+                                        <td> - </td>
+                                        {{/if}}
+
+                                        <td style="text-align: center;">
+
+
+                                            <a class='fa fa-solid fa-pen' style="color: blue;"
+                                                href="/reservas/editar/{{id}}">
+
+                                            </a> &nbsp
+                                            <a class="fa fa-solid fa-trash" id="{{id}}" data-toggle="modal"
+                                                style="color: red;" data-target="#removerUsuario"
+                                                onclick="addLink(event)" href="#">
+
+                                            </a>
+
+
+                                    </tr>
+
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+</div>
+<!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloModal"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+            </div>
+            <form name="postDelete" id="postDelete" method="POST">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+    function deleteUser() {
+        document.postDelete.submit();
+    }
+
+    function addLink(event) {
+        const id = event.target.id
+        console.log(id)
+        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Reserva da Sala";
+        const formDelete = document.getElementById("postDelete")
+        formDelete.setAttribute('action', `/reservas/excluir/${id}`);
+    }
+
+
+</script>
+
+{{> footer}}

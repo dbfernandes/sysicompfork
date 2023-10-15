@@ -11,23 +11,20 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Usuários</a></li>
-                        <li class="breadcrumb-item active">Listar</li>
+                        <li class="breadcrumb-item active">Usuários</li>
                     </ol>
                 </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-sm-3 col-md-2 col-lg-1 min-width-button">
-                    <button type="button" class="btn btn-block btn-secondary">
-                        <i class="fa fa-arrow-left color-white"></i>
+            <div class="row mb-4">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </button>
-                </div>
-                <div class="col-sm-4 col-md-3 col-lg-2 min-width-button">
-                    <a type="button" class="btn btn-block btn-primary" href="/usuarios/adicionar">
-                        <i class="fas fa-user-plus color-white"></i>
-                        Adicionar Usuário
                     </a>
+                    <a class="btn btn-primary color-white" href="/usuarios/adicionar">
+                        <i class="fas fa-plus"></i>
+                        Adicionar
+                    </a>      
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -39,12 +36,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Usuários</h3>
-                        </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="example2" class="table table-hover w-100">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -52,18 +46,59 @@
                                         <th>Email</th>
                                         <th>Telefones</th>
                                         <th>Perfil(s)</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {{#each usuarios}}
                                     <tr>
-                                        <td> {{nome}} </td>
-                                        <td> {{username}} </td>
+                                        <td> {{nomeCompleto}} </td>
+                                        <td> {{cpf}} </td>
                                         <td> {{email}} </td>
-                                        <td> {{telcelular}}{{#if telresidencial}}/{{telresidencial}}{{/if}} </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                {{#if telCelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular" title="{{telCelular}}"></i>{{/if}}     
+                                                {{#if telResidencial}} <i id="{{id}}f" class="fa fa-phone fa-lg fixo" title="{{telResidencial}}"></i>{{/if}}
+                                                
+                                            </div>
+                                        </td>
                                         <td>
                                             {{perfis}}
+                                        </td>
+                                        <td>
+                                            <span class="{{#if status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span>
+                                        </td>
+                                        <td class='links-container'>
+                                            <div class="d-flex justify-content-between">
+                                                <a  style="margin-right: 2px"
+                                                    href='/usuarios/dados/{{id}}'
+                                                    class='fa fa-solid fa-eye'
+                                                    title="Visualizar" 
+                                                /></a>
+                                                {{#if status}}
+                                                <a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerUsuario"
+                                                    title="Bloquear" 
+                                                    onclick="addLink(event)" href="#"
+                                                    
+                                                    >
+                                                </a>
+                                                {{else}}
+                                                <a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+                                                data-toggle="modal" data-target="#removerUsuario"
+                                                title="Desbloquear" 
+                                                onclick="addLink(event)" href="#"
+                                                    >
+                                                </a>
+                                                {{/if}}
+                                                <a  style="margin-right: 2px"
+                                                    href='/usuarios/editar/{{id}}'
+                                                    class='fa fa-solid fa-pen'
+                                                    title="Editar"
+
+                                                /></a>
+                                            </div>
                                         </td>
                                     </tr>
                                     {{/each}}
@@ -82,4 +117,79 @@
     </section>
     <!-- /.content -->
 </div>
+<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+                    </div>
+                    <form name="postDelete" id="postDelete" method="POST">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    </form>
+                </div>
+            </div>
+        </div>
+<script>
+    // Adiciona margem entre os icones de telefone caso haja 2 números de contato
+    const celulares = document.getElementsByClassName("celular")
+    for (let cel of celulares) {
+        const id = cel.id.slice(0,-1)
+        if (document.getElementById(id+"f")) cel.className = cel.className + " mr-2"
+    }
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var datatable = $("#example2").DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+        },
+        responsive: true,
+        columns: [
+            { responsivePriority: 1 },
+            { responsivePriority: 6 },
+            { responsivePriority: 3 },
+            { responsivePriority: 4 },
+            { responsivePriority: 5 },
+            { responsivePriority: 7 },
+            { responsivePriority: 2 },
+        ],
+        columnDefs: [ {
+            "targets": [3,6],
+            "orderable": false
+        } ]
+        });
+    });
+
+    function deleteUser(){
+        document.postDelete.submit();
+    }
+
+    function addLink(event) {
+        const [tipo, nomeCompleto, id] = event.target.id.split("_");
+        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " "+nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
+        const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
+        document.getElementById("tituloModal").innerHTML =  prefixo + nome + "?";
+        const formDelete = document.getElementById("postDelete")
+        const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
+        formDelete.setAttribute('action', url);
+    }
+    if("{{message}}"){
+        $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-{{type}}",
+            autohide: true,
+            delay: 10000,
+            title: '{{messageTitle}}',
+            body: '{{message}}'
+            })
+
+    }
+
+</script>
 {{> footer}}

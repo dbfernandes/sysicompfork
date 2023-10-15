@@ -2,6 +2,22 @@
 const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
 
+
+const autorizarAdmin = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria) next();
+    else return res.redirect('/');
+}
+const autorizarCoord = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.coordenador) next();
+    else return res.redirect('/');
+}
+const autorizarProf = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.professor) next();
+    else return res.redirect('/');
+}
+
 const login = async (req, res) => {
 
       
@@ -15,9 +31,9 @@ const login = async (req, res) => {
         try{
             const { cpf, senha } = await req.body;
             const usuario = await Usuario.findOne({
-                where: { username: cpf }
+                where: { cpf: cpf }
             })
-    
+       
             if (!usuario){
                 console.log("teste");
     
@@ -25,17 +41,32 @@ const login = async (req, res) => {
                     csrfToken: req.csrfToken(),
                     message: "Usuário não cadastrado", type: 'danger'
                 })
+            }else if(usuario.status == 0){
+                return res.render('autenticacao/login', {
+                    csrfToken: req.csrfToken(),
+                    message: "Usuário bloqueado. Contate a administração.", type: 'danger'
+                })
             }
-            let isSenhaCorreta = await bcrypt.compare(senha, usuario.password_hash)
+
+            let isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash)
             if (!isSenhaCorreta){
-                console.log("testeoi")
                 return res.render('autenticacao/login', {
                     csrfToken: req.csrfToken(),
                     message: "Senha inválida", type: 'danger'
                 })
             }
+
             req.session.uid = usuario.id
-            req.session.nome = `${usuario.nome.split(' ')[0]} ${usuario.nome.split(' ')[usuario.nome.split(' ').length - 1]}`
+            req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1 ? 
+            " "+usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1] : 
+            ""}`
+            req.session.tipoUsuario = {
+                administrador: usuario.administrador,
+                coordenador: usuario.coordenador,
+                secretaria: usuario.secretaria,
+                professor: usuario.professor
+            }
+            req.session.uid = usuario.id
             return res.redirect('/inicio')
         }catch(err){
             console.log(err);
@@ -53,9 +84,10 @@ const recuperar_senha = async (req, res) => {
 
             if (!user)
                 return res.render('autenticacao/recuperar-senha', {
+                    csrfToken: req.csrfToken(),
                     message: "Usuário não encontrado", type: 'danger'
                 })
-
+                
             const token = crypto.randomBytes(20).toString('hex')
 
             const now = new Date()
@@ -63,8 +95,8 @@ const recuperar_senha = async (req, res) => {
             now.setHours(now.getHours() + 1)
 
             await Usuario.update({
-                password_reset_token: token,
-                password_reset_expires: now
+                tokenResetSenha: token,
+                validadeTokenResetSenha: now
             }, {
                 where: { id: user.id }
             })
@@ -78,11 +110,13 @@ const recuperar_senha = async (req, res) => {
             }, (err) => {
                 if (err)
                     return res.render('autenticacao/recuperar-senha', {
+                        csrfToken: req.csrfToken(),
                         message: "Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde",
                         type: 'danger'
                     })
 
                 return res.render('autenticacao/recuperar-senha', {
+                    csrfToken: req.csrfToken(),
                     message: "Token enviado para o e-mail cadastrado", type: 'success'
                 })
             })
@@ -90,13 +124,16 @@ const recuperar_senha = async (req, res) => {
         } catch (err) {
             console.log(err)
             return res.render('autenticacao/recuperar-senha', {
+                csrfToken: req.csrfToken(),
                 message: "Erro durante a recuperação de senha, tente novamente.",
                 type: 'danger'
             })
         }
     }
     else if (req.method === 'GET'){
-        return res.render('autenticacao/recuperar-senha')
+        return res.render('autenticacao/recuperar-senha', {
+            csrfToken: req.csrfToken()
+        })
     }
 }
 
@@ -115,4 +152,4 @@ const verificar = async (req, res,next) => {
     if (!req.session.uid) return res.redirect('/login');
     next();
 }
-export default { logout, recuperar_senha, login , verificar }
+export default { logout, recuperar_senha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }

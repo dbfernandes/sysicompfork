@@ -9,7 +9,7 @@ const begin = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
 			return res.render('selecaoppgi/begin', {
-				...locals
+				...locals,
 			});
 		case 'POST':
 			return res.send('Erro 400');

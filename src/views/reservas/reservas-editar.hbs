@@ -1,0 +1,263 @@
+{{> header}}
+{{> sidebar module='reservas' page='reservas-editar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-3">
+                <div class="col-sm-9">
+                    <h1>Editar Reserva</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/reservas/gerenciar">Reservas</a></li>
+                        <li class="breadcrumb-item active">Editar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-warning color-white" href="/reservas/gerenciar">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><b>Dados da Reserva</b></h3>
+                    </div>
+                    <div class="container-fluid">
+                        <form method="POST" action="/reservas/editar/{{sala.id}}" id="editSalaForm">
+                            <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
+                            <div class="card-body ">
+
+
+                                <div class="form-group">
+                                    <label for="atividade">
+                                        <font color="#FF0000">*</font> Atividade:
+                                    </label>
+                                    <input type="text" class="form-control" value = {{reserva.atividade}} id="atividade" name="atividade"
+                                        placeholder="Ex: Seminários ">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="bloco">
+                                        <font color="#FF0000">*</font> Tipo:
+                                    </label>
+                                    <select class="form-control" id="tipo" name="tipo" required>
+                                        <option value="Aula">Aula</option>
+                                        <option value="Defesa">Defesa</option>
+                                        <option value="Exame">Exame</option>
+                                        <option value="Reunião">Reunião</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="SalaId">
+                                        <font color="#FF0000">*</font> Sala:
+                                    </label>
+                                    <select class="form-control" id="SalaId" name="SalaId" required>
+                                       
+                                        <option value= {{reserva.salas.id}}> {{reserva.salas.nome}} - {{reserva.salas.bloco}} - {{sala.andar}}° andar</option>
+                                       
+                                    </select>
+
+                                </div>
+
+                        
+                                <div class="form-group " id="conditionalInput">
+
+                                    <label class="control-label" id="dia" for="candidato-nome">
+                                        <font color="#FF0000"> &nbsp&nbsp</font>
+                                        <b>Dias da semana:</b>
+                                    </label>
+
+                                    <label class="checkbox-inline ml-2 ">
+                                        <input type="checkbox" id="segunda" name="dia" value="Segunda">
+                                        Segunda
+                                    </label>
+
+                                    <label class="checkbox-inline ml-4 ">
+                                        <input type="checkbox" id="terca" name="dia" value="Terça">
+                                        Terça
+                                    </label>
+
+                                    <label class="checkbox-inline ml-4">
+                                        <input type="checkbox" id="quarta" name="dia" value="Quarta">
+                                        Quarta
+                                    </label>
+                                    <label class="checkbox-inline ml-4">
+                                        <input type="checkbox" id="quinta" name="dia" value="Quinta">
+                                        Quinta
+                                    </label>
+                                    <label class="checkbox-inline ml-4">
+                                        <input type="checkbox" id="sexta" name="dia" value="Sexta">
+                                        Sexta
+                                    </label>
+                                    <label class="checkbox-inline ml-4">
+                                        <input type="checkbox" id="sabado" name="dia" value="Sábado">
+                                        Sábado
+                                    </label>
+                                    <div class="invalid-feedback" id="diaErro">Escolha os dias da semana. Por
+                                        favo,</div>
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="dataInicio">
+                                            <font color="#FF0000">*</font> Data Inicial:
+                                        </label>
+
+                                        <div class="input-group date  " data-target-input="nearest">
+
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                                            <input type="date" class="form-control datetimepicker-input "
+                                                placeholder="Data de Início" id="dataInicio"  value = {{reserva.dataInicio}} name="dataInicio"
+                                                data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy"
+                                                required id="data_inicio">
+
+                                            <div class="invalid-feedback" id="dataInicioError">Data inválida. Por favor,
+                                                insira datas válidas.</div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group col-md-6" id="conditionalInput2">
+                                        <label for="dataTermino">
+                                            <font color="#FF0000">*</font> Data Término:
+                                        </label>
+                                        <div class="input-group date" data-target-input="nearest">
+
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            <input type="date" class="form-control datetimepicker-input"
+                                                placeholder="Data de Início" id="dataTermino"  value = {{reserva.dataTermino}} name="dataTermino"
+                                                placeholder="dd/mm/yyyy" data-inputmask-inputformat="dd/mm/yyyy"
+                                                placeholder="DD-MM-YYYY">
+                                            <div class="invalid-feedback" id="dataTerminoError">Data inválida. Por
+                                                favor,
+                                                insira datas válidas.</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group  col-md-6 ">
+                                        <label for="horaInicio">
+                                            <font color="#FF0000">*</font> Hora Inicial:
+                                        </label>
+                                        <div class="input-group date" data-target-input="nearest">
+                                            <div class="input-group-append" data-target="#horaTermino"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                            </div>
+                                            <input type="time" class="form-control datetimepicker-input"
+                                                data-target="#horaInicio" id="horaInicio"  value = {{reserva.horaInicio}} name="horaInicio"
+                                                placeholder='HH:mm'>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6 ">
+                                        <label for="horaTermino">
+                                            <font color="#FF0000">*</font> Hora Término:
+                                        </label>
+                                        <div class="input-group date" data-target-input="nearest">
+                                            <div class="input-group-append" data-target="#horaTermino"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                            </div>
+                                            <input type="time" class="form-control  datetimepicker-input"
+                                                data-target="#horaTermino" id="horaTermino"  value = {{reserva.horaTermino}} name="horaTermino"
+                                                placeholder='HH:mm'>
+                                            <div class="invalid-feedback" id="horaTerminoError">Hora inválida. Por
+                                                favor,
+                                                insira horas válidas.</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="card-footer pr-0">
+                                <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success float-right">
+                                        Editar Reserva
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /.card -->
+    </section>
+</div>
+{{> footer}}
+<!-- Add Bootstrap JS and jQuery (required) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Add Moment.js (required by Datetimepicker) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<!-- Add Bootstrap Datetimepicker JS -->
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script>
+
+    const radioOption = document.querySelectorAll('input[name="semanal"]');
+    const conditionalInput = document.getElementById('conditionalInput');
+    const conditionalInput2 = document.getElementById('conditionalInput2');
+    radioOption.forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.id === 'option2' && this.checked) {
+                conditionalInput.style.display = 'block';
+                conditionalInput2.style.display = 'none';
+            } else {
+                conditionalInput.style.display = 'none';
+                conditionalInput2.style.display = 'block';
+            }
+        });
+    });
+    // Initialize date and time pickers
+    $('#dataTermino,#dataInicio').datetimepicker({
+        format: 'DD-MM-YYYY',
+        icons: {
+            time: 'fa fa-calendar',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-calendar-check-o',
+            clear: 'fa fa-trash',
+            close: 'fa fa-times'
+        }
+    });
+
+    $('#horaInicio,#horaTermino').datetimepicker({
+        format: 'HH:mm',
+        icons: {
+            time: 'fa fa-clock',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-calendar-check-o',
+            clear: 'fa fa-trash',
+            close: 'fa fa-times'
+        }
+    });
+</script>
