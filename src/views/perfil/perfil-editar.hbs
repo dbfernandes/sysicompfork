@@ -1,5 +1,5 @@
  {{> header}}
-{{> sidebar module='usuarios' page='usuarios-editar' }}
+{{> sidebar module='perfil' page='perfil-editar' }}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -7,34 +7,26 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Editar Usuário {{usuario.nomeCompleto}}</h1>
+                    <h1>Editar perfil: {{usuario.nomeCompleto}}</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/usuarios/listar">Usuários</a></li>
+                        <li class="breadcrumb-item"><a href="/perfil">Perfil</a></li>
                         <li class="breadcrumb-item active">Editar</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
-                    <a class="btn btn-warning color-white" onclick="history.go(-1);">
+                    <a class="btn btn-warning color-white" href="/perfil">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
-                    {{#if usuario.status}}
                     <a class="btn btn-danger color-white" href="#"  id="removerUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
                         data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
                         <i class="fas fa-user-lock"></i>
                         Bloquear
                     </a>
-                    {{else}}
-                    <a class="btn btn-success color-white" href="#"  id="desbloquearUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
-                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
-                        <i class="fas fa-unlock"></i>
-                        Desbloquear
-                    </a>
-                    {{/if}}
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -48,7 +40,7 @@
             <div style="text-align:left">
                 <font color="#FF0000">*</font> Campos Obrigatórios
             </div>
-            <form action="/usuarios/editar/{{usuario.id}}" method="post" id="editarUsuarioForm">
+            <form action="/perfil/editar" method="post" id="editarUsuarioForm" name="editarUsuarioForm">
                 <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
                 <div class="card card-primary">
                     <div class="card-header">
@@ -236,7 +228,7 @@
                     <div class="card-footer">
                             <div style="margin-right: auto;" class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success float-right">
-                                    Editar Usuário
+                                    Editar Perfil
                                 </button>
 
                             </div>
@@ -376,12 +368,10 @@
     }
 
     function addLink(event) {
-        const [tipo, nomeCompleto, id] = event.target.id.split("_");
-        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " "+nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
-        const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
-        document.getElementById("tituloModal2").innerHTML =  prefixo + nome + "?";
+        const prefixo = "<b>Deseja realmente bloquear o seu perfil?</b> <br/><b>Atenção: </b>a página será redirecionada para o login do sistema. Para desbloquear o seu acesso contate o Suporte!</b>" 
+        document.getElementById("tituloModal2").innerHTML =  prefixo;
         const formDelete = document.getElementById("postDeleteOnEdit")
-        const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
+        const url = `/perfil/deletar`
         formDelete.setAttribute('action', url);
     }
     if("{{message}}"){
