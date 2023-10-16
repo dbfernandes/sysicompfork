@@ -14,7 +14,7 @@ const listar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle, csrfToken: req.csrfToken()});
+    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle, ...locals, tipoUsuario: _req.session.tipoUsuario });
 };
 
 const buscar = async (req, res) => {
@@ -28,7 +28,7 @@ const buscar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, pageTitle});
+    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle, ...locals,  tipoUsuario: req.session.tipoUsuario});
 };
 
 const criar = async (req, res) => {

@@ -2,6 +2,22 @@
 const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
 
+
+const autorizarAdmin = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria) next();
+    else return res.redirect('/');
+}
+const autorizarCoord = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.coordenador) next();
+    else return res.redirect('/');
+}
+const autorizarProf = async (req, res, next) => {
+    if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria || 
+        req.session.tipoUsuario.professor) next();
+    else return res.redirect('/');
+}
+
 const login = async (req, res) => {
 
       
@@ -17,7 +33,7 @@ const login = async (req, res) => {
             const usuario = await Usuario.findOne({
                 where: { cpf: cpf }
             })
-    
+       
             if (!usuario){
                 console.log("teste");
     
@@ -34,17 +50,22 @@ const login = async (req, res) => {
 
             let isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash)
             if (!isSenhaCorreta){
-                console.log("testeoi")
                 return res.render('autenticacao/login', {
                     csrfToken: req.csrfToken(),
                     message: "Senha inválida", type: 'danger'
                 })
             }
+
+            req.session.uid = usuario.id
             req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1 ? 
             " "+usuario.nomeCompleto.split(' ')[usuario.nomeCompleto.split(' ').length - 1] : 
             ""}`
-
-
+            req.session.tipoUsuario = {
+                administrador: usuario.administrador,
+                coordenador: usuario.coordenador,
+                secretaria: usuario.secretaria,
+                professor: usuario.professor
+            }
             req.session.uid = usuario.id
             return res.redirect('/inicio')
         }catch(err){
@@ -131,4 +152,4 @@ const verificar = async (req, res,next) => {
     if (!req.session.uid) return res.redirect('/login');
     next();
 }
-export default { logout, recuperar_senha, login , verificar }
+export default { logout, recuperar_senha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }

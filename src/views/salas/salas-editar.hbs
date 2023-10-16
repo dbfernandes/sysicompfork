@@ -6,7 +6,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-3">
                 <div class="col-sm-9">
                     <h1>Editar Sala</h1>
                 </div>
@@ -19,7 +19,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
-                    <a type="button" class="btn btn-block btn-secondary" href="/salas/gerenciar">
+                    <a type="button" class="btn btn-warning color-white" href="/salas/gerenciar">
                         <i class="fa fa-arrow-left color-white"></i>
                         Voltar
                     </a>
@@ -28,100 +28,89 @@
         </div><!-- /.container-fluid -->
     </section>
 
+
     <section class="content">
-        <div class="col-md-7">
-                <div class="card card-light">
-                    <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
-                        <input type="hidden" name="_csrf" value="{{csrf}}"/> 
-                        <div class="card-body ">
-                              <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                                <label for="nome">
-                                    <font color="#FF0000">*</font> Nome:
-                                </label>
-                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex. Auditório 1" value="{{sala.nome}}" required>
-                            </div>
+        <div class="row">
+            <div class="col">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados da Sala</h3>
+                    </div>
+                    <div class="container-fluid">
+                        <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
+                            <input type="hidden" name="_csrf" value="{{csrf}}" />
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="nome">
+                                            <font color="#FF0000">*</font> Nome:
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                            placeholder="Ex. Auditório 1" value="{{sala.nome}}" required>
+                                    </div>
 
-                            <div class="form-group col-sm-12 col-md-6 col-lg-5">
-                                <label for="numero">
-                                    Número:
-                                </label>
-                                <input type="number" class="form-control" id="numero" name="numero"  min="0" max = '100' value="{{sala.numero}}" placeholder="Ex. 12">
-                            </div>
-                            </div>
-                            
-                        
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="numero">
+                                            Número:
+                                        </label>
+                                        <input type="number" class="form-control" id="numero" name="numero" min="0"
+                                            max='100' value="{{sala.numero}}" placeholder="Ex. 12">
+                                    </div>
+                                </div>
 
-                           <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                                <label for="andar">
-                                    <font color="#FF0000">*</font> Andar:
-                                </label>
-                            <input type="number" class="form-control" id="andar" name="andar"  min="1" max = '3'value="{{sala.andar}}"   value="1"> 
 
-                            </div>
-                            
-                            <div class="form-group c  ol-sm-12 col-md-6 col-lg-5">
-                                <label for="capacidade">
-                                    <font color="#FF0000"></font> Capacidade:
-                                </label>
-                                <input type="number" class="form-control" id="capacidade" name="capacidade" min="0" max = '100' value="{{sala.capacidade}}"  placeholder="Ex. 30"> 
 
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="andar">
+                                            <font color="#FF0000">*</font> Andar:
+                                        </label>
+                                        <input type="number" class="form-control" id="andar" name="andar" min="1"
+                                            max='3' value="{{sala.andar}}" value="1">
+
+                                    </div>
+
+                                    <div class="form-group c  ol-sm-12 col-md-6 col-lg-6">
+                                        <label for="capacidade">
+                                            <font color="#FF0000"></font> Capacidade:
+                                        </label>
+                                        <input type="number" class="form-control" id="capacidade" name="capacidade"
+                                            min="0" max='100' value="{{sala.capacidade}}" placeholder="Ex. 30">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-12">
+                                        <label for="bloco">
+                                            <font color="#FF0000">*</font> Bloco:
+                                        </label>
+                                        <select class="form-control" id="bloco" name="bloco" required>
+                                            <option {{checked sala.bloco 'Icomp Tech' }} value="Icomp Tech">Icomp Tech
+                                            </option>
+                                            <option {{checked sala.bloco 'Icomp 1' }} value="Icomp 1">Icomp 1</option>
+                                            <option {{checked sala.bloco 'Icomp 2' }} value="Icomp 2">Icomp 2</option>
+                                            <option {{checked sala.bloco 'CPD' }} value="CPD">CPD</option>
+
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                           </div>
-                               <div class="form-group">
-                                <label for="bloco">
-                                    <font color="#FF0000">*</font> Bloco:
-                                </label>
-                                <select class="form-control" id="bloco" name="bloco"  required>
-                                    <option  value="Icomp Tech">Icomp Tech </option>
-                                    <option value="IComp 1">IComp 1</option>
-                                    <option value="IComp 2">IComp 1</option>
-                                    <option value="IComp 3">IComp 3</option>
-                                </select>                            </div>
-                        </div>
-                        <!-- /.card-body -->
-                        <div class="card-footer">
-                            <input type="submit" class="btn btn-primary" value="Salvar" />
-                        </div>
-                    </form>
-                </div> 
-        </div>
-        <!-- /.card -->
+                            <!-- /.card-body -->
+                            <div class="card-footer pr-0">
+                                <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success float-right">
+                                        Salvar Sala
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card -->
     </section>
 </div>
 
 
-
-<script>
-    
-    function submitForm(id) {
-        const dataFromForm = $('#editSalaForm').serializeArray();
-      
-        $.ajax({
-            url: "salas/editar/" + id,
-            type: 'PUT',
-            data: dataFromForm,
-            success: function (data) {
-                
-                alert("Form successful update!");
-                window.location.href = '/salas/gereniar'
-                
-                $.validator.setDefaults({
-                    submitHandler: function () {
-                    },
-                    onfocusout: function (el) {
-                        this.element(el);
-                    },
-                });
-            },
-            error: function (data) {
-                alert("Erro ao atualizar sala!");
-                console.log(data);
-            }
-        });
-        
-    }
-
-</script>
 {{> footer}}
