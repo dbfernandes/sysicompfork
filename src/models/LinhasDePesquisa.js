@@ -5,8 +5,10 @@ module.exports = (sequelize, DataTypes) => {
   class LinhasDePesquisa extends Model {
     static associate(models) {
       // fazer as associações aqui
-      LinhasDePesquisa.hasMany(models.Candidate, {
-        foreignKey: "linhaDePesquisaId",
+      LinhasDePesquisa.belongsToMany(models.Candidate, {
+        through: "CandidateLinhasDePesquisa",
+        foreignKey: "candidateId",
+        otherKey: "linhaDePesquisaId",
         onDelete: "RESTRICT",
       });
     }

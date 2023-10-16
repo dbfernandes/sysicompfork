@@ -17,10 +17,6 @@ module.exports = {
         allowNull:false,
         type: Sequelize.STRING
       },
-      linhaDePesquisaId:{
-        allowNull:true,
-        type: Sequelize.INTEGER
-      },
       passwordHash: {
         allowNull:false,
         type: Sequelize.STRING

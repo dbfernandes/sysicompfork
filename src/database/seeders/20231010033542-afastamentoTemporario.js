@@ -1,0 +1,45 @@
+'use strict';
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    /**
+     * Add seed commands here.
+     *
+     * Example:
+     * await queryInterface.bulkInsert('People', [{
+     *   name: 'John Doe',
+     *   isBetaMember: false
+     * }], {});
+    */
+    await queryInterface.bulkInsert('AfastamentoTemporarios', [
+      {
+        id: 1,
+        usuarioId: 1,
+        dataSaida: new Date(),
+        dataRetorno: new Date(),
+        tipoViagem: 1,
+        localViagem: 'São Paulo',
+        justificativa: 'Viagem para São Paulo',
+        planoReposicao: 'Fazer reposição',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 2,
+        usuarioId: 2,
+        dataSaida: new Date(),
+        dataRetorno: new Date(),
+        tipoViagem: 0,
+        localViagem: 'Rio de Janeiro',
+        justificativa: 'Viagem para Rio de Janeiro',
+        planoReposicao: 'Fazer reposição',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ], {});
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('AfastamentoTemporario', null, {});
+  }
+};
