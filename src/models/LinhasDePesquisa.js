@@ -5,10 +5,8 @@ module.exports = (sequelize, DataTypes) => {
   class LinhasDePesquisa extends Model {
     static associate(models) {
       // fazer as associações aqui
-      LinhasDePesquisa.belongsToMany(models.Candidate, {
-        through: "CandidateLinhasDePesquisa",
-        foreignKey: "candidateId",
-        otherKey: "linhaDePesquisaId",
+      LinhasDePesquisa.hasMany(models.Candidate, {
+        foreignKey: "linhaDePesquisaId",
         onDelete: "RESTRICT",
       });
     }
