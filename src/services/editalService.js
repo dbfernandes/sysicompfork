@@ -1,4 +1,5 @@
 import Candidate from '../models/Candidate';
+const moment = require('moment-timezone'); 
 
 var {
     Edital
@@ -42,8 +43,10 @@ class EditalService {
                 dataInicio: data_inicio,
                 dataFim: data_fim,                
                 status: "1",
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                inscricoesIniciadas: 0,
+                inscricoesEncerradas: 0,
+                createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
+                updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
             });
         
             return novo_edital;
@@ -58,7 +61,6 @@ class EditalService {
 
     async listEdital() {
         // listagem dos editais
-        console.log('ta listado')
         const editais = await Edital.findAll().catch(err => {
             console.log(`[ERROR] Listar Editais: ${err}`)
             throw new Error("Não foi possivel listar o edital");
@@ -112,7 +114,7 @@ class EditalService {
 
         await Edital.update({
             status,
-            updatedAt: new Date(),
+            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
         }, {
             where: {
                 editalId: id_edital
@@ -180,8 +182,7 @@ class EditalService {
             documento: documento,
             dataInicio: data_inicio,
             dataFim: data_fim,
-            status: "1",
-            updatedAt: new Date(),
+            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
         }, {
             where: {
                 editalId: id_update

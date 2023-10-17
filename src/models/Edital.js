@@ -45,11 +45,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         dataInicio: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
         dataFim: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },        
         status: {

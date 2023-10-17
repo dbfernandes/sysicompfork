@@ -40,11 +40,11 @@ module.exports = {
       },
       dataInicio:{
         allowNull : false,
-        type : Sequelize.DATE
+        type : Sequelize.DATEONLY
       },
       dataFim:{
         allowNull : false,
-        type : Sequelize.DATE
+        type : Sequelize.DATEONLY
       },      
       status:{
         allowNull : false,
