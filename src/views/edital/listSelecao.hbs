@@ -84,10 +84,10 @@
                                     <tr>
                                         <td>{{add @index 1}}</td>
                                         <td> {{dataValues.editalId}} </td>
-                                        <td> {{dataValues.dataInicio}} </td>
-                                        <td> {{dataValues.dataFim}} </td>
-                                        <td>  </td>
-                                        <td>  </td>
+                                        <td>{{ dataValues.dataInicio}}</td>
+                                        <td> {{ dataValues.dataFim}} </td>
+                                        <td> {{dataValues.inscricoesIniciadas}} </td>
+                                        <td> {{dataValues.inscricoesEncerradas}} </td>
                                         <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
                                         <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
                                         <td>
@@ -113,7 +113,7 @@
                                                     onclick="abrirModal('{{dataValues.editalId}}', '{{dataValues.status}}')"
                                                     data-toggle="modal"
                                                     data-target="#removerEdital"
-                                                    onclick="addLink(event)">
+                                                    >
                                                 </a>
                                                
                                                 <a  style="margin-right: 2px"
@@ -254,10 +254,20 @@
                 { responsivePriority: 5 },
                 { responsivePriority: 2 },
             ],
-            columnDefs: [ {
+            columnDefs: [
+            {
                 "targets": [9],
                 "orderable": false
-            } ]
+            },
+            {
+                targets: [2, 3], // Índices das colunas que tem datas
+                render: function(data, type) {
+                if (type === 'sort') {
+                    return moment(data).format('YYYY-MM-DD') // Para ordenação usa no formato YYYY-MM-DD'
+                }
+                return moment(data).format('DD/MM/YYYY') // Para exibição usa no formato DD/MM/YYYY'
+                }
+            }]
         });
 
         document.getElementById("voltarBtn").addEventListener("click", function() {
