@@ -8,7 +8,8 @@ import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas.routes';
-import autenticacaoController from '../controllers/auntenticacaoController';
+import perfilRoutes from './perfil.routes';
+import autenticacaoController from '../controllers/autenticacaoController';
 import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
 const router = express.Router();
@@ -36,6 +37,7 @@ router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);
+router.use("/perfil", perfilRoutes);
 
 // Rotas Exclusivas Administrador e Secretaria 
 router.use("/usuarios", autenticacaoController.autorizarAdmin, usuariosRoutes);
