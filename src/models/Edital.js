@@ -37,32 +37,42 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         cartaRecomendacao: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         documento: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         dataInicio: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATE,
             allowNull: false
         },
         dataFim: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATE,
             allowNull: false
         },        
         status: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        inscricoesIniciadas: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false
+        },
+        inscricoesEncerradas: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
             allowNull: false
         },
         createdAt: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATE,
             defaultValue: new Date(),
             allowNull: false,
           },
         updatedAt: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATE,
             defaultValue: new Date(),
             allowNull: false,
         },

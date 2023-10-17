@@ -40,23 +40,33 @@ module.exports = {
       },
       dataInicio:{
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.DATE
       },
       dataFim:{
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.DATE
       },      
       status:{
         allowNull : false,
         type : Sequelize.STRING,
-        defaultValue:0,
+        defaultValue: '0',
+      },
+      inscricoesIniciadas: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      inscricoesEncerradas: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       createdAt: {
-        type : Sequelize.STRING,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       updatedAt: {
-        type : Sequelize.STRING,
+        type: Sequelize.DATE,
         allowNull: false,
       },
     });
