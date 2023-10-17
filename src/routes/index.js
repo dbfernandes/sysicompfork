@@ -32,16 +32,19 @@ router.get('/logout', autenticacaoController.logout)
 
 router.use("/selecaoppgi", selecaoppgiRouter);
 
-//router.use(autenticacaoController.verificar)
+router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);
 
-router.use("/usuarios", usuariosRoutes);
-router.use("/projetos", projetosRoutes);
-router.use("/edital", editalRouter);
-router.use("/linhasdepesquisa", linhasDePesquisaRouter);
-router.use('/salas', salasRoutes);
-router.use('/reservas', reservasRoutes);
-router.use("/horascomplementares", horasComplementaresRoutes)
+// Rotas Exclusivas Administrador e Secretaria 
+router.use("/usuarios", autenticacaoController.autorizarAdmin, usuariosRoutes);
+//router.use("/projetos", projetosRoutes);
+// Rotas Exclusivas Coordenador
+router.use("/edital", autenticacaoController.autorizarCoord, editalRouter);
+router.use("/linhasdepesquisa", autenticacaoController.autorizarCoord, linhasDePesquisaRouter);
+// Rotas Exclusivas Professor
+router.use('/salas', autenticacaoController.autorizarProf, salasRoutes);
+router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
+router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
 export default router;
