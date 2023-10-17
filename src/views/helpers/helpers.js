@@ -46,6 +46,20 @@ const checked = (a, b) => {
   return ''
 }
 
+const checked_in = (a, b) => {
+  if (a.includes(b))
+      return 'selected'
+  return ''
+}
+
+
+const checked_unica = (a) => {
+  if (typeof a !== "undefined")
+      return 'selected'
+  return ''
+}
+
+
 const getJsonContext = (data, options) => {
     return options.fn(JSON.parse(data));
 };
@@ -66,4 +80,6 @@ const add = (a, b) => {
     return a + b;
 };
 
-module.exports = { ...ops, ifEqual, checked, add, showError, autorizarUsuario }
+
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario }
+

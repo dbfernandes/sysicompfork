@@ -31,9 +31,13 @@
     <section class="content">
         <div class="row">
             <div class="col">
-                <div class="card card-primary">
-                      <div class="card-header">
-                       <h3 class="card-title"><b>Dados da Sala</b></h3> 
+                <div class="card card-primary" style="width: 50%;">
+                    <div class="card-header">
+                        <h3 class="card-title"><b>Dados da Sala</b></h3>
+                        <button class="expand-btn"
+                            style="color:white; position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
+                            <i class="fas fa-expand" style="color:white"></i>
+                        </button>
                     </div>
                     <div class="container-fluid">
                         <form id="formAdicionarSala" method="POST" action="/salas/adicionar">
@@ -62,8 +66,8 @@
                                         <label for="andar">
                                             <font color="#FF0000">*</font> Andar:
                                         </label>
-                                        <input type="number" class="form-control" id="andar" name="andar"
-                                           min="1"  max='3' value="1">
+                                        <input type="number" class="form-control" id="andar" name="andar" min="1"
+                                            max='3' value="1">
 
                                     </div>
 
@@ -109,5 +113,36 @@
     </section>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const card = document.querySelector('.card');
+        const expandBtn = document.querySelector('.expand-btn');
+        const formAdicionarSala = document.getElementById('formAdicionarSala');
+
+        // Adicione este listener para o evento 'submit' do formulário
+        formAdicionarSala.addEventListener('submit', function (event) {
+            event.preventDefault(); // Previna o comportamento padrão do formulário
+
+            // Mostre a notificação
+            localStorage.setItem('toastMessage', 'Sala adicionada com sucesso!');
+            localStorage.setItem('toastType', 'success');
+            // Aguarde um pouco antes de realmente enviar o formulário para que a notificação seja vista pelo usuário
+
+            formAdicionarSala.submit();  // Envie o formulário depois de um delay
+            // 2 segundos de delay
+        });
+
+        expandBtn.addEventListener('click', function () {
+            if (card.style.width === '100%') {
+                card.style.width = '50%';
+                //expandBtn.innerText = '<bExpandir';
+            } else {
+                card.style.width = '100%';
+                // expandBtn.innerText = 'Reduzir';
+            }
+        });
+    });
+</script>
 
 {{> footer}}
