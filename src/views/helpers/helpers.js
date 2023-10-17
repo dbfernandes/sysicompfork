@@ -1,8 +1,13 @@
+const moment = require('moment-timezone');
+
+const formataData = (data) => {
+  return moment(data).format('DD/MM/YYYY');
+}
 
 const ifEqual = (a, b, options) => {
-    if (a === b)
-        return options.fn(this)
-    return options.inverse(this)
+  if (a === b)
+      return options.fn(this)
+  return options.inverse(this)
 }
 
 
@@ -32,4 +37,4 @@ const add = (a, b) => {
     return a + b;
 };
 
-module.exports = { ifEqual, checked, add, showError }
+module.exports = { formataData, ifEqual, checked, add, showError }
