@@ -1,3 +1,37 @@
+const ops = {
+  ['not']: (v1) => !v1,
+  ['!']: (v1) => !v1,
+  ['and']: (v1, v2) => v1 && v2,
+  ['&&']: (v1, v2) => v1 && v2,
+  ['or']: (v1, v2) => v1 || v2,
+  ['||']: (v1, v2) => v1 || v2,
+  ['eq']: (v1, v2) => v1 == v2,
+  ['==']: (v1, v2) => v1 == v2,
+  ['ne']: (v1, v2) => v1 != v2,
+  ['!=']: (v1, v2) => v1 != v2,
+  ['eqf']: (v1, v2) => v1 === v2,
+  ['===']: (v1, v2) => v1 === v2,
+  ['nef']: (v1, v2) => v1 !== v2,
+  ['!==']: (v1, v2) => v1 !== v2,
+  ['gt']: (v1, v2) => v1 > v2,
+  ['>']: (v1, v2) => v1 > v2,
+  ['gte']: (v1, v2) => v1 >= v2,
+  ['>=']: (v1, v2) => v1 >= v2,
+  ['lt']: (v1, v2) => v1 < v2,
+  ['<']: (v1, v2) => v1 < v2,
+  ['lte']: (v1, v2) => v1 <= v2,
+  ['<=']: (v1, v2) => v1 <= v2,
+};
+
+const autorizarUsuario = (tipos, autorizacao) => {
+  if(autorizacao == "administrador"){
+    return tipos.administrador || tipos.secretaria 
+  }else if(autorizacao == "coordenador"){
+    return tipos.administrador || tipos.secretaria || tipos.coordenador
+  }else if(autorizacao == "professor"){
+    return tipos.administrador || tipos.secretaria || tipos.professor
+  }
+}
 
 const ifEqual = (a, b, options) => {
     if (a === b)
@@ -46,4 +80,6 @@ const add = (a, b) => {
     return a + b;
 };
 
-module.exports = { ifEqual, checked, add, showError,checked_in, checked_unica }
+
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario }
+

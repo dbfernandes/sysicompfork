@@ -17,7 +17,9 @@ const adicionar = async (req, res) => {
             salas: salas.map(sala => sala.toJSON()),
             nome: req.session.nome,
             UsuarioId: req.session.uid,
-            csrf: req.csrfToken(),
+            csrf: req.csrfToken(),   
+            tipoUsuario: req.session.tipoUsuario
+
         })
 
     } else if (req.method === 'POST') {
@@ -98,7 +100,8 @@ const gerenciar = async (req, res) => {
     res.render('reservas/reservas-gerenciar', {
         reservas: reservas.map(reservas => reservas.toJSON()),
         nome: req.session.nome,
-        csrfToken: req.csrfToken(),
+        csrfToken: req.csrfToken(),  
+        tipoUsuario: req.session.tipoUsuario
 
     })
 }
@@ -126,6 +129,7 @@ const editar = async (req, res) => {
                 reserva: reserva.toJSON(),
                 csrf: req.csrfToken(),
                 nome: req.session.nome,
+                tipoUsuario: req.session.tipoUsuario
 
             })
 
