@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 const moment = require('moment-timezone');
 
-const formataData = (data) => {
-  return moment(data).format('DD/MM/YYYY');
-=======
 const ops = {
   ['not']: (v1) => !v1,
   ['!']: (v1) => !v1,
@@ -37,7 +33,6 @@ const autorizarUsuario = (tipos, autorizacao) => {
   }else if(autorizacao == "professor"){
     return tipos.administrador || tipos.secretaria || tipos.professor
   }
->>>>>>> main
 }
 
 const ifEqual = (a, b, options) => {
@@ -87,10 +82,11 @@ const add = (a, b) => {
     return a + b;
 };
 
-<<<<<<< HEAD
-module.exports = { formataData, ifEqual, checked, add, showError }
-=======
 
-module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario }
+const formataData = (data) => {
+  return moment(data).format('DD/MM/YYYY');
+}
 
->>>>>>> main
+
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData }
+
