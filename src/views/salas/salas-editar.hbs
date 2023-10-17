@@ -118,12 +118,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+       
         const card = document.querySelector('.card');
         const expandBtn = document.querySelector('.expand-btn');
-        const formAdicionarSala = document.getElementById('formAdicionarSala');
+        const formAdicionarSala = document.getElementById('editSalaForm');
 
         // Adicione este listener para o evento 'submit' do formulário
         formAdicionarSala.addEventListener('submit', function (event) {
+            console.log('in')
             event.preventDefault(); // Previna o comportamento padrão do formulário
 
             // Mostre a notificação
@@ -136,6 +138,7 @@
         });
 
         expandBtn.addEventListener('click', function () {
+            console.log('in')
 
             if (card.style.width === '100%') {
                 card.style.width = '50%';
@@ -147,5 +150,6 @@
         });
     });
 </script>
+
 
 {{> footer}}

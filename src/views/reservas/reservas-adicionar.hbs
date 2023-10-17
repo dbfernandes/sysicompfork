@@ -268,7 +268,7 @@
         // lógica do switch
         $("#unica").on('switchChange.bootstrapSwitch', function (event, state) {
             const unica = $("#unica").prop('checked');
-            if (!unica) {
+            if (unica) {
                 dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data Inicial:'
                 conditionalInput.style.display = 'block';
                 conditionalInput2.style.display = 'block';
@@ -305,7 +305,7 @@
         let dias = diasSemana()
 
         //verificacao do caso data unica
-        if (unica) {
+        if (!unica) {
             const data = new Date(document.getElementById("dataInicio").value);
             const diaDaSemana = data.getDay();
             const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
