@@ -38,6 +38,7 @@ const adicionar = async (req, res) => {
 
            
             console.log({...req.body})
+
             
             const reserva = await ReservaSala
                 .create({

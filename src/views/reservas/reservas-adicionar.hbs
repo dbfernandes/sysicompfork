@@ -31,37 +31,44 @@
     <section class="content">
         <div class="row">
             <div class="col">
-                <div class="card card-primary">
+                <div class="card card-primary" style="width: 50%;">
                     <div class="card-header">
                         <h3 class="card-title"><b>Dados da Reserva</b></h3>
+
+                        <!-- Ícone de expandir -->
+                        <button class="expand-btn"
+                            style="position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
+                            <i class="fas fa-expand" style="color:white"></i>
+                        </button>
                     </div>
+
                     <div class="container-fluid">
                         <form id="formAdicionarSala" method="POST" action="/reservas/adicionar">
                             <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
                             <input type="hidden" id="UsuarioId" name="UsuarioId" value="{{UsuarioId}}" />
                             <div class="card-body ">
 
+                                <div class="row">
+                                    <div class="form-group col-md-6 ">
+                                        <label for="atividade">
+                                            <font color="#FF0000">*</font> Atividade:
+                                        </label>
+                                        <input type="text" class="form-control" id="atividade" name="atividade"
+                                            placeholder="Ex: Seminários ">
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="atividade">
-                                        <font color="#FF0000">*</font> Atividade:
-                                    </label>
-                                    <input type="text" class="form-control" id="atividade" name="atividade"
-                                        placeholder="Ex: Seminários ">
+                                    <div class="form-group col-md-6 ">
+                                        <label for="bloco">
+                                            <font color="#FF0000">*</font> Tipo:
+                                        </label>
+                                        <select class="form-control" id="tipo" name="tipo" required>
+                                            <option value="Aula">Aula</option>
+                                            <option value="Defesa">Defesa</option>
+                                            <option value="Exame">Exame</option>
+                                            <option value="Reunião">Reunião</option>
+                                        </select>
+                                    </div>
                                 </div>
-
-                                <div class="form-group ">
-                                    <label for="bloco">
-                                        <font color="#FF0000">*</font> Tipo:
-                                    </label>
-                                    <select class="form-control" id="tipo" name="tipo" required>
-                                        <option value="Aula">Aula</option>
-                                        <option value="Defesa">Defesa</option>
-                                        <option value="Exame">Exame</option>
-                                        <option value="Reunião">Reunião</option>
-                                    </select>
-                                </div>
-
                                 <div class="form-group ">
                                     <label for="SalaId">
                                         <font color="#FF0000">*</font> Sala:
@@ -76,14 +83,15 @@
 
                                 <div class="row">
 
-                                    <div class="form-group col-md-1">
+                                    <div class="form-group ">
                                         <label for="carta_recomendacao">
-                                            <font color="#FF0000">*</font> Reserva Única?
+                                            <font color="#FF0000"></font> &nbsp&nbsp &nbspEssa Reserva se repete?
+                                            &nbsp&nbsp
                                         </label>
                                     </div>
                                     <div class="form-group ">
                                         <input type="checkbox" name="unica" data-bootstrap-switch
-                                            data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                            data-off-color="danger" checked data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não" value="1" id="unica">
                                     </div>
                                 </div>
@@ -132,7 +140,7 @@
 
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="dataInicio">
+                                        <label for="dataInicio" id="dataInicioLabel">
                                             <font color="#FF0000">*</font> Data Inicial:
                                         </label>
 
@@ -224,10 +232,31 @@
     </section>
 </div>
 
-{{> footer}}
+
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     $(document).ready(function () {
+        const dataInicioLabel = document.querySelector('#dataInicioLabel');
         const conditionalInput = document.getElementById('conditionalInput');
         const conditionalInput2 = document.getElementById('conditionalInput2');
 
@@ -239,16 +268,19 @@
         // lógica do switch
         $("#unica").on('switchChange.bootstrapSwitch', function (event, state) {
             const unica = $("#unica").prop('checked');
-            if (unica) {
-                conditionalInput.style.display = 'none';
-                conditionalInput2.style.display = 'none';
-            } else {
+            if (!unica) {
+                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data Inicial:'
                 conditionalInput.style.display = 'block';
                 conditionalInput2.style.display = 'block';
+            } else {
+                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data:';
+                conditionalInput.style.display = 'none';
+                conditionalInput2.style.display = 'none';
             }
-
         });
     });
+
+
 
     function diasSemana() {
         let dias = ""
@@ -290,7 +322,15 @@
             dias
         };
     }
+    document.querySelector('.expand-btn').addEventListener('click', function () {
+        const card = document.querySelector('.card');
 
+        if (card.style.width !== "100%") {
+            card.style.width = "100%";
+        } else {
+            card.style.width = "50%"; // ou qualquer tamanho padrão que você deseja
+        }
+    });
     async function buscarReservas() {
         try {
             const response = await fetch('/reservas/listar'); // Rota para buscar reservas
@@ -350,9 +390,10 @@
         // Verifica se as datas termino
         if (isNaN(dataFim.getTime())) {
             console.log('1')
-            if (unica) {
+            if (!unica) {
                 dataFim = dataInicio
             } else {
+                toastr.error("Por favor, insira uma data.");
                 document.getElementById("dataTerminoError").textContent = "Por favor, insira uma data.";
                 document.getElementById("dataTermino").classList.add("is-invalid");
                 return;
@@ -365,6 +406,8 @@
         // Verifica se a data de início é anterior à data de fim
         if (dataInicio > dataFim) {
             console.log('2')
+            toastr.error("A data de termino deve ser posterior à data de inicio.");
+
             document.getElementById("dataTerminoError").textContent = "A data de termino deve ser posterior à data de inicio.";
             document.getElementById("dataTermino").classList.add("is-invalid");
             return;
@@ -376,6 +419,8 @@
         // Verifica se a hora de início é anterior à hora de fim
         if (horaInicio >= horaTermino) {
             console.log('3')
+            toastr.error("A hora de termino deve ser posterior à hora de inicio.");
+
             document.getElementById("horaTerminoError").textContent = "A hora de termino deve ser posterior à hora de inicio.";
             document.getElementById("horaTermino").classList.add("is-invalid");
             return;
@@ -386,8 +431,10 @@
 
         // Verifica se dias da semana está selecionado
 
-        if (!unica & dias == "") {
+        if (unica & dias == "") {
             console.log('4')
+            toastr.error("Escolha os dias da semana. Por favor.");
+
             document.getElementById("diaErro").textContent = "Escolha os dias da semana. Por favor.";
             document.getElementById("dia").classList.add("is-invalid");
             return;
@@ -408,15 +455,19 @@
 
         if (conflito) {
             console.log('5')
+            toastr.error('Existe um conflito com as reservas existente nesse horário!');
             document.getElementById("dataInicioError").textContent = "Existe um conflito com as reservas existente nesse horário";
             document.getElementById("dataInicio").classList.add("is-invalid");
             document.getElementById("dataTermino").classList.add("is-invalid");
             document.getElementById("horaInicio").classList.add("is-invalid");
-            document.getElementById("horaTermino").classList.add("is-invalid");
+            document.getElementById("horaTermino").classList.add("is-invalid")
 
             return;
 
         } else {
+            localStorage.setItem('toastMessage', 'Reserva adicionada com sucesso!');
+            localStorage.setItem('toastType', 'success');
+
             document.getElementById("dataInicioError").textContent = "";
             document.getElementById("dataInicio").classList.remove("is-invalid");
             document.getElementById("dataTermino").classList.remove("is-invalid");
@@ -430,3 +481,5 @@
     });
 
 </script>
+
+{{> footer}}
