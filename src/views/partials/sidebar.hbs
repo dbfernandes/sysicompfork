@@ -1,10 +1,9 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="/script-adminlte/index3.html" class="brand-link">
-    <span class="brand-text">ICOMP</span>
+  <a href="/inicio" class="brand-link">
+    <span class="brand-text">SYSICOMP</span>
   </a>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
@@ -13,7 +12,7 @@
         <img src="/public/img/user-profile-generic.png" class="img-circle elevation-2" alt="User Image">
       </div>
       <div class="info">
-        <a href="#" class="d-block"> {{ nome }} </a>
+        <a href="/perfil" class="d-block"> {{ nome }} </a>
       </div>
     </div>
 
@@ -23,13 +22,14 @@
         <!-- Add icons to the links using the .nav-icon class
               with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="/inicio" class="nav-link">
+          <a href="/inicio" class="nav-link {{#ifEqual module 'inicio'}}active{{/ifEqual}}">
             <i class="nav-icon fas fa-home"></i>
             <p>
               Início
             </p>
           </a>
         </li>
+        {{#if (autorizarUsuario tipoUsuario "administrador")}}
         <li class="nav-header">Administração</li>
         <li class="nav-item {{#ifEqual module 'usuarios'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'usuarios'}}active{{/ifEqual}}">
@@ -54,10 +54,11 @@
               </a>
             </li>
           </ul>
+        {{/if}}
         </li>
-
+        {{#if (autorizarUsuario tipoUsuario "coordenador")}}
         <li class="nav-header">Coordenação PPGI</li>
-        <li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+        <!--<li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
             <i class="nav-icon fas fa-list-ul"></i>
             <p>
@@ -80,7 +81,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li>-->
 
         <li class="nav-item {{#ifEqual module 'selecaoppgi'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'selecaoppgi'}}active{{/ifEqual}}">
@@ -130,6 +131,8 @@
             </li>
           </ul>
         </li>
+         {{/if}}
+         {{#if (autorizarUsuario tipoUsuario "professor")}}
         <li class="nav-header">Professor</li>
         <li class="nav-item {{#ifEqual module 'afastamentoTemporario'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'afastamentoTemporario'}}active{{/ifEqual}}">
@@ -156,6 +159,7 @@
           </ul>
         </li>
         <li class="nav-item">
+        <!--<li class="nav-item">
           <a href="/script-adminlte/pages/widgets.html" class="nav-link">
             <i class="nav-icon fas fa-file-alt"></i>
             <p>
@@ -186,7 +190,7 @@
               Gerar Cautela Avulsa
             </p>
           </a>
-        </li>
+        </li>-->
         <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
           <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
             <i class="nav-icon far fa-clipboard "></i>
@@ -204,7 +208,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="/" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
+              <a href="/reservas/gerenciar" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
                 <i class="fas fa-table nav-icon"></i>
                 <p>Gerenciar Reservas</p>
               </a>
@@ -235,6 +239,7 @@
             </li>
           </ul>
         </li>
+        {{/if}}
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

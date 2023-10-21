@@ -10,6 +10,7 @@ const addEditalSelecao = async (req, res) => {
          console.log(req.session.nome);
          return res.render("edital/addNewSelecao", {
             csrfToken: req.csrfToken(),
+            tipoUsuario: req.session.tipoUsuario,
             nome: req.session.nome,
             ...locals,             
          });
@@ -65,9 +66,10 @@ const listEditalSelecao = async (req, res) => {
    switch (req.method) {
       case "GET":
          return res.render("edital/listSelecao", {
+            csrfToken: req.csrfToken(),
             nome: req.session.nome,
-            ...locals,
             editais: await EditalService.listEdital(),
+            tipoUsuario: req.session.tipoUsuario
          });
 
       case "POST":
@@ -86,16 +88,42 @@ const listEditalSelecao = async (req, res) => {
 const deleteEdital = async (req, res) => {
    switch (req.method) {
       case "DELETE":
-         const {
-            id
-         } = req.params;
-         const edital = await EditalService.delete(id).catch((err) => {
+
+      console.log("aqui no controller delete")
+
+         const { id } = req.params;
+
+         try {
+            await EditalService.delete(id);     
+         }catch (error) {
+            return res.status(400).json({
+               csrfToken: req.csrfToken(),
+               error: error.message,
+            });
+        }
+
+      default:
+         return res.status(404).send();
+   }
+};
+
+const arquivarEdital = async (req, res) => {
+   const { id_edital } = req.params;
+
+   console.log('no controler :' + id_edital);
+   switch (req.method) {
+      case "PUT":
+         const { status } = await req.body;
+
+         const edital_update = await EditalService.arquivar(id_edital, {
+            status,
+         }).catch((err) => {
             return res.status(400).json({
                error: err.message,
             });
          });
 
-         return res.status(200).send(edital);
+         return res.status(200).send(edital_update);
 
       default:
          return res.status(404).send();
@@ -114,17 +142,17 @@ const viewEdital = async (req, res) => {
             });
          });
          return res.render("edital/viewSelecao", {
+            csrfToken: req.csrfToken(),
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
    }
 };
 
 const updateEdital = async (req, res) => {
-   const {
-      id_update
-   } = req.params;
+   const { id_update } = req.params;
    switch (req.method) {
       case "GET":
          const edital = await EditalService.getEdital(id_update).catch((err) => {
@@ -133,14 +161,16 @@ const updateEdital = async (req, res) => {
             });
          });
          return res.render("edital/editSelecao", {
+            csrfToken: req.csrfToken(),
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
 
       case "PUT":
          const {
-            number,
+            num_edital,
             documento,
             data_inicio,
             data_fim,
@@ -153,7 +183,7 @@ const updateEdital = async (req, res) => {
          } = await req.body;
 
          const edital_update = await EditalService.update(id_update, {
-            number,
+            num_edital,
             documento,
             data_inicio,
             data_fim,
@@ -187,9 +217,11 @@ const listCandidatesEdital = async (req, res) => {
             });
          });
          return res.render("edital/listCandidates", {
+            csrfToken: req.csrfToken(),
             nome: req.session.nome,
             ...locals,
             edital: edital.dataValues,
+            tipoUsuario: req.session.tipoUsuario
          });
          
       case "POST":
@@ -212,6 +244,7 @@ export default {
    listEditalSelecao,
    addEditalSelecao,
    deleteEdital,
+   arquivarEdital,
    viewEdital,
    listCandidatesEdital,
    updateEdital,

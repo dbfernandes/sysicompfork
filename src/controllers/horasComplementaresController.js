@@ -6,7 +6,7 @@ const listarHoras = async (_req, res) => {
 
   return res
     .status(200)
-    .render('horasComplementares/main', {atividadesRealizadas: MockHoras});
+    .render('horasComplementares/main', {atividadesRealizadas: MockHoras, tipoUsuario: _req.session.tipoUsuario});
 };
 
 const adicionarAtividade = async (_req, res) => {
@@ -18,7 +18,7 @@ const adicionarAtividade = async (_req, res) => {
 
 return res
   .status(200)
-  .render('horasComplementares/adicionar-atividade', { atividades: MockAtividades });
+  .render('horasComplementares/adicionar-atividade', { atividades: MockAtividades, tipoUsuario: _req.session.tipoUsuario });
 };
 
 

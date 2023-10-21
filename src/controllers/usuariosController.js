@@ -11,7 +11,8 @@ const adicionar = async (req, res) => {
     if (req.method === 'GET') {
         return res.render('usuarios/usuarios-adicionar', {
             nome: req.session.nome,
-            csrfToken: req.csrfToken()
+            csrfToken: req.csrfToken(),
+            tipoUsuario: req.session.tipoUsuario
         })
     } else if(req.method === 'POST'){
        try{
@@ -66,6 +67,7 @@ const adicionar = async (req, res) => {
                 'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
                 type: 'danger',
                 messageTitle: 'Criação de usuário indisponível!',
+                tipoUsuario: req.session.tipoUsuario
             });
 
        }
@@ -75,6 +77,7 @@ const adicionar = async (req, res) => {
             messageTitle: 'Criação de usuário bem-sucedida!',
             message: 'Usuário adicionado no sistema com sucesso.',
             type: 'success',
+            tipoUsuario: req.session.tipoUsuario
         }
        ));
     }
@@ -83,14 +86,19 @@ const adicionar = async (req, res) => {
 const deletar = async (req, res)=> {
     if (req.method === 'POST') {
         try {
+            const id = req.params.id
             await UsuarioService.alterar(req.params.id, { 
                 status: 0,
             })
+            if(req.session.uid == id){
+                req.session.uid = null
+            }
             return res.redirect(
                 criarURL('/usuarios/listar', {
                   message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
                   type: 'success',
                   messageTitle: 'Bloqueio de usuário bem-sucedido!',
+                  tipoUsuario: req.session.tipoUsuario
                 })
               );
             
@@ -101,6 +109,7 @@ const deletar = async (req, res)=> {
                     messageTitle: 'Bloqueio de usuário indisponível!',
                     message: 'Não foi possível bloquear este usuário.',
                     type: 'danger',
+                    tipoUsuario: req.session.tipoUsuario
                 })
               );
         }
@@ -122,6 +131,7 @@ const restaurar = async (req, res)=> {
                   message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
                   type: 'success',
                   messageTitle: 'Desbloqueio de usuário bem-sucedido!',
+                  tipoUsuario: req.session.tipoUsuario
                 })
               );
             
@@ -132,6 +142,7 @@ const restaurar = async (req, res)=> {
                     message: 'Não foi possível desbloquear este usuário.',
                     type: 'danger',
                     messageTitle: 'Desbloqueio de usuário indisponível!',
+                    tipoUsuario: req.session.tipoUsuario
                 })
               );
         }
@@ -153,7 +164,8 @@ const listar = async (req, res) => {
                 nome: req.session.nome,
                 message, 
                 type,
-                messageTitle
+                messageTitle,
+                tipoUsuario: req.session.tipoUsuario
             })
         } catch (error) {
             console.log(error)
@@ -162,6 +174,7 @@ const listar = async (req, res) => {
                     message: 'Não foi possível listar os usuários.',
                     type: 'danger',
                     messageTitle: 'Listagem de usuários indisponível!',
+                    tipoUsuario: req.session.tipoUsuario
                 })
               );
         }
@@ -179,7 +192,8 @@ const visualizar = async (req, res) => {
             nome: req.session.nome,
             message, 
             type,
-            messageTitle
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario
         })
     } catch (error) { 
         console.log(error)
@@ -188,6 +202,7 @@ const visualizar = async (req, res) => {
                 message: 'Não foi possível visualizar este usuário.',
                 type: 'danger',
                 messageTitle: 'Visualização do usuário indisponível!',
+                tipoUsuario: req.session.tipoUsuario
             })
           );
     }
@@ -204,7 +219,8 @@ const editar = async (req, res) => {
                 nome: req.session.nome,
                 message, 
                 type,
-                messageTitle
+                messageTitle,
+                tipoUsuario: req.session.tipoUsuario
             })
         } catch (error) { 
             console.log(error)
@@ -212,7 +228,8 @@ const editar = async (req, res) => {
                 criarURL('/usuarios/listar', {
                     message: 'Não foi possível abrir formulário de edição para este usuário.',
                     type: 'danger',
-                    messageTitle: 'Edição de usuário indisponível!'
+                    messageTitle: 'Edição de usuário indisponível!',
+                    tipoUsuario: req.session.tipoUsuario
                 })
                 );
             }
@@ -252,6 +269,7 @@ const editar = async (req, res) => {
                     type: 'danger',
                     messageTitle: 'Edição de usuário indisponível!',
                     errors: error.errors,
+                    tipoUsuario: req.session.tipoUsuario
                 })
     
             }
@@ -260,7 +278,8 @@ const editar = async (req, res) => {
             criarURL(`/usuarios/dados/${req.params.id}`, {
                 message: 'Dados alterados com sucesso!',
                 type: 'success',
-                messageTitle: 'Edição de usuário bem-sucedida!'
+                messageTitle: 'Edição de usuário bem-sucedida!',
+                tipoUsuario: req.session.tipoUsuario
             }
             ));
         }

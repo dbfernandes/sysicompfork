@@ -5,6 +5,7 @@ const adicionar = async (req, res) => {
         res.render('salas/salas-adicionar', { 
             nome: req.session.nome,
             csrf: req.csrfToken(),   
+            tipoUsuario: req.session.tipoUsuario
         })
 
     }else if( req.method === 'POST'){
@@ -74,7 +75,7 @@ const gerenciar = async (req, res) => {
         salas: salas.map(sala => sala.toJSON()),
         nome: req.session.nome,
         csrfToken: req.csrfToken(),  
-      
+        tipoUsuario: req.session.tipoUsuario
     })
 }
 
@@ -91,6 +92,7 @@ const editar = async (req, res) => {
                 sala: sala.toJSON(),
                 csrf: req.csrfToken(),  
                 nome: req.session.nome,
+                tipoUsuario: req.session.tipoUsuario
               
             })
     
