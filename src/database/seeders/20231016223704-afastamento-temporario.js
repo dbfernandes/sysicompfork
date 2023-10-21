@@ -15,9 +15,9 @@ module.exports = {
       {
         id: 1,
         usuarioId: 1,
-        dataSaida: new Date(),
-        dataRetorno: new Date(),
-        tipoViagem: 1,
+        dataSaida: new Date(2021,6,10),
+        dataRetorno: new Date(2021,7,10),
+        tipoViagem: 'Nacional',
         localViagem: 'São Paulo',
         justificativa: 'Viagem para São Paulo',
         planoReposicao: 'Fazer reposição',
@@ -27,9 +27,9 @@ module.exports = {
       {
         id: 2,
         usuarioId: 2,
-        dataSaida: new Date(),
-        dataRetorno: new Date(),
-        tipoViagem: 0,
+        dataSaida: new Date(2021,6,10),
+        dataRetorno: new Date(2021,7,10),
+        tipoViagem: 'Nacional',
         localViagem: 'Rio de Janeiro',
         justificativa: 'Viagem para Rio de Janeiro',
         planoReposicao: 'Fazer reposição',
@@ -40,6 +40,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('AfastamentoTemporario', null, {});
+    await queryInterface.bulkDelete('AfastamentoTemporarios', null, {});
   }
 };

@@ -1,39 +1,53 @@
-const {Afastamento} = require('../models/AfastamentoTemporario');
+const {AfastamentoTemporario} = require('../models');
 
+const formatDbAnswer = (object) => {
+    const array = Array.isArray(object);
+  
+    switch(array) {
+    case (true): {
+      return object.map((linha) => (linha.dataValues));
+    };
+  
+    case (false): {
+      return object.dataValues;
+    };
+  
+    default:
+      return object.dataValues;
+    };
+};
 class AfastamentoService
 { 
-    async create({
-        localViagem,
-        dataInicio,
-        dataFim,
-        justificativa,
-        plano,
-        idUsuario,
-        tipoViagem,
-    }) {
-        const afastamento = await Afastamento.create({
-            usuarioId: idUsuario,
-            dataSaida: dataInicio,
-            dataRetorno: dataFim,
-            tipoViagem: tipoViagem,
-            localViagem: localViagem,
-            justificativa: justificativa,
-            planoReposicao: plano,
-        }).catch(err => {
-            console.log(`[ERROR] Criar de afastamento: ${err}`)
-            throw new Error("Não foi possivel criar o afastamento erro no create");
-        })
-
-        return afastamento;
-    }
-
+    
     async listar() {
-        const afastamentos = await Afastamento.findAll().catch(err => {
-            console.log(`[ERROR] Listar afastamentos: ${err}`)
-            throw new Error("Não foi possivel listar o afastamento");
-        })
-        return afastamentos;
+        const allResearchLines = await AfastamentoTemporario.findAll({});
+
+        const formatedAnswer = formatDbAnswer(allResearchLines);
+
+        return formatedAnswer;
     }
+    
+    async criar(newAfastamento) {
+        // console.log(
+        //     "Usuario id..:",usuarioId,
+        //     "Local viagem:",localViagem,
+        //     "Data inicio:",dataSaida,
+        //     "Data fim:",dataRetorno,
+        //     "Justificativa:",justificativa,
+        //     "Plano reposição:",planoReposicao,
+        //     "Tipo viagem:",tipoViagem,
+        // );
+        const {dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao} = newAfastamento;
+        await AfastamentoTemporario.create({
+            dataSaida,
+            dataRetorno,
+            tipoViagem,
+            localViagem,
+            justificativa,
+            planoReposicao,
+        });
+    }
+
 }
 
 export default new AfastamentoService();

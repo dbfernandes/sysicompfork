@@ -12,23 +12,22 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       dataSaida: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       dataRetorno: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       tipoViagem: {
-        defaultValue: 0,
-        type: Sequelize.SMALLINT
+        type: Sequelize.STRING
       },
       localViagem: {
         type: Sequelize.STRING
       },
       justificativa: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
       },
       planoReposicao: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
