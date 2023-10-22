@@ -14,7 +14,12 @@ const listar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-listar', { linhaDePesquisa, pageTitle, ...locals, tipoUsuario: req.session.tipoUsuario });
+    .render('linhasDePesquisa/linhasDePesquisa-listar', { 
+      linhaDePesquisa, 
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session.tipoUsuario 
+    });
 };
 
 const buscar = async (req, res) => {
@@ -28,14 +33,15 @@ const buscar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle, ...locals,  tipoUsuario: req.session.tipoUsuario});
+    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle,  tipoUsuario: req.session.tipoUsuario});
 };
 
 const criar = async (req, res) => {
   if (req.method === 'GET') {
     return res.status(200).
     render('linhasDePesquisa/linhasDePesquisa-criar',{ 
-      pageTitle, csrfToken: req.csrfToken() 
+      pageTitle, csrfToken: req.csrfToken(),
+      tipoUsuario: req.session.tipoUsuario
     });
   } else {
     try {
@@ -52,6 +58,7 @@ const criar = async (req, res) => {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
         pageTitle, csrfToken: req.csrfToken(), 
+        tipoUsuario: req.session.tipoUsuario ,
         error: error.message || 'Não foi possível criar a linha de pesquisa!'
       });
     }
@@ -80,7 +87,7 @@ const editar = async (req, res) => {
   const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id);
   if (req.method === 'GET') {
     return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', { 
-      linhaPesquisa, pageTitle, csrfToken: req.csrfToken() 
+      linhaPesquisa, pageTitle, csrfToken: req.csrfToken() , tipoUsuario: req.session.tipoUsuario 
     });
 
   } else {
@@ -98,6 +105,7 @@ const editar = async (req, res) => {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-editar', {
         pageTitle, linhaPesquisa, csrfToken: req.csrfToken(), 
+        tipoUsuario: req.session.tipoUsuario ,
         error: error.message || 'Não foi possível editar a linha de pesquisa!'
       });
     }
