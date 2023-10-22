@@ -18,22 +18,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     dataSaida: {
-      type: DataTypes.DATE
+      type: DataTypes.DATEONLY
     },
     dataRetorno: {
-      type: DataTypes.DATE
+      type: DataTypes.DATEONLY
     },
     tipoViagem: {
-      type: DataTypes.SMALLINT
+      type: DataTypes.STRING
     },
     localViagem: {
       type: DataTypes.STRING
     },
     justificativa: {
-      type: DataTypes.TEXT
+      type: DataTypes.STRING
     },
     planoReposicao: {
-      type: DataTypes.TEXT
+      type: DataTypes.STRING
     },
   }, {
     sequelize,

@@ -35,21 +35,39 @@ module.exports = {
         type : Sequelize.STRING
       },
       documento:{
-      allowNull : false,
-      type : Sequelize.STRING
+        allowNull : false,
+        type : Sequelize.STRING
       },
       dataInicio:{
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.DATEONLY
       },
       dataFim:{
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.DATEONLY
       },      
       status:{
         allowNull : false,
         type : Sequelize.STRING,
-        defaultValue:0,
+        defaultValue: '0',
+      },
+      inscricoesIniciadas: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      inscricoesEncerradas: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
     });
   },

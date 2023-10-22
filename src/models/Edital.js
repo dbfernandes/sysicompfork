@@ -37,29 +37,49 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         cartaRecomendacao: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         documento: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         dataInicio: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
         dataFim: {
-            type:DataTypes.STRING,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },        
         status: {
-            type:DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
-        }
+        },
+        inscricoesIniciadas: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false
+        },
+        inscricoesEncerradas: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+            allowNull: false,
+          },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+            allowNull: false,
+        },
     }, {
         sequelize,
+        tableName: 'Edital',
         modelName: 'Edital',
-        freezeTableName: true,
         timestamps: false,
     });
     

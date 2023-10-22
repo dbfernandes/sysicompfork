@@ -87,9 +87,9 @@
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
-                                            <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
-                                                data-inputmask-inputformat="dd/mm/yyyy" value="{{edital.dataInicio}}" required
-                                                id="data_inicio">
+                                                <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
+                                                    data-inputmask-inputformat="dd/mm/yyyy" value= "{{edital.dataInicio}}" required
+                                                    id="data_inicio">
                                         </div>
                                     </div>
 
@@ -103,7 +103,8 @@
                                                 </span>
                                             </div>
                                             <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
-                                                required value="{{edital.dataFim}}" id="data_fim">
+                                                data-inputmask-inputformat="dd/mm/yyyy" value= "{{edital.dataFim}}" required
+                                                id="data_fim">
                                         </div>
                                     </div>
                                 </div>
@@ -203,9 +204,8 @@
                                     </div>
                                 </div>
 
-
-                                <div class="card-footer form-row d-flex justify-content-end mt-5">                     
-                                    <div class="text-end">
+                                <div class="card-footer pr-0">
+                                    <div style="margin-right: auto;" class="d-flex justify-content-end">
                                         <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
                                             <i class="fas fa-check-circle"></i>
                                             Alterar Edital
@@ -235,12 +235,10 @@
 
 <script>
 
-    console.log({{edital.cartaRecomendacao}})
 
     document.getElementById("voltarBtn").addEventListener("click", function() {
         window.history.back();
     });
-   
 
     let camposIncorretos = false;
 
@@ -277,9 +275,10 @@
              $('#botaoSubmit').prop('disabled', true);
         }
     }
-    
+
 
     $(document).ready(function () {
+    
         $('#botaoSubmit').prop('disabled', false);
      
         //fica monitorando sempre que uma dessas variáveis mudar
@@ -526,7 +525,7 @@
                         icon: 'success',
                         class: "bg-success",
                         autohide: true,
-                        delay: 10000,
+                        delay: 3000,
                         title: 'Sucesso!',
                         body: 'Edital atualizado no sistema com sucesso'
                     })

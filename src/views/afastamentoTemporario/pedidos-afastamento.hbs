@@ -61,7 +61,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each afastamentoTemporario}}
+                                    {{#each afastamentos}}
                                     <tr>
                                         <td> {{id}} </td>
                                         <td> {{createdAt}} </td>
@@ -146,18 +146,18 @@
             { responsivePriority: 5 },
             { responsivePriority: 6 },
             { responsivePriority: 7 },
-            
+            { responsivePriority: 8 }, 
         ],
-        {{!-- columnDefs: [ {
-            "targets": [2,3],
+        columnDefs: [ {
+            "targets": [7],
             "orderable": false
-        } ] --}}
+        } ]
         });
     });
 
     function deletarLdP(event){
         console.log ("as")
-
+        
         // document.postDelete.submit();
         var form = document.getElementById("postDelete");
         console.log(form)

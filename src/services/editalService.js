@@ -1,4 +1,5 @@
 import Candidate from '../models/Candidate';
+const moment = require('moment-timezone'); 
 
 var {
     Edital
@@ -41,7 +42,11 @@ class EditalService {
                 documento: documento,
                 dataInicio: data_inicio,
                 dataFim: data_fim,                
-                status: "1"
+                status: "1",
+                inscricoesIniciadas: 0,
+                inscricoesEncerradas: 0,
+                createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
+                updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
             });
         
             return novo_edital;
@@ -108,7 +113,8 @@ class EditalService {
         }
 
         await Edital.update({
-            status
+            status,
+            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
         }, {
             where: {
                 editalId: id_edital
@@ -176,7 +182,7 @@ class EditalService {
             documento: documento,
             dataInicio: data_inicio,
             dataFim: data_fim,
-            status: "1",
+            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
         }, {
             where: {
                 editalId: id_update

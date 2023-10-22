@@ -19,7 +19,7 @@
             </div>
             <div class="row mb-2">
 
-                <div class="col-sm-12 col-md-12 col-lg-12 mt-12">
+                <div class="col-sm-12">
                     <a class="btn btn-warning color-white" id="voltarBtnView">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
@@ -28,10 +28,9 @@
                         <i class="fas fa-edit color-white"></i>
                         Editar
                     </a>
-                    <a class="btn btn-danger" href="/edital/listEdital" onclick="deleteEdital()">
-                        <i class="fas fa-trash-alt color-white"></i>
-
-                        Excluir
+                    <a id="btn-{{edital.editalId}}" class="btn {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}" onclick="abrirModal()">
+                        <i id="icone-{{edital.editalId}}" class="fa color-white {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"></i>
+                        {{#ifEqual edital.status '1'}}Aberto{{else}}Encerrado{{/ifEqual}} 
                     </a>
                     <a class="btn btn-info" href="/edital/adicionar">
                         <i class="fas fa-list color-white"></i>
@@ -67,37 +66,37 @@
 
                                     <tr>
                                         <td>Data início</td>
-                                        <td>{{edital.dataInicio}}</td>
+                                        <td>{{formataData edital.dataInicio}}</td>
                                     </tr>
 
                                     <tr>
                                         <td>Data fim</td>
-                                        <td>{{edital.dataFim}}</td>
+                                        <td>{{formataData edital.dataFim}}</td>
                                     </tr>
 
                                     <tr>
                                         <td>Nº de Inscrições Iniciadas</td>
-                                        <td>{{edital.inscricoesIniciadas}}</td>
+                                        <td> {{edital.inscricoesIniciadas}}</td>
                                     </tr>
                                     
                                     <tr>                                
                                         <td>Nº de Inscrições Encerradas</td>
-                                        <td>{{edital.inscricoesEncerradas}}</td>
+                                        <td> {{edital.inscricoesEncerradas}}</td>
                                     </tr>
 
                                     <tr>
                                         <td>Carta de Recomendação</td>
-                                        <td>{{edital.cartaRecomendacao}}</td>
+                                        <td>{{#ifEqual edital.cartaRecomendacao '1'}}Sim{{else}}Não{{/ifEqual}}</td>
                                     </tr>
 
                                     <tr>
                                         <td>Carta do Orientador</td>
-                                        <td>{{edital.cartaOrientador}}</td>
+                                        <td>{{#ifEqual edital.cartaOrientador '1'}}Sim{{else}}Não{{/ifEqual}}</td>                                    
                                     </tr>
 
                                     <tr>
                                         <td>Curso</td>
-                                        <td>{{edital.curso}}</td>
+                                        <td id="curso"> </td>
                                     </tr>
 
                                     <tr>
@@ -109,17 +108,12 @@
                                         <td>Vagas para Doutorado</td>
                                         <td>REG: {{edital.vagaDoutorado}} / SUP: {{edital.cotasDoutorado}}</td>
                                     </tr>
-
-                                    <tr>
-                                        <td>Data da Criação no sistema</td>
-                                        <td> </td>
-                                    </tr>
                                         
                                     <tr>
                                         <td>Edital em PDF</td>
                                         <td>
-                                            <a href="/edital/{{edital}}/selecao/baixar" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-download"></i>
+                                            <a href='{{edital.documento}}' target="_blank" >
+                                                Baixar
                                             </a>
                                         </td>
                                     </tr>
@@ -135,35 +129,134 @@
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
+         <div id="modalArquivar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalArquivarLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalArquivarLabel">Deletar Edital</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalArquivarBody">
+                            <!-- mensagem -->                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="confirmButton" onclick="arquivarEdital()">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </section>
     <!-- /.content -->
 </div>
 
 <script>
+
+        const regMestrado = "{{edital.vagaMestrado}}";
+        const supMestrado = "{{edital.cotasMestrado}}";
+
+        const regDoutorado = "{{edital.vagaDoutorado}}";
+        const supDoutorado = "{{edital.cotasDoutorado}}";
+
+        let curso;
+
+        if((regMestrado > 0 || supMestrado > 0) && (regDoutorado > 0 || supDoutorado > 0)){
+            curso = 'Mestrado e  Doutorado';
+        }
+        else if((regMestrado == 0 && supMestrado == 0) && (regDoutorado > 0 || supDoutorado > 0 )){
+            curso = 'Doutorado';
+        }
+        else{
+            curso = 'Mestrado';
+        }
+
+        document.getElementById("curso").innerText = curso;
+
+
+
+        let csrfToken = "{{csrfToken}}";
+        let editalId = "{{edital.editalId}}";
+
+
+
+
  
 
-    function deleteEdital(){
-        var r = confirm("Deseja realmente excluir o edital com ID {{edital.editalId}} ?");
-        if (r == true) {
+        let status = "{{edital.status}}";
+
+        function abrirModal() {
         
-        
-        $.ajax({
-            url: '/edital/deleteEdital/{{edital.editalId}}',
-            type: 'DELETE',
-            data: {},
-            success: function(data) {
-                if (data.errors) {
-                    toastr.error('Validação', 'Erro ao excluir edital');
-                } else {
-                    toastr.success('Sucesso', 'Edital excluido com sucesso');
-                    window.location = "/edital/listar";
-                }
+            if (status == '1') {
+                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + editalId + "?");
+                $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+            } else {
+                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + editalId + "?");
+                $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
             }
-        });
             
+            $('#modalArquivar').modal('show');
         }
-         
-    }
+
+        function arquivarEdital() {
+
+            let novoStatus = (status == '1'? '0' : '1');
+            
+            const dataFromForm = {
+                status: novoStatus,
+                _csrf: csrfToken
+            };
+
+            $.ajax({
+                url: `/edital/arquivarEdital/${editalId}`,
+                type: 'PUT',
+                data: dataFromForm,
+                success: function (data) {
+                    /*$(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Sucesso!',
+                        body: 'Status do Edital alterado no sistema com sucesso'
+                    });*/
+                    
+                    // Fechar o modal
+                    $('#modalArquivar').modal('hide');
+
+
+                    /*if (novoStatus == '0') {
+                        $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
+                        $(`#btn-${editalId}`).removeClass('btn btn-success').addClass('btn btn-danger').text('Encerrado');
+                    } else {
+                        $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
+                        $(`#btn-${editalId}`).removeClass('btn btn-danger').addClass('btn btn-success').text('Aberto');
+                    }*/
+
+                   //setTimeout(function() {
+                        window.location.reload();
+                   // }, 3000); 
+
+
+                    status = novoStatus;
+
+                },
+                error: function (data) {
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    });
+                }
+            });
+        }
+        
+
+
 
     document.getElementById("voltarBtnView").addEventListener("click", function() {
         window.history.back();
