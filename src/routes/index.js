@@ -7,6 +7,7 @@ import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
+import afastamentoTemporarioRouter from "./afastamentoTemporario.routes";
 import salasRoutes from './salas.routes';
 import perfilRoutes from './perfil.routes';
 import autenticacaoController from '../controllers/autenticacaoController';
@@ -50,4 +51,5 @@ router.use("/linhasdepesquisa", autenticacaoController.autorizarCoord, linhasDeP
 router.use('/salas', autenticacaoController.autorizarProf, salasRoutes);
 router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
 router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
+router.use("/afastamentotemporario", autenticacaoController.autorizarProf, afastamentoTemporarioRoutes);
 export default router;

@@ -12,7 +12,7 @@ const listar = async (req, res) => {
     return res
         .status(200)
         .render('afastamentoTemporario/pedidos-afastamento', 
-        { afastamentos, pageTitle, csrfToken: req.csrfToken() 
+        { afastamentos, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session.tipoUsuario
     });
 }
 
@@ -20,7 +20,7 @@ const criar = async (req, res) => {
     if (req.method == 'GET') {
         return res.status(200).
         render('afastamentoTemporario/solicitar-afastamento', { 
-            pageTitle, csrfToken: req.csrfToken() 
+            pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session.tipoUsuario ,
         });
     } else {
         try {
@@ -62,6 +62,7 @@ const criar = async (req, res) => {
             console.log(error)
             return res.render('afastamentoTemporario/solicitar-afastamento', {
                 pageTitle, csrfToken: req.csrfToken(), 
+                tipoUsuario: req.session.tipoUsuario ,
                 error: error.message || 'Não foi possível criar o pedido de afastamento!'
             });
         }
