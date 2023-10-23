@@ -118,106 +118,104 @@
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
-                        <div class="card-body">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="form-row">                                        
-                                        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
-                                            <div class="form-group">
-                                                <div class="form-row">                                                
-                                                    <label for="carta_recomendacao"> <font color="#FF0000">*</font> Carta de Recomendação? </label>
-                                                </div>
-                                                <input type="checkbox" name="carta_recomendacao" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="carta_recomendacao">
+                        <div class="card-body">                        
+                            <div class="form-group">
+                                <div class="form-row">                                        
+                                    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
+                                        <div class="form-group">
+                                            <div class="form-row">                                                
+                                                <label for="carta_recomendacao"> <font color="#FF0000">*</font> Carta de Recomendação? </label>
                                             </div>
+                                            <input type="checkbox" name="carta_recomendacao" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="carta_recomendacao">
                                         </div>
+                                    </div>
 
-                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="carta_orientador"> <font color="#FF0000">*</font>Carta Orientador?</label>
-                                                </div>
-                                                <input type="checkbox" name="carta_orientador" data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="carta_orientador">
-                                            </div>   
-                                        </div>
-
+                                    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="carta_orientador"> <font color="#FF0000">*</font>Carta Orientador?</label>
+                                            </div>
+                                            <input type="checkbox" name="carta_orientador" data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="carta_orientador">
+                                        </div>   
                                     </div>
 
                                 </div>
-                                                           
 
-                                <div class="form-group">                            
-                                    <div class="form-row">
-                                        <div class="col-sm-3 col-md-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
-                                                </div>
-                                                <input type="checkbox" name="mestrado" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="mestrado">
-                                            </div>                                            
-                                        </div>
+                            </div>
+                                                        
 
-                                        <div class="col-sm-4">                                                
-                                            <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
-                                            <input type="number" name="vaga_regular_mestrado" class="form-control "
-                                                placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_regular_mestrado" value="0" min="0">
-                                        </div>
+                            <div class="form-group">                            
+                                <div class="form-row">
+                                    <div class="col-sm-3 col-md-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
+                                            </div>
+                                            <input type="checkbox" name="mestrado" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="mestrado">
+                                        </div>                                            
+                                    </div>
 
-                                        <div class="col-sm-5 col-md-6">
-                                            <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
-                                            <input type="number" class="form-control " name="vaga_suplementar_mestrado"
-                                                placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_suplementar_mestrado" value="0" min="0">
-                                        </div>
+                                    <div class="col-sm-4">                                                
+                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
+                                        <input type="number" name="vaga_regular_mestrado" class="form-control "
+                                            placeholder="Vagas Regulares para Mestrado" required
+                                            id="vaga_regular_mestrado" value="0" min="0">
+                                    </div>
+
+                                    <div class="col-sm-5 col-md-6">
+                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
+                                        <input type="number" class="form-control " name="vaga_suplementar_mestrado"
+                                            placeholder="Vagas Regulares para Mestrado" required
+                                            id="vaga_suplementar_mestrado" value="0" min="0">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group">                            
-                                    <div class="form-row">
-                                        <div class="col-sm-3 col-md-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
-                                                </div>
-                                                <input type="checkbox" name="doutorado" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="doutorado">
-                                            </div> 
-                                        </div>
+                            <div class="form-group">                            
+                                <div class="form-row">
+                                    <div class="col-sm-3 col-md-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
+                                            </div>
+                                            <input type="checkbox" name="doutorado" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="doutorado">
+                                        </div> 
+                                    </div>
 
-                                        <div class="col-sm-4">                                                
-                                            <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
-                                            <input type="number" name="vaga_regular_doutorado" class="form-control "
-                                                placeholder="Vagas Regulares para Doutorado" required
-                                                id="vaga_regular_doutorado" value="0" min="0">
-                                        </div>
+                                    <div class="col-sm-4">                                                
+                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
+                                        <input type="number" name="vaga_regular_doutorado" class="form-control "
+                                            placeholder="Vagas Regulares para Doutorado" required
+                                            id="vaga_regular_doutorado" value="0" min="0">
+                                    </div>
 
-                                        <div class="col-sm-5 col-md-6">
-                                            <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
-                                            <input type="number" class="form-control" name="vaga_suplementar_doutorado"
-                                                placeholder="Vagas Regulares para Doutorado" required
-                                                id="vaga_suplementar_doutorado" value="0" min="0">
-                                        </div>
+                                    <div class="col-sm-5 col-md-6">
+                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
+                                        <input type="number" class="form-control" name="vaga_suplementar_doutorado"
+                                            placeholder="Vagas Regulares para Doutorado" required
+                                            id="vaga_suplementar_doutorado" value="0" min="0">
                                     </div>
                                 </div>
-
-                                <div class="card-footer pr-0">
-                                    <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                        <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
-                                            <i class="fas fa-check-circle"></i>
-                                            Criar Edital
-                                        </button>
-                                    </div>                        
-                                </div>
-
-                            </div>                                   
+                            </div>                                                      
                         </div>
+
+                        <div class="card-footer">
+                            <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                <button id="botaoSubmit" type="button" class="btn btn-success float-right" onclick="submitForm()">
+                                    <i class="fas fa-check-circle"></i>
+                                    Criar Edital
+                                </button>
+                            </div>
+                        </div>
+
                     </div>      
                 </form>        
             </div>
