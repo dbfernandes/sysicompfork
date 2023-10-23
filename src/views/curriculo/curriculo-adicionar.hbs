@@ -1,0 +1,275 @@
+{{> header}}
+{{> sidebar module='salas' page='salas-adicionar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-3">
+                <div class="col-sm-9">
+                    <h1>Upload Currículo Lattes</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Lattes</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div style="text-align:left">
+                    <font color="#FF0000">*</font> Campos Obrigatórios
+            </div>
+            <form id="formAdicionarLattes">
+                <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+                <div class="card card-primary w-100">
+                    <div class="card-header">
+                        <h3 class="card-title"><b>Currículo Lattes</b></h3>
+                    </div>
+                    <div class="card-body ">
+                                <div class="form-group ">
+                                    <label for="bloco">
+                                        <font color="#FF0000">*</font> Selecione o professor desejado:
+                                    </label>
+                                    <select class="form-control" id="professor" name="professor" required>
+                                        {{#each professores}}
+                                            <option value={{id}}>{{nomeCompleto}}</option>
+                                        {{/each}}
+                                    </select>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="mb-3">
+                                        <label for="formXML" class="form-label" ><font color="#FF0000">*</font> Curriculum Lattes em XML:</label>
+                                        <input class="form-control p-0 h-100" type="file" accept=".xml" id="formXML" name="XML">
+                                    </div>
+                                </div>
+                            <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <div style="margin-right: auto;" class="d-flex justify-content-end">
+                            <button class="btn btn-success float-right">
+                                Enviar
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    $.validator.addMethod("verificarArquivo", function (el) {
+        return (document.querySelector("input[type=file]").files.length > 0)
+    })
+
+    $.validator.setDefaults({
+            submitHandler: function () {
+                FormSubmit()    
+            },
+        });
+
+    function FormSubmit() {
+        const idProfessor = $("#professor").val(); 
+        const csrfToken = $("#csrfToken").val();
+        const [file] = document.querySelector("input[type=file]").files; 
+        const reader = new FileReader(); 
+        var xmlText = "" 
+        var x2js = new X2JS(); 
+        reader.addEventListener(
+            "load", 
+            () => { 
+            xmlText = x2js.xml_str2json(reader.result); 
+            publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
+            let publicDict = {}
+            if(publicacoes){
+                console.log(publicacoes)
+                for(var i in publicacoes){
+                    var val = publicacoes[i];
+                    for(var j in val){
+                        var sub_key = j;
+                        var sub_val = val[j];
+                        if(sub_val.length > 0){
+                            publicDict[j] = []
+                            for (var m in sub_val){
+                                const public = get_publicDict(sub_val[m])
+                                publicDict[j].push(public)
+
+                            }
+                        }else{
+                            if(sub_val.hasOwnProperty("AUTORES")){
+                                publicDict[j] = []
+                                const public = get_publicDict(sub_val)
+                                publicDict[j].push(public)
+                            }else{
+                                for(var k in sub_val){
+                                    if(sub_val[k].length > 0){
+                                        publicDict[k] = []
+                                        for (var l in sub_val[k]){
+                                            const public = get_publicDict(sub_val[k][l])
+                                            publicDict[k].push(public)
+                                        }
+                                    }else{
+                                        if(sub_val[k].hasOwnProperty("AUTORES")){
+                                            publicDict[k] = []
+                                            const public = get_publicDict(sub_val[k])
+                                            publicDict[k].push(public)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(publicDict)
+            $.ajax({
+                type: "POST",
+                url: "lattes/upload",
+                data: {
+                    idProfessor: idProfessor,
+                    _csrf: csrfToken,
+                    publicacoes: publicDict
+
+                },
+                success: function(data) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Currículo adiconado com sucesso!',
+                        body: 'O arquivo XML do currículo foi adicionado corretamente.'
+                    })
+
+                },
+                error: function(err) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Ocorreu um problema!',
+                        body: 'O arquivo XML do currículo não pôde ser adicionado ao sistema.'
+                    })
+                }
+            });
+            },
+            false,
+        );
+        reader.readAsText(file, "ISO-8859-1");
+        
+	}
+
+    function get_index(obj, idx){
+        const keys = Object.keys(obj);
+        for (var key in keys){
+            if(keys[key].includes(idx)){
+                return keys[key]
+            }
+        }
+        return ""
+    }
+
+    function get_publicDict(dados){
+        autoresArr = dados["AUTORES"]
+        const autores = {
+            nomeCompleto: [], 
+            nomeAbreviado: [],
+        }
+        if(autoresArr.length>0){
+            for (a in autoresArr){
+                autores.nomeCompleto.push(autoresArr[a]["_NOME-COMPLETO-DO-AUTOR"])
+                autores.nomeAbreviado.push(autoresArr[a]["_NOME-PARA-CITACAO"])
+            }
+        }else{
+            autores.nomeCompleto.push(autoresArr["_NOME-COMPLETO-DO-AUTOR"])
+            autores.nomeAbreviado.push(autoresArr["_NOME-PARA-CITACAO"])
+        }
+        
+        const dbIndx = get_index(dados, "DADOS-BASICOS")
+        const anoIdx = get_index(dados[dbIndx], "_ANO")
+        const ano = dados[dbIndx][anoIdx]
+        const tituloIdx = get_index(dados[dbIndx], "_TITULO")
+        const titulo = dados[dbIndx][tituloIdx]
+        const natIdx = get_index(dados[dbIndx], "_NATUREZA")
+        const natureza = dados[dbIndx][natIdx]
+        const dtIndx = get_index(dados, "DETALHAMENTO")
+        const issnIdx = get_index(dados[dtIndx], "_IS")
+        const issn = dados[dtIndx][issnIdx]
+        const localIdx = get_index(dados[dtIndx], "_TITULO-")
+        const local = dados[dtIndx][localIdx]
+        //localIdx = get_index(sub_val[l][dtIndx], "_LOCAL") 
+        const pub = {
+            titulo,
+            autores,
+            ano,
+            issn,
+            local,
+            natureza
+        }
+        return pub
+    }
+
+    $('#formAdicionarLattes').validate({
+        rules: {
+            professor: {
+                required: true,
+            },
+            XML: {
+                verificarArquivo: true,
+                accept: "text/xml",
+            }
+        },
+        messages: {
+            professor: {
+                required: 'Você deve escolher um professor.',
+            },
+            XML: {
+                verificarArquivo: 'É necessário submeter um arquivo XML.',
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('div').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    if("{{message}}"){
+        $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-{{type}}",
+            autohide: true,
+            delay: 10000,
+            title: '{{messageTitle}}',
+            body: '{{message}}'
+            })
+
+    }
+
+</script>
+
+{{> footer}}

@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     
     static associate(models) {
       this.hasMany(models.ReservaSala);
+      this.hasMany(models.Publicacao);
     }
   }
 
