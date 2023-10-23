@@ -14,7 +14,7 @@ module.exports = {
     await queryInterface.bulkInsert('AfastamentoTemporarios', [
       {
         id: 1,
-        usuarioId: 1,
+        usuarioNome: "Bob",
         dataSaida: new Date(2021,6,10),
         dataRetorno: new Date(2021,7,10),
         tipoViagem: 'Nacional',
@@ -26,7 +26,7 @@ module.exports = {
       },
       {
         id: 2,
-        usuarioId: 2,
+        usuarioNome: "Jhon",
         dataSaida: new Date(2021,6,10),
         dataRetorno: new Date(2021,7,10),
         tipoViagem: 'Nacional',

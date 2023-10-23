@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   AfastamentoTemporario.init({
-    usuarioId: {
-      type: DataTypes.INTEGER
+    usuarioNome: {
+      type: DataTypes.STRING
     },
     dataSaida: {
       type: DataTypes.DATEONLY
@@ -30,10 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     justificativa: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
     planoReposicao: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
   }, {
     sequelize,

@@ -1,19 +1,27 @@
 import  afastamentoService  from '../services/afastamentoService.js'
+import UsuarioService from '../services/usuarioService.js'
 import session from 'express-session';
 
 const pageTitle = 'Afastamento Temporário';
 
 const listar = async (req, res) => {
-    
-    const afastamentos = await afastamentoService.listar();
-    const doesNotExists = !afastamentos || afastamentos.length === 0;
-    if (doesNotExists) res.status(400).json({ message: 'Nenhuma pedido de afastamento encontrado' });
+    try {
 
-    return res
-        .status(200)
-        .render('afastamentoTemporario/pedidos-afastamento', 
-        { afastamentos, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session.tipoUsuario
-    });
+        const afastamentos = await afastamentoService.listar();
+        const doesNotExists = !afastamentos || afastamentos.length === 0;
+        if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado');
+    
+        return res
+            .status(200)
+            .render('afastamentoTemporario/pedidos-afastamento', 
+            { afastamentos, 
+                pageTitle, 
+                csrfToken: req.csrfToken(), 
+                tipoUsuario: req.session.tipoUsuario
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message || 'Não foi possível listar os pedidos de afastamento' });
+    }
 }
 
 const criar = async (req, res) => {
@@ -32,24 +40,13 @@ const criar = async (req, res) => {
             const justificativa = req.body.justificativa;
             const planoReposicao = req.body.planoReposicao;
 
-            const usuarioId = 3
+            const usuarioNome = req.session.nomeCompleto;
 
             // Criar função para formatar a data
             // const dataSaidaFormatada = dateSaida.split('/').reverse().join('-');
 
-            // Colocar condição para verificar se o usuário já tem um afastamento no período
-            // console.log(
-            //     "Usuario id..:",idUsuario,
-            //     "Local viagem:",localViagem,
-            //     "Data inicio:",dateSaida,
-            //     "Data fim:",dateRetorno,
-            //     "Justificativa:",inputJustificativa,
-            //     "Plano reposição:",inputPlanoReposicao,
-            //     "Tipo viagem:",inputTipoViagem,
-            //     "Data requisição:",dataRequisicao
-            // );
             await afastamentoService.criar({
-                usuarioId:3,
+                usuarioNome:usuarioNome,
                 dataSaida,
                 dataRetorno,
                 tipoViagem,
@@ -71,4 +68,19 @@ const criar = async (req, res) => {
     return res.redirect('/afastamentoTemporario/listar');
 }
 
-export default { criar, listar };
+const vizualizar = async (req, res) => {
+    try {
+        const afastamento = await afastamentoService.vizualizar(req.params.id);
+        if (!afastamento) return res.status(400).json({ message: 'Pedido de afastamento não encontrado' });
+        return res.render("afastamentoTemporario/vizualizar-afastamento", { 
+            afastamento, 
+            pageTitle, 
+            csrfToken: req.csrfToken(), 
+            tipoUsuario: req.session.tipoUsuario 
+        })
+    } catch (error) {
+        return res.status(400).json({ message: 'Não foi possível vizualizar o pedido de afastamento' });
+    }
+}
+
+export default { criar, listar, vizualizar };

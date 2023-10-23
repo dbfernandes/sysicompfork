@@ -65,7 +65,7 @@
                                     <tr>
                                         <td> {{id}} </td>
                                         <td> {{createdAt}} </td>
-                                        <td> {{usuarioId}} </td>
+                                        <td> {{usuarioNome}} </td>
                                         <td> {{dataSaida}} </td>
                                         <td> {{dataRetorno}} </td>
                                         <td> {{tipoViagem}} </td>
@@ -73,6 +73,11 @@
 
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-end" style="gap: 10px">
+                                                <a  style="margin-right: 2px"
+                                                    href='/afastamentoTemporario/dados/{{id}}'
+                                                    class='fa fa-solid fa-eye'
+                                                    title="Visualizar" 
+                                                /></a>
                                                 <a class="fa fa-solid fa-trash " id="removerLdP_{{nome}}_{{id}}"
                                                     data-toggle="modal" data-target="#removerLdP"
                                                     title="remover" 

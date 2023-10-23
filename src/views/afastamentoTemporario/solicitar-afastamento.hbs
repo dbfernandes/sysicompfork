@@ -59,13 +59,17 @@
                                             <label for="dataSaida">
                                                 <font color="#FF0000">*</font> Data de Saída:
                                             </label>
-                                            
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt">
+                                                    </i></span>
                                                 </div>
-                                                <input id="dataSaida" name="dataSaida" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask
-                                                placeholder="Selecione a Data de Saída..." required>
+                                                <input id="dataSaida" name="dataSaida" 
+                                                    type="date"
+                                                    class="form-control datemask" 
+                                                    data-inputmask-inputformat="dd/mm/yyyy"
+                                                >
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-6 col-lg-6">
@@ -74,10 +78,15 @@
                                             </label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
                                                 </div>
-                                            <input id="dataRetorno" name="dataRetorno" type="text" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask
-                                            placeholder="Selecione a Data de Retorno..." required>
+                                                <input id="dataRetorno" name="dataRetorno" 
+                                                    type="date"
+                                                    class="form-control datemask" 
+                                                    data-inputmask-inputformat="dd/mm/yyyy"
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -122,7 +131,7 @@
                             </div>
                             <div class="card-footer">
                                 <div class="col">
-                                    <input type="submit" value="Enviar" class="btn btn-success float-left">
+                                    <input type="submit" value="Enviar" class="btn btn-success float-md-right">
                                 </div>
                             </div>
                             </form>

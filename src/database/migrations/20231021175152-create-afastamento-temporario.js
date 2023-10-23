@@ -8,8 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      usuarioId: {
-        type: Sequelize.INTEGER
+      usuarioNome: {
+        type: Sequelize.STRING
       },
       dataSaida: {
         type: Sequelize.DATEONLY
@@ -24,10 +24,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       justificativa: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       planoReposicao: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

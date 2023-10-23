@@ -7,7 +7,6 @@ import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
-import afastamentoTemporarioRouter from "./afastamentoTemporario.routes";
 import salasRoutes from './salas.routes';
 import perfilRoutes from './perfil.routes';
 import autenticacaoController from '../controllers/autenticacaoController';
