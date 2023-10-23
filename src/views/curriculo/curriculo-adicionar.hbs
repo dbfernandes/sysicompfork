@@ -1,5 +1,5 @@
 {{> header}}
-{{> sidebar module='salas' page='salas-adicionar'}}
+{{> sidebar module='curriculo' page='curriculo-adicionar'}}
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -19,7 +19,7 @@
             <div class="row mb-2">
                 <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
                     <a type="button" class="btn btn-warning color-white" href="/inicio">
-                        <i class="fa fa-arrow-left color-white"></i>
+                        <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
                 </div>
@@ -43,7 +43,7 @@
                                     <label for="bloco">
                                         <font color="#FF0000">*</font> Selecione o professor desejado:
                                     </label>
-                                    <select class="form-control" id="professor" name="professor" required>
+                                    <select class="form-control" id="professor" name="professor" onload="selectCurrentUser(this);" required>
                                         {{#each professores}}
                                             <option value={{id}}>{{nomeCompleto}}</option>
                                         {{/each}}
@@ -74,6 +74,14 @@
 </div>
 
 <script>
+
+    if({{tipoUsuario.professor}}){
+        const sel = document.querySelector(`[id="professor"]`);
+        for (var i in sel.options){
+            if (sel.options[i].value=={{usuarioId}}) sel.selectedIndex = i
+        }
+    }
+    
 
     $.validator.addMethod("verificarArquivo", function (el) {
         return (document.querySelector("input[type=file]").files.length > 0)

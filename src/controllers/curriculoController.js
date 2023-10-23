@@ -18,6 +18,7 @@ const visualizar = async (req, res) => {
           professores,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
+          usuarioId: req.session.uid,
           message, 
           type,
           messageTitle,

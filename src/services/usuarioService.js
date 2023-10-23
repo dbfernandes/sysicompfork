@@ -98,6 +98,9 @@ class UsuarioService {
     try {
       const usuarios = await Usuario.findAll(
         { where: data,
+          order: [
+            ['nomeCompleto', 'ASC'],
+          ],
           atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape",
           "administrador", "secretaria", "professor", "coordenador",  
           "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
