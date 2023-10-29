@@ -1,4 +1,7 @@
 'use strict';
+const moment = require('moment-timezone');
+
+const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -12,9 +15,13 @@ module.exports = {
         cartaOrientador: '1',
         cartaRecomendacao: '1',
         documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '18-09-2023',
-        dataFim: '20-11-2023',       
+        dataInicio: '2023-08-23',
+        dataFim: '2023-09-09',       
         status: '1',
+        inscricoesIniciadas: 0,
+        inscricoesEncerradas: 0,
+        createdAt: data,
+        updatedAt: data,
       },
       {
         editalId: '002-2023',
@@ -25,9 +32,13 @@ module.exports = {
         cartaOrientador: '0',
         cartaRecomendacao: '1',
         documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '08-09-2023',
-        dataFim: '15-10-2023',        
-        status: '1',
+        dataInicio: '2023-05-27',
+        dataFim: '2023-06-027',        
+        status: '0',
+        inscricoesIniciadas: 0,
+        inscricoesEncerradas: 0,
+        createdAt: data,
+        updatedAt: data,
       },
       {
         editalId: '003-2023',
@@ -38,9 +49,13 @@ module.exports = {
         cartaOrientador: '1',
         cartaRecomendacao: '0',
         documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '09-09-2023',
-        dataFim: '05-12-2023',
+        dataInicio: '2023-07-14',
+        dataFim: '2023-08-01',
         status: '1',
+        inscricoesIniciadas: 0,
+        inscricoesEncerradas: 0,
+        createdAt: data,
+        updatedAt: data,
       },
       {
         editalId: '004-2023',
@@ -51,9 +66,13 @@ module.exports = {
         cartaOrientador: '0',
         cartaRecomendacao: '0',
         documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '28-10-2023',
-        dataFim: '18-11-2023',        
+        dataInicio: '2023-08-02',
+        dataFim: '2023-09-30',        
         status: '1',
+        inscricoesIniciadas: 0,
+        inscricoesEncerradas: 0,
+        createdAt: data,
+        updatedAt: data,
       },
       
     ]);

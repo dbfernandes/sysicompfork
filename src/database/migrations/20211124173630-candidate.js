@@ -21,127 +21,90 @@ module.exports = {
         allowNull:false,
         type: Sequelize.STRING
       },
-      begin:{
-        allowNull: true,
-        type: Sequelize.DATE
-      },
-      finish:{
-        allowNull: true,
-        type: Sequelize.DATE
-      },
-      currentStep:{
-        allowNull:false,
-        type:Sequelize.INTEGER,
-        defaultValue: 0
-      },
-      name:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      socialName:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      address:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      neighborhood:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      city:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      uf:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      cep:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      email:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      email:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      birthday:{
-        type: Sequelize.DATE
-      },
-      nationality:{
-        type:Sequelize.INTEGER
-      },
-      country: {
-        type: Sequelize.STRING
-      },
-      passport: {
-        type: Sequelize.STRING
-      },
-      cpf: {
-        type: Sequelize.STRING
-      },
-      gender:{
-        type: Sequelize.STRING
-      },
-      homePhone:{
-        type: Sequelize.STRING
-      },
-      cellPhone: {
-        type: Sequelize.STRING
-      },
-      desiredCourse: {
-        type: Sequelize.STRING
-      },
-      polity: {
-        type: Sequelize.STRING
-      },
-      inscricaoposcomp: {
-        type: Sequelize.STRING
-      },
-      anoposcomp: {
-        type: Sequelize.STRING
-      },
-      notaposcomp: {
-        type: Sequelize.STRING
-      },
-      solicitabolsa: {
-        type: Sequelize.STRING
-      },
-      tituloproposta: {
-        type: Sequelize.STRING
-      },
-      cartaorientador: {
-        type: Sequelize.STRING
-      },
-      motivos: {
-        type: Sequelize.STRING
-      },
-      proposta: {
-        type: Sequelize.STRING
-      },
-      curriculum: {
-        type: Sequelize.STRING
-      },
-      prova_anterior: {
-        type: Sequelize.STRING
-      },
-      diploma: {
-        type: Sequelize.STRING
-      },
-      cotas: {
-        allowNull:true,
-        type: Sequelize.STRING
-      },
-      status: {
-        allowNull:false,
+      Nome: {
         type: Sequelize.STRING,
-        defaultValue: '0'
-      }
+        allowNull: true,
+      },
+      Nascimento: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      Sexo: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      NomeSocial: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      CEP: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      UF: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Endereco: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Cidade: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Bairro: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Nacionalidade: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Telefone: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      TelefoneSecundario: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      ComoSoube: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Curso: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Regime: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Cotista: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
+      CotistaTipo: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Condicao: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
+      CondicaoTipo: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      Bolsista: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
+      email:{
+        allowNull: true,
+        type: Sequelize.STRING
+      },
     });
   },
 

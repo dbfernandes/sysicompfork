@@ -2,7 +2,7 @@
 const {
   Model
 } = require('sequelize');
-
+const moment = require('moment');
 const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
@@ -24,6 +24,90 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
+    editalPosition:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
+    },
+    Nome: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Nascimento:{
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    Sexo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    NomeSocial: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CEP:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    UF:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Endereco: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Cidade:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Bairro:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Nacionalidade:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Telefone:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    TelefoneSecundario:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ComoSoube:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Curso:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Regime:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },  
+    Cotista:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    CotistaTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Condicao:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    CondicaoTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Bolsista:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -40,15 +124,6 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.STRING,
       allowNull: false,
     },
-    currentStep: {
-      type:DataTypes.INTEGER,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
   }, {
     sequelize,
     modelName: 'Candidate',

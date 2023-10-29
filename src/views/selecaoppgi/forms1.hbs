@@ -125,7 +125,7 @@
 		width: 100%;
 		height: 10px;
 		border-radius: 5px;
-		background-color: #0e3a74;
+		background-color: rgba(0, 110, 255, 0.5);
 		margin-top: -105px;
 	}
 
@@ -177,7 +177,7 @@
 		height: 90px;
 		font-size: 1.8rem !important;
 		border-radius: 50%;
-		background-color: #0e3a74;
+		background-color: rgb(0, 110, 255);
 		color: #fff;
 	}
 
@@ -227,6 +227,8 @@
 		<div class="container-fluid">
 			<form id="candidato-formulario">
 				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+				<input id="email" type="hidden" value="{{email}}">
+				<input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
 				<div class="card card-primary">
 					<div class="card-header">
 						<h3 class="card-title">Identificação do Candidato</h3>
@@ -247,15 +249,15 @@
 							</div>
 
 							<div class="col-md-3 campo-candidato-datanascimento">
-								<label class="control-label" for="candidato-nome">
+								<label class="control-label" for="data-nascimento">
 									<font color="#FF0000">*</font>
 									<b>Data de Nascimento:</b>
 								</label>
 								<div class="input-group">
 
 									<div class="input-group date" id="candidato-datanascimento" data-target-input="nearest">
-										<input type="text" class="form-control datetimepicker-input"
-											data-target="#candidato-datanascimento">
+										<input type="text" class="form-control datetimepicker-input" id="data-nascimento"
+											name="datanascimento" data-target="#candidato-datanascimento">
 										<div class="input-group-append" data-target="#candidato-datanascimento"
 											data-toggle="datetimepicker">
 											<div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -268,11 +270,12 @@
 							</div>
 
 							<div class="col-md-3 " role="radiogroup">
-								<label class="control-label" for="candidato-nome">
+								<label class="control-label" for="candidato-sexo">
 									<font color="#FF0000">*</font>
 									<b>Sexo:</b>
 								</label>
-								<div id="candidato-sexo" role="radiogroup" style="display: flex; align-content:center; gap: 20px;">
+								<div id="candidato-sexo" role="radiogroup"
+									style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Sexo" name="candidatoSexo" checked="">
 										<label for="Sexo"> Masculino
@@ -281,7 +284,7 @@
 
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Sexo2" name="candidatoSexo">
-										<label for="Sexo2"> Feminino
+										<label for="Sexo2">Feminino
 										</label>
 									</div>
 
@@ -628,6 +631,11 @@
 			locale: 'pt-br',
 		});
 
+		$.validator.addMethod("dateBR", function (value, element) {
+			return /^(\d{2}\/\d{2}\/\d{4})$/.test(value);
+		}, "Informe uma data válida no formato DD/MM/YYYY");
+
+
 		$("input[data-bootstrap-switch-cotista]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
 			$(this).bootstrapSwitch('onSwitchChange', () => {
@@ -747,30 +755,50 @@
 
 	function getBolsa() {
 		let bolsa = document.getElementById("candidato-bolsa").checked;
+		if(!bolsa){
+			return 0;
+		}
 		return bolsa;
 	}
 
+	function checkCondicao(){
+		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
+		if (!deficiencia) {
+			return 0;
+		}
+		return deficiencia;
+	}
+
+	function checkCotista(){
+		let cotista = document.getElementById("cotista").checked;
+		if (!cotista) {
+			return 0;
+		}
+		return cotista;
+	}
 	function getValueFromForm() {
 
 		const form = document.getElementById('candidato-formulario');
 		let data = {}
-		data.Nome = form.elements[1].value;
-		data.Nascimento = form.elements[2].value;
+		data.Nome = document.getElementById('candidato-nome').value;
+		data.Nascimento = document.getElementById('data-nascimento').value;
 		data.Sexo = getSelectedSexo()
-		data.NomeSocial = form.elements[5].value;
-		data.CEP = form.elements[6].value;
-		data.UF = form.elements[7].value;
-		data.Endereco = form.elements[8].value;
-		data.Cidade = form.elements[9].value;
-		data.Bairro = form.elements[10].value;
+		data.NomeSocial = document.getElementById('candidato-nomesocial').value;
+		data.CEP = document.getElementById('candidato-cep').value;
+		data.UF = document.getElementById('candidato-uf').value;
+		data.Endereco = document.getElementById('candidato-endereco').value;
+		data.Cidade = document.getElementById('candidato-cidade').value;
+		data.Bairro = document.getElementById('candidato-bairro').value;
 		data.Nacionalidade = getSelectedNacionalidade();
-		data.TelefonePrincipal = form.elements[13].value;
-		data.TelefoneAlternativo = form.elements[14].value;
+		data.TelefonePrincipal = document.getElementById('candidato-telresidencial').value;
+		data.TelefoneAlternativo = document.getElementById('candidato-telcelular').value;
 		data.ComoSoube = getSelectedComoSoube();
 		data.CursoDesejado = getSelectedCurso();
 		data.RegimeDedicacao = getSelectedRegime();
-		data.Cotista = getSelectedCota();
-		data.Condicao = getCondicao();
+		data.Cotista = checkCotista();
+		data.CotistaTipo = getSelectedCota();
+		data.Condicao = checkCondicao()
+		data.CondicaoTipo = getCondicao();
 		data.Bolsa = getBolsa()
 		return data;
 	}
@@ -787,7 +815,7 @@
 				},
 				datanascimento: {
 					required: true,
-					date: true
+					dateBR: true
 				},
 				candidatoSexo: {
 					required: true
@@ -842,7 +870,6 @@
 				},
 				datanascimento: {
 					required: "Por favor, informe sua data de nascimento",
-					date: "Informe uma data de nascimento válida"
 				},
 				candidatoSexo: "Por favor, selecione seu sexo",
 				candidatoUf: "Por favor, selecione seu estado",
@@ -873,14 +900,19 @@
 				e.preventDefault();
 				const data = getValueFromForm();
 				const csrfToken = $("#csrfToken").val();
+				const email = $("#email").val();
+				const editalPosicao = $("#editalPosicao").val();
+				const id = $("#id").val();
 				console.log(data);
-				console.log("oi")
 				$.ajax({
 					url: 'http://localhost:3001/selecaoppgi/formulario/1',
 					type: 'POST',
 					data: {
 						data: data,
 						_csrf: csrfToken,
+						email: email,
+						editalPosicao: editalPosicao,
+						id: id
 					},
 					success: function (data) {
 						$.validator.setDefaults({

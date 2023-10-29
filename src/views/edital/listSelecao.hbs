@@ -1,5 +1,8 @@
 {{> header}}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
+
 {{> sidebar module='selecaoppgi' page='edital-listar'}}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -82,12 +85,12 @@
                                 <tbody>
                                     {{#each editais}}
                                     <tr>
-                                        <td>{{add @index 1}}</td>
+                                        <td> {{add @index 1}} </td>
                                         <td> {{dataValues.editalId}} </td>
                                         <td> {{dataValues.dataInicio}} </td>
                                         <td> {{dataValues.dataFim}} </td>
-                                        <td>  </td>
-                                        <td>  </td>
+                                        <td> {{dataValues.inscricoesIniciadas}} </td>
+                                        <td> {{dataValues.inscricoesEncerradas}} </td>
                                         <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
                                         <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
                                         <td>
@@ -110,10 +113,10 @@
                                                 <a class="fa fa-solid {{#ifEqual dataValues.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
                                                     id="icone-{{dataValues.editalId}}"
                                                     data-editalId="{{editalId}}"
-                                                    onclick="abrirModal('{{dataValues.editalId}}', '{{dataValues.status}}')"
+                                                    onclick="abrirModal('{{dataValues.editalId}}', '{{dataValues.status}}', '{{dataValues.dataFim}}')"
                                                     data-toggle="modal"
                                                     data-target="#removerEdital"
-                                                    onclick="addLink(event)">
+                                                    >
                                                 </a>
                                                
                                                 <a  style="margin-right: 2px"
@@ -142,7 +145,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalArquivarLabel">Deletar Edital</h5>
+                            <h5 class="modal-title" id="modalArquivarLabel">Status do Edital</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -163,15 +166,18 @@
     <!-- /.content -->
 </div>
 
+
 <script>
     
     let csrfToken = "{{csrfToken}}";
     let editalId;
     let status;
+    let dataFim;
 
-    function abrirModal(id, statusCorrente) {
+    function abrirModal(id, statusCorrente, data) {
         editalId = id;
         status = statusCorrente;
+        dataFim = data;
 
         if (status == '1') {
             $('#modalArquivarBody').html("Você realmente deseja arquivar o edital com ID " + editalId + "?");
@@ -186,52 +192,71 @@
 
 
     function arquivarEdital() {
-        const dataFromForm = {
-            status: status == '1'? '0' : '1',
-            _csrf: csrfToken
-        };
+  
+        const dataAtual = moment.tz('America/Manaus').format('YYYY-MM-DD');
 
-        $.ajax({
-            url: `/edital/arquivarEdital/${editalId}`,
-            type: 'PUT',
-            data: dataFromForm,
-            success: function (data) {
-                $(document).Toasts('create', {
-                    icon: 'success',
-                    class: "bg-success",
-                    autohide: true,
-                    delay: 3000,
-                    title: 'Sucesso!',
-                    body: 'Status do Edital alterado no sistema com sucesso'
-                });
-                
-                // Fechar o modal
-                $('#modalArquivar').modal('hide');
+        // Fechar o modal
+        $('#modalArquivar').modal('hide');
 
-                if (status == '1') {
-                    $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
-                    $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Arquivado');
-                } else {
-                    $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
-                    $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Ativo');
+        if (new Date(dataAtual) > new Date(dataFim) && status=='0'){
+
+            $(document).Toasts('create', {
+                icon: 'error',
+                class: "bg-danger",
+                autohide: true,
+                delay: 5000,
+                title: 'Erro!',
+                body: 'Você não pode ativar um edital com uma data de encerramento menor que a data atual'
+            });
+
+        }
+        else{
+
+             const dataFromForm = {
+                status: status == '1'? '0' : '1',
+                _csrf: csrfToken
+            };
+
+            $.ajax({
+                url: `/edital/arquivarEdital/${editalId}`,
+                type: 'PUT',
+                data: dataFromForm,
+                success: function (data) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Sucesso!',
+                        body: 'Status do Edital alterado no sistema com sucesso'
+                    });
+                    
+
+                    if (status == '1') {
+                        $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
+                        $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Encerrado');
+                    } else {
+                        $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
+                        $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Aberto');
+                    }
+
+                    setTimeout(function() {
+                        window.location.href = '/edital/listEdital';
+                    }, 3000);
+
+                },
+                error: function (data) {
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    });
                 }
-
-                setTimeout(function() {
-                    window.location.href = '/edital/listEdital';
-                }, 3000);
-
-            },
-            error: function (data) {
-                $(document).Toasts('create', {
-                    icon: 'error',
-                    class: "bg-danger",
-                    autohide: true,
-                    delay: 3000,
-                    title: 'Erro!',
-                    body: 'Erro: ' + data.responseJSON.error
-                });
-            }
-        });
+            });
+        }
     }
 
 
@@ -254,10 +279,20 @@
                 { responsivePriority: 5 },
                 { responsivePriority: 2 },
             ],
-            columnDefs: [ {
+            columnDefs: [
+            {
                 "targets": [9],
                 "orderable": false
-            } ]
+            },
+            {
+                targets: [2, 3], // Índices das colunas que tem datas
+                render: function(data, type) {
+                if (type === 'sort') {
+                    return moment(data).format('YYYY-MM-DD') // Para ordenação usa no formato YYYY-MM-DD'
+                }
+                return moment(data).format('DD/MM/YYYY') // Para exibição usa no formato DD/MM/YYYY'
+                }
+            }]
         });
 
         document.getElementById("voltarBtn").addEventListener("click", function() {

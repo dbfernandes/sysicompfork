@@ -179,7 +179,7 @@
 							<div class="row actions">
 								<button onclick="signin()" class="btn btn-success col-md-5 col-xs-12">Salvar
 									Candidato</button>
-								<button onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
+								<button type="button" onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
 							</div>
 						</form>
 					</div>
@@ -253,7 +253,7 @@
           _csrf: csrfToken,
 				},
 				success: function (data) {
-					window.location.href = "{{url}}/selecaoppgi/formulario";
+					window.location.href = "{{url}}/selecaoppgi/";
 				},
 				error: function (res, status, error) {
 					console.log("Entrou no erro")

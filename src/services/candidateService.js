@@ -1,5 +1,5 @@
 import { genSalt, hash } from "bcrypt";
-
+const moment = require('moment');
 const { Candidate } = require("../models");
 
 class CandidateService {
@@ -33,6 +33,7 @@ class CandidateService {
             password: password,
             passwordHash: passwordHash,
             editalId: editalNumber,
+            editalPosition: 1,
             currentStep: step,
             status: "created"
         }).catch(err => {
@@ -78,7 +79,55 @@ class CandidateService {
             throw new Error("Usuário ou senha incorretos")
         }
 
-        return true;
+        return candidate;
+    }
+
+    async form1({
+        Candidato,
+        id,
+    }){
+        const dataNascimentoFormatada = moment(Candidato.Nascimento, 'DD/MM/YYYY').format('YYYY-MM-DD');
+        console.log(dataNascimentoFormatada)
+        Candidato.Nascimento = dataNascimentoFormatada
+        const candidateAtualizacao = await Candidate.update({
+            Nome: Candidato.Nome,
+            editalPosition: 2,
+            Nascimento: Candidato.Nascimento,
+            Sexo:  Candidato.Sexo,
+            NomeSocial:  Candidato.NomeSocial,
+            CEP:  Candidato.CEP,
+            UF:  Candidato.UF,
+            Endereco:  Candidato.Endereco,
+            Cidade:  Candidato.Cidade,
+            Bairro:  Candidato.Bairro,
+            Nascionalidade:  Candidato.Nascionalidade,
+            Telefone:  Candidato.TelefonePrincipal,
+            TelefoneSecundario:  Candidato.TelefoneAlternativo,
+            ComoSoube:  Candidato.ComoSoube,
+            Curso:  Candidato.CursoDesejado,
+            Regime:  Candidato.RegimeDedicacao,
+            Cotista:  Candidato.Cotista,
+            CotistaTipo:  Candidato.CotistaTipo,
+            Condicao:  Candidato.Condicao,
+            CondicaoTipo:  Candidato.CondicaoTipo,
+            Bolsista:  Candidato.Bolsa,
+        }, {
+            where: {
+                id: id
+            }
+        }).catch(err => {
+            console.log(err)
+            throw new Error("Não foi possivel atualizar o candidato");
+        })
+        const candidate = await Candidate.findOne({
+            where: {
+                id: id
+            }
+        }).catch(err => {
+            console.log(err)
+            throw new Error("Não foi possivel encontrar o candidato");
+        })
+        return candidate
     }
 }
 

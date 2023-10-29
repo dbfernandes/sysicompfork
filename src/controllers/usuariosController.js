@@ -86,9 +86,13 @@ const adicionar = async (req, res) => {
 const deletar = async (req, res)=> {
     if (req.method === 'POST') {
         try {
+            const id = req.params.id
             await UsuarioService.alterar(req.params.id, { 
                 status: 0,
             })
+            if(req.session.uid == id){
+                req.session.uid = null
+            }
             return res.redirect(
                 criarURL('/usuarios/listar', {
                   message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
