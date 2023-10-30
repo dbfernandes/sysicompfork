@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   AfastamentoTemporario.init({
+    usuarioId: {
+      type: DataTypes.INTEGER
+    },
     usuarioNome: {
       type: DataTypes.STRING
     },

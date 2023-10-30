@@ -16,7 +16,7 @@
                     </ol>
                 </div>
             </div>
-            <div class="row mb-4">
+            <div class="row mb-2">
                     <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
                         <a class="btn btn-warning color-white" href="/inicio">
                             <i class="fa fa-arrow-left"></i>
@@ -33,17 +33,18 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
-					<div style="text-align:left">
+					
+                    <div style="text-align:left">
 						<font color="#FF0000">*</font> Campos Obrigatórios
 					</div>						
-					<div class="card card-primary">
 						
-                        <div class="card-header">
-							<h3 class="card-title">Informações sobre o Pedido de Afastamento</h3>
-						</div>
 
-                        <form action="/afastamentoTemporario/criar" method="POST" id="afastamentoTemporarioForm">
+                    <form action="/afastamentoTemporario/criar" method="POST" id="afastamentoTemporarioForm">
+					    <div class="card card-primary">
                             <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+                            <div class="card-header">
+                                <h3 class="card-title">Informações sobre o Pedido de Afastamento</h3>
+                            </div>
                            
                             <div class="card-body">
                                 <div class="form-group">
@@ -131,15 +132,15 @@
                             </div>
                             <div class="card-footer">
                                 <div class="col">
-                                    <input type="submit" value="Enviar" class="btn btn-success float-md-right">
+                                    <input type="submit" value="Fazer Solicitação" class="btn btn-success float-md-right">
                                 </div>
                             </div>
-                            </form>
                         </div>
-					</div>
-				</div>
-			</div>
-		</div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
 	</section>
 </div>
 

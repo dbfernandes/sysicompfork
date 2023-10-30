@@ -7,6 +7,19 @@
 
   <section class="content-header">
     <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col">
+          <ol class="breadcrumb float-md-right">
+            <li class="breadcrumb-item">
+              <a href="/afastamentoTemporario/listar">afastamentos</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Dados
+            </li>
+          </ol>
+          <h1>{{afastamento.usuarioNome}}</h1>
+        </div>
+      </div>
       <div class="row mb-4">
           <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
               <a class="btn btn-warning color-white" href="/afastamentoTemporario/listar">
@@ -26,7 +39,7 @@
         <div class="card-header">
           <h3 class="card-title">
             <i class="fas fa-info-circle"></i>
-            Dados do Usuário
+            Dados do Afastamento
           </h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

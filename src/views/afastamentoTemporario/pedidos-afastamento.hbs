@@ -51,12 +51,12 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Data de Envio</th>
                                         <th>Nome do Usuário</th>
                                         <th>Data de Saída</th>
                                         <th>Data de Retorno</th>
                                         <th>Tipo de Viagem</th>
                                         <th>Local da Viagem</th>
+                                        <th>Data de Envio</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -64,12 +64,12 @@
                                     {{#each afastamentos}}
                                     <tr>
                                         <td> {{id}} </td>
-                                        <td> {{createdAt}} </td>
                                         <td> {{usuarioNome}} </td>
                                         <td> {{dataSaida}} </td>
                                         <td> {{dataRetorno}} </td>
                                         <td> {{tipoViagem}} </td>
                                         <td> {{localViagem}} </td>
+                                        <td> {{createdAt}} </td>
 
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-end" style="gap: 10px">
@@ -78,10 +78,11 @@
                                                     class='fa fa-solid fa-eye'
                                                     title="Visualizar" 
                                                 /></a>
-                                                <a class="fa fa-solid fa-trash " id="removerLdP_{{nome}}_{{id}}"
-                                                    data-toggle="modal" data-target="#removerLdP"
-                                                    title="remover" 
-                                                    onclick="addLink(event)" href="#"
+                                                <a class="fa fa-solid fa-trash " id="removerAT_{{nome}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerAT"
+                                                    title="remover"
+                                                    onclick="addLink(event)" 
+                                                    href="#"
                                                     >
                                                 </a>
                                             </div>
@@ -104,7 +105,7 @@
     <!-- /.content -->
 </div>
 
-<div class="modal fade" id="removerLdP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="removerAT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -116,7 +117,7 @@
                     </div>
                     <div class="modal-footer">
                         <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarLdP()">Sim</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarAT()">Sim</a>
                     </div>
                     <form name="postDelete" id="postDelete" method="POST">
                         <input type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -160,9 +161,7 @@
         });
     });
 
-    function deletarLdP(event){
-        console.log ("as")
-        
+    function deletarAT(event){
         // document.postDelete.submit();
         var form = document.getElementById("postDelete");
         console.log(form)
@@ -172,10 +171,8 @@
     function addLink(event) {
         const [a, nome, id] = event.target.id.split("_");
         document.getElementById("tituloModal").innerHTML =  "Deseja excluir " + nome + "?";
-        console.log("AddLink- aqui")
         const formDelete = document.getElementById("postDelete")
-        console.log("AddLink- aqui2")
-        formDelete.setAttribute('action', `/linhasDePesquisa/remover/${id}`);
+        formDelete.setAttribute('action', `/afastamentoTemporario/remover/${id}`);
     }
 
 </script>

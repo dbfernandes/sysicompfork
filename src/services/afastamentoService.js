@@ -19,8 +19,12 @@ const formatDbAnswer = (object) => {
 class AfastamentoService
 { 
     
-    async listar() {
-        const allResearchLines = await AfastamentoTemporario.findAll({});
+    async listar(id) {
+        const allResearchLines = await AfastamentoTemporario.findAll({
+            where: {
+                usuarioId: id,
+            },
+        });
         // console.log(allResearchLines);
         const formatedAnswer = formatDbAnswer(allResearchLines);
         console.log(formatedAnswer);
@@ -40,8 +44,10 @@ class AfastamentoService
     }
     
     async criar(newAfastamento) {
-        const {dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao} = newAfastamento;
+        const {usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao} = newAfastamento;
         await AfastamentoTemporario.create({
+            usuarioId,
+            usuarioNome,
             dataSaida,
             dataRetorno,
             tipoViagem,
@@ -67,6 +73,13 @@ class AfastamentoService
         return dataFormatada;
     }
 
+    async delete(id) {
+        await AfastamentoTemporario.destroy({
+            where: {
+                id,
+            },
+        });
+    }
 }
 
 export default new AfastamentoService();
