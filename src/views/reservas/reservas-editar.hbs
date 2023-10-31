@@ -43,9 +43,10 @@
                     </div>
 
                     <div class="container-fluid">
-                        <form id="formAdicionarSala" method="POST" action="/reservas/adicionar">
+                        <form id="formAdicionarSala" method="POST" action="/reservas/editar/{{reserva.id}}">
                             <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
-                            <input type="hidden" id="UsuarioId" name="UsuarioId" value="{{UsuarioId}}" />
+                            <input type="hidden" id="id" name="id" value="{{reserva.id}}" />
+                            <input type="hidden" id="UsuarioId" name="UsuarioId" value="{{reserva.UsuarioId}}" />
                             <div class="card-body ">
 
                                 <div class="row">
@@ -91,7 +92,7 @@
                                     </div>
                                     <div class="form-group ">
                                         <input type="checkbox" name="unica" data-bootstrap-switch
-                                            data-off-color="danger" checked data-on-color="success" data-on-text="Sim"
+                                            data-off-color="danger" {{checked_unica reserva.dias}} data-on-color="success" data-on-text="Sim"
                                             data-off-text="Não" value="1" id="unica">
                                     </div>
                                 </div>
@@ -217,7 +218,7 @@
                             <div class="card-footer pr-0">
                                 <div style="margin-right: auto;" class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-success float-right">
-                                        Adicionar Reserva
+                                        Editar Reserva
                                     </button>
 
                                 </div>
@@ -302,6 +303,8 @@
         const dataTermino = unica ? dataInicio : $("#dataTermino").val();
         const horaInicio = $("#horaInicio").val() + ":00";
         const horaTermino = $("#horaTermino").val() + ":00";
+        const id  = $("#id").val();
+
         let dias = diasSemana()
 
         //verificacao do caso data unica
@@ -319,7 +322,8 @@
             dataTermino,
             horaInicio,
             horaTermino,
-            dias
+            dias,
+            id
         };
     }
     document.querySelector('.expand-btn').addEventListener('click', function () {
@@ -347,7 +351,11 @@
 
     function verificaConflitoComReservas(novaReserva, reservasExistente) {
         for (const reserva of reservasExistente) {
-            console.log(reserva)
+            
+
+            if(reserva.id == novaReserva.id){
+                continue
+            }
             // Verifica se a nova reserva está dentro do período de alguma reserva existente
             if (novaReserva.dataInicio <= reserva.dataTermino && novaReserva.dataTermino >= reserva.dataInicio) {
 
@@ -365,7 +373,7 @@
 
                 // Verifica se há sobreposição nas horas
                 if (diasEmComum && novaReserva.horaInicio < reserva.horaTermino && novaReserva.horaTermino > reserva.horaInicio) {
-
+                    console.log(reserva)
                     return true; // Conflito encontrado
                 }
             } else {

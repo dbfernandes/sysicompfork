@@ -30,20 +30,26 @@ const adicionar = async (req, res) => {
 
             if (req.body.dataTermino == "") {
                 req.body.dataTermino = req.body.dataInicio
+                req.body.dias = ""
 
             } else {
-                if (req.body.dia.includes(',')) {
-                    let dias = req.body.dia ? req.body.dia.join(', ') : ""
+                console.log(req.body.dia.length)
+
+                if (typeof req.body.dia === 'string') {
+
+                    let dias = req.body.dia
                     req.body.dias = dias
+                } else if (req.body.dia) {
+
+                    let dias = req.body.dia.join(', ')
+                    req.body.dias = dias
+                    console.log(req.body.dias)
                 } else {
-                    let dias = req.body.dia ? req.body.dia : ""
-                    req.body.dias = dias
+                    req.body.dias = ""
                 }
-
-
             }
-            console.log({ ...req.body })
 
+            console.log({ ...req.body })
 
             const reserva = await ReservaSala
                 .create({
@@ -54,10 +60,7 @@ const adicionar = async (req, res) => {
                 });
 
             if (!reserva) {
-                return res.status(400).json({
-                    error: responseError.message
-
-                });
+                res.redirect('/reservas/gerenciar')
             }
 
             res.redirect('/reservas/gerenciar')
@@ -84,6 +87,11 @@ const excluir = async (req, res) => {
     }
 };
 
+function converterData(data) {
+    const partes = data.split('-');
+    return partes[2] + '/' + partes[1] + '/' + partes[0];
+}
+
 const gerenciar = async (req, res) => {
     const reservas = await ReservaSala.findAll({
         include: [
@@ -95,16 +103,28 @@ const gerenciar = async (req, res) => {
                 as: 'usuario',
             }
         ],
-    })
+    });
+
+    const reservasJSON = reservas.map(reserva => {
+        let reservaObj = reserva.toJSON();
+
+        reservaObj.dataInicio = converterData(reservaObj.dataInicio);
+        reservaObj.dataTermino = converterData(reservaObj.dataTermino);
+        const dataAtual = new Date();
+        const dataTerminoReserva = new Date(reservaObj.dataTermino + ' ' + reservaObj.horaTermino);
+        reservaObj.terminou = dataTerminoReserva < dataAtual;
+
+        return reservaObj;
+    });
 
     res.render('reservas/reservas-gerenciar', {
-        reservas: reservas.map(reservas => reservas.toJSON()),
+        reservas: reservasJSON,
         nome: req.session.nome,
         csrfToken: req.csrfToken(),  
         tipoUsuario: req.session.tipoUsuario
 
     })
-}
+
 
 const editar = async (req, res) => {
 
@@ -123,7 +143,7 @@ const editar = async (req, res) => {
                 ],
             })
 
-
+     
             res.render('reservas/reservas-editar', {
                 salas: salas.map(sala => sala.toJSON()),
                 reserva: reserva.toJSON(),
@@ -137,15 +157,41 @@ const editar = async (req, res) => {
             res.status(500).send({ message: error.message })
         }
     } else if (req.method === 'POST') {
+        let responseError = null;
 
+        if (req.body.dataTermino == "") {
+            req.body.dataTermino = req.body.dataInicio
+            req.body.dias = ""
+
+        } else {
+          
+
+            if (typeof req.body.dia === 'string') {
+
+                let dias = req.body.dia
+                req.body.dias = dias
+            } else if (req.body.dia) {
+
+                let dias = req.body.dia.join(', ')
+                req.body.dias = dias
+                console.log(req.body.dias)
+            } else {
+                req.body.dias = ""
+            }
+        }
+
+        console.log({ ...req.body })
+    
+     
         try {
             const reserva = await ReservaSala.update({
                 ...req.body
             }, { where: { id: req.params.id } });
-
+         
             res.redirect('/reservas/gerenciar')
 
         } catch (error) {
+            
             res.status(500).send({ message: error.message })
         }
     }

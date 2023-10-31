@@ -1,12 +1,12 @@
 {
   "development": {
-    "username": "user",
-    "password": "password",
-    "database": "db",
-    "host": "db",
-    "dialect": "mysql",
-    "port": 3306
-  },
+      "username": "root",
+      "password": "password",
+      "database": "syscomp",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "port": 3306
+    },
     "test": {
       "username": "user",
       "password": "password",
