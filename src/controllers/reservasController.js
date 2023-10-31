@@ -17,9 +17,8 @@ const adicionar = async (req, res) => {
             salas: salas.map(sala => sala.toJSON()),
             nome: req.session.nome,
             UsuarioId: req.session.uid,
-            csrf: req.csrfToken(),   
+            csrf: req.csrfToken(),
             tipoUsuario: req.session.tipoUsuario
-
         })
 
     } else if (req.method === 'POST') {
@@ -120,81 +119,82 @@ const gerenciar = async (req, res) => {
     res.render('reservas/reservas-gerenciar', {
         reservas: reservasJSON,
         nome: req.session.nome,
-        csrfToken: req.csrfToken(),  
+        csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario
 
     })
+}
+
+    const editar = async (req, res) => {
+
+        if (req.method === 'GET') {
+            try {
+                const salas = await Salas.findAll();
+                const reserva = await ReservaSala.findOne({
+                    where: {
+                        id: req.params.id
+                    },
+                    include: [
+                        {
+                            model: Salas, // Include the associated "Post" model
+                            as: 'salas', // Alias for the posts association (if defined in the User model)   
+                        }
+                    ],
+                })
 
 
-const editar = async (req, res) => {
+                res.render('reservas/reservas-editar', {
+                    salas: salas.map(sala => sala.toJSON()),
+                    reserva: reserva.toJSON(),
+                    csrf: req.csrfToken(),
+                    nome: req.session.nome,
+                    tipoUsuario: req.session.tipoUsuario
 
-    if (req.method === 'GET') {
-        try {
-            const salas = await Salas.findAll();
-            const reserva = await ReservaSala.findOne({
-                where: {
-                    id: req.params.id
-                },
-                include: [
-                    {
-                        model: Salas, // Include the associated "Post" model
-                        as: 'salas', // Alias for the posts association (if defined in the User model)   
-                    }
-                ],
-            })
+                })
 
-     
-            res.render('reservas/reservas-editar', {
-                salas: salas.map(sala => sala.toJSON()),
-                reserva: reserva.toJSON(),
-                csrf: req.csrfToken(),
-                nome: req.session.nome,
-                tipoUsuario: req.session.tipoUsuario
+            } catch (error) {
+                res.status(500).send({ message: error.message })
+            }
+        } else if (req.method === 'POST') {
+            let responseError = null;
 
-            })
-
-        } catch (error) {
-            res.status(500).send({ message: error.message })
-        }
-    } else if (req.method === 'POST') {
-        let responseError = null;
-
-        if (req.body.dataTermino == "") {
-            req.body.dataTermino = req.body.dataInicio
-            req.body.dias = ""
-
-        } else {
-          
-
-            if (typeof req.body.dia === 'string') {
-
-                let dias = req.body.dia
-                req.body.dias = dias
-            } else if (req.body.dia) {
-
-                let dias = req.body.dia.join(', ')
-                req.body.dias = dias
-                console.log(req.body.dias)
-            } else {
+            if (req.body.dataTermino == "") {
+                req.body.dataTermino = req.body.dataInicio
                 req.body.dias = ""
+
+            } else {
+
+
+                if (typeof req.body.dia === 'string') {
+
+                    let dias = req.body.dia
+                    req.body.dias = dias
+                } else if (req.body.dia) {
+
+                    let dias = req.body.dia.join(', ')
+                    req.body.dias = dias
+                    console.log(req.body.dias)
+                } else {
+                    req.body.dias = ""
+                }
+            }
+
+            console.log({ ...req.body })
+
+
+            try {
+                const reserva = await ReservaSala.update({
+                    ...req.body
+                }, { where: { id: req.params.id } });
+
+                res.redirect('/reservas/gerenciar')
+
+            } catch (error) {
+
+                res.status(500).send({ message: error.message })
             }
         }
-
-        console.log({ ...req.body })
-    
-     
-        try {
-            const reserva = await ReservaSala.update({
-                ...req.body
-            }, { where: { id: req.params.id } });
-         
-            res.redirect('/reservas/gerenciar')
-
-        } catch (error) {
-            
-            res.status(500).send({ message: error.message })
-        }
     }
-}
+
 
 export default { adicionar, excluir, gerenciar, editar, listar }
