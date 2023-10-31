@@ -28,9 +28,12 @@
                         <i class="fas fa-edit color-white"></i>
                         Editar
                     </a>
-                    <a id="btn-{{edital.editalId}}" class="btn {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}" onclick="abrirModal()">
-                        <i id="icone-{{edital.editalId}}" class="fa color-white {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"></i>
-                        {{#ifEqual edital.status '1'}}Aberto{{else}}Encerrado{{/ifEqual}} 
+                    <a id="btn-{{edital.editalId}}" class="btn
+                        {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}" onclick="abrirModal()">
+                        <i id="icone-{{edital.editalId}}" class="fa color-white
+                            {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}">
+                        </i>
+                        {{#ifEqual edital.status '1'}}Não Suspenso{{else}}Suspenso{{/ifEqual}} 
                     </a>
                     <a class="btn btn-info" href="/edital/adicionar">
                         <i class="fas fa-list color-white"></i>
@@ -62,6 +65,11 @@
                                     <tr>
                                         <td>Nº edital</td>
                                         <td>{{edital.editalId}}</td>
+                                    </tr>
+
+                                     <tr>
+                                        <td>Status</td>
+                                        <td id="labelStatus"> </td>
                                     </tr>
 
                                     <tr>
@@ -133,7 +141,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalArquivarLabel">Deletar Edital</h5>
+                            <h5 class="modal-title" id="modalArquivarLabel">Status do Edital</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -153,6 +161,8 @@
 </div>
 
 <script>
+
+        let status = "{{edital.status}}";
 
         const regMestrado = "{{edital.vagaMestrado}}";
         const supMestrado = "{{edital.cotasMestrado}}";
@@ -176,15 +186,51 @@
 
 
 
+
+        const dataInicio = "{{edital.dataInicio}}";
+        const dataFim = "{{edital.dataFim}}";
+       
+        const dataAtual= moment.tz('America/Manaus').format('YYYY-MM-DD');
+
+
+        let labelStatus;
+        if( status == '1'){
+            if( dataInicio > dataAtual){
+                labelStatus = 'Não Iniciado';
+            }
+            else if( dataFim < dataAtual){
+                labelStatus = 'Encerrado';
+            }
+            else{
+                labelStatus = 'Aberto';
+            }
+        }else{
+             labelStatus = 'Suspenso';
+        }
+
+        
+        document.getElementById("labelStatus").innerText = labelStatus;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         let csrfToken = "{{csrfToken}}";
         let editalId = "{{edital.editalId}}";
-
-
-
-
  
 
-        let status = "{{edital.status}}";
+       
 
         function abrirModal() {
         
@@ -208,39 +254,24 @@
                 _csrf: csrfToken
             };
 
+
+            // Fechar o modal
+            $('#modalArquivar').modal('hide');
+
             $.ajax({
                 url: `/edital/arquivarEdital/${editalId}`,
                 type: 'PUT',
                 data: dataFromForm,
                 success: function (data) {
-                    /*$(document).Toasts('create', {
-                        icon: 'success',
-                        class: "bg-success",
-                        autohide: true,
-                        delay: 3000,
-                        title: 'Sucesso!',
-                        body: 'Status do Edital alterado no sistema com sucesso'
-                    });*/
+
+                    const mensagem = "Status do Edital alterado no sistema com sucesso";            
+                    const expirationTime = new Date(new Date().getTime() + 5000);
+
+                    document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                    document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+                    window.location.href = '/edital/listEdital';
                     
-                    // Fechar o modal
-                    $('#modalArquivar').modal('hide');
-
-
-                    /*if (novoStatus == '0') {
-                        $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
-                        $(`#btn-${editalId}`).removeClass('btn btn-success').addClass('btn btn-danger').text('Encerrado');
-                    } else {
-                        $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
-                        $(`#btn-${editalId}`).removeClass('btn btn-danger').addClass('btn btn-success').text('Aberto');
-                    }*/
-
-                   //setTimeout(function() {
-                        window.location.reload();
-                   // }, 3000); 
-
-
-                    status = novoStatus;
-
                 },
                 error: function (data) {
                     $(document).Toasts('create', {
@@ -253,14 +284,12 @@
                     });
                 }
             });
-        }
-        
+        }        
 
 
-
-    document.getElementById("voltarBtnView").addEventListener("click", function() {
-        window.history.back();
-    });
+        document.getElementById("voltarBtnView").addEventListener("click", function() {
+            window.history.back();
+        });
 
 </script>
 
