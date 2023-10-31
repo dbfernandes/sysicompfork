@@ -515,18 +515,22 @@
             dataFromForm._csrf = $("#_csrf").val();
             $.ajax({
                 url: '{{url}}/edital/updateEdital/{{edital.editalId}} ',
-                
                 type: 'PUT',
                 data: dataFromForm,
                 success: function (data) {
-                   $(document).Toasts('create', {
+                    $(document).Toasts('create', {
                         icon: 'success',
                         class: "bg-success",
                         autohide: true,
                         delay: 3000,
                         title: 'Sucesso!',
                         body: 'Edital atualizado no sistema com sucesso'
-                    })
+                    });
+
+                    setTimeout(function() {
+                        window.location.href = '/edital/listEdital';
+                    }, 1500);
+
                 },
                 error: function (data) {
                     $(document).Toasts('create', {

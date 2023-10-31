@@ -502,18 +502,13 @@
                 type: 'POST',
                 data: dados,
                 success: function (data) {                               
-                    $(document).Toasts('create', {
-                        icon: 'success',
-                        class: "bg-success",
-                        autohide: true,
-                        delay: 10000,
-                        title: 'Sucesso!',
-                        body: 'Edital adicionado no sistema com sucesso'
-                    })
-                
-                    setTimeout(function() {
-                        window.location.href = '/edital/listEdital';
-                    }, 3000);
+                    const mensagem = "Edital adicionado no sistema com sucesso";            
+                    const expirationTime = new Date(new Date().getTime() + 5000);
+
+                    document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                    document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+                    window.location.href = '/edital/listEdital';
                 },
                 error: function (data) {                
                     $(document).Toasts('create', {
