@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   class Publicacao extends Model {
     
     static associate(models) {
-        this.belongsTo(models.Usuario)
+        this.belongsTo(models.Usuario, { foreignKey: 'idProfessor', as: "Professor" })
+    }
+    static associate(models) {
+        this.belongsTo(models.TipoPublicacao, { foreignKey: 'tipo', as: "Tipo" })
     }
   }
 

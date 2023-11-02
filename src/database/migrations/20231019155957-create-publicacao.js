@@ -4,9 +4,9 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Publicacao', {
       id: {
+        primaryKey: true,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
         type: Sequelize.INTEGER
       },
       idProfessor: {
@@ -30,8 +30,10 @@ module.exports = {
         default: null
       },
       tipo:{
-        type: Sequelize.SMALLINT(1),
-        allowNull: false
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: { model: 'TipoPublicacao', key: 'id' },
+        allowNull: false,
       },
       natureza: {
         type: Sequelize.STRING(100),
