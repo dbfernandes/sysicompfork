@@ -22,9 +22,8 @@ const adicionar = async (req, res) => {
         })
 
     } else if (req.method === 'POST') {
-
-
         try {
+
             let responseError = null;
 
             if (req.body.dataTermino == "") {
@@ -32,17 +31,13 @@ const adicionar = async (req, res) => {
                 req.body.dias = ""
 
             } else {
-                console.log(req.body.dia.length)
 
                 if (typeof req.body.dia === 'string') {
-
                     let dias = req.body.dia
                     req.body.dias = dias
                 } else if (req.body.dia) {
-
                     let dias = req.body.dia.join(', ')
                     req.body.dias = dias
-                    console.log(req.body.dias)
                 } else {
                     req.body.dias = ""
                 }
@@ -142,7 +137,6 @@ const gerenciar = async (req, res) => {
                     ],
                 })
 
-
                 res.render('reservas/reservas-editar', {
                     salas: salas.map(sala => sala.toJSON()),
                     reserva: reserva.toJSON(),
@@ -155,6 +149,7 @@ const gerenciar = async (req, res) => {
             } catch (error) {
                 res.status(500).send({ message: error.message })
             }
+
         } else if (req.method === 'POST') {
             let responseError = null;
 
@@ -163,7 +158,6 @@ const gerenciar = async (req, res) => {
                 req.body.dias = ""
 
             } else {
-
 
                 if (typeof req.body.dia === 'string') {
 
