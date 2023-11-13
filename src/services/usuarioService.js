@@ -93,6 +93,30 @@ class UsuarioService {
       throw error
     }
   }
+
+  async listarTodosPorCondicao(data){
+    try {
+      const usuarios = await Usuario.findAll(
+        { where: data,
+          order: [
+            ['nomeCompleto', 'ASC'],
+          ],
+          atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape",
+          "administrador", "secretaria", "professor", "coordenador",  
+          "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
+          "turno", "idLattes", "createdAt"]
+        }
+      )
+      return usuarios.map(usuario => {
+        return {
+          perfis: usuario.perfis(),
+          ...usuario.get(),
+        }
+      })
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 

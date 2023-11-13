@@ -49,15 +49,16 @@ const checked = (a, b) => {
 }
 
 const checked_in = (a, b) => {
-  if (a.includes(b))
-      return 'selected'
+  console.log(a)
+  if (a !== "" & a.includes(b))
+      return 'checked'
   return ''
 }
 
 
 const checked_unica = (a) => {
-  if (typeof a !== "undefined")
-      return 'selected'
+  if (a !== "")
+      return 'checked'
   return ''
 }
 

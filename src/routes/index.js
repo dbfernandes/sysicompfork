@@ -8,9 +8,11 @@ import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas.routes';
-import autenticacaoController from '../controllers/auntenticacaoController';
+import perfilRoutes from './perfil.routes';
+import autenticacaoController from '../controllers/autenticacaoController';
 import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
+import curriculoRoutes from './curriculo.routes'
 const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
@@ -36,6 +38,7 @@ router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use("/inicio", inicioRoutes);
+router.use("/perfil", perfilRoutes);
 
 // Rotas Exclusivas Administrador e Secretaria 
 router.use("/usuarios", autenticacaoController.autorizarAdmin, usuariosRoutes);
@@ -47,4 +50,5 @@ router.use("/linhasdepesquisa", autenticacaoController.autorizarCoord, linhasDeP
 router.use('/salas', autenticacaoController.autorizarProf, salasRoutes);
 router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
 router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
+router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes)
 export default router;
