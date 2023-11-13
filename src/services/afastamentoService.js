@@ -42,6 +42,26 @@ class AfastamentoService
         });
         return dataFormatada;
     }
+
+    async listarTodos() {
+        const allResearchLines = await AfastamentoTemporario.findAll();
+        // console.log(allResearchLines);
+        const formatedAnswer = formatDbAnswer(allResearchLines);
+        console.log(formatedAnswer);
+        const dataFormatada = formatedAnswer.map((afastamento) => {
+            afastamento["createdAt"] = new Date(afastamento["createdAt"]).toLocaleDateString("pt-BR", {
+                timeZone: 'America/Manaus',
+            }).slice(0,10);
+            afastamento["dataSaida"] = new Date(afastamento["dataSaida"]).toLocaleDateString("pt-BR", {
+                timeZone: 'America/Manaus',
+            }).slice(0,10);
+            afastamento["dataRetorno"] = new Date(afastamento["dataRetorno"]).toLocaleDateString("pt-BR", {
+                timeZone: 'America/Manaus',
+            }).slice(0,10);
+            return afastamento;
+        });
+        return dataFormatada;
+    }
     
     async criar(newAfastamento) {
         const {usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao} = newAfastamento;
@@ -55,6 +75,10 @@ class AfastamentoService
             justificativa,
             planoReposicao,
         });
+    }
+    async pegarAfastamento(id) {
+        const afastamento = await AfastamentoTemporario.findByPk(id);
+        return afastamento;
     }
 
     async vizualizar(id) {

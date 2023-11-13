@@ -1,22 +1,40 @@
 import  afastamentoService  from '../services/afastamentoService.js'
+import fs from 'fs';
 
 const pageTitle = 'Afastamento Temporário';
 
 const listar = async (req, res) => {
     try {
-
-        const afastamentos = await afastamentoService.listar(req.session.uid);
-        const doesNotExists = !afastamentos || afastamentos.length === 0;
-        if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado');
-    
-        return res
-            .status(200)
-            .render('afastamentoTemporario/pedidos-afastamento', 
-            { afastamentos, 
-                pageTitle, 
-                csrfToken: req.csrfToken(), 
-                tipoUsuario: req.session.tipoUsuario
-        });
+        if (req.session.tipoUsuario.administrador) {
+            console.log('Acessando como Administrador')
+            const afastamentos = await afastamentoService.listarTodos();
+            const doesNotExists = !afastamentos || afastamentos.length === 0;
+            if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado');
+        
+            return res
+                .status(200)
+                .render('afastamentoTemporario/pedidos-afastamento', 
+                { afastamentos, 
+                    pageTitle, 
+                    csrfToken: req.csrfToken(), 
+                    tipoUsuario: req.session.tipoUsuario
+            });
+        }
+        else{
+            console.log('Acessando como Usuário')
+            const afastamentos = await afastamentoService.listar(req.session.uid);
+            const doesNotExists = !afastamentos || afastamentos.length === 0;
+            if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado');
+        
+            return res
+                .status(200)
+                .render('afastamentoTemporario/pedidos-afastamento', 
+                { afastamentos, 
+                    pageTitle, 
+                    csrfToken: req.csrfToken(), 
+                    tipoUsuario: req.session.tipoUsuario
+            });
+        }
     } catch (error) {
         return res.render('afastamentoTemporario/pedidos-afastamento', {
             pageTitle, csrfToken: req.csrfToken(), 
@@ -100,4 +118,6 @@ const remover = async (req, res) => {
         }
     }
 }
-export default { criar, listar, vizualizar, remover };
+
+
+export default { criar, listar, vizualizar, remover};
