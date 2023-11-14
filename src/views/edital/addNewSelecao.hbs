@@ -77,10 +77,6 @@
                                     </div>
                                 </div>
 
-
-
- <!-- /.input group 
-
                                 <div class="form-row mt-4">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -89,64 +85,16 @@
 
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="far fa-calendar-alt"></i>
-                                                </span>
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
                                                 </div>
-                                                <input type="text" class="form-control float-right" id="datas">
+                                                <input type="text" class="form-control float-right" id="datas" name="datas" required>
                                             </div>
                                             
                                         </div>
                                     </div>
-                                </div>
-
-                                -->
-
-                               
-
-
-
-
-
-
-
-
-
-
-
-
-                                <div class="form-row mt-4">
-                                    <!------data de inicio------------>
-                                    <div class="col-md-6">
-                                        <font color="#FF0000">*</font>
-                                        <label>Data de Início das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                            <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
-                                                data-inputmask-inputformat="dd/mm/yyyy" required
-                                                id="data_inicio">
-                                        </div>
-                                    </div>
-
-                                    <!------data de fim------------>
-                                    <div class="col-md-6">
-                                        <font color="#FF0000">*</font> <label>Data de Término das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                            <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
-                                                required id="data_fim">
-                                        </div>
-                                    </div>
-                                </div>
-                                
+                                </div>                                                         
                             </div>
                         </div> 
                     </div>
@@ -162,7 +110,7 @@
                                     <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
                                         <div class="form-group">
                                             <div class="form-row">                                                
-                                                <label for="carta_recomendacao"> <font color="#FF0000">*</font> Carta de Recomendação? </label>
+                                                <label for="carta_recomendacao"> <font color="#FF0000">* </font>Carta de Recomendação? </label>
                                             </div>
                                             <input type="checkbox" name="carta_recomendacao" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
@@ -173,16 +121,14 @@
                                     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2">
                                         <div class="form-group">
                                             <div class="form-row">            
-                                                <label for="carta_orientador"> <font color="#FF0000">*</font>Carta Orientador?</label>
+                                                <label for="carta_orientador"> <font color="#FF0000">* </font>Carta Orientador?</label>
                                             </div>
                                             <input type="checkbox" name="carta_orientador" data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_orientador">
                                         </div>   
                                     </div>
-
                                 </div>
-
                             </div>
                                                         
 
@@ -191,7 +137,7 @@
                                     <div class="col-sm-3 col-md-2">
                                         <div class="form-group">
                                             <div class="form-row">            
-                                                <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
+                                                <label for="mestrado"> <font color="#FF0000">* </font>Mestrado?</label>
                                             </div>
                                             <input type="checkbox" name="mestrado" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
@@ -200,14 +146,14 @@
                                     </div>
 
                                     <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
+                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Mestrado:</label>
                                         <input type="number" name="vaga_regular_mestrado" class="form-control "
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_regular_mestrado" value="0" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-6">
-                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
+                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Mestrado:</label>
                                         <input type="number" class="form-control " name="vaga_suplementar_mestrado"
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_suplementar_mestrado" value="0" min="0">
@@ -220,7 +166,7 @@
                                     <div class="col-sm-3 col-md-2">
                                         <div class="form-group">
                                             <div class="form-row">            
-                                                <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
+                                                <label for="doutorado"> <font color="#FF0000">* </font>Doutorado?</label>
                                             </div>
                                             <input type="checkbox" name="doutorado" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
@@ -229,14 +175,14 @@
                                     </div>
 
                                     <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
+                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Doutorado:</label>
                                         <input type="number" name="vaga_regular_doutorado" class="form-control "
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_regular_doutorado" value="0" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-6">
-                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
+                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Doutorado:</label>
                                         <input type="number" class="form-control" name="vaga_suplementar_doutorado"
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_suplementar_doutorado" value="0" min="0">
@@ -265,13 +211,7 @@
 
 
 
-<script>
-
-    //Date range picker
-    $('#datas').daterangepicker()
-    $('#datas').inputmask({ 'placeholder': 'dd/mm/yyyy' })
-    //$('#datas').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-    
+<script>    
 
     document.getElementById("voltarBtn").addEventListener("click", function() {
         window.history.back();
@@ -321,8 +261,18 @@
     
 
     $(document).ready(function () {
-         //Date range picker
-    $('#reservation').daterangepicker()
+    
+        $('#datas').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY', 
+                separator: ' - ',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                daysOfWeek: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            },
+        });
+              
 
          // Inicialize o switch
         $("input[data-bootstrap-switch]").each(function () {
@@ -352,18 +302,6 @@
     });
     
 
-    //metodo para comparação de data
-    $.validator.addMethod('comparaData', function (value, element, params) {
-        let dataInicio = $('#data_inicio').val();
-        let dataFim = $('#data_fim').val();
-
-        if (!dataInicio || !dataFim) {
-            return true;
-        }
-
-        return new Date(dataInicio) <= new Date(dataFim);
-    });
-
     //validação dos campos do formulário
     $('#adicionarSelecaoForm').validate({ 
         rules: {
@@ -390,15 +328,9 @@
                 required: true,
                 url: true,
             },
-            data_inicio: {
+            datas: {
                 required: true,
-                date: true,
-                comparaData: true
-            },
-            data_fim: {
-                required: true,
-                date: true,
-                comparaData: true
+               
             },
         },
         messages: {
@@ -425,17 +357,9 @@
                 required: 'Este campo é obrigatório.',
                 url: 'Por favor, insira uma URL válida.',
             },
-            data_inicio: {
+            datas: {
                 required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-                
-            },
-            data_fim: {
-                required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-        
+                   
             },
         },
         errorElement: 'span',
@@ -463,8 +387,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#data_inicio").val();
-        const data_fim = $("#data_fim").val();
+        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
+        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
 
 
         return {

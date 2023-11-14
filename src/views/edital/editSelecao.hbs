@@ -77,37 +77,23 @@
                                 </div>
 
                                 <div class="form-row mt-4">
-                                    <!------data de inicio------------>
                                     <div class="col-md-6">
-                                        <font color="#FF0000">*</font>
-                                        <label>Data de Início das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                                <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
-                                                    data-inputmask-inputformat="dd/mm/yyyy" value= "{{edital.dataInicio}}" required
-                                                    id="data_inicio">
-                                        </div>
-                                    </div>
+                                        <div class="form-group">
+                                            <font color="#FF0000">*</font>
+                                            <label>Datas de Início e Fim das Inscrições:</label>
 
-                                    <!------data de fim------------>
-                                    <div class="col-md-6">
-                                        <font color="#FF0000">*</font> <label>Data de Término das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="datas" name="datas" required>
                                             </div>
-                                            <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
-                                                data-inputmask-inputformat="dd/mm/yyyy" value= "{{edital.dataFim}}" required
-                                                id="data_fim">
+                                            
                                         </div>
                                     </div>
-                                </div>
+                                </div>                              
                                 
                             </div>
                         </div> 
@@ -274,7 +260,23 @@
         }
 
 
-    $(document).ready(function () {     
+    $(document).ready(function () { 
+
+        let dataI = moment('{{edital.dataInicio}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
+        let dataF = moment('{{edital.dataFim}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
+             
+        $('#datas').daterangepicker({
+            startDate: dataI,
+            endDate: dataF,
+            locale: {
+                format: 'DD/MM/YYYY', 
+                separator: ' - ',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                daysOfWeek: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            },
+        });
 
         // Inicialize o switch
         $("input[data-bootstrap-switch]").each(function () {
@@ -304,18 +306,6 @@
     });
     
 
-    //metodo para comparação de data
-    $.validator.addMethod('comparaData', function (value, element, params) {
-        let dataInicio = $('#data_inicio').val();
-        let dataFim = $('#data_fim').val();
-
-        if (!dataInicio || !dataFim) {
-            return true;
-        }
-
-        return new Date(dataInicio) <= new Date(dataFim);
-    });
-
     //validação dos campos do formulário
     $('#adicionarSelecaoForm').validate({ 
         rules: {
@@ -342,16 +332,10 @@
                 required: true,
                 url: true,
             },
-            data_inicio: {
-                required: true,
-                date: true,
-                comparaData: true
+            datas: {
+                required: true,            
             },
-            data_fim: {
-                required: true,
-                date: true,
-                comparaData: true
-            },
+            
         },
         messages: {
             vaga_regular_mestrado: {
@@ -377,17 +361,8 @@
                 required: 'Este campo é obrigatório.',
                 url: 'Por favor, insira uma URL válida.',
             },
-            data_inicio: {
-                required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-                
-            },
-            data_fim: {
-                required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-        
+            datas: {
+                required: 'Este campo é obrigatório.',                               
             },
         },
         errorElement: 'span',
@@ -415,8 +390,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#data_inicio").val();
-        const data_fim = $("#data_fim").val();
+        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
+        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
 
         return {
             vaga_regular_mestrado,
