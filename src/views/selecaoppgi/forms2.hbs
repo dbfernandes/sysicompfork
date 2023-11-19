@@ -169,7 +169,7 @@
     font-size: 28px;
   }
 
-  .forms-page nav .nav-icon {
+  .nav-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -177,12 +177,20 @@
     height: 90px;
     font-size: 1.8rem !important;
     border-radius: 50%;
-    background-color: rgb(0, 110, 255);
+    background-color: #7FB6FF;
     color: #fff;
   }
 
-  .forms-page nav .active {
+  .nav-icon.active {
     background-color: #006eff;
+    color: #fff;
+  }
+
+  .custom-button {
+    margin-right: 10px;
+    /* Adicione a margem desejada entre os botões */
+    margin-bottom: 10px;
+    /* Adicione a margem desejada na parte inferior dos botões (espaço vertical) */
   }
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
@@ -207,7 +215,7 @@
           Dados
         </li>
         <li>
-          <i class="nav-icon fas fa-history"></i>
+          <i class="nav-icon fas fa-history active"></i>
           Histórico
         </li>
         <li>
@@ -225,7 +233,7 @@
       </div>
     </nav>
     <div class="container-fluid">
-      <form id="candidato-formulario">
+      <form id="candidato-formulario2">
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
@@ -261,13 +269,12 @@
                 <font color="#FF0000">*</font>
                 <b>Ano de Egresso:</b>
               </label>
-              <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="Egreco"
+              <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="AnoEgresso"
                 value="" maxlength="60">
             </div>
 
           </div>
         </div>
-
 
         <div class="card card-primary">
           <div class="card-header">
@@ -287,13 +294,12 @@
 
               <div class="col-md-6 " role="radiogroup">
                 <label class="control-label" for="candidato-curso-tipo">
-                  <font color="#FF0000">*</font>
                   <b>Tipo:</b>
                 </label>
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="Tipo1" name="CursoTipo" checked="">
+                    <input type="radio" id="Tipo1" name="CursoTipo">
                     <label for="Tipo1"> Mestrado Acadêmico
                     </label>
                   </div>
@@ -308,6 +314,8 @@
                     <label for="Tipo3">Doutorado
                     </label>
                   </div>
+                  <button id="limparSelecao">Limpar Seleção</button>
+
                 </div>
               </div>
 
@@ -325,28 +333,280 @@
                 <label class="control-label" for="candidato-ano-pos">
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano-pos" type="text" name="EgrecoPos">
+                <input class="form-control" id="candidato-ano-pos" type="text" name="AnoEgressoPos">
               </div>
             </div>
 
           </div>
         </div>
 
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Curriculum Vittae</h3>
+          </div>
 
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <label class="control-label" for="vittaepdf">
+                  <font color="#FF0000">*</font>
+                  <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
+                </label>
+                <div class="form-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="vittaepdf" name="VitaePDF">
+                    <label class="custom-file-label" for="VitaePDF">Escolher arquivo</label>
+                  </div>
+                </div>
+
+
+                <label class="control-label" for="vittaexml">
+                  <b>Curriculum Vittae XML no formato Lattes - http://lattes.cnpq.br (não incluir significa não ter
+                    publicações a serem contadas na seleção):</b>
+                </label>
+                <div class="form-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="vittaexml" name="VitaeXML">
+                    <label class="custom-file-label" for="VitaeXML">Escolher arquivo</label>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-6" style="display: flex; justify-content: center; align-items: center;">
+                <button onclick="enviarDocumentos()" type="button" class="btn btn-block btn-primary"
+                  style="width:50%">Enviar</button>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Aproveitamento de Prova de Seleção Anterior</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <label class="control-label" for="candidato-prova">
+                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2
+                    anos), pro favor faça o upload do PDF da prova através da opção abaixo:
+                  </b>
+                </label>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="candidato-prova" name="Prova">
+                    <label class="custom-file-label" for="Prova">Escolher arquivo</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Experiência Acadêmica</h3>
+          </div>
+
+          <div class="card-body">
+            <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
+            <div id="experiencia-container">
+              <div class="row experiencia-row">
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-instituicao">
+                    Instituição Academica:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="Experiencia"
+                    value="" maxlength="60">
+                </div>
+
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-atividade">
+                    Atividade:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-atividade" type="text"
+                    name="ExperienciaAtividade" value="" maxlength="60">
+                </div>
+
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-periodo">
+                    Período:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="ExperienciaPeriodo"
+                    value="" maxlength="60">
+                </div>
+                <div class="col-1" style="margin-top:10px">
+                  <button class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="col">
+              <button type="submit" class="btn btn-success float-right custom-button">
+                Salvar e Continuar
+              </button>
+              <button onclick="voltarFormulario()" class="btn btn-warning float-right custom-button">
+                Passo Anterior
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
   </section>
 </div>
 
-
-
-
-
-
-</div>
-
 <footer>
 </footer>
+
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const addButton = document.getElementById("add-experiencia-button");
+    const experienciaContainer = document.getElementById("experiencia-container");
+    const exemploRow = document.querySelector(".experiencia-row");
+
+    addButton.addEventListener("click", function (e) {
+      // Crie um clone da linha de exemplo
+      e.preventDefault();
+      const newExperienciaRow = exemploRow.cloneNode(true);
+
+      // Limpe os valores dos campos de input no novo clone
+      const inputs = newExperienciaRow.querySelectorAll("input");
+      inputs.forEach(input => input.value = "");
+
+      // Adicione o novo clone ao container de experiência
+      experienciaContainer.appendChild(newExperienciaRow);
+
+      // Verifique o número de experiências e mostre o botão "Excluir" se houver mais de uma
+      const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
+      if (experiencias.length > 1) {
+        for (const experiencia of experiencias) {
+          const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+          deleteButton.style.display = "inline-block";
+          deleteButton.addEventListener("click", function () {
+            experienciaContainer.removeChild(experiencia);
+          });
+        }
+      }
+    });
+  });
+
+  $(document).ready(function () {
+    $("#limparSelecao").on("click", function (e) {
+      e.preventDefault()
+
+      $("#candidato-curso-tipo input[type='radio']").prop("checked", false);
+    });
+  });
+
+  $.validator.addMethod("conjuntoPreenchido", function (value, element) {
+    const cursoPos = $("#candidato-curso-pos").val();
+    const instituicaoPos = $("#candidato-instituicao-pos").val();
+    const anoEgressoPos = $("#candidato-ano-pos").val();
+    const cursoTipoChecked = $("#Tipo1").is(":checked") || $("#Tipo2").is(":checked") || $("#Tipo3").is(":checked");
+
+    return (!cursoPos && !instituicaoPos && !anoEgressoPos && !cursoTipoChecked) || (cursoPos && instituicaoPos && anoEgressoPos && cursoTipoChecked);
+  }, "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios.");
+
+  $(document).ready(function () {
+    $("#candidato-formulario2").validate({
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      },
+      rules: {
+        "Curso": {
+          required: true
+        },
+        "Instituicao": {
+          required: true
+        },
+        "AnoEgresso": {
+          required: true
+        },
+        "Curso-Pos": {
+          conjuntoPreenchido: true
+        },
+        "InstituicaoPos": {
+          conjuntoPreenchido: true
+        },
+        "AnoEgressoPos": {
+          conjuntoPreenchido: true
+        },
+        "VitaePDF": {
+          required: true
+        }
+      },
+      messages: {
+        "Curso": {
+          required: "Este campo é obrigatório."
+        },
+        "Instituicao": {
+          required: "Este campo é obrigatório."
+        },
+        "AnoEgresso": {
+          required: "Este campo é obrigatório."
+        },
+        "Curso-Pos": {
+          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        },
+        "InstituicaoPos": {
+          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        },
+        "AnoEgressoPos": {
+          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        },
+        "VitaePDF": {
+          required: "Este campo é obrigatório."
+        }
+      },
+      submitHandler: function (form, e) {
+        e.preventDefault();
+        const csrfToken = $("#csrfToken").val();
+        const email = $("#email").val();
+        const editalPosicao = $("#editalPosicao").val();
+        const id = $("#id").val();
+        console.log("OOOOi")
+        /*$.ajax({
+          url: '',
+          type: 'POST',
+          data: {
+            data: $(form).serialize(),
+            _csrf: csrfToken,
+            email: email,
+            editalPosicao: editalPosicao,
+            id: id
+          },
+          success: function (data) {
+            $.validator.setDefaults({
+              submitHandler: function () {
+                alert("Form successful submitted!");
+              }
+            });
+          },
+          error: function (data) {
+            console.log(data)
+          }
+        });*/
+      }
+    });
+  });
+
+  function enviarDocumentos() { }
+  function voltarFormulario() { }
+  function submitForm() { }
 
 </script>
