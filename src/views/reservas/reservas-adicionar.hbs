@@ -280,8 +280,6 @@
         });
     });
 
-
-
     function diasSemana() {
         let dias = ""
         dias += $("#segunda").prop("checked") ? "Segunda" : ""
@@ -380,12 +378,31 @@
     document.getElementById("formAdicionarSala").addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const dataInicio = new Date(document.getElementById("dataInicio").value);
+        const dataInputElement = document.getElementById("dataInicio");
+        const dataInputValue = dataInputElement.value;
+
+        // Cria a data assumindo que a entrada é uma data local sem horário.
+        // Isso vai evitar a interpretação da string como uma data UTC.
+        const partesData = dataInputValue.split('-'); // Assume o formato AAAA-MM-DD
+        const ano = parseInt(partesData[0], 10);
+        const mes = parseInt(partesData[1], 10) - 1; // Mês é indexado em 0
+        const dia = parseInt(partesData[2], 10);
+
+        const dataInicio = new Date(ano, mes, dia);
+
+        // Se você quiser também eliminar a questão do horário, pode definir explicitamente para zero.
+        dataInicio.setHours(0, 0, 0, 0);
+
+
         let dataFim = new Date(document.getElementById("dataTermino").value);
         const horaInicio = document.getElementById("horaInicio").value
         const horaTermino = document.getElementById("horaTermino").value
         const unica = $("#unica").prop("checked");
         const dias = diasSemana()
+        const agora = new Date();
+        agora.setHours(0, 0, 0, 0);
+   
+
 
         // Verifica se as datas termino
         if (isNaN(dataFim.getTime())) {
@@ -401,6 +418,19 @@
 
             document.getElementById("dataTerminoError").textContent = "";
             document.getElementById("dataTermino").classList.remove("is-invalid");
+        }
+
+        // Verifica se a data de início é anterior à dataatuall
+        if (dataInicio < agora) {
+            console.log('1.5')
+            toastr.error("A data de Inicio deve ser posterior à data de hoje.");
+
+            document.getElementById("dataInicioError").textContent = "A data de Inicio deve ser posterior à data de hoje.";
+            document.getElementById("dataInicio").classList.add("is-invalid");
+            return;
+        } else {
+            document.getElementById("dataInicioError").textContent = "";
+            document.getElementById("dataInicio").classList.remove("is-invalid");
         }
 
         // Verifica se a data de início é anterior à data de fim

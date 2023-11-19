@@ -12,6 +12,7 @@ import perfilRoutes from './perfil.routes';
 import autenticacaoController from '../controllers/autenticacaoController';
 import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
+import curriculoRoutes from './curriculo.routes'
 const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
@@ -49,4 +50,5 @@ router.use("/linhasdepesquisa", autenticacaoController.autorizarCoord, linhasDeP
 router.use('/salas', autenticacaoController.autorizarProf, salasRoutes);
 router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
 router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
+router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes)
 export default router;

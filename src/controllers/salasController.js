@@ -20,8 +20,6 @@ const adicionar = async (req, res) => {
                 });
             }
             
-            console.log(numero)
-            console.log(capacidade)
             numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
             capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
             let responseError = null;
@@ -46,6 +44,7 @@ const adicionar = async (req, res) => {
             }
 
             res.redirect('/salas/gerenciar')
+
         }catch(e){
             console.log(e)
             res.status(500).send({error: e});
@@ -100,7 +99,7 @@ const editar = async (req, res) => {
             res.status(500).send({ message: error.message })
         }
     }else if( req.method === 'POST'){
-        console.log("innn")
+       
         try{
             const sala = await Salas.update({
                 ...req.body

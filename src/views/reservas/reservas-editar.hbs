@@ -43,9 +43,10 @@
                     </div>
 
                     <div class="container-fluid">
-                        <form id="formAdicionarSala" method="POST" action="/reservas/adicionar">
+                        <form id="formAdicionarSala" method="POST" action="/reservas/editar/{{reserva.id}}">
                             <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
-                            <input type="hidden" id="UsuarioId" name="UsuarioId" value="{{UsuarioId}}" />
+                            <input type="hidden" id="id" name="id" value="{{reserva.id}}" />
+                            <input type="hidden" id="UsuarioId" name="UsuarioId" value="{{reserva.UsuarioId}}" />
                             <div class="card-body ">
 
                                 <div class="row">
@@ -53,8 +54,8 @@
                                         <label for="atividade">
                                             <font color="#FF0000">*</font> Atividade:
                                         </label>
-                                        <input type="text" class="form-control" value= {{reserva.atividade}} id="atividade" name="atividade"
-                                            placeholder="Ex: Seminários ">
+                                        <input type="text" class="form-control" value={{reserva.atividade}}
+                                            id="atividade" name="atividade" placeholder="Ex: Seminários ">
                                     </div>
 
                                     <div class="form-group col-md-6 ">
@@ -64,8 +65,8 @@
                                         <select class="form-control" id="tipo" name="tipo" required>
                                             <option {{checked reserva.tipo 'Aula' }} value="Aula">Aula</option>
                                             <option {{checked reserva.tipo 'Defesa' }} value="Defesa">Defesa</option>
-                                            <option {{checked reserva.tipo  'Exame' }} value="Exame">Exame</option>
-                                            <option {{checked reserva.tipo  'Reunião' }} value="Reunião">Reunião</option>
+                                            <option {{checked reserva.tipo 'Exame' }} value="Exame">Exame</option>
+                                            <option {{checked reserva.tipo 'Reunião' }} value="Reunião">Reunião</option>
                                         </select>
                                     </div>
                                 </div>
@@ -75,7 +76,8 @@
                                     </label>
                                     <select class="form-control" id="SalaId" name="SalaId" required>
                                         {{#each salas}}
-                                        <option {{checked reserva.salas.id id }} value="{{id}}">{{nome}} - {{bloco}} - {{andar}}° andar</option>
+                                        <option {{checked reserva.salas.id id }} value="{{id}}">{{nome}} - {{bloco}} -
+                                            {{andar}}° andar</option>
                                         {{/each}}
                                     </select>
 
@@ -91,8 +93,9 @@
                                     </div>
                                     <div class="form-group ">
                                         <input type="checkbox" name="unica" data-bootstrap-switch
-                                            data-off-color="danger" checked data-on-color="success" data-on-text="Sim"
-                                            data-off-text="Não" value="1" id="unica">
+                                            data-off-color="danger" {{checked_unica reserva.dias}}
+                                            data-on-color="success" data-on-text="Sim" data-off-text="Não" value="1"
+                                            id="unica">
                                     </div>
                                 </div>
 
@@ -107,29 +110,35 @@
                                     </label>
 
                                     <label class="checkbox-inline ml-2 ">
-                                        <input {{checked_in reserva.dias 'Segunda' }} type="checkbox" id="segunda" name="dia" value="Segunda">
+                                        <input {{checked_in reserva.dias 'Segunda' }} type="checkbox" id="segunda"
+                                            name="dia" value="Segunda">
                                         Segunda
                                     </label>
 
                                     <label class="checkbox-inline ml-4 ">
-                                        <input {{checked_in reserva.dias 'Terça' }}  type="checkbox" id="terca" name="dia" value="Terça">
+                                        <input {{checked_in reserva.dias 'Terça' }} type="checkbox" id="terca"
+                                            name="dia" value="Terça">
                                         Terça
                                     </label>
 
                                     <label class="checkbox-inline ml-4">
-                                        <input {{checked_in reserva.dias 'Quarta' }} type="checkbox" id="quarta" name="dia" value="Quarta">
+                                        <input {{checked_in reserva.dias 'Quarta' }} type="checkbox" id="quarta"
+                                            name="dia" value="Quarta">
                                         Quarta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input {{checked_in reserva.dias 'Quinta' }}  type="checkbox" id="quinta" name="dia" value="Quinta">
+                                        <input {{checked_in reserva.dias 'Quinta' }} type="checkbox" id="quinta"
+                                            name="dia" value="Quinta">
                                         Quinta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input {{checked_in reserva.dias 'Sexta' }} type="checkbox" id="sexta" name="dia" value="Sexta">
+                                        <input {{checked_in reserva.dias 'Sexta' }} type="checkbox" id="sexta"
+                                            name="dia" value="Sexta">
                                         Sexta
                                     </label>
                                     <label class="checkbox-inline ml-4">
-                                        <input {{checked_in reserva.dias 'Sábado' }}  type="checkbox" id="sabado" name="dia" value="Sábado">
+                                        <input {{checked_in reserva.dias 'Sábado' }} type="checkbox" id="sabado"
+                                            name="dia" value="Sábado">
                                         Sábado
                                     </label>
                                     <div class="invalid-feedback" id="diaErro">Escolha os dias da semana. Por
@@ -149,7 +158,8 @@
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
 
                                             <input type="date" class="form-control datetimepicker-input "
-                                                placeholder="Data de Início" value= {{reserva.dataInicio}} id="dataInicio" name="dataInicio"
+                                                placeholder="Data de Início" value={{reserva.dataInicio}}
+                                                id="dataInicio" name="dataInicio"
                                                 data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy"
                                                 required id="data_inicio">
 
@@ -166,9 +176,9 @@
 
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             <input type="date" class="form-control datetimepicker-input"
-                                                placeholder="Data de Início" value= {{reserva.dataTermino}} id="dataTermino" name="dataTermino"
-                                                placeholder="dd/mm/yyyy" data-inputmask-inputformat="dd/mm/yyyy"
-                                                placeholder="DD-MM-YYYY">
+                                                placeholder="Data de Início" value={{reserva.dataTermino}}
+                                                id="dataTermino" name="dataTermino" placeholder="dd/mm/yyyy"
+                                                data-inputmask-inputformat="dd/mm/yyyy" placeholder="DD-MM-YYYY">
                                             <div class="invalid-feedback" id="dataTerminoError">Data inválida. Por
                                                 favor,
                                                 insira datas válidas.</div>
@@ -188,8 +198,8 @@
                                                 <div class="input-group-text"><i class="fa fa-clock"></i></div>
                                             </div>
                                             <input type="time" class="form-control datetimepicker-input"
-                                                data-target="#horaInicio" value= {{reserva.horaInicio}} id="horaInicio" name="horaInicio"
-                                                placeholder='HH:mm'>
+                                                data-target="#horaInicio" value={{reserva.horaInicio}} id="horaInicio"
+                                                name="horaInicio" placeholder='HH:mm'>
 
                                         </div>
                                     </div>
@@ -203,8 +213,8 @@
                                                 <div class="input-group-text"><i class="fa fa-clock"></i></div>
                                             </div>
                                             <input type="time" class="form-control  datetimepicker-input"
-                                                data-target="#horaTermino" value= {{reserva.horaTermino}} id="horaTermino" name="horaTermino"
-                                                placeholder='HH:mm'>
+                                                data-target="#horaTermino" value={{reserva.horaTermino}}
+                                                id="horaTermino" name="horaTermino" placeholder='HH:mm'>
                                             <div class="invalid-feedback" id="horaTerminoError">Hora inválida. Por
                                                 favor,
                                                 insira horas válidas.</div>
@@ -217,7 +227,7 @@
                             <div class="card-footer pr-0">
                                 <div style="margin-right: auto;" class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-success float-right">
-                                        Adicionar Reserva
+                                        Editar Reserva
                                     </button>
 
                                 </div>
@@ -259,17 +269,17 @@
         const dataInicioLabel = document.querySelector('#dataInicioLabel');
         const conditionalInput = document.getElementById('conditionalInput');
         const conditionalInput2 = document.getElementById('conditionalInput2');
+        const unicaCheckBox = $("#unica");
 
-        // Inicialize o switch
+        // Initialize the switch
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).is(':checked'));
         });
 
-        // lógica do switch
-        $("#unica").on('switchChange.bootstrapSwitch', function (event, state) {
-            const unica = $("#unica").prop('checked');
-            if (unica) {
-                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data Inicial:'
+        // Function to toggle the display based on the checkbox state
+        function toggleConditionalInput(state) {
+            if (state) {
+                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data Inicial:';
                 conditionalInput.style.display = 'block';
                 conditionalInput2.style.display = 'block';
             } else {
@@ -277,8 +287,17 @@
                 conditionalInput.style.display = 'none';
                 conditionalInput2.style.display = 'none';
             }
+        }
+
+        // Set the initial state of the conditional input based on the checkbox state
+        toggleConditionalInput(unicaCheckBox.is(':checked'));
+
+        // Switch change logic
+        unicaCheckBox.on('switchChange.bootstrapSwitch', function (event, state) {
+            toggleConditionalInput(state);
         });
     });
+
 
 
 
@@ -302,6 +321,8 @@
         const dataTermino = unica ? dataInicio : $("#dataTermino").val();
         const horaInicio = $("#horaInicio").val() + ":00";
         const horaTermino = $("#horaTermino").val() + ":00";
+        const id = $("#id").val();
+
         let dias = diasSemana()
 
         //verificacao do caso data unica
@@ -319,7 +340,8 @@
             dataTermino,
             horaInicio,
             horaTermino,
-            dias
+            dias,
+            id
         };
     }
     document.querySelector('.expand-btn').addEventListener('click', function () {
@@ -347,7 +369,11 @@
 
     function verificaConflitoComReservas(novaReserva, reservasExistente) {
         for (const reserva of reservasExistente) {
-            console.log(reserva)
+
+
+            if (reserva.id == novaReserva.id) {
+                continue
+            }
             // Verifica se a nova reserva está dentro do período de alguma reserva existente
             if (novaReserva.dataInicio <= reserva.dataTermino && novaReserva.dataTermino >= reserva.dataInicio) {
 
@@ -365,7 +391,7 @@
 
                 // Verifica se há sobreposição nas horas
                 if (diasEmComum && novaReserva.horaInicio < reserva.horaTermino && novaReserva.horaTermino > reserva.horaInicio) {
-
+                    console.log(reserva)
                     return true; // Conflito encontrado
                 }
             } else {
@@ -380,12 +406,28 @@
     document.getElementById("formAdicionarSala").addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const dataInicio = new Date(document.getElementById("dataInicio").value);
+        const dataInputElement = document.getElementById("dataInicio");
+        const dataInputValue = dataInputElement.value;
+
+        // Cria a data assumindo que a entrada é uma data local sem horário.
+        // Isso vai evitar a interpretação da string como uma data UTC.
+        const partesData = dataInputValue.split('-'); // Assume o formato AAAA-MM-DD
+        const ano = parseInt(partesData[0], 10);
+        const mes = parseInt(partesData[1], 10) - 1; // Mês é indexado em 0
+        const dia = parseInt(partesData[2], 10);
+
+        const dataInicio = new Date(ano, mes, dia);
+
+        // Se você quiser também eliminar a questão do horário, pode definir explicitamente para zero.
+        dataInicio.setHours(0, 0, 0, 0);
         let dataFim = new Date(document.getElementById("dataTermino").value);
         const horaInicio = document.getElementById("horaInicio").value
         const horaTermino = document.getElementById("horaTermino").value
         const unica = $("#unica").prop("checked");
         const dias = diasSemana()
+
+        const agora = new Date();
+        agora.setHours(0, 0, 0, 0);
 
         // Verifica se as datas termino
         if (isNaN(dataFim.getTime())) {
@@ -402,7 +444,18 @@
             document.getElementById("dataTerminoError").textContent = "";
             document.getElementById("dataTermino").classList.remove("is-invalid");
         }
+        // Verifica se a data de início é anterior à dataatuall
+        if (dataInicio < agora) {
+            console.log('1.5')
+            toastr.error("A data de Inicio deve ser posterior à data de hoje.");
 
+            document.getElementById("dataInicioError").textContent = "A data de Inicio deve ser posterior à data de hoje.";
+            document.getElementById("dataInicio").classList.add("is-invalid");
+            return;
+        } else {
+            document.getElementById("dataInicioError").textContent = "";
+            document.getElementById("dataInicio").classList.remove("is-invalid");
+        }
         // Verifica se a data de início é anterior à data de fim
         if (dataInicio > dataFim) {
             console.log('2')

@@ -94,7 +94,17 @@
                                         <td> REG: {{dataValues.vagaMestrado}} / SUP: {{dataValues.cotasMestrado}} </td>
                                         <td> REG: {{dataValues.vagaDoutorado}} / SUP: {{dataValues.cotasDoutorado}} </td>
                                         <td>
-                                            <span id="badge-{{dataValues.editalId}}" class="{{#ifEqual dataValues.status '1'}}badge bg-success">Aberto{{else}}badge bg-danger">Encerrado{{/ifEqual}}</span>
+                                            <span id="badge-{{dataValues.editalId}}"
+                                                
+                                                {{#validaLabel dataValues.status dataValues.dataInicio dataValues.dataFim }}
+
+                                                {{else}}
+                                                    <span class="badge bg-danger">
+                                                        Suspenso
+                                                    </span>
+                                                {{/validaLabel}}
+
+                                            </span>
                                         </td>
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-between">
@@ -180,7 +190,7 @@
         dataFim = data;
 
         if (status == '1') {
-            $('#modalArquivarBody').html("Você realmente deseja arquivar o edital com ID " + editalId + "?");
+            $('#modalArquivarBody').html("Você realmente deseja suspender o edital com ID " + editalId + "?");
             $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
         } else {
             $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + editalId + "?");
@@ -193,69 +203,64 @@
 
     function arquivarEdital() {
   
-        const dataAtual = moment.tz('America/Manaus').format('YYYY-MM-DD');
-
         // Fechar o modal
         $('#modalArquivar').modal('hide');
 
-        if (new Date(dataAtual) > new Date(dataFim) && status=='0'){
-
-            $(document).Toasts('create', {
-                icon: 'error',
-                class: "bg-danger",
-                autohide: true,
-                delay: 5000,
-                title: 'Erro!',
-                body: 'Você não pode ativar um edital com uma data de encerramento menor que a data atual'
-            });
-
+       
+        const dataFromForm = {
+        status: status == '1'? '0' : '1',
+        _csrf: csrfToken
         }
-        else{
+        
 
-             const dataFromForm = {
-                status: status == '1'? '0' : '1',
-                _csrf: csrfToken
-            };
+        $.ajax({
+            url: `/edital/arquivarEdital/${editalId}`,
+            type: 'PUT',
+            data: dataFromForm,
+            success: function (data) {
 
-            $.ajax({
-                url: `/edital/arquivarEdital/${editalId}`,
-                type: 'PUT',
-                data: dataFromForm,
-                success: function (data) {
-                    $(document).Toasts('create', {
-                        icon: 'success',
-                        class: "bg-success",
-                        autohide: true,
-                        delay: 3000,
-                        title: 'Sucesso!',
-                        body: 'Status do Edital alterado no sistema com sucesso'
-                    });
-                    
+                const mensagem = "Status do Edital alterado no sistema com sucesso";            
+                const expirationTime = new Date(new Date().getTime() + 5000);
 
-                    if (status == '1') {
-                        $(`#icone-${editalId}`).removeClass('fa-lock-open').addClass('fa-lock');
-                        $(`#badge-${editalId}`).removeClass('badge bg-success').addClass('badge bg-danger').text('Encerrado');
-                    } else {
-                        $(`#icone-${editalId}`).removeClass('fa-lock').addClass('fa-lock-open');
-                        $(`#badge-${editalId}`).removeClass('badge bg-danger').addClass('badge bg-success').text('Aberto');
-                    }
+                document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
 
-                    setTimeout(function() {
-                        window.location.href = '/edital/listEdital';
-                    }, 3000);
+                window.location.reload();
+            },
+            error: function (data) {
+                $(document).Toasts('create', {
+                    icon: 'error',
+                    class: "bg-danger",
+                    autohide: true,
+                    delay: 3000,
+                    title: 'Erro!',
+                    body: 'Erro: ' + data.responseJSON.error
+                });
+            }
+        });
+        
+    }
 
-                },
-                error: function (data) {
-                    $(document).Toasts('create', {
-                        icon: 'error',
-                        class: "bg-danger",
-                        autohide: true,
-                        delay: 3000,
-                        title: 'Erro!',
-                        body: 'Erro: ' + data.responseJSON.error
-                    });
-                }
+    const showToastCookie = document.cookie.split('; ').find(row => row.startsWith('showToast='));
+    if (showToastCookie && showToastCookie.split('=')[1] === 'true') {
+        
+        const mensagemCookie = document.cookie.split('; ').find(row => row.startsWith('mensagem='));
+        const mensagem= mensagemCookie.split('=')[1];
+
+        if (mensagem) {
+            $(document).Toasts('create', {
+                icon: 'success',
+                class: "bg-success",
+                autohide: true,
+                delay: 3000,
+                title: 'Sucesso!',
+                body: mensagem
             });
+
+            // Limpar o cookie
+            const expirationTime = new Date(0);
+            document.cookie = `showToast=; expires=${expirationTime.toUTCString()}`;
+            document.cookie = `mensagem=; expires=${expirationTime.toUTCString()}`;
         }
     }
 
