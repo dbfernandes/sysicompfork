@@ -129,6 +129,45 @@ class CandidateService {
         })
         return candidate
     }
+
+    async findOne({
+        id,
+    }){
+        const candidate = await Candidate.findOne({
+            where:{
+                id: id
+            }
+        })
+        if(!candidate){
+            throw new Error("Candidato não encontrado")
+        }
+        return candidate
+    }
+
+    async back({
+        id,
+        editalPosition
+    }){
+        const candidateBack = await Candidate.update({
+            editalPosition: editalPosition
+        },{
+            where:{
+                id: id
+            }
+        }).catch(err => {
+            console.log(err)
+            throw new Error("Não foi possivel atualizar o candidato");
+        })
+        const candidate = await Candidate.findOne({
+            where: {
+                id: id
+            }
+        }).catch(err => {
+            console.log(err)
+            throw new Error("Não foi possivel encontrar o candidato");
+        })
+        return candidate
+    }
 }
 
 export default new CandidateService();

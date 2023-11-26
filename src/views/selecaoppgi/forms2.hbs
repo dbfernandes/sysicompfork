@@ -237,7 +237,7 @@
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-
+        <input id="id" type="hidden" value="{{id}}">
 
         <div class="card card-primary">
           <div class="card-header">
@@ -451,9 +451,10 @@
               <button type="submit" class="btn btn-success float-right custom-button">
                 Salvar e Continuar
               </button>
-              <button onclick="voltarFormulario()" class="btn btn-warning float-right custom-button">
+              <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
                 Passo Anterior
               </button>
+
             </div>
           </div>
         </div>
@@ -466,6 +467,36 @@
 </footer>
 
 <script>
+
+  $(document).ready(function () {
+    $("#voltarForm").on("click", function (e) {
+      const csrfToken = $("#csrfToken").val();
+      const id = $("#id").val();
+      const editalPosicao = $("#editalPosicao").val();
+
+      console.log(editalPosicao)
+
+      $.ajax({
+        url: '/selecaoppgi/voltar',
+        type: 'POST',
+        data: {
+          _csrf: csrfToken,
+          editalPosicao: editalPosicao,
+          id: id
+        }, success: function (data) {
+          window.location.href = '/selecaoppgi/forms';
+          window.location.reload(true);
+        },
+        error: function (data) {
+          console.log(data)
+        }
+      });
+
+    });
+  });
+
+
+
   document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.getElementById("add-experiencia-button");
     const experienciaContainer = document.getElementById("experiencia-container");
@@ -606,7 +637,6 @@
   });
 
   function enviarDocumentos() { }
-  function voltarFormulario() { }
-  function submitForm() { }
+
 
 </script>

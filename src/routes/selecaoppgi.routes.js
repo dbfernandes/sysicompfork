@@ -9,5 +9,6 @@ router.all('/entrar', selecaoppgiController.login)
 router.all('/formulario', selecaoppgiController.forms)
 router.all('/formulario/1' ,selecaoppgiController.form1)
 router.all('/candidates', selecaoppgiController.candidates)
-
+router.all('/voltar', selecaoppgiController.voltar)
+router.all('/refresh', selecaoppgiController.refresh)
 export default router;

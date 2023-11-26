@@ -24,7 +24,7 @@ const signin = async (req, res) => {
 				csrfToken: req.csrfToken(),
 				...locals,
 				editais: editais.map((edital) => {
-					return{
+					return {
 						...edital.get(),
 					};
 				}),
@@ -73,7 +73,7 @@ const login = async (req, res) => {
 				csrfToken: req.csrfToken(),
 				...locals,
 				editais: editais.map((edital) => {
-					return{
+					return {
 						...edital.get(),
 					};
 				}),
@@ -105,7 +105,7 @@ const login = async (req, res) => {
 				.catch((err) => {
 					responseError = err;
 				});
-			
+
 			if (!IsCandidateValide) {
 				return res.status(400).json({
 					error: responseError.message
@@ -126,25 +126,53 @@ const login = async (req, res) => {
 
 const forms = async (req, res) => {
 	console.log(req.method)
+
+
 	switch (req.method) {
 		case 'GET':
-			if(!req.session.email){
+
+
+			if (!req.session.email) {
 				res.redirect('/selecaoppgi/entrar')
 			}
-			if(req.session.editalPosition == 1){
+			if (req.session.editalPosition == 1) {
 				console.log(req.session.email)
 				console.log(req.session.editalId)
 				console.log(req.session.uid)
-
+				const id = req.session.uid
+				const candidate = await CandidateService.findOne({
+					id: id,
+				})
+				console.log(candidate)
 				return res.render('selecaoppgi/forms1', {
 					...locals,
+					Nome: candidate.Nome,
+					Nascimento: candidate.Nascimento,
+					Sexo: candidate.Sexo,
+					NomeSocial: candidate.NomeSocial,
+					CEP: candidate.CEP,
+					UF: candidate.UF,
+					Endereco: candidate.Endereco,
+					Cidade: candidate.Cidade,
+					Bairro: candidate.Bairro,
+					Nacionalidade: candidate.Nacionalidade,
+					Telefone: candidate.Telefone,
+					TelefoneSecundario: candidate.TelefoneSecundario,
+					ComoSoube: candidate.ComoSoube,
+					Curso: candidate.CursoDesejado,
+					Regime: candidate.RegimeDedicacao,
+					Cotista: candidate.Cotista,
+					CotistaTipo: candidate.CotistaTipo,
+					Condicao: candidate.Condicao,
+					CondicaoTipo: candidate.CondicaoTipo,
+					Bolsista: candidate.Bolsa,
 					editalPosicao: req.session.editalPosition,
 					email: req.session.email,
 					id: req.session.uid,
 					csrfToken: req.csrfToken()
 				});
-			}
-			if(req.session.editalPosition == 2){
+			} 
+			if (req.session.editalPosition == 2) {
 				return res.render('selecaoppgi/forms2', {
 					...locals,
 					editalPosicao: req.session.editalPosition,
@@ -156,55 +184,59 @@ const forms = async (req, res) => {
 
 		case 'POST':
 
-			if(req.session.editalPosition == 1){
+			if (req.session.editalPosition == 1) {
 				console.log(req.body)
 			}
 
 	}
-} 
+}
 
 const form1 = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
 			res.send("oi")
 		case 'POST':
-			const data = req.body
+			console.log("********************************************")
+			const data = req.body.data
 			console.log(req.session.editalPosition)
-			if(req.session.editalPosition == 1){
+			if (req.session.editalPosition == 1) {
+				console.log("teste")
+				console.log(data)
 				const Candidato = {
-					Nome: data['data[Nome]'],
-					Nascimento: data['data[Nascimento]'],
-					Sexo: data['data[Sexo]'],
-					NomeSocial: data['data[NomeSocial]'],
-					CEP: data['data[CEP]'],
-					UF: data['data[UF]'],
-					Endereco: data['data[Endereco]'],
-					Cidade: data['data[Cidade]'],
-					Bairro: data['data[Bairro]'],
-					Nacionalidade: data['data[Nacionalidade]'],
-					TelefonePrincipal: data['data[TelefonePrincipal]'],
-					TelefoneAlternativo: data['data[TelefoneAlternativo]'],
-					ComoSoube: data['data[ComoSoube]'],
-					CursoDesejado: data['data[CursoDesejado]'],
-					RegimeDedicacao: data['data[RegimeDedicacao]'],
-					Cotista: data['data[Cotista]'],
-					CotistaTipo: data['data[CotistaTipo]'],
-					Condicao: data['data[Condicao]'],
-					CondicaoTipo: data['data[CondicaoTipo]'],
-					Bolsa: data['data[Bolsa]'],
+					Nome: data.Nome,
+					Nascimento: data.Nascimento,
+					Sexo: data.Sexo,
+					NomeSocial: data.NomeSocial,
+					CEP: data.CEP,
+					UF: data.UF,
+					Endereco: data.Endereco,
+					Cidade: data.Cidade,
+					Bairro: data.Bairro,
+					Nacionalidade: data.Nacionalidade,
+					TelefonePrincipal: data.TelefonePrincipal,
+					TelefoneAlternativo: data.TelefoneAlternativo,
+					ComoSoube: data.ComoSoube,
+					CursoDesejado: data.CursoDesejado,
+					RegimeDedicacao: data.RegimeDedicacao,
+					Cotista: data.Cotista,
+					CotistaTipo: data.CotistaTipo,
+					Condicao: data.Condicao,
+					CondicaoTipo: data.CondicaoTipo,
+					Bolsa: data.Bolsa,
 				};
 				console.log(Candidato)
 				const id = req.session.uid
 
 				const candidate = await CandidateService
-				.form1({
-					Candidato: Candidato,
-					id:id,
-				})
-				.catch((err) => {
-				});
+					.form1({
+						Candidato: Candidato,
+						id: id,
+					})
+					.catch((err) => {
+					});
 				req.session.editalPosition = candidate.editalPosition
-				res.redirect('/selecaoppgi/forms')
+				res.status(200).send()
+
 				break;
 			}
 
@@ -216,18 +248,48 @@ const candidates = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
 			return res.json({
-				candidates: await CandidateService.list() 
+				candidates: await CandidateService.list()
 			});
 		default:
 			return res.status(400).send();
 	}
 }
 
+const voltar = async (req, res) => {
+	switch (req.method) {
+		case 'POST':
+			console.log(req.body)
+			const id = req.body.id
+			let editalPosicao = req.body.editalPosicao;
+			console.log(editalPosicao)
+			editalPosicao = parseInt(editalPosicao, 10) - 1;
+
+			//res.redirect('/selecaoppgi')
+			console.log(editalPosicao)
+
+			const candidateAtualizacao = await CandidateService.back({
+				id: id,
+				editalPosition: editalPosicao
+			})
+			console.log(candidateAtualizacao)
+			req.session.editalPosition = candidateAtualizacao.editalPosition
+			res.status(200).send()
+		default:
+			return res.status(400).send();
+	}
+}
+
+const refresh = async (req, res) => {
+	console.log("asdasdsadasd")
+	res.redirect('/selecaoppgi/formulario')
+}
 export default {
 	begin,
 	signin,
 	login,
 	forms,
 	form1,
-	candidates
+	candidates,
+	voltar,
+	refresh
 };

@@ -245,9 +245,8 @@
 									<b>Nome:</b>
 								</label>
 								<input class="form-control" id="candidato-nome" placeholder="Insira seu nome" type="text" name="Nome"
-									value="" maxlength="60">
+									 maxlength="60" value="{{Nome}}">
 							</div>
-
 							<div class="col-md-3 campo-candidato-datanascimento">
 								<label class="control-label" for="data-nascimento">
 									<font color="#FF0000">*</font>
@@ -299,8 +298,8 @@
 								<label class="control-label" for="candidato-nomesocial">
 									<b>Nome Social:</b>
 								</label>
-								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]" value=""
-									maxlength="60" />
+								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]" 
+									maxlength="60" value="{{NomeSocial}}" />
 								<div class="help-block"></div>
 							</div>
 
@@ -309,8 +308,8 @@
 									<font color="#FF0000">*</font>
 									<b>CEP:</b>
 								</label>
-								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" value=""
-									data-plugin-inputmask="" />
+								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" 
+									data-plugin-inputmask="" value="{{CEP}}"/>
 								<div class="help-block"></div>
 							</div>
 
@@ -319,7 +318,7 @@
 									<font color="#FF0000">*</font>
 									<b>Estado:</b>
 								</label>
-								<select id="candidato-uf" class="custom-select" name="candidatoUf">
+								<select  id="candidato-uf" class="custom-select" name="candidatoUf">
 									<option value="">Selecione UF:</option>
 									<option value="AC">AC</option>
 									<option value="AL">AL</option>
@@ -360,8 +359,8 @@
 								<label class="control-label" for="candidato-endereco">
 									<font color="#FF0000">*</font> <b>Endereço:</b>
 								</label>
-								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco" value=""
-									maxlength="160">
+								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco"
+									maxlength="160" value="{{Endereco}}" >
 
 								<div class="help-block"></div>
 							</div>
@@ -370,16 +369,16 @@
 								<label class="control-label" for="candidato-cidade">
 									<font color="#FF0000">*</font> <b>Cidade:</b>
 								</label>
-								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" value=""
-									maxlength="40" aria-invalid="true">
+								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" 
+									maxlength="40" aria-invalid="true" value="{{Cidade}}">
 							</div>
 
 							<div class="col-md-3 field-candidato-bairro">
 								<label class="control-label" for="candidato-bairro">
 									<font color="#FF0000">*</font> <b>Bairro:</b>
 								</label>
-								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" value=""
-									maxlength="50">
+								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" 
+									maxlength="50" value="{{Bairro}}">
 								<div class="help-block"></div>
 							</div>
 
@@ -422,15 +421,14 @@
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
 								</label>
 								<input type="text" id="candidato-telresidencial" class="form-control" name="candidatoTelresidencial"
-									data-plugin-inputmask="inputmask_32e8983f">
-
+									 value="{{Telefone}}">
 								<div class="help-block"></div>
 							</div>
 
 							<div class="form-group col-3 ">
 								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
 								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
-									data-plugin-inputmask="inputmask_32e8983f">
+									 value="{{TelefoneSecundario}}">
 
 								<div class="help-block"></div>
 							</div>
@@ -577,7 +575,7 @@
 									<font color="#FF0000">*</font> <b>Qual:</b>
 								</label>
 								<input type="text" id="candidato-condicao" class="form-control" name="candidatoCondicao"
-									data-plugin-inputmask="inputmask_32e8983f">
+									data-plugin-inputmask="inputmask_32e8983f" value="{{CondicaoTipo}}">
 							</div>
 						</div>
 
@@ -755,13 +753,13 @@
 
 	function getBolsa() {
 		let bolsa = document.getElementById("candidato-bolsa").checked;
-		if(!bolsa){
+		if (!bolsa) {
 			return 0;
 		}
 		return bolsa;
 	}
 
-	function checkCondicao(){
+	function checkCondicao() {
 		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
 		if (!deficiencia) {
 			return 0;
@@ -769,7 +767,7 @@
 		return deficiencia;
 	}
 
-	function checkCotista(){
+	function checkCotista() {
 		let cotista = document.getElementById("cotista").checked;
 		if (!cotista) {
 			return 0;
@@ -904,8 +902,9 @@
 				const editalPosicao = $("#editalPosicao").val();
 				const id = $("#id").val();
 				console.log(data);
+
 				$.ajax({
-					url: 'http://localhost:3001/selecaoppgi/formulario/1',
+					url: '/selecaoppgi/formulario/1',
 					type: 'POST',
 					data: {
 						data: data,
@@ -915,11 +914,8 @@
 						id: id
 					},
 					success: function (data) {
-						$.validator.setDefaults({
-							submitHandler: function () {
-								alert("Form successful submitted!");
-							}
-						});
+						window.location.href = '/selecaoppgi/formulario';
+						window.location.reload(true);
 					},
 					error: function (data) {
 						console.log(data)
