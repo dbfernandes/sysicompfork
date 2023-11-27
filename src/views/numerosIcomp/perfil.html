@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!-- Icons -->
+    <link href="../assets/css/nucleo-icons-ds.css" rel="stylesheet">
+    <link href="../assets/css/nucleo-svg-ds.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Favicon -->
+    <link href="../assets/img/brand/favicon.png" rel="icon" type="image/png">
+
+    <!-- CSS Files -->
+    <link id="pagestyle" href="../assets/css/material-dashboard.css" rel="stylesheet" />
+
+
+</head>
+<body class="pt-4">
+
+
+    <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+    <!-- jQuery DataTables-->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.6.0/js/dataTables.searchBuilder.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.6.0/js/searchBuilder.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/2.2.0/js/dataTables.searchPanes.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/2.2.0/js/searchPanes.bootstrap5.min.js"></script>
+
+    
+  <script src="../assets/js/plugins/chartjs.min.js"></script>
+
+
+    <div class="flex-wrapper bg-primary">
+        <nav class="navbar navbar-expand-lg shadow-none fixed-top" style="background-color: #2c3e50;">
+            <div class="container">
+                <a class="navbar-brand d-flex text-center text-white fs-6" href="/">
+                    <i class="material-icons position-relative fs-5">home</i>
+                    <span class="ms-1">INSTITUTO DE COMPUTAÇÃO</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header-2" aria-controls="navbar-header-2" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar-header-2">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item me-3">
+                    <a href="/table" class="nav-link text-white fs-6">
+                        ALUNOS
+                    </a>
+                    </li>
+                    <li class="nav-item me-3" >
+                    <a href="/table" class="nav-link text-white fs-6">
+                        DOCENTES
+                    </a>
+                    </li>
+                    <li class="nav-item me-3">
+                    <a href="/table" class="nav-link text-white fs-6">
+                        PUBLICAÇÕES
+                    </a>
+                    </li>
+                    <li class="nav-item me-3">
+                    <a class="nav-link text-white fs-6">
+                        PROJETOS
+                    </a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+            </nav>
+    <section class="pt-8 mb-3">
+        <div class="container">
+                <div class="card card-body mx-3 mx-md-4 mt-n6">
+                    <div class="row gx-4 mb-4">
+                        <div class="nav-wrapper position-relative end-0">
+                            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                            <li class="nav-item">
+                                <a id="profile-tab" class="nav-link mb-0 px-0 active" data-bs-toggle="tab" href="#profile" aria-controls="profile" role="tab" aria-selected="true">
+                                <i class="material-icons position-relative">person</i>
+                                
+                                <span class="ms-1">Perfil</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 " data-bs-toggle="tab" href="#public" aria-controls="public" role="tab" aria-selected="false">
+                                <i class="material-icons position-relative">description</i>
+                                
+                                <span class="ms-1">Publicações</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 " data-bs-toggle="tab" href="#research" role="tab" aria-controls="code" aria-selected="false">
+                                <i class="material-icons text-lg position-relative">search</i>
+                                <span class="ms-1">Projetos de Pesquisa</span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" mb-0 px-0 py-1 " data-bs-toggle="dropdown" href="#guidences" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons text-lg position-relative">account_circle</i>
+                                <span class="ms-1">Orientações</span>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Graduação</a>
+                                    <a class="dropdown-item" href="#">Mestrado</a>
+                                    <a class="dropdown-item" href="#">Doutorado</a>
+                                  </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0  " data-bs-toggle="tab" href="#prizes" role="tab" aria-controls="code" aria-selected="false">
+                                <i class="material-icons text-lg position-relative">military_tech</i>
+                                <span class="ms-1">Prêmios</span>
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+
+            
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row gx-4 mb-2">
+    
+                        <div class="col-auto">
+                        <div class="avatar avatar-xxl position-relative">
+                            <img src="https://numeros.icomp.ufam.edu.br/numeros_assets/img/professores/alberto.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        </div>
+                        </div>
+                        <div class="col-auto my-auto">
+                        <div class="h-100">
+                            <h5 class="mb-1">
+                            Alberto Nogueira de Castro Junior
+                            </h5>
+                        </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mt-3">
+    
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="row">
+                            <div class="card card-plain h-100">
+                            <div class="card-body p-3">
+                                <p class="text-sm text-justify">
+                                    Possui graduação em Engenharia Civil pela Universidade Federal do Amazonas(1986), graduação em Tecnologia Eletrônica pelo Instituto de Tecnologia da Amazônia(1984), mestrado em Automação Industrial pela Universidade Federal do Espírito Santo(1993), doutorado em Computer Science - Artificial Intelligence pela University of Edinburgh(1998) e pós-doutorado pela University of Edinburgh(2010). Atualmente é professor titular da Universidade Federal do Amazonas e Membro de corpo editorial da Revista Brasileira de Informática na Educação (1414-5685). Tem experiência na área de Ciência da Computação, com ênfase em Metodologia e Técnicas da Computação. Atuando principalmente nos seguintes temas:program synthesis, logic programming, intelligent interfaces, knowledge-based systems.
+                                </p>
+                                <hr class="horizontal gray-light my-4">
+                                <ul class="list-group">
+                                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Formação:</strong> &nbsp; Doutorado em Computer Science - Artificial Intelligence</li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Local:</strong> &nbsp;  University of Edinburgh</li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Ano:</strong> &nbsp; 1998</li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Lattes:</strong> &nbsp; <a href="http://lattes.cnpq.br/5919189481858271"> http://lattes.cnpq.br/5919189481858271</a></li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">E-mail:</strong> &nbsp; alberto@icomp.ufam.edu.br</li>
+                                </ul>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade show" id="public" role="tabpanel" aria-labelledby="public-tab">
+                    <div class="card mb-3">
+                        <div class="card-body p-3" >
+                          <div class="chart" style="height: 220px">
+                            <canvas id="line-chart" class="chart-canvas" ></canvas>
+                          </div>
+                          <div class="chart-2" style="height: 220px">
+                            <canvas id="line-chart-2" class="chart-canvas" style="height: 100px"></canvas>
+                          </div>
+                          <div class="nav-wrapper position-relative end-0 pt-3">
+                          <ul class="nav nav-tabs p-1" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link px-3" id="conference-tab" data-bs-toggle="tab" href="#conference" role="tab" aria-controls="conference" aria-selected="true">Artigos Publicados em Conferências (72)</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link " id="paper-book-tab" data-bs-toggle="tab" href="#paper-book" role="tab" aria-controls="PaperBook" aria-selected="false">Artigos Publicados em Periódicos (72)</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link px-3" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">Livros Publicados (2)</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link px-3" id="chapter-tab" data-bs-toggle="tab" href="#chapter" role="tab" aria-controls="chapter" aria-selected="false">Capítulos de Livros Publicados (2)</a>
+                            </li>
+                          </ul>
+                        </div>
+                          <div class="tab-content" id="myTabContent2">
+                            <div class="tab-pane fade show" id="conference" role="tabpanel" aria-labelledby="conference-tab">
+                                <ol class="mt-3 text-dark" style="font-size: 14px;"><li><strong>Multimodal Re-ranking of Product Image Search Results. </strong>Joyce Miranda Dos Santos; Joao Marcos Bastos Cavalcanti; Patrícia Correia Saraiva; Moura, Edleno S.; <i>35th European Conference on Information Retrieval - ECIR 2013, 2013. </i>Completo. <b></b></li><br><li><strong>Sorted Dominant Local Color for Searching Large and Heterogeneous Image Databases. </strong>Márcio L. A. Vidal; Joao Marcos Bastos Cavalcanti; Edleno Silva De Moura; Altigran Soares Da Silva; Ricardo Da Silva Torres; <i>21st International Conference on Pattern Recognition - ICPR 2012, 2012. </i>Completo. <b></b></li><br><li><strong>Automated Generation of Digital Libraries based on 5S and WebML. </strong>Emanuelle E. S. Gomes; Joao Marcos Bastos Cavalcanti; Marcos A. Gonçalves; <i>XIII Brazilian Symposium on Multimedia and the Web, 2007. </i>Completo. <b></b></li><br><li><strong>Labeling Data Extracted from the Web. </strong>Altigran Soares Da Silva; Denilson Barbosa; Joao Marcos Bastos Cavalcanti; Marco Sevalho; <i>ODBASE - International Conference on Ontologies, Databases and Applications of Semantics, 2007. </i>Completo. <b></b></li><br><li><strong>GoGetIt!: A Tool for Generating Structure Driven Web Crawlers. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>15th International World Wide Web Conference, 2006. </i>Resumo. <b></b></li><br><li><strong>Structure-Driven Crawler Generation by Example. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>29th Annual International ACM SIGIR Conference on Research &amp; Development on Information Retrieval, 2006. </i>Completo. <b></b></li><br><li><strong>Extracting and Searching Useful Information Available on Web FAQ. </strong>Edson Oliveira; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>21o Simpósio Brasileiro de Banco de Dados, 2006. </i>Completo. <b></b></li><br><li><strong>A Fast and Robust Method for Web Page Template Detection and Removal. </strong>Karane Mariano Vieira; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; Juliana Freire; Nick Pinto; <i>Conference on Information and Knowledge Management - CIKM, 2006. </i>Completo. <b></b></li><br><li><strong>SNIF: A Simple Nude Image Finder. </strong>Ruan J.s. Belém; Joao Marcos Bastos Cavalcanti; Edleno Silva De Moura; Mário A. Nascimento; <i>3rd Latin American Web Congress - LA-Web 2005, 2005. </i>Completo. <b></b></li><br><li><strong>An Agent-Based Approach to Web Site Maintenance. </strong>Wamberto Vasconcelos; Joao Marcos Bastos Cavalcanti; <i>International Conference on Web Engineering - ICWE2004, 2004. </i>Completo. <b></b></li><br><li><strong>Information Retrieval Aware Web Site Modelling and Generation. </strong>Keyla Ahnizeret; Joao Marcos Bastos Cavalcanti; David Oliveira; Edleno Silva De Moura; Altigran Soares Da Silva; <i>23rd International Conference on Conceptual Modeling(ER2004), 2004. </i>Completo. <b></b></li><br><li><strong>A Logic-Based Approach for Automatic Synthesis and Maintenance of Web Sites. </strong>Joao Marcos Bastos Cavalcanti; Wamberto Vasconcelos; <i>14th International Conference on Software Engineering and Knowledge Engineering, 2002. </i>Completo. <b></b></li><br><li><strong>Synthesis of Web Sites from High Level Descriptions. </strong>Joao Marcos Bastos Cavalcanti; David Robertson; <i>Third Workshop on Web Engineering, 2000. </i>Completo. <b></b></li><br><li><strong>Implementing Prolog-Run WWW Sites.. </strong>Wamberto Vasconcelos; R Schwitter; D Molla; Joao Marcos Bastos Cavalcanti; <i>13th International Conference on Applications of Prolog - inap 2000, 2000. </i>Completo. <b></b></li><br><li><strong>Performance Evaluation of the Relational Implementation
+of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcanti; Alberto Henrique Frade Laender; <i>2nd International Workshop on Time Oriented Business Applications - ZobIS'96, 1996. </i>Completo. <b></b></li><br><li><strong>Uma Abordagem para Implementacao de um Modelo Temporal Orientado a Objetos usando SGBDs Relacionais. </strong>Joao Marcos Bastos Cavalcanti; Alberto Henrique Frade Laender; Jose Palazzo De Oliveira; Nina Edelweiss; <i>10o Simposio Brasileiro de Banco de Dados, 1995. </i>Completo. <b></b></li><br><li><strong>Implementation of an Object-Oriented Temporal Model. </strong>Jose Palazzo De Oliveira; Nina Edelweiss; E Arruda; Alberto Henrique Frade Laender; Joao Marcos Bastos Cavalcanti; <i>International Conference on Database and Expert Systems Applications - DEXA'95, 1995. </i>Completo. <b></b></li><br></ol>
+                            </div>
+                            <div class="tab-pane fade" style="font-size: 14px;" id="paper-book" role="tabpanel" aria-labelledby="paper-book-tab">
+                                <ol class="mt-3 text-dark"><li><strong>A multimodal query expansion based on genetic programming for visually-oriented e-commerce applications. </strong>Saraiva, PatrÍcia C.; Joao Marcos Bastos Cavalcanti; De Moura, Edleno S.; GonÇalves, Marcos A.; Torres, Ricardo Da S.; <i>Information Processing &amp; Management,  <b></b></i></li><i><br><li><strong>A signature-based bag of visual words method for image indexing and search. </strong>Dos Santos, Joyce Miranda; De Moura, Edleno Silva; Da Silva, Altigran Soares; Joao Marcos Bastos Cavalcanti; Torres, Ricardo Da Silva; Vidal, MÁrcio Luiz A.; <i>Pattern Recognition Letters,  <b></b></i></li><i><br><li><strong>Evaluation of parameters for combining multiple textual sources of evidence for Web image retrieval using genetic programming. </strong>Saraiva, PatrÍcia Correia; Joao Marcos Bastos Cavalcanti; GonÇalves, Marcos A.; Santos, Katia C. Lage; Moura, Edleno S.; Torres, Ricardo Da S.; <i>Journal of The Brazilian Computer Society (Online),  <b></b></i></li><i><br><li><strong>Evaluating Retrieval Effectiveness of Descriptors for Searching in Large Image Databases. </strong>Petrina A. S. Kimura; Joao Marcos Bastos Cavalcanti; Patrícia Correia Saraiva; Ricardo Da Silva Torres; Marcos A. Gonçalves; <i>Journal of Information and Data Management - JIDM,  <b></b></i></li><i><br><li><strong>The Database and Information Retrieval Research Group at UFAM. </strong>Joao Marcos Bastos Cavalcanti; Marco Antônio Pinheiro De Cristo; David Fernandes; Edleno Silva De Moura; Altigran Soares Da Silva; <i>Journal of Information and Data Management - JIDM,  <b></b></i></li><i><br><li><strong>An evolutionary approach for combining different sources of evidence in search engines. </strong>Thomaz Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; Altigran Soares Da Silva; Moisés Carvalho; Marcos A. Gonçalves; <i>Information Systems,  <b></b></i></li><i><br><li><strong>Structure-Based Crawling in the Hidden Web. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>Journal of Universal Computer Science,  <b></b></i></li><i><br><li><strong>Web Site Synthesis Based on Computational Logic. </strong>Joao Marcos Bastos Cavalcanti; David Robertson; <i>Knowledge and Information Systems,  <b></b></i></li><i><br></i></i></i></i></i></i></i></i></ol>
+                            </div>
+                            <div class="tab-pane fade" style="font-size: 14px;" id="book" role="tabpanel" aria-labelledby="book-tab">
+                                <ol class="mt-3 text-dark"><i><i></i><li><i><strong>Anais do XV Simpósio Brasileiro de Informática na Educação - SBIE2004 - Diversidade e Integração: Desafios para a Telemática na Educação. </strong>2004. </i></li><br></i><li><i><strong>Anais do XV Simpósio Brasileiro de Informática na Educação - SBIE2004 - Diversidade e Integração: Desafios para a Telemática na Educação - Volume II. </strong>2004. </i></li><br></ol>
+                            </div>
+                            <div class="tab-pane fade" style="font-size: 14px;" id="chapter" role="tabpanel" aria-labelledby="chapter-tab">
+                                <ol class="mt-3 text-dark"><li><strong>Aprendizagem Colaborativa com Suporte Computacional. </strong><i>Sistemas Colaborativos, 2011. </i></li><br><li><strong>Orientações para Uso da Web e Produção de Conteúdos em EAD. </strong><i>Guia de Referência para Produção Gráfica de Material Didático em Educação a Distância, 2007. </i></li><br></ol>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>        
+            
+                </div>
+            </div>
+    </section>
+        
+
+
+      <footer class="text-center w-100" style="bottom: 0;left: 0;">
+
+        <div style="padding: 25px 0; background-color: #233140;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-white">
+                        Copyright © IComp 2023                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script>
+    // Line chart
+    var ctx1 = document.getElementById("line-chart").getContext("2d");
+    var ctx2 = document.getElementById("line-chart-2").getContext("2d");
+
+    new Chart(ctx1, {
+    type: "line",
+    data: {
+        labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
+        datasets: [{
+            label: "Artigos",
+            tension: 0.4,
+            borderWidth: 0,
+            pointRadius: 2,
+            pointBackgroundColor: "#18bc9c",
+            borderColor: "#18bc9c",
+            borderWidth: 3,
+            backgroundColor: 'transparent',
+            data: [90, 21, 28, 17, 23, 16, 16, 16, 22, 0, 0],
+            maxBarThickness: 6
+        }
+        ],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: {
+            display: false,
+        },
+        title: {
+            fullsize: true,
+            color: '#000',
+            display: true,
+            text: 'Artigos Publicados em Conferências',
+            font: {
+                weight: 'bold'
+            },
+        }
+        },
+        interaction: {
+        intersect: false,
+        mode: 'index',
+        },
+        scales: {
+        y: {
+            grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            borderDash: [5, 5]
+            },
+            ticks: {
+            display: true,
+            padding: 10,
+            color: '#b2b9bf',
+            font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+            },
+            }
+        },
+        x: {
+            grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: true,
+            borderDash: [5, 5]
+            },
+            ticks: {
+            display: true,
+            color: '#b2b9bf',
+            padding: 10,
+            font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+            },
+            }
+        },
+        },
+    },
+    });
+    new Chart(ctx2, {
+    type: "line",
+    data: {
+        labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
+        datasets: [{
+            label: "Artigos",
+            tension: 0.4,
+            borderWidth: 0,
+            pointRadius: 2,
+            pointBackgroundColor: "#18bc9c",
+            borderColor: "#18bc9c",
+            borderWidth: 3,
+            backgroundColor: 'transparent',
+            data: [8, 0, 3, 3, 2, 5, 7, 3, 5, 2, 0],
+            maxBarThickness: 6
+        },
+        ],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: {
+            display: false,
+        },
+        title: {
+            fullsize: true,
+            color: '#000',
+            display: true,
+            text: 'Artigos Publicados em Periódicos',
+            font: {
+                weight: 'bold'
+            },
+        }
+        },
+        interaction: {
+        intersect: false,
+        mode: 'index',
+        },
+        scales: {
+        y: {
+            grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            borderDash: [5, 5]
+            },
+            ticks: {
+            display: true,
+            padding: 10,
+            color: '#b2b9bf',
+            font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+            },
+            }
+        },
+        x: {
+            grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: true,
+            borderDash: [5, 5]
+            },
+            ticks: {
+            display: true,
+            color: '#b2b9bf',
+            padding: 10,
+            font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+            },
+            }
+        },
+        },
+    },
+    });
+
+
+    $(document).ready(function() {
+        // Setup - add a text input to each footer cell
+        $('#example thead #filters th').each( function (i) {
+            var title = $('#example thead #header th').eq( $(this).index() ).text();
+            $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><label class="form-label">'+title+'</label><input type="text" class="form-control" data-index="'+i+'" /></div>')
+        } );
+    
+        // DataTable
+        var table = $('#example').DataTable( {
+            dom: 'tp',
+            bLengthChange: false,
+            paginationType: "numbers",
+            pageLength: 20,
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            },
+            autoWidth: false,
+        } );
+
+        table.columns().every(function(){
+            const column = this;
+            const title = column.header().textContent;
+            const idx = column.index()
+
+            const input = $(`#filters th #input${idx} input`)
+            input.on('keyup', function () {
+                console.log(table.column(idx).search("alb").draw())
+
+                if (table.column(idx).search() !== this.value) {
+                    table.column(idx).search(this.value).draw()
+                }
+             })
+
+        })
+
+    } );
+        
+
+</script>
+     <!--   Core JS Files   -->
+  <script src="../assets/js/core/popper.min.js" type="text/javascript"></script>
+  <script src="../assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../assets/js/plugins/moment.min.js"></script>
+
+
+  <!--	Plugin for Select, full documentation here: https://joshuajohnson.co.uk/Choices/ -->
+  <script src="../assets/js/plugins/choices.min.js" type="text/javascript"></script>
+
+
+  <!-- Control Center for Material Kit parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/material-dashboard.min.js"></script>
+</body>
+</html>

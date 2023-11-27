@@ -6,6 +6,7 @@ import usuariosRoutes from "./usuarios.routes";
 import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
+import numerosIcompRouter from "./numerosIcomp.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas.routes';
 import perfilRoutes from './perfil.routes';
@@ -33,6 +34,8 @@ router.post('/recuperar-senha',autenticacaoController.recuperar_senha)
 router.get('/logout', autenticacaoController.logout)
 
 router.use("/selecaoppgi", selecaoppgiRouter);
+
+router.use("/numerosIcomp", numerosIcompRouter);
 
 router.use(autenticacaoController.verificar)
 

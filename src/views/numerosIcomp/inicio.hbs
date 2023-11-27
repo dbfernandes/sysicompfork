@@ -1,0 +1,87 @@
+<div class="pt-5">
+    <header>
+        {{> numerosIcomp/navbar}}
+
+        <div class="page-header" style="background: #18bc9c; min-height: 450px;" loading="lazy">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 d-flex justify-content-center flex-column">
+                        <h1 class="text-white mb-4">IComp em Números</h1>
+                        <p class="text-white opacity-8 lead mt-3 pe-5 me-5">Confira abaixo as estatísticas do Instituto de Computação da Universidade Federal do Amazonas (UFAM)</p>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center flex-column">
+                        <div class="row w-100">
+                            <div class="col-sm-6">
+                                <img class="img-responsive" src="https://icomp.ufam.edu.br/images/icomp.png" alt="" width="320">
+                            </div>
+                            <div class="col-sm-5 ms-auto">
+                                <img class="img-responsive" src="https://edoc.ufam.edu.br/bitstream/123456789/4819/7/marca_ufam_vetor_positivo.png" alt="" width="136">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </header>
+
+    <section class="py-9">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-12 text-center">
+                <h3>Alunos Matriculados</h3>
+                <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5 my-auto text-center">
+                    <h3>Graduação e Pós-Graduação</h3>
+                    <p>Quantidade de alunos matriculados nos cursos de graduação e pós-graduação oferecidos pelo Instituto de Computação.</p>
+                </div>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-md-6 position-relative">
+                            <div class="p-3 text-center">
+                                <h1 style="color: #18bc9c;"><span id="state1" countto="359">359</span></h1>
+                                <h5 class="mt-3">Ciência da Computação</h5>
+                            
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6 position-relative">
+                            <div class="p-3 text-center">
+                                <h1 style="color: #18bc9c;"> <span id="state2" countto="144">144</span></h1>
+                                <h5 class="mt-3">Engenharia de Software / Sistemas de Informação</h5>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="horizontal dark">
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="p-3 text-center">
+                                <h1 style="color: #18bc9c;" id="state3" countto="226">226</h1>
+                                <h5 class="mt-3">Mestrado</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 text-center">
+                                <h1 style="color: #18bc9c;" id="state4" countto="119">119</h1>
+                                <h5 class="mt-3">Doutorado</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+            <div class="col-md-12 text-end">
+                <small >Fonte: SIE, 18/05/2018.</small>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    {{> numerosIcomp/footer}}
+
+</div>
