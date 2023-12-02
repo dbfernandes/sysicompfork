@@ -57,6 +57,7 @@ function getCompleteData(data, publicCallback){
         "load", 
         () => { 
         xmlText = x2js.xml_str2json(reader.result); 
+        console.log(xmlText)
         const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
         let publicDict = {}
         if(publicacoes){
@@ -100,6 +101,66 @@ function getCompleteData(data, publicCallback){
             }
         }
         data["publicacoes"] = publicDict
+        publicCallback(data)
+        },
+        false,
+    );
+    reader.readAsText(file, "ISO-8859-1");
+}
+
+function getCompleteFormData(data, publicCallback){
+    const [file] = document.querySelector("input[type=file]").files; 
+    const reader = new FileReader(); 
+    var xmlText = "" 
+    var x2js = new X2JS(); 
+    reader.addEventListener(
+        "load", 
+        () => { 
+        xmlText = x2js.xml_str2json(reader.result); 
+        console.log(xmlText)
+        const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
+        let publicDict = {}
+        if(publicacoes){
+            console.log(publicacoes)
+            for(var i in publicacoes){
+                var val = publicacoes[i];
+                for(var j in val){
+                    var sub_key = j;
+                    var sub_val = val[j];
+                    if(sub_val.length > 0){
+                        publicDict[j] = []
+                        for (var m in sub_val){
+                            const public = get_publicDict(sub_val[m])
+                            publicDict[j].push(public)
+
+                        }
+                    }else{
+                        if(sub_val.hasOwnProperty("AUTORES")){
+                            publicDict[j] = []
+                            const public = get_publicDict(sub_val)
+                            publicDict[j].push(public)
+                        }else{
+                            for(var k in sub_val){
+                                if(sub_val[k].length > 0){
+                                    publicDict[k] = []
+                                    for (var l in sub_val[k]){
+                                        const public = get_publicDict(sub_val[k][l])
+                                        publicDict[k].push(public)
+                                    }
+                                }else{
+                                    if(sub_val[k].hasOwnProperty("AUTORES")){
+                                        publicDict[k] = []
+                                        const public = get_publicDict(sub_val[k])
+                                        publicDict[k].push(public)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        data.append("publicacoes", publicDict);
         publicCallback(data)
         },
         false,
