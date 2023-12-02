@@ -39,6 +39,7 @@
                         <h3 class="card-title"><b>Currículo Lattes</b></h3>
                     </div>
                     <div class="card-body ">
+
                                 <div class="form-group ">
                                     <label for="bloco">
                                         <font color="#FF0000">*</font> Selecione o professor desejado:
@@ -54,6 +55,19 @@
                                     <div class="mb-3">
                                         <label for="formXML" class="form-label" ><font color="#FF0000">*</font> Curriculum Lattes em XML:</label>
                                         <input class="form-control p-0 h-100" type="file" accept=".xml" id="formXML" name="XML">
+                                    </div>
+                                </div>
+                                <!--Avatar-->
+                                <div>
+                                    <div class="form-group">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="customFile2"> <font color="#FF0000">*</font> Escolha uma imagem de perfil: </label>
+                                            <input type="file" name="Image" class="form-control p-0 h-100" accept="image/*" id="avatarImage" onchange="displaySelectedImage(event, 'selectedAvatar')" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center bg-white">
+                                        <img id="selectedAvatar" src="/public/img/user-profile-generic.png"
+                                        class="rounded" style="width: 120px; height: 120px; object-fit: cover;" alt="example placeholder" />
                                     </div>
                                 </div>
                             <!-- /.card-body -->
@@ -75,6 +89,21 @@
 
 <script>
 
+    function displaySelectedImage(event, elementId) {
+        const selectedImage = document.getElementById(elementId);
+        const fileInput = event.target;
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                selectedImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
     if({{tipoUsuario.professor}}){
         const sel = document.querySelector(`[id="professor"]`);
         for (var i in sel.options){
@@ -87,6 +116,15 @@
         return (document.querySelector("input[type=file]").files.length > 0)
     })
 
+    $.validator.addMethod("verificarImagem", function (el) {
+        return (document.querySelector("#avatarImage").files.length > 0)
+    })
+    
+    $.validator.addMethod("verificarTamanho", function (el) {
+        return (document.querySelector("#avatarImage").files[0].size < 5242880)
+    })
+
+
     $.validator.setDefaults({
             submitHandler: function () {
                 FormSubmit()    
@@ -96,8 +134,11 @@
     function reqAjax(data){
         $.ajax({
                 type: "POST",
-                url: "lattes/upload",
+                url: 'lattes/upload?_csrf={{csrfToken}}',
                 data,
+                cache: false,
+                contentType: false,
+                processData: false,
                 success: function(data) {
                     $(document).Toasts('create', {
                         icon: 'success',
@@ -110,6 +151,7 @@
 
                 },
                 error: function(err) {
+                    console.log(err)
                     $(document).Toasts('create', {
                         icon: 'success',
                         class: "bg-danger",
@@ -123,18 +165,19 @@
     }
 
     function FormSubmit(){
-        const idProfessor = $("#professor").val(); 
+        const idProfessor = $("#professor").val();
+        const [image] = $('#avatarImage').prop('files');
         const csrfToken = $("#csrfToken").val();
-        const data = {
-            idProfessor: idProfessor,
-            _csrf: csrfToken,
+        const data = new FormData()
+        data.append("idProfessor", idProfessor)
+        data.append("file", image)
+        data.append("_csrf", csrfToken)
 
-        }  
-        getCompleteData(data, reqAjax)     
+        getCompleteFormData(data, reqAjax)     
     }
 
 
-    $('#formAdicionarLattes').validate({
+    const formValidation = $('#formAdicionarLattes').validate({
         rules: {
             professor: {
                 required: true,
@@ -142,6 +185,11 @@
             XML: {
                 verificarArquivo: true,
                 accept: "text/xml",
+            },
+            Image: {
+                verificarImagem: true,
+                verificarTamanho: true,
+                accept: "image/*",
             }
         },
         messages: {
@@ -150,6 +198,10 @@
             },
             XML: {
                 verificarArquivo: 'É necessário submeter um arquivo XML.',
+            },
+            Image: {
+                verificarImagem: 'É necessário submeter uma imagem.',
+                verificarTamanho: 'Tamanho máximo de arquivo excedido. Envie uma imagem de até 5MB.',
             },
         },
         errorElement: 'span',
@@ -162,8 +214,16 @@
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
-        }
+        },
     });
+
+    $('#avatarImage').on('change', function(evt){
+        formValidation.element('#avatarImage')
+    })
+
+    
+
+
 
 
 </script>

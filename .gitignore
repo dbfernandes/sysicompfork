@@ -5,3 +5,6 @@ src/config/database.js
 
 #Removing the mail credentials
 src/config/mail.json
+
+#Removing upload files
+src/uploads
