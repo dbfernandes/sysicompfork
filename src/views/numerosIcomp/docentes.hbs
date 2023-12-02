@@ -1,7 +1,6 @@
-<div class="pt-4">
-    {{> numerosIcomp/navbar}}
-
-     <section class="success min-vh-90 pt-6" style="background-color: #18bc9c;" id="docentes">
+    {{> numerosIcomp/navbar page="docentes"}}
+<div class="flex-wrapper bg-primary">
+     <section class="success"  id="docentes">
         <div class="container pb-4" >
           <div class="row ">
               <div class="col-md-12 text-center">
@@ -9,34 +8,13 @@
                   <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
               </div>
       <table id="example" class="table table-hover table-striped w-100 bg-white"><thead>
-      <tr id="filters"><th>Nome</th><th>Formação</th><th>Última atualização</th></tr>
+      <tr id="filters"><th id="name">Nome</th><th id="formation">Formação</th><th id="lastUpdate">Última atualização</th></tr>
       <tr id="header"><th>Nome</th><th>Formação</th><th>Última atualização</th></tr>
       </thead>
       <tbody>
         {{#each professores}}
         <tr data-key={{id}}><td class="ps-4"><a href="perfil/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">Doutorado em Computer Science - Artificial Intelligence. University of Edinburgh, 1998.</td><td class="ps-4">19/05/2018</td></tr>
         {{/each}}
-      {{!-- <tr data-key="1"><td class="ps-4"><a href="/perfil">Alberto Nogueira de Castro Junior</a></td><td class="ps-4">Doutorado em Computer Science - Artificial Intelligence. University of Edinburgh, 1998.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="49"><td class="ps-4"><a href="/perfil">Alexandre Passito de Queiroz</a></td><td class="ps-4">Doutorado em Informática. Universidade Federal do Amazonas, 2012.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="2"><td class="ps-4"><a href="/perfil">Altigran Soares da Silva</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Minas Gerais, 2002.</td><td class="ps-4">20/06/2022</td></tr>
-      <tr data-key="44"><td class="ps-4"><a href="/perfil">André Luiz da Costa Carvalho</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Minas Gerais, 2010.</td><td class="ps-4">17/10/2023</td></tr>
-      <tr data-key="3"><td class="ps-4"><a href="/perfil">Arilo Claudio Dias Neto</a></td><td class="ps-4">Doutorado em Engenharia de Sistemas e Computação. Universidade Federal do Rio de Janeiro, 2009.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="13"><td class="ps-4"><a href="/perfil">Aristóbulo </a></td><td class="ps-4">Graduação em Economia. Universidade Federal do Amazonas, 1983.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="41"><td class="ps-4"><a href="/perfil">Bruno Freitas Gadelha</a></td><td class="ps-4">Doutorado em Informática. Pontifícia Universidade Católica do Rio de Janeiro, 2012.</td><td class="ps-4">20/06/2022</td></tr>
-      <tr data-key="82"><td class="ps-4"><a href="/perfil">Carlos Gustavo Gomes de Araújo</a></td><td class="ps-4"></td><td class="ps-4">26/01/2022</td></tr>
-      <tr data-key="6"><td class="ps-4"><a href="/perfil">César Augusto Viana Melo</a></td><td class="ps-4">Doutorado em Ciência da Computação. Universidade Estadual de Campinas, 2004.</td><td class="ps-4">23/02/2023</td></tr>
-      <tr data-key="84"><td class="ps-4"><a href="/perfil">Daniel Santiago da Silva</a></td><td class="ps-4"></td><td class="ps-4">15/08/2023</td></tr>
-      <tr data-key="7"><td class="ps-4"><a href="/perfil">David Braga Fernandes de Oliveira</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Minas Gerais, 2010.</td><td class="ps-4">20/06/2022</td></tr>
-      <tr data-key="9"><td class="ps-4"><a href="/perfil">Edjair de Souza Mota</a></td><td class="ps-4">Doutorado em Informática. Universidade de Tecnologia de Berlim, 2000.</td><td class="ps-4">22/06/2022</td></tr>
-      <tr data-key="8"><td class="ps-4"><a href="/perfil">Edjard de Souza Mota</a></td><td class="ps-4">Doutorado em Inteligência Artificial. The University Of Edinburgh, 1997.</td><td class="ps-4">21/06/2022</td></tr>
-      <tr data-key="10"><td class="ps-4"><a href="/perfil">Edleno Silva de Moura</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Minas Gerais, 1999.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="11"><td class="ps-4"><a href="/perfil">Edson Nascimento Silva Jr.</a></td><td class="ps-4">Doutorado em Computação. Universidade Federal do Rio Grande do Sul, 2003.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="14"><td class="ps-4"><a href="/perfil">Eduardo Freire Nakamura</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Minas Gerais, 2007.</td><td class="ps-4">19/05/2018</td></tr>
-      <tr data-key="15"><td class="ps-4"><a href="/perfil">Eduardo James Pereira Souto</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Pernambuco, 2007.</td><td class="ps-4">02/07/2022</td></tr>
-      <tr data-key="12"><td class="ps-4"><a href="/perfil">Eduardo Luzeiro Feitosa</a></td><td class="ps-4">Doutorado em Ciências da Computação. Universidade Federal de Pernambuco, 2010.</td><td class="ps-4">20/09/2022</td></tr>
-      <tr data-key="39"><td class="ps-4"><a href="/perfil">Elaine Harada Teixeira de Oliveira</a></td><td class="ps-4">Doutorado em Informática na Educação. Universidade Federal do Rio Grande do Sul, 2011.</td><td class="ps-4">10/05/2023</td></tr>
-      <tr data-key="86"><td class="ps-4"><a href="/perfil">Eliton de Souza Silva</a></td><td class="ps-4"></td><td class="ps-4">15/08/2023</td></tr>
-      <tr data-key="86"><td class="ps-4"><a href="/perfil">Eliton de Souza Silva</a></td><td class="ps-4"></td><td class="ps-4">15/08/2023</td></tr> --}}
       </tbody>
     </table>
         </div>
@@ -58,7 +36,14 @@
             bLengthChange: false,
             paginationType: "numbers",
             pageLength: 20,
-            responsive: true,
+            responsive: {
+                details: false,
+            },
+            columns: [
+            { responsivePriority: 1 },
+            { responsivePriority: 3 },
+            { responsivePriority: 2 },
+        ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
             },
@@ -82,6 +67,34 @@
         })
 
     } );
+
+
+    window.addEventListener("resize", verifyColumns)
+
+        function verifyColumns() {
+            setTimeout(()=>{
+                const header =  $('#example #header .dtr-hidden').length
+                const formationTr = $("#formation")
+                const lastUpdateTr = $("#lastUpdate")
+                if(header == 0){
+                    if(formationTr.hasClass("d-none")){
+                        formationTr.removeClass("d-none")
+                    }
+                    if(!lastUpdateTr.hasClass("d-none")){
+                        lastUpdateTr.removeClass("d-none")
+                    }
+                }else if(header==1 && !formationTr.hasClass("d-none")){
+                    formationTr.addClass("d-none")
+                }else if(header==2 && !lastUpdateTr.hasClass("d-none")){
+                    lastUpdateTr.addClass("d-none")
+                    if(!formationTr.hasClass("d-none")){
+                        formationTr.addClass("d-none")
+                    }
+                }
+            }, 200)
+            
+        }
+    verifyColumns()
         
 
 </script>

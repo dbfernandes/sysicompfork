@@ -1,7 +1,7 @@
-<div class="flex-wrapper bg-primary pt-4">
+    {{> numerosIcomp/navbar page="docentes"}}
+<div class="flex-wrapper bg-primary">
 
-    {{> numerosIcomp/navbar}}
-    <section class="pt-8 mb-3">
+    <section class="mb-3">
         <div class="container">
                 <div class="card card-body mx-3 mx-md-4 mt-n6">
                     <div class="row gx-4 mb-4">
@@ -54,7 +54,7 @@
                     <div class="row gx-4 mb-2">
     
                         <div class="col-auto">
-                        <div class="avatar avatar-xxl position-relative">
+                        <div class="avatar avatar-xxl position-relative ms-3">
                             <img src="https://numeros.icomp.ufam.edu.br/numeros_assets/img/professores/alberto.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
                         </div>
                         </div>
@@ -150,9 +150,9 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
         labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
         datasets: [{
             label: "Artigos",
-            tension: 0.4,
+            tension: 0,
             borderWidth: 0,
-            pointRadius: 2,
+            pointRadius: 5,
             pointBackgroundColor: "#18bc9c",
             borderColor: "#18bc9c",
             borderWidth: 3,
@@ -233,9 +233,9 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
         labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
         datasets: [{
             label: "Artigos",
-            tension: 0.4,
+            tension: 0,
             borderWidth: 0,
-            pointRadius: 2,
+            pointRadius: 5,
             pointBackgroundColor: "#18bc9c",
             borderColor: "#18bc9c",
             borderWidth: 3,
@@ -311,44 +311,6 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
     },
     });
 
-
-    $(document).ready(function() {
-        // Setup - add a text input to each footer cell
-        $('#example thead #filters th').each( function (i) {
-            var title = $('#example thead #header th').eq( $(this).index() ).text();
-            $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><label class="form-label">'+title+'</label><input type="text" class="form-control" data-index="'+i+'" /></div>')
-        } );
-    
-        // DataTable
-        var table = $('#example').DataTable( {
-            dom: 'tp',
-            bLengthChange: false,
-            paginationType: "numbers",
-            pageLength: 20,
-            responsive: true,
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-            },
-            autoWidth: false,
-        } );
-
-        table.columns().every(function(){
-            const column = this;
-            const title = column.header().textContent;
-            const idx = column.index()
-
-            const input = $(`#filters th #input${idx} input`)
-            input.on('keyup', function () {
-                console.log(table.column(idx).search("alb").draw())
-
-                if (table.column(idx).search() !== this.value) {
-                    table.column(idx).search(this.value).draw()
-                }
-             })
-
-        })
-
-    } );
         
 
 </script>
