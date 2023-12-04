@@ -21909,7 +21909,7 @@ body.dark-version {
     content: "\f0d8";
     position: absolute;
     top: 0;
-    left: 28px;
+    left: 50%;
     right: auto;
     font-size: 22px;
     color: #fff;
@@ -21945,7 +21945,7 @@ body.dark-version {
     content: "\f0d8";
     position: absolute;
     top: 0;
-    left: 28px;
+    left: 50%;
     right: auto;
     font-size: 22px;
     color: #fff;
@@ -21991,7 +21991,7 @@ body.dark-version {
     content: "\f0d8";
     position: absolute;
     top: 0;
-    left: 28px;
+    left: 50%;
     right: auto;
     font-size: 22px;
     color: #fff;
@@ -22131,7 +22131,7 @@ body.dark-version {
   position: absolute;
   z-index: -1;
   bottom: 22px;
-  left: 28px;
+  left: 50%;
   right: auto;
   font-size: 22px;
   color: #fff;

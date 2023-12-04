@@ -32,7 +32,7 @@
                                 <i class="material-icons text-lg position-relative">account_circle</i>
                                 <span class="ms-1">Orientações</span>
                                 </a>
-                                <div class="dropdown-menu">
+                                <div class="dropdown-menu w-100 text-center">
                                     <a class="dropdown-item" href="#">Graduação</a>
                                     <a class="dropdown-item" href="#">Mestrado</a>
                                     <a class="dropdown-item" href="#">Doutorado</a>
@@ -55,7 +55,7 @@
     
                         <div class="col-auto">
                         <div class="avatar avatar-xxl position-relative ms-3">
-                            <img src="https://numeros.icomp.ufam.edu.br/numeros_assets/img/professores/alberto.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                            <img src="{{#if professor.Avatar}}/uploads/{{professor.Avatar.nome}}{{else}}/public/img/user-profile-generic.png{{/if}}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
                         </div>
                         </div>
                         <div class="col-auto my-auto">
@@ -83,7 +83,7 @@
                                 <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Local:</strong> &nbsp;  University of Edinburgh</li>
                                 <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Ano:</strong> &nbsp; 1998</li>
                                 <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Lattes:</strong> &nbsp; <a href="http://lattes.cnpq.br/5919189481858271"> http://lattes.cnpq.br/5919189481858271</a></li>
-                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">E-mail:</strong> &nbsp; alberto@icomp.ufam.edu.br</li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">E-mail:</strong> &nbsp; {{professor.email}}</li>
                                 </ul>
                             </div>
                             </div>
@@ -102,32 +102,47 @@
                           <div class="nav-wrapper position-relative end-0 pt-3">
                           <ul class="nav nav-tabs p-1" role="tablist">
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="conference-tab" data-bs-toggle="tab" href="#conference" role="tab" aria-controls="conference" aria-selected="true">Artigos Publicados em Conferências (72)</a>
+                              <a class="nav-link px-3" id="conference-tab" data-bs-toggle="tab" href="#conference" role="tab" aria-controls="conference" aria-selected="true">Artigos Publicados em Conferências ({{paperConfLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link " id="paper-book-tab" data-bs-toggle="tab" href="#paper-book" role="tab" aria-controls="PaperBook" aria-selected="false">Artigos Publicados em Periódicos (72)</a>
+                              <a class="nav-link " id="paper-book-tab" data-bs-toggle="tab" href="#paper-book" role="tab" aria-controls="PaperBook" aria-selected="false">Artigos Publicados em Periódicos ({{paperPerLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">Livros Publicados (2)</a>
+                              <a class="nav-link px-3" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">Livros Publicados ({{bookLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="chapter-tab" data-bs-toggle="tab" href="#chapter" role="tab" aria-controls="chapter" aria-selected="false">Capítulos de Livros Publicados (2)</a>
+                              <a class="nav-link px-3" id="chapter-tab" data-bs-toggle="tab" href="#chapter" role="tab" aria-controls="chapter" aria-selected="false">Capítulos de Livros Publicados ({{chapterLen}})</a>
                             </li>
                           </ul>
                         </div>
                           <div class="tab-content" id="myTabContent2">
                             <div class="tab-pane fade show" id="conference" role="tabpanel" aria-labelledby="conference-tab">
-                                <ol class="mt-3 text-dark" style="font-size: 14px;"><li><strong>Multimodal Re-ranking of Product Image Search Results. </strong>Joyce Miranda Dos Santos; Joao Marcos Bastos Cavalcanti; Patrícia Correia Saraiva; Moura, Edleno S.; <i>35th European Conference on Information Retrieval - ECIR 2013, 2013. </i>Completo. <b></b></li><br><li><strong>Sorted Dominant Local Color for Searching Large and Heterogeneous Image Databases. </strong>Márcio L. A. Vidal; Joao Marcos Bastos Cavalcanti; Edleno Silva De Moura; Altigran Soares Da Silva; Ricardo Da Silva Torres; <i>21st International Conference on Pattern Recognition - ICPR 2012, 2012. </i>Completo. <b></b></li><br><li><strong>Automated Generation of Digital Libraries based on 5S and WebML. </strong>Emanuelle E. S. Gomes; Joao Marcos Bastos Cavalcanti; Marcos A. Gonçalves; <i>XIII Brazilian Symposium on Multimedia and the Web, 2007. </i>Completo. <b></b></li><br><li><strong>Labeling Data Extracted from the Web. </strong>Altigran Soares Da Silva; Denilson Barbosa; Joao Marcos Bastos Cavalcanti; Marco Sevalho; <i>ODBASE - International Conference on Ontologies, Databases and Applications of Semantics, 2007. </i>Completo. <b></b></li><br><li><strong>GoGetIt!: A Tool for Generating Structure Driven Web Crawlers. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>15th International World Wide Web Conference, 2006. </i>Resumo. <b></b></li><br><li><strong>Structure-Driven Crawler Generation by Example. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>29th Annual International ACM SIGIR Conference on Research &amp; Development on Information Retrieval, 2006. </i>Completo. <b></b></li><br><li><strong>Extracting and Searching Useful Information Available on Web FAQ. </strong>Edson Oliveira; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>21o Simpósio Brasileiro de Banco de Dados, 2006. </i>Completo. <b></b></li><br><li><strong>A Fast and Robust Method for Web Page Template Detection and Removal. </strong>Karane Mariano Vieira; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; Juliana Freire; Nick Pinto; <i>Conference on Information and Knowledge Management - CIKM, 2006. </i>Completo. <b></b></li><br><li><strong>SNIF: A Simple Nude Image Finder. </strong>Ruan J.s. Belém; Joao Marcos Bastos Cavalcanti; Edleno Silva De Moura; Mário A. Nascimento; <i>3rd Latin American Web Congress - LA-Web 2005, 2005. </i>Completo. <b></b></li><br><li><strong>An Agent-Based Approach to Web Site Maintenance. </strong>Wamberto Vasconcelos; Joao Marcos Bastos Cavalcanti; <i>International Conference on Web Engineering - ICWE2004, 2004. </i>Completo. <b></b></li><br><li><strong>Information Retrieval Aware Web Site Modelling and Generation. </strong>Keyla Ahnizeret; Joao Marcos Bastos Cavalcanti; David Oliveira; Edleno Silva De Moura; Altigran Soares Da Silva; <i>23rd International Conference on Conceptual Modeling(ER2004), 2004. </i>Completo. <b></b></li><br><li><strong>A Logic-Based Approach for Automatic Synthesis and Maintenance of Web Sites. </strong>Joao Marcos Bastos Cavalcanti; Wamberto Vasconcelos; <i>14th International Conference on Software Engineering and Knowledge Engineering, 2002. </i>Completo. <b></b></li><br><li><strong>Synthesis of Web Sites from High Level Descriptions. </strong>Joao Marcos Bastos Cavalcanti; David Robertson; <i>Third Workshop on Web Engineering, 2000. </i>Completo. <b></b></li><br><li><strong>Implementing Prolog-Run WWW Sites.. </strong>Wamberto Vasconcelos; R Schwitter; D Molla; Joao Marcos Bastos Cavalcanti; <i>13th International Conference on Applications of Prolog - inap 2000, 2000. </i>Completo. <b></b></li><br><li><strong>Performance Evaluation of the Relational Implementation
-of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcanti; Alberto Henrique Frade Laender; <i>2nd International Workshop on Time Oriented Business Applications - ZobIS'96, 1996. </i>Completo. <b></b></li><br><li><strong>Uma Abordagem para Implementacao de um Modelo Temporal Orientado a Objetos usando SGBDs Relacionais. </strong>Joao Marcos Bastos Cavalcanti; Alberto Henrique Frade Laender; Jose Palazzo De Oliveira; Nina Edelweiss; <i>10o Simposio Brasileiro de Banco de Dados, 1995. </i>Completo. <b></b></li><br><li><strong>Implementation of an Object-Oriented Temporal Model. </strong>Jose Palazzo De Oliveira; Nina Edelweiss; E Arruda; Alberto Henrique Frade Laender; Joao Marcos Bastos Cavalcanti; <i>International Conference on Database and Expert Systems Applications - DEXA'95, 1995. </i>Completo. <b></b></li><br></ol>
+                                <ol class="mt-3 text-dark" style="font-size: 14px;">
+                                    {{#each professor.artigosConferencias}}
+                                    <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
+                                    {{/each}}
+                                </ol>
+
                             </div>
                             <div class="tab-pane fade" style="font-size: 14px;" id="paper-book" role="tabpanel" aria-labelledby="paper-book-tab">
-                                <ol class="mt-3 text-dark"><li><strong>A multimodal query expansion based on genetic programming for visually-oriented e-commerce applications. </strong>Saraiva, PatrÍcia C.; Joao Marcos Bastos Cavalcanti; De Moura, Edleno S.; GonÇalves, Marcos A.; Torres, Ricardo Da S.; <i>Information Processing &amp; Management,  <b></b></i></li><i><br><li><strong>A signature-based bag of visual words method for image indexing and search. </strong>Dos Santos, Joyce Miranda; De Moura, Edleno Silva; Da Silva, Altigran Soares; Joao Marcos Bastos Cavalcanti; Torres, Ricardo Da Silva; Vidal, MÁrcio Luiz A.; <i>Pattern Recognition Letters,  <b></b></i></li><i><br><li><strong>Evaluation of parameters for combining multiple textual sources of evidence for Web image retrieval using genetic programming. </strong>Saraiva, PatrÍcia Correia; Joao Marcos Bastos Cavalcanti; GonÇalves, Marcos A.; Santos, Katia C. Lage; Moura, Edleno S.; Torres, Ricardo Da S.; <i>Journal of The Brazilian Computer Society (Online),  <b></b></i></li><i><br><li><strong>Evaluating Retrieval Effectiveness of Descriptors for Searching in Large Image Databases. </strong>Petrina A. S. Kimura; Joao Marcos Bastos Cavalcanti; Patrícia Correia Saraiva; Ricardo Da Silva Torres; Marcos A. Gonçalves; <i>Journal of Information and Data Management - JIDM,  <b></b></i></li><i><br><li><strong>The Database and Information Retrieval Research Group at UFAM. </strong>Joao Marcos Bastos Cavalcanti; Marco Antônio Pinheiro De Cristo; David Fernandes; Edleno Silva De Moura; Altigran Soares Da Silva; <i>Journal of Information and Data Management - JIDM,  <b></b></i></li><i><br><li><strong>An evolutionary approach for combining different sources of evidence in search engines. </strong>Thomaz Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; Altigran Soares Da Silva; Moisés Carvalho; Marcos A. Gonçalves; <i>Information Systems,  <b></b></i></li><i><br><li><strong>Structure-Based Crawling in the Hidden Web. </strong>Márcio L. A. Vidal; Altigran Soares Da Silva; Edleno Silva De Moura; Joao Marcos Bastos Cavalcanti; <i>Journal of Universal Computer Science,  <b></b></i></li><i><br><li><strong>Web Site Synthesis Based on Computational Logic. </strong>Joao Marcos Bastos Cavalcanti; David Robertson; <i>Knowledge and Information Systems,  <b></b></i></li><i><br></i></i></i></i></i></i></i></i></ol>
+                                <ol class="mt-3 text-dark">
+                                    {{#each professor.artigosPeriodicos}}
+                                    <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
+                                    {{/each}}
                             </div>
                             <div class="tab-pane fade" style="font-size: 14px;" id="book" role="tabpanel" aria-labelledby="book-tab">
-                                <ol class="mt-3 text-dark"><i><i></i><li><i><strong>Anais do XV Simpósio Brasileiro de Informática na Educação - SBIE2004 - Diversidade e Integração: Desafios para a Telemática na Educação. </strong>2004. </i></li><br></i><li><i><strong>Anais do XV Simpósio Brasileiro de Informática na Educação - SBIE2004 - Diversidade e Integração: Desafios para a Telemática na Educação - Volume II. </strong>2004. </i></li><br></ol>
+                                <ol class="mt-3 text-dark">
+                                    {{#each professor.livros}}
+                                    <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
+                                    {{/each}}
+                                </ol>
                             </div>
                             <div class="tab-pane fade" style="font-size: 14px;" id="chapter" role="tabpanel" aria-labelledby="chapter-tab">
-                                <ol class="mt-3 text-dark"><li><strong>Aprendizagem Colaborativa com Suporte Computacional. </strong><i>Sistemas Colaborativos, 2011. </i></li><br><li><strong>Orientações para Uso da Web e Produção de Conteúdos em EAD. </strong><i>Guia de Referência para Produção Gráfica de Material Didático em Educação a Distância, 2007. </i></li><br></ol>
+                                <ol class="mt-3 text-dark">
+                                    {{#each professor.capitulos}}
+                                    <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
+                                    {{/each}}
+                                </ol>
                             </div>
                           </div>
                         </div>
@@ -143,11 +158,13 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
     // Line chart
     var ctx1 = document.getElementById("line-chart").getContext("2d");
     var ctx2 = document.getElementById("line-chart-2").getContext("2d");
+    var labels = [{{anos}}]
+    labels[0] = "Até "+labels[1]
 
     new Chart(ctx1, {
     type: "line",
     data: {
-        labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
+        labels: labels,
         datasets: [{
             label: "Artigos",
             tension: 0,
@@ -157,7 +174,7 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
             borderColor: "#18bc9c",
             borderWidth: 3,
             backgroundColor: 'transparent',
-            data: [90, 21, 28, 17, 23, 16, 16, 16, 22, 0, 0],
+            data: [{{graficoArtigosConferencias}}],
             maxBarThickness: 6
         }
         ],
@@ -230,7 +247,7 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
     new Chart(ctx2, {
     type: "line",
     data: {
-        labels: ["Até 2014", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"],
+        labels: labels,
         datasets: [{
             label: "Artigos",
             tension: 0,
@@ -240,7 +257,7 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
             borderColor: "#18bc9c",
             borderWidth: 3,
             backgroundColor: 'transparent',
-            data: [8, 0, 3, 3, 2, 5, 7, 3, 5, 2, 0],
+            data: [{{graficoArtigosPeriodicos}}],
             maxBarThickness: 6
         },
         ],
@@ -310,8 +327,6 @@ of an Object-Oriented Temporal Data Model.. </strong>Joao Marcos Bastos Cavalcan
         },
     },
     });
-
-        
 
 </script>
 {{> numerosIcomp/footer}}

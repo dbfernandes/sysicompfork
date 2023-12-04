@@ -50,7 +50,6 @@ class PublicacaoService {
             return tipo.dataValues;
           })
           const publicArr = await getPublicationsArr(publicacoes, idProfessor, tipos)
-          console.log(publicArr)
           await Publicacao.destroy({
             where: {
               idProfessor: idProfessor
