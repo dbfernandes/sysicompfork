@@ -34,7 +34,7 @@ function get_publicDict(dados){
     const dtIndx = get_index(dados, "DETALHAMENTO")
     const issnIdx = get_index(dados[dtIndx], "_IS")
     const issn = dados[dtIndx][issnIdx]
-    const localIdx = get_index(dados[dtIndx], "_TITULO-")
+    const localIdx = get_index(dados[dtIndx], "_NOME-DO-EVENTO") != '' ? get_index(dados[dtIndx], "_NOME-DO-EVENTO") : get_index(dados[dtIndx], "_TITULO-")
     const local = dados[dtIndx][localIdx]
     //localIdx = get_index(sub_val[l][dtIndx], "_LOCAL") 
     const pub = {
@@ -160,7 +160,8 @@ function getCompleteFormData(data, publicCallback){
                 }
             }
         }
-        data.append("publicacoes", publicDict);
+        
+        data.append("publicacoes", JSON.stringify(publicDict));
         publicCallback(data)
         },
         false,
