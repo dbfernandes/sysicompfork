@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     
     static associate(models) {
       this.hasMany(models.ReservaSala);
+      this.hasOne(models.Avatar, {
+        foreignKey: 'idUsuario',
+        as: 'Avatar',
+      });
       this.hasMany(models.Publicacao, {
         foreignKey: 'idProfessor',
         as: 'Publicacoes',

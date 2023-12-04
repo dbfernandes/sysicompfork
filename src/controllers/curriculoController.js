@@ -1,3 +1,4 @@
+import AvatarService from "../services/avatarService";
 import PublicacaoService from "../services/publicacaoService";
 import UsuarioService from "../services/usuarioService";
 
@@ -40,8 +41,11 @@ const visualizar = async (req, res) => {
 const carregar = async (req, res)=> {
   if (req.method === 'POST') {
     try {
-      const {publicacoes, idProfessor} = req.body
-        await PublicacaoService.adicionarVarios(idProfessor, publicacoes)
+        console.log(req.file)
+        const {publicacoes, idProfessor} = req.body
+        const publicacoesParsed = JSON.parse(publicacoes)
+        await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)
+        await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path)
         return res.status(201).send();                
       }catch(error){  
         console.log(error)
