@@ -6,23 +6,31 @@ const compileHTML = require('handlebars').compile;
 const compilePDF = require('html-pdf').create;
 
 const PDF_dir = path.join(process.cwd(), '/src/views/layouts/modeloAfastamento')
-function PDFOptions(header) {
+function PDFOptions(header, footer) {
     return {
       format: 'A4',
       header: {
-        height: '28mm',
+        height: '24mm',
         contents: {
             first: header,
+            default: '',
+        },
+      },
+      footer: {
+        height: '3cm',
+        contents: {
+            first: footer,
             default: '',
         },
       },
     }
 }
 // Geração de PDF
-async function HBStoPDF(afastamentoDoc, headerPath, caminho) {
+async function HBStoPDF(afastamentoDoc, headerPath, footerPath, caminho) {
     const header = compileHTML(fs.readFileSync(headerPath, 'utf8'))();
+    const footer = compileHTML(fs.readFileSync(footerPath, 'utf8'))();
     const conteudo = compileHTML(fs.readFileSync(caminho, 'utf8'))({afastamentoDoc});
-    return new Promise((resolve, reject) => compilePDF(conteudo, PDFOptions(header))
+    return new Promise((resolve, reject) => compilePDF(conteudo, PDFOptions(header, footer))
         .toBuffer((err, buffer) => err ? reject(err) : resolve(buffer)));
 }
 
@@ -45,13 +53,14 @@ async function getAfastamento(id) {
 }
 
 async function gerarPDF(req, res, next) {
-    var contentPath = path.join(PDF_dir, 'afastamentoPDF.hbs')
     const relatorio = await getAfastamento(req.params.id);
     var filename = `Afastamento-${relatorio.usuarioNome}.pdf`;
     const headerPath = path.join(PDF_dir, 'header.hbs');
+    const footerPath = path.join(PDF_dir, 'footer.hbs');
+    const contentPath = path.join(PDF_dir, 'afastamentoPDF.hbs')
 
     try {
-        const pdfBuffer = await HBStoPDF(relatorio, headerPath, contentPath); 
+        const pdfBuffer = await HBStoPDF(relatorio, headerPath, footerPath, contentPath); 
         return res.set({
             'Content-Type': 'application/pdf',
             'Content-Disposition': `inline; filename=${filename}`
