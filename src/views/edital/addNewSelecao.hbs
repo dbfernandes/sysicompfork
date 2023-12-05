@@ -78,37 +78,23 @@
                                 </div>
 
                                 <div class="form-row mt-4">
-                                    <!------data de inicio------------>
                                     <div class="col-md-6">
-                                        <font color="#FF0000">*</font>
-                                        <label>Data de Início das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                            <input type="date" class="form-control" placeholder="Data de Início" name="data_inicio"
-                                                data-inputmask-inputformat="dd/mm/yyyy" required
-                                                id="data_inicio">
-                                        </div>
-                                    </div>
+                                        <div class="form-group">
+                                            <font color="#FF0000">*</font>
+                                            <label>Datas de Início e Fim das Inscrições:</label>
 
-                                    <!------data de fim------------>
-                                    <div class="col-md-6">
-                                        <font color="#FF0000">*</font> <label>Data de Término das Inscrições:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="datas" name="datas" required>
                                             </div>
-                                            <input type="date" class="form-control" name="data_fim" placeholder="Data de Fim"
-                                                required id="data_fim">
+                                            
                                         </div>
                                     </div>
-                                </div>
-                                
+                                </div>                                                         
                             </div>
                         </div> 
                     </div>
@@ -118,106 +104,102 @@
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
-                        <div class="card-body">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="form-row">                                        
-                                        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
-                                            <div class="form-group">
-                                                <div class="form-row">                                                
-                                                    <label for="carta_recomendacao"> <font color="#FF0000">*</font> Carta de Recomendação? </label>
-                                                </div>
-                                                <input type="checkbox" name="carta_recomendacao" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="carta_recomendacao">
+                        <div class="card-body">                        
+                            <div class="form-group">
+                                <div class="form-row">                                        
+                                    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-2">
+                                        <div class="form-group">
+                                            <div class="form-row">                                                
+                                                <label for="carta_recomendacao"> <font color="#FF0000">* </font>Carta de Recomendação? </label>
                                             </div>
-                                        </div>
-
-                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="carta_orientador"> <font color="#FF0000">*</font>Carta Orientador?</label>
-                                                </div>
-                                                <input type="checkbox" name="carta_orientador" data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="carta_orientador">
-                                            </div>   
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                                           
-
-                                <div class="form-group">                            
-                                    <div class="form-row">
-                                        <div class="col-sm-3 col-md-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
-                                                </div>
-                                                <input type="checkbox" name="mestrado" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="mestrado">
-                                            </div>                                            
-                                        </div>
-
-                                        <div class="col-sm-4">                                                
-                                            <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
-                                            <input type="number" name="vaga_regular_mestrado" class="form-control "
-                                                placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_regular_mestrado" value="0" min="0">
-                                        </div>
-
-                                        <div class="col-sm-5 col-md-6">
-                                            <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
-                                            <input type="number" class="form-control " name="vaga_suplementar_mestrado"
-                                                placeholder="Vagas Regulares para Mestrado" required
-                                                id="vaga_suplementar_mestrado" value="0" min="0">
+                                            <input type="checkbox" name="carta_recomendacao" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="carta_recomendacao">
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group">                            
-                                    <div class="form-row">
-                                        <div class="col-sm-3 col-md-2">
-                                            <div class="form-group">
-                                                <div class="form-row">            
-                                                    <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
-                                                </div>
-                                                <input type="checkbox" name="doutorado" checked data-bootstrap-switch
-                                                    data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                                    data-off-text="Não" id="doutorado">
-                                            </div> 
-                                        </div>
-
-                                        <div class="col-sm-4">                                                
-                                            <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
-                                            <input type="number" name="vaga_regular_doutorado" class="form-control "
-                                                placeholder="Vagas Regulares para Doutorado" required
-                                                id="vaga_regular_doutorado" value="0" min="0">
-                                        </div>
-
-                                        <div class="col-sm-5 col-md-6">
-                                            <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
-                                            <input type="number" class="form-control" name="vaga_suplementar_doutorado"
-                                                placeholder="Vagas Regulares para Doutorado" required
-                                                id="vaga_suplementar_doutorado" value="0" min="0">
-                                        </div>
+                                    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="carta_orientador"> <font color="#FF0000">* </font>Carta Orientador?</label>
+                                            </div>
+                                            <input type="checkbox" name="carta_orientador" data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="carta_orientador">
+                                        </div>   
                                     </div>
                                 </div>
+                            </div>
+                                                        
 
-                                <div class="card-footer pr-0">
-                                    <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                        <button id="botaoSubmit" type="button" class="btn btn-success" onclick="submitForm()">
-                                            <i class="fas fa-check-circle"></i>
-                                            Criar Edital
-                                        </button>
-                                    </div>                        
+                            <div class="form-group">                            
+                                <div class="form-row">
+                                    <div class="col-sm-3 col-md-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="mestrado"> <font color="#FF0000">* </font>Mestrado?</label>
+                                            </div>
+                                            <input type="checkbox" name="mestrado" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="mestrado">
+                                        </div>                                            
+                                    </div>
+
+                                    <div class="col-sm-4">                                                
+                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Mestrado:</label>
+                                        <input type="number" name="vaga_regular_mestrado" class="form-control "
+                                            placeholder="Vagas Regulares para Mestrado" required
+                                            id="vaga_regular_mestrado" value="0" min="0">
+                                    </div>
+
+                                    <div class="col-sm-5 col-md-6">
+                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Mestrado:</label>
+                                        <input type="number" class="form-control " name="vaga_suplementar_mestrado"
+                                            placeholder="Vagas Regulares para Mestrado" required
+                                            id="vaga_suplementar_mestrado" value="0" min="0">
+                                    </div>
                                 </div>
+                            </div>
 
-                            </div>                                   
+                            <div class="form-group">                            
+                                <div class="form-row">
+                                    <div class="col-sm-3 col-md-2">
+                                        <div class="form-group">
+                                            <div class="form-row">            
+                                                <label for="doutorado"> <font color="#FF0000">* </font>Doutorado?</label>
+                                            </div>
+                                            <input type="checkbox" name="doutorado" checked data-bootstrap-switch
+                                                data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                                data-off-text="Não" id="doutorado">
+                                        </div> 
+                                    </div>
+
+                                    <div class="col-sm-4">                                                
+                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Doutorado:</label>
+                                        <input type="number" name="vaga_regular_doutorado" class="form-control "
+                                            placeholder="Vagas Regulares para Doutorado" required
+                                            id="vaga_regular_doutorado" value="0" min="0">
+                                    </div>
+
+                                    <div class="col-sm-5 col-md-6">
+                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Doutorado:</label>
+                                        <input type="number" class="form-control" name="vaga_suplementar_doutorado"
+                                            placeholder="Vagas Regulares para Doutorado" required
+                                            id="vaga_suplementar_doutorado" value="0" min="0">
+                                    </div>
+                                </div>
+                            </div>                                                      
                         </div>
+
+                        <div class="card-footer">
+                            <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                <button id="botaoSubmit" type="button" class="btn btn-success float-right" onclick="submitForm()">
+                                    <i class="fas fa-check-circle"></i>
+                                    Criar Edital
+                                </button>
+                            </div>
+                        </div>
+
                     </div>      
                 </form>        
             </div>
@@ -229,17 +211,14 @@
 
 
 
-<script>
-    
+<script>    
 
     document.getElementById("voltarBtn").addEventListener("click", function() {
         window.history.back();
     });
 
-    let camposIncorretos = true;
-
-    //verifica se pelo menos um dos quatro campos tem valor maior que 0
-    function verificarCampos() {
+    //verifica se pelo menos um dos quatro campos de vagas tem valor maior que 0
+    function verificaVagas() {
         const vaga_regular_mestrado = parseInt($('#vaga_regular_mestrado').val());
         const vaga_suplementar_mestrado = parseInt($('#vaga_suplementar_mestrado').val());
         const vaga_regular_doutorado = parseInt($('#vaga_regular_doutorado').val());
@@ -251,79 +230,66 @@
             vaga_regular_doutorado > 0 ||
             vaga_suplementar_doutorado > 0
         ) {
-            camposIncorretos = false;             
-        } else {
-            camposIncorretos = true;          
+            return true;             
         }
 
-        var camposPreenchidos = true;
-        $('input').each(function () {
-            if ($(this).val() === '') {
-                camposPreenchidos = false;
-                return false;
-            }
-        });
-
-        if ($('.is-invalid').length === 0 && camposPreenchidos && !camposIncorretos) {
-            $('#botaoSubmit').prop('disabled', false);
-        }
-        else{
-             $('#botaoSubmit').prop('disabled', true);
-        }
+        return false;
     }
+
+
+    //se o switch estiver desabilitado, bloqueia o campo correspondente e altera o valor pra 0
+        function toggleFields() {
+            let mestradoChecked = $("#mestrado").prop('checked');
+            let doutoradoChecked = $("#doutorado").prop('checked');
+
+            let vagaRegularMestrado = $("#vaga_regular_mestrado");
+            vagaRegularMestrado.prop('disabled', !mestradoChecked);
+            vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');     //se unchecked, valor=0
+
+            let vagaSuplementarMestrado = $("#vaga_suplementar_mestrado");
+            vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
+            vagaSuplementarMestrado.val(mestradoChecked ? vagaSuplementarMestrado.val() : '0');
+
+            let vagaRegularDoutorado = $("#vaga_regular_doutorado");
+            vagaRegularDoutorado.prop('disabled', !doutoradoChecked);
+            vagaRegularDoutorado.val(doutoradoChecked ? vagaRegularDoutorado.val() : '0');
+
+            let vagaSuplementarDoutorado = $("#vaga_suplementar_doutorado");
+            vagaSuplementarDoutorado.prop('disabled', !doutoradoChecked);
+            vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');            
+        }
     
 
     $(document).ready(function () {
-        $('#botaoSubmit').prop('disabled', true);
-     
-        //fica monitorando sempre que uma dessas variáveis mudar
-        $('#vaga_regular_mestrado').change(verificarCampos);
-        $('#vaga_suplementar_mestrado').change(verificarCampos);
-        $('#vaga_regular_doutorado').change(verificarCampos);
-        $('#vaga_suplementar_doutorado').change(verificarCampos);
-        //--
+    
+        $('#datas').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY', 
+                separator: ' - ',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                daysOfWeek: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            },
+        });
+              
 
-
-        // Inicialize o switch
+         // Inicialize o switch
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).is(':checked'));
         });
         //--
         
-        //se o switch estiver desabilitado, bloqueia o campo correspondente e altera o valor pra 0
-        function toggleFields() {
-            var mestradoChecked = $("#mestrado").prop('checked');
-            var doutoradoChecked = $("#doutorado").prop('checked');
-
-            var vagaRegularMestrado = $("#vaga_regular_mestrado");
-            vagaRegularMestrado.prop('disabled', !mestradoChecked);
-            vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');     //se unchecked, valor=0
-
-            var vagaSuplementarMestrado = $("#vaga_suplementar_mestrado");
-            vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
-            vagaSuplementarMestrado.val(mestradoChecked ? vagaSuplementarMestrado.val() : '0');
-
-            var vagaRegularDoutorado = $("#vaga_regular_doutorado");
-            vagaRegularDoutorado.prop('disabled', !doutoradoChecked);
-            vagaRegularDoutorado.val(doutoradoChecked ? vagaRegularDoutorado.val() : '0');
-
-            var vagaSuplementarDoutorado = $("#vaga_suplementar_doutorado");
-            vagaSuplementarDoutorado.prop('disabled', !doutoradoChecked);
-            vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');
-        }
-
-        toggleFields();
-
-
+      
+        //chamado sempre q o switch mudar
         $("#mestrado, #doutorado").on('switchChange.bootstrapSwitch', function (event, state) {
+
             toggleFields();
-        });
 
-        // Pelo menos um dos campos (Mestrado ou Doutorado) sempre deve estar habilitado
-        $("#mestrado, #doutorado").on('switchChange.bootstrapSwitch', function (event, state) {
+            // Pelo menos um dos campos (Mestrado ou Doutorado) sempre deve estar habilitado
             if (!state) {
-                var mestradoChecked = $("#mestrado").prop('checked');
-                var doutoradoChecked = $("#doutorado").prop('checked');
+                let mestradoChecked = $("#mestrado").prop('checked');
+                let doutoradoChecked = $("#doutorado").prop('checked');
                 if (!mestradoChecked && !doutoradoChecked) {
                     if (event.target.id === "mestrado") {
                         $("#doutorado").bootstrapSwitch('state', true);
@@ -335,18 +301,6 @@
         });
     });
     
-
-    //metodo para comparação de data
-    $.validator.addMethod('comparaData', function (value, element, params) {
-        var dataInicio = $('#data_inicio').val();
-        var dataFim = $('#data_fim').val();
-
-        if (!dataInicio || !dataFim) {
-            return true;
-        }
-
-        return new Date(dataInicio) <= new Date(dataFim);
-    });
 
     //validação dos campos do formulário
     $('#adicionarSelecaoForm').validate({ 
@@ -367,12 +321,6 @@
                 required: true,
                 digits: true,                
             },
-            carta_recomendacao: {
-                required: true,
-            },
-            carta_orientador: {
-                required: true,
-            },
             num_edital: {
                 required: true,
             },
@@ -380,15 +328,9 @@
                 required: true,
                 url: true,
             },
-            data_inicio: {
+            datas: {
                 required: true,
-                date: true,
-                comparaData: true
-            },
-            data_fim: {
-                required: true,
-                date: true,
-                comparaData: true
+               
             },
         },
         messages: {
@@ -408,12 +350,6 @@
                 required: 'Este campo é obrigatório.',
                 digits: 'Por favor, insira apenas números inteiros.',                
             },
-            carta_recomendacao: {
-                required: 'Selecione uma opção para Carta de Recomendação.',
-            },
-            carta_orientador: {
-                required: 'Selecione uma opção para Carta do Orientador.',
-            },
             num_edital: {
                 required: 'Este campo é obrigatório.',
             },
@@ -421,17 +357,9 @@
                 required: 'Este campo é obrigatório.',
                 url: 'Por favor, insira uma URL válida.',
             },
-            data_inicio: {
+            datas: {
                 required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-                
-            },
-            data_fim: {
-                required: 'Este campo é obrigatório.',
-                date: 'Por favor, insira uma data válida.',
-                comparaData: 'A data de fim deve ser maior que a data de início.'
-        
+                   
             },
         },
         errorElement: 'span',
@@ -441,27 +369,12 @@
         },
         
         highlight: function (element, errorClass, validClass) {
-            $(element).addClass('is-invalid') || camposIncorretos;
-            $('#botaoSubmit').prop('disabled', true);
+            $(element).addClass('is-invalid');
         },
 
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
-
-            // Verifica se todos os campos estão preenchidos
-            var camposPreenchidos = true;
-            $('input').each(function () {
-                if ($(this).val() === '') {
-                    camposPreenchidos = false;
-                    return false;
-                }
-            });
-
-            if ($('.is-invalid').length === 0 && camposPreenchidos && !camposIncorretos) {
-                $('#botaoSubmit').prop('disabled', false);
-            }
         }
-
     });
 
 
@@ -474,8 +387,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#data_inicio").val();
-        const data_fim = $("#data_fim").val();
+        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
+        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
 
 
         return {
@@ -494,42 +407,59 @@
 
 
     function submitForm() {
-        const dados = pegaDados();
 
-        if (dados) {
-            dados._csrf = $("#_csrf").val();
+        const $form = $('#adicionarSelecaoForm');
+        const vagas= verificaVagas();
+    
+        if($form.valid()){
 
-            $.ajax({
-                url: '/edital/addEdital',
-                type: 'POST',
-                data: dados,
-                success: function (data) {                               
-                    $(document).Toasts('create', {
-                        icon: 'success',
-                        class: "bg-success",
-                        autohide: true,
-                        delay: 10000,
-                        title: 'Sucesso!',
-                        body: 'Edital adicionado no sistema com sucesso'
-                    })
-                
-                    setTimeout(function() {
-                        window.location.href = '/edital/listEdital';
-                    }, 3000);
-                },
-                error: function (data) {                
-                    $(document).Toasts('create', {
-                        icon: 'error',
-                        class: "bg-danger",
-                        autohide: true,
-                        delay: 3000,
-                        title: 'Erro!',
-                        body: 'Erro: ' + data.responseJSON.error
-                    })
+            if(vagas){
+               
+                const dados = pegaDados();
 
+                if (dados) {
+                    dados._csrf = $("#_csrf").val();
+
+                    $.ajax({
+                        url: '/edital/addEdital',
+                        type: 'POST',
+                        data: dados,
+                        success: function (data) {                               
+                            const mensagem = "Edital adicionado no sistema com sucesso";            
+                            const expirationTime = new Date(new Date().getTime() + 5000);
+
+                            document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                            document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+                            window.location.href = '/edital/listEdital';
+                        },
+                        error: function (data) {                
+                            $(document).Toasts('create', {
+                                icon: 'error',
+                                class: "bg-danger",
+                                autohide: true,
+                                delay: 3000,
+                                title: 'Erro!',
+                                body: 'Erro: ' + data.responseJSON.error
+                            })
+
+                        }
+                    });
                 }
-            });
+
+            }else{
+                $(document).Toasts('create', {
+                    icon: 'error',
+                    class: "bg-danger",
+                    autohide: true,
+                    delay: 3000,
+                    title: 'Erro!',
+                    body: 'Erro: Adicione pelo menos 1 vaga'
+                })
+            }
+
         }
+
     }
 </script>
 

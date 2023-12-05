@@ -14,6 +14,7 @@ import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
 import afastamentoTemporarioRoutes from './afastamentoTemporario.routes';
 import pdfController from '../controllers/exportToPDF';
+import curriculoRoutes from './curriculo.routes'
 const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
@@ -53,4 +54,5 @@ router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
 router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
 router.use("/afastamentotemporario", autenticacaoController.autorizarProf, afastamentoTemporarioRoutes);
 router.use("/gerarPDF/:id", pdfController.gerarPDF);
+router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes)
 export default router;

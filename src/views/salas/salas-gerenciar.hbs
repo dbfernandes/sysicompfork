@@ -63,7 +63,7 @@
                                                 href="/salas/editar/{{id}}">
 
                                             </a> &nbsp
-                                            <a class="fa fa-solid fa-trash" id="{{id}}" data-toggle="modal"
+                                            <a class="fa fa-solid fa-trash" id="{{id}}" data-name = "{{nome}}"data-toggle="modal"
                                                 style="color: red;" data-target="#removerUsuario"
                                                 onclick="addLink(event)" href="#">
 
@@ -175,7 +175,7 @@
 
         let toastMessage = localStorage.getItem('toastMessage');
         let toastType = localStorage.getItem('toastType');
-        console.log("in")
+  
         if (toastMessage && toastType) {
             if (toastType === 'success') {
                 toastr.success(toastMessage);
@@ -191,7 +191,8 @@
 
     function addLink(event) {
         const id = event.target.id
-        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Sala?";
+        const nome = event.target.dataset.name;
+        document.getElementById("tituloModal").innerHTML = `Deseja realmente excluir a Sala ${nome}?`;
         const formDelete = document.getElementById("postDelete")
         formDelete.setAttribute('action', `/salas/excluir/${id}`);
     }

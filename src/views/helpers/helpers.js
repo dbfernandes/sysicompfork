@@ -49,15 +49,16 @@ const checked = (a, b) => {
 }
 
 const checked_in = (a, b) => {
-  if (a.includes(b))
-      return 'selected'
+  console.log(a)
+  if (a !== "" & a.includes(b))
+      return 'checked'
   return ''
 }
 
 
 const checked_unica = (a) => {
-  if (typeof a !== "undefined")
-      return 'selected'
+  if (a !== "")
+      return 'checked'
   return ''
 }
 
@@ -88,5 +89,28 @@ const formataData = (data) => {
 }
 
 
-module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData }
+const validaLabel = (status, dataInicio, dataFim, options) => {
+
+  const dataAtual= moment.tz('America/Manaus').format('YYYY-MM-DD');
+
+  if(status == '1'){
+
+    if (moment(dataAtual).isBefore(dataInicio)) {
+      return '<span class="badge bg-info">Não Iniciado</span>';
+    }
+    else if(moment(dataAtual).isAfter(dataFim)){
+      return '<span class="badge bg-warning">Encerrado</span>';
+    }
+    else{
+      return '<span class="badge bg-success">Aberto</span>';
+    }
+
+  }else{
+    return options.inverse(this);
+  } 
+}
+
+
+
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData, validaLabel}
 
