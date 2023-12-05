@@ -2,20 +2,14 @@ import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
 import afastamentoService  from '../services/afastamentoService.js'
+import usuarioService from '../services/usuarioService.js';
 const compileHTML = require('handlebars').compile;
 const compilePDF = require('html-pdf').create;
 
 const PDF_dir = path.join(process.cwd(), '/src/views/layouts/modeloAfastamento')
-function PDFOptions(header, footer) {
+function PDFOptions(footer) {
     return {
       format: 'A4',
-      header: {
-        height: '24mm',
-        contents: {
-            first: header,
-            default: '',
-        },
-      },
       footer: {
         height: '3cm',
         contents: {
@@ -26,16 +20,17 @@ function PDFOptions(header, footer) {
     }
 }
 // Geração de PDF
-async function HBStoPDF(afastamentoDoc, headerPath, footerPath, caminho) {
-    const header = compileHTML(fs.readFileSync(headerPath, 'utf8'))();
+async function HBStoPDF(afastamentoDoc, footerPath, caminho) {
     const footer = compileHTML(fs.readFileSync(footerPath, 'utf8'))();
     const conteudo = compileHTML(fs.readFileSync(caminho, 'utf8'))({afastamentoDoc});
-    return new Promise((resolve, reject) => compilePDF(conteudo, PDFOptions(header, footer))
+    return new Promise((resolve, reject) => compilePDF(conteudo, PDFOptions(footer))
         .toBuffer((err, buffer) => err ? reject(err) : resolve(buffer)));
 }
 
 async function getAfastamento(id) {
     const afastamento = await afastamentoService.pegarAfastamento(id);
+    const usuario = await usuarioService.listarUm(id);
+    const email = usuario.email;
     const { usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao, createdAt } = afastamento;
     const afastamentoDoc = {
         usuarioNome,
@@ -46,7 +41,8 @@ async function getAfastamento(id) {
         justificativa,
         planoReposicao,
         data: moment(createdAt).format('DD/MM/YYYY'),
-        hora: moment(createdAt).format('HH:mm')
+        hora: moment(createdAt).format('HH:mm'),
+        email
     }
     return afastamentoDoc;
 
@@ -55,12 +51,11 @@ async function getAfastamento(id) {
 async function gerarPDF(req, res, next) {
     const relatorio = await getAfastamento(req.params.id);
     var filename = `Afastamento-${relatorio.usuarioNome}.pdf`;
-    const headerPath = path.join(PDF_dir, 'header.hbs');
     const footerPath = path.join(PDF_dir, 'footer.hbs');
     const contentPath = path.join(PDF_dir, 'afastamentoPDF.hbs')
 
     try {
-        const pdfBuffer = await HBStoPDF(relatorio, headerPath, footerPath, contentPath); 
+        const pdfBuffer = await HBStoPDF(relatorio, footerPath, contentPath); 
         return res.set({
             'Content-Type': 'application/pdf',
             'Content-Disposition': `inline; filename=${filename}`
