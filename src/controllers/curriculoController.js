@@ -23,32 +23,45 @@ const visualizar = async (req, res) => {
           message, 
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
+          avatar: null
       })
   } catch (error) { 
       console.log(error)
       return res.redirect(
           criarURL('/iniciar', {
-              message: 'Não foi possível visualizar o seu perfil.',
+              message: 'Não foi possível abrir o envio de currículo.',
               type: 'danger',
-              messageTitle: 'Visualização do perfil indisponível!',
-              tipoUsuario: req.session.tipoUsuario
+              messageTitle: 'Envio de currículo indisponível!',
+              tipoUsuario: req.session.tipoUsuario,
           })
         );
+  }
+}
+
+const verificarAvatar = async (req, res) => {
+  try {
+    const {id} = req.params
+    const avatar = await AvatarService.listarUm(id)
+    res.status(200).send(avatar)
+  }catch(err){
+    throw err
   }
 }
 
 const carregar = async (req, res)=> {
   if (req.method === 'POST') {
     try {
-        console.log(req.file)
         const {publicacoes, idProfessor} = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)
-        await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path)
+        if(req.file){
+          await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path)
+        }
         return res.status(201).send();                
       }catch(error){  
         console.log(error)
+        throw error
       }
   }
 
@@ -57,4 +70,4 @@ const carregar = async (req, res)=> {
 
 }
 
-export default { visualizar, carregar}
+export default { visualizar, verificarAvatar, carregar}

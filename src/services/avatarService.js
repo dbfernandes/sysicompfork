@@ -8,15 +8,31 @@ class AvatarService {
         caminho
     ){
         try {
-        this.remover(idUsuario)
+        await this.remover(idUsuario)
+
+        const caminhoFormated = "/src/uploads/"+nome
 
         await Avatar.create({
             idUsuario,
             nome, 
-            caminho
+            caminho: caminhoFormated
         }, {})
         } catch (error) {
             throw error
+        }
+    }
+
+    async listarUm(idUsuario){
+        try {
+            const avatar = await Avatar.findOne({
+                where: {
+                    idUsuario: idUsuario
+                }
+            })
+            var avatarDict = avatar == null ? avatar : avatar.get()
+            return avatarDict
+        }catch(err){
+            throw err
         }
     }
 
