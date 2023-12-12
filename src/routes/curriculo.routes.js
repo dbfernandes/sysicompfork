@@ -20,13 +20,13 @@ router.get('/', curriculoController.visualizar)
 router.get('/avatar/:id', curriculoController.verificarAvatar)
 
 router.post('/upload', (req, res) =>{
-    curriculoController.carregar(req, res)
     uploads(req, res, function (err) {
         if (err) {
             console.log(err)
-          // An error occurred when uploading
-          throw err
-    }
+            // An error occurred when uploading
+            throw err
+        }
+    curriculoController.carregar(req, res)
 })
 }
 )

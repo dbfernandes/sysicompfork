@@ -57,11 +57,9 @@ function getCompleteData(data, publicCallback){
         "load", 
         () => { 
         xmlText = x2js.xml_str2json(reader.result); 
-        console.log(xmlText)
         const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
         let publicDict = {}
         if(publicacoes){
-            console.log(publicacoes)
             for(var i in publicacoes){
                 var val = publicacoes[i];
                 for(var j in val){
@@ -118,10 +116,9 @@ function getCompleteFormData(data, publicCallback){
         () => { 
         xmlText = x2js.xml_str2json(reader.result); 
         console.log(xmlText)
-        const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
+        const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"]
         let publicDict = {}
         if(publicacoes){
-            console.log(publicacoes)
             for(var i in publicacoes){
                 var val = publicacoes[i];
                 for(var j in val){
@@ -132,7 +129,7 @@ function getCompleteFormData(data, publicCallback){
                         for (var m in sub_val){
                             const public = get_publicDict(sub_val[m])
                             publicDict[j].push(public)
-
+                            
                         }
                     }else{
                         if(sub_val.hasOwnProperty("AUTORES")){
@@ -160,11 +157,36 @@ function getCompleteFormData(data, publicCallback){
                 }
             }
         }
-        
+        const premios =  xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"]["PREMIO-TITULO"]
+        let premiosArr= []
+        if(premios){
+            if(premios.length>0){
+                for(var i in premios){
+                    const titulo = premios[i]["_NOME-DO-PREMIO-OU-TITULO"]
+                    const ano = premios[i]["_ANO-DA-PREMIACAO"]
+                    const entidade = premios[i]["_NOME-DA-ENTIDADE-PROMOTORA"]
+                    premiosArr.push({
+                        titulo,
+                        ano,
+                        entidade
+                    })
+                }
+            }else{
+                const titulo = premios["_NOME-DO-PREMIO-OU-TITULO"]
+                const ano = premios["_ANO-DA-PREMIACAO"]
+                const entidade = premios["_NOME-DA-ENTIDADE-PROMOTORA"]
+                premiosArr.push({
+                    titulo,
+                    ano,
+                    entidade
+                })
+            }
+        }
+        data.append("premios", JSON.stringify({"premios": premiosArr}))
         data.append("publicacoes", JSON.stringify(publicDict));
         publicCallback(data)
-        },
-        false,
+    },
+    false,
     );
     reader.readAsText(file, "ISO-8859-1");
 }

@@ -1,5 +1,6 @@
 import AvatarService from "../services/avatarService";
 import PublicacaoService from "../services/publicacaoService";
+import PremioService from "../services/premioService";
 import UsuarioService from "../services/usuarioService";
 
 function criarURL(root, params = {}) {
@@ -52,8 +53,10 @@ const verificarAvatar = async (req, res) => {
 const carregar = async (req, res)=> {
   if (req.method === 'POST') {
     try {
-        const {publicacoes, idProfessor} = req.body
+        const {publicacoes, idProfessor, premios} = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
+        const premiosParsed = JSON.parse(premios)
+        await PremioService.adicionarVarios(idProfessor, premiosParsed)
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)
         if(req.file){
           await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path)
