@@ -4,7 +4,7 @@ class DocenteService {
     async listarUm(id){
         try {
         const usuario = await Usuario.findByPk(id, {
-            atributes: ["id", "nomeCompleto", "email", "status", "idLattes", "createdAt"],
+            atributes: ["id", "nomeCompleto", "email", "status", "idLattes", "formacao", "resumo", "ultimaAtualizacao", "createdAt"],
             include: [
                 {
                     model: Publicacao,
