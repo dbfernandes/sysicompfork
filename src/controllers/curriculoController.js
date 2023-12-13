@@ -53,9 +53,12 @@ const verificarAvatar = async (req, res) => {
 const carregar = async (req, res)=> {
   if (req.method === 'POST') {
     try {
-        const {publicacoes, idProfessor, premios} = req.body
+        const {publicacoes, idProfessor, premios, info} = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
         const premiosParsed = JSON.parse(premios)
+        const infoParsed = JSON.parse(info)
+
+        await UsuarioService.alterarInfo(idProfessor, infoParsed)
         await PremioService.adicionarVarios(idProfessor, premiosParsed)
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)
         if(req.file){
