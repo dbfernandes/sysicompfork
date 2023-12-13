@@ -13,7 +13,8 @@
       </thead>
       <tbody>
         {{#each professores}}
-        <tr data-key={{id}}><td class="ps-4"><a href="perfil/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">Doutorado em Computer Science - Artificial Intelligence. University of Edinburgh, 1998.</td><td class="ps-4">19/05/2018</td></tr>
+        <tr data-key={{id}}><td class="ps-4"><a href="perfil/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td><td class="ps-4">
+            {{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td></tr>
         {{/each}}
       </tbody>
     </table>
@@ -27,7 +28,7 @@
         // Setup - add a text input to each footer cell
         $('#example thead #filters th').each( function (i) {
             var title = $('#example thead #header th').eq( $(this).index() ).text();
-            $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><label class="form-label">'+title+'</label><input type="text" class="form-control" data-index="'+i+'" /></div>')
+            $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><input type="text" class="form-control" data-index="'+i+'" placeholder="'+title+'" /></div>')
         } );
     
         // DataTable
@@ -57,7 +58,6 @@
 
             const input = $(`#filters th #input${idx} input`)
             input.on('keyup', function () {
-                console.log(table.column(idx).search("alb").draw())
 
                 if (table.column(idx).search() !== this.value) {
                     table.column(idx).search(this.value).draw()

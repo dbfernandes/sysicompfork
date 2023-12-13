@@ -87,6 +87,22 @@ const add = (a, b) => {
 const formataData = (data) => {
   return moment(data).format('DD/MM/YYYY');
 }
+const formataFormacao = (formacao) => {
+  const formacaoArr = formacao.split(";")
+  return formacaoArr[0]+" em "+formacaoArr[1]+". "+ formacaoArr[2]+", "+formacaoArr[3]+".";
+}
+const formataFormacaoTitulo  = (formacao) => {
+  const formacaoArr = formacao.split(";")
+  return formacaoArr[0]+" em "+formacaoArr[1];
+}
+const formataFormacaoLocal = (formacao) => {
+  const formacaoArr = formacao.split(";")
+  return formacaoArr[2];
+}
+const formataFormacaoAno = (formacao) => {
+  const formacaoArr = formacao.split(";")
+  return formacaoArr[3];
+}
 
 
 const validaLabel = (status, dataInicio, dataFim, options) => {
@@ -112,5 +128,6 @@ const validaLabel = (status, dataInicio, dataFim, options) => {
 
 
 
-module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData, validaLabel}
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData, 
+  validaLabel, formataFormacao, formataFormacaoLocal, formataFormacaoTitulo,formataFormacaoAno}
 
