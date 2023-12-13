@@ -65,7 +65,7 @@ function get_projectDict(dados, nome, idLattes){
     const titulo = dados["_NOME-DO-PROJETO"]
     const descricao = dados["_DESCRICAO-DO-PROJETO"]
     const inicio = dados["_ANO-INICIO"]
-    const fim = dados["_ANO-FIM"]
+    const fim = dados["_ANO-FIM"] == "" || dados["_ANO-FIM"] == undefined ? 0 : dados["_ANO-FIM"] 
     var integrantes = []
     var papel = ""
     var financiadores = []
@@ -297,7 +297,6 @@ function getCompleteFormData(data, publicCallback){
                 })
             }
         }
-
         data.append("projetos", JSON.stringify(projectDict))
         data.append("premios", JSON.stringify({"premios": premiosArr}))
         data.append("publicacoes", JSON.stringify(publicDict));

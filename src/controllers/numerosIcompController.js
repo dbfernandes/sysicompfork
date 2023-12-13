@@ -48,6 +48,7 @@ const perfil = async (req, res) => {
             const anos = [...Array(11).keys()].map(i => i + currentYear-10)
             var graficoArtigosConferencias = [0,0,0,0,0,0,0,0,0,0,0] 
             var graficoArtigosPeriodicos = [0,0,0,0,0,0,0,0,0,0,0]                                                       
+            var graficoProjetos = [0,0,0,0,0,0,0,0,0,0]                                                       
             professor.artigosConferencias.forEach(artigo =>{
                 const idx = anos.findIndex((e=>e==artigo.ano))
                 if(idx==-1){
@@ -65,6 +66,17 @@ const perfil = async (req, res) => {
                     graficoArtigosPeriodicos[idx] = graficoArtigosPeriodicos[idx]+1
                 }
             })
+            professor.Projetos.forEach(projeto =>{
+                const anosProjeto = projeto.fim == 0 ? 
+                [...Array(currentYear-projeto.inicio).keys()].map(i => i + currentYear-(currentYear-projeto.inicio-1)):
+                [...Array(projeto.fim-projeto.inicio).keys()].map(i => i + projeto.fim-(projeto.fim-projeto.inicio-1))
+                anosProjeto.forEach(ano => {
+                    const idx = anos.slice(1).findIndex((e=>e==ano))
+                    if(idx>-1){
+                        graficoProjetos[idx] = graficoProjetos[idx]+1
+                    }
+                }) 
+            })
 
             return res.render('numerosIcomp/perfil', {
                 professor,
@@ -75,7 +87,8 @@ const perfil = async (req, res) => {
                 ...localsDashboard,
                 anos,
                 graficoArtigosConferencias,
-                graficoArtigosPeriodicos
+                graficoArtigosPeriodicos,
+                graficoProjetos
             });
         case 'POST':
             return res.send('Erro 400');

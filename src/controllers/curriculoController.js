@@ -2,6 +2,7 @@ import AvatarService from "../services/avatarService";
 import PublicacaoService from "../services/publicacaoService";
 import PremioService from "../services/premioService";
 import UsuarioService from "../services/usuarioService";
+import ProjetoService from "../services/projetoService";
 
 function criarURL(root, params = {}) {
   if (root instanceof URL) root = root.href;
@@ -53,11 +54,13 @@ const verificarAvatar = async (req, res) => {
 const carregar = async (req, res)=> {
   if (req.method === 'POST') {
     try {
-        const {publicacoes, idProfessor, premios, info} = req.body
+        const {publicacoes, idProfessor, premios, info, projetos} = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
         const premiosParsed = JSON.parse(premios)
         const infoParsed = JSON.parse(info)
+        const projetosParsed = JSON.parse(projetos)
 
+        await ProjetoService.adicionarVarios(idProfessor, projetosParsed)
         await UsuarioService.alterarInfo(idProfessor, infoParsed)
         await PremioService.adicionarVarios(idProfessor, premiosParsed)
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)

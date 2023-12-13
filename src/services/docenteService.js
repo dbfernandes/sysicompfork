@@ -1,4 +1,4 @@
-const {Usuario, Publicacao, TipoPublicacao, Avatar, Premio} = require('../models');
+const {Usuario, Publicacao, TipoPublicacao, Avatar, Premio, Projeto} = require('../models');
 
 class DocenteService {
     async listarUm(id){
@@ -21,16 +21,22 @@ class DocenteService {
                 {
                     model: Premio,
                     as: "Premios"
+                },
+                {
+                    model: Projeto,
+                    as: "Projetos"
                 }
             ],
             order: [
                 [{ model: Publicacao, as:'Publicacoes' }, 'ano', 'DESC' ],
                 [{ model: Premio, as:'Premios' }, 'ano', 'DESC' ],
+                [{ model: Projeto, as:'Projetos' }, 'inicio', 'DESC' ],
                 ],
         })
         const usuarioDict = usuario.get()
         usuarioDict["Avatar"] = usuario.Avatar ? usuario.Avatar.get() : usuario.Avatar
         usuarioDict["Premios"] = usuario.Premios.length > 0 ? usuario.Premios.map((p)=>p.get()) : usuario.Premios
+        usuarioDict["Projetos"] = usuario.Projetos.length > 0 ? usuario.Projetos.map((p)=>p.get()) : usuario.Projetos
         usuarioDict["perfil"] = usuario.perfis()
         usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
             timeZone: 'America/Manaus',
