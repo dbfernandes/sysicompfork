@@ -1,3 +1,4 @@
+
 function get_index(obj, idx){
     const keys = Object.keys(obj);
     for (var key in keys){
@@ -6,6 +7,18 @@ function get_index(obj, idx){
         }
     }
     return ""
+}
+
+function get_projetos_from_instituicao(instituicoes){
+    if(instituicoes.length > 0){
+        for (var idx in instituicoes){
+            if(instituicoes[idx]["_CODIGO-INSTITUICAO"]=="008200000000"){
+                return instituicoes[idx]["ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO"]
+            }
+        }
+    }else{
+        return instituicoes["ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO"]
+    }
 }
 
 function get_publicDict(dados){
@@ -46,6 +59,54 @@ function get_publicDict(dados){
         natureza
     }
     return pub
+}
+
+function get_projectDict(dados, nome, idLattes){
+    const titulo = dados["_NOME-DO-PROJETO"]
+    const descricao = dados["_DESCRICAO-DO-PROJETO"]
+    const inicio = dados["_ANO-INICIO"]
+    const fim = dados["_ANO-FIM"]
+    var integrantes = []
+    var papel = ""
+    var financiadores = []
+    
+    const integrantesArr = dados["EQUIPE-DO-PROJETO"]["INTEGRANTES-DO-PROJETO"]
+    if(integrantesArr.length > 0){
+        for (var i in integrantesArr){
+            integrantes.push(integrantesArr[i]["_NOME-COMPLETO"])
+            if(integrantesArr[i]["_NRO-ID-CNPQ"] == idLattes || integrantesArr[i]["_NOME-COMPLETO"] == nome){
+                papel = integrantesArr[i]["_FLAG-RESPONSAVEL"] == "SIM" ? "Coordenador" : "Participante"
+            }
+        }
+    }else{
+        integrantes = integrantesArr["_NOME-COMPLETO"]
+        papel = "Coordenador"
+    }
+
+    const financiadoresArr = dados["FINANCIADORES-DO-PROJETO"]
+    if(financiadoresArr){
+        if(financiadoresArr["FINANCIADOR-DO-PROJETO"].length > 0){
+            for (var j in financiadoresArr["FINANCIADOR-DO-PROJETO"]){
+                var nomeFinanciador = financiadoresArr["FINANCIADOR-DO-PROJETO"][j]["_NOME-INSTITUICAO"]
+                financiadores.push(nomeFinanciador == "" ? "Não possui" : nomeFinanciador)
+            }
+        }else{
+            var nomeFinanciador = financiadoresArr["FINANCIADOR-DO-PROJETO"]["_NOME-INSTITUICAO"]
+            financiadores = nomeFinanciador == "" ? "Não possui" : nomeFinanciador
+        }
+    }else{
+        financiadores.push("Não possui")
+    }
+
+    return {
+        titulo,
+        descricao,
+        inicio,
+        fim,
+        integrantes: typeof integrantes != "string" ? integrantes.join("; ") : integrantes,
+        financiadores: typeof financiadores != "string" ? financiadores.join("; ") : financiadores,
+        papel,
+    }
 }
 
 function getCompleteData(data, publicCallback){
@@ -116,6 +177,35 @@ function getCompleteFormData(data, publicCallback){
         () => { 
         xmlText = x2js.xml_str2json(reader.result); 
         console.log(xmlText)
+        const nomeCompleto = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["NOME-COMPLETO"]
+        const userDict = {}
+        userDict["idLattes"] = xmlText["CURRICULO-VITAE"]["_NUMERO-IDENTIFICADOR"]
+        userDict["resumo"] = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["RESUMO-CV"] ? xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["RESUMO-CV"]["_TEXTO-RESUMO-CV-RH"] : ""
+        userDict["ultimaAtualizacao"] = new Date()
+        const formacao = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["FORMACAO-ACADEMICA-TITULACAO"]
+        var formacaoTexto = ""
+        if(formacao.hasOwnProperty("DOUTORADO")){
+            formacaoTexto += "Doutorado;"
+            if(formacao["DOUTORADO"].length > 0){
+                formacaoTexto +=  formacao["DOUTORADO"][0]["_NOME-CURSO"] +";"+formacao["DOUTORADO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["DOUTORADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+            }else{
+                formacaoTexto +=  formacao["DOUTORADO"]["_NOME-CURSO"] +";"+formacao["DOUTORADO"]["_NOME-INSTITUICAO"]+";"+ formacao["DOUTORADO"]["_ANO-DE-CONCLUSAO"]+";"
+            }
+        }else if(formacao.hasOwnProperty("MESTRADO")){
+            if(formacao["MESTRADO"].length > 0){
+                formacaoTexto +=  formacao["MESTRADO"][0]["_NOME-CURSO"] +";"+formacao["MESTRADO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["MESTRADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+            }else{
+                formacaoTexto +=  formacao["MESTRADO"]["_NOME-CURSO"] +";"+formacao["MESTRADO"]["_NOME-INSTITUICAO"]+";"+ formacao["MESTRADO"]["_ANO-DE-CONCLUSAO"]+";"
+            }
+        }else{
+            if(formacao["GRADUACAO"].length > 0){
+                formacaoTexto +=  formacao["GRADUACAO"][0]["_NOME-CURSO"] +";"+formacao["GRADUACAO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["GRADUACAO"][0]["_ANO-DE-CONCLUSAO"]+";"
+            }else{
+                formacaoTexto +=  formacao["GRADUACAO"]["_NOME-CURSO"] +";"+formacao["GRADUACAO"]["_NOME-INSTITUICAO"]+";"+ formacao["GRADUACAO"]["_ANO-DE-CONCLUSAO"]+";"
+            }
+        }
+        userDict["formacao"] = formacaoTexto
+
         const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"]
         let publicDict = {}
         if(publicacoes){
@@ -157,7 +247,32 @@ function getCompleteFormData(data, publicCallback){
                 }
             }
         }
-        const premios =  xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"]["PREMIO-TITULO"]
+
+        const instituicoes = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["ATUACOES-PROFISSIONAIS"]["ATUACAO-PROFISSIONAL"]
+        const projetos = get_projetos_from_instituicao(instituicoes)
+        console.log(projetos)
+        const projectDict = { "projetos": []}
+        if(projetos){
+            if(projetos["PARTICIPACAO-EM-PROJETO"].length > 0){
+                sub_val = projetos["PARTICIPACAO-EM-PROJETO"]
+                for (var p in sub_val){
+                    if(sub_val[p]["PROJETO-DE-PESQUISA"].length > 0){
+                        for (var o in sub_val[p]["PROJETO-DE-PESQUISA"]){
+                             const project = get_projectDict(sub_val[p]["PROJETO-DE-PESQUISA"][o], nomeCompleto, userDict["idLattes"])
+                             projectDict["projetos"].push(project)
+                        }
+                    }else{
+                        const project = get_projectDict(sub_val[p]["PROJETO-DE-PESQUISA"], nomeCompleto, userDict["idLattes"])
+                        projectDict["projetos"].push(project)
+                    }
+                }
+            }else{
+                const project = get_projectDict(sub_val["PROJETO-DE-PESQUISA"], nomeCompleto, userDict["idLattes"])
+                projectDict["projetos"].push(project)
+            }
+        }
+
+        const premios =  xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"] == undefined ? null : xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"]["PREMIO-TITULO"]
         let premiosArr= []
         if(premios){
             if(premios.length>0){
@@ -182,8 +297,11 @@ function getCompleteFormData(data, publicCallback){
                 })
             }
         }
+
+        data.append("projetos", JSON.stringify(projectDict))
         data.append("premios", JSON.stringify({"premios": premiosArr}))
         data.append("publicacoes", JSON.stringify(publicDict));
+        data.append("info", JSON.stringify(userDict));
         publicCallback(data)
     },
     false,
