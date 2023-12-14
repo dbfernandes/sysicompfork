@@ -15,28 +15,36 @@ module.exports = (sequelize, DataTypes) => {
   };
   AfastamentoTemporario.init({
     usuarioId: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     usuarioNome: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     dataSaida: {
-      type: DataTypes.DATEONLY
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
     dataRetorno: {
-      type: DataTypes.DATEONLY
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
     tipoViagem: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     localViagem: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     justificativa: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     planoReposicao: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
   }, {
     sequelize,

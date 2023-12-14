@@ -9,28 +9,36 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       usuarioId: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       usuarioNome: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       dataSaida: {
-        type: Sequelize.DATEONLY
+        allowNull: false,
+        type: Sequelize.DATEONLY,
       },
       dataRetorno: {
-        type: Sequelize.DATEONLY
+        allowNull: false,
+        type: Sequelize.DATEONLY,
       },
       tipoViagem: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       localViagem: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       justificativa: {
-        type: Sequelize.TEXT
+        allowNull: false,
+        type: Sequelize.TEXT,
       },
       planoReposicao: {
-        type: Sequelize.TEXT
+        allowNull: false,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
