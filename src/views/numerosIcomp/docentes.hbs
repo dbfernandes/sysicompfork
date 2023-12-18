@@ -4,8 +4,8 @@
         <div class="container pb-4" >
           <div class="row ">
               <div class="col-md-12 text-center">
-                  <h3>Docentes</h3>
-                  <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
+                  <h1 class="text-white">Docentes</h1>
+                  <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
               </div>
       <table id="example" class="table table-hover table-striped w-100 bg-white"><thead>
       <tr id="filters"><th id="name">Nome</th><th id="formation">Formação</th><th id="lastUpdate">Última atualização</th></tr>
@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         {{#each professores}}
-        <tr data-key={{id}}><td class="ps-4"><a href="perfil/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td><td class="ps-4">
+        <tr data-key={{id}}><td class="ps-4"><a href="docente/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td><td class="ps-4">
             {{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td></tr>
         {{/each}}
       </tbody>
@@ -39,7 +39,7 @@
             pageLength: 20,
             responsive: {
                 details: false,
-            },
+            }, 
             columns: [
             { responsivePriority: 1 },
             { responsivePriority: 3 },

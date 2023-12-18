@@ -43,13 +43,31 @@ const perfil = async (req, res) => {
     switch (req.method) {
         case 'GET':
             const {id} = req.params
-            const professor = await DocenteService.listarUm(id)
+            const professor = await DocenteService.listarPerfil(id)
+
+            return res.render('numerosIcomp/perfil/perfil', {
+                professor,
+                ...localsDashboard,
+            });
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+const publicacoes = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {id} = req.params
+            const professor = await DocenteService.listarPerfil(id)
+            const publicacoes = await DocenteService.listarPublicacoes(id)
+
             const currentYear = new Date().getFullYear()
             const anos = [...Array(11).keys()].map(i => i + currentYear-10)
             var graficoArtigosConferencias = [0,0,0,0,0,0,0,0,0,0,0] 
             var graficoArtigosPeriodicos = [0,0,0,0,0,0,0,0,0,0,0]                                                       
             var graficoProjetos = [0,0,0,0,0,0,0,0,0,0]                                                       
-            professor.artigosConferencias.forEach(artigo =>{
+            publicacoes.artigosConferencias.forEach(artigo =>{
                 const idx = anos.findIndex((e=>e==artigo.ano))
                 if(idx==-1){
                     graficoArtigosConferencias[0] = graficoArtigosConferencias[0]+1
@@ -58,7 +76,7 @@ const perfil = async (req, res) => {
                 }
             })
 
-            professor.artigosPeriodicos.forEach(artigo =>{
+            publicacoes.artigosPeriodicos.forEach(artigo =>{
                 const idx = anos.findIndex((e=>e==artigo.ano))
                 if(idx==-1){
                     graficoArtigosPeriodicos[0] = graficoArtigosPeriodicos[0]+1
@@ -66,29 +84,158 @@ const perfil = async (req, res) => {
                     graficoArtigosPeriodicos[idx] = graficoArtigosPeriodicos[idx]+1
                 }
             })
-            professor.Projetos.forEach(projeto =>{
+
+
+            return res.render('numerosIcomp/perfil/perfil-publicacao', {
+                professor,
+                publicacoes,
+                paperConfLen: publicacoes.artigosConferencias.length,
+                paperPerLen: publicacoes.artigosPeriodicos.length,
+                bookLen: publicacoes.livros.length,
+                chapterLen: publicacoes.capitulos.length,
+                ...localsDashboard,
+                anos,
+                graficoArtigosConferencias,
+                graficoArtigosPeriodicos,
+            });
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+const pesquisa = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {id} = req.params
+            const professor = await DocenteService.listarPerfil(id)
+            const projetos = await DocenteService.listarPesquisas(id)
+
+            const currentYear = new Date().getFullYear()
+            const anos = [...Array(10).keys()].map(i => i + currentYear-9)
+                                                     
+            var graficoProjetos = [0,0,0,0,0,0,0,0,0,0]                                                       
+
+            projetos.forEach(projeto =>{
                 const anosProjeto = projeto.fim == 0 ? 
                 [...Array(currentYear-projeto.inicio).keys()].map(i => i + currentYear-(currentYear-projeto.inicio-1)):
                 [...Array(projeto.fim-projeto.inicio).keys()].map(i => i + projeto.fim-(projeto.fim-projeto.inicio-1))
                 anosProjeto.forEach(ano => {
-                    const idx = anos.slice(1).findIndex((e=>e==ano))
+                    const idx = anos.findIndex((e=>e==ano))
                     if(idx>-1){
                         graficoProjetos[idx] = graficoProjetos[idx]+1
                     }
                 }) 
             })
 
-            return res.render('numerosIcomp/perfil', {
+            return res.render('numerosIcomp/perfil/perfil-projeto', {
                 professor,
-                paperConfLen: professor.artigosConferencias.length,
-                paperPerLen: professor.artigosPeriodicos.length,
-                bookLen: professor.livros.length,
-                chapterLen: professor.capitulos.length,
+                projetos,
+                projetosLen: projetos.length,
                 ...localsDashboard,
                 anos,
-                graficoArtigosConferencias,
-                graficoArtigosPeriodicos,
                 graficoProjetos
+            });
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+const orientacao = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {id, tipo} = req.params
+            const tipos = ["graduacao","mestrado","doutorado"]
+            const t = tipos.findIndex(e=>e==tipo) + 1
+            if(t){
+                const professor = await DocenteService.listarPerfil(id)
+
+                const orientacoes = await DocenteService.listarOrientacoes(id, t)
+    
+                const currentYear = new Date().getFullYear()
+                const anos = [...Array(10).keys()].map(i => i + currentYear-9)
+                                                           
+                var graficoOrientacoesConcluidas = [0,0,0,0,0,0,0,0,0,0]                                                       
+                var graficoOrientacoesAndamento = [0,0,0,0,0,0,0,0,0,0]          
+    
+                orientacoes.concluidas.forEach(orientacao =>{
+                    const idx = anos.findIndex((e=>e==orientacao.ano))
+                    if(idx==-1){
+                        graficoOrientacoesConcluidas[0] = graficoOrientacoesConcluidas[0]+1
+                    }else{
+                        graficoOrientacoesConcluidas[idx] = graficoOrientacoesConcluidas[idx]+1
+                    }
+                })
+    
+                orientacoes.andamento.forEach(orientacao =>{
+                    const idx = anos.findIndex((e=>e==orientacao.ano))
+                    if(idx==-1){
+                        graficoOrientacoesAndamento[0] = graficoOrientacoesAndamento[0]+1
+                    }else{
+                        graficoOrientacoesAndamento[idx] = graficoOrientacoesAndamento[idx]+1
+                    }
+                })
+    
+                return res.render('numerosIcomp/perfil/perfil-orientacao', {
+                    professor,
+                    orientacoes,
+                    orientacoesConcluidasLen: orientacoes.concluidas.length,
+                    orientacoesAndamentoLen: orientacoes.andamento.length,
+                    ...localsDashboard,
+                    anos,
+                    tipo: tipo == "graduacao" ? "Graduação" : tipo.charAt(0).toUpperCase() + tipo.slice(1),
+                    graficoOrientacoesAndamento,
+                    graficoOrientacoesConcluidas,
+                });
+            }else{
+                return res.send('Erro 400');
+            }
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+const alunos = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {curso} = req.params
+            const cursos = ["processamento-de-dados","ciencia-computacao","engenharia-de-software", "mestrado", "doutorado"]
+            const c = cursos.findIndex(e=>e==curso) + 1
+            if(c){
+                const alunosInfo = []
+                const  alunosFormados = 0                              
+    
+                return res.render('numerosIcomp/alunos', {
+                    alunosInfo,
+                    alunosFormados,
+                    ...localsMain,
+                    curso: curso == "ciencia-computacao" ? "Ciência Da Computação" : 
+                            curso.split("-").map((p)=> p.charAt(0).toUpperCase() + p.slice(1)).join(" "),
+                });
+            }else{
+                return res.send('Erro 400');
+            }
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+
+const premios = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {id} = req.params
+            const premios = await DocenteService.listarPremios(id)
+            const professor = await DocenteService.listarPerfil(id)
+
+            return res.render('numerosIcomp/perfil/perfil-premio', {
+                premios,
+                professor,
+                premiosLen: premios.length,
+                ...localsDashboard,
             });
         case 'POST':
             return res.send('Erro 400');
@@ -99,5 +246,10 @@ const perfil = async (req, res) => {
 export default {
 	inicio,
     professores,
-    perfil
+    perfil,
+    publicacoes,
+    pesquisa,
+    orientacao,
+    premios,
+    alunos
 };

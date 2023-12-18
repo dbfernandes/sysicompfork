@@ -1,0 +1,101 @@
+    {{> numerosIcomp/navbar page="docentes"}}
+<div class="flex-wrapper bg-primary">
+
+    <section class="mb-3">
+        <div class="container">
+                <div class="card card-body mx-3 mx-md-4 mt-n6">
+                    <div class="row gx-4 mb-4">
+                        <div class="nav-wrapper position-relative end-0">
+                        <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                            <li class="nav-item">
+                                <a id="profile-tab" class="nav-link mb-0 px-0 active" href="/numerosIcomp/docente/{{professor.id}}" aria-controls="profile" role="tab" aria-selected="true">
+                                <i class="material-icons position-relative">person</i>
+                                
+                                <span class="ms-1">Perfil</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docente/{{professor.id}}/publicacoes" aria-controls="public" role="tab" aria-selected="false">
+                                <i class="material-icons position-relative">description</i>
+                                
+                                <span class="ms-1">Publicações</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docente/{{professor.id}}/projetos" role="tab" aria-controls="code" aria-selected="false">
+                                <i class="material-icons text-lg position-relative">search</i>
+                                <span class="ms-1">Projetos de Pesquisa</span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle mb-0 px-0 " data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons text-lg position-relative">account_circle</i>
+                                <span class="ms-1">Orientações</span>
+                                </a>
+                                <div class="dropdown-menu w-100 text-center">
+                                    <a class="dropdown-item" href="/numerosIcomp/docente/{{professor.id}}/orientacoes/graduacao">Graduação</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docente/{{professor.id}}/orientacoes/mestrado">Mestrado</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docente/{{professor.id}}/orientacoes/doutorado">Doutorado</a>
+                                  </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docente/{{professor.id}}/premios" role="tab" aria-controls="code" aria-selected="false">
+                                <i class="material-icons text-lg position-relative">military_tech</i>
+                                <span class="ms-1">Prêmios</span>
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+
+            
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row gx-4 mb-2">
+    
+                        <div class="col-auto">
+                        <div class="avatar avatar-xxl position-relative ms-3">
+                            <img src="{{#if professor.Avatar}}/uploads/{{professor.Avatar.nome}}{{else}}/public/img/user-profile-generic.png{{/if}}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        </div>
+                        </div>
+                        <div class="col-auto my-auto">
+                        <div class="h-100">
+                            <h3 class="mb-1">
+                            {{professor.nomeCompleto}}
+                            </h3>
+                        </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mt-3">
+    
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="row">
+                            <div class="card card-plain h-100">
+                            <div class="card-body p-3">
+                                <p class="text-justify">
+                                    {{professor.resumo}}
+                                </p>
+                                <hr class="horizontal gray-light my-4">
+                                <ul class="list-group">
+                                <li class="list-group-item border-0 ps-0 pt-0"><strong class="text-dark">Formação:</strong> &nbsp; {{#if professor.formacao}}{{formataFormacaoTitulo professor.formacao}}{{/if}}</li>
+                                <li class="list-group-item border-0 ps-0"><strong class="text-dark">Local:</strong> &nbsp;  {{#if professor.formacao}}{{formataFormacaoLocal professor.formacao}}{{/if}}</li>
+                                <li class="list-group-item border-0 ps-0"><strong class="text-dark">Ano:</strong> &nbsp; {{#if professor.formacao}}{{formataFormacaoAno professor.formacao}}{{/if}}</li>
+                                <li class="list-group-item border-0 ps-0"><strong class="text-dark">Lattes:</strong> &nbsp; <a target="_blank" href="http://lattes.cnpq.br/{{professor.idLattes}}"> http://lattes.cnpq.br/{{professor.idLattes}}</a></li>
+                                <li class="list-group-item border-0 ps-0"><strong class="text-dark">E-mail:</strong> &nbsp; {{professor.email}}</li>
+                                </ul>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+            
+                </div>
+            </div>
+    </section>
+        
+
+{{> numerosIcomp/footer}}
+</div>
