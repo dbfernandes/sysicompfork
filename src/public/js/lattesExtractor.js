@@ -109,6 +109,25 @@ function get_projectDict(dados, nome, idLattes){
     }
 }
 
+function get_guidenceDict(dados){
+    const dadosBasicosIDX = get_index(dados, "DADOS-BASICOS")
+    const detalhamentoIDX = get_index(dados, "DETALHAMENTO")
+    const tituloIDX = get_index(dados[dadosBasicosIDX], "_TITULO")
+    const alunoIDX = get_index(dados[detalhamentoIDX], "_NOME-DO-ORIENTA")
+    var natureza = dados[dadosBasicosIDX]["_NATUREZA"]
+    if(natureza.split("_").length > 1){
+        natureza = (natureza.toLowerCase().charAt(0).toUpperCase()+natureza.toLowerCase().slice(1)).split("_").join(" ")
+    }
+
+    return {
+        titulo: dados[dadosBasicosIDX][tituloIDX],
+        aluno: dados[detalhamentoIDX][alunoIDX],
+        ano: dados[dadosBasicosIDX]["_ANO"],
+        natureza
+    }
+    
+}
+
 function getCompleteData(data, publicCallback){
     const [file] = document.querySelector("input[type=file]").files; 
     const reader = new FileReader(); 
@@ -250,7 +269,6 @@ function getCompleteFormData(data, publicCallback){
 
         const instituicoes = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["ATUACOES-PROFISSIONAIS"]["ATUACAO-PROFISSIONAL"]
         const projetos = get_projetos_from_instituicao(instituicoes)
-        console.log(projetos)
         const projectDict = { "projetos": []}
         if(projetos){
             if(projetos["PARTICIPACAO-EM-PROJETO"].length > 0){
@@ -272,8 +290,73 @@ function getCompleteFormData(data, publicCallback){
             }
         }
 
-        const premios =  xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"] == undefined ? null : xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"]["PREMIO-TITULO"]
-        let premiosArr= []
+        const orientacaoDict = {"orientacoes": []}
+        const orientacoesAndamento = xmlText["CURRICULO-VITAE"]["DADOS-COMPLEMENTARES"]["ORIENTACOES-EM-ANDAMENTO"]
+        if(orientacoesAndamento){
+            for (var tipo in orientacoesAndamento){
+                var t = 0
+                 switch (tipo) {
+                    case "ORIENTACAO-EM-ANDAMENTO-DE-DOUTORADO":
+                        t = 3
+                        break;
+                 
+                    case "ORIENTACAO-EM-ANDAMENTO-DE-MESTRADO":
+                        t = 2
+                        break;
+                 
+                    default:
+                        t = 1
+                        break;
+                    }
+                    if(orientacoesAndamento[tipo].length > 0){
+                        for (var i in orientacoesAndamento[tipo]){
+                            const orientacao = get_guidenceDict(orientacoesAndamento[tipo][i])
+                            orientacao["tipo"] = t
+                            orientacao["status"] = 1
+                            orientacaoDict["orientacoes"].push(orientacao)
+                        }
+                    }else{
+                        const orientacao = get_guidenceDict(orientacoesAndamento[tipo])
+                        orientacao["tipo"] = t
+                        orientacao["status"] = 1                        
+                        orientacaoDict["orientacoes"].push(orientacao)
+                    }
+                }
+            }
+        const orientacoesConcluida = xmlText["CURRICULO-VITAE"]["OUTRA-PRODUCAO"] ? xmlText["CURRICULO-VITAE"]["OUTRA-PRODUCAO"]["ORIENTACOES-CONCLUIDAS"] : null
+        if(orientacoesConcluida){
+            for (var tipo in orientacoesConcluida){
+                var t = 0
+                 switch (tipo) {
+                    case "ORIENTACOES-CONCLUIDAS-PARA-DOUTORADO":
+                        t = 3
+                        break;
+                 
+                    case "ORIENTACOES-CONCLUIDAS-PARA-MESTRADO":
+                        t = 2
+                        break;
+                 
+                    default:
+                        t = 1
+                        break;
+                    }
+                    if(orientacoesConcluida[tipo].length > 0){
+                        for (var i in orientacoesConcluida[tipo]){
+                            const orientacao = get_guidenceDict(orientacoesConcluida[tipo][i])
+                            orientacao["tipo"] = t
+                            orientacao["status"] = 0
+                            orientacaoDict["orientacoes"].push(orientacao)
+                        }
+                    }else{
+                        const orientacao = get_guidenceDict(orientacoesConcluida[tipo])
+                        orientacao["tipo"] = t
+                        orientacao["status"] = 0                        
+                        orientacaoDict["orientacoes"].push(orientacao)
+                    }
+                }
+            }
+            const premios =  xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"] == undefined ? null : xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["PREMIOS-TITULOS"]["PREMIO-TITULO"]
+            let premiosArr= []
         if(premios){
             if(premios.length>0){
                 for(var i in premios){
@@ -297,6 +380,7 @@ function getCompleteFormData(data, publicCallback){
                 })
             }
         }
+        data.append("orientacoes", JSON.stringify(orientacaoDict))
         data.append("projetos", JSON.stringify(projectDict))
         data.append("premios", JSON.stringify({"premios": premiosArr}))
         data.append("publicacoes", JSON.stringify(publicDict));
