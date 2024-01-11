@@ -1,5 +1,6 @@
 import UsuarioService from "../services/usuarioService";
 import DocenteService from "../services/docenteService";
+import AlunoService from "../services/alunoService";
 const {Publicacao} = require('../models');
 
 const localsMain = {
@@ -13,8 +14,10 @@ const localsDashboard = {
 const inicio = async (req, res) => {
     switch (req.method) {
         case 'GET':
+            const contagem = await AlunoService.contarTodos()
             return res.render('numerosIcomp/inicio', {
                 ...localsMain,
+                contagem
             });
         case 'POST':
             return res.send('Erro 400');

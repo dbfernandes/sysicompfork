@@ -4,13 +4,7 @@ import PremioService from "../services/premioService";
 import UsuarioService from "../services/usuarioService";
 import ProjetoService from "../services/projetoService";
 import OrientacaoService from "../services/orientacaoService"
-
-function criarURL(root, params = {}) {
-  if (root instanceof URL) root = root.href;
-  params = new URLSearchParams(params).toString();
-  const token = !root.endsWith('?') && params ? '?' : '';
-  return root + token + params;
-}
+import criarURL from '../utils/criar-url'
 
 const visualizar = async (req, res) => {
   try {

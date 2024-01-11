@@ -26,7 +26,7 @@ const ops = {
 };
 
 const autorizarUsuario = (tipos, autorizacao) => {
-  if(autorizacao == "administrador"){
+  if(autorizacao == "administrador" || autorizacao == "secretaria"){
     return tipos.administrador || tipos.secretaria 
   }else if(autorizacao == "coordenador"){
     return tipos.administrador || tipos.secretaria || tipos.coordenador

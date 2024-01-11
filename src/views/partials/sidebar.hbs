@@ -54,8 +54,8 @@
               </a>
             </li>
           </ul>
-        {{/if}}
         </li>
+        {{/if}}
         {{#if (autorizarUsuario tipoUsuario "coordenador")}}
         <li class="nav-header">Coordenação PPGI</li>
         <!--<li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
@@ -219,6 +219,17 @@
             <i class="nav-icon fas fa-file"></i>
             <p>
               Upload Lattes
+            </p>
+          </a>
+        </li>
+        {{/if}}
+        {{#if (autorizarUsuario tipoUsuario "secretaria")}}
+        <li class="nav-header">Secretaria</li>
+        <li class="nav-item">
+          <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-graduation-cap"></i>
+            <p>
+              Gerenciar Alunos
             </p>
           </a>
         </li>

@@ -4,7 +4,7 @@ class AlunoService {
     async adicionarVarios(
         alunoArr
         ){
-          if(alunoArr!=undefined){
+          if(alunoArr!=undefined && alunoArr.length>0){
             try{
               await Aluno.truncate().then(async ()=>{
                 await Aluno.bulkCreate(alunoArr)
@@ -31,6 +31,35 @@ class AlunoService {
             throw err
         }
     }
+
+    async contarTodos(){
+      try{
+      const data = await Aluno.findOne({atributes: ["createdAt"]})
+      const contagem = {
+        matriculados: {
+            CC: await Aluno.count({where: {formado: 0, curso: "Ciência da Computação"}}),
+            SI: await Aluno.count({where: {formado: 0, curso: "Sistemas de Informação"}}),
+            ES: await Aluno.count({where: {formado: 0, curso: "Engenharia de Software"}}),
+            D: await Aluno.count({where: {formado: 0, curso: "Doutorado"}}),
+            M: await Aluno.count({where: {formado: 0, curso: "Mestrado"}}),
+        },
+        egressos: {
+          PD: 254,
+          CC: await Aluno.count({where: {formado: 1, curso: "Ciência da Computação"}}),
+          SI: await Aluno.count({where: {formado: 1, curso: "Sistemas de Informação"}}),
+          ES: await Aluno.count({where: {formado: 1, curso: "Engenharia de Software"}}),
+          D: await Aluno.count({where: {formado: 1, curso: "Doutorado"}}),
+          M: await Aluno.count({where: {formado: 1, curso: "Mestrado"}}),
+        },
+        data: data ? data.get().createdAt : new Date()
+      }
+      return contagem
+      }catch(err){
+        throw err;
+      }
+      
+    }
+
 
 }
 

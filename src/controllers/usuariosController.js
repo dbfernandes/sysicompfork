@@ -1,11 +1,5 @@
 import UsuarioService from "../services/usuarioService";
-
-function criarURL(root, params = {}) {
-    if (root instanceof URL) root = root.href;
-    params = new URLSearchParams(params).toString();
-    const token = !root.endsWith('?') && params ? '?' : '';
-    return root + token + params;
-  }
+import criarURL from '../utils/criar-url'
 
 const adicionar = async (req, res) => {
     if (req.method === 'GET') {
