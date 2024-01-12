@@ -6,7 +6,6 @@ const inicio = async (req, res) => {
     try {
         const { message, type, messageTitle } = req.query;
         const contagem = await AlunoService.contarTodos()
-        console.log(contagem)
         return res.render("alunos/alunos-gerenciar", {
             csrfToken: req.csrfToken(),
             nome: req.session.nome,

@@ -1,7 +1,7 @@
 import UsuarioService from "../services/usuarioService";
 import DocenteService from "../services/docenteService";
 import AlunoService from "../services/alunoService";
-const {Publicacao} = require('../models');
+import ProjetoService from "../services/projetoService"
 
 const localsMain = {
     layout: 'numerosIcompMain'
@@ -24,7 +24,6 @@ const inicio = async (req, res) => {
     }
 
 }
-
 
 const professores = async (req, res) => {
     switch (req.method) {
@@ -145,6 +144,21 @@ const pesquisa = async (req, res) => {
 
 }
 
+const projetos = async (req, res) => {
+    switch (req.method ) {
+        case "GET":
+            const projetosFiltrados = await ProjetoService.listarAtuais()
+
+            return res.status(200).render('numerosIcomp/projetos', {
+                ...localsMain,
+                projetosFiltrados
+            })
+        default:
+            return res.status(400)
+
+    }
+}
+
 const orientacao = async (req, res) => {
     switch (req.method) {
         case 'GET':
@@ -207,15 +221,20 @@ const alunos = async (req, res) => {
             const cursos = ["processamento-de-dados","ciencia-computacao","engenharia-de-software", "mestrado", "doutorado"]
             const c = cursos.findIndex(e=>e==curso) + 1
             if(c){
-                const alunosInfo = []
-                const  alunosFormados = 0                              
-    
+                const cursoSearch = curso == "ciencia-computacao" ? "Ciência Da Computação" : 
+                curso.split("-").map((p)=> {
+                    const palavra = p == 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1) 
+                    return palavra
+                }).join(" ")
+                const alunosInfo = await AlunoService.listarTodos(
+                    cursoSearch == "Engenharia de Software" ? ["Engenharia de Software", "Sistemas de Informação"] : cursoSearch, 
+                    1)
+                const alunosFormados = alunosInfo.length                             
                 return res.render('numerosIcomp/alunos', {
                     alunosInfo,
                     alunosFormados,
                     ...localsMain,
-                    curso: curso == "ciencia-computacao" ? "Ciência Da Computação" : 
-                            curso.split("-").map((p)=> p.charAt(0).toUpperCase() + p.slice(1)).join(" "),
+                    curso: cursoSearch == "Engenharia de Software" ? cursoSearch +" / Sistemas de Informação" : cursoSearch,
                 });
             }else{
                 return res.send('Erro 400');
@@ -254,5 +273,6 @@ export default {
     pesquisa,
     orientacao,
     premios,
-    alunos
+    alunos,
+    projetos
 };

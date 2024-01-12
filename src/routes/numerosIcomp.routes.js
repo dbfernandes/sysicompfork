@@ -8,6 +8,9 @@ router.all('/', numerosIcompController.inicio);
 // Lista de docentes
 router.all('/docentes', numerosIcompController.professores);
 
+// Lista de projetos atuais
+router.all('/projetos', numerosIcompController.projetos);
+
 // Perfil
 router.all('/docente/:id', numerosIcompController.perfil);
 router.all('/docente/:id/publicacoes', numerosIcompController.publicacoes);

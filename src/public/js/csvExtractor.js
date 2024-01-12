@@ -56,7 +56,7 @@ function getCSVData(data, cb){
                             break;
                     }
                     const periodoIngresso = row[10].slice(0,4)
-                    const periodoConclusao = formado ? row[11].slice(6,10) : null
+                    const periodoConclusao = row[11].length > 0 ? row[11].slice(6,10) : row[12].length > 0 ? row[12].slice(0,4) : null
     
                     const alunoData = {
                         nomeCompleto,

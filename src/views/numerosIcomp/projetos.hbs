@@ -1,22 +1,37 @@
-    {{> numerosIcomp/navbar page="alunos"}}
+    {{> numerosIcomp/navbar page="projetos"}}
 <div class="flex-wrapper bg-primary">
      <section class="success"  id="docentes">
         <div class="container pb-4" >
           <div class="row ">
               <div class="col-md-12 text-center">
-                  <h1 class="text-white">{{alunosFormados}} Alunos Formados</h1>
-                  <h2 class="text-white">{{curso}}</h2>
+                  <h2 class="text-white">{{projetosFiltrados.length}} Projetos de Pesquisa em Andamento</h2>
+                  <h5 class="text-white">Para conferir os detalhes dos projetos, clique no título do projeto.</h5>
                   <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
               </div>
-      <table id="example" class="table table-hover table-striped w-100 bg-white"><thead>
-      <tr id="filters"><th id="name">Nome</th><th id="conclusionDate">Data de Conclusão</th></tr>
-      <tr id="header"><th>Nome</th><th>Data de Conclusão</th></tr>
+      <table id="example" class="table table-hover table-striped w-100 bg-white wrap"><thead>
+      <tr id="filters">
+        <th id="name">Título</th>
+        <th id="period">Período</th>
+        <th id="about-hidden">Descrição</th>
+        <th id="financers-hidden">Financiadores</th>
+        <th id="team-hidden">Integrante(s)</th>
+      </tr>
+      <tr id="header">
+        <th>Título</th>
+        <th>Período</th>
+        <th>Descrição:</th>
+        <th>Financiador(es):</th>
+        <th>Integrante(s):</th>
+      </tr>
       </thead>
       <tbody>
-        {{#each alunosInfo}}
+        {{#each projetosFiltrados}}
         <tr data-key={{id}}>
-            <td class="ps-4">{{nomeCompleto}}</td>
-            <td class="ps-4">{{#if periodoConclusao}}{{ periodoConclusao}}{{/if}}</td>
+            <td class="ps-4" style="word-break: break-word; white-space: normal;">{{titulo}}</td>
+            <td class="ps-4"><b>{{inicio}} - {{#if fim}}{{fim}}{{else}}Atual{{/if}}</b></td>
+            <td class="ps-4">{{#if descricao}}{{descricao}}{{else}}Sem descrição disponível{{/if}}</td>
+            <td class="ps-4">{{#if financiadores}}{{financiadores}}{{else}}Sem financiadores{{/if}}</td>
+            <td class="ps-4">{{#if integrantes}}{{integrantes}}{{else}}Sem equipe de integrantes disponível{{/if}}</td>
         </tr>
         {{/each}}
       </tbody>
@@ -40,20 +55,22 @@
             bLengthChange: false,
             paginationType: "numbers",
             pageLength: 20,
-            responsive: {
-                details: false,
-            }, 
+            responsive: true, 
             columns: [
             { responsivePriority: 1 },
             { responsivePriority: 2 },
+            { responsivePriority: 3 },
+            { responsivePriority: 3 },
+            { responsivePriority: 3 },
         ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
             },
             autoWidth: false,
             columnDefs: [
-            { "width": "150px", "targets": 1 },
+            { "width": "100px", "targets": 1 },
             ],
+            order: [[1, 'desc']],
         } );
 
         table.columns().every(function(){
@@ -78,14 +95,21 @@
 
     function verifyColumns() {
         setTimeout(()=>{
+            const period = $("#period")
+            const headerHidden = [$('#about-hidden'), $('#financers-hidden'), $('#team-hidden')]
+            headerHidden.forEach(h=>{
+                if(!h.hasClass('d-none')){
+                    h.addClass('d-none')
+                }
+            })
             const header =  $('#example #header .dtr-hidden').length
-            const conclusionDate = $("#conclusionDate")
-            if(header == 0 && conclusionDate.hasClass("d-none")){
-                conclusionDate.removeClass("d-none")
-            }else if(header==1 && !conclusionDate.hasClass("d-none")){
-                conclusionDate.addClass("d-none")
+            console.log(header)
+            if(header == 3 && period.hasClass("d-none")){
+                period.removeClass("d-none")
+            }else if(header==4 && !period.hasClass("d-none")){
+                period.addClass("d-none")
             }
-        }, 100)
+        }, 200)
         
     }
     verifyColumns()
