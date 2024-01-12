@@ -65,6 +65,16 @@ class PublicacaoService {
 
   }
 
+  async listarTodos(conditions=null){
+    try {
+      const publicacoes = await Publicacao.findAll(conditions ? { where: conditions } : {})
+
+      return publicacoes.length > 0 ? publicacoes.map(p=>p.get()) : publicacoes
+    } catch (error) {
+      throw err;
+    }
+  }
+
 }
 
 

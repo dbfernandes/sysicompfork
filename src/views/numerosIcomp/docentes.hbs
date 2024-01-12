@@ -13,8 +13,11 @@
       </thead>
       <tbody>
         {{#each professores}}
-        <tr data-key={{id}}><td class="ps-4"><a href="docente/{{id}}">{{nomeCompleto}}</a></td><td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td><td class="ps-4">
-            {{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td></tr>
+        <tr data-key={{id}}>
+            <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docente/{{id}}">{{nomeCompleto}}</a></td>
+            <td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td>
+            <td class="ps-4">{{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td>
+        </tr>
         {{/each}}
       </tbody>
     </table>
@@ -80,18 +83,23 @@
                     if(formationTr.hasClass("d-none")){
                         formationTr.removeClass("d-none")
                     }
-                    if(!lastUpdateTr.hasClass("d-none")){
+                    if(lastUpdateTr.hasClass("d-none")){
                         lastUpdateTr.removeClass("d-none")
                     }
-                }else if(header==1 && !formationTr.hasClass("d-none")){
-                    formationTr.addClass("d-none")
+                }else if(header==1){
+                    if(!formationTr.hasClass("d-none")){
+                        formationTr.addClass("d-none")
+                    }
+                    if(lastUpdateTr.hasClass("d-none")){
+                        lastUpdateTr.removeClass("d-none")
+                    }
                 }else if(header==2 && !lastUpdateTr.hasClass("d-none")){
                     lastUpdateTr.addClass("d-none")
                     if(!formationTr.hasClass("d-none")){
                         formationTr.addClass("d-none")
                     }
                 }
-            }, 200)
+            }, 100)
             
         }
     verifyColumns()

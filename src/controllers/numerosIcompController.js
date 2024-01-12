@@ -2,6 +2,8 @@ import UsuarioService from "../services/usuarioService";
 import DocenteService from "../services/docenteService";
 import AlunoService from "../services/alunoService";
 import ProjetoService from "../services/projetoService"
+import PublicacaoService from "../services/publicacaoService";
+import { Op } from "sequelize";
 
 const localsMain = {
     layout: 'numerosIcompMain'
@@ -10,6 +12,8 @@ const localsMain = {
 const localsDashboard = {
     layout: 'numerosIcompDashboard'
 }
+
+// Home-page
 
 const inicio = async (req, res) => {
     switch (req.method) {
@@ -24,6 +28,8 @@ const inicio = async (req, res) => {
     }
 
 }
+
+// Listagem de Docentes
 
 const professores = async (req, res) => {
     switch (req.method) {
@@ -40,6 +46,83 @@ const professores = async (req, res) => {
     }
 
 }
+
+// Listagem Projetos
+
+const projetos = async (req, res) => {
+    switch (req.method ) {
+        case "GET":
+            const projetosFiltrados = await ProjetoService.listarAtuais()
+
+            return res.status(200).render('numerosIcomp/projetos', {
+                ...localsMain,
+                projetosFiltrados
+            })
+        default:
+            return res.status(400)
+
+    }
+}
+
+// Listagem de Alunos
+
+const alunos = async (req, res) => {
+    switch (req.method) {
+        case 'GET':
+            const {curso} = req.params
+            const cursos = ["processamento-de-dados","ciencia-computacao","engenharia-de-software", "mestrado", "doutorado"]
+            const c = cursos.findIndex(e=>e==curso) + 1
+            if(c){
+                const cursoSearch = curso == "ciencia-computacao" ? "Ciência Da Computação" : 
+                curso.split("-").map((p)=> {
+                    const palavra = p == 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1) 
+                    return palavra
+                }).join(" ")
+                const alunosInfo = await AlunoService.listarTodos(
+                    cursoSearch == "Engenharia de Software" ? ["Engenharia de Software", "Sistemas de Informação"] : cursoSearch, 
+                    1)
+                const alunosFormados = alunosInfo.length                             
+                return res.render('numerosIcomp/alunos', {
+                    alunosInfo,
+                    alunosFormados,
+                    ...localsMain,
+                    curso: cursoSearch == "Engenharia de Software" ? cursoSearch +" / Sistemas de Informação" : cursoSearch,
+                });
+            }else{
+                return res.send('Erro 400');
+            }
+        case 'POST':
+            return res.send('Erro 400');
+    }
+
+}
+
+// Listagem Publicações
+
+const publicacaoList = async (req, res) => {
+    switch (req.method) {
+        case "GET":
+            const ano = new Date().getFullYear()
+            const publicacoes = await PublicacaoService.listarTodos({
+                ano: {
+                    [Op.gt]: ano - 3
+                }
+            })
+
+            return res.render('numerosIcomp/publicacoes', {
+                ...localsMain,
+                publicacoes,
+                ano
+            });
+    
+        default:
+
+        return res.status(400)
+            break;
+    }
+}
+
+// Perfil
 
 const perfil = async (req, res) => {
     switch (req.method) {
@@ -144,21 +227,6 @@ const pesquisa = async (req, res) => {
 
 }
 
-const projetos = async (req, res) => {
-    switch (req.method ) {
-        case "GET":
-            const projetosFiltrados = await ProjetoService.listarAtuais()
-
-            return res.status(200).render('numerosIcomp/projetos', {
-                ...localsMain,
-                projetosFiltrados
-            })
-        default:
-            return res.status(400)
-
-    }
-}
-
 const orientacao = async (req, res) => {
     switch (req.method) {
         case 'GET':
@@ -214,38 +282,6 @@ const orientacao = async (req, res) => {
 
 }
 
-const alunos = async (req, res) => {
-    switch (req.method) {
-        case 'GET':
-            const {curso} = req.params
-            const cursos = ["processamento-de-dados","ciencia-computacao","engenharia-de-software", "mestrado", "doutorado"]
-            const c = cursos.findIndex(e=>e==curso) + 1
-            if(c){
-                const cursoSearch = curso == "ciencia-computacao" ? "Ciência Da Computação" : 
-                curso.split("-").map((p)=> {
-                    const palavra = p == 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1) 
-                    return palavra
-                }).join(" ")
-                const alunosInfo = await AlunoService.listarTodos(
-                    cursoSearch == "Engenharia de Software" ? ["Engenharia de Software", "Sistemas de Informação"] : cursoSearch, 
-                    1)
-                const alunosFormados = alunosInfo.length                             
-                return res.render('numerosIcomp/alunos', {
-                    alunosInfo,
-                    alunosFormados,
-                    ...localsMain,
-                    curso: cursoSearch == "Engenharia de Software" ? cursoSearch +" / Sistemas de Informação" : cursoSearch,
-                });
-            }else{
-                return res.send('Erro 400');
-            }
-        case 'POST':
-            return res.send('Erro 400');
-    }
-
-}
-
-
 const premios = async (req, res) => {
     switch (req.method) {
         case 'GET':
@@ -265,6 +301,7 @@ const premios = async (req, res) => {
 
 }
 
+
 export default {
 	inicio,
     professores,
@@ -274,5 +311,6 @@ export default {
     orientacao,
     premios,
     alunos,
-    projetos
+    projetos,
+    publicacaoList
 };
