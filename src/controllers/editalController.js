@@ -1,4 +1,5 @@
 import EditalService from "../services/editalService";
+import editalGerarPlanilha from "../services/editalGerarPlanilha";
 
 const locals = {
    layout: "selecaoppgi",
@@ -239,6 +240,14 @@ const listCandidatesEdital = async (req, res) => {
    }
 }
 
+const geraPlanilha = async (req, res) => {
+   const planilha = await editalGerarPlanilha.gerarPlanilha();
+   return res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': 'attachment; filename=planilha.xlsx',
+      'Content-Length': planilha.length
+   }).status(200).send(planilha);
+}
 
 export default {
    listEditalSelecao,
@@ -248,4 +257,5 @@ export default {
    viewEdital,
    listCandidatesEdital,
    updateEdital,
+   geraPlanilha,
 };
