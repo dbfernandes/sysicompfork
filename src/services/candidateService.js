@@ -100,7 +100,7 @@ class CandidateService {
             Endereco:  Candidato.Endereco,
             Cidade:  Candidato.Cidade,
             Bairro:  Candidato.Bairro,
-            Nascionalidade:  Candidato.Nascionalidade,
+            Nacionalidade:  Candidato.Nacionalidade,
             Telefone:  Candidato.TelefonePrincipal,
             TelefoneSecundario:  Candidato.TelefoneAlternativo,
             ComoSoube:  Candidato.ComoSoube,
@@ -148,16 +148,7 @@ class CandidateService {
         id,
         editalPosition
     }){
-        const candidateBack = await Candidate.update({
-            editalPosition: editalPosition
-        },{
-            where:{
-                id: id
-            }
-        }).catch(err => {
-            console.log(err)
-            throw new Error("Não foi possivel atualizar o candidato");
-        })
+        
         const candidate = await Candidate.findOne({
             where: {
                 id: id

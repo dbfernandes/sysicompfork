@@ -25,6 +25,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      email:{
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       Nascimento: {
         type: Sequelize.DATEONLY,
         allowNull: true,
@@ -101,10 +105,36 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: true,
       },
-      email:{
+      CursoGraduyacao: {
+        type: Sequelize.STRING,
         allowNull: true,
-        type: Sequelize.STRING
       },
+      InstituicaoGraduacao: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      AnoEgressoGraduacao: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      CursoPos: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },	
+      CursoPosTipo:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      CursoInstituicaoPos:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      CursoAnoEgressoPos:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      
+
     });
   },
 

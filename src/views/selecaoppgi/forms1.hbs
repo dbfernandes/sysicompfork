@@ -229,6 +229,15 @@
 				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 				<input id="email" type="hidden" value="{{email}}">
 				<input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
+				<input id="ComoSoubeObj" type="hidden" value="{{ComoSoube}}">
+				<input id="NascimentoObj" type="hidden" value="{{Nascimento}}">
+				<input id="UFObj" type="hidden" value="{{UF}}">
+				<input id="CotistaObj" type="hidden" value="{{Cotista}}">
+				<input id="CotistaTipoObj" type="hidden" value="{{CotistaTipo}}">
+				<input id="CondicaoObj" type="hidden" value="{{Condicao}}">
+				<input id="CondicaoTipoObj" type="hidden" value="{{CondicaoTipo}}">
+				<input id="BolsaObj" type="hidden" value="{{Bolsista}}">
+
 				<div class="card card-primary">
 					<div class="card-header">
 						<h3 class="card-title">Identificação do Candidato</h3>
@@ -245,7 +254,7 @@
 									<b>Nome:</b>
 								</label>
 								<input class="form-control" id="candidato-nome" placeholder="Insira seu nome" type="text" name="Nome"
-									 maxlength="60" value="{{Nome}}">
+									maxlength="60" value="{{Nome}}">
 							</div>
 							<div class="col-md-3 campo-candidato-datanascimento">
 								<label class="control-label" for="data-nascimento">
@@ -298,7 +307,7 @@
 								<label class="control-label" for="candidato-nomesocial">
 									<b>Nome Social:</b>
 								</label>
-								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]" 
+								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]"
 									maxlength="60" value="{{NomeSocial}}" />
 								<div class="help-block"></div>
 							</div>
@@ -308,8 +317,8 @@
 									<font color="#FF0000">*</font>
 									<b>CEP:</b>
 								</label>
-								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" 
-									data-plugin-inputmask="" value="{{CEP}}"/>
+								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" data-plugin-inputmask=""
+									value="{{CEP}}" />
 								<div class="help-block"></div>
 							</div>
 
@@ -318,7 +327,7 @@
 									<font color="#FF0000">*</font>
 									<b>Estado:</b>
 								</label>
-								<select  id="candidato-uf" class="custom-select" name="candidatoUf">
+								<select id="candidato-uf" class="custom-select" name="candidatoUf">
 									<option value="">Selecione UF:</option>
 									<option value="AC">AC</option>
 									<option value="AL">AL</option>
@@ -359,8 +368,8 @@
 								<label class="control-label" for="candidato-endereco">
 									<font color="#FF0000">*</font> <b>Endereço:</b>
 								</label>
-								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco"
-									maxlength="160" value="{{Endereco}}" >
+								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco" maxlength="160"
+									value="{{Endereco}}">
 
 								<div class="help-block"></div>
 							</div>
@@ -369,16 +378,16 @@
 								<label class="control-label" for="candidato-cidade">
 									<font color="#FF0000">*</font> <b>Cidade:</b>
 								</label>
-								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" 
-									maxlength="40" aria-invalid="true" value="{{Cidade}}">
+								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" maxlength="40"
+									aria-invalid="true" value="{{Cidade}}">
 							</div>
 
 							<div class="col-md-3 field-candidato-bairro">
 								<label class="control-label" for="candidato-bairro">
 									<font color="#FF0000">*</font> <b>Bairro:</b>
 								</label>
-								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" 
-									maxlength="50" value="{{Bairro}}">
+								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" maxlength="50"
+									value="{{Bairro}}">
 								<div class="help-block"></div>
 							</div>
 
@@ -421,14 +430,14 @@
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
 								</label>
 								<input type="text" id="candidato-telresidencial" class="form-control" name="candidatoTelresidencial"
-									 value="{{Telefone}}">
+									value="{{Telefone}}">
 								<div class="help-block"></div>
 							</div>
 
 							<div class="form-group col-3 ">
 								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
 								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
-									 value="{{TelefoneSecundario}}">
+									value="{{TelefoneSecundario}}">
 
 								<div class="help-block"></div>
 							</div>
@@ -451,6 +460,7 @@
 									<font color="#FF0000">*</font> <b>Como você soube do edital de seleção?</b>
 								</label>
 								<select id="como-soube" class="custom-select" name="comoSoube">
+
 									<option value="">Selecione como soube:</option>
 									<option value="Facebook">Facebook</option>
 									<option value="Instagram">Instagram</option>
@@ -624,6 +634,81 @@
 
 	function FormAdicionarPage() {
 
+		$(document).ready(function () {
+			var comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+
+			$("#como-soube").val(comoSoubeValue);
+		});
+
+
+		var cotistaValue = document.getElementById("CotistaObj").value;
+		var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
+
+		if (cotistaValue == "false")
+			document.getElementById("cotista").checked = false;
+
+		var select = document.getElementById("tipo-cota");
+		for (var i = 0; i < select.options.length; i++) {
+			if (select.options[i].value === cotistaTipoValue) {
+				select.selectedIndex = i;
+				break;
+			}
+		}
+
+
+
+		var ufValue = document.getElementById('UFObj').value;
+		var selectElement = document.getElementById('candidato-uf');
+		for (var i = 0; i < selectElement.options.length; i++) {
+			if (selectElement.options[i].value === ufValue) {
+				selectElement.options[i].selected = true;
+				break;
+			}
+		}
+
+
+		var condicaocheck = document.getElementById("CondicaoObj").value;
+		console.log(condicaocheck)
+		if (condicaocheck == "false")
+			document.getElementById("candidato-deficiencia1").checked = false;
+
+
+		var bolsacheck = document.getElementById("BolsaObj").value;
+		if (bolsacheck == "false")
+			document.getElementById("candidato-bolsa").checked = false;
+		else
+			document.getElementById("candidato-bolsa").checked = true;
+
+		$(document).ready(function () {
+			var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
+
+			$("#CondicaoObj").val(condicaoInicial);
+
+			$("#candidato-deficiencia1").change(function () {
+				$("#CondicaoObj").val($(this).prop("checked"));
+			});
+
+			$("#candidato-condicao").change(function () {
+				$("#CondicaoTipoObj").val($(this).val());
+			});
+
+		});
+
+
+
+
+
+		$(document).ready(function () {
+			var nascimentoValue = "{{Nascimento}}";
+			var formattedDate = moment(nascimentoValue, "YYYY-MM-DD").format("DD/MM/YYYY");
+
+			$("#data-nascimento").val(formattedDate);
+
+			$('#candidato-datanascimento').datetimepicker({
+				format: 'DD/MM/YYYY',
+			});
+		});
+
 		$('#candidato-datanascimento').datetimepicker({
 			format: 'DD/MM/YYYY',
 			locale: 'pt-br',
@@ -639,10 +724,9 @@
 			$(this).bootstrapSwitch('onSwitchChange', () => {
 				var input = document.getElementById('cota');
 				if ($(this).is(":checked")) {
-					// Se o checkbox for marcado
-					$("#cota").slideDown(); // Mostra o select
+					$("#cota").slideDown();
 				} else {
-					$("#cota").slideUp(); // Oculta o select
+					$("#cota").slideUp();
 				}
 			})
 		});
@@ -652,11 +736,10 @@
 			$(this).bootstrapSwitch('onSwitchChange', () => {
 				var input = document.getElementById('condicao');
 				if ($(this).is(":checked")) {
-					// Se o checkbox for marcado
-					$("#condicao").slideDown(); // Mostra o select
+					$("#condicao").slideDown();
 					$("#deficiencia-div").css("height", "auto");
 				} else {
-					$("#condicao").slideUp(); // Oculta o select
+					$("#condicao").slideUp();
 					$("#deficiencia-div").css("height", "auto");
 				}
 			})
@@ -905,7 +988,7 @@
 
 				$.ajax({
 					url: '/selecaoppgi/formulario/1',
-					type: 'POST',
+					type: "POST",
 					data: {
 						data: data,
 						_csrf: csrfToken,

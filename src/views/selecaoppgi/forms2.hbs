@@ -237,7 +237,7 @@
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="id" type="hidden" value="{{id}}">
+        <input id="idCandidato" type="hidden" value="{{id}}">
 
         <div class="card card-primary">
           <div class="card-header">
@@ -264,15 +264,16 @@
                   name="Instituicao" value="" maxlength="60">
               </div>
             </div>
-            <div class="col-md-3 ">
-              <label class="control-label" for="candidato-ano">
-                <font color="#FF0000">*</font>
-                <b>Ano de Egresso:</b>
-              </label>
-              <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="AnoEgresso"
-                value="" maxlength="60">
+            <div class="row">
+              <div class="col-md-3 ">
+                <label class="control-label" for="candidato-ano">
+                  <font color="#FF0000">*</font>
+                  <b>Ano de Egresso:</b>
+                </label>
+                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="AnoEgresso"
+                  value="" maxlength="60">
+              </div>
             </div>
-
           </div>
         </div>
 
@@ -299,18 +300,18 @@
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="Tipo1" name="CursoTipo">
+                    <input type="radio" id="Tipo1" name="CursoTipo" value="Mestrado Acadêmico">
                     <label for="Tipo1"> Mestrado Acadêmico
                     </label>
                   </div>
 
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="Tipo2" name="CursoTipo">
+                    <input type="radio" id="Tipo2" name="CursoTipo" value="Mestrado Profissional">
                     <label for="Tipo2">Mestrado Profissional
                     </label>
                   </div>
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="Tipo3" name="CursoTipo">
+                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado">
                     <label for="Tipo3">Doutorado
                     </label>
                   </div>
@@ -448,7 +449,7 @@
           </div>
           <div class="card-footer">
             <div class="col">
-              <button type="submit" class="btn btn-success float-right custom-button">
+              <button class="btn btn-success float-right custom-button">
                 Salvar e Continuar
               </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
@@ -484,7 +485,7 @@
           editalPosicao: editalPosicao,
           id: id
         }, success: function (data) {
-          window.location.href = '/selecaoppgi/forms';
+          window.location.href = '/selecaoppgi/formulario';
           window.location.reload(true);
         },
         error: function (data) {
@@ -503,18 +504,14 @@
     const exemploRow = document.querySelector(".experiencia-row");
 
     addButton.addEventListener("click", function (e) {
-      // Crie um clone da linha de exemplo
       e.preventDefault();
       const newExperienciaRow = exemploRow.cloneNode(true);
 
-      // Limpe os valores dos campos de input no novo clone
       const inputs = newExperienciaRow.querySelectorAll("input");
       inputs.forEach(input => input.value = "");
 
-      // Adicione o novo clone ao container de experiência
       experienciaContainer.appendChild(newExperienciaRow);
 
-      // Verifique o número de experiências e mostre o botão "Excluir" se houver mais de uma
       const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
       if (experiencias.length > 1) {
         for (const experiencia of experiencias) {
@@ -545,98 +542,167 @@
     return (!cursoPos && !instituicaoPos && !anoEgressoPos && !cursoTipoChecked) || (cursoPos && instituicaoPos && anoEgressoPos && cursoTipoChecked);
   }, "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios.");
 
-  $(document).ready(function () {
-    $("#candidato-formulario2").validate({
-      errorElement: 'span',
-      errorPlacement: function (error, element) {
-        error.addClass('invalid-feedback');
-        element.closest('div').append(error);
-      },
-      highlight: function (element, errorClass, validClass) {
-        $(element).addClass('is-invalid');
-      },
-      unhighlight: function (element, errorClass, validClass) {
-        $(element).removeClass('is-invalid');
-      },
-      rules: {
-        "Curso": {
-          required: true
-        },
-        "Instituicao": {
-          required: true
-        },
-        "AnoEgresso": {
-          required: true
-        },
-        "Curso-Pos": {
-          conjuntoPreenchido: true
-        },
-        "InstituicaoPos": {
-          conjuntoPreenchido: true
-        },
-        "AnoEgressoPos": {
-          conjuntoPreenchido: true
-        },
-        "VitaePDF": {
-          required: true
-        }
-      },
-      messages: {
-        "Curso": {
-          required: "Este campo é obrigatório."
-        },
-        "Instituicao": {
-          required: "Este campo é obrigatório."
-        },
-        "AnoEgresso": {
-          required: "Este campo é obrigatório."
-        },
-        "Curso-Pos": {
-          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
-        },
-        "InstituicaoPos": {
-          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
-        },
-        "AnoEgressoPos": {
-          conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
-        },
-        "VitaePDF": {
-          required: "Este campo é obrigatório."
-        }
-      },
-      submitHandler: function (form, e) {
-        e.preventDefault();
-        const csrfToken = $("#csrfToken").val();
-        const email = $("#email").val();
-        const editalPosicao = $("#editalPosicao").val();
-        const id = $("#id").val();
-        console.log("OOOOi")
-        /*$.ajax({
-          url: '',
-          type: 'POST',
-          data: {
-            data: $(form).serialize(),
-            _csrf: csrfToken,
-            email: email,
-            editalPosicao: editalPosicao,
-            id: id
-          },
-          success: function (data) {
-            $.validator.setDefaults({
-              submitHandler: function () {
-                alert("Form successful submitted!");
-              }
-            });
-          },
-          error: function (data) {
-            console.log(data)
-          }
-        });*/
-      }
-    });
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      FormSubmit(event)
+    },
   });
 
-  function enviarDocumentos() { }
+  function reqAjax(data) {
+    console.log("ajax")
+    console.log(data)
+    const csrfToken = $("#csrfToken").val();
+
+    $.ajax({
+      url: '/selecaoppgi/formulario/2',
+      type: "POST",
+      data: data,
+      success: function (data) {
+        $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-success",
+          autohide: true,
+          delay: 10000,
+          title: 'Formulário salvo com sucesso!',
+          body: 'O formulário foi salvo com sucesso.'
+        })
+      },
+      error: function (err) {
+        $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-danger",
+          autohide: true,
+          delay: 10000,
+          title: 'Ocorreu um problema!',
+          body: 'O formulário não pôde ser salvo.'
+        })
+      }
+    })
+
+  }
+
+  function getExperienciasData() {
+    const experiencias = document.getElementsByClassName("experiencia-row");
+    const experienciasData = [];
+
+    for (const experiencia of experiencias) {
+      const instituicao = experiencia.querySelector("#candidato-experiencia-instituicao").value;
+      const atividade = experiencia.querySelector("#candidato-experiencia-atividade").value;
+      const periodo = experiencia.querySelector("#candidato-experiencia-periodo").value;
+
+      const experienciaData = {
+        instituicao: instituicao,
+        atividade: atividade,
+        periodo: periodo
+      };
+
+      experienciasData.push(experienciaData);
+    }
+
+    return experienciasData;
+  }
+
+  function FormSubmit(e) {
+    e.preventDefault();
+    const csrfToken = $("#csrfToken").val();
+    const idCandidato = $("#idCandidato").val();
+    const Curso = $("#candidato-curso").val();
+    const Instituicao = $("#candidato-instituicao").val();
+    const AnoEgresso = $("#candidato-ano").val();
+    const CursoPos = $("#candidato-curso-pos").val();
+    const TipoCursoPos = $("input[name='CursoTipo']:checked").val() || "";
+    const InstituicaoPos = $("#candidato-instituicao-pos").val();
+    const AnoEgressoPos = $("#candidato-ano-pos").val();
+    const VitaePDF = $("#vittaepdf").val();
+    const VitaeXML = $("#vittaexml").val();
+    const Prova = $("#candidato-prova").val();
+    const experienciasData = getExperienciasData();
+
+    var formData = new FormData($('#candidato-formulario2')[0]);
+    formData.append('testKey', 'testValue');
+    console.log(formData)
+    const data = {
+      id: idCandidato,
+      _csrf: csrfToken,
+      Curso: Curso,
+      Instituicao: Instituicao,
+      AnoEgresso: AnoEgresso,
+      CursoPos: CursoPos,
+      TipoCursoPos: TipoCursoPos,
+      VitaePDF: VitaePDF,
+      Prova: Prova,
+      ExperienciasData: experienciasData,
+    }
+
+    if (VitaeXML === "") {
+      reqAjax(formData)
+    } else {
+      getCompleteData(formData, reqAjax)
+    }
+
+  }
+
+  $("#candidato-formulario2").validate({
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('div').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+    },
+    rules: {
+      "Curso": {
+        required: true
+      },
+      "Instituicao": {
+        required: true
+      },
+      "AnoEgresso": {
+        required: true
+      },
+      "Curso-Pos": {
+        conjuntoPreenchido: true
+      },
+      "InstituicaoPos": {
+        conjuntoPreenchido: true
+      },
+      "AnoEgressoPos": {
+        conjuntoPreenchido: true
+      },
+      "VitaePDF": {
+        required: true
+      }
+    },
+    messages: {
+      "Curso": {
+        required: "Este campo é obrigatório."
+      },
+      "Instituicao": {
+        required: "Este campo é obrigatório."
+      },
+      "AnoEgresso": {
+        required: "Este campo é obrigatório."
+      },
+      "Curso-Pos": {
+        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+      },
+      "InstituicaoPos": {
+        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+      },
+      "AnoEgressoPos": {
+        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+      },
+      "VitaePDF": {
+        required: "Este campo é obrigatório."
+      }
+    },
+
+  });
 
 
 </script>

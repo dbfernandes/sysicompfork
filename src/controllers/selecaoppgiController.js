@@ -53,7 +53,6 @@ const signin = async (req, res) => {
 					responseError = err;
 				});
 
-			console.log(candidate)
 			if (!candidate) {
 				return res.status(400).json({
 					error: responseError.message
@@ -71,6 +70,7 @@ const login = async (req, res) => {
 			const editais = await EditalService.listEdital();
 			return res.render('selecaoppgi/login', {
 				csrfToken: req.csrfToken(),
+				teste: "teste",
 				...locals,
 				editais: editais.map((edital) => {
 					return {
@@ -78,46 +78,66 @@ const login = async (req, res) => {
 					};
 				}),
 			});
+
 		case 'POST':
-			const {
-				email, senha, edital
-			} = req.body;
+			try {
+				const {
+					email, senha, edital
+				} = req.body;
 
-			console.log({
-				email,
-				senha,
-				edital
-			})
-
-			if (!email || !senha || !edital) {
-				return res.status(400).json({
-					error: 'Dados incompletos ou mal formatados'
-				});
-			}
-
-			let responseError = null;
-			const IsCandidateValide = await CandidateService
-				.auth({
+				console.log({
 					email,
-					password: senha,
-					editalNumber: edital
+					senha,
+					edital
 				})
-				.catch((err) => {
-					responseError = err;
-				});
 
-			if (!IsCandidateValide) {
-				return res.status(400).json({
-					error: responseError.message
-				});
+				if (!email || !senha || !edital) {
+					return res.status(400).json({
+						error: 'Dados incompletos ou mal formatados'
+					});
+				}
+
+				let responseError = null;
+				const IsCandidateValid = await CandidateService
+					.auth({
+						email,
+						password: senha,
+						editalNumber: edital
+					})
+					.catch((err) => {
+						responseError = err;
+					});
+
+				console.log("TESTE");
+				const editais2 = await EditalService.listEdital();
+
+				if (!IsCandidateValid) {
+					console.log("error teste");
+					console.log(req.csrfToken());
+
+					return res.render('selecaoppgi/login', {
+						csrfToken: req.csrfToken(),
+						message: "Usuário não cadastrado",
+						type: 'danger',
+						...locals,
+						editais: editais2.map((edital) => {
+							return {
+								...edital.get(),
+							};
+						}),
+					});
+				}
+
+				req.session.email = IsCandidateValid.email;
+				req.session.editalId = IsCandidateValid.editalId;
+				req.session.uid = IsCandidateValid.id;
+				req.session.editalPosition = IsCandidateValid.editalPosition;
+				return res.status(200).send();
+
+			} catch (err) {
+				console.log(err);
+				return res.status(500).send();
 			}
-
-			req.session.email = IsCandidateValide.email
-			req.session.editalId = IsCandidateValide.editalId
-			req.session.uid = IsCandidateValide.id
-			req.session.editalPosition = IsCandidateValide.editalPosition
-			res.status(200).send()
-
 
 		default:
 			return res.status(404).send();
@@ -126,7 +146,7 @@ const login = async (req, res) => {
 
 const forms = async (req, res) => {
 	console.log(req.method)
-
+	console.log("teste forms")
 
 	switch (req.method) {
 		case 'GET':
@@ -136,14 +156,14 @@ const forms = async (req, res) => {
 				res.redirect('/selecaoppgi/entrar')
 			}
 			if (req.session.editalPosition == 1) {
-				console.log(req.session.email)
-				console.log(req.session.editalId)
-				console.log(req.session.uid)
+				//console.log(req.session.email)
+				//console.log(req.session.editalId)
+				//console.log(req.session.uid)
 				const id = req.session.uid
 				const candidate = await CandidateService.findOne({
 					id: id,
 				})
-				console.log(candidate)
+				//console.log(candidate)
 				return res.render('selecaoppgi/forms1', {
 					...locals,
 					Nome: candidate.Nome,
@@ -165,15 +185,35 @@ const forms = async (req, res) => {
 					CotistaTipo: candidate.CotistaTipo,
 					Condicao: candidate.Condicao,
 					CondicaoTipo: candidate.CondicaoTipo,
-					Bolsista: candidate.Bolsa,
+					Bolsista: candidate.Bolsista,
 					editalPosicao: req.session.editalPosition,
 					email: req.session.email,
 					id: req.session.uid,
 					csrfToken: req.csrfToken()
 				});
-			} 
+			}
 			if (req.session.editalPosition == 2) {
+				const candidate = await CandidateService.findOne({
+					id: req.session.uid,
+				})
+
+
 				return res.render('selecaoppgi/forms2', {
+					...locals,
+					editalPosicao: req.session.editalPosition,
+					email: req.session.email,
+					id: req.session.uid,
+					Curso: candidate.CursoDesejado,
+					csrfToken: req.csrfToken()
+				});
+			}
+
+			if (req.session.editalPosition == 3) {
+				const candidate = await CandidateService.findOne({
+					id: req.session.uid,
+				})
+
+				return res.render('selecaoppgi/forms3', {
 					...locals,
 					editalPosicao: req.session.editalPosition,
 					email: req.session.email,
@@ -185,7 +225,7 @@ const forms = async (req, res) => {
 		case 'POST':
 
 			if (req.session.editalPosition == 1) {
-				console.log(req.body)
+				//console.log(req.body)
 			}
 
 	}
@@ -196,12 +236,11 @@ const form1 = async (req, res) => {
 		case 'GET':
 			res.send("oi")
 		case 'POST':
-			console.log("********************************************")
+			console.log("******************************************** FORM 1 POST")
 			const data = req.body.data
-			console.log(req.session.editalPosition)
+			//console.log(req.session.editalPosition)
 			if (req.session.editalPosition == 1) {
-				console.log("teste")
-				console.log(data)
+				console.log("teste form1")
 				const Candidato = {
 					Nome: data.Nome,
 					Nascimento: data.Nascimento,
@@ -224,7 +263,6 @@ const form1 = async (req, res) => {
 					CondicaoTipo: data.CondicaoTipo,
 					Bolsa: data.Bolsa,
 				};
-				console.log(Candidato)
 				const id = req.session.uid
 
 				const candidate = await CandidateService
@@ -244,6 +282,13 @@ const form1 = async (req, res) => {
 	}
 }
 
+const form2 = async (req, res) => {
+	console.log("form2post")
+	console.log(req.body)
+	res.status(200).send()
+
+}
+
 const candidates = async (req, res) => {
 	switch (req.method) {
 		case 'GET':
@@ -258,7 +303,6 @@ const candidates = async (req, res) => {
 const voltar = async (req, res) => {
 	switch (req.method) {
 		case 'POST':
-			console.log(req.body)
 			const id = req.body.id
 			let editalPosicao = req.body.editalPosicao;
 			console.log(editalPosicao)
@@ -269,10 +313,8 @@ const voltar = async (req, res) => {
 
 			const candidateAtualizacao = await CandidateService.back({
 				id: id,
-				editalPosition: editalPosicao
 			})
-			console.log(candidateAtualizacao)
-			req.session.editalPosition = candidateAtualizacao.editalPosition
+			req.session.editalPosition = editalPosicao
 			res.status(200).send()
 		default:
 			return res.status(400).send();
@@ -289,6 +331,7 @@ export default {
 	login,
 	forms,
 	form1,
+	form2,
 	candidates,
 	voltar,
 	refresh

@@ -1,0 +1,492 @@
+<style>
+  .forms-page {
+    height: 100vh;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    overflow-y: auto;
+  }
+
+  .forms-page header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 50px;
+    background-color: #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px 45px;
+    z-index: 9999;
+  }
+
+  .forms-page header h1 {
+    font-size: 1.4rem;
+    color: #dbdbdb;
+    cursor: pointer;
+  }
+
+  .forms-page header h1:hover {
+    color: #fff;
+  }
+
+  @media screen and (max-width: 720pt) {
+    .forms-page header {
+      padding: 10px 15px;
+    }
+  }
+
+  .forms-page header .options {
+    display: flex;
+    align-items: center;
+  }
+
+  .forms-page header .options button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #c7c7c7;
+    transition: all .3s;
+  }
+
+  .forms-page header .options button:hover {
+    color: #fff;
+  }
+
+  .forms-page nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 250px;
+
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(27, 27, 27);
+  }
+
+  .forms-page section {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: auto;
+    margin-top: 2%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow-y: auto;
+    color: #222;
+  }
+
+  .forms-page section h1 {
+    font-size: 1.4rem;
+    color: #222;
+    margin-bottom: 10px;
+  }
+
+  .forms-page section .line {
+    width: 100%;
+    height: 1px;
+    background-color: #c2c2c2;
+    margin-bottom: 10px;
+  }
+
+  .forms-page section .info {
+    width: 100%;
+    height: 100%;
+  }
+
+  .forms-page section form {
+    width: 100%;
+    padding: 0 5%;
+  }
+
+  .forms-page section button {
+    position: relative;
+    bottom: 0;
+  }
+
+  .forms-page footer {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+  }
+
+  .forms-page .progress {
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: rgba(0, 110, 255, 0.5);
+    margin-top: -105px;
+  }
+
+  .forms-page .progress .progress-bar {
+    background-color: #006eff;
+  }
+
+  .forms-page .pbar-1 {
+    width: 12%;
+  }
+
+  .forms-page .pbar-2 {
+    width: 38%;
+  }
+
+  .forms-page .pbar-3 {
+    width: 62%;
+  }
+
+  .forms-page .pbar-4 {
+    width: 88%;
+  }
+
+  .forms-page .pbar-5 {
+    width: 100%;
+  }
+
+  .forms-page nav ul {
+    list-style-type: none;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  .forms-page nav ul li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+  }
+
+  .nav-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 90px;
+    font-size: 1.8rem !important;
+    border-radius: 50%;
+    background-color: #7FB6FF;
+    color: #fff;
+  }
+
+  .nav-icon.active {
+    background-color: #006eff;
+    color: #fff;
+  }
+
+  .custom-button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .remove-btn {
+    color: white;
+    background-color: red;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  #add-btn {
+    margin-top: 10px;
+  }
+
+.custom-file-container {
+    width: 50%;
+}
+
+.custom-file-container .custom-file-input {
+  padding: 10px;
+}
+
+/* Adicione a seguinte regra se necessário, para ajustar a largura do label associado */
+.custom-file-container .custom-file-label {
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+</style>
+<link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+
+<div class="forms-page">
+  <header>
+    <h1>PPGI</h1>
+    <div class="options">
+      <button>Sair</button>
+    </div>
+  </header>
+
+
+
+  {{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
+
+  <section class="content">
+    <nav>
+      <ul>
+        <li>
+          <i class="nav-icon fas fa-user active"></i>
+          Dados
+        </li>
+        <li>
+          <i class="nav-icon fas fa-history active"></i>
+          Histórico
+        </li>
+        <li>
+          <i class="nav-icon fas fa-project-diagram active"></i>
+          Proposta de Projeto
+        </li>
+        <li>
+          <i class="nav-icon fas fa-check"></i>
+          Confirmação
+        </li>
+      </ul>
+      <div class="progress">
+        <div class="progress-bar pbar-3" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <form id="candidato-formulario2">
+        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+        <input id="email" type="hidden" value="{{email}}">
+        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
+        <input id="idCandidato" type="hidden" value="{{id}}">
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Proposta do Candidato</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="row">
+              <div class="form-group col-5">
+                <label for="candidato-curso">
+                  <font color="#FF0000">*</font>
+                  <b>Linha de Pesquisa:</b>
+                </label>
+                <select id="candidato-Pesquisa" class="custom-select" name="CandidatoSoube">
+
+                  <option value="">Selecione uma Linha de Pesquisa:</option>
+                  <option value="Inteligência Computacional e Ciência de Dados">Inteligência Computacional e Ciência de
+                    Dados</option>
+                  <option value="Sistema Computacionais">Sistema Computacionais</option>
+                  <option value="Software, Interação e Aplicações">Software, Interação e Aplicações</option>
+                </select>
+
+
+              </div>
+
+              <div class="col-md-7 ">
+                <label class="control-label" for="candidato-instituicao">
+                  <font color="#FF0000">*</font>
+                  <b>Titulo da Proposta:</b>
+                </label>
+                <input class="form-control" id="candidato-Proposta" type="text" name="Proposta" value="" maxlength="60">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Orientador:</h3>
+          </div>
+
+
+          <div class="card-body">
+            <p>Caso o tema da proposta tenha sido definido em conjunto com algum orientador do PPGI, favor informar o
+              nome dele no campo abaixo.</p>
+            <div class="row">
+              <div class="form-group col-12">
+                <label for="candidato-curso-pos">
+                  <b>Nome do orientador:</b>
+                </label>
+                <input class="form-control" id="candidato-orientador" type="text" name="CandidatoOrientador" value=""
+                  maxlength="60">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Carta de Recomendação</h3>
+          </div>
+
+          <div class="card-body">
+            <p>Você precisa apenas preencher corretamente o nome e email das pessoas que devem fornecer as cartas de
+              recomendação. Feito isso, assim que você finalizar e submeter sua inscrição os indicados receberão um
+              email com as instruções de como preencher de forma online sua carta de recomendação. Ao menos 2 nomes são
+              obrigatórios.</p>
+
+            <div class="row">
+              <div class="col-md-5 ">
+                <label class="control-label" for="candidato-instituicao">
+                  <font color="#FF0000">*</font>
+                  <b>Nome:</b>
+                </label>
+                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
+                  value="" maxlength="60">
+              </div>
+
+              <div class="col-md-5 ">
+                <label class="control-label" for="candidato-instituicao">
+                  <font color="#FF0000">*</font>
+                  <b>Email:</b>
+                </label>
+                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
+                  value="" maxlength="60">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5 ">
+                <label class="control-label" for="candidato-instituicao">
+                  <font color="#FF0000">*</font>
+                  <b>Nome:</b>
+                </label>
+                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
+                  value="" maxlength="60">
+              </div>
+
+              <div class="col-md-5 ">
+                <label class="control-label" for="candidato-instituicao">
+                  <font color="#FF0000">*</font>
+                  <b>Email:</b>
+                </label>
+                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
+                  value="" maxlength="60">
+              </div>
+            </div>
+
+            <div id="dynamic-inputs">
+              <!-- Novos campos serão adicionados aqui -->
+            </div>
+
+            <button id="add-btn" class="btn btn-success">+</button>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="control-label" for="candidato-Motivo">
+                    Descreva os motivos que o levaram a se candidatar ao curso
+                    (<span id="charCount">1000</span> Caracteres Restantes):
+                  </label>
+                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="CandidatoMotivo"
+                    maxlength="1000"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group custom-file-container">
+                  <input type="file" class="custom-file-input" id="candidato-CartaAceite" name="CartaAceiteOrientador">
+                  <label class="custom-file-label" for="candidato-CartaAceite">
+                    Carta de Aceite do Orientador (obrigatório para doutorado):
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group custom-file-container">
+
+                <input type="file" class="custom-file-input" id="candidato-PropostaTrabalho" name="PropostaTrabalho">
+                <label class="custom-file-label" for="candidato-PropostaTrabalho">
+                  Proposta de Trabalho:
+                </label>
+              </div>
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group custom-file-container">
+
+                <input type="file" class="custom-file-input" id="candidato-ComprovantePagamento"
+                  name="ComprovantePagamento">
+                <label class="custom-file-label" for="candidato-ComprovantePagamento">
+                  Comprovante de Pagamento:
+                </label>
+              </div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+          <div class="card-footer">
+            <div class="col">
+              <button class="btn btn-success float-right custom-button">
+                Salvar e Continuar
+              </button>
+              <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
+                Passo Anterior
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+</div>
+
+<footer>
+</footer>
+
+<script>
+  $(document).ready(function () {
+    // Adicionar novo input
+    $("#add-btn").click(function (e) {
+      e.preventDefault();
+      var newInput = '<div class="row">' +
+        '<div class="col-md-5">' +
+        '<label class="control-label" for="candidato-Nome-Recomendacao">' +
+        '<font color="#FF0000">*</font>' +
+        '<b>Nome:</b>' +
+        '</label>' +
+        '<input class="form-control" type="text" name="RecomendacaoNome[]" value="" maxlength="60">' +
+        '</div>' +
+        '<div class="col-md-5">' +
+        '<label class="control-label" for="candidato-Email-Recomendacao">' +
+        '<font color="#FF0000">*</font>' +
+        '<b>Email:</b>' +
+        '</label>' +
+        '<input class="form-control" type="text" name="RecomendacaoEmail[]" value="" maxlength="60">' +
+        '</div>' +
+        '<div class="col-md-2 align-self-end">' +
+        '<button class="remove-btn" onclick="$(this).closest(\'.row\').remove();">X</button>' + '</div>' +
+        '</div>';
+
+      $("#dynamic-inputs").append(newInput);
+    });
+
+    $("#candidato-Motivo").on("input", function () {
+      var maxLength = 1000;
+      var currentLength = $(this).val().length;
+      var charactersRemaining = maxLength - currentLength;
+      $("#charCount").text(charactersRemaining);
+    });
+  });
+</script>

@@ -6,9 +6,9 @@ const router = express.Router()
 router.all('/', selecaoppgiController.begin);
 router.all('/cadastro', selecaoppgiController.signin);
 router.all('/entrar', selecaoppgiController.login)
-router.all('/formulario', selecaoppgiController.forms)
 router.all('/formulario/1' ,selecaoppgiController.form1)
+router.all('/formulario/2' ,selecaoppgiController.form2)
+router.all('/formulario', selecaoppgiController.forms)
 router.all('/candidates', selecaoppgiController.candidates)
 router.all('/voltar', selecaoppgiController.voltar)
-router.all('/refresh', selecaoppgiController.refresh)
 export default router;
