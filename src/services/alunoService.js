@@ -1,4 +1,5 @@
 const {Aluno} = require('../models');
+const { Op } = require("sequelize");
 
 class AlunoService {
     async adicionarVarios(
@@ -18,7 +19,7 @@ class AlunoService {
     }
 
     async listarTodos(curso, formado){
-        try {
+      try {
             const alunos = await Aluno.findAll({
                 where: {
                     curso,
@@ -34,26 +35,75 @@ class AlunoService {
 
     async contarTodos(){
       try{
-      const data = await Aluno.findOne({atributes: ["createdAt"]})
-      const contagem = {
-        matriculados: {
-            CC: await Aluno.count({where: {formado: 0, curso: "Ciência da Computação"}}),
-            SI: await Aluno.count({where: {formado: 0, curso: "Sistemas de Informação"}}),
-            ES: await Aluno.count({where: {formado: 0, curso: "Engenharia de Software"}}),
-            D: await Aluno.count({where: {formado: 0, curso: "Doutorado"}}),
-            M: await Aluno.count({where: {formado: 0, curso: "Mestrado"}}),
-        },
-        egressos: {
-          PD: 254,
-          CC: await Aluno.count({where: {formado: 1, curso: "Ciência da Computação"}}),
-          SI: await Aluno.count({where: {formado: 1, curso: "Sistemas de Informação"}}),
-          ES: await Aluno.count({where: {formado: 1, curso: "Engenharia de Software"}}),
-          D: await Aluno.count({where: {formado: 1, curso: "Doutorado"}}),
-          M: await Aluno.count({where: {formado: 1, curso: "Mestrado"}}),
-        },
-        data: data ? data.get().createdAt : new Date()
-      }
-      return contagem
+        const contagem = {
+          matriculados: {
+              CC: 0,
+              SI: 0,
+              ES: 0,
+              D: 0,
+              M: 0,
+          },
+          egressos: {
+            PD: 254,
+            CC: 0,
+            SI: 0,
+            ES: 0,
+            D: 0,
+            M: 0,
+          },
+          data: new Date()
+        }
+        const alunos = await Aluno.findAll({
+          where: {
+            curso: {
+              [Op.not]: "Processamento de Dados", 
+            }
+          },
+          attributes: ["formado", "curso", "createdAt"]
+        })
+
+        if (alunos.length > 0) {
+          contagem.data = alunos[0].dataValues.createdAt
+          alunos.forEach(aluno => {
+            if(!aluno.dataValues.formado){
+              switch (aluno.dataValues.curso) {
+                case 'Ciência da Computação':
+                  contagem.matriculados.CC += 1
+                  break;
+                case 'Engenharia de Software':
+                  contagem.matriculados.ES += 1
+                  break;
+                case 'Mestrado':
+                  contagem.matriculados.M += 1
+                  break;
+                default:
+                  contagem.matriculados.D += 1
+                  break;
+              }
+            }else{
+              switch (aluno.dataValues.curso) {
+                case 'Ciência da Computação':
+                  contagem.egressos.CC += 1
+                  break;
+                case 'Engenharia de Software':
+                  contagem.egressos.ES += 1
+                  break;
+                case 'Sistemas de Informação':
+                  contagem.egressos.SI += 1
+                  break;
+                case 'Mestrado':
+                  contagem.egressos.M += 1
+                  break;
+                default:
+                  contagem.egressos.D += 1
+                  break;
+              }
+            }
+            
+          });
+        }
+        
+        return contagem
       }catch(err){
         throw err;
       }

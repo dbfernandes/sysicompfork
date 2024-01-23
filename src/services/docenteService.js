@@ -3,25 +3,29 @@ const {Usuario, Publicacao, TipoPublicacao, Avatar, Premio, Projeto, Orientacao}
 class DocenteService {
     async listarPerfil(id){
         try {
-        const usuario = await Usuario.findByPk(id, {
-            atributes: ["id", "nomeCompleto", "email", "status", "idLattes", "formacao", "resumo", "ultimaAtualizacao", "createdAt"],
-            include: [
-                {
-                    model: Avatar,
-                    as: 'Avatar'
-                },
-            ],
-        })
-        const usuarioDict = usuario.get()
-        usuarioDict["Avatar"] = usuario.Avatar ? usuario.Avatar.get() : usuario.Avatar
-        usuarioDict["perfil"] = usuario.perfis()
-        usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
-            timeZone: 'America/Manaus',
-        }).slice(0,10);
-        
-        return usuarioDict;
+            const usuario = await Usuario.findByPk(id, {
+                atributes: [
+                    "id", "nomeCompleto", "email", "status", "idLattes", "formacao", "resumo", "ultimaAtualizacao", "createdAt"
+                ],
+                include: [
+                    {
+                        model: Avatar,
+                        as: 'Avatar'
+                    },
+                ],
+            })
+            if(usuario){
+                const usuarioDict = usuario.get()
+                usuarioDict["Avatar"] = usuario.Avatar ? usuario.Avatar.get() : usuario.Avatar
+                usuarioDict["perfil"] = usuario.perfis()
+                usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
+                    timeZone: 'America/Manaus',
+                }).slice(0,10);
+                return usuarioDict;
+            }
+            return null
         } catch (error) {
-        throw error
+            throw error
         }
     }
 

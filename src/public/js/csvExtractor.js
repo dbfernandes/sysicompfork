@@ -44,11 +44,11 @@ function getCSVData(data, cb){
                             curso = "Engenharia de Software"
                             break;
                         
-                        case "PPG-INF-M":
+                        case "PPG-INF-D":
                             curso = "Doutorado"
                             break;
                     
-                        case "PPG-INF-D":
+                        case "PPG-INF-M":
                             curso = "Mestrado"
                             break;
                     
