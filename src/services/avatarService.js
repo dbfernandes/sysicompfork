@@ -44,7 +44,8 @@ class AvatarService {
                 }
             })
             if(avatar){
-                fs.unlink(avatar.caminho, (err) => {
+                const caminho = __dirname + "/../uploads/" + avatar.nome
+                fs.unlink(caminho, (err) => {
                     if (err) {
                       console.error(err);
                       return;

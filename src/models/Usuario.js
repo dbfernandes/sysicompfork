@@ -12,10 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'idUsuario',
         as: 'Avatar',
       });
-      this.hasMany(models.Publicacao, {
-        foreignKey: 'idProfessor',
-        as: 'Publicacoes',
-      });
+      this.belongsToMany(models.Publicacao, { 
+        through: 'RelUsuarioPublicacao', 
+        foreignKey: 'idUsuario',
+        as: 'Publicacoes' 
+      })
       this.hasMany(models.Orientacao, {
         foreignKey: 'idProfessor',
         as: 'Orientacoes',

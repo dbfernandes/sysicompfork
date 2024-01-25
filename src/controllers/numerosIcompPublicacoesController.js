@@ -11,7 +11,9 @@ const publicacao = async (req, res) => {
     switch (req.method) {
         case "GET":
             try {
-                const publicacoes = await PublicacaoService.listarTodos()
+                const publicacoes = await PublicacaoService.listarTodos({
+                    tipo: [1,2]
+                })
     
                 return res.render('numerosIcomp/publicacoes', {
                     ...layoutMain,

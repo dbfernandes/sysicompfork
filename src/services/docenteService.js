@@ -1,4 +1,4 @@
-const {Usuario, Publicacao, TipoPublicacao, Avatar, Premio, Projeto, Orientacao} = require('../models');
+const {Usuario, Publicacao, Avatar, Premio, Projeto, Orientacao, TipoPublicacao} = require('../models');
 
 class DocenteService {
     async listarPerfil(id){
@@ -32,14 +32,17 @@ class DocenteService {
 
     async listarPublicacoes(id){
         try {
-        const publicacoes = await Publicacao.findAll(
-            {
-                where: { idProfessor: id},
+        const professor = await Usuario.findByPk(id, {
+            attributes: ["id", "nomeCompleto"],
+            include: {
+                model: Publicacao,
+                as: 'Publicacoes',
                 include: {
                     model: TipoPublicacao,
-                    as: "Tipo",
-                },
-                order: [['ano', 'DESC']],
+                    as: 'Tipo'
+                }
+            },
+            order: [['Publicacoes', 'ano', 'DESC']],
         })
         const publicacoesDict = {
             artigosConferencias: [],
@@ -47,7 +50,11 @@ class DocenteService {
             livros: [],
             capitulos: [],
         }
-        if(publicacoes){
+        if(professor 
+            && professor.dataValues.Publicacoes 
+            && professor.dataValues.Publicacoes.length > 0
+        ){
+            const publicacoes = professor.dataValues.Publicacoes
             publicacoes.forEach(publi => {
                 const publiDict = publi.get()
                 publiDict.Tipo = publiDict.Tipo.get()
@@ -61,6 +68,7 @@ class DocenteService {
                     publicacoesDict.capitulos.push(publiDict) 
                 }
             });
+            
         }
         return publicacoesDict;
         } catch (error) {
