@@ -3,10 +3,10 @@ import alunosController from '../controllers/alunosController'
 
 const router = express.Router()
 
-router.get('/', alunosController.inicio)
+router.all('/', alunosController.inicio)
 
 
-router.post('/upload', alunosController.carregar)
+router.all('/upload', alunosController.carregar)
 
 
 export default router

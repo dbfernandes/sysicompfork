@@ -1,3 +1,5 @@
+// Rota desativada - funcionalidade removida
+
 const adicionar = (req, res) => {
    if (req.method === "GET") {
       return res.render('projetos/projetos-adicionar', { 

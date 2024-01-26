@@ -8,15 +8,16 @@ class AvatarService {
         caminho
     ){
         try {
-        await this.remover(idUsuario)
+            await this.remover(idUsuario)
+            const caminhoArr = caminho.split("/")
+            const caminhoParsed = caminhoArr.slice(caminhoArr.length-3).join("/")
+            const caminhoFormated = "/"+caminhoParsed
 
-        const caminhoFormated = "/src/uploads/"+nome
-
-        await Avatar.create({
-            idUsuario,
-            nome, 
-            caminho: caminhoFormated
-        }, {})
+            await Avatar.create({
+                idUsuario,
+                nome, 
+                caminho: caminhoFormated
+            }, {})
         } catch (error) {
             throw error
         }

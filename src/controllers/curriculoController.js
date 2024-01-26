@@ -7,48 +7,62 @@ import OrientacaoService from "../services/orientacaoService"
 import criarURL from '../utils/criar-url'
 
 const visualizar = async (req, res) => {
-  try {
-      const { message, type, messageTitle } = req.query;
-      const professores = await UsuarioService.listarTodosPorCondicao({
-        professor: 1
-      })
-      return res.render("curriculo/curriculo-adicionar", {
-          professores,
-          csrfToken: req.csrfToken(),
-          nome: req.session.nome,
-          usuarioId: req.session.uid,
-          message, 
-          type,
-          messageTitle,
-          tipoUsuario: req.session.tipoUsuario,
-          avatar: null
-      })
-  } catch (error) { 
-      console.log(error)
-      return res.redirect(
-          criarURL('/iniciar', {
-              message: 'Não foi possível abrir o envio de currículo.',
-              type: 'danger',
-              messageTitle: 'Envio de currículo indisponível!',
-              tipoUsuario: req.session.tipoUsuario,
-          })
-        );
+  switch (req.method) {
+    case 'GET':
+      try {
+        const { message, type, messageTitle } = req.query;
+        const professores = await UsuarioService.listarTodosPorCondicao({
+          professor: 1,
+          status: 1
+        })
+        return res.render("curriculo/curriculo-adicionar", {
+            professores,
+            csrfToken: req.csrfToken(),
+            nome: req.session.nome,
+            usuarioId: req.session.uid,
+            message, 
+            type,
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario,
+            avatar: null
+        })
+      }catch (error) { 
+        console.log(error)
+        return res.status(503).redirect(
+            criarURL('/inicio', {
+                message: 'Não foi possível abrir o envio de currículo.',
+                type: 'danger',
+                messageTitle: 'Envio de currículo indisponível!',
+                tipoUsuario: req.session.tipoUsuario,
+            })
+          );
+      }
+    default:
+      return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
   }
+  
 }
 
 const verificarAvatar = async (req, res) => {
-  try {
-    const {id} = req.params
-    const avatar = await AvatarService.listarUm(id)
-    res.status(200).send(avatar)
-  }catch(err){
-    throw err
+  switch (req.method) {
+    case 'GET':
+      try {
+        const {id} = req.params
+        const avatar = await AvatarService.listarUm(id)
+        res.status(200).send(avatar)
+      }catch(err){
+        res.status(500).send()
+      }
+    default:
+      return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
   }
+  
 }
 
 const carregar = async (req, res)=> {
-  if (req.method === 'POST') {
-    try {
+  switch (req.method) {
+    case 'POST':
+      try {
         const {publicacoes, idProfessor, premios, info, projetos, orientacoes} = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
         const premiosParsed = JSON.parse(premios)
@@ -67,12 +81,11 @@ const carregar = async (req, res)=> {
         return res.status(201).send();                
       }catch(error){  
         console.log(error)
-        throw error
+        return res.status(500).send()
       }
+    default:
+      return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
   }
-
-    
-    
 
 }
 
