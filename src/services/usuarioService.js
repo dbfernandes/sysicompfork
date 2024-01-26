@@ -55,7 +55,19 @@ class UsuarioService {
       } 
       const usuario = await Usuario.findByPk(id)
       await usuario.update(user)
+
       return 
+    }catch(error){
+        throw error
+    }
+  }
+
+  async alterarInfo(id, user){
+    try {
+      let usuario = await Usuario.findByPk(id)
+      usuario = await usuario.update(user)
+
+      return usuario
     }catch(error){
         throw error
     }
@@ -69,7 +81,7 @@ class UsuarioService {
           perfis: usuario.perfis(),
           ...usuario.get(),
         }
-    })
+      })
     } catch (error) {
       throw error
     }
@@ -88,6 +100,7 @@ class UsuarioService {
       usuarioDict["createdAt"] = new Date(usuarioDict["createdAt"]).toLocaleString("pt-BR", {
           timeZone: 'America/Manaus',
       }).slice(0,10);
+      
       return usuarioDict;
     } catch (error) {
       throw error
@@ -104,15 +117,17 @@ class UsuarioService {
           atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape",
           "administrador", "secretaria", "professor", "coordenador",  
           "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
-          "turno", "idLattes", "createdAt"]
+          "turno", "idLattes", "formacao", "ultimaAtualizacao","createdAt"]
         }
       )
+
       return usuarios.map(usuario => {
         return {
           perfis: usuario.perfis(),
           ...usuario.get(),
         }
       })
+
     } catch (error) {
       throw error
     }
