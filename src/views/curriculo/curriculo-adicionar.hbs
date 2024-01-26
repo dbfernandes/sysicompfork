@@ -145,7 +145,14 @@
                     changeAvatarPreview(data)
                 },
                 error: function(err) {
-                    console.log(err)
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 7000,
+                        title: 'Ocorreu um problema na exibição da imagem de perfil!',
+                        body: 'Não foi possível verificar se o usuário já possui uma imagem de perfil cadastrada.'
+                    })
                 }
             });
     }
@@ -159,7 +166,7 @@
     })
     
     $.validator.addMethod("verificarTamanho", function (el) {
-        return (document.querySelector("#avatarImage").files[0].size < 5242880)
+        return (document.querySelector("#avatarImage").files[0].size < 5 * 1024 * 1024) // Aceita imagens de até 5MB
     })
 
 
