@@ -24,15 +24,14 @@ router.use('/publicacoes/', numerosIcompExceptionController.redirectPublicacoes)
 
 // Lista de docentes
 router.all('/docentes', numerosICompProfessoresController.professores);
-router.use('/docentes', numerosIcompExceptionController.redirectProfessores);
 
 // Perfil
-router.all('/docente/:id', numerosICompProfessoresController.perfil);
-router.all('/docente/:id/publicacoes', numerosICompProfessoresController.publicacoes);
-router.all('/docente/:id/projetos', numerosICompProfessoresController.pesquisa);
-router.all('/docente/:id/orientacoes/:tipo', numerosICompProfessoresController.orientacao);
-router.all('/docente/:id/premios', numerosICompProfessoresController.premios);
-router.use('/docente', numerosIcompExceptionController.redirectProfessores);
+router.all('/docentes/:id', numerosICompProfessoresController.perfil);
+router.all('/docentes/:id/publicacoes', numerosICompProfessoresController.publicacoes);
+router.all('/docentes/:id/projetos', numerosICompProfessoresController.pesquisa);
+router.all('/docentes/:id/orientacoes/:tipo', numerosICompProfessoresController.orientacao);
+router.all('/docentes/:id/premios', numerosICompProfessoresController.premios);
+router.use('/docentes', numerosIcompExceptionController.redirectProfessores);
 
 //* Rota Não Encontrada (404)
 router.use(numerosIcompExceptionController.erro404);
