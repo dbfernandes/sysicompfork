@@ -1,8 +1,33 @@
 import express from 'express'
+import multer from 'multer'
 import curriculoController from '../controllers/curriculoController'
+
+
+const storage = multer.diskStorage({ // configuração do armazenamento das imagens
+    destination: (req, file, callback)=>{
+        callback(null, __dirname+ "/../uploads/"); // caminho '/src/uploads'
+    },
+    filename: (req, file, callback)=>{
+        const id = req.body.idProfessor
+        callback(null, `${new Date().getTime()}-${id}-`+file.originalname);
+    }
+})
+
+const uploads = multer({storage: storage}).single("file") // intanciando o middleware
 const router = express.Router()
 
-router.get('/', curriculoController.visualizar)
-router.post('/upload', curriculoController.carregar)
+router.all('/', curriculoController.visualizar)
+
+router.all('/avatar/:id', curriculoController.verificarAvatar)
+
+router.all('/upload', (req, res) =>{
+    uploads(req, res, function (err) { // Executando o middleware antes do controller para tratar erros
+        if (err) { // Caso haja erro no armazenamento da imagem
+            return res.status(500).send()
+        }
+    curriculoController.carregar(req, res) // Execução do controller
+})
+}
+)
 
 export default router

@@ -7,10 +7,14 @@ module.exports = (sequelize, DataTypes) => {
   class Publicacao extends Model {
     
     static associate(models) {
-        this.belongsTo(models.Usuario, { foreignKey: 'idProfessor', as: "Professor" })
-    }
-    static associate(models) {
-        this.belongsTo(models.TipoPublicacao, { foreignKey: 'tipo', as: "Tipo" })
+        this.belongsToMany(models.Usuario, { 
+          through: 'RelUsuarioPublicacao', 
+          foreignKey: 'idPublicacao',
+          as: "Professor"
+        })
+        this.belongsTo(models.TipoPublicacao, { 
+          foreignKey: 'tipo', as: "Tipo" 
+        })
     }
   }
 
@@ -20,13 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
-    },
-    idProfessor: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notNull: { msg: 'Este campo não pode ser vazio' },
-        },
     },
     titulo: {
       type: DataTypes.STRING(1024),

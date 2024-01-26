@@ -9,13 +9,6 @@ module.exports = {
         autoIncrement: true,
         type: Sequelize.INTEGER
       },
-      idProfessor: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: { model: 'Usuario', key: 'id' },
-        onUpdate: 'restrict',
-        onDelete: 'restrict',
-      },
       titulo: {
         type: Sequelize.STRING(1024),
         allowNull: false
