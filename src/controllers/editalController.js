@@ -241,7 +241,7 @@ const listCandidatesEdital = async (req, res) => {
 }
 
 const geraPlanilha = async (req, res) => {
-   const planilha = await editalGerarPlanilha.gerarPlanilha();
+   const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
    return res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': 'attachment; filename=planilha.xlsx',

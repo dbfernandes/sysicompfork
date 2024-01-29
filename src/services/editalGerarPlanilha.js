@@ -1,8 +1,13 @@
-
 import fs from 'fs';
+import EditalService from './editalService.js';
 const exceljs = require('exceljs');
 
 // Pegar o edital do banco de dados
+async function getEdital(id) {
+    let edital = await EditalService.getEdital(id);
+    console.log('Edital: ', edital);
+    // return edital;
+}
 
 // Transformar os dados para JSON
 let testeDados = { nome: 'Teste', email: 'asd@email.com', 
@@ -14,7 +19,11 @@ let testeDados2 = { nome: 'Teste2', email: 'asd@asd.com',
 let dados = JSON.stringify(testeDados);
 let dados2 = JSON.stringify(testeDados2);
 
-async function gerarPlanilha(editaId) {
+function auxCriarTabela() {
+    //
+}
+
+async function gerarPlanilha(editalId) {
     // Create a new instance of a Workbook class
     let workbook = new exceljs.Workbook();
     // Novas abas na planilhas
@@ -22,6 +31,7 @@ async function gerarPlanilha(editaId) {
     let worksheetProvas = workbook.addWorksheet('Provas');
     let worksheetPropostas = workbook.addWorksheet('Propostas');
     
+    console.log('EditalId: ', editalId);
 
     worksheetCandidatos.columns = [
         { header: 'Nome', key: 'nome', width: 40 },

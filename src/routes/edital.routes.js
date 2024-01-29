@@ -10,7 +10,7 @@ router.all('/arquivarEdital/:id_edital',selecaoppgiRoutes.arquivarEdital);
 router.all('/listEdital/:id',selecaoppgiRoutes.viewEdital);
 router.all('/updateEdital/:id_update',selecaoppgiRoutes.updateEdital);	
 router.all('/listCandidatesEdital/:id',selecaoppgiRoutes.listCandidatesEdital);
-router.all('/geraPlanilha',selecaoppgiRoutes.geraPlanilha);
+router.all('/geraPlanilha/:id',selecaoppgiRoutes.geraPlanilha);
 
 
 export default router
