@@ -20,34 +20,144 @@ module.exports = (sequelize, DataTypes) => {
   };
   Candidate.init({
     id: {
-      type:DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    editalId: {
-      type:DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type:DataTypes.VIRTUAL,
-      allowNull: false,
-    },
-    passwordHash: {
-      type:DataTypes.STRING,
-      allowNull: false,
-    },
-    currentStep: {
-      type:DataTypes.INTEGER,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
+      editalPosition:{
+        allowNull:true,
+        type:DataTypes.INTEGER
+      },
+      editalId:{
+        allowNull:false,
+        type: DataTypes.STRING
+      },
+      passwordHash: {
+        allowNull:false,
+        type: DataTypes.STRING
+      },
+      begin:{
+        allowNull: true,
+        type: DataTypes.DATE
+      },
+      finish:{
+        allowNull: true,
+        type: DataTypes.DATE
+      },
+      currentStep:{
+        allowNull:false,
+        type:DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      name:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      socialName:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      address:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      neighborhood:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      city:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      uf:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      cep:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      email:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      email:{
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      birthday:{
+        type: DataTypes.DATE
+      },
+      nationality:{
+        type:DataTypes.INTEGER
+      },
+      country: {
+        type: DataTypes.STRING
+      },
+      passport: {
+        type: DataTypes.STRING
+      },
+      cpf: {
+        type: DataTypes.STRING
+      },
+      gender:{
+        type: DataTypes.STRING
+      },
+      homePhone:{
+        type: DataTypes.STRING
+      },
+      cellPhone: {
+        type: DataTypes.STRING
+      },
+      desiredCourse: {
+        type: DataTypes.STRING
+      },
+      polity: {
+        type: DataTypes.STRING
+      },
+      inscricaoposcomp: {
+        type: DataTypes.STRING
+      },
+      anoposcomp: {
+        type: DataTypes.STRING
+      },
+      notaposcomp: {
+        type: DataTypes.STRING
+      },
+      solicitabolsa: {
+        type: DataTypes.STRING
+      },
+      tituloproposta: {
+        type: DataTypes.STRING
+      },
+      cartaorientador: {
+        type: DataTypes.STRING
+      },
+      motivos: {
+        type: DataTypes.STRING
+      },
+      proposta: {
+        type: DataTypes.STRING
+      },
+      curriculum: {
+        type: DataTypes.STRING
+      },
+      prova_anterior: {
+        type: DataTypes.STRING
+      },
+      diploma: {
+        type: DataTypes.STRING
+      },
+      cotas: {
+        allowNull:true,
+        type: DataTypes.STRING
+      },
+      status: {
+        allowNull:false,
+        type: DataTypes.STRING,
+        defaultValue: '0'
+      }
 
   }, {
     sequelize,

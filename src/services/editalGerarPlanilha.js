@@ -1,12 +1,32 @@
 import fs from 'fs';
-import EditalService from './editalService.js';
+import CandidatoService from './candidateService.js';
+
 const exceljs = require('exceljs');
 
-// Pegar o edital do banco de dados
-async function getEdital(id) {
-    let edital = await EditalService.getEdital(id);
-    console.log('Edital: ', edital);
-    // return edital;
+function formatarDados(dados) {
+    let dadosFormatados = [];
+    for (let i = 0; i < dados.length; i++) {
+        dadosFormatados.push({
+            name: dados[i].name,
+            email: dados[i].email,
+            inscricao: dados[i].inscricaoposcomp,
+            linha: dados[i].linha,
+            orientador: dados[i].orientador,
+            bolsa: dados[i].bolsa,
+            nivel: dados[i].nivel
+        });
+    }
+
+    dadosFormatados = JSON.stringify(dadosFormatados);
+    console.log('Dados formatados: ', dadosFormatados);
+    return dadosFormatados;
+}
+
+// Pegar o canditatos pelo editalId do banco de dados
+async function getCandidatos(EditalId) {
+    const candidatos = await CandidatoService.listCanditatesByEdital(EditalId)
+    // candidatos = formatarDados(candidatos);
+    return candidatos;
 }
 
 // Transformar os dados para JSON
@@ -19,6 +39,7 @@ let testeDados2 = { nome: 'Teste2', email: 'asd@asd.com',
 let dados = JSON.stringify(testeDados);
 let dados2 = JSON.stringify(testeDados2);
 
+// Axuliar na formatação dos dados na tabela
 function auxCriarTabela() {
     //
 }
@@ -31,8 +52,8 @@ async function gerarPlanilha(editalId) {
     let worksheetProvas = workbook.addWorksheet('Provas');
     let worksheetPropostas = workbook.addWorksheet('Propostas');
     
-    console.log('EditalId: ', editalId);
-
+    const candidatos = await getCandidatos(editalId);
+    console.log('Candidatos: ', candidatos);
     worksheetCandidatos.columns = [
         { header: 'Nome', key: 'nome', width: 40 },
         { header: 'Email', key: 'email', width: 40 },
@@ -70,7 +91,7 @@ async function gerarPlanilha(editalId) {
     }
 
     // Dados testes
-    worksheetCandidatos.addRow(JSON.parse(dados));
+    worksheetCandidatos.addRow(candidatos);
     
     // Cria um separador
     let separador2 = worksheetCandidatos.addRow(['']);
