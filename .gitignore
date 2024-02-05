@@ -5,3 +5,7 @@ src/config/database.js
 
 #Removing the mail credentials
 src/config/mail.json
+
+src/candidato/uploads/*
+
+!src/candidato/uploads/.gitkeep 
