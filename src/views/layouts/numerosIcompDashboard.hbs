@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{professor.nomeCompleto}}</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!-- Icons -->
+    <link href="/public/template/css/nucleo-icons-ds.css" rel="stylesheet">
+    <link href="/public/template/css/nucleo-svg-ds.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Favicon -->
+    <link href="/public/img/favicon.ico" rel="icon" type="image/png">
+
+    <!-- CSS Files -->
+    <link id="pagestyle" href="/public/template/css/material-dashboard.css" rel="stylesheet" />
+
+    <style>
+        /* Cor dos botões de paginação das DataTables */
+        .page-item.active .page-link {
+            background-color: #0f7864;
+            border-color: #0f7864;
+        }
+
+        /* Adicionar quebra de linha para textos longos nos details das DataTables */
+
+        ul.drt-details {
+            word-break: break-word;
+            white-space: normal;
+            text-align: justify;
+            padding: 1em 1.25em;
+        }
+
+    </style>
+
+
+</head>
+
+    <body>
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+        <!-- Chartsjs -->
+        <script src="/public/template/js/plugins/chartjs.min.js"></script>
+
+        <!--   Core JS Files   -->
+        <script src="/public/template/js/core/popper.min.js" type="text/javascript"></script>
+        <script src="/public/template/js/core/bootstrap.min.js" type="text/javascript"></script>
+        <script src="/public/template/js/plugins/moment.min.js"></script>
+
+
+        <!--	Plugin for Select, full documentation here: https://joshuajohnson.co.uk/Choices/ -->
+        <script src="/public/template/js/plugins/choices.min.js" type="text/javascript"></script>
+        <script src="/public/template/js/cbpAnimatedHeader.js"></script>
+
+
+        <!-- Control Center for Material Kit parallax effects, scripts for the example pages etc -->
+        <script src="/public/template/js/material-dashboard.min.js"></script>
+
+        {{{ body }}}
+
+
+    </body>
+
+    
+</html>

@@ -6,6 +6,12 @@ src/config/database.js
 #Removing the mail credentials
 src/config/mail.json
 
+#Removing upload files
+src/uploads/*
+
+# exception to the rule
+!src/uploads/.gitkeep 
+
 src/candidato/uploads/*
 
 !src/candidato/uploads/.gitkeep 

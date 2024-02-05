@@ -92,7 +92,19 @@ module.exports = {
       },
       idLattes: {
         type: Sequelize.BIGINT,
-        allowNull: true
+        allowNull: true,
+      },
+      formacao: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      resumo: {
+        type: Sequelize.STRING(5000),
+        allowNull: true,
+      },
+      ultimaAtualizacao: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
