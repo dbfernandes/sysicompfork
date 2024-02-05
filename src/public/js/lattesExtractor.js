@@ -49,7 +49,7 @@ function get_publicDict(dados){
 }
 
 function getCompleteData(data, publicCallback){
-    const [file] = document.querySelector("input[type=file]").files; 
+    const [file] = document.querySelector("#vittaexml").files; 
     const reader = new FileReader(); 
     var xmlText = "" 
     var x2js = new X2JS(); 

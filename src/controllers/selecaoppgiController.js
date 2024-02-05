@@ -1,5 +1,6 @@
 import EditalService from '../services/editalService'
 import CandidateService from '../services/candidateService'
+import { json } from 'body-parser';
 
 const locals = {
 	layout: 'selecaoppgi'
@@ -213,6 +214,7 @@ const forms = async (req, res) => {
 					id: req.session.uid,
 				})
 
+				console.log("*************************************************")
 				return res.render('selecaoppgi/forms3', {
 					...locals,
 					editalPosicao: req.session.editalPosition,
@@ -284,10 +286,149 @@ const form1 = async (req, res) => {
 
 const form2 = async (req, res) => {
 	console.log("form2post")
-	console.log(req.body)
+	console.log(req.files)
+	var VitaePDF = null
+	var Prova = null
+	if (req.files && req.files.Prova != undefined) {
+		Prova = req.files.Prova[0];
+	}
+	if (req.files && req.files.VitaePDF != undefined) {
+		VitaePDF = req.files.VitaePDF[0];
+	}
+
+
+	if (Prova) {
+		// Isola o valor da propriedade 'path' em uma variável
+		const caminhoDoArquivoVittae = VitaePDF.path;
+
+		const ProvaPDF = Prova.path;
+
+		const Candidato = {
+			Curso: req.body.Curso,
+			Instituicao: req.body.Instituicao,
+			AnoEgresso: req.body.AnoEgresso,
+			CursoPos: req.body.CursoPos,
+			TipoCursoPos: req.body.TipoCursoPos,
+			InstituicaoPos: req.body.InstituicaoPos,
+			AnoEgressoPos: req.body.AnoEgressoPos,
+			VitaePDF: caminhoDoArquivoVittae,
+			Prova: ProvaPDF,
+		}
+
+		console.log("Caminho do arquivo:", ProvaPDF);
+	} else {
+
+		const caminhoDoArquivoVittae = VitaePDF.path;
+
+		const Candidato = {
+			Curso: req.body.Curso,
+			Instituicao: req.body.Instituicao,
+			AnoEgresso: req.body.AnoEgresso,
+			CursoPos: req.body.CursoPos,
+			TipoCursoPos: req.body.TipoCursoPos,
+			InstituicaoPos: req.body.InstituicaoPos,
+			AnoEgressoPos: req.body.AnoEgressoPos,
+			VitaePDF: caminhoDoArquivoVittae,
+		}
+		console.log(Candidato)
+		console.log("Nenhum arquivo de prova encontrado.");
+	}
+
 	res.status(200).send()
 
 }
+
+const formPublicacoes = async (req, res) => {
+	console.log(req.method)
+	switch (req.method) {
+
+		case 'GET':
+
+		
+			
+		case 'POST':
+			try {
+
+				const dados = req.body;
+
+				const periodicos = dados.publicacoes["ARTIGO-PUBLICADO"];
+
+				const conferencias = {
+					"TRABALHO-EM-EVENTOS": dados.publicacoes["TRABALHO-EM-EVENTOS"],
+					"LIVRO-PUBLICADO-OU-ORGANIZADO": dados.publicacoes["LIVRO-PUBLICADO-OU-ORGANIZADO"],
+					"CAPITULO-DE-LIVRO-PUBLICADO": dados.publicacoes["CAPITULO-DE-LIVRO-PUBLICADO"],
+					"OUTRA-PRODUCAO-BIBLIOGRAFICA": dados.publicacoes["OUTRA-PRODUCAO-BIBLIOGRAFICA"],
+					"PREFACIO-POSFACIO": dados.publicacoes["PREFACIO-POSFACIO"],
+				};
+
+
+				const formatarParaHandlebars = (objeto) => {
+
+					const resultado = [];
+
+					for (const item of objeto) {
+						const autoresFormatados = item.autores.nomeCompleto.join('; ');
+						const tituloFormatado = `${item.ano}: ${item.titulo}`;
+						const conteudoFormatado = `${autoresFormatados}. ${item.titulo}. ${item.local || ''}. ${item.ano}.`;
+
+						resultado.push({
+							tituloFormatado,
+							conteudoFormatado,
+						});
+					}
+
+					return resultado;
+				};
+
+				const periodicosFormatados = formatarParaHandlebars(periodicos);
+				const conferenciasFormatadas = {};
+
+				for (const key in conferencias) {
+					if (Object.hasOwnProperty.call(conferencias, key)) {
+						conferenciasFormatadas[key] = formatarParaHandlebars(conferencias[key]);
+					}
+				}
+
+
+				const data = {
+					periodicos: periodicosFormatados,
+					conferencias: conferenciasFormatadas,
+				};
+
+
+				req.session.editalPosition = 3;
+
+				if(req.session.editalPosition == 3){
+					return res.render('selecaoppgi/forms2', {
+						message: "Dados salvos com sucesso",
+						editalPosicao: req.session.editalPosition,
+						email: req.session.email,
+						id: req.session.uid,
+						csrfToken: req.csrfToken(),
+						periodicos: periodicosFormatados,
+						conferencias: conferenciasFormatadas,
+					});
+				}
+
+				if (data) {
+					//console.log(data)
+					
+
+				} else {
+					return res.status(400).send(data);
+				}
+
+			}
+			catch {
+
+			}
+
+
+		//res.status(400).send(data);		
+	}
+};
+
+
 
 const candidates = async (req, res) => {
 	switch (req.method) {
@@ -299,6 +440,8 @@ const candidates = async (req, res) => {
 			return res.status(400).send();
 	}
 }
+
+
 
 const voltar = async (req, res) => {
 	switch (req.method) {
@@ -334,5 +477,6 @@ export default {
 	form2,
 	candidates,
 	voltar,
-	refresh
+	refresh,
+	formPublicacoes
 };

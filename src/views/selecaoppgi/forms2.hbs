@@ -234,11 +234,12 @@
     </nav>
     <div class="container-fluid">
       <form id="candidato-formulario2">
-        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+        <input id="csrfToken" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
         <input id="idCandidato" type="hidden" value="{{id}}">
-
+        <input id="idCandidato" type="" value="{{message}}">
+        <p>{{message}}</p>
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Curso de Graduação</h3>
@@ -378,8 +379,33 @@
                   style="width:50%">Enviar</button>
               </div>
             </div>
+            <div>
 
 
+
+            {{#if periodicos}}
+            <button onclick="mostrarPeriodicos()">Periodicos</button>
+            {{/if}}
+
+            {{#if conferencias.length}}
+            <button onclick="mostrarConferencias()">Conferencias</button>
+            {{/if}}
+
+            <div id="periodicos" style="display: block;">
+              {{#each periodicos}}
+              <h3>{{this.tituloFormatado}}</h3>
+              <p>{{this.conteudoFormatado}}</p>
+              {{/each}}
+            </div>
+
+            <div id="conferencias" style="display: none;">
+              {{#each conferencias}}
+              <h3>{{this.tituloFormatado}}</h3>
+              <p>{{this.conteudoFormatado}}</p>
+              {{/each}}
+            </div>
+
+                        </div>
           </div>
         </div>
 
@@ -469,6 +495,17 @@
 
 <script>
 
+  function mostrarPeriodicos() {
+    document.getElementById("periodicos").style.display = "block";
+    document.getElementById("conferencias").style.display = "none";
+  }
+
+  function mostrarConferencias() {
+    document.getElementById("periodicos").style.display = "none";
+    document.getElementById("conferencias").style.display = "block";
+  }
+
+
   $(document).ready(function () {
     $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
@@ -545,17 +582,35 @@
 
   $.validator.setDefaults({
     submitHandler: function () {
-      FormSubmit(event)
+      SubmitForm(event)
     },
   });
+
+  function SubmitForm(e) {
+    e.preventDefault()
+    var VitaeXML = $("#vittaexml").val()
+    var formData = new FormData($('#candidato-formulario2')[0]);
+    console.log(VitaeXML)
+    if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
+      reqAjax(formData)
+    } else {
+      getCompleteData(formData, reqAjax)
+    }
+
+  }
 
   function reqAjax(data) {
     console.log("ajax")
     console.log(data)
     const csrfToken = $("#csrfToken").val();
+    const email = $("#email").val();
+    const editalPosicao = $("#editalPosicao").val();
+    const id = $("#id").val();
+
+
 
     $.ajax({
-      url: '/selecaoppgi/formulario/2',
+      url: '/selecaoppgi/formulario/2?_csrf={{csrfToken}}',
       type: "POST",
       data: data,
       success: function (data) {
@@ -567,6 +622,7 @@
           title: 'Formulário salvo com sucesso!',
           body: 'O formulário foi salvo com sucesso.'
         })
+        location.replace(location.href);
       },
       error: function (err) {
         $(document).Toasts('create', {
@@ -577,7 +633,9 @@
           title: 'Ocorreu um problema!',
           body: 'O formulário não pôde ser salvo.'
         })
-      }
+      },
+      processData: false,
+      contentType: false
     })
 
   }
@@ -596,50 +654,54 @@
         atividade: atividade,
         periodo: periodo
       };
-
+      console.log("COmplete data")
       experienciasData.push(experienciaData);
     }
 
     return experienciasData;
   }
 
-  function FormSubmit(e) {
-    e.preventDefault();
-    const csrfToken = $("#csrfToken").val();
-    const idCandidato = $("#idCandidato").val();
-    const Curso = $("#candidato-curso").val();
-    const Instituicao = $("#candidato-instituicao").val();
-    const AnoEgresso = $("#candidato-ano").val();
-    const CursoPos = $("#candidato-curso-pos").val();
-    const TipoCursoPos = $("input[name='CursoTipo']:checked").val() || "";
-    const InstituicaoPos = $("#candidato-instituicao-pos").val();
-    const AnoEgressoPos = $("#candidato-ano-pos").val();
-    const VitaePDF = $("#vittaepdf").val();
-    const VitaeXML = $("#vittaexml").val();
-    const Prova = $("#candidato-prova").val();
-    const experienciasData = getExperienciasData();
-
+  function enviarDocumentos() {
+    var VitaeXML = document.querySelector("VitaeXML")
     var formData = new FormData($('#candidato-formulario2')[0]);
-    formData.append('testKey', 'testValue');
-    console.log(formData)
-    const data = {
-      id: idCandidato,
-      _csrf: csrfToken,
-      Curso: Curso,
-      Instituicao: Instituicao,
-      AnoEgresso: AnoEgresso,
-      CursoPos: CursoPos,
-      TipoCursoPos: TipoCursoPos,
-      VitaePDF: VitaePDF,
-      Prova: Prova,
-      ExperienciasData: experienciasData,
-    }
 
     if (VitaeXML === "") {
-      reqAjax(formData)
+      //reqAjax(formData)
     } else {
-      getCompleteData(formData, reqAjax)
+      getCompleteData(formData, GetDataPubli)
     }
+
+  }
+
+  function GetDataPubli(data) {
+    const DataForm = data;
+    console.log(DataForm)
+    JSON.stringify(DataForm)
+    var formData2 = new FormData($('#candidato-formulario2')[0]);
+
+    const tete = {
+      teste: "teste"
+    }
+    $.ajax({
+      url: '/selecaoppgi/formulario/publicacoes?_csrf={{csrfToken}}',
+      type: "POST",
+      data: JSON.stringify(DataForm),
+      success: function (data) {
+        window.location.href = '/selecaoppgi/formulario/publicacoes'
+      },
+      error: function (err) {
+        $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-danger",
+          autohide: true,
+          delay: 10000,
+          title: 'Ocorreu um problema!',
+          body: 'As informações não poderam ser salvas.'
+        })
+      },
+      contentType: 'application/json',
+    })
+
 
   }
 
