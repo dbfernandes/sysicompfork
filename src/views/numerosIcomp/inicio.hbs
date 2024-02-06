@@ -1,5 +1,5 @@
 <div>
-        {{> numerosIcomp/navbar page='alunos'}}
+        {{> numerosIcomp/navbar }}
     <header class="text-center">
 
         <div class="page-header" style="background: #18bc9c; min-height: 600px;">
@@ -200,6 +200,115 @@
             </div>
         </div>
     </section>
+
+    <section id="publicacoes" class="pt-6 pb-9">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-12 text-center">
+                <h3>Publicações em Conferências e Periódicos</h3>
+                <span class="mt-2">Para conferir a lista de artigos de cada ano, clique nas colunas do gráfico.</span>
+                <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
+                </div>
+            </div>
+            <div class="chart" style="height: 400px">
+                <canvas id="line-chart" class="chart-canvas" ></canvas>
+            </div>
+        </div>
+    </section>
+
+    <script>
+            // Line chart
+    
+    var labels = [{{contagemPublicacoes.anos}}]
+    var ctx1 = document.getElementById("line-chart")
+    if(ctx1){
+        const chart = new Chart(ctx1.getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [
+                {
+                    label: "Publicações em Periódicos",
+                    backgroundColor: "#18bc9c",
+                    stack: 'Stack 0',
+                    data: [{{contagemPublicacoes.contagemTotal.Periodico}}],
+                },
+                {
+                    label: "Publicações em Conferências",
+                    backgroundColor: "#344767",
+                    stack: 'Stack 0',
+                    data: [{{contagemPublicacoes.contagemTotal.Conferencia}}],
+                },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    fullsize: true,
+                    color: '#344767',
+                    display: true,
+                    text: 'Histórico de Publicações',
+                    font: {
+                        size: 24
+                    },
+                }
+                },
+                scales: {
+                y: {
+                    stacked: true,
+                    ticks: {
+                        display: true,
+                        padding: 10,
+                        color: '#344767',
+                        font: {
+                            size: 15,
+                            family: "Open Sans",
+                            style: 'normal',
+                            lineHeight: 2
+                        },
+                    }
+                },
+                x: {
+                    stacked: true,
+                    ticks: {
+                        display: true,
+                        color: '#344767',
+                        padding: 10,
+                        font: {
+                            size: 15,
+                            family: "Open Sans",
+                            style: 'normal',
+                            lineHeight: 2
+                        },
+                    }
+                },
+                },
+            },
+        });
+        ctx1.onclick = (evt) => {
+        const res = chart.getElementsAtEventForMode(
+            evt,
+            'nearest',
+            { intersect: true },
+            true
+        );
+        // If didn't click on a bar, `res` will be an empty array
+        if (res.length === 0) {
+            return;
+        }
+        // Alerts "You clicked on A" if you click the "A" chart
+        const ano = chart.data.labels[res[0].index]
+        window.location.href = `/numerosIcomp/publicacoes?ano=${ano}`;
+        };
+    }
+
+    
+    </script>
 
     {{> numerosIcomp/footer}}
 

@@ -19,16 +19,22 @@
                         <b>DOCENTES</b>
                     </a>
                     </li>
-                    <li class="nav-item me-3">
-                    <a href="/numerosIcomp/publicacoes" class="nav-link fs-6 {{#ifEqual page 'publicacoes'}}active{{/ifEqual}}" >
-                        <b>PUBLICAÇÕES</b>
-                    </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fs-6 {{#ifEqual page 'publicacoes'}}active{{/ifEqual}}" 
+                        href="" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <b>PUBLICAÇÕES</b>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/numerosIcomp#publicacoes">Histórico de Publicacões</a></li>
+                            <li><a class="dropdown-item" href="/numerosIcomp/publicacoes">Todas as Publicações</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item me-3">
                     <a href="/numerosIcomp/projetos" class="nav-link fs-6 {{#ifEqual page 'projetos'}}active{{/ifEqual}}" >
                         <b>PROJETOS</b>
                     </a>
                     </li>
+                    
                 </ul>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import AlunoService from "../services/alunoService";
+import PublicacaoService from "../services/publicacaoService";
 
 // Escolha do Layout
 const layoutMain = {
@@ -12,15 +13,18 @@ const inicio = async (req, res) => {
         case 'GET':
             try {
                 const contagem = await AlunoService.contarTodos()
+                const contagemPublicacoes = await PublicacaoService.contarTodos()
                 return res.status(200).render('numerosIcomp/inicio', {
                     ...layoutMain,
-                    contagem
+                    contagem,
+                    contagemPublicacoes
                 });
             } catch (error) {
+                console.log(error)
                 return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
             }
         default:
-            return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+            return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
     }
 
 }

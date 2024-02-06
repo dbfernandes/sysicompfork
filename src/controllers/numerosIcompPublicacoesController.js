@@ -10,14 +10,20 @@ const layoutMain = {
 const publicacao = async (req, res) => {
     switch (req.method) {
         case "GET":
+            const {ano} = req.query
             try {
-                const publicacoes = await PublicacaoService.listarTodos({
-                    tipo: [1,2]
-                })
+                const conditions = {
+                    tipo: [1,2],
+                }
+                if(ano){
+                    conditions["ano"] = ano
+                }
+                const publicacoes = await PublicacaoService.listarTodos(conditions)
     
                 return res.render('numerosIcomp/publicacoes', {
                     ...layoutMain,
                     publicacoes,
+                    ano
                 });
             } catch (error) {
                 return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');

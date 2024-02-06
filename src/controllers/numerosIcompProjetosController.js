@@ -21,7 +21,7 @@ const projetos = async (req, res) => {
                 return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
             }
         default:
-            return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+            return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
 
     }
 }
