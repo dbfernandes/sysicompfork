@@ -227,66 +227,73 @@
             data: {
                 labels: labels,
                 datasets: [
-                {
-                    label: "Publicações em Periódicos",
-                    backgroundColor: "#18bc9c",
-                    stack: 'Stack 0',
-                    data: [{{contagemPublicacoes.contagemTotal.Periodico}}],
-                },
-                {
-                    label: "Publicações em Conferências",
-                    backgroundColor: "#344767",
-                    stack: 'Stack 0',
-                    data: [{{contagemPublicacoes.contagemTotal.Conferencia}}],
-                },
+                    {
+                        label: "Publicações em Periódicos",
+                        backgroundColor: "#18bc9c",
+                        stack: 'Stack 0',
+                        data: [{{contagemPublicacoes.contagemTotal.Periodico}}],
+                    },
+                    {
+                        label: "Publicações em Conferências",
+                        backgroundColor: "#344767",
+                        stack: 'Stack 0',
+                        data: [{{contagemPublicacoes.contagemTotal.Conferencia}}],
+                    },
                 ],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                legend: {
-                    display: false,
-                },
-                title: {
-                    fullsize: true,
-                    color: '#344767',
-                    display: true,
-                    text: 'Histórico de Publicações',
-                    font: {
-                        size: 24
+                    legend: {
+                        color: '#344767',
+                        font: {
+                            size: 24
+                        },
                     },
-                }
+                    title: {
+                        fullsize: true,
+                        color: '#344767',
+                        display: true,
+                        text: 'Histórico de Publicações',
+                        font: {
+                            size: 24
+                        },
+                    }
+                },
+                onHover: function(e, chartElement) {
+                    e.native.target.style.cursor = 
+                        chartElement.length > 0 ? "pointer" : "default"
                 },
                 scales: {
-                y: {
-                    stacked: true,
-                    ticks: {
-                        display: true,
-                        padding: 10,
-                        color: '#344767',
-                        font: {
-                            size: 15,
-                            family: "Open Sans",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    stacked: true,
-                    ticks: {
-                        display: true,
-                        color: '#344767',
-                        padding: 10,
-                        font: {
-                            size: 15,
-                            family: "Open Sans",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: '#344767',
+                            font: {
+                                size: 15,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            display: true,
+                            color: '#344767',
+                            padding: 10,
+                            font: {
+                                size: 15,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
                 },
             },
         });
@@ -297,7 +304,6 @@
             { intersect: true },
             true
         );
-        // If didn't click on a bar, `res` will be an empty array
         if (res.length === 0) {
             return;
         }
