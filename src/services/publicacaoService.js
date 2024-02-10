@@ -76,9 +76,15 @@ class PublicacaoService {
   }
 
   async listarTodos(conditions=null){
+    const params = {
+        include: {
+          model: TipoPublicacao,
+          as: 'Tipo',
+        },
+        where: conditions ? conditions : {} ,
+    }
     try {
-      const publicacoes = await Publicacao.findAll(conditions ? { where: conditions } : {})
-
+      const publicacoes = await Publicacao.findAll(params)
       return publicacoes.length > 0 ? publicacoes.map(p=>p.get()) : publicacoes
     } catch (error) {
       throw err;

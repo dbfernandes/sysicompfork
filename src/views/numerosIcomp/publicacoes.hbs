@@ -2,41 +2,52 @@
 <div class="flex-wrapper bg-primary">
      <section class="success"  id="docentes">
         <div class="container pb-4" >
-          <div class="row ">
-              <div class="col-md-12 text-center">
-                  <h2 class="text-white">{{publicacoes.length}} publicações dos professores do IComp {{#if ano}}no ano de {{ano}}{{/if}}</h2>
-                  <h5 class="text-white">Para conferir os detalhes das publicações, clique no seu título.</h5>
-                  <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
-              </div>
-      <table id="example" class="table table-hover table-striped w-100 bg-white wrap"><thead>
-      <tr id="filters">
-        <th id="name">Título</th>
-        <th id="period">Ano</th>
-        <th id="about-hidden">Local:</th>
-        <th id="financers-hidden">Autor(es):</th>
-        <th id="team-hidden">ISSN/ISBN:</th>
-      </tr>
-      <tr id="header">
-        <th>Título</th>
-        <th>Ano</th>
-        <th>Local:</th>
-        <th>Autor(es):</th>
-        <th>ISSN/ISBN:</th>
-      </tr>
-      </thead>
-      <tbody>
-        {{#each publicacoes}}
-        <tr data-key={{id}}>
-            <td class="ps-4" style="word-break: break-word; white-space: normal;">{{titulo}}</td>
-            <td class="ps-4"><b>{{ano}}</b></td>
-            <td class="ps-4">{{local}}</td>
-            <td class="ps-4">{{autores}}</td>
-            <td class="ps-4">{{#if ('!=' ISSN "0")}}{{ISSN}}{{else}}Não informado{{/if}}</td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
-        </div>
+            <div class="row ">
+                <div class="col-md-12 text-center">
+                    <h2 class="text-white">{{publicacoes.length}} publicações dos professores do IComp {{#if ano}}no ano de {{ano}}{{/if}}</h2>
+                    <h5 class="text-white">Para conferir os detalhes das publicações, clique no seu título.</h5>
+                    <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
+                </div>
+                <div class="text-center" id="loading">
+                    <div class="spinner-border text-light mt-5 text-center" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="datatable-wrapper">
+                    <table id="example" class="table table-hover table-striped w-100 bg-white wrap rounded">
+                    <thead>
+                        <tr id="filters">
+                            <th id="name">Título</th>
+                            <th id="period">Ano</th>
+                            <th id="type-hidden">Tipo:</th>
+                            <th id="about-hidden">Local:</th>
+                            <th id="financers-hidden">Autor(es):</th>
+                            <th id="team-hidden">ISSN/ISBN:</th>
+                        </tr>
+                        <tr id="header">
+                            <th>Título</th>
+                            <th>Ano</th>
+                            <th>Tipo:</th>
+                            <th>Local:</th>
+                            <th>Autor(es):</th>
+                            <th>ISSN/ISBN:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each publicacoes}}
+                        <tr data-key={{id}}>
+                            <td class="ps-4" style="word-break: break-word; white-space: normal;">{{titulo}}</td>
+                            <td class="ps-4"><b>{{ano}}</b></td>
+                            <td class="ps-4">{{Tipo.dataValues.nome}}</td>
+                            <td class="ps-4">{{local}}</td>
+                            <td class="ps-4">{{autores}}</td>
+                            <td class="ps-4">{{#if ('!=' ISSN "0")}}{{ISSN}}{{else}}Não informado{{/if}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                </div>
+            </div>
         </div>
       </section>
 
@@ -50,21 +61,29 @@
             var title = $('#example thead #header th').eq( $(this).index() ).text();
             $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><input type="text" class="form-control" data-index="'+i+'" placeholder="'+title+'" /></div>')
         } );
-    
+        $('#datatable-wrapper').addClass('d-none') 
+
         // DataTable
         table = $('#example').DataTable( {
             dom: 'tp',
             bLengthChange: false,
             paginationType: "simple_numbers",
             pageLength: 20,
-            responsive: true, 
+            responsive: true,
+            initComplete: function() {
+                setTimeout(() => {
+                    $('#datatable-wrapper').removeClass('d-none') 
+                    $("#loading").html('')
+                }, 500)
+            }, 
             columns: [
-            { responsivePriority: 1 },
-            { responsivePriority: 2 },
-            { responsivePriority: 3 },
-            { responsivePriority: 3 },
-            { responsivePriority: 3 },
-        ],
+                { responsivePriority: 1 },
+                { responsivePriority: 2 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+            ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
                 "paginate": {
@@ -78,11 +97,11 @@
             { className: 'none', targets: 2 },
             { className: 'none', targets: 3 },
             { className: 'none', targets: 4 },
+            { className: 'none', targets: 5 },
             ],
             order: [[1, 'desc']],
         } );
-
-
+        
 
         table.columns().every(function(){
             const column = this;
@@ -101,22 +120,21 @@
 
     } );
 
-
     window.addEventListener("resize", verifyColumns)
 
     function verifyColumns() {
         setTimeout(()=>{
             const period = $("#period")
-            const headerHidden = [$('#about-hidden'), $('#financers-hidden'), $('#team-hidden')]
+            const headerHidden = [$('#type-hidden'), $('#about-hidden'), $('#financers-hidden'), $('#team-hidden')]
             headerHidden.forEach(h => {
                 if(!h.hasClass('d-none')){
                     h.addClass('d-none')
                 }
             })
             const header =  $('#example #header .dtr-hidden').length
-            if(header == 3 && period.hasClass("d-none")){
+            if(header == 4 && period.hasClass("d-none")){
                 period.removeClass("d-none")
-            }else if(header==4 && !period.hasClass("d-none")){
+            }else if(header==5 && !period.hasClass("d-none")){
                 period.addClass("d-none")
             }
         }, 200)

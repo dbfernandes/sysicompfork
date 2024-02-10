@@ -38,72 +38,80 @@
                     <div class="card">
                         <!-- /.card-header -->
                         <div class="card-body" style="overflow-x:auto;">
-                            <table id="example2" class="table table-hover w-100">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>CPF</th>
-                                        <th>Email</th>
-                                        <th>Telefones</th>
-                                        <th>Perfil(s)</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each usuarios}}
-                                    <tr>
-                                        <td> {{nomeCompleto}} </td>
-                                        <td> {{cpf}} </td>
-                                        <td> {{email}} </td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                {{#if telCelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular" title="{{telCelular}}"></i>{{/if}}     
-                                                {{#if telResidencial}} <i id="{{id}}f" class="fa fa-phone fa-lg fixo" title="{{telResidencial}}"></i>{{/if}}
-                                                
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{perfis}}
-                                        </td>
-                                        <td>
-                                            <span class="{{#if status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span>
-                                        </td>
-                                        <td class='links-container'>
-                                            <div class="d-flex justify-content-between">
-                                                <a  style="margin-right: 2px"
-                                                    href='/usuarios/dados/{{id}}'
-                                                    class='fa fa-solid fa-eye'
-                                                    title="Visualizar" 
-                                                /></a>
-                                                {{#if status}}
-                                                <a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
-                                                    data-toggle="modal" data-target="#removerUsuario"
-                                                    title="Bloquear" 
-                                                    onclick="addLink(event)" href="#"
+                            <div class="text-center" id="loading">
+                                <div class="spinner-border my-5 text-center" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div id="datatable-wrapper">
+                                <table id="example2" class="table table-hover w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>CPF</th>
+                                            <th>Email</th>
+                                            <th>Telefones</th>
+                                            <th>Perfil(s)</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each usuarios}}
+                                        <tr>
+                                            <td> {{nomeCompleto}} </td>
+                                            <td> {{cpf}} </td>
+                                            <td> {{email}} </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    {{#if telCelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular" title="{{telCelular}}"></i>{{/if}}     
+                                                    {{#if telResidencial}} <i id="{{id}}f" class="fa fa-phone fa-lg fixo" title="{{telResidencial}}"></i>{{/if}}
                                                     
-                                                    >
-                                                </a>
-                                                {{else}}
-                                                <a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
-                                                data-toggle="modal" data-target="#removerUsuario"
-                                                title="Desbloquear" 
-                                                onclick="addLink(event)" href="#"
-                                                    >
-                                                </a>
-                                                {{/if}}
-                                                <a  style="margin-right: 2px"
-                                                    href='/usuarios/editar/{{id}}'
-                                                    class='fa fa-solid fa-pen'
-                                                    title="Editar"
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{perfis}}
+                                            </td>
+                                            <td>
+                                                <span class="{{#if status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span>
+                                            </td>
+                                            <td class='links-container'>
+                                                <div class="d-flex justify-content-between">
+                                                    <a  style="margin-right: 2px"
+                                                        href='/usuarios/dados/{{id}}'
+                                                        class='fa fa-solid fa-eye'
+                                                        title="Visualizar" 
+                                                    /></a>
+                                                    {{#if status}}
+                                                    <a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                        data-toggle="modal" data-target="#removerUsuario"
+                                                        title="Bloquear" 
+                                                        onclick="addLink(event)" href="#"
+                                                        
+                                                        >
+                                                    </a>
+                                                    {{else}}
+                                                    <a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerUsuario"
+                                                    title="Desbloquear" 
+                                                    onclick="addLink(event)" href="#"
+                                                        >
+                                                    </a>
+                                                    {{/if}}
+                                                    <a  style="margin-right: 2px"
+                                                        href='/usuarios/editar/{{id}}'
+                                                        class='fa fa-solid fa-pen'
+                                                        title="Editar"
 
-                                                /></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
+                                                    /></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -145,10 +153,18 @@
         if (document.getElementById(id+"f")) cel.className = cel.className + " mr-2"
     }
     document.addEventListener("DOMContentLoaded", function(event) {
+        $('#datatable-wrapper').addClass('d-none') 
+
         var datatable = $("#example2").DataTable({
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
         },
+        initComplete: function() {
+            setTimeout(() => {
+                $('#datatable-wrapper').removeClass('d-none') 
+                $("#loading").html('')
+            }, 500)
+        }, 
         responsive: true,
         columns: [
             { responsivePriority: 1 },
