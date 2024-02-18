@@ -4,8 +4,8 @@
         <div class="container pb-4" >
             <div class="row ">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-white">{{alunosFormados}} Alunos Formados</h1>
-                    <h2 class="text-white">{{curso}}</h2>
+                    <h1 class="text-white">{{alunosFormados}} {{__ "students.alunosFormados"}}</h1>
+                    <h2 class="text-white">{{whichCourse curso lng}}</h2>
                     <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
                 </div>
                 <div class="text-center" id="loading">
@@ -16,8 +16,8 @@
                 <div id="datatable-wrapper">
                     <table id="example" class="table table-hover table-striped w-100 bg-white rounded">
                         <thead>
-                            <tr id="filters"><th id="name">Nome</th><th id="conclusionDate">Data de Conclusão</th></tr>
-                            <tr id="header"><th>Nome</th><th>Data de Conclusão</th></tr>
+                            <tr id="filters"><th id="name">{{__ "students.nome"}}</th><th id="conclusionDate">{{__ "students.dataDeConclusão"}}</th></tr>
+                            <tr id="header"><th>{{__ "students.nome"}}</th><th>{{__ "students.dataDeConclusão"}}</th></tr>
                         </thead>
                         <tbody>
                             {{#each alunosInfo}}

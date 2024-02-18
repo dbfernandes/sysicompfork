@@ -4,7 +4,7 @@
         <div class="container pb-4" >
             <div class="row ">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-white">Docentes</h1>
+                    <h1 class="text-white">{{__ "teachers.docentes"}}</h1>
                     <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
                 </div>
                 <div class="text-center" id="loading">
@@ -15,14 +15,22 @@
                 <div id="datatable-wrapper">
                     <table id="example" class="table table-hover table-striped w-100 bg-white rounded">
                         <thead>
-                            <tr id="filters"><th id="name">Nome</th><th id="formation">Formação</th><th id="lastUpdate">Última atualização</th></tr>
-                            <tr id="header"><th>Nome</th><th>Formação</th><th>Última atualização</th></tr>
+                            <tr id="filters">
+                                <th id="name">{{__ "teachers.nome"}}</th>
+                                <th id="formation">{{__ "teachers.formacao"}}</th>
+                                <th id="lastUpdate">{{__ "teachers.ultimaAtualizacao"}}</th>
+                            </tr>
+                            <tr id="header">
+                                <th>{{__ "teachers.nome"}}</th>
+                                <th>{{__ "teachers.formacao"}}</th>
+                                <th style="word-break: break-word; white-space: normal;">{{__ "teachers.ultimaAtualizacao"}}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {{#each professores}}
                             <tr data-key={{id}}>
-                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}">{{nomeCompleto}}</a></td>
-                                <td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}?lng={{lng}}">{{nomeCompleto}}</a></td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td>
                                 <td class="ps-4">{{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td>
                             </tr>
                             {{/each}}
@@ -49,13 +57,14 @@
             bLengthChange: false,
             paginationType: "simple_numbers",
             pageLength: 20,
-            responsive: {
-                details: false,
-            }, 
+            responsive: true, 
             columns: [
                 { responsivePriority: 1 },
                 { responsivePriority: 3 },
                 { responsivePriority: 2 },
+            ],
+            columnDefs: [
+            { width: "100px", targets: 2 },
             ],
             initComplete: function() {
                 setTimeout(() => {

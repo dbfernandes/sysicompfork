@@ -4,8 +4,8 @@
         <div class="container pb-4" >
             <div class="row ">
                 <div class="col-md-12 text-center">
-                    <h2 class="text-white">{{projetosFiltrados.length}} Projetos de Pesquisa em Andamento</h2>
-                    <h5 class="text-white">Para conferir os detalhes dos projetos, clique no título do projeto.</h5>
+                    <h2 class="text-white">{{projetosFiltrados.length}} {{__ "projects.projetosEmAndamento"}}</h2>
+                    <h5 class="text-white">{{__ "projects.paraConferir"}}</h5>
                     <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
                 </div>
                 <div class="text-center" id="loading">
@@ -17,28 +17,28 @@
                     <table id="example" class="table table-hover table-striped w-100 bg-white wrap rounded">
                         <thead>
                             <tr id="filters">
-                                <th id="name">Título</th>
-                                <th id="period">Período</th>
-                                <th id="about-hidden">Descrição</th>
-                                <th id="financers-hidden">Financiadores</th>
-                                <th id="team-hidden">Integrante(s)</th>
+                                <th id="name">{{__ "projects.titulo"}}:</th>
+                                <th id="period">{{__ "projects.periodo"}}<:/th>
+                                <th id="about-hidden">{{__ "projects.descricao"}}:</th>
+                                <th id="financers-hidden">{{__ "projects.financiadores"}}:</th>
+                                <th id="team-hidden">{{__ "projects.integrantes"}}:</th>
                             </tr>
                             <tr id="header">
-                                <th>Título</th>
-                                <th>Período</th>
-                                <th>Descrição:</th>
-                                <th>Financiador(es):</th>
-                                <th>Integrante(s):</th>
+                                <th>{{__ "projects.titulo"}}</th>
+                                <th>{{__ "projects.periodo"}}</th>
+                                <th>{{__ "projects.descricao"}}:</th>
+                                <th>{{__ "projects.financiadores"}}:</th>
+                                <th>{{__ "projects.integrantes"}}:</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{#each projetosFiltrados}}
                             <tr data-key={{id}}>
                                 <td class="ps-4" style="word-break: break-word; white-space: normal;">{{titulo}}</td>
-                                <td class="ps-4"><b>{{inicio}} - {{#if fim}}{{fim}}{{else}}Atual{{/if}}</b></td>
-                                <td class="ps-4">{{#if descricao}}{{descricao}}{{else}}Sem descrição disponível{{/if}}</td>
-                                <td class="ps-4">{{#if financiadores}}{{financiadores}}{{else}}Sem financiadores{{/if}}</td>
-                                <td class="ps-4">{{#if integrantes}}{{integrantes}}{{else}}Sem equipe de integrantes disponível{{/if}}</td>
+                                <td class="ps-4"><b>{{inicio}} - {{#if fim}}{{fim}}{{else}}{{__ "projects.atual"}}{{/if}}</b></td>
+                                <td class="ps-4">{{#if descricao}}{{descricao}}{{else}}{{__ "projects.semDescricaoDisponivel"}}{{/if}}</td>
+                                <td class="ps-4">{{#if financiadores}}{{financiadores}}{{else}}{{__ "projects.semFinanciadores"}}{{/if}}</td>
+                                <td class="ps-4">{{#if integrantes}}{{integrantes}}{{else}}{{__ "projects.semEquipe"}}{{/if}}</td>
                             </tr>
                             {{/each}}
                         </tbody>

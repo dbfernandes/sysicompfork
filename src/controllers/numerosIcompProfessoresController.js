@@ -17,10 +17,12 @@ const professores = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const professores = await UsuarioService.listarTodosPorCondicao({
                     professor: 1
                   })
                 return res.status(200).render('numerosIcomp/docentes', {
+                    lng,
                     professores,
                     ...layoutMain,
                 });
@@ -39,12 +41,14 @@ const perfil = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {id} = req.params
                 const professor = await DocenteService.listarPerfil(id)
                 if(!professor){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 return res.render('numerosIcomp/perfil/perfil', {
+                    lng,
                     professor,
                     ...layoutDashboard,
                 });
@@ -62,10 +66,11 @@ const publicacoes = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {id} = req.params
                 const professor = await DocenteService.listarPerfil(id)
                 if(!professor){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 const publicacoes = await DocenteService.listarPublicacoes(id)
 
@@ -93,6 +98,7 @@ const publicacoes = async (req, res) => {
 
 
                 return res.render('numerosIcomp/perfil/perfil-publicacao', {
+                    lng,
                     professor,
                     publicacoes,
                     paperConfLen: publicacoes.artigosConferencias.length,
@@ -118,10 +124,11 @@ const pesquisa = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {id} = req.params
                 const professor = await DocenteService.listarPerfil(id)
                 if(!professor){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 const projetos = await DocenteService.listarPesquisas(id)
     
@@ -142,6 +149,7 @@ const pesquisa = async (req, res) => {
                     }) 
                 })
                 return res.render('numerosIcomp/perfil/perfil-projeto', {
+                    lng,
                     professor,
                     projetos,
                     projetosLen: projetos.length,
@@ -164,15 +172,16 @@ const orientacao = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {id, tipo} = req.params
                 const tipos = ["graduacao","mestrado","doutorado"]
                 const t = tipos.findIndex(e=>e==tipo) + 1
                 if(t==0){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 const professor = await DocenteService.listarPerfil(id)
                 if(!professor){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 const orientacoes = await DocenteService.listarOrientacoes(id, t)
     
@@ -201,6 +210,7 @@ const orientacao = async (req, res) => {
                 })
     
                 return res.render('numerosIcomp/perfil/perfil-orientacao', {
+                    lng,
                     professor,
                     orientacoes,
                     orientacoesConcluidasLen: orientacoes.concluidas.length,
@@ -224,14 +234,16 @@ const premios = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {id} = req.params
                 const professor = await DocenteService.listarPerfil(id)
                 if(!professor){
-                    return res.redirect('/numerosIcomp/docentes')
+                    return res.redirect('/numerosIcomp/docentes?lng='+lng)
                 }
                 const premios = await DocenteService.listarPremios(id)
 
                 return res.render('numerosIcomp/perfil/perfil-premio', {
+                    lng,
                     premios,
                     professor,
                     premiosLen: premios.length,

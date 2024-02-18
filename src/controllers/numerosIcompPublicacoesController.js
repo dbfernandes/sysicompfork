@@ -10,7 +10,7 @@ const layoutMain = {
 const publicacao = async (req, res) => {
     switch (req.method) {
         case "GET":
-            const {ano} = req.query
+            const {ano, lng} = req.query
             try {
                 const conditions = {
                     tipo: [1,2],
@@ -21,6 +21,7 @@ const publicacao = async (req, res) => {
                 const publicacoes = await PublicacaoService.listarTodos(conditions)
     
                 return res.render('numerosIcomp/publicacoes', {
+                    lng,
                     ...layoutMain,
                     publicacoes,
                     ano

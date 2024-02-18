@@ -8,40 +8,40 @@
                         <div class="nav-wrapper position-relative end-0">
                             <ul class="nav nav-pills nav-fill p-1" role="tablist">
                             <li class="nav-item">
-                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}" aria-controls="profile" role="tab" aria-selected="true">
+                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}?lng={{lng}}" aria-controls="profile" role="tab" aria-selected="true">
                                 <i class="material-icons position-relative">person</i>
                                 
-                                <span class="ms-1">Perfil</span>
+                                <span class="ms-1">{{__ 'profile.perfil'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/publicacoes" aria-controls="public" role="tab" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/publicacoes?lng={{lng}}" aria-controls="public" role="tab" aria-selected="false">
                                 <i class="material-icons position-relative">description</i>
                                 
-                                <span class="ms-1">Publicações</span>
+                                <span class="ms-1">{{__ 'profile.publicacoes'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/projetos" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/projetos?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">search</i>
-                                <span class="ms-1">Projetos de Pesquisa</span>
+                                <span class="ms-1">{{__ 'profile.projetosDePesquisa'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle mb-0 px-0 " data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <i class="material-icons text-lg position-relative">account_circle</i>
-                                <span class="ms-1">Orientações</span>
+                                <span class="ms-1">{{__ 'profile.orientacoes'}}</span>
                                 </a>
                                 <div class="dropdown-menu w-100 text-center">
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao">Graduação</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado">Mestrado</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado">Doutorado</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ 'profile.graduacao'}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ 'profile.mestrado'}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ 'profile.doutorado'}}</a>
                                   </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}/premios" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}/premios?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">military_tech</i>
-                                <span class="ms-1">Prêmios</span>
+                                <span class="ms-1">{{__ 'profile.premios'}}</span>
                                 </a>
                             </li>
                             </ul>
@@ -64,7 +64,7 @@
                                 <div class="nav-wrapper position-relative end-0 pt-3">
                                     <ul class="nav nav-tabs p-1" role="tablist">
                                         <li class="nav-item">
-                                        <a class="nav-link px-3" id="research-tab" data-bs-toggle="tab" href="#research-content" role="tab" aria-controls="research-content" aria-selected="true">Projetos de Pesquisa ({{projetosLen}})</a>
+                                        <a class="nav-link px-3" id="research-tab" data-bs-toggle="tab" href="#research-content" role="tab" aria-controls="research-content" aria-selected="true">{{__ 'profile.projetosDePesquisa'}} ({{projetosLen}})</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -73,19 +73,19 @@
                                         <ol class="mt-3 text-dark" style="font-size: 14px;">
                                             {{#if projetos}}
                                             {{#each projetos}}
-                                            <li><strong>{{inicio}}-{{#if fim}}{{fim}}{{else}}Atual{{/if}}.</strong> <i>{{titulo}}.</i> ({{papel}})
+                                            <li><strong>{{inicio}}-{{#if fim}}{{fim}}{{else}}{{__ 'profile.atual'}}{{/if}}.</strong> <i>{{titulo}}.</i> ({{papel}})
                                                 <br><br>
-                                                <strong>Descrição: </strong>{{descricao}}
+                                                <strong>{{__ 'profile.descricao'}}: </strong>{{descricao}}
                                                 <br>
                                                 <br>
-                                                <strong>Integrante(s): </strong> {{integrantes}}.
+                                                <strong>{{__ 'profile.integrantes'}}: </strong> {{integrantes}}.
                                                 <br>
                                                 <br>
-                                                <strong>Financidor(es): </strong> {{financiadores}}.
+                                                <strong>{{__ 'profile.financiadores'}}: </strong> {{financiadores}}.
                                                 </li><br>
                                             {{/each}}
                                             {{else}}
-                                            Não há projetos cadastrados para {{professor.nomeCompleto}}.
+                                            {{__ 'profile.naoHaProjetos'}} {{professor.nomeCompleto}}.
                                             {{/if}}
                                         </ol>
                                     </div>
@@ -111,7 +111,7 @@
         data: {
             labels,
             datasets: [{
-                label: "Projetos",
+                label: "{{__ 'profile.projetos'}}",
                 tension: 0,
                 borderWidth: 0,
                 pointRadius: 5,
@@ -135,7 +135,7 @@
                 fullsize: true,
                 color: '#344767',
                 display: true,
-                text: 'Projetos de Pesquisa',
+                text: '{{__ "profile.projetosDePesquisa"}}',
                 font: {
                     size: 24
                 },
@@ -157,9 +157,9 @@
                 ticks: {
                 display: true,
                 padding: 10,
-                color: '#b2b9bf',
+                color: 'gray',
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2
@@ -176,10 +176,10 @@
                 },
                 ticks: {
                 display: true,
-                color: '#b2b9bf',
+                color: 'gray',
                 padding: 10,
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2

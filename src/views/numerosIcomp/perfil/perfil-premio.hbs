@@ -8,40 +8,40 @@
                         <div class="nav-wrapper position-relative end-0">
                             <ul class="nav nav-pills nav-fill p-1" role="tablist">
                             <li class="nav-item">
-                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}" aria-controls="profile" role="tab" aria-selected="true">
+                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}?lng={{lng}}" aria-controls="profile" role="tab" aria-selected="true">
                                 <i class="material-icons position-relative">person</i>
                                 
-                                <span class="ms-1">Perfil</span>
+                                <span class="ms-1">{{__ 'profile.perfil'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes{{professor.id}}/publicacoes" aria-controls="public" role="tab" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes{{professor.id}}/publicacoes?lng={{lng}}" aria-controls="public" role="tab" aria-selected="false">
                                 <i class="material-icons position-relative">description</i>
                                 
-                                <span class="ms-1">Publicações</span>
+                                <span class="ms-1">{{__ 'profile.publicacoes'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/projetos" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/projetos?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">search</i>
-                                <span class="ms-1">Projetos de Pesquisa</span>
+                                <span class="ms-1">{{__ 'profile.projetosDePesquisa'}}</span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle mb-0 px-0" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <i class="material-icons text-lg position-relative">account_circle</i>
-                                <span class="ms-1">Orientações</span>
+                                <span class="ms-1">{{__ 'profile.orientacoes'}}</span>
                                 </a>
                                 <div class="dropdown-menu w-100 text-center">
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao">Graduação</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado">Mestrado</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado">Doutorado</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ 'profile.graduacao'}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ 'profile.mestrado'}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ 'profile.doutorado'}}</a>
                                   </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/premios" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/premios?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">military_tech</i>
-                                <span class="ms-1">Prêmios</span>
+                                <span class="ms-1">{{__ 'profile.premios'}}</span>
                                 </a>
                             </li>
                             </ul>
@@ -60,7 +60,7 @@
                                     <div class="nav-wrapper position-relative end-0">
                                         <ul class="nav nav-tabs p-1" role="tablist">
                                             <li class="nav-item">
-                                            <a class="nav-link px-3 nav-link-event" id="prizes-tab" data-bs-toggle="tab" href="#prizes" role="tab" aria-controls="prizes" aria-selected="false">Prêmios ({{premiosLen}})</a>
+                                            <a class="nav-link px-3 nav-link-event" id="prizes-tab" data-bs-toggle="tab" href="#prizes" role="tab" aria-controls="prizes" aria-selected="false">{{__ 'profile.premios'}} ({{premiosLen}})</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -72,7 +72,7 @@
                                                 <li><strong>{{titulo}}. </strong>{{entidade}}, {{ano}}.</li><br>
                                                 {{/each}}
                                                 {{else}}
-                                                Não há prêmios cadastrados para {{professor.nomeCompleto}}.
+                                                {{__ 'profile.naoHaPremios'}} {{professor.nomeCompleto}}.
                                                 {{/if}}
                                             </ol>
                                         </div>

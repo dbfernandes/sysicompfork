@@ -11,9 +11,11 @@ const projetos = async (req, res) => {
     switch (req.method ) {
         case "GET":
             try {
+                const {lng} = req.query
                 const projetosFiltrados = await ProjetoService.listarAtuais()
 
                 return res.status(200).render('numerosIcomp/projetos', {
+                    lng,
                     ...layoutMain,
                     projetosFiltrados
                 })

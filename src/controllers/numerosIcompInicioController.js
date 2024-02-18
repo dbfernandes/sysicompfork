@@ -12,12 +12,14 @@ const inicio = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const contagem = await AlunoService.contarTodos()
                 const contagemPublicacoes = await PublicacaoService.contarTodos()
                 return res.status(200).render('numerosIcomp/inicio', {
                     ...layoutMain,
                     contagem,
-                    contagemPublicacoes
+                    contagemPublicacoes,
+                    lng
                 });
             } catch (error) {
                 console.log(error)
