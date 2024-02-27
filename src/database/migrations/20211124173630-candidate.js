@@ -66,10 +66,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
-      email:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       birthday:{
         type: Sequelize.DATE
       },
@@ -101,6 +97,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       inscricaoposcomp: {
+        type: Sequelize.STRING
+      },
+      nivel: {
         type: Sequelize.STRING
       },
       anoposcomp: {

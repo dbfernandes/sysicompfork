@@ -1,47 +1,169 @@
 import fs from 'fs';
 import CandidatoService from './candidateService.js';
+import exp from 'constants';
+import { get } from 'http';
 
 const exceljs = require('exceljs');
 
 function formatarDados(dados) {
-    let dadosFormatados = [];
-    for (let i = 0; i < dados.length; i++) {
-        dadosFormatados.push({
-            name: dados[i].name,
-            email: dados[i].email,
-            inscricao: dados[i].inscricaoposcomp,
-            linha: dados[i].linha,
-            orientador: dados[i].orientador,
-            bolsa: dados[i].bolsa,
-            nivel: dados[i].nivel
-        });
-    }
+    return dados.map((dado) => ({
+        nome: dado.name,
+        email: dado.email,
+        inscricao: dado.inscricaoposcomp,
+        linha: dado.linha,
+        orientador: dado.orientador,
+        bolsa: dado.bolsa,
+        nivel: dado.nivel,
+        comprovante: dado.comprovante,
+        curriculum: dado.curriculum,
+        historico: dado.historico,
+        proposto: dado.proposto, 
+        
+        provaInscricao: {formula: '=Candidato!B:B',},
+        propostasMediaFinal: {formula: 'SUM(B2:D2)', result: '0'},
 
-    dadosFormatados = JSON.stringify(dadosFormatados);
-    console.log('Dados formatados: ', dadosFormatados);
-    return dadosFormatados;
+        ws_mediaFinal_prova: {formula: '=Provas!C:C',},
+        ws_mediaFinal_proposta: {formula: '=Propostas!E:E',},
+        ws_mediaFinal_media: {formula: 'AVERAGE(B2:D2)', result: '0'},
+        ws_mediaFinal_titulos: {formula: '=Titulos!I2', result: '0'},
+
+        ws_titulos_nota: {formula: '=IF(SUM(B2:E2)>30,30,SUM(B2:E2)) + IF(SUM(F2:H2)>70,70,SUM(F2:H2))', result: '0'},
+        ws_titulos_nac: {formula: '=5+((5 * I2)/100)', result: '5'},
+    }));
 }
 
+function insertData(worksheet, dados, filtro = null) {
+    dados.forEach((dado) => {
+        if (filtro) {
+            if (dado.nivel == filtro) {
+                let row = worksheet.addRow(dado);
+                row.eachCell((cell, number) => {
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                });
+            }
+        } else worksheet.addRow(dado);
+    });
+}
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(EditalId) {
     const candidatos = await CandidatoService.listCanditatesByEdital(EditalId)
-    // candidatos = formatarDados(candidatos);
-    return candidatos;
+    const candidatosFormatado = formatarDados(candidatos);
+    return candidatosFormatado;
 }
 
-// Transformar os dados para JSON
-let testeDados = { nome: 'Teste', email: 'asd@email.com', 
-    inscricao: '123456', linha: 'Teste', orientador: 'Teste', bolsa: 'Teste', nivel: 'Teste' };
+function createSeparador(worksheet, header, cellValue, line, limit) {
+    
+    worksheet.mergeCells(`A${line}:${String.fromCharCode(65 + Math.min(header.length, limit) - 1)}${line}`);
+    // worksheet.mergeCells(`A${line}:${String.fromCharCode(65 + header.length - 1)}${line}`);
+    worksheet.getCell(`A${line}`).value = cellValue;
+    worksheet.getCell(`A${line}`).alignment = { vertical: 'middle', horizontal: 'center'};
+    worksheet.getCell(`A${line}`).font = {color: { argb: 'FFFFFF' }, bold: true};
+    worksheet.getCell(`A${line}`).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFC0C0C0' },
+        bgColor: { argb: 'FFC0C0C0' }
+    };
+    worksheet.getRow(line).height = 20;
+}
 
-let testeDados2 = { nome: 'Teste2', email: 'asd@asd.com',
-    inscricao: '123456', linha: 'Teste', orientador: 'Teste', bolsa: 'Teste', nivel: 'Teste' };
+function createWorksheetTitulo(header, dados, worksheet) {
+    worksheet.columns = header.map((item) => {
+        return { header: item.header, key: item.key, width: item.width };
+    });
+    
+    worksheet.spliceRows(1, 0, []);
+    // createSeparador(worksheet, header, 'Mestrados', 1);
+    createSeparador(worksheet, header, 'Mestrados', 1, 11);
+    worksheet.spliceRows(2, 0, []);
+    worksheet.mergeCells('A3:A2');
+    worksheet.getCell('A3').value = 'Nome';
+    worksheet.mergeCells('B2:E2');
+    worksheet.mergeCells('F2:H2');
+    worksheet.mergeCells('I3:I2');
+    worksheet.mergeCells('J3:J2');
 
-let dados = JSON.stringify(testeDados);
-let dados2 = JSON.stringify(testeDados2);
+    worksheet.getCell('B2').value = 'Atividades';
+    worksheet.getCell('F2').value = 'Publicações';
+    worksheet.getCell('I3').value = 'Nota';
+    worksheet.getCell('J3').value = 'NAC';
+    
+
+    let headerRow = worksheet.getRow(2);
+    worksheet.getRow(3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    worksheet.getRow(3).height = 30;
+    let secondHeaderRow = header.map((item) => item.header);
+    headerRow.eachCell((cell, number) => {
+        cell.font = { bold: true, color: { argb: '00000' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    });
+    headerRow.height = 15;
+    insertData(worksheet, dados, 'Mestrado');
+
+    createSeparador(worksheet, header, 'Doutorados', worksheet.rowCount + 1, 11);
+    let linhaHeaderDoutorados = worksheet.addRow(secondHeaderRow);
+    worksheet.spliceRows(worksheet.rowCount, 0, []);
+
+    worksheet.mergeCells(`A${worksheet.rowCount}:A${worksheet.rowCount-1}`);
+    worksheet.mergeCells(`B${worksheet.rowCount-1}:E${worksheet.rowCount-1}`);
+    worksheet.mergeCells(`F${worksheet.rowCount-1}:H${worksheet.rowCount-1}`);
+    worksheet.mergeCells(`I${worksheet.rowCount}:I${worksheet.rowCount-1}`);
+    worksheet.mergeCells(`J${worksheet.rowCount}:J${worksheet.rowCount-1}`);
+
+    worksheet.getCell(`A${worksheet.rowCount}`).value = 'Nome';
+    worksheet.getCell(`B${worksheet.rowCount-1}`).value = 'Atividades';
+    worksheet.getCell(`F${worksheet.rowCount-1}`).value = 'Publicações';
+    worksheet.getCell(`I${worksheet.rowCount}`).value = 'Nota';
+    worksheet.getCell(`J${worksheet.rowCount}`).value = 'NAC';
+
+    worksheet.getRow(worksheet.rowCount).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    worksheet.getRow(worksheet.rowCount).height = 30;
+
+    linhaHeaderDoutorados.eachCell((cell, number) => {
+        cell.font = { bold: true, color: { argb: '00000' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    }
+    );
+    linhaHeaderDoutorados.height = 15;
+    insertData(worksheet, dados, 'Doutorado');
+
+}
 
 // Axuliar na formatação dos dados na tabela
-function auxCriarTabela() {
-    //
+function createWorksheet(header, dados, worksheet) {
+
+    worksheet.columns = header.map((item) => {
+        return { header: item.header, key: item.key, width: item.width };
+    });
+
+    worksheet.spliceRows(1, 0, [])
+    
+    createSeparador(worksheet, header, 'Mestrados', 1, 11);
+
+    let headerRow = worksheet.getRow(2);
+    let secondHeaderRow = header.map((item) => item.header);
+    secondHeaderRow = secondHeaderRow.filter((item) => item !== 'Homologado');
+
+    headerRow.eachCell((cell, number) => {
+        cell.font = { bold: true, color: { argb: '00000' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    });
+    headerRow.height = 40;
+    
+    insertData(worksheet, dados, 'Mestrado');
+    
+    createSeparador(worksheet, header, 'Doutorados', worksheet.rowCount + 1, 11);
+    
+    let linhaHeaderDoutorados = worksheet.addRow(secondHeaderRow);
+
+    linhaHeaderDoutorados.eachCell((cell, number) => {
+        cell.font = { bold: true, color: { argb: '00000' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    }
+    );
+    linhaHeaderDoutorados.height = 40;
+
+    insertData(worksheet, dados, 'Doutorado');
 }
 
 async function gerarPlanilha(editalId) {
@@ -51,212 +173,83 @@ async function gerarPlanilha(editalId) {
     let worksheetCandidatos = workbook.addWorksheet('Candidato');
     let worksheetProvas = workbook.addWorksheet('Provas');
     let worksheetPropostas = workbook.addWorksheet('Propostas');
+    let worksheetTitulos = workbook.addWorksheet('Titulos');
+    let worksheetMediaFinal = workbook.addWorksheet('Média Final');
     
     const candidatos = await getCandidatos(editalId);
-    console.log('Candidatos: ', candidatos);
-    worksheetCandidatos.columns = [
-        { header: 'Nome', key: 'nome', width: 40 },
-        { header: 'Email', key: 'email', width: 40 },
-        { header: 'Inscrição', key: 'inscricao', width: 20 },
-        { header: 'Linha', key: 'linha', width: 10 },
-        { header: 'Orientador', 'key': 'orientador', width: 40 },
-        { header: 'Bolsa', key: 'bolsa', width: 15 },
-        { header: 'Nível', key: 'nivel', width: 15 },
-    ];
-    
-    let headerRow = worksheetCandidatos.getRow(1);
-    headerRow.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-    headerRow.height = 30;
-    
-    // Cria um separador
-    worksheetCandidatos.spliceRows(1,0, [])
 
-    for (let i = 1; i <= 7; i++) {
-        let cell = worksheetCandidatos.getCell(1, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-        cell.font = {color: { argb: 'FFFFFF' } };
+    createWorksheet(
+        [
+            { header: 'Nome', key: 'nome', width: 40 },
+            { header: 'Email', key: 'email', width: 40 },
+            { header: 'Inscrição', key: 'inscricao', width: 20 },
+            { header: 'Linha', key: 'linha', width: 10 },
+            { header: 'Orientador', 'key': 'orientador', width: 40 },
+            { header: 'Bolsa', key: 'bolsa', width: 15 },
+            { header: 'Nível', key: 'nivel', width: 15 },
+            { header: 'Comprovante', key: 'comprovante', width: 15},
+            { header: 'Curriculum', key: 'curriculum', width: 15},
+            { header: 'Historico', key: 'historico', width: 15},
+            { header: 'Proposto', key: 'proposto', width: 15},
+            { header: 'Cartas (2 no minimo)', key: 'cartas', width: 40 },
+            { header: 'Homologado', key: 'homologado', width: 40 },
+            { header: 'Observacoes', key: 'observacoes', width: 40 },
 
-        if (i == 4) {
-            cell.value = 'Mestrados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        } 
-    }
-
-    // Dados testes
-    worksheetCandidatos.addRow(candidatos);
-    
-    // Cria um separador
-    let separador2 = worksheetCandidatos.addRow(['']);
-    for (let i = 1; i <= 7; i++) {
-        let cell = worksheetCandidatos.getCell(separador2.number, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-        cell.font = {color: { argb: 'FFFFFF' } };
-
-        if (i == 4) {
-            cell.value = 'Doutorados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        } 
-    }
-
-    let linhaHeaderDoutorados = worksheetCandidatos.addRow(
-        ['Nome', 'Email', 'Inscrição', 'Linha', 'Orientador', 'Bolsa', 'Nível']
+        ],
+        candidatos,
+        worksheetCandidatos
     );
 
-    linhaHeaderDoutorados.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-    linhaHeaderDoutorados.height = 30;
+    createWorksheet(
+        [
+            { header: 'Nome', key: 'nome', width: 40 },
+            { header: 'Inscrição', key: 'provaInscricao', width: 20 },
+            { header: 'Nota Final', key: 'notaFinal', width: 20 }
+        ],
+        candidatos,
+        worksheetProvas
+    );
 
-    // Dados testes
-    worksheetCandidatos.addRow(JSON.parse(dados2));
-
-    worksheetProvas.columns = [
-        { header: 'Nome', key: 'nome', width: 40 },
-        { header: 'Inscrição', key: 'inscricao', width: 20 },
-        { header: 'Nota Final', key: 'notaFinal', width: 20 }
-    ];
-
-    let headerRowProvas = worksheetProvas.getRow(1);
-    headerRowProvas.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-    headerRowProvas.height = 30;
+    createWorksheet(
+        [
+            { header: 'Nome', key: 'nome', width: 40 },
+            { header: 'Avaliador 1', key: 'avaliador1', width: 40 },
+            { header: 'Avaliador 2', key: 'avaliador2', width: 40 },
+            { header: 'Avaliador 3', key: 'avaliador3', width: 40 },
+            { header: 'Media Final', key: 'propostasMediaFinal', width: 20 }
+        ],
+        candidatos,
+        worksheetPropostas
+    );
     
-    // Cria um separador
-    worksheetProvas.spliceRows(1,0, [])
-
-    for (let i = 1; i <= 3; i++) {
-        let cell = worksheetProvas.getCell(1, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-        cell.font = {color: { argb: 'FFFFFF' } };
-
-        if (i == 2) {
-            cell.value = 'Mestrados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        } 
-    }
-
-    // Dados testes
-
-    // Cria um separador
-    let separadorProvas2 = worksheetProvas.addRow(['']);
-    separador2.height = 30;
-    for (let i = 1; i <= 3; i++) {
-        let cell = worksheetProvas.getCell(separadorProvas2.number, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-        cell.font = {color: { argb: 'FFFFFF' } };
-
-        if (i == 2) {
-            cell.value = 'Doutorados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        } 
-    }
-
-    let linhaHeaderProvasDoutorados = worksheetProvas.addRow(
-        ['Nome', 'Inscrição', 'Nota Final']
+    createWorksheetTitulo(
+        [
+            { header: 'Nome', key: 'nome', width: 40 },
+            { header: 'Mestrado', key: 'mestrado', width: 15 },
+            { header: 'Estágio, Extensão e monitoria', key: 'atividades', width: 20 },
+            { header: 'Docência', key: 'docencia', width: 10 },
+            { header: 'IC, IT, ID', key: 'siglas', width: 10 },
+            { header: 'A', key: 'publicacoes_A', width: 10 },
+            { header: 'B1 a B2', key: 'publicacoes_B1', width: 10 },
+            { header: 'B3 a B5', key: 'publicacoes_B3', width: 10 },
+            { header: 'Nota', key: 'ws_titulos_nota', width: 10 },
+            { header: 'NAC', key: 'ws_titulos_nac', width: 10 },
+        ],
+        candidatos,
+        worksheetTitulos
     );
 
-    linhaHeaderProvasDoutorados.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    }
+    createWorksheet(
+        [
+            { header: 'Nome', key: 'nome', width: 40 },
+            { header: 'Prova', key: 'ws_mediaFinal_prova', width: 20 },
+            { header: 'Proposta', key: 'ws_mediaFinal_proposta', width: 20 },
+            { header: 'Títulos', key: 'ws_mediaFinal_titulos', width: 20 },
+            { header: 'Média', key: 'ws_mediaFinal_media', width: 20 },
+        ],
+        candidatos,
+        worksheetMediaFinal
     );
-    linhaHeaderProvasDoutorados.height = 30;
-
-    // Dados testes
-
-    worksheetPropostas.columns = [
-        { header: 'Nome', key: 'nome', width: 40 },
-        { header: 'Avaliador 1', key: 'avaliador1', width: 40 },
-        { header: 'Avaliador 2', key: 'avaliador2', width: 40 },
-        { header: 'Avaliador 3', key: 'avaliador3', width: 40 },
-        { header: 'Media Final', key: 'mediaFinal', width: 20 }
-    ];
-
-    let headerRowPropostas = worksheetPropostas.getRow(1);
-    headerRowPropostas.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-    headerRowPropostas.height = 30;
-
-    // Cria um separador
-    worksheetPropostas.spliceRows(1,0, [])
-
-    for (let i = 1; i <= 5; i++) {
-        let cell = worksheetPropostas.getCell(1, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-
-        if (i == 2) {
-            cell.value = 'Mestrados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        }
-        cell.font = {color: { argb: 'FFFFFF' } };
-    }
-
-    // Dados testes
-
-    // Cria um separador
-    let separadorPropostas2 = worksheetPropostas.addRow(['']);
-    for (let i = 1; i <= 5; i++) {
-        let cell = worksheetPropostas.getCell(separadorPropostas2.number, i); 
-        cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFC0C0C0' },
-            bgColor: { argb: 'FFC0C0C0' }
-        };
-        cell.font = {color: { argb: 'FFFFFF' } };
-
-        if (i == 2) {
-            cell.value = 'Doutorados';
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        } 
-    }
-
-    let linhaHeaderPropostas = worksheetPropostas.addRow(
-        ['Nome', 'Avaliador 1', 'Avaliador 2', 'Avaliador 3', 'Media Final']
-    );
-
-    linhaHeaderPropostas.eachCell((cell, number) => {
-        cell.font = { bold: true, color: { argb: '00000' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    }
-    );
-    linhaHeaderPropostas.height = 30;
-    
-    
-
 
     // Save Excel on Hard Disk
     await workbook.xlsx.writeFile('planilha.xlsx')

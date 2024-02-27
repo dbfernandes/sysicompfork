@@ -82,10 +82,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.STRING
       },
-      email:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
       birthday:{
         type: DataTypes.DATE
       },
@@ -120,6 +116,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
       anoposcomp: {
+        type: DataTypes.STRING
+      },
+      nivel: {
         type: DataTypes.STRING
       },
       notaposcomp: {
