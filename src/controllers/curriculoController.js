@@ -49,9 +49,9 @@ const verificarAvatar = async (req, res) => {
       try {
         const {id} = req.params
         const avatar = await AvatarService.listarUm(id)
-        res.status(200).send(avatar)
+        return res.status(200).send(avatar)
       }catch(err){
-        res.status(500).send()
+        return res.status(500).send()
       }
     default:
       return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');

@@ -1,4 +1,5 @@
-const {Salas} = require('../models');
+// const {Salas} = require('../models');
+import SalaService from '../services/salasService';
 
 const adicionar = async (req, res) => {
     if (req.method === 'GET') {
@@ -20,28 +21,32 @@ const adicionar = async (req, res) => {
                 });
             }
             
-            numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
-            capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
-            let responseError = null;
-        
-            const sala = await Salas
-                .create({
-                    nome,
-                    bloco,
-                    andar,
-                    numero,
-                    capacidade
-                })
-                .catch((err) => {
-                    responseError = err;
-                });
+            // numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
+            numero = parseInt(req.body.numero, 10) || 0;
+            // capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
+            capacidade = parseInt(req.body.capacidade, 10) || 0;
+            // let responseError = null;
+            
+            await SalaService.criar(nome, bloco, andar, numero, capacidade)
 
-            if (!sala) {
-                return res.status(400).json({
-                    error: responseError.message
+            // const sala = await Salas
+            //     .create({
+            //         nome,
+            //         bloco,
+            //         andar,
+            //         numero,
+            //         capacidade
+            //     })
+            //     .catch((err) => {
+            //         responseError = err;
+            //     });
+
+            // if (!sala) {
+            //     return res.status(400).json({
+            //         error: responseError.message
                     
-                });
-            }
+            //     });
+            // }
 
             res.redirect('/salas/gerenciar')
 
@@ -54,12 +59,14 @@ const adicionar = async (req, res) => {
 
 const excluir = async (req, res) => {
     const {id} = req.params;
-    const sala = await Salas.findOne({where : {id: req.params.id}});
+    // const sala = await Salas.findOne({where : {id: req.params.id}});
+    const sala = await SalaService.listarUm(id);
     try{
         if(!sala)
             throw new Error('Sala não encontrado!');
 
-        const sala_apagada = await Salas.destroy({where: {id: id}});
+        // const sala_apagada = await Salas.destroy({where: {id: id}});
+        const sala_apagada = await SalaService.excluir(id);
         res.redirect('/salas/gerenciar')
      
     }catch(e){
@@ -69,7 +76,7 @@ const excluir = async (req, res) => {
 };
 
 const gerenciar = async (req, res) => {
-    const salas = await Salas.findAll()
+    const salas = await SalaService.listarTodos();
     res.render('salas/salas-gerenciar', { 
         salas: salas.map(sala => sala.toJSON()),
         nome: req.session.nome,
@@ -81,12 +88,12 @@ const gerenciar = async (req, res) => {
 const editar = async (req, res) => {
     if (req.method === 'GET') {
         try {
-            const sala = await Salas.findOne({
-                where: { 
-                    id: req.params.id 
-                }
-            })
-
+            // const sala = await Salas.findOne({
+            //     where: { 
+            //         id: req.params.id 
+            //     }
+            // })
+            const sala = await SalaService.listarUm(req.params.id);
             res.render('salas/salas-editar', { 
                 sala: sala.toJSON(),
                 csrf: req.csrfToken(),  
@@ -101,10 +108,7 @@ const editar = async (req, res) => {
     }else if( req.method === 'POST'){
        
         try{
-            const sala = await Salas.update({
-                ...req.body
-            }, {where : {id: req.params.id}});
-
+            const sala = await SalaService.editar(req.params.id, req.body);
             res.redirect('/salas/gerenciar')
 
         }catch (error) {

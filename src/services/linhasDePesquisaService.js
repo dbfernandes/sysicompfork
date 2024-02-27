@@ -21,7 +21,7 @@ const formatDbAnswer = (object) => {
 
 export default new class LinhasDePesquisaService {
   async list() {
-    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla', 'icone', 'cor']});
+    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla']});
 
     const formatedAnswer = formatDbAnswer(allResearchLines);
 
@@ -30,39 +30,69 @@ export default new class LinhasDePesquisaService {
 
   async findById(id) {
     const researchLine = await LinhasDePesquisa.findByPk(id);
-
+    
     const formatedAnswer = formatDbAnswer(researchLine);
 
     return formatedAnswer;
   }
 
+  async findByName(name) {
+    try{
+      const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name }});
+      
+      if (!researchLine) return null;
+
+      const formatedAnswer = formatDbAnswer(researchLine);
+  
+      return formatedAnswer;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findBySigla(sigla) {
+    try {
+      const researchLine = await LinhasDePesquisa.findOne({ where: { sigla }});
+  
+      if (!researchLine) return null;
+      
+      const formatedAnswer = formatDbAnswer(researchLine);
+      
+
+      return formatedAnswer;
+      
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async create(newResearchLine) {
-    const { nome, icone, iniciais, cor } = newResearchLine;
+    const { nome, sigla} = newResearchLine;
 
     await LinhasDePesquisa.create({
       nome,
-      icone,
-      iniciais,
-      cor,
+      sigla,
     });
   }
 
   async update(id, newInfo) {
-    const { nome, icone, iniciais, cor } = newInfo;
-
-    await LinhasDePesquisa.update(
-      {
-        nome,
-        icone,
-        iniciais,
-        cor,
-      },
-      {
-        where: {
-          id,
+    const { nome, sigla } = newInfo;
+    try {
+      await LinhasDePesquisa.update(
+        {
+          nome,
+          sigla,
         },
-      }
-    );
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async delete(id) {

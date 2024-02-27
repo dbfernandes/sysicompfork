@@ -1,0 +1,108 @@
+{{> header}}
+
+{{> sidebar module='afastamentoTemporario' page='afastamentoTemporario'}}
+
+<div class="content-wrapper">
+
+
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col">
+          <ol class="breadcrumb float-md-right">
+            <li class="breadcrumb-item">
+              <a href="/afastamentoTemporario/listar">afastamentos</a>
+            </li>
+            <li class="breadcrumb-item active">
+              Dados
+            </li>
+          </ol>
+          <h1>{{afastamento.usuarioNome}}</h1>
+        </div>
+      </div>
+      <div class="row mb-4">
+          <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+              <a class="btn btn-warning color-white" href="/afastamentoTemporario/listar">
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar
+              </a>
+          </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-info-circle"></i>
+            Dados do Afastamento
+          </h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="example2" class="table table-bordered table-hover">
+            <tbody>
+              <tr>
+                <th class="col-3">Nome Completo</th>
+                <td>{{afastamento.usuarioNome}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Data de Requisição</th>
+                <td>{{afastamento.createdAt}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Data de Saida</th>
+                <td>{{afastamento.dataSaida}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Data de Retorno</th>
+                <td>{{afastamento.dataRetorno}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Tipo de Viagem</th>
+                <td>{{afastamento.tipoViagem}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Local de Viagem</th>
+                <td>{{afastamento.localViagem}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Justificativa</th>
+                <td>{{afastamento.justificativa}}</td>
+              </tr>
+              <tr>
+                <th class="col-3">Plano de Reposição</th>
+                <td>{{afastamento.planoReposicao}}</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+  
+  </section>
+</div>
+
+{{#if message}}
+  <script>
+      $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-{{type}}",
+          autohide: true,
+          delay: 10000,
+          title: '{{messageTitle}}',
+          body: '{{message}}'
+          })
+  </script>
+{{/if}}
+{{> footer}}
