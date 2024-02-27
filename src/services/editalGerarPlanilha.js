@@ -138,11 +138,11 @@ function createWorksheet(header, dados, worksheet) {
 
     worksheet.spliceRows(1, 0, [])
     
-    createSeparador(worksheet, header, 'Mestrados', 1, 11);
+    createSeparador(worksheet, header, 'Mestrados', 1, 14);
 
     let headerRow = worksheet.getRow(2);
     let secondHeaderRow = header.map((item) => item.header);
-    secondHeaderRow = secondHeaderRow.filter((item) => item !== 'Homologado');
+    // secondHeaderRow = secondHeaderRow.filter((item) => item !== 'Homologado');
 
     headerRow.eachCell((cell, number) => {
         cell.font = { bold: true, color: { argb: '00000' } };
@@ -152,7 +152,7 @@ function createWorksheet(header, dados, worksheet) {
     
     insertData(worksheet, dados, 'Mestrado');
     
-    createSeparador(worksheet, header, 'Doutorados', worksheet.rowCount + 1, 11);
+    createSeparador(worksheet, header, 'Doutorados', worksheet.rowCount + 1, 14);
     
     let linhaHeaderDoutorados = worksheet.addRow(secondHeaderRow);
 
@@ -189,11 +189,11 @@ async function gerarPlanilha(editalId) {
             { header: 'Nível', key: 'nivel', width: 15 },
             { header: 'Comprovante', key: 'comprovante', width: 15},
             { header: 'Curriculum', key: 'curriculum', width: 15},
-            { header: 'Historico', key: 'historico', width: 15},
+            { header: 'Histórico', key: 'historico', width: 15},
             { header: 'Proposto', key: 'proposto', width: 15},
-            { header: 'Cartas (2 no minimo)', key: 'cartas', width: 40 },
+            { header: 'Cartas (2 no mínimo)', key: 'cartas', width: 40 },
             { header: 'Homologado', key: 'homologado', width: 40 },
-            { header: 'Observacoes', key: 'observacoes', width: 40 },
+            { header: 'Observações', key: 'observacoes', width: 40 },
 
         ],
         candidatos,
