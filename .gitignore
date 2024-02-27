@@ -13,4 +13,4 @@ src/uploads/*
 !src/uploads/.gitkeep 
 
 #Removing the .xlsx file
-planilha.xlsx
+./planilha.xlsx
