@@ -6,32 +6,79 @@ module.exports = (sequelize, DataTypes) => {
   class Projeto extends Model {
     
     static associate(models) {
-
+      Projeto.belongsTo(models.Usuario, {
+        foreignKey: 'idProfessor', as: "Usuario"
+      });
     }
   };
   Projeto.init({
-    nome_projeto: {
-      type: DataTypes.STRING,
+    idProfessor: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      validate: {
+          notNull: { msg: 'Este campo não pode ser vazio' },
+        },
     },
-    convenio_projeto: {
-      type: DataTypes.STRING,
+    titulo: {
+      type: DataTypes.STRING(1024),
       allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
     },
-    conta_bancaria_projeto: {
-      type: DataTypes.STRING,
+    descricao: {
+      type: DataTypes.STRING(5000),
       allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
     },
-    inicio_projeto: {
+    inicio: {
+      type: DataTypes.INTEGER(4),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
+    },
+    fim: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      defaultValue: null,
+    },
+    papel: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
+    },
+    financiadores: {
+      type: DataTypes.STRING(1024),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
+    },
+    integrantes: {
+      type: DataTypes.STRING(1024),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+      },
+    },
+    createdAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
     },
-    fim_projeto: {
+    updatedAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
       allowNull: false,
-    }
+    },
   }, {
     sequelize,
+    tableName: 'Projeto',
     modelName: 'Projeto',
   });
   return Projeto;

@@ -8,9 +8,26 @@ module.exports = (sequelize, DataTypes) => {
     
     static associate(models) {
       this.hasMany(models.ReservaSala);
-      this.hasMany(models.Publicacao, {
+      this.hasOne(models.Avatar, {
+        foreignKey: 'idUsuario',
+        as: 'Avatar',
+      });
+      this.belongsToMany(models.Publicacao, { 
+        through: 'RelUsuarioPublicacao', 
+        foreignKey: 'idUsuario',
+        as: 'Publicacoes' 
+      })
+      this.hasMany(models.Orientacao, {
         foreignKey: 'idProfessor',
-        as: 'Publicacoes',
+        as: 'Orientacoes',
+      });
+      this.hasMany(models.Projeto, {
+        foreignKey: 'idProfessor',
+        as: 'Projetos',
+      });
+      this.hasMany(models.Premio, {
+        foreignKey: 'idProfessor',
+        as: 'Premios',
       });
     }
   }
@@ -120,7 +137,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     idLattes: {
       type: DataTypes.BIGINT,
-      allowNull: true
+      allowNull: true,
+      defaultValue: null
+    },
+    formacao: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: null
+    },
+    resumo: {
+      type: DataTypes.STRING(5000),
+      allowNull: true,
+      defaultValue: null
+    },
+    ultimaAtualizacao: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
     },
     createdAt: {
       type: DataTypes.DATE,

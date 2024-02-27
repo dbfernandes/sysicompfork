@@ -6,6 +6,7 @@ import usuariosRoutes from "./usuarios.routes";
 import projetosRoutes from "./projetos.routes";
 import editalRouter from "./edital.routes";
 import selecaoppgiRouter from "./selecaoppgi.routes";
+import numerosIcompRouter from "./numerosIcomp.routes";
 import linhasDePesquisaRouter from "./linhasDePesquisa.routes";
 import salasRoutes from './salas.routes';
 import perfilRoutes from './perfil.routes';
@@ -15,6 +16,7 @@ import horasComplementaresRoutes from './horasComplementares.routes'
 import afastamentoTemporarioRoutes from './afastamentoTemporario.routes';
 import pdfController from '../controllers/exportToPDF';
 import curriculoRoutes from './curriculo.routes'
+import alunosRoutes from './alunos.routes'
 const router = express.Router();
 
 //const { isUsuarioAutenticado } = require('../utils/autenticacao-middleware')
@@ -36,6 +38,8 @@ router.get('/logout', autenticacaoController.logout)
 
 router.use("/selecaoppgi", selecaoppgiRouter);
 
+router.use("/numerosIcomp", numerosIcompRouter);
+
 router.use(autenticacaoController.verificar)
 
 router.use('//', (req, res) => res.redirect('/inicio'));
@@ -55,4 +59,6 @@ router.use("/horascomplementares", autenticacaoController.autorizarProf, horasCo
 router.use("/afastamentotemporario", autenticacaoController.autorizarProf, afastamentoTemporarioRoutes);
 router.use("/gerarPDF/:id", pdfController.gerarPDF);
 router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes)
+// Rotas Exclusivas Secretaria
+router.use("/alunos", autenticacaoController.autorizarAdmin, alunosRoutes)
 export default router;

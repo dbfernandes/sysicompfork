@@ -34,11 +34,12 @@
             </div>
             <form id="formAdicionarLattes">
                 <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
-                <div class="card card-primary w-100">
+                <div class="card card-primary w-50">
                     <div class="card-header">
                         <h3 class="card-title"><b>Currículo Lattes</b></h3>
                     </div>
                     <div class="card-body ">
+
                                 <div class="form-group ">
                                     <label for="bloco">
                                         <font color="#FF0000">*</font> Selecione o professor desejado:
@@ -51,9 +52,26 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <div class="mb-3">
-                                        <label for="formXML" class="form-label" ><font color="#FF0000">*</font> Curriculum Lattes em XML:</label>
-                                        <input class="form-control p-0 h-100" type="file" accept=".xml" id="formXML" name="XML">
+                                    <label class="form-label" ><font color="#FF0000">*</font> Curriculum Lattes em XML:</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" accept=".xml" id="vittaexml" name="XML">
+                                        <label class="custom-file-label" for="exampleInputFile">Selecione o arquivo</label>
+                                    </div>
+                                </div>
+                                <!--Avatar-->
+                                <div>
+                                    <div class="form-group">
+                                        <label class="form-label"> <font color="#FF0000">*</font> Escolha uma imagem de perfil: </label>
+                                        <div class="custom-file">
+                                            <input type="file" name="Image" class="custom-file-input" accept="image/*" id="avatarImage" onchange="displaySelectedImage(event, 'selectedAvatar')">
+                                            <label id="avatarInputLabel" class="custom-file-label" for="exampleInputFile">Selecione o arquivo</label>
+                                        </div>
+                                        
+
+                                    </div>
+                                    <div class="d-flex justify-content-center bg-white">
+                                        <img id="selectedAvatar" src="/public/img/user-profile-generic.png"
+                                        class="rounded" style="width: 120px; height: 120px; object-fit: cover;" alt="example placeholder" />
                                     </div>
                                 </div>
                             <!-- /.card-body -->
@@ -74,18 +92,83 @@
 </div>
 
 <script>
-
     if({{tipoUsuario.professor}}){
         const sel = document.querySelector(`[id="professor"]`);
         for (var i in sel.options){
-            if (sel.options[i].value=={{usuarioId}}) sel.selectedIndex = i
+            if (sel.options[i].value=={{usuarioId}}){
+                sel.selectedIndex = i
+                getAvatar({{usuarioId}})
+            } 
         }
     }
+
+    document.querySelector(`[id="professor"]`).addEventListener("change", (e)=>{
+        const select = document.querySelector(`[id="professor"]`)
+        getAvatar(select.value)
+    })
+
+    $(document).ready(function () {
+        bsCustomFileInput.init()
+    })
+
+    function displaySelectedImage(event, elementId) {
+        const selectedImage = document.getElementById(elementId);
+        const fileInput = event.target;
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                selectedImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
+    function changeAvatarPreview(avatar){
+        const selectedImage = document.getElementById("selectedAvatar");
+        const sel = document.querySelector(`[id="avatarImage"]`)
+        const avatarLabel = document.querySelector("[id='avatarInputLabel']")
+        selectedImage.src = avatar == "" ? "/public/img/user-profile-generic.png" : "/uploads/"+avatar.nome
+        avatar == "" ? sel.removeAttribute("disabled") : sel.setAttribute("disabled", "")
+        sel.value = null
+        avatarLabel.textContent = avatar == "" ? "Selecione o arquivo" : avatar.nome.split("-").slice(1).join('-')
+    }
+
     
+    function getAvatar(id){
+        $.ajax({
+                type: "GET",
+                url: 'lattes/avatar/'+id,
+                success: function(data) {
+                    changeAvatarPreview(data)
+                },
+                error: function(err) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 7000,
+                        title: 'Ocorreu um problema na exibição da imagem de perfil!',
+                        body: 'Não foi possível verificar se o usuário já possui uma imagem de perfil cadastrada.'
+                    })
+                }
+            });
+    }
 
     $.validator.addMethod("verificarArquivo", function (el) {
         return (document.querySelector("input[type=file]").files.length > 0)
     })
+
+    $.validator.addMethod("verificarImagem", function (el) {
+        return (document.querySelector("#avatarImage").files.length > 0)
+    })
+    
+    $.validator.addMethod("verificarTamanho", function (el) {
+        return (document.querySelector("#avatarImage").files[0].size < 5 * 1024 * 1024) // Aceita imagens de até 5MB
+    })
+
 
     $.validator.setDefaults({
             submitHandler: function () {
@@ -96,8 +179,11 @@
     function reqAjax(data){
         $.ajax({
                 type: "POST",
-                url: "lattes/upload",
+                url: 'lattes/upload?_csrf={{csrfToken}}',
                 data,
+                cache: false,
+                contentType: false,
+                processData: false,
                 success: function(data) {
                     $(document).Toasts('create', {
                         icon: 'success',
@@ -123,18 +209,19 @@
     }
 
     function FormSubmit(){
-        const idProfessor = $("#professor").val(); 
+        const idProfessor = $("#professor").val();
+        const [image] = $('#avatarImage').prop('files');
         const csrfToken = $("#csrfToken").val();
-        const data = {
-            idProfessor: idProfessor,
-            _csrf: csrfToken,
+        const data = new FormData()
+        data.append("idProfessor", idProfessor)
+        data.append("file", image)
+        data.append("_csrf", csrfToken)
 
-        }  
-        getCompleteData(data, reqAjax)     
+        getCompleteFormData(data, reqAjax)     
     }
 
 
-    $('#formAdicionarLattes').validate({
+    const formValidation = $('#formAdicionarLattes').validate({
         rules: {
             professor: {
                 required: true,
@@ -142,6 +229,11 @@
             XML: {
                 verificarArquivo: true,
                 accept: "text/xml",
+            },
+            Image: {
+                verificarImagem: true,
+                verificarTamanho: true,
+                accept: "image/*",
             }
         },
         messages: {
@@ -150,6 +242,10 @@
             },
             XML: {
                 verificarArquivo: 'É necessário submeter um arquivo XML.',
+            },
+            Image: {
+                verificarImagem: 'É necessário submeter uma imagem.',
+                verificarTamanho: 'Tamanho máximo de arquivo excedido. Envie uma imagem de até 5MB.',
             },
         },
         errorElement: 'span',
@@ -162,8 +258,16 @@
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
-        }
+        },
     });
+
+    $('#avatarImage').on('change', function(evt){
+        formValidation.element('#avatarImage')
+    })
+
+    
+
+
 
 
 </script>
