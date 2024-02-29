@@ -88,10 +88,9 @@
             },
             autoWidth: false,
             columnDefs: [
-            { "width": "100px", "targets": 1 },
-            { className: 'none', targets: 2 },
-            { className: 'none', targets: 3 },
-            { className: 'none', targets: 4 },
+            {className: 'text-dark', targets: 0},
+            { width: "100px", className: 'text-dark', targets: 1 },
+            { className: 'none text-dark', targets: [2,3,4] },
             ],
             order: [[1, 'desc']],
         } );
