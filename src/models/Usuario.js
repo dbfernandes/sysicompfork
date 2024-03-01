@@ -145,7 +145,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: null
     },
+    formacaoIngles: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: null
+    },
     resumo: {
+      type: DataTypes.STRING(5000),
+      allowNull: true,
+      defaultValue: null
+    },
+    resumoIngles: {
       type: DataTypes.STRING(5000),
       allowNull: true,
       defaultValue: null

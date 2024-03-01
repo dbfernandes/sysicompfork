@@ -6,6 +6,7 @@ import profile from './profile.json'
 import projects from './projects.json'
 import publications from './publications.json'
 import teachers from './teachers.json'
+import db from './fromDB.json'
 
 export default {
     "translation" : {
@@ -16,6 +17,7 @@ export default {
         profile,
         projects,
         publications,
-        teachers
+        teachers,
+        ...db
     }
 }

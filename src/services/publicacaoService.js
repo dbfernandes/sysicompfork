@@ -19,31 +19,39 @@ class PublicacaoService {
           })
           const publicArr = await getPublicationsArr(publicacoes, idProfessor, tipos)
           const professor = await Usuario.findByPk(idProfessor, {
+            attributes: ["id"],
             include: {
+              attributes: ["id"],
               model: Publicacao,
               as: 'Publicacoes',
-          }
+              raw: true,
+            },
           })
-          if(professor.dataValues.Publicacoes.length > 0){
-            const relations = await RelUsuarioPublicacao.findAll({
+          const publicacoesExistentes = professor.dataValues.Publicacoes
+          if(publicacoesExistentes.length > 0){
+            const idPublicacoesExistentes = publicacoesExistentes.length > 1 ? 
+              publicacoesExistentes.map(p => p.dataValues.id) : publicacoesExistentes.dataValues.id
+            const idPublicacoesAExcluir = idPublicacoesExistentes
+            const todasRelacoes = await RelUsuarioPublicacao.findAll({
               where: {
-                idUsuario: idProfessor
+                idPublicacao: idPublicacoesExistentes
               }
             })
-            relations.forEach(async relation => {
-              const publicacaoId = relation.dataValues.idPublicacao
-              await relation.destroy()
-              const outraRelacao = await RelUsuarioPublicacao.findOne({
-                where: {
-                  idPublicacao: publicacaoId
-                }
-              })
-              if(!outraRelacao){
-                await Publicacao.destroy({
-                  where: {
-                    id: publicacaoId
-                  }
-                })
+            publicacoesExistentes.forEach(async publication => {
+              const publicacaoId = publication.dataValues.id
+              const outraRelacao = todasRelacoes.find((e) => 
+              e.dataValues.idPublicacao == publicacaoId && e.dataValues.idUsuario !=  idProfessor)
+              if(outraRelacao){
+                const idxPublicAExcluir = idPublicacoesAExcluir.findIndex(e => e == publicacaoId)
+                idPublicacoesAExcluir.splice(idxPublicAExcluir, idxPublicAExcluir+1)
+              }
+            })
+            idPublicacoesExistentes.forEach(async id => {
+              await professor.removePublicacoes(id)
+            })
+            await Publicacao.destroy({
+              where: {
+                id: idPublicacoesAExcluir
               }
             })
           }
@@ -62,11 +70,12 @@ class PublicacaoService {
               }
               return true
             })
+            
             if(!unicaPublicacao){
               unicaPublicacao = await Publicacao.create(publicacao)
             }
             await professor.addPublicacoes(unicaPublicacao.dataValues.id)
-          })
+        })
           
         }catch(err){
           throw err;

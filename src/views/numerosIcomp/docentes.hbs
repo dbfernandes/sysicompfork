@@ -29,9 +29,17 @@
                         <tbody>
                             {{#each professores}}
                             <tr data-key={{id}}>
-                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}?lng={{lng}}">{{nomeCompleto}}</a></td>
-                                <td class="ps-4" style="word-break: break-word; white-space: normal;">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td>
-                                <td class="ps-4">{{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}?lng={{../lng}}">{{nomeCompleto}}</a></td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;">
+                                {{#if formacao}}
+                                {{#if (isEnLng ../lng)}}
+                                    {{formataFormacao formacaoIngles ../lng}}
+                                {{else}}
+                                    {{formataFormacao formacao ../lng}}
+                                {{/if}}
+                                {{/if}}
+                                </td>
+                                <td class="ps-4">{{#if ultimaAtualizacao}}{{formataDataLng ultimaAtualizacao ../lng}}{{/if}}</td>
                             </tr>
                             {{/each}}
                         </tbody>
