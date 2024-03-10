@@ -1,4 +1,4 @@
-import Candidate from '../models/Candidate';
+const { Candidate } = require('../models');
 const moment = require('moment-timezone'); 
 
 var {
@@ -209,15 +209,46 @@ class EditalService {
     }
 
     async listCandidates(id){
-        const candidates= await Candidate.findAll({
-            where:{
-                editalId:id
+        const candidates = await Candidate.findAll({
+            where: {
+                editalId: id
             }
-        }).catch(err=>{
-            console.log(`[ERROR] Buscar candidatos: ${err}`);
-            throw new Error("Não foi possivel buscar candidatos");
-
+        }
+        ).catch(err => {
+            console.log(`[ERROR] Listar Candidatos: ${err}`)
+            throw new Error("Não foi possivel listar os candidatos");
         })
+
+        return candidates;
+    }
+
+    async getCandidate(id) {
+        try {
+            const candidate = await Candidate.findByPk(id, { 
+                attributes: [
+                'id',                'editalPosition',   'editalId',
+                'passwordHash',      'begin',            'finish',
+                'currentStep',       'name',             'socialName',
+                'address',           'neighborhood',     'city',
+                'uf',                'cep',              'email',
+                'birthday',          'nationality',      'country',
+                'passport',          'cpf',              'gender',
+                'homePhone',         'cellPhone',        'desiredCourse',
+                'polity',            'inscricaoposcomp', 'anoposcomp',
+                'nivel',             'notaposcomp',      'solicitabolsa',
+                'tituloproposta',    'cartaorientador',  'motivos',
+                'proposta',          'curriculum',       'prova_anterior',
+                'diploma',           'cotas',            'status',
+                'linhaDePesquisaId'
+                ]
+            });
+            return candidate;
+
+        } catch (error) {
+            console.log(`[ERROR] Buscar Candidato: ${err}`)
+            throw new Error("Não foi possivel buscar o candidato");
+        
+        }
     }
 }
 

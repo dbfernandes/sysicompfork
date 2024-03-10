@@ -1,0 +1,144 @@
+{{> header}}
+
+{{> sidebar module="edital"}}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Candidato {{candidate.id}} - Edital {{candidate.editalId}} </h1>
+                </div>
+                <div class="col-sm-2">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
+                        <li class="breadcrumb-item active">Canditado {{candidate.id}}</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.editalId}}">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a> 
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title
+                            "><b>Informações do Candidato</b></h3>
+                        </div>
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <tbody>
+                                <tr>
+                                    <th class="col-3">Nome Completo</th>
+                                    <td>{{candidate.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Email</th>
+                                    <td>{{candidate.email}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Birthday</th>
+                                    <td>{{candidate.birthday}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">CPF</th>
+                                    <td>{{candidate.cpf}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">address(s)</th>
+                                    <td>{{candidate.address}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Neighborhood</th>
+                                    <td>{{candidate.neighborhood}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">City</th>
+                                    <td>{{candidate.city}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">uf</th>
+                                    <td>{{candidate.uf}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">CEP</th>
+                                    <td>{{candidate.cep}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Nationality</th>
+                                    <td>{{candidate.nationality}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">County</th>
+                                    <td>{{candidate.county}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Desired Course</th>
+                                    <td>{{candidate.desiredCourse}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Polity</th>
+                                    <td>{{candidate.polity}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Inscrição de pós-graduação</th>
+                                    <td>{{candidate.inscricaoposcomp}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Nivel</th>
+                                    <td>{{candidate.nivel}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Ano de pós-graduação</th>
+                                    <td>{{candidate.anoposcomp}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Nota de pós-graduação</th>
+                                    <td>{{candidate.notaposcomp}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Nota de pós-graduação</th>
+                                    <td>{{candidate.notaposcomp}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Solicitação de bolsa</th>
+                                    <td>{{candidate.solicitabolsa}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Titulo de proposta</th>
+                                    <td>{{candidate.tituloproposta}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Proposta</th>
+                                    <td>{{candidate.proposta}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Curriculo</th>
+                                    <td>{{candidate.curriculo}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Status</th>
+                                    <td><span class="{{#if usuario.status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{{> footer}}

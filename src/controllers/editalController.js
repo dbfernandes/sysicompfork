@@ -240,6 +240,25 @@ const listCandidatesEdital = async (req, res) => {
    }
 }
 
+const editalCandidates = async (req, res) => {
+   const editalID = req.params.id;
+   const candidates = await EditalService.listCandidates(editalID).catch(
+      (err) => {
+         return res.status(400).json({
+            error: err.message,
+         });
+      }
+   );
+   return res.render("edital/listCandidates", {
+      csrfToken: req.csrfToken(),
+      nome: req.session.nome,
+      ...locals,
+      candidates: candidates,
+      editalID: editalID,
+      tipoUsuario: req.session.tipoUsuario
+   });
+}
+
 const geraPlanilha = async (req, res) => {
    const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
    return res.set({
@@ -248,6 +267,25 @@ const geraPlanilha = async (req, res) => {
       'Content-Length': planilha.length
    }).status(200).send(planilha);
 }
+
+const candidateDetails = async (req, res) => {
+   try {
+      const candidate = await EditalService.getCandidate(req.params.id);
+      console.log(candidate);
+      return res.render("edital/candidateDetails", {
+         candidate: candidate.dataValues,
+         csrfToken: req.csrfToken(),
+         nome: req.session.nome,
+         ...locals,
+         tipoUsuario: req.session.tipoUsuario
+      });
+   } catch (error) {
+      return res.status(400).json({
+         error: error.message,
+      });
+   }
+   
+};
 
 export default {
    listEditalSelecao,
@@ -258,4 +296,6 @@ export default {
    listCandidatesEdital,
    updateEdital,
    geraPlanilha,
+   editalCandidates,
+   candidateDetails
 };
