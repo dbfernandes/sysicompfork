@@ -1,5 +1,5 @@
 <div>
-        {{> numerosIcomp/navbar page='alunos'}}
+        {{> numerosIcomp/navbar }}
     <header class="text-center">
 
         <div class="page-header" style="background: #18bc9c; min-height: 600px;">
@@ -10,8 +10,8 @@
                                 <img class="img-fluid me-5 mb-3" src="/public/img/logo-icomp.png" alt="" width="320px">
                                 <img class="img-fluid mb-3" src="/public/img/logo-ufam.png" alt="" width="136">
                         </div>
-                        <span class="text-white mb-4 mt-sm-3 header-title">ICOMP EM NÚMEROS</span>
-                        <p class="text-white fs-4 lead ">Confira abaixo as estatísticas do Instituto de Computação da Universidade Federal do Amazonas (UFAM)</p>
+                        <span class="text-white mb-4 mt-sm-3 header-title">{{__ "landing.titulo"}}</span>
+                        <p class="text-white fs-4 lead ">{{__ "landing.verifique"}}</p>
                     </div>
                     
                 </div>
@@ -19,11 +19,11 @@
             </div>
     </header>
 
-    <section id="alunos" class="pt-9">
+    <section id="alunos" class="pt-8">
         <div class="container">
             <div class="row mb-4">
                 <div class="col-md-12 text-center">
-                <h3>Alunos Matriculados</h3>
+                <h3>{{__ "landing.matriculados"}}</h3>
                 <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
                 </div>
             </div>
@@ -33,14 +33,14 @@
                         <div class="col-md-4 d-flex position-relative align-items-center">
                             <div class="p-3 w-100 text-center">
                                 <div>
-                                    <h3>Graduação</h3>
+                                    <h3>{{__ "landing.graduacao"}}</h3>
                                 </div>
                             </div> 
                         </div>
                         <div class="col-md-4 position-relative">
                             <div class="p-3 text-center">
                                 <h2 style="color: #18bc9c;"><span id="state1" countto={{contagem.matriculados.CC}}>{{contagem.matriculados.CC}}</span></h2>
-                                <h5 class="mt-3">Ciência da Computação</h5>
+                                <h5 class="mt-3">{{__ "landing.cienciaDaComputacao"}}</h5>
                             
                             </div>
                             
@@ -48,7 +48,7 @@
                         <div class="col-md-4 position-relative">
                             <div class="p-3 text-center">
                                 <h2 style="color: #18bc9c;"> <span id="state2" countto={{add contagem.matriculados.ES contagem.matriculados.SI}}>{{add contagem.matriculados.ES contagem.matriculados.SI}}</span></h2>
-                                <h5 class="mt-3">Engenharia de Software / Sistemas de Informação</h5>
+                                <h5 class="mt-3">{{__ "landing.engenhariaDeSoftware"}} / {{__ "landing.sistemasDeInformacao"}}</h5>
     
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-md-12 text-end">
-                            <small >Fonte: SIE, {{formataData contagem.data}}.</small>
+                            <small >{{__ "landing.fonte"}}: SIE, {{formataData contagem.data}}.</small>
                         </div>
                     </div>
                     <hr class="horizontal dark">
@@ -64,20 +64,20 @@
                         <div class="col-md-4 d-flex position-relative align-items-center">
                             <div class="p-3 w-100 text-center">
                                 <div>
-                                    <h3>Pós-Graduação</h3>
+                                    <h3>{{__ "landing.posGraduacao"}}</h3>
                                 </div>
                             </div> 
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 text-center">
                                 <h2 style="color: #18bc9c;" id="state3" countto={{contagem.matriculados.M}}>{{contagem.matriculados.M}}</h2>
-                                <h5 class="mt-3">Mestrado</h5>
+                                <h5 class="mt-3">{{__ "landing.mestrado"}}</h5>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 text-center">
                                 <h2 style="color: #18bc9c;" id="state4" countto={{contagem.matriculados.D}}>{{contagem.matriculados.D}}</h2>
-                                <h5 class="mt-3">Doutorado</h5>
+                                <h5 class="mt-3">{{__ "landing.doutorado"}}</h5>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
             <br/>
             <div class="row">
             <div class="col-md-12 text-end">
-                <small >Fonte: SIE, {{formataData contagem.data}}.</small>
+                <small >{{__ "landing.fonte"}}: SIE, {{formataData contagem.data}}.</small>
             </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
         <div class="container">
             <div class="row mb-4">
                 <div class="col-md-12 text-center">
-                <h3>Alunos Egressos</h3>
+                <h3>{{__ "landing.egressos"}}</h3>
                 <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
                 </div>
             </div>
@@ -108,42 +108,42 @@
                         <div class="col-md-4 d-flex position-relative align-items-center">
                             <div class="p-3 w-100 text-center">
                                 <div>
-                                    <h3>Graduação</h3>
+                                    <h3>{{__ "landing.graduacao"}}</h3>
                                 </div>
                             </div> 
                         </div>
                         <div class="col-md-2 position-relative">
                             <div class="p-3 text-center">
                                 <h2>
-                                    <a href="/numerosIcomp/alunos/processamento-de-dados">
+                                    <a href="/numerosIcomp/alunos/processamento-de-dados?lng={{lng}}">
                                     <span style="color: #18bc9c;">{{contagem.egressos.PD}}</span>       
                                         <span class="secundary-color material-icons position-relative fs-4">search</span>
                                     </a>
                                 </h2>
-                                <h5 class="mt-3">Processamento de Dados</h5>
+                                <h5 class="mt-3">{{__ "landing.processamentoDeDados"}}</h5>
                             </div> 
                         </div>
                         <div class="col-md-2 position-relative">
                             <div class="p-3 text-center">
                                 <h2 >
-                                    <a href="/numerosIcomp/alunos/ciencia-computacao">
+                                    <a href="/numerosIcomp/alunos/ciencia-computacao?lng={{lng}}">
                                     <span style="color: #18bc9c;">{{contagem.egressos.CC}}</span>       
                                         <span class="secundary-color material-icons position-relative fs-4">search</span>
                                     </a>
                                 </h2>
-                                <h5 class="mt-3">Ciência da Computação</h5>
+                                <h5 class="mt-3">{{__ "landing.cienciaDaComputacao"}}</h5>
                             </div> 
                         </div>
                         
                         <div class="col-md-2 position-relative">
                             <div class="p-3 text-center">
                                 <h2>
-                                    <a href="/numerosIcomp/alunos/engenharia-de-software">
+                                    <a href="/numerosIcomp/alunos/engenharia-de-software?lng={{lng}}">
                                     <span style="color: #18bc9c;">{{add contagem.egressos.ES contagem.egressos.SI}}</span>       
                                         <span class="secundary-color material-icons position-relative fs-4">search</span>
                                     </a>
                                 </h2>
-                                <h5 class="mt-3">Engenharia de Software / Sistemas de Informação</h5>
+                                <h5 class="mt-3">{{__ "landing.engenhariaDeSoftware"}} / {{__ "landing.sistemasDeInformacao"}}</h5>
     
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-md-12 text-end">
-                            <small >Fonte: SIE, {{formataData contagem.data}}.</small>
+                            <small >{{__ "landing.fonte"}}: SIE, {{formataData contagem.data}}.</small>
                         </div>
                     </div>
                     <hr class="horizontal dark">
@@ -161,37 +161,37 @@
                         <div class="col-md-4 d-flex position-relative align-items-center">
                             <div class="p-3 w-100 text-center">
                                 <div>
-                                    <h3>Pós-Graduação</h3>
+                                    <h3>{{__ "landing.posGraduacao"}}</h3>
                                 </div>
                             </div> 
                         </div>
                         <div class="col-md-3">
                             <div class="p-3 text-center">
                                 <h2>
-                                    <a href="/numerosIcomp/alunos/mestrado">
+                                    <a href="/numerosIcomp/alunos/mestrado?lng={{lng}}">
                                     <span style="color: #18bc9c;">{{contagem.egressos.M}}</span>       
                                         <span class="secundary-color material-icons position-relative fs-4">search</span>
                                     </a>
                                 </h2>
-                                <h5 class="mt-3">Mestrado</h5>
+                                <h5 class="mt-3">{{__ "landing.mestrado"}}</h5>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="p-3 text-center">
                                 <h2>
-                                    <a href="/numerosIcomp/alunos/doutorado">
+                                    <a href="/numerosIcomp/alunos/doutorado?lng={{lng}}">
                                     <span style="color: #18bc9c;">{{contagem.egressos.D}}</span>       
                                         <span class="secundary-color material-icons position-relative fs-4">search</span>
                                     </a>
                                 </h2>
-                                <h5 class="mt-3">Doutorado</h5>
+                                <h5 class="mt-3">{{__ "landing.doutorado"}}</h5>
                             </div>
                         </div>
                     </div>
                     <br/>
                     <div class="row">
                         <div class="col-md-12 text-end">
-                            <small >Fonte: SIE, {{formataData contagem.data}}.</small>
+                            <small >{{__ "landing.fonte"}}: SIE, {{formataData contagem.data}}.</small>
                         </div>
                     </div>
                 </div>
@@ -200,6 +200,121 @@
             </div>
         </div>
     </section>
+
+    <section id="publicacoes" class="pt-6 pb-9">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-12 text-center">
+                <h3>{{__ "landing.conferenciaEPublicacoes"}}</h3>
+                <span class="mt-2">{{__ "landing.verifiqueArtigos"}}</span>
+                <hr style="border-top: 3px solid; border-top-color: #000; border-color: #000;">
+                </div>
+            </div>
+            <div class="chart" style="height: 400px">
+                <canvas id="line-chart" class="chart-canvas" ></canvas>
+            </div>
+        </div>
+    </section>
+
+    <script>
+            // Line chart
+    
+    var labels = [{{contagemPublicacoes.anos}}]
+    var ctx1 = document.getElementById("line-chart")
+    if(ctx1){
+        const chart = new Chart(ctx1.getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "{{__ 'landing.publicacoesEmPeriodicos'}}",
+                        backgroundColor: "#18bc9c",
+                        stack: 'Stack 0',
+                        data: [{{contagemPublicacoes.contagemTotal.Periodico}}],
+                    },
+                    {
+                        label: "{{__ 'landing.publicacoesEmConferencias'}}",
+                        backgroundColor: "#344767",
+                        stack: 'Stack 0',
+                        data: [{{contagemPublicacoes.contagemTotal.Conferencia}}],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        color: '#344767',
+                        font: {
+                            size: 24
+                        },
+                    },
+                    title: {
+                        fullsize: true,
+                        color: '#344767',
+                        display: true,
+                        text: '{{__ "landing.historicoDePublicacoes"}}',
+                        font: {
+                            size: 24
+                        },
+                    }
+                },
+                onHover: function(e, chartElement) {
+                    e.native.target.style.cursor = 
+                        chartElement.length > 0 ? "pointer" : "default"
+                },
+                scales: {
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: '#344767',
+                            font: {
+                                size: 15,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            display: true,
+                            color: '#344767',
+                            padding: 10,
+                            font: {
+                                size: 15,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
+        });
+        ctx1.onclick = (evt) => {
+        const res = chart.getElementsAtEventForMode(
+            evt,
+            'nearest',
+            { intersect: true },
+            true
+        );
+        if (res.length === 0) {
+            return;
+        }
+        // Alerts "You clicked on A" if you click the "A" chart
+        const ano = chart.data.labels[res[0].index]
+        window.location.href = `/numerosIcomp/publicacoes?ano=${ano}`;
+        };
+    }
+
+    
+    </script>
 
     {{> numerosIcomp/footer}}
 

@@ -133,7 +133,7 @@
         selectedImage.src = avatar == "" ? "/public/img/user-profile-generic.png" : "/uploads/"+avatar.nome
         avatar == "" ? sel.removeAttribute("disabled") : sel.setAttribute("disabled", "")
         sel.value = null
-        avatarLabel.textContent = avatar == "" ? "Selecione o arquivo" : avatar.nome.split("-").slice(1).join('-')
+        avatarLabel.textContent = avatar == "" ? "Selecione o arquivo" : avatar.nome.split("-").slice(2).join('-')
     }
 
     

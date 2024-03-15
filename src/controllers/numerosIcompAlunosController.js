@@ -12,6 +12,7 @@ const alunos = async (req, res) => {
     switch (req.method) {
         case 'GET':
             try {
+                const {lng} = req.query
                 const {curso} = req.params
                 const cursos = ["processamento-de-dados","ciencia-computacao","engenharia-de-software", "mestrado", "doutorado"]
                 const c = cursos.findIndex(e=>e==curso) + 1
@@ -26,19 +27,20 @@ const alunos = async (req, res) => {
                         1)
                     const alunosFormados = alunosInfo.length                             
                     return res.status(200).render('numerosIcomp/alunos', {
+                        lng,
                         alunosInfo,
                         alunosFormados,
                         ...layoutMain,
                         curso: cursoSearch == "Engenharia de Software" ? cursoSearch +" / Sistemas de Informação" : cursoSearch,
                     });
                 }else{
-                    return res.redirect('/numerosIcomp#alunos');
+                    return res.redirect(`/numerosIcomp?lng=${lng}#alunos`);
                 }
             } catch (error) {
                 return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
             }
         default:
-            return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+            return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
     }
 
 }

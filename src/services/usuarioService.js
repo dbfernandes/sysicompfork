@@ -117,7 +117,7 @@ class UsuarioService {
           atributes: ["id", "nomeCompleto", "cpf", "email", "status", "siape",
           "administrador", "secretaria", "professor", "coordenador",  
           "dataIngresso", "endereco", "telCelular", "telResidencial", "unidade", 
-          "turno", "idLattes", "formacao", "ultimaAtualizacao","createdAt"]
+          "turno", "idLattes", "formacao", "formacaoIngles", "ultimaAtualizacao","createdAt"]
         }
       )
 

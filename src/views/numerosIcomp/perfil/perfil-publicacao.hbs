@@ -8,40 +8,40 @@
                         <div class="nav-wrapper position-relative end-0">
                             <ul class="nav nav-pills nav-fill p-1" role="tablist">
                             <li class="nav-item">
-                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}" aria-controls="profile" role="tab" aria-selected="true">
+                                <a id="profile-tab" class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}?lng={{lng}}" aria-controls="profile" role="tab" aria-selected="true">
                                 <i class="material-icons position-relative">person</i>
                                 
-                                <span class="ms-1">Perfil</span>
+                                <span class="ms-1">{{__ "profile.perfil"}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/publicacoes" aria-controls="public" role="tab" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}/publicacoes?lng={{lng}}" aria-controls="public" role="tab" aria-selected="false">
                                 <i class="material-icons position-relative">description</i>
                                 
-                                <span class="ms-1">Publicações</span>
+                                <span class="ms-1">{{__ "profile.publicacoes"}}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/projetos" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/projetos?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">search</i>
-                                <span class="ms-1">Projetos de Pesquisa</span>
+                                <span class="ms-1">{{__ "profile.projetosDePesquisa"}}</span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle mb-0 px-0 " data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <i class="material-icons text-lg position-relative">account_circle</i>
-                                <span class="ms-1">Orientações</span>
+                                <span class="ms-1">{{__ "profile.orientacoes"}}</span>
                                 </a>
                                 <div class="dropdown-menu w-100 text-center">
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao">Graduação</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado">Mestrado</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado">Doutorado</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ "profile.graduacao"}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ "profile.mestrado"}}</a>
+                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ "profile.doutorado"}}</a>
                                   </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}/premios" role="tab" aria-controls="code" aria-selected="false">
+                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}/premios?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
                                 <i class="material-icons text-lg position-relative">military_tech</i>
-                                <span class="ms-1">Prêmios</span>
+                                <span class="ms-1">{{__ "profile.premios"}}</span>
                                 </a>
                             </li>
                             </ul>
@@ -54,9 +54,9 @@
                     <div class="card mb-3">
                         <div class="card-body p-3" >
                             <div class="w-100 text-center">
-                                <h3 class="mb-4">
+                                <h4 class="mb-4">
                                     {{professor.nomeCompleto}}
-                                </h3>
+                                </h4>
                             </div>
                           <div class="chart" style="height: 220px">
                             <canvas id="line-chart" class="chart-canvas" ></canvas>
@@ -67,16 +67,16 @@
                           <div class="nav-wrapper position-relative end-0 pt-3">
                           <ul class="nav nav-tabs p-1" role="tablist">
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="conference-tab" data-bs-toggle="tab" href="#conference" role="tab" aria-controls="conference" aria-selected="true">Artigos Publicados em Conferências ({{paperConfLen}})</a>
+                              <a class="nav-link px-3" id="conference-tab" data-bs-toggle="tab" href="#conference" role="tab" aria-controls="conference" aria-selected="true">{{__ "profile.artigosConferencias"}} ({{paperConfLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link " id="paper-book-tab" data-bs-toggle="tab" href="#paper-book" role="tab" aria-controls="PaperBook" aria-selected="false">Artigos Publicados em Periódicos ({{paperPerLen}})</a>
+                              <a class="nav-link " id="paper-book-tab" data-bs-toggle="tab" href="#paper-book" role="tab" aria-controls="PaperBook" aria-selected="false">{{__ "profile.artigosPeriodicos"}} ({{paperPerLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">Livros Publicados ({{bookLen}})</a>
+                              <a class="nav-link px-3" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">{{__ "profile.livrosPublicados"}} ({{bookLen}})</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link px-3" id="chapter-tab" data-bs-toggle="tab" href="#chapter" role="tab" aria-controls="chapter" aria-selected="false">Capítulos de Livros Publicados ({{chapterLen}})</a>
+                              <a class="nav-link px-3" id="chapter-tab" data-bs-toggle="tab" href="#chapter" role="tab" aria-controls="chapter" aria-selected="false">{{__ "profile.capitulosDeLivrosPublicados"}} ({{chapterLen}})</a>
                             </li>
                           </ul>
                         </div>
@@ -89,7 +89,7 @@
                                     <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
                                     {{/each}}
                                     {{else}}
-                                    Não há artigos publicados em conferências cadastrados para {{professor.nomeCompleto}}.
+                                    {{__ "profile.naoHaArtigosConferencias"}} {{professor.nomeCompleto}}.
                                     {{/if}}
                                 </ol>
 
@@ -101,7 +101,7 @@
                                     <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
                                     {{/each}}
                                     {{else}}
-                                    Não há artigos publicados em periódicos cadastrados para {{professor.nomeCompleto}}.
+                                    {{__ "profile.naoHaArtigosPeriodicos"}} {{professor.nomeCompleto}}.
                                     {{/if}}
                                     
                             </div>
@@ -112,7 +112,7 @@
                                     <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
                                     {{/each}}
                                     {{else}}
-                                    Não há livros publicados cadastrados para {{professor.nomeCompleto}}.
+                                    {{__ "profile.naoHaLivrosPublicados"}} {{professor.nomeCompleto}}.
                                     {{/if}}
                                 </ol>
                             </div>
@@ -123,7 +123,7 @@
                                     <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b></li><br>
                                     {{/each}}
                                     {{else}}
-                                    Não há capitulos de livros publicados cadastrados para {{professor.nomeCompleto}}.
+                                    {{__ "profile.naoHaCapitulosDeLivrosPublicados"}} {{professor.nomeCompleto}}.
                                     {{/if}}
                                 </ol>
                             </div>
@@ -142,14 +142,14 @@
     var ctx1 = document.getElementById("line-chart").getContext("2d");
     var ctx2 = document.getElementById("line-chart-2").getContext("2d");
     var labels = [{{anos}}]
-    labels[0] = "Até "+labels[1]
+    labels[0] = "{{__ 'profile.ate'}} "+labels[1]
 
     new Chart(ctx1, {
         type: "line",
         data: {
             labels: labels,
             datasets: [{
-                label: "Artigos",
+                label: "{{__ 'profile.artigos'}}",
                 tension: 0,
                 borderWidth: 0,
                 pointRadius: 5,
@@ -171,11 +171,11 @@
             },
             title: {
                 fullsize: true,
-                color: '#000',
+                color: '#344767',
                 display: true,
-                text: 'Artigos Publicados em Conferências',
+                text: '{{__ "profile.artigosConferencias"}}',
                 font: {
-                    weight: 'bold'
+                    size: 24
                 },
             }
             },
@@ -195,9 +195,9 @@
                 ticks: {
                 display: true,
                 padding: 10,
-                color: '#b2b9bf',
+                color: 'gray',
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2
@@ -214,10 +214,10 @@
                 },
                 ticks: {
                 display: true,
-                color: '#b2b9bf',
+                color: 'gray',
                 padding: 10,
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2
@@ -232,7 +232,7 @@
         data: {
             labels: labels,
             datasets: [{
-                label: "Artigos",
+                label: "{{__ 'profile.artigos'}}",
                 tension: 0,
                 borderWidth: 0,
                 pointRadius: 5,
@@ -254,11 +254,11 @@
             },
             title: {
                 fullsize: true,
-                color: '#000',
+                color: '#344767',
                 display: true,
-                text: 'Artigos Publicados em Periódicos',
+                text: '{{__ "profile.artigosPeriodicos"}}',
                 font: {
-                    weight: 'bold'
+                    size: 24
                 },
             }
             },
@@ -278,9 +278,9 @@
                 ticks: {
                 display: true,
                 padding: 10,
-                color: '#b2b9bf',
+                color: 'gray',
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2
@@ -297,10 +297,10 @@
                 },
                 ticks: {
                 display: true,
-                color: '#b2b9bf',
+                color: 'gray',
                 padding: 10,
                 font: {
-                    size: 11,
+                    size: 14,
                     family: "Open Sans",
                     style: 'normal',
                     lineHeight: 2

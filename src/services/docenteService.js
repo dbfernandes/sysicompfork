@@ -5,7 +5,7 @@ class DocenteService {
         try {
             const usuario = await Usuario.findByPk(id, {
                 atributes: [
-                    "id", "nomeCompleto", "email", "status", "idLattes", "formacao", "resumo", "ultimaAtualizacao", "createdAt"
+                    "id", "nomeCompleto", "email", "status", "idLattes", "formacao", "formacaoIngles", "resumo", "resumoIngles", "ultimaAtualizacao", "createdAt"
                 ],
                 include: [
                     {

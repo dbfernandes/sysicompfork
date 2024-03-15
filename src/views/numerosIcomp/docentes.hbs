@@ -1,29 +1,53 @@
     {{> numerosIcomp/navbar page="docentes"}}
 <div class="flex-wrapper bg-primary">
-     <section class="success"  id="docentes">
+    <section class="success"  id="docentes">
         <div class="container pb-4" >
-          <div class="row ">
-              <div class="col-md-12 text-center">
-                  <h1 class="text-white">Docentes</h1>
-                  <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
-              </div>
-      <table id="example" class="table table-hover table-striped w-100 bg-white"><thead>
-      <tr id="filters"><th id="name">Nome</th><th id="formation">Formação</th><th id="lastUpdate">Última atualização</th></tr>
-      <tr id="header"><th>Nome</th><th>Formação</th><th>Última atualização</th></tr>
-      </thead>
-      <tbody>
-        {{#each professores}}
-        <tr data-key={{id}}>
-            <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}">{{nomeCompleto}}</a></td>
-            <td class="ps-4">{{#if formacao}}{{formataFormacao formacao}}{{/if}}</td>
-            <td class="ps-4">{{#if ultimaAtualizacao}}{{formataData ultimaAtualizacao}}{{/if}}</td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
+            <div class="row ">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white">{{__ "teachers.docentes"}}</h1>
+                    <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
+                </div>
+                <div class="text-center" id="loading">
+                    <div class="spinner-border text-light mt-5 text-center" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="datatable-wrapper">
+                    <table id="example" class="table table-hover table-striped w-100 bg-white rounded">
+                        <thead>
+                            <tr id="filters">
+                                <th id="name">{{__ "teachers.nome"}}</th>
+                                <th id="formation">{{__ "teachers.formacao"}}</th>
+                                <th id="lastUpdate">{{__ "teachers.ultimaAtualizacao"}}</th>
+                            </tr>
+                            <tr id="header">
+                                <th>{{__ "teachers.nome"}}</th>
+                                <th>{{__ "teachers.formacao"}}</th>
+                                <th style="word-break: break-word; white-space: normal;">{{__ "teachers.ultimaAtualizacao"}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each professores}}
+                            <tr data-key={{id}}>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}?lng={{../lng}}">{{nomeCompleto}}</a></td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;">
+                                {{#if formacao}}
+                                {{#if (isEnLng ../lng)}}
+                                    {{formataFormacao formacaoIngles ../lng}}
+                                {{else}}
+                                    {{formataFormacao formacao ../lng}}
+                                {{/if}}
+                                {{/if}}
+                                </td>
+                                <td class="ps-4">{{#if ultimaAtualizacao}}{{formataDataLng ultimaAtualizacao ../lng}}{{/if}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        </div>
-      </section>
+    </section>
 
 
       <script>
@@ -33,21 +57,30 @@
             var title = $('#example thead #header th').eq( $(this).index() ).text();
             $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><input type="text" class="form-control" data-index="'+i+'" placeholder="'+title+'" /></div>')
         } );
-    
+        $('#datatable-wrapper').addClass('d-none') 
+
         // DataTable
         var table = $('#example').DataTable( {
             dom: 'tp',
             bLengthChange: false,
             paginationType: "simple_numbers",
             pageLength: 20,
-            responsive: {
-                details: false,
-            }, 
+            responsive: true, 
             columns: [
-            { responsivePriority: 1 },
-            { responsivePriority: 3 },
-            { responsivePriority: 2 },
-        ],
+                { responsivePriority: 1 },
+                { responsivePriority: 3 },
+                { responsivePriority: 2 },
+            ],
+            columnDefs: [
+            { width: "100px", targets: 2 },
+            {"className": 'text-dark', "targets": [0,1,2]},
+            ],
+            initComplete: function() {
+                setTimeout(() => {
+                    $('#datatable-wrapper').removeClass('d-none') 
+                    $("#loading").html('')
+                }, 500)
+            }, 
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
                 "paginate": {

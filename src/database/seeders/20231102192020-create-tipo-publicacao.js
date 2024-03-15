@@ -5,25 +5,25 @@ module.exports = {
     await queryInterface.bulkInsert('TipoPublicacao', [
 
       {
-        nome: "Artigos Publicados em Conferências",
+        nome: "Artigo Publicado em Conferências",
         chave: "TRABALHO-EM-EVENTOS",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        nome: "Artigos Publicados em Periódicos",
+        nome: "Artigo Publicado em Periódicos",
         chave: "ARTIGO-PUBLICADO",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        nome: "Livros Publicados",
+        nome: "Livro Publicado",
         chave: "LIVRO-PUBLICADO-OU-ORGANIZADO",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        nome: "Capítulos de Livros Publicados",
+        nome: "Capítulo de Livro Publicado",
         chave: "CAPITULO-DE-LIVRO-PUBLICADO",
         createdAt: new Date(),
         updatedAt: new Date(),

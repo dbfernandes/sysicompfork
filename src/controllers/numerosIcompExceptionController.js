@@ -4,22 +4,27 @@ const layoutMain = {
 }
 
 const erro404 = async (req, res) => {
-    return res.status(404).render('numerosIcomp/error404', { ...layoutMain })
+    const {lng} = req.query
+    return res.status(404).render('numerosIcomp/error404', { ...layoutMain,lng })
 }
 
 // Redirect Routes
 
 const redirectAlunos = async (req, res) => {
-    return res.redirect('/numerosIcomp#alunos');
+    const {lng} = req.query
+    return res.redirect('/numerosIcomp?lng='+lng+'#alunos');
 }
 const redirectProfessores = async (req, res) => {
-    return res.redirect('/numerosIcomp/docentes');
+    const {lng} = req.query
+    return res.redirect('/numerosIcomp/docentes?lng='+lng);
 }
 const redirectProjetos = async (req, res) => {
-    return res.redirect('/numerosIcomp/projetos');
+    const {lng} = req.query
+    return res.redirect('/numerosIcomp/projetos?lng='+lng);
 }
 const redirectPublicacoes = async (req, res) => {
-    return res.redirect('/numerosIcomp/publicacoes');
+    const {lng} = req.query
+    return res.redirect('/numerosIcomp/publicacoes?lng='+lng);
 }
 
 
