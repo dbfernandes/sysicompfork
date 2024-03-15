@@ -2,7 +2,15 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class LinhasDePesquisa extends Model {}
+  class LinhasDePesquisa extends Model {
+    static associate(models) {
+      // fazer as associações aqui
+      LinhasDePesquisa.hasMany(models.Candidate, {
+        foreignKey: "linhaDePesquisaId",
+        onDelete: "RESTRICT",
+      });
+    }
+  }
 
   LinhasDePesquisa.init(
     {
@@ -11,14 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       sigla: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      icone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      cor: {
         type: DataTypes.STRING,
         allowNull: false,
       },

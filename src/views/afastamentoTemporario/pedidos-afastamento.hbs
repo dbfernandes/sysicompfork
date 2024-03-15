@@ -1,5 +1,5 @@
 {{> header}}
-{{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
+{{> sidebar module='afastamentoTemporario' page='pedidos-afastamento'}}
 
 <main class="content-wrapper">
 
@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Lista de linhas de Pesquisas </h1>
+                    <h1>Listar Afastamentos Temporario </h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
@@ -22,9 +22,9 @@
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
-                    <a class="btn btn-primary color-white" href="/linhasDePesquisa/criar">
+                    <a class="btn btn-primary color-white" href="/afastamentoTemporario/criar">
                         <i class="fas fa-plus"></i>
-                        Adicionar
+                        Novo Pedido de Afastamento
                     </a>      
                 </div>
             </div>
@@ -51,32 +51,46 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nome</th>
-                                        <th>Sigla</th>
+                                        <th>Nome do Usuário</th>
+                                        <th>Data de Saída</th>
+                                        <th>Data de Retorno</th>
+                                        <th>Tipo de Viagem</th>
+                                        <th>Local da Viagem</th>
+                                        <th>Data de Envio</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each linhaDePesquisa}}
+                                    {{#each afastamentos}}
                                     <tr>
                                         <td> {{id}} </td>
-                                        <td> {{nome}} </td>
-                                        <td> {{sigla}} </td>
+                                        <td> {{usuarioNome}} </td>
+                                        <td> {{dataSaida}} </td>
+                                        <td> {{dataRetorno}} </td>
+                                        <td> {{tipoViagem}} </td>
+                                        <td> {{localViagem}} </td>
+                                        <td> {{createdAt}} </td>
 
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-end" style="gap: 10px">
-                                                <a class="fa fa-solid fa-trash " id="removerLdP_{{nome}}_{{id}}"
-                                                    data-toggle="modal" data-target="#removerLdP"
-                                                    title="remover" 
-                                                    onclick="addLink(event)" href="#"
+                                                <a  style="margin-right: 2px"
+                                                    href='/afastamentoTemporario/dados/{{id}}'
+                                                    class='fa fa-solid fa-eye'
+                                                    title="Visualizar" 
+                                                /></a>
+                                                <a  style="margin-right: 3px"
+                                                    href='/gerarPDF/{{id}}'
+                                                    target="_blank"
+                                                    class='fa fa-solid fa-file-pdf'
+                                                    title="PDF" 
+                                                /></a>
+                                                <a class="fa fa-solid fa-trash " id="removerAT_{{nome}}_{{id}}"
+                                                    data-toggle="modal" data-target="#removerAT"
+                                                    title="remover"
+                                                    onclick="addLink(event)" 
+                                                    href="#"
                                                     >
                                                 </a>
-                                                <a  style="margin-right: 2px"
-                                                    href='/linhasDePesquisa/editar/{{id}}'
-                                                    class='fa fa-solid fa-pen  '
-                                                    title="Editar"
-
-                                                /></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -97,7 +111,7 @@
     <!-- /.content -->
 </div>
 
-<div class="modal fade" id="removerLdP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="removerAT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -109,7 +123,7 @@
                     </div>
                     <div class="modal-footer">
                         <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarLdP()">Sim</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarAT()">Sim</a>
                     </div>
                     <form name="postDelete" id="postDelete" method="POST">
                         <input type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -141,17 +155,19 @@
             { responsivePriority: 2 },
             { responsivePriority: 3 },
             { responsivePriority: 4 },
+            { responsivePriority: 5 },
+            { responsivePriority: 6 },
+            { responsivePriority: 7 },
+            { responsivePriority: 8 }, 
         ],
         columnDefs: [ {
-            "targets": [2,3],
+            "targets": [7],
             "orderable": false
         } ]
         });
     });
 
-    function deletarLdP(event){
-        console.log ("as")
-
+    function deletarAT(event){
         // document.postDelete.submit();
         var form = document.getElementById("postDelete");
         console.log(form)
@@ -161,10 +177,8 @@
     function addLink(event) {
         const [a, nome, id] = event.target.id.split("_");
         document.getElementById("tituloModal").innerHTML =  "Deseja excluir " + nome + "?";
-        console.log("AddLink- aqui")
         const formDelete = document.getElementById("postDelete")
-        console.log("AddLink- aqui2")
-        formDelete.setAttribute('action', `/linhasDePesquisa/remover/${id}`);
+        formDelete.setAttribute('action', `/afastamentoTemporario/remover/${id}`);
     }
 
 </script>

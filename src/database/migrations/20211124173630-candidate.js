@@ -17,6 +17,10 @@ module.exports = {
         allowNull:false,
         type: Sequelize.STRING
       },
+      linhaDePesquisaId:{
+        allowNull:true,
+        type: Sequelize.INTEGER
+      },
       passwordHash: {
         allowNull:false,
         type: Sequelize.STRING
@@ -66,10 +70,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
-      email:{
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       birthday:{
         type: Sequelize.DATE
       },
@@ -101,6 +101,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       inscricaoposcomp: {
+        type: Sequelize.STRING
+      },
+      nivel: {
         type: Sequelize.STRING
       },
       anoposcomp: {
