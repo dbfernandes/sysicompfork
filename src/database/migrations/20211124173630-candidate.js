@@ -105,7 +105,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: true,
       },
-      CursoGraduyacao: {
+      CursoGraduacao: {
         type: Sequelize.STRING,
         allowNull: true,
       },

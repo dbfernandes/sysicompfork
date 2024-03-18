@@ -318,7 +318,8 @@
 									<b>CEP:</b>
 								</label>
 								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" data-plugin-inputmask=""
-									value="{{CEP}}" />
+									value="{{CEP}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+								<div class="invalid-feedback"></div>
 								<div class="help-block"></div>
 							</div>
 
@@ -430,14 +431,14 @@
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
 								</label>
 								<input type="text" id="candidato-telresidencial" class="form-control" name="candidatoTelresidencial"
-									value="{{Telefone}}">
+									value="{{Telefone}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 								<div class="help-block"></div>
 							</div>
 
 							<div class="form-group col-3 ">
 								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
 								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
-									value="{{TelefoneSecundario}}">
+									value="{{TelefoneSecundario}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 
 								<div class="help-block"></div>
 							</div>
@@ -721,18 +722,23 @@
 
 		$("input[data-bootstrap-switch-cotista]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
+			if (!$(this).prop('checked')) {
+				$("#cota").slideUp();
+			}
 			$(this).bootstrapSwitch('onSwitchChange', () => {
-				var input = document.getElementById('cota');
 				if ($(this).is(":checked")) {
 					$("#cota").slideDown();
 				} else {
 					$("#cota").slideUp();
 				}
-			})
+			});
 		});
 
 		$("input[data-bootstrap-switch-deficiencia]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
+			if (!$(this).prop('checked')) {
+				$("#condicao").slideUp();
+			}
 			$(this).bootstrapSwitch('onSwitchChange', () => {
 				var input = document.getElementById('condicao');
 				if ($(this).is(":checked")) {
@@ -746,16 +752,24 @@
 		})
 
 		$("input[data-bootstrap-switch-bolsa]").each(function () {
+			if ($(this).prop('checked')) {
+				$("#Regime2").prop("checked", false).prop("disabled", true);
+			} else {
+				$("#Regime2").prop("disabled", false);
+			}
+		});
+
+		$("input[data-bootstrap-switch-bolsa]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
 			$(this).bootstrapSwitch('onSwitchChange', () => {
 				if ($(this).is(":checked")) {
 					$("#Regime1").prop("checked", true);
-					$("#Regime2").prop("disabled", true);
+					$("#Regime2").prop("checked", false).prop("disabled", true);
 				} else {
 					$("#Regime2").prop("disabled", false);
 				}
-			})
-		})
+			});
+		});
 
 	}
 
@@ -818,7 +832,7 @@
 	function getSelectedCota() {
 		let cotista = document.getElementById("cotista").checked;
 		if (!cotista) {
-			return false;
+			return null;
 		}
 		let selectCota = document.getElementById("tipo-cota");
 		let selectedCota = selectCota.options[selectCota.selectedIndex].value;
@@ -828,7 +842,7 @@
 	function getCondicao() {
 		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
 		if (!deficiencia) {
-			return false;
+			return null;
 		}
 		let condicao = document.getElementById("candidato-condicao").value;
 		return condicao;
@@ -844,7 +858,9 @@
 
 	function checkCondicao() {
 		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
+		let condicaoInput = document.getElementById("candidato-condicao");
 		if (!deficiencia) {
+			condicaoInput.value = "";
 			return 0;
 		}
 		return deficiencia;
@@ -852,11 +868,14 @@
 
 	function checkCotista() {
 		let cotista = document.getElementById("cotista").checked;
+		let cotistaCota = document.getElementById("tipo-cota");
 		if (!cotista) {
+			cotistaCota.value = "";
 			return 0;
 		}
 		return cotista;
 	}
+
 	function getValueFromForm() {
 
 		const form = document.getElementById('candidato-formulario');
@@ -1016,5 +1035,47 @@
 
 		console.log(data)
 	})*/
+
+	function pesquisarCep() {
+		const cep = document.getElementById('candidato-cep').value;
+		const cepInput = document.getElementById('candidato-cep');
+		const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
+
+		const cepValido = /^[0-9]{8}$/.test(cep);
+
+		if (!cepValido) {
+			cepInput.classList.add('is-invalid');
+			invalidFeedback.textContent = "CEP inválido. Por favor, insira um CEP válido com 8 dígitos.";
+			return;
+		}
+
+		cepInput.classList.remove('is-invalid');
+
+		const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+		fetch(url)
+			.then(response => {
+				if (!response.ok) {
+					console.log(response)
+					throw new Error('CEP não encontrado.');
+				}
+				return response.json();
+			})
+			.then(data => {
+				document.getElementById('candidato-endereco').value = data.logradouro;
+				document.getElementById('candidato-cidade').value = data.localidade;
+				document.getElementById('candidato-bairro').value = data.bairro;
+				document.getElementById('candidato-uf').value = data.uf;
+			})
+			.catch(error => {
+				cepInput.classList.add('is-invalid');
+				invalidFeedback.textContent = error.message;
+			});
+	}
+
+	document.getElementById('candidato-cep').addEventListener('blur', pesquisarCep);
+
+
+
 
 </script>

@@ -1,6 +1,7 @@
 import EditalService from '../services/editalService'
 import CandidateService from '../services/candidateService'
 import { json } from 'body-parser';
+import candidatePublicacaoService from '../services/candidatePublicacaoService';
 
 const locals = {
 	layout: 'selecaoppgi'
@@ -198,9 +199,15 @@ const forms = async (req, res) => {
 					id: req.session.uid,
 				})
 
-
 				return res.render('selecaoppgi/forms2', {
 					...locals,
+					cursoGraduacao: candidate.cursoGraduacao,
+					instituicao: candidate.Instituicao,
+					anoEgresso: candidate.AnoEgresso,
+					cursoPos: candidate.CursoPos,
+					tipoCursoPos: candidate.TipoCursoPos,
+					instituicaoPos: candidate.InstituicaoPos,
+					anoEgressoPos: candidate.AnoEgressoPos,
 					editalPosicao: req.session.editalPosition,
 					email: req.session.email,
 					id: req.session.uid,
@@ -285,138 +292,150 @@ const form1 = async (req, res) => {
 }
 
 const form2 = async (req, res) => {
-	console.log("form2post")
-	console.log(req.files)
-	var VitaePDF = null
-	var Prova = null
-	if (req.files && req.files.Prova != undefined) {
-		Prova = req.files.Prova[0];
+
+
+	switch (req.method) {
+		case 'GET':
+
+
+		case 'POST':
+			try {
+				console.log("form2post")
+				
+				var VitaePDF = null
+				var Prova = null
+				if (req.files && req.files.Prova != undefined) {
+					Prova = req.files.Prova[0];
+				}
+				if (req.files && req.files.VitaePDF != undefined) {
+					VitaePDF = req.files.VitaePDF[0];
+				}
+
+
+				if (Prova) {
+					const caminhoDoArquivoVittae = VitaePDF.path;
+
+					const ProvaPDF = Prova.path;
+
+					const Candidato = {
+						CursoGraduacao: req.body.Curso,
+						InstituicaoGraduacao: req.body.Instituicao,
+						AnoEgressoGraduacao: req.body.AnoEgresso,
+						CursoPos: req.body.CursoPos,
+						CursoPosTipo: req.body.TipoCursoPos,
+						CursoInstituicaoPos: req.body.InstituicaoPos,
+						CursoAnoEgressoPos: req.body.AnoEgressoPos,
+						VitaePDF: caminhoDoArquivoVittae,
+						Prova: ProvaPDF,
+					}
+
+					console.log("Caminho do arquivo:", ProvaPDF);
+				} else {
+					console.log("FILES__________________")
+					console.log(req.files)
+					console.log("EndFILES__________________")
+					console.log(req.body)
+					console.log("EndBody__________________")
+
+					console.log("Nenhum arquivo de prova encontrado.");
+				}
+
+				res.status(200).send()
+			} catch { }
 	}
-	if (req.files && req.files.VitaePDF != undefined) {
-		VitaePDF = req.files.VitaePDF[0];
-	}
-
-
-	if (Prova) {
-		// Isola o valor da propriedade 'path' em uma variável
-		const caminhoDoArquivoVittae = VitaePDF.path;
-
-		const ProvaPDF = Prova.path;
-
-		const Candidato = {
-			Curso: req.body.Curso,
-			Instituicao: req.body.Instituicao,
-			AnoEgresso: req.body.AnoEgresso,
-			CursoPos: req.body.CursoPos,
-			TipoCursoPos: req.body.TipoCursoPos,
-			InstituicaoPos: req.body.InstituicaoPos,
-			AnoEgressoPos: req.body.AnoEgressoPos,
-			VitaePDF: caminhoDoArquivoVittae,
-			Prova: ProvaPDF,
-		}
-
-		console.log("Caminho do arquivo:", ProvaPDF);
-	} else {
-
-		const caminhoDoArquivoVittae = VitaePDF.path;
-
-		const Candidato = {
-			Curso: req.body.Curso,
-			Instituicao: req.body.Instituicao,
-			AnoEgresso: req.body.AnoEgresso,
-			CursoPos: req.body.CursoPos,
-			TipoCursoPos: req.body.TipoCursoPos,
-			InstituicaoPos: req.body.InstituicaoPos,
-			AnoEgressoPos: req.body.AnoEgressoPos,
-			VitaePDF: caminhoDoArquivoVittae,
-		}
-		console.log(Candidato)
-		console.log("Nenhum arquivo de prova encontrado.");
-	}
-
-	res.status(200).send()
-
+ 
 }
 
+const form2json = async (req, res) => {
+	console.log("******************************************** FORM 2 JSON")
+	switch (req.method) {
+		case 'GET':
+			return res.json({
+				candidates: await CandidateService.list()
+			});
+		case 'POST':
+			try{
+
+				console.log("******************************************** FORM 2 JSON POST")
+				console.log(req.body)
+				res.status(200).send()
+			}catch{
+
+			}
+		default:
+			return res.status(400).send();
+	}
+
+}
 const formPublicacoes = async (req, res) => {
-	console.log(req.method)
 	switch (req.method) {
 
 		case 'GET':
 
-		
-			
+			const data = await candidatePublicacaoService.ListarPublicacoesCandidate(req.session.uid);
+
+
+			const periodicos = data.periodicos.map((periodico) => periodico.toJSON());
+			const conferencias = data.conferencias.map((conferencia) => conferencia.toJSON());
+
+			data.conferencias.forEach(publicacao => {
+				console.log(publicacao.toJSON());
+			});
+
+
+
+			return res.render('selecaoppgi/forms2', {
+				message: "Dados salvos com sucesso",
+				editalPosicao: req.session.editalPosition,
+				email: req.session.email,
+				id: req.session.uid,
+				csrfToken: req.csrfToken(),
+				periodicos,
+				conferencias
+			});
+
+
+
+
 		case 'POST':
 			try {
 
 				const dados = req.body;
-
+				console.log(dados)
 				const periodicos = dados.publicacoes["ARTIGO-PUBLICADO"];
+				const eventos = dados.publicacoes["TRABALHO-EM-EVENTOS"];
+				const livros = dados.publicacoes["LIVRO-PUBLICADO-OU-ORGANIZADO"];
+				const capitulos = dados.publicacoes["CAPITULO-DE-LIVRO-PUBLICADO"];
+				const outras = dados.publicacoes["OUTRA-PRODUCAO-BIBLIOGRAFICA"];
+				const prefacios = dados.publicacoes["PREFACIO-POSFACIO"];
 
-				const conferencias = {
-					"TRABALHO-EM-EVENTOS": dados.publicacoes["TRABALHO-EM-EVENTOS"],
-					"LIVRO-PUBLICADO-OU-ORGANIZADO": dados.publicacoes["LIVRO-PUBLICADO-OU-ORGANIZADO"],
-					"CAPITULO-DE-LIVRO-PUBLICADO": dados.publicacoes["CAPITULO-DE-LIVRO-PUBLICADO"],
-					"OUTRA-PRODUCAO-BIBLIOGRAFICA": dados.publicacoes["OUTRA-PRODUCAO-BIBLIOGRAFICA"],
-					"PREFACIO-POSFACIO": dados.publicacoes["PREFACIO-POSFACIO"],
-				};
+				console.log("Capitulos", prefacios);
+
+				const promises = [];
 
 
-				const formatarParaHandlebars = (objeto) => {
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, periodicos, 1));
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, eventos, 2));
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, livros, 3));
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, capitulos, 4));
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, outras, 5));
+				promises.push(candidatePublicacaoService.adicionarVarios(req.session.uid, prefacios, 6));
 
-					const resultado = [];
 
-					for (const item of objeto) {
-						const autoresFormatados = item.autores.nomeCompleto.join('; ');
-						const tituloFormatado = `${item.ano}: ${item.titulo}`;
-						const conteudoFormatado = `${autoresFormatados}. ${item.titulo}. ${item.local || ''}. ${item.ano}.`;
+				const results = await Promise.allSettled(promises);
 
-						resultado.push({
-							tituloFormatado,
-							conteudoFormatado,
-						});
+				results.forEach((result, index) => {
+					if (result.status === 'fulfilled') {
+						console.log(`Operação ${index + 1} concluída com sucesso.`);
+						console.log('Resultado:', result.value);
+					} else {
+						console.error(`Operação ${index + 1} falhou.`);
+						console.error('Erro:', result.reason);
 					}
+				});
 
-					return resultado;
-				};
+				res.status(200).send('Dados salvos com sucesso.');
 
-				const periodicosFormatados = formatarParaHandlebars(periodicos);
-				const conferenciasFormatadas = {};
-
-				for (const key in conferencias) {
-					if (Object.hasOwnProperty.call(conferencias, key)) {
-						conferenciasFormatadas[key] = formatarParaHandlebars(conferencias[key]);
-					}
-				}
-
-
-				const data = {
-					periodicos: periodicosFormatados,
-					conferencias: conferenciasFormatadas,
-				};
-
-
-				req.session.editalPosition = 3;
-
-				if(req.session.editalPosition == 3){
-					return res.render('selecaoppgi/forms2', {
-						message: "Dados salvos com sucesso",
-						editalPosicao: req.session.editalPosition,
-						email: req.session.email,
-						id: req.session.uid,
-						csrfToken: req.csrfToken(),
-						periodicos: periodicosFormatados,
-						conferencias: conferenciasFormatadas,
-					});
-				}
-
-				if (data) {
-					//console.log(data)
-					
-
-				} else {
-					return res.status(400).send(data);
-				}
 
 			}
 			catch {
@@ -447,6 +466,7 @@ const voltar = async (req, res) => {
 	switch (req.method) {
 		case 'POST':
 			const id = req.body.id
+			console.log(id)
 			let editalPosicao = req.body.editalPosicao;
 			console.log(editalPosicao)
 			editalPosicao = parseInt(editalPosicao, 10) - 1;
@@ -475,6 +495,7 @@ export default {
 	forms,
 	form1,
 	form2,
+	form2json,
 	candidates,
 	voltar,
 	refresh,

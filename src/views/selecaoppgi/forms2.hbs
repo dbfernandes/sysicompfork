@@ -237,7 +237,7 @@
         <input id="csrfToken" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="idCandidato" type="hidden" value="{{id}}">
+        <input id="idCandidato" value="{{id}}">
         <input id="idCandidato" type="" value="{{message}}">
         <p>{{message}}</p>
         <div class="card card-primary">
@@ -252,8 +252,10 @@
                   <font color="#FF0000">*</font>
                   <b>Curso:</b>
                 </label>
+                {{cursoGraduacao}}
+                {{instituicao}}
                 <input class="form-control" id="candidato-curso" placeholder="Insira seu curso" type="text" name="Curso"
-                  value="" maxlength="60">
+                  maxlength="60" value="{{cursoGraduacao}}">
               </div>
 
               <div class="col-md-6 ">
@@ -262,7 +264,7 @@
                   <b>Instituição:</b>
                 </label>
                 <input class="form-control" id="candidato-instituicao" placeholder="Insira sua instituição" type="text"
-                  name="Instituicao" value="" maxlength="60">
+                  name="Instituicao" maxlength="60" value="{{instituicao}}">
               </div>
             </div>
             <div class="row">
@@ -272,7 +274,7 @@
                   <b>Ano de Egresso:</b>
                 </label>
                 <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="AnoEgresso"
-                  value="" maxlength="60">
+                  value="{{anoEgresso}}" maxlength="60" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
               </div>
             </div>
           </div>
@@ -290,8 +292,8 @@
                 <label for="candidato-curso-pos">
                   <b>Curso:</b>
                 </label>
-                <input class="form-control" id="candidato-curso-pos" type="text" name="Curso-Pos" value=""
-                  maxlength="60">
+                <input class="form-control" id="candidato-curso-pos" type="text" name="Curso-Pos" maxlength="60"
+                  value="{{cursoPos}}">
               </div>
 
               <div class="col-md-6 " role="radiogroup">
@@ -300,25 +302,25 @@
                 </label>
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
-                  <div class="icheck-primary d-inline">
+                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
                     <input type="radio" id="Tipo1" name="CursoTipo" value="Mestrado Acadêmico">
-                    <label for="Tipo1"> Mestrado Acadêmico
-                    </label>
+                    <label for="Tipo1"> Mestrado Acadêmico </label>
                   </div>
 
-                  <div class="icheck-primary d-inline">
+                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
                     <input type="radio" id="Tipo2" name="CursoTipo" value="Mestrado Profissional">
-                    <label for="Tipo2">Mestrado Profissional
-                    </label>
+                    <label for="Tipo2"> Mestrado Profissional </label>
                   </div>
-                  <div class="icheck-primary d-inline">
-                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado">
-                    <label for="Tipo3">Doutorado
-                    </label>
-                  </div>
-                  <button id="limparSelecao">Limpar Seleção</button>
 
+                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
+                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado">
+                    <label for="Tipo3"> Doutorado </label>
+                  </div>
+
+                  <button id="limparSelecao" class="btn btn-block btn-primary" style="width:50%;">Limpar
+                    Seleção</button>
                 </div>
+
               </div>
 
             </div>
@@ -328,14 +330,15 @@
                 <label class="control-label" for="candidato-instituicao-pos">
                   <b>Instituição:</b>
                 </label>
-                <input class="form-control" id="candidato-instituicao-pos" type="text" name="InstituicaoPos" value=""
-                  maxlength="60">
+                <input class="form-control" id="candidato-instituicao-pos" type="text" name="InstituicaoPos"
+                  maxlength="60" value="{{instituicaoPos}}">
               </div>
               <div class="col-md-3">
                 <label class="control-label" for="candidato-ano-pos">
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano-pos" type="text" name="AnoEgressoPos">
+                <input class="form-control" id="candidato-ano-pos" type="text" name="AnoEgressoPos"
+                  oninput="permitirApenasNumeros(this)" value="{{anoEgressoPos}}">
               </div>
             </div>
 
@@ -381,34 +384,83 @@
             </div>
             <div>
 
+              <div>
+                <p>
+                  {{#if periodicos}}
+                  <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button"
+                    aria-expanded="false" aria-controls="multiCollapseExample1">Periodicos <span
+                      class="badge badge-light">{{periodicos.length}}</span></a>
+                  {{/if}}
+                </p>
 
+                <div class="collapse multi-collapse" id="multiCollapseExample1">
 
-            {{#if periodicos}}
-            <button onclick="mostrarPeriodicos()">Periodicos</button>
-            {{/if}}
-
-            {{#if conferencias.length}}
-            <button onclick="mostrarConferencias()">Conferencias</button>
-            {{/if}}
-
-            <div id="periodicos" style="display: block;">
-              {{#each periodicos}}
-              <h3>{{this.tituloFormatado}}</h3>
-              <p>{{this.conteudoFormatado}}</p>
-              {{/each}}
-            </div>
-
-            <div id="conferencias" style="display: none;">
-              {{#each conferencias}}
-              <h3>{{this.tituloFormatado}}</h3>
-              <p>{{this.conteudoFormatado}}</p>
-              {{/each}}
-            </div>
-
+                  {{#each periodicos}}
+                  <div class="card collapsed-card">
+                    <div class="card-header">
+                      <div style="display:flex; align-items: center; justify-content: space-between;">
+                        <a data-card-widget="collapse" style="color:#000" class="card-title">
+                          {{ano}}: {{titulo}}
+                        </a>
+                        <div class="card-tools">
+                          <!-- Collapse Button -->
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                            data-card-toggle="collapse"><i class="fas fa-plus"></i></button>
                         </div>
+                      </div>
+                      <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                      <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b>
+                      </li>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                  {{/each}}
+                </div>
+                <p>
+                  {{#if conferencias.length}}
+                  <button class="btn btn-primary" type="button" data-toggle="collapse"
+                    data-target="#multiCollapseExample2" aria-expanded="false"
+                    aria-controls="multiCollapseExample2">Conferências <span
+                      class="badge badge-light">{{conferencias.length}}</span></button>
+                  {{/if}}
+                </p>
+                <div class="collapse multi-collapse" id="multiCollapseExample2">
+
+                  {{#each conferencias}}
+
+                  <div class="card collapsed-card">
+                    <div class="card-header">
+                      <div style="display:flex; align-items: center; justify-content: space-between;">
+                        <a data-card-widget="collapse" style="color:#000" class="card-title">
+                          {{ano}}: {{titulo}}
+                        </a>
+                        <div class="card-tools">
+                          <!-- Collapse Button -->
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                            data-card-toggle="collapse"><i class="fas fa-plus"></i></button>
+                        </div>
+                      </div>
+                      <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                      <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b>
+                      </li>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+
+                  {{/each}}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Aproveitamento de Prova de Seleção Anterior</h3>
@@ -418,7 +470,8 @@
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="candidato-prova">
-                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2
+                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo
+                    2
                     anos), pro favor faça o upload do PDF da prova através da opção abaixo:
                   </b>
                 </label>
@@ -449,7 +502,7 @@
                     Instituição Academica:
                   </label>
                   <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="Experiencia"
-                    value="" maxlength="60">
+                    maxlength="60">
                 </div>
 
                 <div class="col-4">
@@ -457,7 +510,7 @@
                     Atividade:
                   </label>
                   <input class="form-control" id="candidato-experiencia-atividade" type="text"
-                    name="ExperienciaAtividade" value="" maxlength="60">
+                    name="ExperienciaAtividade" maxlength="60">
                 </div>
 
                 <div class="col-4">
@@ -465,7 +518,7 @@
                     Período:
                   </label>
                   <input class="form-control" id="candidato-experiencia-periodo" type="text" name="ExperienciaPeriodo"
-                    value="" maxlength="60">
+                    maxlength="60">
                 </div>
                 <div class="col-1" style="margin-top:10px">
                   <button class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
@@ -496,20 +549,38 @@
 <script>
 
   function mostrarPeriodicos() {
-    document.getElementById("periodicos").style.display = "block";
-    document.getElementById("conferencias").style.display = "none";
+    var accordion = $("#accordion");
+    if (accordion.hasClass("show")) {
+      accordion.collapse("hide");
+    } else {
+      accordion.collapse("show");
+    }
   }
+  $(".accordion").on("show.bs.collapse", function () {
+    $(this).find(".collapse").slideDown(20000);
+  });
+
+  $(".accordion").on("hide.bs.collapse", function () {
+    $(this).find(".collapse").slideUp(20000);
+  });
+
 
   function mostrarConferencias() {
     document.getElementById("periodicos").style.display = "none";
     document.getElementById("conferencias").style.display = "block";
   }
 
+  function permitirApenasNumeros(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+  }
+
+
 
   $(document).ready(function () {
     $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
-      const id = $("#id").val();
+      const id = $("#idCandidato").val();
+      console.log(id)
       const editalPosicao = $("#editalPosicao").val();
 
       console.log(editalPosicao)
@@ -588,55 +659,60 @@
 
   function SubmitForm(e) {
     e.preventDefault()
+    console.log("submit")
     var VitaeXML = $("#vittaexml").val()
     var formData = new FormData($('#candidato-formulario2')[0]);
     console.log(VitaeXML)
     if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
       reqAjax(formData)
     } else {
+      console.log(formData)
       getCompleteData(formData, reqAjax)
     }
 
   }
 
   function reqAjax(data) {
-    console.log("ajax")
-    console.log(data)
+
+    var formData = new FormData($('#candidato-formulario2')[0]);
+    formData.append('csrfToken', $("#csrfToken").val());
+    formData.append('email', $("#email").val());
+    formData.append('editalPosicao', $("#editalPosicao").val());
+    formData.append('id', $("#idCandidato").val());
+
+    
     const csrfToken = $("#csrfToken").val();
     const email = $("#email").val();
     const editalPosicao = $("#editalPosicao").val();
     const id = $("#id").val();
 
-
-
     $.ajax({
       url: '/selecaoppgi/formulario/2?_csrf={{csrfToken}}',
       type: "POST",
-      data: data,
-      success: function (data) {
-        $(document).Toasts('create', {
-          icon: 'success',
-          class: "bg-success",
-          autohide: true,
-          delay: 10000,
-          title: 'Formulário salvo com sucesso!',
-          body: 'O formulário foi salvo com sucesso.'
-        })
-        location.replace(location.href);
-      },
-      error: function (err) {
-        $(document).Toasts('create', {
-          icon: 'success',
-          class: "bg-danger",
-          autohide: true,
-          delay: 10000,
-          title: 'Ocorreu um problema!',
-          body: 'O formulário não pôde ser salvo.'
-        })
-      },
+      data: formData, 
+      contentType: false,
       processData: false,
-      contentType: false
-    })
+      success: function (response) {
+        $.ajax({
+          url: '/selecaoppgi/formulario/json?_csrf={{csrfToken}}',
+          type: "POST",
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            console.log("oi")
+            // Trate a resposta do backend, se necessário
+          },
+          error: function (xhr, status, error) {
+          }
+        });
+      },
+      error: function (xhr, status, error) {
+        // Trate o erro, se houver
+      }
+    });
+
+
+
 
   }
 
@@ -676,12 +752,19 @@
   function GetDataPubli(data) {
     const DataForm = data;
     console.log(DataForm)
-    JSON.stringify(DataForm)
+    console.log(JSON.stringify(DataForm))
     var formData2 = new FormData($('#candidato-formulario2')[0]);
+    const email = $("#email").val();
+    const editalPosicao = $("#editalPosicao").val();
+    const id = $("#id").val();
+    formData2.append('email', email);
+    formData2.append('editalPosicao', editalPosicao);
+    formData2.append('id', id);
 
     const tete = {
       teste: "teste"
     }
+
     $.ajax({
       url: '/selecaoppgi/formulario/publicacoes?_csrf={{csrfToken}}',
       type: "POST",
@@ -705,6 +788,33 @@
 
   }
 
+  $.validator.addMethod("anoValido", function (value, element) {
+    if (!/^\d{4}$/.test(value)) {
+      return false;
+    }
+
+    let anoAtual = new Date().getFullYear();
+    let anoMinimo = 1850;
+    let anoInserido = parseInt(value);
+    return anoInserido <= anoAtual && anoInserido >= anoMinimo;
+  }, "Ano inválido");
+
+  $.validator.addMethod("anoPosValido", function (value, element) {
+
+    if (value.trim() === "") {
+      return true;
+    }
+
+    if (!/^\d{4}$/.test(value)) {
+      return false;
+    }
+
+    let anoAtual = new Date().getFullYear();
+    let anoMinimo = 1850;
+    let anoInserido = parseInt(value);
+    return anoInserido <= anoAtual && anoInserido >= anoMinimo;
+  }, "Ano inválido");
+
   $("#candidato-formulario2").validate({
     errorElement: 'span',
     errorPlacement: function (error, element) {
@@ -725,7 +835,9 @@
         required: true
       },
       "AnoEgresso": {
-        required: true
+        required: true,
+        anoValido: true
+
       },
       "Curso-Pos": {
         conjuntoPreenchido: true
@@ -734,7 +846,8 @@
         conjuntoPreenchido: true
       },
       "AnoEgressoPos": {
-        conjuntoPreenchido: true
+        conjuntoPreenchido: true,
+        anoPosValido: true
       },
       "VitaePDF": {
         required: true

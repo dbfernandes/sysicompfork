@@ -124,6 +124,35 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.STRING,
       allowNull: false,
     },
+    CursoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    InstituicaoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    AnoEgressoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoPos: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },	
+    CursoPosTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoInstituicaoPos:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoAnoEgressoPos:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
   }, {
     sequelize,
     modelName: 'Candidate',
