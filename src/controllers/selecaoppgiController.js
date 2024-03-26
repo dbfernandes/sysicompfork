@@ -346,27 +346,7 @@ const form2 = async (req, res) => {
  
 }
 
-const form2json = async (req, res) => {
-	console.log("******************************************** FORM 2 JSON")
-	switch (req.method) {
-		case 'GET':
-			return res.json({
-				candidates: await CandidateService.list()
-			});
-		case 'POST':
-			try{
 
-				console.log("******************************************** FORM 2 JSON POST")
-				console.log(req.body)
-				res.status(200).send()
-			}catch{
-
-			}
-		default:
-			return res.status(400).send();
-	}
-
-}
 const formPublicacoes = async (req, res) => {
 	switch (req.method) {
 
@@ -495,7 +475,6 @@ export default {
 	forms,
 	form1,
 	form2,
-	form2json,
 	candidates,
 	voltar,
 	refresh,

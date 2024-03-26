@@ -33,17 +33,6 @@ router.all('/formulario/2', (req, res) => {
   })
 })
 
-
-router.all('/formulario/json', (req, res) => {
-  uploads(req, res, function(err){
-    if(err){
-      console.log(err)
-      throw err
-    }
-    selecaoppgiController.form2json(req, res)
-  })
-});
-
 router.all('/formulario/publicacoes',(req, res) => {
   uploads(req, res, function(err){
     if(err){

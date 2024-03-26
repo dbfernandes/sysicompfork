@@ -377,10 +377,7 @@
                 </div>
 
               </div>
-              <div class="col-6" style="display: flex; justify-content: center; align-items: center;">
-                <button onclick="enviarDocumentos()" type="button" class="btn btn-block btn-primary"
-                  style="width:50%">Enviar</button>
-              </div>
+
             </div>
             <div>
 
@@ -693,18 +690,7 @@
       contentType: false,
       processData: false,
       success: function (response) {
-        $.ajax({
-          url: '/selecaoppgi/formulario/json?_csrf={{csrfToken}}',
-          type: "POST",
-          data: JSON.stringify(data),
-          contentType: 'application/json',
-          success: function (response) {
-            console.log("oi")
-            // Trate a resposta do backend, se necessário
-          },
-          error: function (xhr, status, error) {
-          }
-        });
+       
       },
       error: function (xhr, status, error) {
         // Trate o erro, se houver
@@ -737,17 +723,18 @@
     return experienciasData;
   }
 
-  function enviarDocumentos() {
-    var VitaeXML = document.querySelector("VitaeXML")
+
+  $('#vittaexml').change(function(){
+     var VitaeXML = document.querySelector("VitaeXML")
     var formData = new FormData($('#candidato-formulario2')[0]);
 
     if (VitaeXML === "") {
-      //reqAjax(formData)
+      
     } else {
       getCompleteData(formData, GetDataPubli)
     }
+  })
 
-  }
 
   function GetDataPubli(data) {
     const DataForm = data;
