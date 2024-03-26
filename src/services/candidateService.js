@@ -159,6 +159,20 @@ class CandidateService {
         })
         return candidate
     }
+    async listCanditatesByEdital(editalId) {
+        const candidates = await Candidate.findAll({
+            where: {
+                editalId: editalId
+            },
+            attributes: {
+                exclude: ['passwordHash']
+            }
+        }).catch(err => {
+            console.log(`[ERROR] Listar Candidatos: ${err}`)
+            throw new Error("Não foi possivel listar o candidato");
+        })
+        return candidates;
+    }
 }
 
 export default new CandidateService();

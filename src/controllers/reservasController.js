@@ -1,17 +1,20 @@
-const { ReservaSala } = require('../models');
-const { Salas } = require('../models');
-const { Usuario } = require('../models');
+import reservasService from '../services/reservasService';
+import ReservaService from '../services/reservasService';
+import salasService from '../services/salasService';
+// const { ReservaSala } = require('../models');
+// const { Salas } = require('../models');
+// const { Usuario } = require('../models');
 
 
 const listar = async (req, res) => {
-    const reservas = await ReservaSala.findAll();
+    const reservas = await ReservaService.listarTodos();
     res.json({ reservas: reservas.map(sala => sala.toJSON()) })
 }
 
 const adicionar = async (req, res) => {
 
     if (req.method === 'GET') {
-        const salas = await Salas.findAll();
+        const salas = await salasService.listarTodos();
 
         res.render('reservas/reservas-adicionar', {
             salas: salas.map(sala => sala.toJSON()),
@@ -42,16 +45,18 @@ const adicionar = async (req, res) => {
                     req.body.dias = ""
                 }
             }
+            const dados = {
+                ...req.body
+            }
 
-            console.log({ ...req.body })
-
-            const reserva = await ReservaSala
-                .create({
-                    ...req.body,
-                })
-                .catch((err) => {
-                    responseError = err;
-                });
+            // const reserva = await ReservaSala
+            //     .create({
+            //         ...req.body,
+            //     })
+            //     .catch((err) => {
+            //         responseError = err;
+            //     });
+            const reserva = await ReservaService.criar(dados);
 
             if (!reserva) {
                 res.redirect('/reservas/gerenciar')
@@ -67,12 +72,11 @@ const adicionar = async (req, res) => {
 
 const excluir = async (req, res) => {
     const { id } = req.params;
-    const reserva = await ReservaSala.findOne({ where: { id: req.params.id } });
+    const reserva = await reservasService.listarUm(id);
     try {
-        if (!reserva)
-            throw new Error('Sala não encontrado!');
+        if (!reserva) throw new Error('Sala não encontrado!');
 
-        const reserva_apagada = await ReservaSala.destroy({ where: { id: id } });
+        await reservasService.remover(id);
         res.redirect('/reservas/gerenciar')
 
     } catch (e) {
@@ -87,18 +91,18 @@ function converterData(data) {
 }
 
 const gerenciar = async (req, res) => {
-    const reservas = await ReservaSala.findAll({
-        include: [
-            {
-                model: Salas,
-                as: 'salas',
-            }, {
-                model: Usuario,
-                as: 'usuario',
-            }
-        ],
-    });
-
+    // const reservas = await ReservaSala.findAll({
+    //     include: [
+    //         {
+    //             model: Salas,
+    //             as: 'salas',
+    //         }, {
+    //             model: Usuario,
+    //             as: 'usuario',
+    //         }
+    //     ],
+    // });
+    const reservas = await reservasService.listarReservasSalas();
     const reservasJSON = reservas.map(reserva => {
         let reservaObj = reserva.toJSON();
 
@@ -124,18 +128,19 @@ const gerenciar = async (req, res) => {
 
         if (req.method === 'GET') {
             try {
-                const salas = await Salas.findAll();
-                const reserva = await ReservaSala.findOne({
-                    where: {
-                        id: req.params.id
-                    },
-                    include: [
-                        {
-                            model: Salas, // Include the associated "Post" model
-                            as: 'salas', // Alias for the posts association (if defined in the User model)   
-                        }
-                    ],
-                })
+                const salas = await salasService.listarTodos();
+                const reserva = await reservasService.listarReservasSalasPorUsuario(req.params.id);
+                // const reserva = await ReservaSala.findOne({
+                //     where: {
+                //         id: req.params.id
+                //     },
+                //     include: [
+                //         {
+                //             model: Salas, // Include the associated "Post" model
+                //             as: 'salas', // Alias for the posts association (if defined in the User model)   
+                //         }
+                //     ],
+                // })
 
                 res.render('reservas/reservas-editar', {
                     salas: salas.map(sala => sala.toJSON()),
@@ -173,14 +178,16 @@ const gerenciar = async (req, res) => {
                 }
             }
 
-            console.log({ ...req.body })
-
+            const dados = {
+                ...req.body
+            }
 
             try {
-                const reserva = await ReservaSala.update({
-                    ...req.body
-                }, { where: { id: req.params.id } });
 
+                // const reserva = await ReservaSala.update({
+                //     ...req.body
+                // }, { where: { id: req.params.id } });
+                await reservasService.atualizar(req.params.id, dados);
                 res.redirect('/reservas/gerenciar')
 
             } catch (error) {

@@ -13,15 +13,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      icone: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       sigla: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      cor: {
         type: Sequelize.STRING,
         allowNull: false,
       },

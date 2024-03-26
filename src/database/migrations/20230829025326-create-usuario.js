@@ -98,7 +98,15 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true,
       },
+      formacaoIngles: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
       resumo: {
+        type: Sequelize.STRING(5000),
+        allowNull: true,
+      },
+      resumoIngles: {
         type: Sequelize.STRING(5000),
         allowNull: true,
       },

@@ -1,5 +1,73 @@
 const moment = require('moment-timezone');
 
+
+const whichCourse = (course, lng) => {
+  const language = require('../../modules/i18n.js')
+  console.log(course)
+  const i18n = language.default.i18next
+  i18n.changeLanguage(lng)
+  switch (course) {
+    case 'Processamento de Dados':
+      
+      return i18n.t("students.processamentoDeDados");
+    case 'Ciência Da Computação':
+      
+      return i18n.t("students.cienciaDaComputacao");
+    case 'Engenharia de Software / Sistemas de Informação':
+      
+      return i18n.t("students.engenhariaESistemas");
+    case 'Mestrado':
+      
+      return i18n.t("students.mestrado");
+    case 'Doutorado':
+      
+      return i18n.t("students.doutorado");
+  
+  }
+}
+
+const isEnLng = (lng) =>{
+  return lng == "en"
+}
+
+const guidencesOnGoing = (course, lng) => {
+  const language = require('../../modules/i18n.js')
+  console.log(course)
+  const i18n = language.default.i18next
+  i18n.changeLanguage(lng)
+  switch (course) {
+    case 'Graduação':
+      
+      return i18n.t("profile.orientacoesDeGraduacaoEmAndamento");
+    case 'Mestrado':
+      
+      return i18n.t("profile.orientacoesDeMestradoEmAndamento");
+    case 'Doutorado':
+      
+      return i18n.t("profile.orientacoesDeDoutoradoEmAndamento");
+  
+  }
+}
+
+const guidencesEnded = (course, lng) => {
+  const language = require('../../modules/i18n.js')
+  console.log(course)
+  const i18n = language.default.i18next
+  i18n.changeLanguage(lng)
+  switch (course) {
+    case 'Graduação':
+      
+      return i18n.t("profile.orientacoesDeGraduacaoConcluidas");
+    case 'Mestrado':
+      
+      return i18n.t("profile.orientacoesDeMestradoConcluidas");
+    case 'Doutorado':
+      
+      return i18n.t("profile.orientacoesDeDoutoradoConcluidas");
+  
+  }
+}
+
 const ops = {
   ['not']: (v1) => !v1,
   ['!']: (v1) => !v1,
@@ -87,13 +155,27 @@ const add = (a, b) => {
 const formataData = (data) => {
   return moment(data).format('DD/MM/YYYY');
 }
-const formataFormacao = (formacao) => {
-  const formacaoArr = formacao.split(";")
-  return formacaoArr[0]+" em "+formacaoArr[1]+". "+ formacaoArr[2]+", "+formacaoArr[3]+".";
+const formataDataLng = (data, lng) => {
+  if(lng == "en"){
+    return moment(data).format('MM/DD/YYYY');
+  }
+  return moment(data).format('DD/MM/YYYY');
 }
-const formataFormacaoTitulo  = (formacao) => {
+const formataFormacao = (formacao, lng) => {
   const formacaoArr = formacao.split(";")
-  return formacaoArr[0]+" em "+formacaoArr[1];
+  var prep = " em "
+  if(lng == "en"){
+    prep = " in "
+  }
+  return formacaoArr[0]+prep+formacaoArr[1]+". "+ formacaoArr[2]+", "+formacaoArr[3]+".";
+}
+const formataFormacaoTitulo  = (formacao, lng) => {
+  const formacaoArr = formacao.split(";")
+  var prep = " em "
+  if(lng == "en"){
+    prep = " in "
+  }
+  return formacaoArr[0]+prep+formacaoArr[1];
 }
 const formataFormacaoLocal = (formacao) => {
   const formacaoArr = formacao.split(";")
@@ -128,6 +210,8 @@ const validaLabel = (status, dataInicio, dataFim, options) => {
 
 
 
-module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData, 
-  validaLabel, formataFormacao, formataFormacaoLocal, formataFormacaoTitulo,formataFormacaoAno}
+module.exports = { ...ops, ifEqual, checked, add, showError,checked_in, checked_unica, autorizarUsuario, formataData, formataDataLng, 
+  validaLabel, formataFormacao, formataFormacaoLocal, formataFormacaoTitulo,formataFormacaoAno, whichCourse, guidencesOnGoing,
+  guidencesEnded, isEnLng
+}
 

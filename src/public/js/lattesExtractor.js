@@ -200,30 +200,74 @@ function getCompleteFormData(data, publicCallback){
         const userDict = {}
         userDict["idLattes"] = xmlText["CURRICULO-VITAE"]["_NUMERO-IDENTIFICADOR"]
         userDict["resumo"] = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["RESUMO-CV"] ? xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["RESUMO-CV"]["_TEXTO-RESUMO-CV-RH"] : ""
+        userDict["resumoIngles"] = userDict["resumo"] != "" ? xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["RESUMO-CV"]["_TEXTO-RESUMO-CV-RH-EN"] : ""
         userDict["ultimaAtualizacao"] = new Date()
         const formacao = xmlText["CURRICULO-VITAE"]["DADOS-GERAIS"]["FORMACAO-ACADEMICA-TITULACAO"]
-        var formacaoTexto = ""
+        var formacaoTexto = "" 
+        var formacaoTextoIngles = "" 
         if(formacao.hasOwnProperty("DOUTORADO")){
             formacaoTexto += "Doutorado;"
+            formacaoTextoIngles += "Doctorate;"
             if(formacao["DOUTORADO"].length > 0){
-                formacaoTexto +=  formacao["DOUTORADO"][0]["_NOME-CURSO"] +";"+formacao["DOUTORADO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["DOUTORADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["DOUTORADO"][0]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["DOUTORADO"][0]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["DOUTORADO"][0]["_NOME-CURSO"] +";" : formacao["DOUTORADO"][0]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["DOUTORADO"][0]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["DOUTORADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano
             }else{
-                formacaoTexto +=  formacao["DOUTORADO"]["_NOME-CURSO"] +";"+formacao["DOUTORADO"]["_NOME-INSTITUICAO"]+";"+ formacao["DOUTORADO"]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["DOUTORADO"]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["DOUTORADO"]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["DOUTORADO"]["_NOME-CURSO"] +";" : formacao["DOUTORADO"]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["DOUTORADO"]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["DOUTORADO"]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano
             }
         }else if(formacao.hasOwnProperty("MESTRADO")){
+            formacaoTexto += "Mestrado;"
+            formacaoTextoIngles += "Master's degree;"
             if(formacao["MESTRADO"].length > 0){
-                formacaoTexto +=  formacao["MESTRADO"][0]["_NOME-CURSO"] +";"+formacao["MESTRADO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["MESTRADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["MESTRADO"][0]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["MESTRADO"][0]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["MESTRADO"][0]["_NOME-CURSO"] +";": formacao["MESTRADO"][0]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["MESTRADO"][0]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["MESTRADO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano     
             }else{
-                formacaoTexto +=  formacao["MESTRADO"]["_NOME-CURSO"] +";"+formacao["MESTRADO"]["_NOME-INSTITUICAO"]+";"+ formacao["MESTRADO"]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["MESTRADO"]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["MESTRADO"]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["MESTRADO"]["_NOME-CURSO"] +";": formacao["MESTRADO"]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["MESTRADO"]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["MESTRADO"]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano
             }
         }else{
+            formacaoTexto += "Graduado;"
+            formacaoTextoIngles += "Graduate;"
             if(formacao["GRADUACAO"].length > 0){
-                formacaoTexto +=  formacao["GRADUACAO"][0]["_NOME-CURSO"] +";"+formacao["GRADUACAO"][0]["_NOME-INSTITUICAO"]+";"+ formacao["GRADUACAO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["GRADUACAO"][0]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["GRADUACAO"][0]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["GRADUACAO"][0]["_NOME-CURSO"] +";": formacao["GRADUACAO"][0]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["GRADUACAO"][0]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["GRADUACAO"][0]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano 
             }else{
-                formacaoTexto +=  formacao["GRADUACAO"]["_NOME-CURSO"] +";"+formacao["GRADUACAO"]["_NOME-INSTITUICAO"]+";"+ formacao["GRADUACAO"]["_ANO-DE-CONCLUSAO"]+";"
+                const curso = formacao["GRADUACAO"]["_NOME-CURSO"] +";"
+                const cursoIngles = formacao["GRADUACAO"]["_NOME-CURSO-INGLES"] == "" ? 
+                    formacao["GRADUACAO"]["_NOME-CURSO"] +";": formacao["GRADUACAO"]["_NOME-CURSO-INGLES"] +";"
+                const instituicao = formacao["GRADUACAO"]["_NOME-INSTITUICAO"]+";"
+                const ano = formacao["GRADUACAO"]["_ANO-DE-CONCLUSAO"]+";"
+                formacaoTexto += curso + instituicao + ano
+                formacaoTextoIngles +=  cursoIngles + instituicao + ano
             }
         }
         userDict["formacao"] = formacaoTexto
+        userDict["formacaoIngles"] = formacaoTextoIngles
 
         const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"]
         let publicDict = {}

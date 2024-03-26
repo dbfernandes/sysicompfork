@@ -1,29 +1,37 @@
     {{> numerosIcomp/navbar page="alunos"}}
 <div class="flex-wrapper bg-primary">
-     <section class="success"  id="docentes">
+    <section class="success"  id="docentes">
         <div class="container pb-4" >
-          <div class="row ">
-              <div class="col-md-12 text-center">
-                  <h1 class="text-white">{{alunosFormados}} Alunos Formados</h1>
-                  <h2 class="text-white">{{curso}}</h2>
-                  <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
-              </div>
-      <table id="example" class="table table-hover table-striped w-100 bg-white"><thead>
-      <tr id="filters"><th id="name">Nome</th><th id="conclusionDate">Data de Conclusão</th></tr>
-      <tr id="header"><th>Nome</th><th>Data de Conclusão</th></tr>
-      </thead>
-      <tbody>
-        {{#each alunosInfo}}
-        <tr data-key={{id}}>
-            <td class="ps-4">{{nomeCompleto}}</td>
-            <td class="ps-4">{{#if periodoConclusao}}{{ periodoConclusao}}{{/if}}</td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
+            <div class="row ">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white">{{alunosFormados}} {{__ "students.alunosFormados"}}</h1>
+                    <h2 class="text-white">{{whichCourse curso lng}}</h2>
+                    <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
+                </div>
+                <div class="text-center" id="loading">
+                    <div class="spinner-border text-light mt-5 text-center" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="datatable-wrapper">
+                    <table id="example" class="table table-hover table-striped w-100 bg-white rounded">
+                        <thead>
+                            <tr id="filters"><th id="name">{{__ "students.nome"}}</th><th id="conclusionDate">{{__ "students.dataDeConclusão"}}</th></tr>
+                            <tr id="header"><th>{{__ "students.nome"}}</th><th>{{__ "students.dataDeConclusão"}}</th></tr>
+                        </thead>
+                        <tbody>
+                            {{#each alunosInfo}}
+                            <tr data-key={{id}}>
+                                <td class="ps-4">{{nomeCompleto}}</td>
+                                <td class="ps-4">{{#if periodoConclusao}}{{ periodoConclusao}}{{/if}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        </div>
-      </section>
+    </section>
 
 
       <script>
@@ -33,7 +41,8 @@
             var title = $('#example thead #header th').eq( $(this).index() ).text();
             $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><input type="text" class="form-control" data-index="'+i+'" placeholder="'+title+'" /></div>')
         } );
-    
+        $('#datatable-wrapper').addClass('d-none') 
+
         // DataTable
         var table = $('#example').DataTable( {
             dom: 'tp',
@@ -42,11 +51,17 @@
             pageLength: 20,
             responsive: {
                 details: false,
-            }, 
+            },
+            initComplete: function() {
+                setTimeout(() => {
+                    $('#datatable-wrapper').removeClass('d-none') 
+                    $("#loading").html('')
+                }, 500)
+            },  
             columns: [
-            { responsivePriority: 1 },
-            { responsivePriority: 2 },
-        ],
+                { responsivePriority: 1 },
+                { responsivePriority: 2 },
+            ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
                 "paginate": {
@@ -56,7 +71,8 @@
             },
             autoWidth: false,
             columnDefs: [
-            { "width": "150px", "targets": 1 },
+            { width: "150px", className: 'text-dark', "targets": 1 },
+            {"className": 'text-dark', "targets": 0},
             ],
         } );
 

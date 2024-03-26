@@ -1,0 +1,13 @@
+{
+    "projetosEmAndamento": "Projetos de Pesquisa em Andamento",
+    "paraConferir": "Para conferir os detalhes dos projetos, clique no título do projeto.",
+    "titulo": "Título",
+    "periodo": "Período",
+    "descricao": "Descrição",
+    "financiadores": "Financiador(es)",
+    "integrantes": "Integrante(s)",
+    "atual": "Atual",
+    "semDescricaoDisponivel": "Sem descrição disponível",
+    "semFinanciadores": "Sem financiadores",
+    "semEquipe": "Sem equipe de integrantes disponível"
+}

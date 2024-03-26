@@ -30,7 +30,7 @@ const visualizar = async (req, res) => {
             }
     
         default:
-            return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+            return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
     }
   
 }
@@ -112,7 +112,7 @@ const editar = async (req, res) => {
         }
         ));
     default:
-      return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
 
   }
 }
@@ -141,7 +141,7 @@ const editar = async (req, res) => {
             }
     
         default:
-            return res.status(400).send('O Servidor não pode processar a requisição. Bad Request (400)');
+            return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
     }
     
     
