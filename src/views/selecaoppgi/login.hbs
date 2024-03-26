@@ -49,7 +49,7 @@
 	}
 
 	.login-page .box .card .card-body .form-group {
-		width: 80% !important;
+		width: 100% !important;
 		min-width: 280px;
 	}
 
@@ -81,31 +81,49 @@
 				<h1 class="title">
 					Efetuar Login
 				</h1>
+				{{message}}
+				{{#if message}}
+				<div class="alert alert-{{type}}">
+					{{{message}}}
+				</div>
+				{{/if}}
+
 				<p class="sub-title">Todos os campos são obrigatórios</p>
 				<form id="loginform">
+					{{message}}
+					{{teste}}
+					{{csrfToken}}
 					<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 
 					<div class="form-group">
-						<input type="email" class="form-control" name="" id="email" aria-describedby="email" placeholder="Email">
+						<input type="email" class="form-control" name="email" id="email" aria-describedby="email"
+							placeholder="Email">
+						<div class="help-block"></div>
+
 					</div>
 
 					<div class="form-group">
-						<input type="password" class="form-control" name="" id="password" aria-describedby="senha"
+						<input type="password" class="form-control" name="password" id="password" aria-describedby="senha"
 							placeholder="Senha">
+						<div class="help-block"></div>
+
 					</div>
 
 					<div class="form-group">
-						<select class="form-control" name="" id="edital">
+						<select class="form-control" name="edital" id="edital">
 							<option value="">Selecione um edital</option>
 							{{#each editais}}
 							<option value="{{editalId}}">{{editalId}}</option>
 							{{/each}}
 						</select>
+						<div class="help-block"></div>
+
 					</div>
-					<button onclick="Formlogin()" name="logar" id="login" class="btn btn-primary btn-block btn-flat">
+					<button type="submit" name="logar" id="login" class="btn btn-primary btn-block btn-flat">
 						Continuar Inscrição
 					</button>
-					<button name="voltar" id="" onclick="back()" class="btn btn-block btn-flat btn-default" role="button">
+					<button name="voltar" type="button" id="voltar" onclick="back()" class="btn btn-block btn-flat btn-default"
+						role="button">
 						Voltar
 					</button>
 				</form>
@@ -123,16 +141,48 @@
 		window.alert("teste")
 	}
 
-	function Formlogin() {
-
-		var email = $("#email").val();
-		var senha = $("#password").val();
-		var edital = $("#edital").val();
-		console.log("teste")
-		$("#loginform").submit(function (event) {
-
-			console.log("Prevente1")
-			event.preventDefault();
+	$("#loginform").validate({
+		ignore: ':hidden',
+		rules: {
+			email: {
+				required: true,
+				email: true
+			},
+			password: {
+				required: true,
+				minlength: 6
+			},
+			edital: {
+				required: true
+			}
+		},
+		messages: {
+			email: {
+				required: "Campo obrigatório",
+				email: "Digite um email válido"
+			},
+			password: {
+				required: "Campo obrigatório",
+				minlength: "A senha deve ter no mínimo 6 caracteres"
+			},
+			edital: {
+				required: "Campo obrigatório"
+			},
+		},
+		errorElement: 'span',
+		errorPlacement: function (error, element) {
+			error.addClass('invalid-feedback');
+			element.closest('div').append(error);
+		},
+		highlight: function (element, errorClass, validClass) {
+			$(element).addClass('is-invalid');
+		},
+		unhighlight: function (element, errorClass, validClass) {
+			$(element).removeClass('is-invalid');
+		},
+		submitHandler: function (form, e) {
+			console.log("teste")
+			e.preventDefault();
 			var email = $("#email").val();
 			var senha = $("#password").val();
 			var edital = $("#edital").val();
@@ -154,9 +204,21 @@
 					console.log("Entrou no erro")
 					const err = res.responseJSON
 					errorSignin = err.error
-					window.alert(errorSignin)
 				}
 			});
+		}
+	})
+
+
+
+	function Formlogin() {
+
+		var email = $("#email").val();
+		var senha = $("#password").val();
+		var edital = $("#edital").val();
+		$("#loginform").submit(function (event) {
+
+
 		});
 
 	}

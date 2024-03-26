@@ -12,5 +12,8 @@ src/uploads/*
 # exception to the rule
 !src/uploads/.gitkeep 
 
+src/candidato/uploads/*
+
+!src/candidato/uploads/.gitkeep 
 #Removing the .xlsx file
 /planilha.xlsx

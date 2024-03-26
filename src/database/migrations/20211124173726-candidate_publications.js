@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       local:{
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       tipo: {
@@ -37,6 +37,18 @@ module.exports = {
       autores: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      ISSN: {
+        type: Sequelize.STRING(300),
+        allowNull: true
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },

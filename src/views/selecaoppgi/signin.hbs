@@ -149,13 +149,13 @@
 					<div class="col-md-7 col-xs-12">
 						<h1>Formulário de Inscrição</h1>
 						<form id="subscription">
-      				<input id="csrfToken"type="hidden" name="_csrf" value="{{csrfToken}}">
+							<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 							<div class="form-group">
 								<label for="email">E-mail</label>
 								<input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
-								{{!-- <div class="help-block">
-									"E-mail" é obrigatório.
-								</div> --}}
+
+								<div class="help-block"></div>
+
 							</div>
 							<div class="form-group">
 								<label for="senha">Senha</label>
@@ -177,9 +177,9 @@
 							</div>
 							<spam class="erro"></spam>
 							<div class="row actions">
-								<button onclick="signin()" class="btn btn-success col-md-5 col-xs-12">Salvar
+								<button type="submit" class="btn btn-success col-md-5 col-xs-12">Salvar
 									Candidato</button>
-								<button onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
+								<button type="button" onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
 							</div>
 						</form>
 					</div>
@@ -195,7 +195,102 @@
 		window.location.href = "{{url}}/selecaoppgi";
 	}
 
+
+
+	$(document).ready(function () {
+
+
+		$.validator.addMethod("strongPassword", function (value, element) {
+			return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value);
+		}, "A senha deve conter letras maiúsculas, minúsculas e números.");
+
+		console.log("Entrou no ready")
+		$("#subscription").validate({
+			ignore: ':hidden',
+			rules: {
+				email: {
+					required: true,
+					email: true
+				},
+				senha: {
+					required: true,
+					minlength: 6,
+					strongPassword: true,
+				},
+				repetir_senha: {
+					required: true,
+					minlength: 6,
+					equalTo: "#senha"
+				},
+				edital: {
+					required: true
+				}
+			},
+			messages: {
+				email: {
+					required: "O campo <b>E-mail</b> é obrigatório.",
+					email: "O campo <b>E-mail</b> deve ser um e-mail válido."
+				},
+				senha: {
+					required: "O campo <b>Senha</b> é obrigatório.",
+					minlength: "O campo <b>Senha</b> precisa ter no mínimo 6 caracteres.",
+					strongPassword: "A senha deve conter letras maiúsculas, minúsculas e números.",
+				},
+				repetir_senha: {
+					required: "O campo <b>Repetir Senha</b> é obrigatório.",
+					minlength: "O campo <b>Repetir Senha</b> precisa ter no mínimo 6 caracteres.",
+					equalTo: "O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo <b>Senha</b>."
+				},
+				edital: {
+					required: "O campo <b>Edital</b> é obrigatório."
+				},
+			},
+			errorElement: 'span',
+			errorPlacement: function (error, element) {
+				error.addClass('invalid-feedback');
+				element.closest('div').append(error);
+			},
+			highlight: function (element, errorClass, validClass) {
+				$(element).addClass('is-invalid');
+			},
+			unhighlight: function (element, errorClass, validClass) {
+				$(element).removeClass('is-invalid');
+			},
+			submitHandler: function (form, e) {
+				e.preventDefault();
+				console.log("Prevente2")
+				const email = $("#email").val();
+				const senha = $("#senha").val();
+				const edital = $("#edital").val();
+				const csrfToken = $("#csrfToken").val();
+				console.log(csrfToken)
+				$.ajax({
+					url: "{{url}}/selecaoppgi/cadastro",
+					type: "POST",
+					data: {
+						email: email,
+						senha: senha,
+						edital: edital,
+						_csrf: csrfToken,
+					},
+					success: function (data) {
+						window.location.href = "{{url}}/selecaoppgi/";
+					},
+					error: function (res, status, error) {
+						console.log("Entrou no erro")
+						const err = res.responseJSON
+						errorSignin = err.error
+						window.alert(errorSignin)
+					}
+				});
+
+			}
+		})
+
+	})
+
 	function signin() {
+
 		var email = $("#email").val();
 		var senha = $("#senha").val();
 		var repetir_senha = $("#repetir_senha").val();
@@ -231,9 +326,9 @@
 			return false;
 		}
 
-		//$("#subscription").submit();
+
+
 		$("#subscription").submit(function (event) {
-			// Impedir o envio padrão do formulário para evitar uma atualização da página
 			console.log("Prevente1")
 			event.preventDefault();
 			console.log("Prevente2")
@@ -242,7 +337,6 @@
 			const edital = $("#edital").val();
 			const csrfToken = $("#csrfToken").val();
 			console.log(csrfToken)
-			// Redirecionar para a nova rota desejada
 			$.ajax({
 				url: "{{url}}/selecaoppgi/cadastro",
 				type: "POST",
@@ -250,10 +344,10 @@
 					email: email,
 					senha: senha,
 					edital: edital,
-          _csrf: csrfToken,
+					_csrf: csrfToken,
 				},
 				success: function (data) {
-					window.location.href = "{{url}}/selecaoppgi/formulario";
+					window.location.href = "{{url}}/selecaoppgi/";
 				},
 				error: function (res, status, error) {
 					console.log("Entrou no erro")

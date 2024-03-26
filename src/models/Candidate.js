@@ -2,7 +2,7 @@
 const {
   Model
 } = require('sequelize');
-
+const moment = require('moment');
 const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
@@ -20,144 +20,139 @@ module.exports = (sequelize, DataTypes) => {
   };
   Candidate.init({
     id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER
-      },
-      editalPosition:{
-        allowNull:true,
-        type:DataTypes.INTEGER
-      },
-      editalId:{
-        allowNull:false,
-        type: DataTypes.STRING
-      },
-      passwordHash: {
-        allowNull:false,
-        type: DataTypes.STRING
-      },
-      begin:{
-        allowNull: true,
-        type: DataTypes.DATE
-      },
-      finish:{
-        allowNull: true,
-        type: DataTypes.DATE
-      },
-      currentStep:{
-        allowNull:false,
-        type:DataTypes.INTEGER,
-        defaultValue: 0
-      },
-      name:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      socialName:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      address:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      neighborhood:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      city:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      uf:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      cep:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      email:{
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      birthday:{
-        type: DataTypes.DATE
-      },
-      nationality:{
-        type:DataTypes.INTEGER
-      },
-      country: {
-        type: DataTypes.STRING
-      },
-      passport: {
-        type: DataTypes.STRING
-      },
-      cpf: {
-        type: DataTypes.STRING
-      },
-      gender:{
-        type: DataTypes.STRING
-      },
-      homePhone:{
-        type: DataTypes.STRING
-      },
-      cellPhone: {
-        type: DataTypes.STRING
-      },
-      desiredCourse: {
-        type: DataTypes.STRING
-      },
-      polity: {
-        type: DataTypes.STRING
-      },
-      inscricaoposcomp: {
-        type: DataTypes.STRING
-      },
-      anoposcomp: {
-        type: DataTypes.STRING
-      },
-      nivel: {
-        type: DataTypes.STRING
-      },
-      notaposcomp: {
-        type: DataTypes.STRING
-      },
-      solicitabolsa: {
-        type: DataTypes.STRING
-      },
-      tituloproposta: {
-        type: DataTypes.STRING
-      },
-      cartaorientador: {
-        type: DataTypes.STRING
-      },
-      motivos: {
-        type: DataTypes.STRING
-      },
-      proposta: {
-        type: DataTypes.STRING
-      },
-      curriculum: {
-        type: DataTypes.STRING
-      },
-      prova_anterior: {
-        type: DataTypes.STRING
-      },
-      diploma: {
-        type: DataTypes.STRING
-      },
-      cotas: {
-        allowNull:true,
-        type: DataTypes.STRING
-      },
-      status: {
-        allowNull:false,
-        type: DataTypes.STRING,
-        defaultValue: '0'
-      }
-
+      type:DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    editalPosition:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
+    },
+    Nome: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Nascimento:{
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    Sexo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    NomeSocial: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CEP:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    UF:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Endereco: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Cidade:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Bairro:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Nacionalidade:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Telefone:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    TelefoneSecundario:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ComoSoube:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Curso:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Regime:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },  
+    Cotista:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    CotistaTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Condicao:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    CondicaoTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    Bolsista:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    editalId: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type:DataTypes.VIRTUAL,
+      allowNull: false,
+    },
+    passwordHash: {
+      type:DataTypes.STRING,
+      allowNull: false,
+    },
+    CursoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    InstituicaoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    AnoEgressoGraduacao: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoPos: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },	
+    CursoPosTipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoInstituicaoPos:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    CursoAnoEgressoPos:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
   }, {
     sequelize,
     modelName: 'Candidate',

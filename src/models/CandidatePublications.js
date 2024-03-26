@@ -16,37 +16,43 @@ module.exports = (sequelize, DataTypes) => {
   };
   CandidatePublications.init({
     id: {
-      type:DataTypes.INTEGER,
       primaryKey: true,
+      type: DataTypes.INTEGER
     },
     idCandidate: {
-      type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
     titulo: {
-      type:DataTypes.STRING,
       allowNull: false,
+      type: DataTypes.STRING
     },
     ano: {
-      type:DataTypes.INTEGER,
       allowNull: false,
+      type: DataTypes.INTEGER
     },
-    local: {
-      type:DataTypes.STRING,
-      allowNull: false,
+    local:{
+      allowNull: true,
+      type: DataTypes.STRING
     },
     tipo: {
-      type: DataTypes.STRING,
       allowNull: false,
+      type: DataTypes.INTEGER
     },
     natureza: {
-      type:DataTypes.STRING,
       allowNull: false,
+      type: DataTypes.STRING
     },
     autores: {
-      type:DataTypes.STRING,
       allowNull: false,
+      type: DataTypes.TEXT
+    },
+    ISSN: {
+      type: DataTypes.STRING(300),
+      allowNull: true
     }
+
   }, {
     sequelize,
     modelName: 'CandidatePublications',

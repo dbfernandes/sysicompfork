@@ -18,25 +18,27 @@
 
   <link rel="stylesheet" href="/public/css/styles.css">
 
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+
   <!-- Plugin do Date Range -->
   <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css">
-  
-    <!-- Toasts -->
+
+  <!-- Toasts -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  
+
   <!-- XML2JSON -->
   <script type='text/javascript' src="/public/js/xml2json.js"></script>
-  
+
   <!-- Lattes Loader -->
   <script type='text/javascript' src="/public/js/lattesExtractor.js"></script>
 
 </head>
 
-<body >
+<body>
 
 
-<!-- jQuery -->
+  <!-- jQuery -->
   <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
   <!-- jquery-validation -->
@@ -56,13 +58,21 @@
   <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
   <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
 
- <!-- Fuso horario Data -->
+  <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
+  <!-- Fuso horario Data -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
 
   <!-- Plugin do Date Range -->
   <script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
-
+  <script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+  <script>
+    $(function () {
+      bsCustomFileInput.init();
+    });
+  </script>
   {{{ body }}}
 
   <script>
@@ -70,14 +80,21 @@
       try {
         masks();
       } catch { }
-
       try {
         usuariosAdicionarPage();
       } catch { }
-
+      try {
+        FormAdicionarPage();
+      } catch { }
+      try {
+        voltarFormulario();
+      } catch { }
       try {
         loginPage();
       } catch { }
+      try{
+        enviarDocumentos();
+      }catch { }
     });
 
     function masks() {
@@ -86,7 +103,7 @@
       $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
       $('.edital').inputmask('999-9999', { 'placeholder': '001-2023' })
     }
-    
+
   </script>
 
 </body>
