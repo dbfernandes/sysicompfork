@@ -119,22 +119,22 @@ module.exports = {
         type: Sequelize.STRING
       },
       cartaorientador: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       motivos: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       proposta: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       curriculum: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       prova_anterior: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       diploma: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       cotas: {
         allowNull:true,

@@ -15,6 +15,7 @@ import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
 import afastamentoTemporarioRoutes from './afastamentoTemporario.routes';
 import pdfController from '../controllers/exportToPDF';
+import editalController from "../controllers/editalController";
 import curriculoRoutes from './curriculo.routes'
 import alunosRoutes from './alunos.routes'
 const router = express.Router();
@@ -58,6 +59,7 @@ router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
 router.use("/horascomplementares", autenticacaoController.autorizarProf, horasComplementaresRoutes)
 router.use("/afastamentotemporario", autenticacaoController.autorizarProf, afastamentoTemporarioRoutes);
 router.use("/gerarPDF/:id", pdfController.gerarPDF);
+router.use("/gerarCandidatoPDF/:id", editalController.gerarCandidatoPDF)
 router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes)
 // Rotas Exclusivas Secretaria
 router.use("/alunos", autenticacaoController.autorizarAdmin, alunosRoutes)

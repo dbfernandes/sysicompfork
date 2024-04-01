@@ -13,5 +13,6 @@ router.all('/listCandidatesEdital/:id',selecaoppgiRoutes.listCandidatesEdital);
 router.all('/listEditalCandidates/:id',selecaoppgiRoutes.editalCandidates);
 router.all('/geraPlanilha/:id',selecaoppgiRoutes.geraPlanilha);
 router.all('/candidateDetails/:id',selecaoppgiRoutes.candidateDetails);
+router.all('/gerarCandidatoPDF',selecaoppgiRoutes.gerarCandidatoPDF);
 
 export default router

@@ -1,4 +1,6 @@
-const { Candidate } = require('../models');
+import linhasDePesquisaService from './linhasDePesquisaService';
+
+const { Candidate, LinhasDePesquisa } = require('../models');
 const moment = require('moment-timezone'); 
 
 var {
@@ -207,47 +209,45 @@ class EditalService {
 
         return edital;
     }
-
+    // Listar candidatos com Linha de pesquisa
     async listCandidates(id){
         const candidates = await Candidate.findAll({
             where: {
                 editalId: id
-            }
+            },
         }
         ).catch(err => {
             console.log(`[ERROR] Listar Candidatos: ${err}`)
             throw new Error("Não foi possivel listar os candidatos");
         })
 
-        return candidates;
+        return candidates
     }
-
+    
     async getCandidate(id) {
         try {
-            const candidate = await Candidate.findByPk(id, { 
-                attributes: [
-                'id',                'editalPosition',   'editalId',
-                'passwordHash',      'begin',            'finish',
-                'currentStep',       'name',             'socialName',
-                'address',           'neighborhood',     'city',
-                'uf',                'cep',              'email',
-                'birthday',          'nationality',      'country',
-                'passport',          'cpf',              'gender',
-                'homePhone',         'cellPhone',        'desiredCourse',
-                'polity',            'inscricaoposcomp', 'anoposcomp',
-                'nivel',             'notaposcomp',      'solicitabolsa',
-                'tituloproposta',    'cartaorientador',  'motivos',
-                'proposta',          'curriculum',       'prova_anterior',
-                'diploma',           'cotas',            'status',
-                'linhaDePesquisaId'
-                ]
-            });
+            const candidate = await Candidate.findByPk(id);
             return candidate;
 
         } catch (error) {
             console.log(`[ERROR] Buscar Candidato: ${err}`)
             throw new Error("Não foi possivel buscar o candidato");
         
+        }
+    }
+
+    async getDocument(id, type) {
+        try {
+            const document = await Candidate.findOne({
+                where: {
+                    id: id
+                },
+                attributes: [type]
+            });
+            return document[type];
+        } catch (error) {
+            console.log(`[ERROR] Buscar Documento: ${error}`)
+            throw new Error("Não foi possivel buscar o documento");
         }
     }
 }

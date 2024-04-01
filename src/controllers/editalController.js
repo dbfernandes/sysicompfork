@@ -1,5 +1,8 @@
 import EditalService from "../services/editalService";
 import editalGerarPlanilha from "../services/editalGerarPlanilha";
+import linhasDePesquisaService from "../services/linhasDePesquisaService";
+import editalService from "../services/editalService";
+const fs = require('fs');
 
 const locals = {
    layout: "selecaoppgi",
@@ -249,13 +252,20 @@ const editalCandidates = async (req, res) => {
          });
       }
    );
+
+   const quantidaDeInscricaoAndamento = candidates.filter(candidate => candidate.editalPosition < 4).length; 
+   const quantidaIncricaoFinalizada = candidates.filter(candidate => candidate.editalPosition == 4).length;
+   
    return res.render("edital/listCandidates", {
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
       ...locals,
       candidates: candidates,
       editalID: editalID,
-      tipoUsuario: req.session.tipoUsuario
+      tipoUsuario: req.session.tipoUsuario,
+      quantidaDeInscricaoAndamento,
+      quantidaIncricaoFinalizada,
+
    });
 }
 
@@ -268,10 +278,21 @@ const geraPlanilha = async (req, res) => {
    }).status(200).send(planilha);
 }
 
+const gerarCandidatoPDF = async (req, res) => {
+   const base64Documento = await EditalService.getDocument(req.params.id, req.query.documento);
+   const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
+   console.log(req.query.documento);
+   return res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=index.pdf`,
+      'Content-Length': docPDF.length
+   }).status(200).send(docPDF);
+}
+
 const candidateDetails = async (req, res) => {
    try {
       const candidate = await EditalService.getCandidate(req.params.id);
-      console.log(candidate);
+      
       return res.render("edital/candidateDetails", {
          candidate: candidate.dataValues,
          csrfToken: req.csrfToken(),
@@ -297,5 +318,6 @@ export default {
    updateEdital,
    geraPlanilha,
    editalCandidates,
-   candidateDetails
+   candidateDetails,
+   gerarCandidatoPDF
 };

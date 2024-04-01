@@ -10,10 +10,11 @@
                 <div class="col-sm-9">
                     <h1>Candidato {{candidate.id}} - Edital {{candidate.editalId}} </h1>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
-                        <li class="breadcrumb-item active">Canditado {{candidate.id}}</li>
+                        {{!-- <li class="breadcrumb-item"><a href="/">Edital: {{candidate.editalId}}</a></li> --}}
+                        <li class="breadcrumb-item active">Detalhes do Canditado</li>
                     </ol>
                 </div>
             </div>
@@ -44,31 +45,27 @@
                                     <td>{{candidate.name}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Email</th>
-                                    <td>{{candidate.email}}</td>
+                                    <th class="col-3">Data da Inicialização da Inscrição</th>
+                                    <td>{{candidate.begin}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Birthday</th>
-                                    <td>{{candidate.birthday}}</td>
+                                    <th class="col-3">Data da Finalização da Inscrição</th>
+                                    <td>{{candidate.finish}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">CPF</th>
-                                    <td>{{candidate.cpf}}</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-3">address(s)</th>
+                                    <th class="col-3">Endereço</th>
                                     <td>{{candidate.address}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Neighborhood</th>
+                                    <th class="col-3">Bairro</th>
                                     <td>{{candidate.neighborhood}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">City</th>
+                                    <th class="col-3">Cidade</th>
                                     <td>{{candidate.city}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">uf</th>
+                                    <th class="col-3">Estado</th>
                                     <td>{{candidate.uf}}</td>
                                 </tr>
                                 <tr>
@@ -76,60 +73,185 @@
                                     <td>{{candidate.cep}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Nationality</th>
+                                    <th class="col-3">E-mail</th>
+                                    <td>{{candidate.email}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Data de nascimento</th>
+                                    <td>{{candidate.birthday}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Nacionalidade</th>
                                     <td>{{candidate.nationality}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">County</th>
-                                    <td>{{candidate.county}}</td>
+                                    <th class="col-3">País</th>
+                                    <td>{{candidate.country}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Desired Course</th>
-                                    <td>{{candidate.desiredCourse}}</td>
+                                    <th class="col-3">CPF</th>
+                                    <td>{{candidate.cpf}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Polity</th>
-                                    <td>{{candidate.polity}}</td>
+                                    <th class="col-3">Sexo</th>
+                                    <td>{{candidate.gender}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Inscrição de pós-graduação</th>
+                                    <th class="col-3">Telefone Principal</th>
+                                    <td>{{candidate.homePhone}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Telefone Alternativo</th>
+                                    <td>{{candidate.cellPhone}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Curso desejado</th>
                                     <td>{{candidate.inscricaoposcomp}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Nivel</th>
-                                    <td>{{candidate.nivel}}</td>
+                                    <th class="col-3">Regime de Dedicação</th>
+                                    <td>Parcial</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Ano de pós-graduação</th>
+                                    <th class="col-3">Incrição poscomp</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Ano poscomp</th>
                                     <td>{{candidate.anoposcomp}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Nota de pós-graduação</th>
+                                    <th class="col-3">Nota poscomp</th>
                                     <td>{{candidate.notaposcomp}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Nota de pós-graduação</th>
-                                    <td>{{candidate.notaposcomp}}</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-3">Solicitação de bolsa</th>
+                                    <th class="col-3">Solicita Bolsa?</th>
                                     <td>{{candidate.solicitabolsa}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Titulo de proposta</th>
+                                    <th class="col-3">Cotista?</th>
+                                    <td>{{candidate.cotas}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Possui algum tipo de problema de saúde física ou psiquiátrica?</th>
+                                    <td>{{candidate.status}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Linha de Pesquisa</th>
+                                    <td>{{candidate.linhaDePesquisaId}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Título da Proposta</th>
                                     <td>{{candidate.tituloproposta}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Proposta</th>
-                                    <td>{{candidate.proposta}}</td>
+                                    <th class="col-3">Motivos</th>
+                                    <td>{{candidate.motivos}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Curriculo</th>
-                                    <td>{{candidate.curriculo}}</td>
+                                    <th class="col-3">Carta do Orientador (PDF)</th>
+                                    <td><span class="{{#if candidate.cartaorientador}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=cartaorientador"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                    </span></td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Status</th>
-                                    <td><span class="{{#if usuario.status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span></td>
+                                    <th class="col-3">Proposta de Trabalho (PDF)</th>
+                                    <td><span class="{{#if candidate.proposta}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=proposta"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Curriculum (PDF)</th>
+                                    <td><span class="{{#if candidate.curriculum}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=curriculum"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Prova de seleção anterior para aproveitamento de nota (PDF)</th>
+                                    <td><span class="{{#if candidate.prova_anterior}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=prova_anterior"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Comprovante de Pagamento (PDF)</th>
+                                    <td><span class="{{#if candidate.recommendationLetter}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=comprovante"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Cartas de Recomendação (PDF)</th>
+                                    <td>
+                                        <span class="{{#if candidate.recommendationLetter}}">
+                                            <a  style="margin-right: 3px"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=recommendationLetter"
+                                                class='fa fa-solid fa-download'
+                                            />
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">N° de Cartas de Recomendação (Emitidas)</th>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">N° de Cartas de Recomendação (Respondidas)</th>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Curso de graduação</th>
+                                    <td><span class="{{#if candidato.desiredCourse}}">{{candidate.desiredCourse}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Instituição da graduação</th>
+                                    <td>{{candidate.status}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Ano de Egresso na Graduação</th>
+                                    <td>{{candidate.anoposcomp}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Curso de Pós Graduação</th>
+                                    <td><span class="{{#if candidate.status}}">{{candidate.status}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Tipo de Pós Graduação</th>
+                                    <td><span class="{{#if candidate.inscricaoposcomp}}">{{candidate.inscricaoposcomp}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Instituição da Pós Graduação</th>
+                                    <td><span class="{{#if candidate.status}}">{{candidate.status}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Ano de Egresso na Pós Graduação</th>
+                                    <td><span class="{{#if candidate.anoposcomp}}">{{candidate.anoposcomp}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="col-3">Resultado da Avaliação</th>
+                                    <td><span class="{{#if candidate.notaposcomp}}">{{candidate.notaposcomp}}{{else}}badge bg-danger">Não Julgado{{/if}}</span></td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -131,22 +131,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
       cartaorientador: {
-        type: DataTypes.STRING
+        type: DataTypes.BLOB
       },
       motivos: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
       },
       proposta: {
-        type: DataTypes.STRING
+        type: DataTypes.BLOB
       },
       curriculum: {
-        type: DataTypes.STRING
+        type: DataTypes.BLOB
       },
       prova_anterior: {
-        type: DataTypes.STRING
+        type: DataTypes.BLOB
       },
       diploma: {
-        type: DataTypes.STRING
+        type: DataTypes.BLOB
       },
       cotas: {
         allowNull:true,
