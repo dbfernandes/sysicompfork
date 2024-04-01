@@ -35,7 +35,8 @@
                         </i>
                         {{#ifEqual edital.status '1'}}Não Suspenso{{else}}Suspenso{{/ifEqual}} 
                     </a>
-                    <a class="btn btn-info" href="/edital/adicionar">
+                    {{!-- Editar aqui --}}
+                    <a id="test" class="btn btn-info" href="/edital/listEditalCandidates/{{edital.editalId}}">
                         <i class="fas fa-list color-white"></i>
                         Lista de Inscritos
                     </a>

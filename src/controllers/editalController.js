@@ -1,5 +1,8 @@
 import EditalService from "../services/editalService";
 import editalGerarPlanilha from "../services/editalGerarPlanilha";
+import linhasDePesquisaService from "../services/linhasDePesquisaService";
+import editalService from "../services/editalService";
+const fs = require('fs');
 
 const locals = {
    layout: "selecaoppgi",
@@ -240,6 +243,32 @@ const listCandidatesEdital = async (req, res) => {
    }
 }
 
+const editalCandidates = async (req, res) => {
+   const editalID = req.params.id;
+   const candidates = await EditalService.listCandidates(editalID).catch(
+      (err) => {
+         return res.status(400).json({
+            error: err.message,
+         });
+      }
+   );
+
+   const quantidaDeInscricaoAndamento = candidates.filter(candidate => candidate.editalPosition < 4).length; 
+   const quantidaIncricaoFinalizada = candidates.filter(candidate => candidate.editalPosition == 4).length;
+   
+   return res.render("edital/listCandidates", {
+      csrfToken: req.csrfToken(),
+      nome: req.session.nome,
+      ...locals,
+      candidates: candidates,
+      editalID: editalID,
+      tipoUsuario: req.session.tipoUsuario,
+      quantidaDeInscricaoAndamento,
+      quantidaIncricaoFinalizada,
+
+   });
+}
+
 const geraPlanilha = async (req, res) => {
    const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
    return res.set({
@@ -248,6 +277,36 @@ const geraPlanilha = async (req, res) => {
       'Content-Length': planilha.length
    }).status(200).send(planilha);
 }
+
+const gerarCandidatoPDF = async (req, res) => {
+   const base64Documento = await EditalService.getDocument(req.params.id, req.query.documento);
+   const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
+   console.log(req.query.documento);
+   return res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=index.pdf`,
+      'Content-Length': docPDF.length
+   }).status(200).send(docPDF);
+}
+
+const candidateDetails = async (req, res) => {
+   try {
+      const candidate = await EditalService.getCandidate(req.params.id);
+      
+      return res.render("edital/candidateDetails", {
+         candidate: candidate.dataValues,
+         csrfToken: req.csrfToken(),
+         nome: req.session.nome,
+         ...locals,
+         tipoUsuario: req.session.tipoUsuario
+      });
+   } catch (error) {
+      return res.status(400).json({
+         error: error.message,
+      });
+   }
+   
+};
 
 export default {
    listEditalSelecao,
@@ -258,4 +317,7 @@ export default {
    listCandidatesEdital,
    updateEdital,
    geraPlanilha,
+   editalCandidates,
+   candidateDetails,
+   gerarCandidatoPDF
 };

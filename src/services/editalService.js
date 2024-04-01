@@ -1,4 +1,6 @@
-import Candidate from '../models/Candidate';
+import linhasDePesquisaService from './linhasDePesquisaService';
+
+const { Candidate, LinhasDePesquisa } = require('../models');
 const moment = require('moment-timezone'); 
 
 var {
@@ -207,17 +209,46 @@ class EditalService {
 
         return edital;
     }
-
+    // Listar candidatos com Linha de pesquisa
     async listCandidates(id){
-        const candidates= await Candidate.findAll({
-            where:{
-                editalId:id
-            }
-        }).catch(err=>{
-            console.log(`[ERROR] Buscar candidatos: ${err}`);
-            throw new Error("Não foi possivel buscar candidatos");
-
+        const candidates = await Candidate.findAll({
+            where: {
+                editalId: id
+            },
+        }
+        ).catch(err => {
+            console.log(`[ERROR] Listar Candidatos: ${err}`)
+            throw new Error("Não foi possivel listar os candidatos");
         })
+
+        return candidates
+    }
+    
+    async getCandidate(id) {
+        try {
+            const candidate = await Candidate.findByPk(id);
+            return candidate;
+
+        } catch (error) {
+            console.log(`[ERROR] Buscar Candidato: ${err}`)
+            throw new Error("Não foi possivel buscar o candidato");
+        
+        }
+    }
+
+    async getDocument(id, type) {
+        try {
+            const document = await Candidate.findOne({
+                where: {
+                    id: id
+                },
+                attributes: [type]
+            });
+            return document[type];
+        } catch (error) {
+            console.log(`[ERROR] Buscar Documento: ${error}`)
+            throw new Error("Não foi possivel buscar o documento");
+        }
     }
 }
 

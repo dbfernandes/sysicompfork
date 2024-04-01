@@ -1,0 +1,214 @@
+{{> header}}
+
+{{> sidebar module="edital" page="listCandidates"}}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-10">
+                    <h1>Candidatos do PPGI - Edital {{editalID}} </h1>
+                </div>
+                <div class="col-sm-2">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
+                        <li class="breadcrumb-item active">Canditados</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-10">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+                    <a class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                    <a class="btn btn-primary color-white" href="/">
+                        <i class="fas fa-plus"></i>
+                        Baixar Documentação
+                    </a>      
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    
+                    <div class="card-body mr-auto ml-n3">
+                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidaIncricaoFinalizada}}</b></h4>
+                    </div>
+
+                    <div class="card card-primary">
+
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="tableCandidatesFinalizados" class="table table-hover w-100">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>N° de Inscrição</th>
+                                        <th>Nome</th>
+                                        <th>Curso Desejado</th>
+                                        <th>Linha Pesquisa</th>
+                                        <th>Fase</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each candidates}}
+                                    {{#if (eq dataValues.editalPosition 4) }}
+                                    <tr>
+                                        <td>{{dataValues.id}}</td>
+                                        <td>{{dataValues.editalId}}</td>
+                                        <td>{{dataValues.name}}</td>
+                                        <td>{{dataValues.inscricaoposcomp}}</td>
+                                        <td>{{dataValues.linhaDePesquisaId}}</td>
+                                        <td>{{#if (eq dataValues.status 0)}}Não Julgado{{else}}{{dataValues.status}}{{/if}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <a  style="margin-right: 0px"
+                                                    target="_blank"
+                                                    href='{{dataValues.documento}}'
+                                                    class='fa fa-solid fa-download'/>
+                                                </a>
+                                                
+                                                <a  style="margin-right: 0px"
+                                                    href='/edital/candidateDetails/{{dataValues.id}}'
+                                                    class='fa fa-solid fa-eye'/>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{/if}}
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                            
+                    </div>
+                    
+                    <div class="card-body mr-auto ml-n3" >
+                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidaDeInscricaoAndamento}}</b></h4>
+                    </div>
+
+                    <div class="card card-primary">
+                        
+
+                        <div class="card-body" style="overflow-x:auto;">
+                            <table id="tableCandidatesAndamento" class="table table-hover w-100">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>N° de Inscrição</th>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th>Curso Desejado</th>
+                                        <th>Linha Pesquisa</th>
+                                        <th>Etapa da Inscrição</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each candidates}}
+                                        {{#if (ne dataValues.editalPosition 4) }}
+                                        <tr>
+                                            <td>{{dataValues.id}}</td>
+                                            <td>{{dataValues.editalId}}</td>
+                                            <td>{{dataValues.name}}</td>
+                                            <td>{{dataValues.email}}</td>
+                                            <td>{{dataValues.inscricaoposcomp}}</td>
+                                            <td>{{dataValues.linhaDePesquisaId}}</td>
+                                            <td>{{dataValues.editalPosition}}/4</td>
+                                            <td>
+                                                <div class="d-flex justify-content-between">
+                                                    <a  style="margin-right: 0px"
+                                                        target="_blank"
+                                                        href='{{dataValues.documento}}'
+                                                        class='fa fa-solid fa-download'/>
+                                                    </a>
+                                                    
+                                                    <a  style="margin-right: 0px"
+                                                        href='/edital/candidateDetails/{{dataValues.id}}'
+                                                        class='fa fa-solid fa-eye'/>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{/if}}
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<head>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+  <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet">
+
+  <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+  <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
+</head>
+
+<script>
+    
+    
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var datatable = $("#tableCandidatesFinalizados").DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            },
+            responsive: true,
+            columns: [
+                { responsivePriority: 1 },
+                { responsivePriority: 2 },
+                { responsivePriority: 3 },
+                { responsivePriority: 4 },
+                { responsivePriority: 5 },
+                { responsivePriority: 6 },
+                { responsivePriority: 7 },
+            ],
+            columnDefs: [ {
+                "targets": [6],
+                "orderable": false
+            } ]
+        });
+        var datatable = $("#tableCandidatesAndamento").DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            },
+            responsive: true,
+            columns: [
+                { responsivePriority: 1 },
+                { responsivePriority: 2 },
+                { responsivePriority: 3 },
+                { responsivePriority: 4 },
+                { responsivePriority: 5 },
+                { responsivePriority: 6 },
+                { responsivePriority: 7 },
+                { responsivePriority: 8 },
+            ],
+            columnDefs: [ {
+                "targets": [7],
+                "orderable": false
+            } ]
+        });
+
+        document.getElementById("voltarBtn").addEventListener("click", function() {
+            window.history.back();
+        });
+    }); 
+</script>
+
+{{> footer}}
