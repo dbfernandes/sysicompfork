@@ -19,7 +19,7 @@ module.exports = {
       },
       linhaDePesquisaId:{
         allowNull:true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       passwordHash: {
         allowNull:false,
@@ -140,6 +140,7 @@ module.exports = {
       
 
     });
+    
   },
 
   down: async (queryInterface, Sequelize) => {

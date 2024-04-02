@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Candidate.belongsTo(models.LinhasDePesquisa, { foreignKey: 'linhaDePesquisaId', as: 'linhaDePesquisa'});
     }
   };
   Candidate.init({
@@ -31,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
     Nome: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    linhaDePesquisaId:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
     },
     Nascimento:{
       type: DataTypes.DATEONLY,
