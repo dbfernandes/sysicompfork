@@ -209,7 +209,7 @@ class EditalService {
 
         return edital;
     }
-    // Listar candidatos com Linha de pesquisa
+    
     async listCandidates(id){
         const candidates = await Candidate.findAll({
             where: {
@@ -233,21 +233,6 @@ class EditalService {
             console.log(`[ERROR] Buscar Candidato: ${err}`)
             throw new Error("Não foi possivel buscar o candidato");
         
-        }
-    }
-
-    async getDocument(id, type) {
-        try {
-            const document = await Candidate.findOne({
-                where: {
-                    id: id
-                },
-                attributes: [type]
-            });
-            return document[type];
-        } catch (error) {
-            console.log(`[ERROR] Buscar Documento: ${error}`)
-            throw new Error("Não foi possivel buscar o documento");
         }
     }
 }

@@ -27,7 +27,6 @@ class AfastamentoService
         });
         // console.log(allResearchLines);
         const formatedAnswer = formatDbAnswer(allResearchLines);
-        console.log(formatedAnswer);
         const dataFormatada = formatedAnswer.map((afastamento) => {
             afastamento["createdAt"] = new Date(afastamento["createdAt"]).toLocaleDateString("pt-BR", {
                 timeZone: 'America/Manaus',
@@ -47,7 +46,6 @@ class AfastamentoService
         const allResearchLines = await AfastamentoTemporario.findAll();
         // console.log(allResearchLines);
         const formatedAnswer = formatDbAnswer(allResearchLines);
-        console.log(formatedAnswer);
         const dataFormatada = formatedAnswer.map((afastamento) => {
             afastamento["createdAt"] = new Date(afastamento["createdAt"]).toLocaleDateString("pt-BR", {
                 timeZone: 'America/Manaus',

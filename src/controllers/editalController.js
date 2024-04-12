@@ -1,9 +1,11 @@
 import EditalService from "../services/editalService";
 import editalGerarPlanilha from "../services/editalGerarPlanilha";
 import linhasDePesquisaService from "../services/linhasDePesquisaService";
-import editalService from "../services/editalService";
+const zip = require('express-zip');
+const StreamZip = require('node-stream-zip');
 const fs = require('fs');
-
+const path = require('path');
+const os = require('os');
 const locals = {
    layout: "selecaoppgi",
 };
@@ -279,14 +281,86 @@ const geraPlanilha = async (req, res) => {
 }
 
 const gerarCandidatoPDF = async (req, res) => {
-   const base64Documento = await EditalService.getDocument(req.params.id, req.query.documento);
+   const candidate = await EditalService.getCandidate(req.params.id);
+   const base64Documento = candidate[req.query.documento];
    const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
-   console.log(req.query.documento);
+
    return res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename=index.pdf`,
       'Content-Length': docPDF.length
    }).status(200).send(docPDF);
+}
+
+const getAllCandidatesDocuments = async (req, res) => {
+   try {
+      // Pegue todos os candidatos do edital
+      const candidates = await EditalService.listCandidates(req.params.id);
+      
+      // Crie um diretório temporário para armazenar os documentos
+      const tempDirPath = path.join(os.tmpdir(), 'documents-');
+      if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true });
+      fs.mkdirSync(tempDirPath);
+
+      // Para cada candidato, crie um arquivo PDF com os documentos
+      const candidatesDocuments = [];
+      for (const candidate of candidates) {
+         
+         if ( candidate.Curriculum ) {
+            const docCurriculumPath = path.join(tempDirPath, `${candidate.Nome}-Curriculum.pdf`);
+            fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
+            candidatesDocuments.push({ path: docCurriculumPath, name: `${candidate.Nome}/${candidate.Nome}-Curriculum.pdf` });
+         }
+
+         if ( candidate.CartaDoOrientador ) {
+            const docCartaOrientadorPath = path.join(tempDirPath, `${candidate.Nome}-CartaDoOrientador.pdf`);
+            fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
+            candidatesDocuments.push({ path: docCartaOrientadorPath, name: `${candidate.Nome}/${candidate.Nome}-CartaDoOrientador.pdf` });
+         }
+
+         if ( candidate.PropostaDeTrabalho ) {
+            const docPropostaPath = path.join(tempDirPath, `${candidate.Nome}-PropostaDeTrabalho.pdf`);
+            fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
+            candidatesDocuments.push({ path: docPropostaPath, name: `${candidate.Nome}/${candidate.Nome}-PropostaDeTrabalho.pdf` });
+         }
+      }
+
+      // Compacte todos os arquivos em um arquivo ZIP
+      return res.zip(candidatesDocuments, 'documentos.zip');
+
+   } catch (error) {
+      res.status(400).json({
+         error: error.message,
+      });
+   }
+}
+
+const getAllDocumentsFromOneCandidate = async (req, res) => {
+   const candidate = await EditalService.getCandidate(req.params.id);
+   try {
+      const tempDirPath = path.join(os.tmpdir(), 'documents-');
+      if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true });
+      fs.mkdirSync(tempDirPath);
+
+      const candidateDocuments = [];
+      const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
+      fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
+      candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
+
+      const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
+      fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
+      candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
+
+      const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
+      fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
+      candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
+
+      return res.zip(candidateDocuments, 'documentos.zip');
+   } catch (error) {
+      res.status(400).json({
+         error: error.message,
+      });
+   }
 }
 
 const candidateDetails = async (req, res) => {
@@ -319,5 +393,7 @@ export default {
    geraPlanilha,
    editalCandidates,
    candidateDetails,
-   gerarCandidatoPDF
+   gerarCandidatoPDF,
+   getAllDocumentsFromOneCandidate,
+   getAllCandidatesDocuments
 };

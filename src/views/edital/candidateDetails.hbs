@@ -42,35 +42,35 @@
                                 <tbody>
                                 <tr>
                                     <th class="col-3">Nome Completo</th>
-                                    <td>{{candidate.name}}</td>
+                                    <td>{{candidate.Nome}}</td>
                                 </tr>
-                                <tr>
+                                {{!-- <tr>
                                     <th class="col-3">Data da Inicialização da Inscrição</th>
                                     <td>{{candidate.begin}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Data da Finalização da Inscrição</th>
                                     <td>{{candidate.finish}}</td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <th class="col-3">Endereço</th>
-                                    <td>{{candidate.address}}</td>
+                                    <td>{{candidate.Endereco}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Bairro</th>
-                                    <td>{{candidate.neighborhood}}</td>
+                                    <td>{{candidate.Bairro}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Cidade</th>
-                                    <td>{{candidate.city}}</td>
+                                    <td>{{candidate.Cidade}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Estado</th>
-                                    <td>{{candidate.uf}}</td>
+                                    <td>{{candidate.UF}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">CEP</th>
-                                    <td>{{candidate.cep}}</td>
+                                    <td>{{candidate.CEP}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">E-mail</th>
@@ -78,43 +78,43 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Data de nascimento</th>
-                                    <td>{{candidate.birthday}}</td>
+                                    <td>{{candidate.Nascimento}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Nacionalidade</th>
-                                    <td>{{candidate.nationality}}</td>
+                                    <td>{{candidate.Nacionalidade}}</td>
                                 </tr>
-                                <tr>
+                                {{!-- <tr>
                                     <th class="col-3">País</th>
-                                    <td>{{candidate.country}}</td>
-                                </tr>
-                                <tr>
+                                    <td>{{candidate.Pais}}</td>
+                                </tr> --}}
+                                {{!-- <tr>
                                     <th class="col-3">CPF</th>
-                                    <td>{{candidate.cpf}}</td>
-                                </tr>
+                                    <td>{{candidate.CPF}}</td>
+                                </tr> --}}
                                 <tr>
                                     <th class="col-3">Sexo</th>
-                                    <td>{{candidate.gender}}</td>
+                                    <td>{{candidate.Sexo}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Principal</th>
-                                    <td>{{candidate.homePhone}}</td>
+                                    <td>{{candidate.Telefone}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Alternativo</th>
-                                    <td>{{candidate.cellPhone}}</td>
+                                    <td>{{candidate.TelefoneSecundario}}</td>
                                 </tr>
-                                <tr>
+                                {{!-- <tr>
                                     <th class="col-3">Curso desejado</th>
                                     <td>{{candidate.inscricaoposcomp}}</td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <th class="col-3">Regime de Dedicação</th>
                                     <td>Parcial</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Incrição poscomp</th>
-                                    <td></td>
+                                    <td>{{candidate.CursoInstituicaoPos}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano poscomp</th>
@@ -150,9 +150,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Carta do Orientador (PDF)</th>
-                                    <td><span class="{{#if candidate.cartaorientador}}">
+                                    <td><span class="{{#if candidate.CartaDoOrientador}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=cartaorientador"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=CartaDoOrientador"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -160,9 +160,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Proposta de Trabalho (PDF)</th>
-                                    <td><span class="{{#if candidate.proposta}}">
+                                    <td><span class="{{#if candidate.PropostaDeTrabalho}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=proposta"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=PropostaDeTrabalho"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -170,9 +170,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curriculum (PDF)</th>
-                                    <td><span class="{{#if candidate.curriculum}}">
+                                    <td><span class="{{#if candidate.Curriculum}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=curriculum"
+                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=Curriculum"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}

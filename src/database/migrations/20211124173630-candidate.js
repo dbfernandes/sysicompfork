@@ -137,6 +137,19 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      Curriculum:{
+        type: Sequelize.BLOB,
+        allowNull: true,
+      },
+      CartaDoOrientador:{
+        type: Sequelize.BLOB,
+        allowNull: true,
+      },
+      PropostaDeTrabalho:{
+        type: Sequelize.BLOB,
+        allowNull: true,
+      },
+
       
 
     });

@@ -14,5 +14,7 @@ router.all('/listEditalCandidates/:id',selecaoppgiRoutes.editalCandidates);
 router.all('/geraPlanilha/:id',selecaoppgiRoutes.geraPlanilha);
 router.all('/candidateDetails/:id',selecaoppgiRoutes.candidateDetails);
 router.all('/gerarCandidatoPDF',selecaoppgiRoutes.gerarCandidatoPDF);
+router.all('/getCandidateDocs/:id',selecaoppgiRoutes.getAllDocumentsFromOneCandidate);
+router.all('/getEditalCandidatesDocs/:id',selecaoppgiRoutes.getAllCandidatesDocuments);
 
 export default router

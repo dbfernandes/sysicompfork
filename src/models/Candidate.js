@@ -157,6 +157,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    Curriculum :{
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
+    CartaDoOrientador :{
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
+    PropostaDeTrabalho :{
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
     
   }, {
     sequelize,
