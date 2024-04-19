@@ -14,7 +14,7 @@ import autenticacaoController from '../controllers/autenticacaoController';
 import reservasRoutes from "./reservas.routes"
 import horasComplementaresRoutes from './horasComplementares.routes'
 import afastamentoTemporarioRoutes from './afastamentoTemporario.routes';
-import pdfController from '../controllers/exportToPDF';
+import pdfController from '../utils/exportToPDF';
 import editalController from "../controllers/editalController";
 import curriculoRoutes from './curriculo.routes'
 import alunosRoutes from './alunos.routes'

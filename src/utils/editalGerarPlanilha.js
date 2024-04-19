@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CandidatoService from './candidateService.js';
+import CandidatoService from '../services/candidateService.js';
 import exp from 'constants';
 import { get } from 'http';
 
