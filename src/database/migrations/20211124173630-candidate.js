@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -9,154 +9,151 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      editalPosition:{
-        allowNull:true,
-        type:Sequelize.INTEGER
+      editalPosition: {
+        allowNull: true,
+        type: Sequelize.INTEGER
       },
-      editalId:{
-        allowNull:false,
+      editalId: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      linhaDePesquisaId:{
-        allowNull:true,
-        type: Sequelize.INTEGER,
+      linhaDePesquisaId: {
+        allowNull: true,
+        type: Sequelize.INTEGER
       },
       passwordHash: {
-        allowNull:false,
+        allowNull: false,
         type: Sequelize.STRING
       },
       Nome: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
-      email:{
+      email: {
         allowNull: true,
         type: Sequelize.STRING
       },
       Nascimento: {
         type: Sequelize.DATEONLY,
-        allowNull: true,
+        allowNull: true
       },
       Sexo: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       NomeSocial: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       CEP: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       UF: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Endereco: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Cidade: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Bairro: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Nacionalidade: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Telefone: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       TelefoneSecundario: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       ComoSoube: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Curso: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Regime: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Cotista: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
+        allowNull: true
       },
       CotistaTipo: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Condicao: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
+        allowNull: true
       },
       CondicaoTipo: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       Bolsista: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
+        allowNull: true
       },
       CursoGraduacao: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       InstituicaoGraduacao: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       AnoEgressoGraduacao: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       CursoPos: {
         type: Sequelize.STRING,
-        allowNull: true,
-      },	
-      CursoPosTipo:{
+        allowNull: true
+      },
+      CursoPosTipo: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
-      CursoInstituicaoPos:{
+      CursoInstituicaoPos: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
-      CursoAnoEgressoPos:{
+      CursoAnoEgressoPos: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
-      Curriculum:{
+      Curriculum: {
         type: Sequelize.BLOB,
-        allowNull: true,
+        allowNull: true
       },
-      CartaDoOrientador:{
+      CartaDoOrientador: {
         type: Sequelize.BLOB,
-        allowNull: true,
+        allowNull: true
       },
-      PropostaDeTrabalho:{
+      PropostaDeTrabalho: {
         type: Sequelize.BLOB,
-        allowNull: true,
-      },
+        allowNull: true
+      }
 
-      
-
-    });
-    
+    })
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Candidate');
+    await queryInterface.dropTable('Candidate')
   }
-};
+}

@@ -1,0 +1,9 @@
+{
+    "extends": [
+        "standard"
+    ],
+    "rules": {
+        "eqeqeq": "warn",
+        "no-eq-null": "warn"
+    }
+}
