@@ -326,7 +326,16 @@ const getAllCandidatesDocuments = async (req, res) => {
       }
 
       // Compacte todos os arquivos em um arquivo ZIP
-      return res.zip(candidatesDocuments, 'documentos.zip');
+      const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+      await res.zip(candidatesDocuments, zipFilePath);
+
+      // Remova o diretório temporário
+      fs.rmdirSync(tempDirPath, { recursive: true });
+
+      // Envie o arquivo ZIP para o cliente
+      return res.download(zipFilePath, 'documentos.zip');
+
+      // return res.zip(candidatesDocuments, 'documentos.zip');
 
    } catch (error) {
       res.status(400).json({
@@ -343,19 +352,32 @@ const getAllDocumentsFromOneCandidate = async (req, res) => {
       fs.mkdirSync(tempDirPath);
 
       const candidateDocuments = [];
-      const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
-      fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
-      candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
 
-      const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
-      fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
-      candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
+      if (candidate.Curriculum) {
+         const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
+         fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
+         candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
+      }
 
-      const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
-      fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
-      candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
+      if (candidate.CartaDoOrientador) {
+         const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
+         fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
+         candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
+      }
 
-      return res.zip(candidateDocuments, 'documentos.zip');
+      if (candidate.PropostaDeTrabalho) {
+         const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
+         fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
+         candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
+      }
+
+      const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+      await res.zip(candidateDocuments, zipFilePath);
+
+      fs.rmdirSync(tempDirPath, { recursive: true });
+
+      return res.download(zipFilePath, 'documentos.zip');
+
    } catch (error) {
       res.status(400).json({
          error: error.message,

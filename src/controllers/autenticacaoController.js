@@ -1,5 +1,5 @@
 // const {Usuario} = require('../models');
-const UsuarioService = require('../services/usuarioService');
+import UsuarioService from '../services/usuarioService';
 const bcrypt = require('bcrypt');
 
 
@@ -30,7 +30,7 @@ const login = async (req, res) => {
     else if (req.method === 'POST') {
         try{
             const { cpf, senha } = await req.body;
-            const usuario = await UsuarioService.buscarUsuarioPor(cpf);
+            const usuario = await UsuarioService.buscarUsuarioPor({cpf: cpf});
        
             if (!usuario){
                 console.log("teste");
@@ -78,7 +78,7 @@ const recuperar_senha = async (req, res) => {
         const { email } = req.body
 
         try {
-            const user = await UsuarioService.buscarUsuarioPor(email);
+            const user = await UsuarioService.buscarUsuarioPor({email: email});
 
             if (!user)
                 return res.render('autenticacao/recuperar-senha', {

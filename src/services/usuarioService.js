@@ -89,7 +89,7 @@ class UsuarioService {
   
   async buscarUsuarioPor(busca){
     try {
-      const usuario = await Usuario.findOne({ where: busca })
+      const usuario = await Usuario.findOne({ where: busca})
       return usuario
     } catch (error) {
       throw error
