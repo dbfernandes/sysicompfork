@@ -1,6 +1,7 @@
 import reservasService from '../services/reservasService';
 import ReservaService from '../services/reservasService';
 import salasService from '../services/salasService';
+import logger from '../utils/logger';
 // const { ReservaSala } = require('../models');
 // const { Salas } = require('../models');
 // const { Usuario } = require('../models');
@@ -61,6 +62,8 @@ const adicionar = async (req, res) => {
             if (!reserva) {
                 res.redirect('/reservas/gerenciar')
             }
+            // Coloque aqui o logger de reserva criada
+            logger.info(`Reserva criada: ${reserva.id}, pelo usuario ${req.session.nome}`);
 
             res.redirect('/reservas/gerenciar')
         } catch (e) {
