@@ -1,5 +1,5 @@
 import AlunoService from '../services/alunoService'
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 
 const inicio = async (req, res) => {
   switch (req.method) {

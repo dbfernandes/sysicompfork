@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Salas extends Model {
     /**
@@ -9,34 +9,34 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      this.hasMany(models.ReservaSala);
+    static associate (models) {
+      this.hasMany(models.ReservaSala)
     }
   };
   Salas.init({
     nome: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     capacidade: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: true
     },
     numero: {
       type: DataTypes.INTEGER,
-      allowNull: true, // Número não é obrigatório
+      allowNull: true // Número não é obrigatório
     },
     andar: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     bloco: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     }
   }, {
     sequelize,
-    modelName: 'Salas',
-  });
-  return Salas;
-};
+    modelName: 'Salas'
+  })
+  return Salas
+}

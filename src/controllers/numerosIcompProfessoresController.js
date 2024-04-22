@@ -75,8 +75,8 @@ const publicacoes = async (req, res) => {
         const graficoArtigosConferencias = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         const graficoArtigosPeriodicos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         publicacoes.artigosConferencias.forEach(artigo => {
-          const idx = anos.findIndex(e => e == artigo.ano)
-          if (idx == -1) {
+          const idx = anos.findIndex(e => e === artigo.ano)
+          if (idx === -1) {
             graficoArtigosConferencias[0] = graficoArtigosConferencias[0] + 1
           } else {
             graficoArtigosConferencias[idx] = graficoArtigosConferencias[idx] + 1
@@ -84,8 +84,8 @@ const publicacoes = async (req, res) => {
         })
 
         publicacoes.artigosPeriodicos.forEach(artigo => {
-          const idx = anos.findIndex(e => e == artigo.ano)
-          if (idx == -1) {
+          const idx = anos.findIndex(e => e === artigo.ano)
+          if (idx === -1) {
             graficoArtigosPeriodicos[0] = graficoArtigosPeriodicos[0] + 1
           } else {
             graficoArtigosPeriodicos[idx] = graficoArtigosPeriodicos[idx] + 1
@@ -131,11 +131,11 @@ const pesquisa = async (req, res) => {
         const graficoProjetos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         projetos.forEach(projeto => {
-          const anosProjeto = projeto.fim == 0
+          const anosProjeto = projeto.fim === 0
             ? [...Array(currentYear - projeto.inicio).keys()].map(i => i + currentYear - (currentYear - projeto.inicio - 1))
             : [...Array(projeto.fim - projeto.inicio).keys()].map(i => i + projeto.fim - (projeto.fim - projeto.inicio - 1))
           anosProjeto.forEach(ano => {
-            const idx = anos.findIndex(e => e == ano)
+            const idx = anos.findIndex(e => e === ano)
             if (idx > -1) {
               graficoProjetos[idx] = graficoProjetos[idx] + 1
             }
@@ -166,8 +166,8 @@ const orientacao = async (req, res) => {
         const { lng } = req.query
         const { id, tipo } = req.params
         const tipos = ['graduacao', 'mestrado', 'doutorado']
-        const t = tipos.findIndex(e => e == tipo) + 1
-        if (t == 0) {
+        const t = tipos.findIndex(e => e === tipo) + 1
+        if (t === 0) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng)
         }
         const professor = await DocenteService.listarPerfil(id)
@@ -183,8 +183,8 @@ const orientacao = async (req, res) => {
         const graficoOrientacoesAndamento = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         orientacoes.concluidas.forEach(orientacao => {
-          const idx = anos.findIndex(e => e == orientacao.ano)
-          if (idx == -1) {
+          const idx = anos.findIndex(e => e === orientacao.ano)
+          if (idx === -1) {
             graficoOrientacoesConcluidas[0] = graficoOrientacoesConcluidas[0] + 1
           } else {
             graficoOrientacoesConcluidas[idx] = graficoOrientacoesConcluidas[idx] + 1
@@ -192,8 +192,8 @@ const orientacao = async (req, res) => {
         })
 
         orientacoes.andamento.forEach(orientacao => {
-          const idx = anos.findIndex(e => e == orientacao.ano)
-          if (idx == -1) {
+          const idx = anos.findIndex(e => e === orientacao.ano)
+          if (idx === -1) {
             graficoOrientacoesAndamento[0] = graficoOrientacoesAndamento[0] + 1
           } else {
             graficoOrientacoesAndamento[idx] = graficoOrientacoesAndamento[idx] + 1
@@ -208,7 +208,7 @@ const orientacao = async (req, res) => {
           orientacoesAndamentoLen: orientacoes.andamento.length,
           ...layoutDashboard,
           anos,
-          tipo: tipo == 'graduacao' ? 'Graduação' : tipo.charAt(0).toUpperCase() + tipo.slice(1),
+          tipo: tipo === 'graduacao' ? 'Graduação' : tipo.charAt(0).toUpperCase() + tipo.slice(1),
           graficoOrientacoesAndamento,
           graficoOrientacoesConcluidas
         })

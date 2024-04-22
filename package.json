@@ -8,7 +8,7 @@
     "db:reset:dev": "npx sequelize-cli db:migrate:undo:all",
     "db:init:dev": "sequelize-cli db:migrate && sequelize-cli db:seed:all",
     "start:dev": "nodemon -L -r esm src/server.js",
-    "criar-modulo": "node src/utils/criar-novo-modulo.js",
+    "criar-modulo": "node src/utils/criarNovoModulo.js",
     "test": "jest"
   },
   "repository": {

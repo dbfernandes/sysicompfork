@@ -1,7 +1,8 @@
 // import { Usuario } from '../models';
-const { Usuario } = require('../models')
 const bcrypt = require('bcrypt')
+const mailer = require('../modules/mailer')
 
+const { Usuario } = require('../models')
 const autorizarAdmin = async (req, res, next) => {
   if (req.session.tipoUsuario.administrador || req.session.tipoUsuario.secretaria) next()
   else return res.redirect('/')
@@ -29,16 +30,14 @@ const login = async (req, res) => {
       const usuario = await Usuario.findOne({
         where: { cpf }
       })
-
       if (!usuario) {
-        console.log('teste')
-
         return res.render('autenticacao/login', {
           csrfToken: req.csrfToken(),
           message: 'Usuário não cadastrado',
           type: 'danger'
         })
-      } else if (usuario.status == 0) {
+      }
+      if (usuario.status === 0) {
         return res.render('autenticacao/login', {
           csrfToken: req.csrfToken(),
           message: 'Usuário bloqueado. Contate a administração.',
@@ -73,7 +72,7 @@ const login = async (req, res) => {
   }
 }
 
-const recuperar_senha = async (req, res) => {
+const recuperarSenha = async (req, res) => {
   if (req.method === 'POST') {
     const { email } = req.body
 
@@ -152,4 +151,4 @@ const verificar = async (req, res, next) => {
   if (!req.session.uid) return res.redirect('/login')
   next()
 }
-export default { logout, recuperar_senha, login, verificar, autorizarAdmin, autorizarCoord, autorizarProf }
+export default { logout, recuperarSenha, login, verificar, autorizarAdmin, autorizarCoord, autorizarProf }

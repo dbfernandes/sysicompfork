@@ -1,5 +1,5 @@
 import UsuarioService from '../services/usuarioService'
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 
 const adicionar = async (req, res) => {
   switch (req.method) {
@@ -29,10 +29,10 @@ const adicionar = async (req, res) => {
           turno
         } = req.body
 
-        administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0
-        coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0
-        secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0
-        professor = req.body.professor && req.body.professor == 'on' ? 1 : 0
+        administrador = req.body.administrador && req.body.administrador === 'on' ? 1 : 0
+        coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
+        secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
+        professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
 
         await UsuarioService.adicionar(
           nomeCompleto,
@@ -86,9 +86,10 @@ const deletar = async (req, res) => {
         await UsuarioService.alterar(req.params.id, {
           status: 0
         })
-        if (req.session.uid == id) {
+        if (req.session.uid === Number(id)) {
           req.session.uid = null
         }
+
         return res.redirect(
           criarURL('/usuarios/listar', {
             message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
@@ -236,10 +237,10 @@ const editar = async (req, res) => {
         )
       }
     case 'POST': {
-      const administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0
-      const coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0
-      const secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0
-      const professor = req.body.professor && req.body.professor == 'on' ? 1 : 0
+      const administrador = req.body.administrador && req.body.administrador === 'on' ? 1 : 0
+      const coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
+      const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
+      const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
       const dados = {
         nomeCompleto: req.body.nomeCompleto,
         cpf: req.body.cpf,

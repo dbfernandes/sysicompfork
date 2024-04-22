@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class AfastamentoTemporario extends Model {
     /**
@@ -9,46 +9,46 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       // define association here
     }
   };
   AfastamentoTemporario.init({
     usuarioId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     usuarioNome: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     dataSaida: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: false
     },
     dataRetorno: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: false
     },
     tipoViagem: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     localViagem: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     justificativa: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: false
     },
     planoReposicao: {
       type: DataTypes.TEXT,
-      allowNull: false,
-    },
+      allowNull: false
+    }
   }, {
     sequelize,
-    modelName: 'AfastamentoTemporario',
-  });
-  return AfastamentoTemporario;
-};
+    modelName: 'AfastamentoTemporario'
+  })
+  return AfastamentoTemporario
+}

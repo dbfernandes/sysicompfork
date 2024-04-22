@@ -22,7 +22,7 @@ const adicionar = async (req, res) => {
     })
   } else if (req.method === 'POST') {
     try {
-      if (req.body.dataTermino == '') {
+      if (req.body.dataTermino === '') {
         req.body.dataTermino = req.body.dataInicio
         req.body.dias = ''
       } else {
@@ -143,7 +143,7 @@ const editar = async (req, res) => {
       res.status(500).send({ message: error.message })
     }
   } else if (req.method === 'POST') {
-    if (req.body.dataTermino == '') {
+    if (req.body.dataTermino === '') {
       req.body.dataTermino = req.body.dataInicio
       req.body.dias = ''
     } else {

@@ -11,12 +11,13 @@ import cookieParser from 'cookie-parser'
 
 dotenv.config()
 const app = express()
-
+// `${__dirname}/views/partials/`
+// `${__dirname}/views/helpers/helpers.js`
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
   extname: '.hbs',
-  partialsDir: `${__dirname}/views/partials/`,
-  helpers: require(`${__dirname}/views/helpers/helpers.js`)
+  partialsDir: path.join(__dirname, 'views', 'partials'),
+  helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.js'))
 }))
 
 app.set('view engine', 'hbs')

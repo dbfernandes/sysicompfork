@@ -87,7 +87,7 @@ class CandidateService {
     const dataNascimentoFormatada = moment(Candidato.Nascimento, 'DD/MM/YYYY').format('YYYY-MM-DD')
     console.log(dataNascimentoFormatada)
     Candidato.Nascimento = dataNascimentoFormatada
-    const candidateAtualizacao = await Candidate.update({
+    await Candidate.update({
       Nome: Candidato.Nome,
       editalPosition: 2,
       Nascimento: Candidato.Nascimento,

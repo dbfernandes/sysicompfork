@@ -1,6 +1,6 @@
 import EditalService from '../services/editalService'
 import editalGerarPlanilha from '../services/editalGerarPlanilha'
-
+/* eslint-disable camelcase */
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
@@ -91,8 +91,7 @@ const listEditalSelecao = async (req, res) => {
 
 const deleteEdital = async (req, res) => {
   switch (req.method) {
-    case 'DELETE':
-
+    case 'DELETE': {
       console.log('aqui no controller delete')
 
       const { id } = req.params
@@ -105,7 +104,8 @@ const deleteEdital = async (req, res) => {
           error: error.message
         })
       }
-
+    }
+      break
     default:
       return res.status(404).send()
   }
@@ -187,7 +187,7 @@ const updateEdital = async (req, res) => {
         vaga_suplementar_doutorado
       } = await req.body
 
-      const edital_update = await EditalService.update(id_update, {
+      const updateEdital = await EditalService.update(id_update, {
         num_edital,
         documento,
         data_inicio,
@@ -203,7 +203,7 @@ const updateEdital = async (req, res) => {
           error: err.message
         })
       })
-      return res.status(200).send(edital_update)
+      return res.status(200).send(updateEdital)
     }
     default:
       return res.status(404).send()
@@ -256,7 +256,7 @@ const editalCandidates = async (req, res) => {
   )
 
   const quantidaDeInscricaoAndamento = candidates.filter(candidate => candidate.editalPosition < 4).length
-  const quantidaIncricaoFinalizada = candidates.filter(candidate => candidate.editalPosition == 4).length
+  const quantidaIncricaoFinalizada = candidates.filter(candidate => candidate.editalPosition === 4).length
 
   return res.render('edital/listCandidates', {
     csrfToken: req.csrfToken(),

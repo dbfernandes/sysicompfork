@@ -151,7 +151,7 @@ const forms = async (req, res) => {
       if (!req.session.email) {
         res.redirect('/selecaoppgi/entrar')
       }
-      if (req.session.editalPosition == 1) {
+      if (req.session.editalPosition === 1) {
         // console.log(req.session.email)
         // console.log(req.session.editalId)
         // console.log(req.session.uid)
@@ -188,7 +188,7 @@ const forms = async (req, res) => {
           csrfToken: req.csrfToken()
         })
       }
-      if (req.session.editalPosition == 2) {
+      if (req.session.editalPosition === 2) {
         const candidate = await CandidateService.findOne({
           id: req.session.uid
         })
@@ -210,7 +210,7 @@ const forms = async (req, res) => {
         })
       }
 
-      if (req.session.editalPosition == 3) {
+      if (req.session.editalPosition === 3) {
         await CandidateService.findOne({
           id: req.session.uid
         })
@@ -243,7 +243,7 @@ const form1 = async (req, res) => {
       console.log('******************************************** FORM 1 POST')
       const data = req.body.data
       // console.log(req.session.editalPosition)
-      if (req.session.editalPosition == 1) {
+      if (req.session.editalPosition === 1) {
         console.log('teste form1')
         const Candidato = {
           Nome: data.Nome,
@@ -296,10 +296,10 @@ const form2 = async (req, res) => {
 
         let VitaePDF = null
         let Prova = null
-        if (req.files && req.files.Prova != undefined) {
+        if (req.files && req.files.Prova !== undefined) {
           Prova = req.files.Prova[0]
         }
-        if (req.files && req.files.VitaePDF != undefined) {
+        if (req.files && req.files.VitaePDF !== undefined) {
           VitaePDF = req.files.VitaePDF[0]
         }
 

@@ -1,103 +1,89 @@
-const { LinhasDePesquisa } = require('../models');
+const { LinhasDePesquisa } = require('../models')
 
 // CRUD da pagina de linhas de pesquisa
 
 const formatDbAnswer = (object) => {
-  const array = Array.isArray(object);
+  const array = Array.isArray(object)
 
-  switch(array) {
-  case (true): {
-    return object.map((linha) => (linha.dataValues));
-  };
+  return array ? object.map((linha) => (linha.dataValues)) : object.dataValues
+  // switch (array) {
+  // case (true): {
+  //     return object.map((linha) => (linha.dataValues))
+  // };
 
-  case (false): {
-    return object.dataValues;
-  };
+  // case (false): {
+  //   return object.dataValues
+  // };
 
-  default:
-    return object.dataValues;
-  };
-};
+  // default:
+  //   return object.dataValues
+  // };
+}
 
 export default new class LinhasDePesquisaService {
-  async list() {
-    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla']});
+  async list () {
+    const allResearchLines = await LinhasDePesquisa.findAll({ attributes: ['id', 'nome', 'sigla'] })
 
-    const formatedAnswer = formatDbAnswer(allResearchLines);
+    const formatedAnswer = formatDbAnswer(allResearchLines)
 
-    return formatedAnswer;
+    return formatedAnswer
   }
 
-  async findById(id) {
-    const researchLine = await LinhasDePesquisa.findByPk(id);
-    
-    const formatedAnswer = formatDbAnswer(researchLine);
+  async findById (id) {
+    const researchLine = await LinhasDePesquisa.findByPk(id)
 
-    return formatedAnswer;
+    const formatedAnswer = formatDbAnswer(researchLine)
+
+    return formatedAnswer
   }
 
-  async findByName(name) {
-    try{
-      const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name }});
-      
-      if (!researchLine) return null;
+  async findByName (name) {
+    const researchLine = await LinhasDePesquisa.findOne({ where: { nome: name } })
 
-      const formatedAnswer = formatDbAnswer(researchLine);
-  
-      return formatedAnswer;
+    if (!researchLine) return null
 
-    } catch (error) {
-      throw error;
-    }
+    const formatedAnswer = formatDbAnswer(researchLine)
+
+    return formatedAnswer
   }
 
-  async findBySigla(sigla) {
-    try {
-      const researchLine = await LinhasDePesquisa.findOne({ where: { sigla }});
-  
-      if (!researchLine) return null;
-      
-      const formatedAnswer = formatDbAnswer(researchLine);
-      
+  async findBySigla (sigla) {
+    const researchLine = await LinhasDePesquisa.findOne({ where: { sigla } })
 
-      return formatedAnswer;
-      
-    } catch (error) {
-      throw error;
-    }
+    if (!researchLine) return null
+
+    const formatedAnswer = formatDbAnswer(researchLine)
+
+    return formatedAnswer
   }
 
-  async create(newResearchLine) {
-    const { nome, sigla} = newResearchLine;
+  async create (newResearchLine) {
+    const { nome, sigla } = newResearchLine
 
     await LinhasDePesquisa.create({
       nome,
-      sigla,
-    });
+      sigla
+    })
   }
 
-  async update(id, newInfo) {
-    const { nome, sigla } = newInfo;
-    try {
-      await LinhasDePesquisa.update(
-        {
-          nome,
-          sigla,
-        },
-        {
-          where: {
-            id,
-          },
+  async update (id, newInfo) {
+    const { nome, sigla } = newInfo
+    await LinhasDePesquisa.update(
+      {
+        nome,
+        sigla
+      },
+      {
+        where: {
+          id
         }
-      );
-    } catch (error) {
-      throw error;
-    }
+      }
+    )
   }
 
-  async delete(id) {
+  async delete (id) {
     await LinhasDePesquisa.destroy({
-      where: { id },
-    });
+      where: { id }
+    })
   }
-};
+}()

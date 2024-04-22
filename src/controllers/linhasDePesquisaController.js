@@ -33,7 +33,7 @@ const buscar = async (req, res) => {
 
   return res
     .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, icone, cor, pageTitle, tipoUsuario: req.session.tipoUsuario })
+    .render('linhasDePesquisa/linhasDePesquisa-busca', { nome, sigla, pageTitle, tipoUsuario: req.session.tipoUsuario })
 }
 
 const criar = async (req, res) => {
@@ -69,7 +69,7 @@ const criar = async (req, res) => {
 }
 
 const remover = async (req, res) => {
-  if (req.method == 'POST') {
+  if (req.method === 'POST') {
     try {
       linhasDePesquisaService.delete(req.params.id)
     } catch (error) {

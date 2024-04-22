@@ -26,7 +26,7 @@
  *
  * Copyrighted 2012 by Evan Plaice.
  */
-
+/*eslint-disable */
 RegExp.escape = function (s) {
   return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 };

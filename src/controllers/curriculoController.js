@@ -4,7 +4,7 @@ import PremioService from '../services/premioService'
 import UsuarioService from '../services/usuarioService'
 import ProjetoService from '../services/projetoService'
 import OrientacaoService from '../services/orientacaoService'
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 
 const visualizar = async (req, res) => {
   switch (req.method) {

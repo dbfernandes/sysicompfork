@@ -1,5 +1,5 @@
 import UsuarioService from '../services/usuarioService'
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 
 const visualizar = async (req, res) => {
   switch (req.method) {
@@ -63,10 +63,10 @@ const editar = async (req, res) => {
       }
 
     case 'POST': {
-      const administrador = req.body.administrador && req.body.administrador == 'on' ? 1 : 0
-      const coordenador = req.body.coordenador && req.body.coordenador == 'on' ? 1 : 0
-      const secretaria = req.body.secretaria && req.body.secretaria == 'on' ? 1 : 0
-      const professor = req.body.professor && req.body.professor == 'on' ? 1 : 0
+      const administrador = req.body.administrador && req.body.administrador === 'on' ? 1 : 0
+      const coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
+      const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
+      const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
       const dados = {
         nomeCompleto: req.body.nomeCompleto,
         cpf: req.body.cpf,

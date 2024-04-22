@@ -14,16 +14,16 @@ const alunos = async (req, res) => {
         const { lng } = req.query
         const { curso } = req.params
         const cursos = ['processamento-de-dados', 'ciencia-computacao', 'engenharia-de-software', 'mestrado', 'doutorado']
-        const c = cursos.findIndex(e => e == curso) + 1
+        const c = cursos.findIndex(e => e === curso) + 1
         if (c) {
-          const cursoSearch = curso == 'ciencia-computacao'
+          const cursoSearch = curso === 'ciencia-computacao'
             ? 'Ciência Da Computação'
             : curso.split('-').map((p) => {
-              const palavra = p == 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1)
+              const palavra = p === 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1)
               return palavra
             }).join(' ')
           const alunosInfo = await AlunoService.listarTodos(
-            cursoSearch == 'Engenharia de Software' ? ['Engenharia de Software', 'Sistemas de Informação'] : cursoSearch,
+            cursoSearch === 'Engenharia de Software' ? ['Engenharia de Software', 'Sistemas de Informação'] : cursoSearch,
             1)
           const alunosFormados = alunosInfo.length
           return res.status(200).render('numerosIcomp/alunos', {
@@ -31,7 +31,7 @@ const alunos = async (req, res) => {
             alunosInfo,
             alunosFormados,
             ...layoutMain,
-            curso: cursoSearch == 'Engenharia de Software' ? cursoSearch + ' / Sistemas de Informação' : cursoSearch
+            curso: cursoSearch === 'Engenharia de Software' ? cursoSearch + ' / Sistemas de Informação' : cursoSearch
           })
         } else {
           return res.redirect(`/numerosIcomp?lng=${lng}#alunos`)
