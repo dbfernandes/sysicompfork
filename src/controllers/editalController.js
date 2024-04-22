@@ -1,5 +1,5 @@
 import EditalService from "../services/editalService";
-import editalGerarPlanilha from "../services/editalGerarPlanilha";
+import editalGerarPlanilha from "../utils/editalGerarPlanilha";
 import linhasDePesquisaService from "../services/linhasDePesquisaService";
 const zip = require('express-zip');
 const StreamZip = require('node-stream-zip');
