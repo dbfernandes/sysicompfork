@@ -5,6 +5,7 @@ const path = require('path');
 //     return `${timestamp} ${level}: ${message}`;
 // });
 
+// Caminho para a pasta de logs
 const logDir = path.join(__dirname, '../../../logs');
 
 const logger = winston.createLogger({
