@@ -86,6 +86,15 @@ class UsuarioService {
       throw error
     }
   }
+  
+  async buscarUsuarioPor(busca){
+    try {
+      const usuario = await Usuario.findOne({ where: busca})
+      return usuario
+    } catch (error) {
+      throw error
+    }
+  }
 
   async listarUm(id){
     try {
@@ -105,6 +114,16 @@ class UsuarioService {
     } catch (error) {
       throw error
     }
+  }
+  
+  async recuperarSenha(token, data, id) {
+    user = await Usuario.findByPk(id)
+    Usuario.update({
+        tokenResetSenha: token,
+        validadeTokenResetSenha: data
+    }, {
+        where: { id: user.id }
+    })
   }
 
   async listarTodosPorCondicao(data){

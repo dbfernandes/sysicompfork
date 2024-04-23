@@ -1,7 +1,5 @@
+import UsuarioService from '../services/usuarioService';
 import { logger } from '../modules/mailer';
-
-//import { Usuario } from '../models';
-const {Usuario} = require('../models');
 const bcrypt = require('bcrypt');
 
 
@@ -32,9 +30,7 @@ const login = async (req, res) => {
     else if (req.method === 'POST') {
         try{
             const { cpf, senha } = await req.body;
-            const usuario = await Usuario.findOne({
-                where: { cpf: cpf }
-            })
+            const usuario = await UsuarioService.buscarUsuarioPor({cpf: cpf});
        
             if (!usuario){
                 console.log("teste");
@@ -83,7 +79,7 @@ const recuperar_senha = async (req, res) => {
         const { email } = req.body
 
         try {
-            const user = await Usuario.findOne({ where: { email } })
+            const user = await UsuarioService.buscarUsuarioPor({email: email});
 
             if (!user)
                 return res.render('autenticacao/recuperar-senha', {
@@ -97,12 +93,14 @@ const recuperar_senha = async (req, res) => {
 
             now.setHours(now.getHours() + 1)
 
-            await Usuario.update({
-                tokenResetSenha: token,
-                validadeTokenResetSenha: now
-            }, {
-                where: { id: user.id }
-            })
+            // await Usuario.update({
+            //     tokenResetSenha: token,
+            //     validadeTokenResetSenha: now
+            // }, {
+            //     where: { id: user.id }
+            // })
+
+            await UsuarioService.recuperarSenha(token, now, user.id)
 
             mailer.sendMail({
                 to: email,

@@ -1,7 +1,5 @@
 import  afastamentoService  from '../services/afastamentoService.js'
 import logger from '../utils/logger';
-import fs from 'fs';
-
 const pageTitle = 'Afastamento Temporário';
 
 const listar = async (req, res) => {
