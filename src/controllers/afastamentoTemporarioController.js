@@ -1,4 +1,5 @@
 import  afastamentoService  from '../services/afastamentoService.js'
+import logger from '../utils/logger';
 import fs from 'fs';
 
 const pageTitle = 'Afastamento Temporário';
@@ -81,6 +82,8 @@ const criar = async (req, res) => {
         }
     }
 
+    logger.info(`Novo Afastamento criado, pelo usuario: ${req.session.nome}, usuarioId: ${req.session.uid}`);
+    
     return res.redirect('/afastamentoTemporario/listar');
 }
 
@@ -108,6 +111,7 @@ const remover = async (req, res) => {
         try {
             console.log(req.params.id)
             await afastamentoService.delete(req.params.id);
+            logger.info(`Afastamento removido, pelo usuario: ${req.session.nome}, usuarioId: ${req.session.uid}`);
             return res.redirect('/afastamentoTemporario/listar');
         } catch (error) {
             return res.render('afastamentoTemporario/pedidos-afastamento', {

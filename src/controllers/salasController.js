@@ -1,4 +1,5 @@
 // const {Salas} = require('../models');
+import logger from '../utils/logger';
 import SalaService from '../services/salasService';
 
 const adicionar = async (req, res) => {
@@ -29,24 +30,7 @@ const adicionar = async (req, res) => {
             
             await SalaService.criar(nome, bloco, andar, numero, capacidade)
 
-            // const sala = await Salas
-            //     .create({
-            //         nome,
-            //         bloco,
-            //         andar,
-            //         numero,
-            //         capacidade
-            //     })
-            //     .catch((err) => {
-            //         responseError = err;
-            //     });
-
-            // if (!sala) {
-            //     return res.status(400).json({
-            //         error: responseError.message
-                    
-            //     });
-            // }
+            logger.info(`Sala ${nome} criada por ${req.session.nome}`);
 
             res.redirect('/salas/gerenciar')
 
@@ -67,6 +51,7 @@ const excluir = async (req, res) => {
 
         // const sala_apagada = await Salas.destroy({where: {id: id}});
         const sala_apagada = await SalaService.excluir(id);
+        logger.info(`Sala ${sala.nome} excluída por ${req.session.nome}`);
         res.redirect('/salas/gerenciar')
      
     }catch(e){
@@ -94,6 +79,7 @@ const editar = async (req, res) => {
             //     }
             // })
             const sala = await SalaService.listarUm(req.params.id);
+            if (!sala) return res.status(400).json({ message: 'Sala não encontrada' });
             res.render('salas/salas-editar', { 
                 sala: sala.toJSON(),
                 csrf: req.csrfToken(),  
@@ -109,6 +95,7 @@ const editar = async (req, res) => {
        
         try{
             const sala = await SalaService.editar(req.params.id, req.body);
+            logger.info(`Sala ${sala.nome} editada por ${req.session.nome}`);
             res.redirect('/salas/gerenciar')
 
         }catch (error) {

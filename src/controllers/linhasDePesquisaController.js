@@ -1,3 +1,4 @@
+import logger from '../utils/logger';
 import linhasDePesquisaService from '../services/linhasDePesquisaService';
 
 const locals = {
@@ -63,6 +64,7 @@ const criar = async (req, res) => {
       });
     }
     
+    logger.info(`Nova linha de pesquisa criada: ${req.body.nome}`);
     return res.redirect('/linhasDePesquisa/listar');
   }
 };
@@ -80,6 +82,7 @@ const remover = async (req, res) => {
   {
     console.log('Não foi possível remover a linha de pesquisa!')
   }
+  logger.info(`Linha de pesquisa removida: ${req.params.id} por ${req.session.nome}`);
   return res.redirect('/linhasDePesquisa/listar');
 };
 
@@ -100,7 +103,7 @@ const editar = async (req, res) => {
       if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
       
       await linhasDePesquisaService.update(req.params.id, { nome, sigla });
-      
+      logger.info(`Linha de pesquisa editada: ${req.body.nome} por ${req.session.nome}`);
     } catch (error) {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-editar', {

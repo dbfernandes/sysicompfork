@@ -1,5 +1,6 @@
 import UsuarioService from "../services/usuarioService";
 import criarURL from '../utils/criar-url'
+import logger from "../utils/logger";
 
 const adicionar = async (req, res) => {
     switch (req.method ) {
@@ -66,7 +67,7 @@ const adicionar = async (req, res) => {
                 });
 
         }
-
+        logger.info(`Novo usuário criado: ${req.body.nomeCompleto} por ${req.session.nome}`);
         return res.status(201).redirect(
             criarURL('/usuarios/listar', {
                 messageTitle: 'Criação de usuário bem-sucedida!',
@@ -91,6 +92,7 @@ const deletar = async (req, res)=> {
                 if(req.session.uid == id){
                     req.session.uid = null
                 }
+                logger.info(`Usuário com id ${id} com sucesso foi bloqueado por ${req.session.nome}`)
                 return res.redirect(
                     criarURL('/usuarios/listar', {
                     message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
@@ -123,6 +125,7 @@ const restaurar = async (req, res)=> {
                 await UsuarioService.alterar(req.params.id, { 
                     status: 1,
                 })
+                logger.info(`Usuário com id ${req.params.id} com sucesso foi desbloqueado por ${req.session.nome}`)
                 return res.status(200).redirect(
                     criarURL('/usuarios/listar', {
                       message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
@@ -282,7 +285,7 @@ const editar = async (req, res) => {
                 })
     
             }
-    
+            logger.info(`Usuário com id ${req.params.id} foi editado por ${req.session.nome}`)
             return res.status(200).redirect(
             criarURL(`/usuarios/dados/${req.params.id}`, {
                 message: 'Dados alterados com sucesso!',

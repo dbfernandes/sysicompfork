@@ -62,6 +62,7 @@ const adicionar = async (req, res) => {
             if (!reserva) {
                 res.redirect('/reservas/gerenciar')
             }
+
             // Coloque aqui o logger de reserva criada
             logger.info(`Reserva criada: ${reserva.id}, pelo usuario ${req.session.nome}`);
 
@@ -80,6 +81,7 @@ const excluir = async (req, res) => {
         if (!reserva) throw new Error('Sala não encontrado!');
 
         await reservasService.remover(id);
+        logger.info(`Reserva excluida: ${reserva.id}, pelo usuario ${req.session.nome}`);
         res.redirect('/reservas/gerenciar')
 
     } catch (e) {
@@ -94,17 +96,6 @@ function converterData(data) {
 }
 
 const gerenciar = async (req, res) => {
-    // const reservas = await ReservaSala.findAll({
-    //     include: [
-    //         {
-    //             model: Salas,
-    //             as: 'salas',
-    //         }, {
-    //             model: Usuario,
-    //             as: 'usuario',
-    //         }
-    //     ],
-    // });
     const reservas = await reservasService.listarReservasSalas();
     const reservasJSON = reservas.map(reserva => {
         let reservaObj = reserva.toJSON();
@@ -133,18 +124,8 @@ const gerenciar = async (req, res) => {
             try {
                 const salas = await salasService.listarTodos();
                 const reserva = await reservasService.listarReservasSalasPorUsuario(req.params.id);
-                // const reserva = await ReservaSala.findOne({
-                //     where: {
-                //         id: req.params.id
-                //     },
-                //     include: [
-                //         {
-                //             model: Salas, // Include the associated "Post" model
-                //             as: 'salas', // Alias for the posts association (if defined in the User model)   
-                //         }
-                //     ],
-                // })
-
+                
+                logger.info(`Reserva editada, id: ${reserva.id}, pelo usuario ${req.session.nome}`);
                 res.render('reservas/reservas-editar', {
                     salas: salas.map(sala => sala.toJSON()),
                     reserva: reserva.toJSON(),
@@ -186,11 +167,9 @@ const gerenciar = async (req, res) => {
             }
 
             try {
-
-                // const reserva = await ReservaSala.update({
-                //     ...req.body
-                // }, { where: { id: req.params.id } });
+                
                 await reservasService.atualizar(req.params.id, dados);
+                logger.info(`Reserva editada, id: ${req.params.id}, pelo usuario ${req.session.nome}`);
                 res.redirect('/reservas/gerenciar')
 
             } catch (error) {

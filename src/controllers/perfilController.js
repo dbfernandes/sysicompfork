@@ -1,5 +1,6 @@
 import UsuarioService from "../services/usuarioService";
 import criarURL from '../utils/criar-url'
+import logger from "../utils/logger";
 
 const visualizar = async (req, res) => {
     switch (req.method) {
@@ -102,7 +103,7 @@ const editar = async (req, res) => {
                 tipoUsuario: req.session.tipoUsuario
             })
         }
-
+        logger.info(`Usuário editado, id: ${id}, pelo usuario ${req.session.nome}`);
         return res.status(200).redirect(
         criarURL(`/perfil`, {
             message: 'Dados alterados com sucesso!',
@@ -126,6 +127,7 @@ const editar = async (req, res) => {
                     status: 0,
                 })
                 req.session.uid = null
+                logger.info(`Usuário bloqueado, id: ${id}, pelo usuario ${req.session.nome}`);
                 return res.redirect('/');
                 
             }catch(error){
