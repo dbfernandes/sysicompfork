@@ -5,7 +5,7 @@ const router = express.Router()
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, './src/candidato/uploads/')
+    callback(null, './uploads/candidatos')
   },
   filename: function (req, file, callback) {
     callback(null, `${new Date().getTime()}-` + file.originalname)
@@ -26,6 +26,7 @@ router.all('/formulario/1', selecaoppgiController.form1)
 router.all('/formulario/2', (req, res) => {
   uploads(req, res, function (err) {
     if (err) {
+      console.log('error aqui')
       console.log(err)
       throw err
     }
