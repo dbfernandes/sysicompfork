@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -17,16 +17,15 @@ module.exports = {
         type: Sequelize.INTEGER(4),
         allowNull: false
       },
-      local:{
+      local: {
         type: Sequelize.STRING(1024),
         allowNull: true,
         default: null
       },
-      tipo:{
+      tipo: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'TipoPublicacao', key: 'id' },
-        allowNull: false,
+        references: { model: 'TipoPublicacao', key: 'id' }
       },
       natureza: {
         type: Sequelize.STRING(100),
@@ -49,9 +48,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Publicacao');
+    await queryInterface.dropTable('Publicacao')
   }
-};
+}
