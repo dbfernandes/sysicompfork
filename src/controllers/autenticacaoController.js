@@ -1,5 +1,5 @@
 import UsuarioService from '../services/usuarioService';
-import { logger } from '../modules/mailer';
+import logger from '../utils/logger';
 const bcrypt = require('bcrypt');
 
 
