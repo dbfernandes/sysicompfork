@@ -1,34 +1,32 @@
-const Sequelize = require('sequelize')
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
-    
-    static associate(models) {
-      this.hasMany(models.ReservaSala);
+    static associate (models) {
+      this.hasMany(models.ReservaSala)
       this.hasOne(models.Avatar, {
         foreignKey: 'idUsuario',
-        as: 'Avatar',
-      });
-      this.belongsToMany(models.Publicacao, { 
-        through: 'RelUsuarioPublicacao', 
+        as: 'Avatar'
+      })
+      this.belongsToMany(models.Publicacao, {
+        through: 'RelUsuarioPublicacao',
         foreignKey: 'idUsuario',
-        as: 'Publicacoes' 
+        as: 'Publicacoes'
       })
       this.hasMany(models.Orientacao, {
         foreignKey: 'idProfessor',
-        as: 'Orientacoes',
-      });
+        as: 'Orientacoes'
+      })
       this.hasMany(models.Projeto, {
         foreignKey: 'idProfessor',
-        as: 'Projetos',
-      });
+        as: 'Projetos'
+      })
       this.hasMany(models.Premio, {
         foreignKey: 'idProfessor',
-        as: 'Premios',
-      });
+        as: 'Premios'
+      })
     }
   }
 
@@ -44,8 +42,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Este campo não pode ser vazio' },
-        notEmpty: { msg: 'Este campo não pode ser vazio' },
-      },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     cpf: {
       type: DataTypes.STRING(255),
@@ -53,16 +51,16 @@ module.exports = (sequelize, DataTypes) => {
       unique: { msg: 'Número de CPF já cadastrado' },
       validate: {
         notNull: { msg: 'Este campo não pode ser vazio' },
-        notEmpty: { msg: 'Este campo não pode ser vazio' },
-      },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     senhaHash: {
       type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
         notNull: { msg: 'Este campo não pode ser vazio' },
-        notEmpty: { msg: 'Este campo não pode ser vazio' },
-      },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     tokenResetSenha: {
       type: DataTypes.STRING(255),
@@ -71,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     validadeTokenResetSenha: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: true
     },
     email: {
       type: DataTypes.STRING(255),
@@ -79,33 +77,33 @@ module.exports = (sequelize, DataTypes) => {
       unique: { msg: 'E-mail já cadastrado' },
       validate: {
         notNull: { msg: 'Este campo não pode ser vazio' },
-        notEmpty: { msg: 'Este campo não pode ser vazio' },
-      },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: 1
     },
     administrador: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     coordenador: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     secretaria: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     professor: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     siape: {
       type: DataTypes.STRING(10),
@@ -163,74 +161,70 @@ module.exports = (sequelize, DataTypes) => {
     ultimaAtualizacao: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: null,
+      defaultValue: null
     },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
-      allowNull: false,
+      allowNull: false
     },
     updatedAt: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
-      allowNull: false,
-    },
-  },{
+      allowNull: false
+    }
+  }, {
     sequelize,
     tableName: 'Usuario',
     modelName: 'Usuario',
     timestamps: false,
     indexes: [
       {
-        name: "PRIMARY",
+        name: 'PRIMARY',
         unique: true,
-        using: "BTREE",
+        using: 'BTREE',
         fields: [
-          { name: "id" },
+          { name: 'id' }
         ]
       },
       {
-        name: "cpf",
+        name: 'cpf',
         unique: true,
-        using: "BTREE",
+        using: 'BTREE',
         fields: [
-          { name: "cpf" },
+          { name: 'cpf' }
         ]
       },
       {
-        name: "email",
+        name: 'email',
         unique: true,
-        using: "BTREE",
+        using: 'BTREE',
         fields: [
-          { name: "email" },
+          { name: 'email' }
         ]
       },
       {
-        name: "tokenResetSenha",
+        name: 'tokenResetSenha',
         unique: true,
-        using: "BTREE",
+        using: 'BTREE',
         fields: [
-          { name: "tokenResetSenha" },
+          { name: 'tokenResetSenha' }
         ]
-      },
+      }
     ]
-  });
+  })
 
   Usuario.prototype.perfis = function () {
     let perfis = ''
-    if(this.administrador === 1) perfis += ' Administrador |'
-    if(this.coordenador === 1) perfis += ' Coordenador |'
-    if(this.professor === 1) perfis += ' Professor |'
-    if(this.secretaria === 1) perfis += ' Secretaria'
+    if (this.administrador === 1) perfis += ' Administrador |'
+    if (this.coordenador === 1) perfis += ' Coordenador |'
+    if (this.professor === 1) perfis += ' Professor |'
+    if (this.secretaria === 1) perfis += ' Secretaria'
 
-    if(perfis.endsWith(' |'))
-        perfis = perfis.substring(0, perfis.length-2)
+    if (perfis.endsWith(' |')) { perfis = perfis.substring(0, perfis.length - 2) }
 
     return perfis
   }
 
-  return Usuario;
+  return Usuario
 }
- 
-
-

@@ -1,14 +1,14 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict'
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class LinhasDePesquisa extends Model {
-    static associate(models) {
+    static associate (models) {
       // fazer as associações aqui
       LinhasDePesquisa.hasMany(models.Candidate, {
-        foreignKey: "linhaDePesquisaId",
-        onDelete: "RESTRICT",
-      });
+        foreignKey: 'linhaDePesquisaId',
+        onDelete: 'RESTRICT'
+      })
     }
   }
 
@@ -16,21 +16,21 @@ module.exports = (sequelize, DataTypes) => {
     {
       nome: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       sigla: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
+        allowNull: false
+      }
     },
     {
       sequelize,
-      tableName: "LinhasDePesquisa",
-      modelName: "LinhasDePesquisa",
+      tableName: 'LinhasDePesquisa',
+      modelName: 'LinhasDePesquisa',
       freezeTableName: true,
-      timestamps: false,
+      timestamps: false
     }
-  );
+  )
 
-  return LinhasDePesquisa;
-};
+  return LinhasDePesquisa
+}

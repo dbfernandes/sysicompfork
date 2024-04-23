@@ -9,15 +9,15 @@ import teachers from './teachers.json'
 import db from './fromDB.json'
 
 export default {
-    "translation" : {
-        navbar,
-        landing,
-        error,
-        students,
-        profile,
-        projects,
-        publications,
-        teachers,
-        ...db
-    }
+  translation: {
+    navbar,
+    landing,
+    error,
+    students,
+    profile,
+    projects,
+    publications,
+    teachers,
+    ...db
+  }
 }

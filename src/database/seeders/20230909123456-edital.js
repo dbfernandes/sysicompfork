@@ -1,7 +1,7 @@
-'use strict';
-const moment = require('moment-timezone');
+'use strict'
+const moment = require('moment-timezone')
 
-const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss');
+const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -16,12 +16,12 @@ module.exports = {
         cartaRecomendacao: '1',
         documento: 'http://www.propesp.ufam.edu.br',
         dataInicio: '2023-08-23',
-        dataFim: '2023-09-09',       
+        dataFim: '2023-09-09',
         status: '1',
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data,
+        updatedAt: data
       },
       {
         editalId: '002-2023',
@@ -33,12 +33,12 @@ module.exports = {
         cartaRecomendacao: '1',
         documento: 'http://www.propesp.ufam.edu.br',
         dataInicio: '2023-05-27',
-        dataFim: '2023-06-027',        
+        dataFim: '2023-06-027',
         status: '0',
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data,
+        updatedAt: data
       },
       {
         editalId: '003-2023',
@@ -55,7 +55,7 @@ module.exports = {
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data,
+        updatedAt: data
       },
       {
         editalId: '004-2023',
@@ -67,20 +67,18 @@ module.exports = {
         cartaRecomendacao: '0',
         documento: 'http://www.propesp.ufam.edu.br',
         dataInicio: '2023-08-02',
-        dataFim: '2023-09-30',        
+        dataFim: '2023-09-30',
         status: '1',
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data,
-      },
-      
-    ]);
+        updatedAt: data
+      }
 
-   
+    ])
   },
 
   down: async (queryInterface, Sequelize) => {
-    
-  },
-};
+
+  }
+}

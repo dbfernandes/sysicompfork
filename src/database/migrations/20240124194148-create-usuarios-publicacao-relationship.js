@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('RelUsuarioPublicacao', {
@@ -6,18 +6,18 @@ module.exports = {
       idUsuario: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'Usuario', key: 'id' },
+        references: { model: 'Usuario', key: 'id' }
       },
       idPublicacao: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'Publicacao', key: 'id' },
+        references: { model: 'Publicacao', key: 'id' }
       },
       createdAt: { allowNull: false, type: Sequelize.DATE },
-      updatedAt: { allowNull: false, type: Sequelize.DATE },
-    });
+      updatedAt: { allowNull: false, type: Sequelize.DATE }
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('RelUsuarioPublicacao');
-  },
-};
+    await queryInterface.dropTable('RelUsuarioPublicacao')
+  }
+}
