@@ -2,9 +2,6 @@ import reservasService from '../services/reservasService';
 import ReservaService from '../services/reservasService';
 import salasService from '../services/salasService';
 import logger from '../utils/logger';
-// const { ReservaSala } = require('../models');
-// const { Salas } = require('../models');
-// const { Usuario } = require('../models');
 
 
 const listar = async (req, res) => {
@@ -50,13 +47,6 @@ const adicionar = async (req, res) => {
                 ...req.body
             }
 
-            // const reserva = await ReservaSala
-            //     .create({
-            //         ...req.body,
-            //     })
-            //     .catch((err) => {
-            //         responseError = err;
-            //     });
             const reserva = await ReservaService.criar(dados);
 
             if (!reserva) {
@@ -76,7 +66,7 @@ const adicionar = async (req, res) => {
 
 const excluir = async (req, res) => {
     const { id } = req.params;
-    const reserva = await reservasService.listarUm(id);
+    const reserva = await reservasService.buscarReserva(id);
     try {
         if (!reserva) throw new Error('Sala não encontrado!');
 
@@ -123,9 +113,8 @@ const gerenciar = async (req, res) => {
         if (req.method === 'GET') {
             try {
                 const salas = await salasService.listarTodos();
-                const reserva = await reservasService.listarReservasSalasPorUsuario(req.params.id);
+                const reserva = await reservasService.buscarReserva(req.params.id);
                 
-                logger.info(`Reserva editada, id: ${reserva.id}, pelo usuario ${req.session.nome}`);
                 res.render('reservas/reservas-editar', {
                     salas: salas.map(sala => sala.toJSON()),
                     reserva: reserva.toJSON(),
