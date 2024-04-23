@@ -130,17 +130,6 @@ const gerenciar = async (req, res) => {
             try {
                 const salas = await salasService.listarTodos();
                 const reserva = await reservasService.listarReservasSalasPorUsuario(req.params.id);
-                // const reserva = await ReservaSala.findOne({
-                //     where: {
-                //         id: req.params.id
-                //     },
-                //     include: [
-                //         {
-                //             model: Salas, // Include the associated "Post" model
-                //             as: 'salas', // Alias for the posts association (if defined in the User model)   
-                //         }
-                //     ],
-                // })
 
                 res.render('reservas/reservas-editar', {
                     salas: salas.map(sala => sala.toJSON()),
@@ -183,10 +172,15 @@ const gerenciar = async (req, res) => {
             }
 
             try {
+                const userId = req.session.uid
 
-                // const reserva = await ReservaSala.update({
-                //     ...req.body
-                // }, { where: { id: req.params.id } });
+                const reserva = await reservasService.listarUm(req.params.id);
+
+
+                if (reserva.UsuarioId !== userId) {
+                    return res.status(403).send({ message: 'Você não tem permissão para editar esta reserva' });
+                }
+
                 await reservasService.atualizar(req.params.id, dados);
                 res.redirect('/reservas/gerenciar')
 

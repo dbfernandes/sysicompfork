@@ -7,7 +7,7 @@ const { Usuario } = require('../models')
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const mailer = require('../modules/mailer');
+const mailer = require('../utils/mailer');
 
 router.get('/login', autenticacaoController.login)
 

@@ -23,10 +23,10 @@ export default new class ReservaService {
         return reservas;
     }
 
-    async listarReservasSalasPorUsuario(idUsuario) {
+    async listarReservasSalasPorUsuario(id) {
         const reserva = await ReservaSala.findOne({
             where: {
-                id: idUsuario
+                id: id
             },
             include: [
                 {

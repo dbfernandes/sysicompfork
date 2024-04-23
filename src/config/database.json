@@ -3,22 +3,22 @@
     "username": "user",
     "password": "password",
     "database": "db",
-    "host": "db",
+    "host": "127.0.0.1",
     "dialect": "mysql",
-    "port": 3306
+    "port": 3327
   },
     "test": {
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "db",
+      "host": "localhost",
       "dialect": "mysql"
     },
     "production": {
       "username": "user",
       "password": "password",
       "database": "db",
-      "host": "db",
+      "host": "localhost",
       "dialect": "mysql",
       "port": 3306
     }

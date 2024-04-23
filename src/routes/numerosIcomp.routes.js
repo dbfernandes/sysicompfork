@@ -5,7 +5,7 @@ import numerosICompProfessoresController from '../controllers/numerosIcompProfes
 import numerosICompProjetosController from '../controllers/numerosIcompProjetosController'
 import numerosICompAlunosController from '../controllers/numerosIcompAlunosController'
 import numerosICompPublicacoesController from '../controllers/numerosIcompPublicacoesController'
-import language from '../modules/i18n.js';
+import language from '../utils/i18n.js';
 
 const languageMiddleware = (req, res, next) =>{
     const {lng} = req.query

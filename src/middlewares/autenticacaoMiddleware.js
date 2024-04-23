@@ -6,18 +6,9 @@ module.exports.isUsuarioAutenticado = async function (req, res, next) {
         return next()
     }
 
-    let usuario
     if(req.session.uid) {
-        usuario = await Usuario.findOne({
-            where: { id: req.session.uid }
-        })
+        return next()
     }
 
-    console.log(req.session)
-    
-    if(!usuario) {
-        return res.redirect('/login')
-    }
-
-    return next()
+    return res.redirect('/login')
 }

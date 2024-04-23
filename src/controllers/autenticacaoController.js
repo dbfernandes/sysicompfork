@@ -148,8 +148,5 @@ const logout = async (req, res) => {
     }
 }
 
-const verificar = async (req, res,next) => {
-    if (!req.session.uid) return res.redirect('/login');
-    next();
-}
-export default { logout, recuperar_senha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }
+
+export default { logout, recuperar_senha, login, autorizarAdmin, autorizarCoord, autorizarProf }

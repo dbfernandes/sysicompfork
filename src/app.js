@@ -10,6 +10,7 @@ import * as bodyParser from 'body-parser';
 import morgan from 'morgan';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+import { isUsuarioAutenticado } from './middlewares/autenticacaoMiddleware';
 
 
 
@@ -58,6 +59,7 @@ app.use(
     express.static(path.join(__dirname, '/../public/uploads/'))
 );
 
-app.use('/', router)
+app.use(isUsuarioAutenticado)
+app.use(router)
 
 export default app
