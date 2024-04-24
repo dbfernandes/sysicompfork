@@ -1,4 +1,5 @@
 import linhasDePesquisaService from '../services/linhasDePesquisaService'
+import logger from '../utils/logger'
 
 // const locals = {
 //   layout: 'dataTable'
