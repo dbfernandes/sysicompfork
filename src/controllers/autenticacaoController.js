@@ -1,4 +1,6 @@
+// const {Usuario} = require('../models');
 import UsuarioService from '../services/usuarioService';
+import mailer from '../modules/mailer';
 import logger from '../utils/logger';
 const bcrypt = require('bcrypt');
 

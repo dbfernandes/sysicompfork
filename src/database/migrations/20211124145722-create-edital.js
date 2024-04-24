@@ -1,14 +1,14 @@
-  'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Edital', {
-  
+
       editalId: {
         allowNull: false,
         type: Sequelize.STRING,
         primaryKey: true,
-        unique: true,
+        unique: true
       },
       vagaDoutorado: {
         allowNull: true,
@@ -26,54 +26,52 @@ module.exports = {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      cartaOrientador:{
-        allowNull : false,
+      cartaOrientador: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      cartaRecomendacao:{
-        allowNull : false,
-        type : Sequelize.STRING
+      cartaRecomendacao: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
-      documento:{
-        allowNull : false,
-        type : Sequelize.STRING
+      documento: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
-      dataInicio:{
-        allowNull : false,
-        type : Sequelize.DATEONLY
+      dataInicio: {
+        allowNull: false,
+        type: Sequelize.DATEONLY
       },
-      dataFim:{
-        allowNull : false,
-        type : Sequelize.DATEONLY
-      },      
-      status:{
-        allowNull : false,
-        type : Sequelize.STRING,
-        defaultValue: '0',
+      dataFim: {
+        allowNull: false,
+        type: Sequelize.DATEONLY
+      },
+      status: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: '0'
       },
       inscricoesIniciadas: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        defaultValue: 0
       },
       inscricoesEncerradas: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        defaultValue: 0
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false,
-      },
-    });
+        allowNull: false
+      }
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    
-    await queryInterface.dropTable('Edital');
-    
+    await queryInterface.dropTable('Edital')
   }
-};
+}

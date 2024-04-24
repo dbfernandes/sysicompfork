@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -8,22 +8,20 @@ module.exports = {
         SalaId: '1',
         UsuarioId: '2',
         atividade: 'Seminários',
-        tipo: "Aula",
-        dias: "Terça, Quinta",
-        dataInicio:new Date(),
-        dataTermino:new Date(),
+        tipo: 'Aula',
+        dias: 'Terça, Quinta',
+        dataInicio: new Date(),
+        dataTermino: new Date(),
         horaInicio: '10:00',
         horaTermino: '12:00',
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
 
-    ]);
+    ])
   },
 
   down: async (queryInterface, Sequelize) => {
-
-    await queryInterface.bulkDelete('ReservaSalas', null, {});
-    
+    await queryInterface.bulkDelete('ReservaSalas', null, {})
   }
-};
+}

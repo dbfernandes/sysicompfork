@@ -1,14 +1,13 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-
     await queryInterface.createTable('Usuario', {
       id: {
         primaryKey: true,
         autoIncrement: true,
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false
       },
       nomeCompleto: {
         type: Sequelize.STRING(255),
@@ -30,7 +29,7 @@ module.exports = {
       },
       validadeTokenResetSenha: {
         type: Sequelize.DATE,
-        allowNull: true,
+        allowNull: true
       },
       email: {
         type: Sequelize.STRING(255),
@@ -92,36 +91,36 @@ module.exports = {
       },
       idLattes: {
         type: Sequelize.BIGINT,
-        allowNull: true,
+        allowNull: true
       },
       formacao: {
         type: Sequelize.STRING(255),
-        allowNull: true,
+        allowNull: true
       },
       formacaoIngles: {
         type: Sequelize.STRING(255),
-        allowNull: true,
+        allowNull: true
       },
       resumo: {
         type: Sequelize.STRING(5000),
-        allowNull: true,
+        allowNull: true
       },
       resumoIngles: {
         type: Sequelize.STRING(5000),
-        allowNull: true,
+        allowNull: true
       },
       ultimaAtualizacao: {
         type: Sequelize.DATE,
-        allowNull: true,
+        allowNull: true
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false,
-      },
+        allowNull: false
+      }
     })
   },
 
@@ -132,7 +131,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('Usuario');
-
+    await queryInterface.dropTable('Usuario')
   }
-};
+}

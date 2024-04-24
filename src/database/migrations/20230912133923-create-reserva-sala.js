@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('ReservaSalas', {
@@ -17,10 +17,10 @@ module.exports = {
       atividade: {
         type: Sequelize.STRING
       },
-      tipo:{
+      tipo: {
         type: Sequelize.STRING
       },
-      dias:{
+      dias: {
         type: Sequelize.STRING
       },
       dataInicio: {
@@ -43,9 +43,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ReservaSalas');
+    await queryInterface.dropTable('ReservaSalas')
   }
-};
+}
