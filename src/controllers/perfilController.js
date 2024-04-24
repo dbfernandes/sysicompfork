@@ -1,5 +1,5 @@
 import UsuarioService from "../services/usuarioService";
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 import logger from "../utils/logger";
 
 const visualizar = async (req, res) => {

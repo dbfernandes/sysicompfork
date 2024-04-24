@@ -75,7 +75,7 @@ const login = async (req, res) => {
     }
 }
 
-const recuperar_senha = async (req, res) => {
+const recuperarSenha = async (req, res) => {
     if (req.method === 'POST') {
 
         const { email } = req.body
@@ -155,4 +155,4 @@ const verificar = async (req, res,next) => {
     if (!req.session.uid) return res.redirect('/login');
     next();
 }
-export default { logout, recuperar_senha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }
+export default { logout, recuperarSenha, login , verificar, autorizarAdmin, autorizarCoord, autorizarProf }

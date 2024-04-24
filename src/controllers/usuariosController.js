@@ -1,5 +1,5 @@
 import UsuarioService from "../services/usuarioService";
-import criarURL from '../utils/criar-url'
+import criarURL from '../utils/criarUrl'
 
 const adicionar = async (req, res) => {
   switch (req.method) {

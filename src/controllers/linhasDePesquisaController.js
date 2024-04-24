@@ -53,7 +53,7 @@ const criar = async (req, res) => {
 
       if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!')
 
-      await linhasDePesquisaService.create({ nome, sigla })
+      await linhasDePesquisaService.criar({ nome, sigla })
     } catch (error) {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
