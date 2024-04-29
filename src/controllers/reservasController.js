@@ -1,6 +1,5 @@
 import ReservaService from '../services/reservasService';
 import salasService from '../services/salasService';
-import logger from '../utils/logger';
 
 const listar = async (req, res) => {
   const reservas = await ReservaService.listarTodos()

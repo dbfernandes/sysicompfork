@@ -1,7 +1,6 @@
 import EditalService from "../services/editalService";
 import editalGerarPlanilha from "../utils/editalGerarPlanilha";
 import linhasDePesquisaService from "../services/linhasDePesquisaService";
-import logger from "../utils/logger";
 const zip = require('express-zip');
 const StreamZip = require('node-stream-zip');
 /* eslint-disable camelcase */
@@ -50,7 +49,6 @@ const addEditalSelecao = async (req, res) => {
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
         })
-        logger.info(`Edital ${num_edital} criado com sucesso por ${req.session.nome}`);
       } catch (error) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
@@ -100,8 +98,7 @@ const deleteEdital = async (req, res) => {
          const { id } = req.params;
 
          try {
-            await EditalService.delete(id);
-            logger.info(`Edital ${id} deletado por ${req.session.nome}`);     
+            await EditalService.delete(id);  
          }catch (error) {
             return res.status(400).json({
                csrfToken: req.csrfToken(),
@@ -129,7 +126,6 @@ const arquivarEdital = async (req, res) => {
           error: err.message
         })
       })
-      logger.info(`Edital ${id_edital} arquivado por ${req.session.nome}`);
       return res.status(200).send(edital_update)
     }
     default:
@@ -206,7 +202,6 @@ const updateEdital = async (req, res) => {
           error: err.message
         })
       })
-      logger.info(`Edital ${id_update} atualizado por ${req.session.nome}`);
       return res.status(200).send(updateEdital)
     }
     default:
@@ -277,7 +272,6 @@ const editalCandidates = async (req, res) => {
 
 const geraPlanilha = async (req, res) => {
    const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
-   logger.info(`Planilha do edital ${req.params.id} gerada por ${req.session.nome}`);
    return res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': 'attachment; filename=planilha.xlsx',
@@ -290,7 +284,6 @@ const gerarCandidatoPDF = async (req, res) => {
    const base64Documento = candidate[req.query.documento];
    const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
    
-   logger.info(`Documento ${req.query.documento} do candidato ${req.params.id} gerado por ${req.session.nome}`);
    return res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename=index.pdf`,
@@ -330,7 +323,6 @@ const getAllCandidatesDocuments = async (req, res) => {
       }
     }
 
-      logger.info(`Documentos de todos os candidatos do edital ${req.params.id} gerados por ${req.session.nome}`);
 
       // Compacte todos os arquivos em um arquivo ZIP
       const zipFilePath = path.join(tempDirPath, 'documentos.zip');
@@ -380,7 +372,6 @@ const getAllDocumentsFromOneCandidate = async (req, res) => {
 
       fs.rmdirSync(tempDirPath, { recursive: true });
       
-      logger.info(`Documentos do candidato ${req.params.id} gerados por ${req.session.nome}`);
       return res.download(zipFilePath, 'documentos.zip');
    
    } catch (error) {

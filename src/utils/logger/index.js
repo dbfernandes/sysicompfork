@@ -11,7 +11,7 @@ const logDir = path.join(__dirname, '../../../logs');
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
-    winston.format.timestamp(),
+    winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
     winston.format.json()
   ),
 //   defaultMeta: { service: 'user-service' },

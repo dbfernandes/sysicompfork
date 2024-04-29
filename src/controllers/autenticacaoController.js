@@ -1,7 +1,6 @@
 // const {Usuario} = require('../models');
 import UsuarioService from '../services/usuarioService';
 import mailer from '../modules/mailer';
-import logger from '../utils/logger';
 const bcrypt = require('bcrypt');
 
 
@@ -67,7 +66,6 @@ const login = async (req, res) => {
                 professor: usuario.professor
             }
             req.session.uid = usuario.id
-            logger.info(`Usuário ${req.session.nome} logado com sucesso`)
             return res.redirect('/inicio')
         }catch(err){
             console.log(err);

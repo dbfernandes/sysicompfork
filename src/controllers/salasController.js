@@ -1,5 +1,3 @@
-// const {Salas} = require('../models');
-import logger from '../utils/logger';
 import SalaService from '../services/salasService';
 
 const adicionar = async (req, res) => {
@@ -29,7 +27,6 @@ const adicionar = async (req, res) => {
 
       await SalaService.criar(nome, bloco, andar, numero, capacidade)
 
-      logger.info(`Sala ${nome} criada por ${req.session.nome}`);
 
       res.redirect('/salas/gerenciar')
     } catch (e) {
@@ -48,7 +45,6 @@ const excluir = async (req, res) => {
 
         // const sala_apagada = await Salas.destroy({where: {id: id}});
         const sala_apagada = await SalaService.excluir(id);
-        logger.info(`Sala ${sala.nome} excluída por ${req.session.nome}`);
         res.redirect('/salas/gerenciar')
      
     }catch(e){
