@@ -88,6 +88,7 @@
     "globals": "^15.0.0",
     "nodemon": "^2.0.14",
     "prettier": "^3.2.5",
+    "prisma": "^5.13.0",
     "sequelize": "^6.6.2",
     "sequelize-auto": "^0.8.2",
     "sequelize-cli": "^6.2.0",

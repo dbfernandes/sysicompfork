@@ -16,8 +16,7 @@ import pdfController from '../controllers/exportToPDF'
 import editalController from '../controllers/editalController'
 import curriculoRoutes from './curriculo.routes'
 import alunosRoutes from './alunos.routes'
-const router = express.Router();
-
+const router = express.Router()
 
 // ROTAS DE AUTENTICAÇÃO
 
@@ -31,8 +30,8 @@ router.use('/selecaoppgi', selecaoppgiRouter)
 
 router.use('/numerosIcomp', numerosIcompRouter)
 
-router.use("/inicio", inicioRoutes);
-router.use("/perfil", perfilRoutes);
+router.use('/inicio', inicioRoutes)
+router.use('/perfil', perfilRoutes)
 
 // Rotas Exclusivas Administrador e Secretaria
 router.use('/usuarios', autenticacaoController.autorizarAdmin, usuariosRoutes)

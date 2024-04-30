@@ -1,18 +1,14 @@
-import express from 'express';
-import exphbs from 'express-handlebars';
-import session from 'express-session';
-import router from './routes';
-import dotenv from 'dotenv';
-import * as uuid from 'uuid';
-import cors from 'cors';
-import * as path from 'path';
-import * as bodyParser from 'body-parser';
-import morgan from 'morgan';
-import csrf from 'csurf';
-import cookieParser from 'cookie-parser';
-import { isUsuarioAutenticado } from './middlewares/autenticacaoMiddleware';
-
-
+import express from 'express'
+import exphbs from 'express-handlebars'
+import session from 'express-session'
+import router from './routes'
+import dotenv from 'dotenv'
+import * as uuid from 'uuid'
+import cors from 'cors'
+import * as path from 'path'
+import csrf from 'csurf'
+import cookieParser from 'cookie-parser'
+import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
 
 dotenv.config()
 const app = express()
