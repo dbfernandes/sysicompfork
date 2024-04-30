@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('AfastamentoTemporarios', {
@@ -10,35 +10,35 @@ module.exports = {
       },
       usuarioId: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       usuarioNome: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       dataSaida: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATEONLY
       },
       dataRetorno: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATEONLY
       },
       tipoViagem: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       localViagem: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       justificativa: {
         allowNull: false,
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT
       },
       planoReposicao: {
         allowNull: false,
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -48,9 +48,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('AfastamentoTemporarios');
+    await queryInterface.dropTable('AfastamentoTemporarios')
   }
-};
+}

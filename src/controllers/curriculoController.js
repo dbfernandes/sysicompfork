@@ -1,69 +1,67 @@
-import AvatarService from "../services/avatarService";
-import PublicacaoService from "../services/publicacaoService";
-import PremioService from "../services/premioService";
-import UsuarioService from "../services/usuarioService";
-import ProjetoService from "../services/projetoService";
-import OrientacaoService from "../services/orientacaoService"
-import criarURL from '../utils/criar-url'
+import AvatarService from '../services/avatarService'
+import PublicacaoService from '../services/publicacaoService'
+import PremioService from '../services/premioService'
+import UsuarioService from '../services/usuarioService'
+import ProjetoService from '../services/projetoService'
+import OrientacaoService from '../services/orientacaoService'
+import criarURL from '../utils/criarUrl'
 
 const visualizar = async (req, res) => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query;
+        const { message, type, messageTitle } = req.query
         const professores = await UsuarioService.listarTodosPorCondicao({
           professor: 1,
           status: 1
         })
-        return res.render("curriculo/curriculo-adicionar", {
-            professores,
-            csrfToken: req.csrfToken(),
-            nome: req.session.nome,
-            usuarioId: req.session.uid,
-            message, 
-            type,
-            messageTitle,
-            tipoUsuario: req.session.tipoUsuario,
-            avatar: null
+        return res.render('curriculo/curriculo-adicionar', {
+          professores,
+          csrfToken: req.csrfToken(),
+          nome: req.session.nome,
+          usuarioId: req.session.uid,
+          message,
+          type,
+          messageTitle,
+          tipoUsuario: req.session.tipoUsuario,
+          avatar: null
         })
-      }catch (error) { 
+      } catch (error) {
         console.log(error)
         return res.status(503).redirect(
-            criarURL('/inicio', {
-                message: 'Não foi possível abrir o envio de currículo.',
-                type: 'danger',
-                messageTitle: 'Envio de currículo indisponível!',
-                tipoUsuario: req.session.tipoUsuario,
-            })
-          );
+          criarURL('/inicio', {
+            message: 'Não foi possível abrir o envio de currículo.',
+            type: 'danger',
+            messageTitle: 'Envio de currículo indisponível!',
+            tipoUsuario: req.session.tipoUsuario
+          })
+        )
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
   }
-  
 }
 
 const verificarAvatar = async (req, res) => {
   switch (req.method) {
     case 'GET':
       try {
-        const {id} = req.params
+        const { id } = req.params
         const avatar = await AvatarService.listarUm(id)
         return res.status(200).send(avatar)
-      }catch(err){
+      } catch (err) {
         return res.status(500).send()
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
   }
-  
 }
 
-const carregar = async (req, res)=> {
+const carregar = async (req, res) => {
   switch (req.method) {
     case 'POST':
       try {
-        const {publicacoes, idProfessor, premios, info, projetos, orientacoes} = req.body
+        const { publicacoes, idProfessor, premios, info, projetos, orientacoes } = req.body
         const publicacoesParsed = JSON.parse(publicacoes)
         const premiosParsed = JSON.parse(premios)
         const infoParsed = JSON.parse(info)
@@ -75,18 +73,17 @@ const carregar = async (req, res)=> {
         await UsuarioService.alterarInfo(idProfessor, infoParsed)
         await PremioService.adicionarVarios(idProfessor, premiosParsed)
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed)
-        if(req.file){
+        if (req.file) {
           await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path)
         }
-        return res.status(201).send();                
-      }catch(error){  
+        return res.status(201).send()
+      } catch (error) {
         console.log(error)
         return res.status(500).send()
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
   }
-
 }
 
-export default { visualizar, verificarAvatar, carregar}
+export default { visualizar, verificarAvatar, carregar }

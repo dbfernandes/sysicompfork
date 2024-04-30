@@ -1,107 +1,107 @@
-const {AfastamentoTemporario} = require('../models');
+const { AfastamentoTemporario } = require('../models')
 
 const formatDbAnswer = (object) => {
-    const array = Array.isArray(object);
-  
-    switch(array) {
-    case (true): {
-      return object.map((linha) => (linha.dataValues));
-    };
-  
-    case (false): {
-      return object.dataValues;
-    };
-  
-    default:
-      return object.dataValues;
-    };
-};
-class AfastamentoService
-{ 
-    
-    async listar(id) {
-        const allResearchLines = await AfastamentoTemporario.findAll({
-            where: {
-                usuarioId: id,
-            },
-        });
-        // console.log(allResearchLines);
-        const formatedAnswer = formatDbAnswer(allResearchLines);
-        const dataFormatada = formatedAnswer.map((afastamento) => {
-            afastamento["createdAt"] = new Date(afastamento["createdAt"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            afastamento["dataSaida"] = new Date(afastamento["dataSaida"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            afastamento["dataRetorno"] = new Date(afastamento["dataRetorno"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            return afastamento;
-        });
-        return dataFormatada;
-    }
+  const array = Array.isArray(object)
 
-    async listarTodos() {
-        const allResearchLines = await AfastamentoTemporario.findAll();
-        // console.log(allResearchLines);
-        const formatedAnswer = formatDbAnswer(allResearchLines);
-        const dataFormatada = formatedAnswer.map((afastamento) => {
-            afastamento["createdAt"] = new Date(afastamento["createdAt"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            afastamento["dataSaida"] = new Date(afastamento["dataSaida"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            afastamento["dataRetorno"] = new Date(afastamento["dataRetorno"]).toLocaleDateString("pt-BR", {
-                timeZone: 'America/Manaus',
-            }).slice(0,10);
-            return afastamento;
-        });
-        return dataFormatada;
-    }
-    
-    async criar(newAfastamento) {
-        const {usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao} = newAfastamento;
-        await AfastamentoTemporario.create({
-            usuarioId,
-            usuarioNome,
-            dataSaida,
-            dataRetorno,
-            tipoViagem,
-            localViagem,
-            justificativa,
-            planoReposicao,
-        });
-    }
-    async pegarAfastamento(id) {
-        const afastamento = await AfastamentoTemporario.findByPk(id);
-        return afastamento;
-    }
+  return array ? object.map((linha) => (linha.dataValues)) : object.dataValues
+  //   switch (array) {
+  //     case (true): {
+  //       return object.map((linha) => (linha.dataValues))
+  //     };
 
-    async vizualizar(id) {
-        const afastamento = await AfastamentoTemporario.findByPk(id);
-        const dataFormatada = afastamento.get()
-        dataFormatada["createdAt"] = new Date(dataFormatada["createdAt"]).toLocaleDateString("pt-BR", {
-            timeZone: 'America/Manaus',
-        }).slice(0,10);
-        dataFormatada["dataSaida"] = new Date(dataFormatada["dataSaida"]).toLocaleDateString("pt-BR", {
-            timeZone: 'America/Manaus',
-        }).slice(0,10);
-        dataFormatada["dataRetorno"] = new Date(dataFormatada["dataRetorno"]).toLocaleDateString("pt-BR", {
-            timeZone: 'America/Manaus',
-        }).slice(0,10);
-        // const formatedAnswer = formatDbAnswer(dataFormatada);
-        return dataFormatada;
-    }
+  //     case (false): {
+  //       return object.dataValues
+  //     };
 
-    async delete(id) {
-        await AfastamentoTemporario.destroy({
-            where: {
-                id,
-            },
-        });
-    }
+//     default:
+//       return object.dataValues
+//   };
+}
+class AfastamentoService {
+  async listar (id) {
+    const allResearchLines = await AfastamentoTemporario.findAll({
+      where: {
+        usuarioId: id
+      }
+    })
+    // console.log(allResearchLines);
+    const formatedAnswer = formatDbAnswer(allResearchLines)
+    const dataFormatada = formatedAnswer.map((afastamento) => {
+      afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      afastamento.dataSaida = new Date(afastamento.dataSaida).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      afastamento.dataRetorno = new Date(afastamento.dataRetorno).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      return afastamento
+    })
+    return dataFormatada
+  }
+
+  async listarTodos () {
+    const allResearchLines = await AfastamentoTemporario.findAll()
+    // console.log(allResearchLines);
+    const formatedAnswer = formatDbAnswer(allResearchLines)
+    const dataFormatada = formatedAnswer.map((afastamento) => {
+      afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      afastamento.dataSaida = new Date(afastamento.dataSaida).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      afastamento.dataRetorno = new Date(afastamento.dataRetorno).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+      return afastamento
+    })
+    return dataFormatada
+  }
+
+  async criar (newAfastamento) {
+    const { usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao } = newAfastamento
+    await AfastamentoTemporario.create({
+      usuarioId,
+      usuarioNome,
+      dataSaida,
+      dataRetorno,
+      tipoViagem,
+      localViagem,
+      justificativa,
+      planoReposicao
+    })
+  }
+
+  async pegarAfastamento (id) {
+    const afastamento = await AfastamentoTemporario.findByPk(id)
+    return afastamento
+  }
+
+  async vizualizar (id) {
+    const afastamento = await AfastamentoTemporario.findByPk(id)
+    const dataFormatada = afastamento.get()
+    dataFormatada.createdAt = new Date(dataFormatada.createdAt).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Manaus'
+    }).slice(0, 10)
+    dataFormatada.dataSaida = new Date(dataFormatada.dataSaida).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Manaus'
+    }).slice(0, 10)
+    dataFormatada.dataRetorno = new Date(dataFormatada.dataRetorno).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Manaus'
+    }).slice(0, 10)
+    // const formatedAnswer = formatDbAnswer(dataFormatada);
+    return dataFormatada
+  }
+
+  async delete (id) {
+    await AfastamentoTemporario.destroy({
+      where: {
+        id
+      }
+    })
+  }
 }
 
-export default new AfastamentoService();
+export default new AfastamentoService()

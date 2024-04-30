@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -7,11 +7,11 @@ module.exports = {
       nome: { type: Sequelize.STRING, allowNull: false },
       chave: { type: Sequelize.STRING, allowNull: false },
       createdAt: { allowNull: false, type: Sequelize.DATE },
-      updatedAt: { allowNull: false, type: Sequelize.DATE },
-    });
+      updatedAt: { allowNull: false, type: Sequelize.DATE }
+    })
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('TipoPublicacao');
+    await queryInterface.dropTable('TipoPublicacao')
   }
-};
+}

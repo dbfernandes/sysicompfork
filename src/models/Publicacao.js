@@ -1,20 +1,18 @@
-const Sequelize = require('sequelize')
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Publicacao extends Model {
-    
-    static associate(models) {
-        this.belongsToMany(models.Usuario, { 
-          through: 'RelUsuarioPublicacao', 
-          foreignKey: 'idPublicacao',
-          as: "Professor"
-        })
-        this.belongsTo(models.TipoPublicacao, { 
-          foreignKey: 'tipo', as: "Tipo" 
-        })
+    static associate (models) {
+      this.belongsToMany(models.Usuario, {
+        through: 'RelUsuarioPublicacao',
+        foreignKey: 'idPublicacao',
+        as: 'Professor'
+      })
+      this.belongsTo(models.TipoPublicacao, {
+        foreignKey: 'tipo', as: 'Tipo'
+      })
     }
   }
 
@@ -30,69 +28,65 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Este campo não pode ser vazio' },
-        notEmpty: { msg: 'Este campo não pode ser vazio' },
-      },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     ano: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        notNull: { msg: 'Este campo não pode ser vazio' },
-      },
+        notNull: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     local: {
-        type: DataTypes.STRING(1024),
-        defaultValue: null,
-        allowNull: true,
+      type: DataTypes.STRING(1024),
+      defaultValue: null,
+      allowNull: true
     },
     tipo: {
-        type: DataTypes.SMALLINT(1),
-        allowNull: false,
-        validate: {
-          notNull: { msg: 'Este campo não pode ser vazio' },
-        },
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     natureza: {
       type: DataTypes.STRING(100),
       defaultValue: null,
-      allowNull: true,
+      allowNull: true
     },
     autores: {
-        type: DataTypes.STRING(1024),
-        allowNull: false,
-        validate: {
-          notNull: { msg: 'Este campo não pode ser vazio' },
-          notEmpty: { msg: 'Este campo não pode ser vazio' },
-        },
+      type: DataTypes.STRING(1024),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     ISSN: {
-        type: DataTypes.STRING(300),
-        allowNull: false,
-        validate: {
-          notNull: { msg: 'Este campo não pode ser vazio' },
-          notEmpty: { msg: 'Este campo não pode ser vazio' },
-        },
+      type: DataTypes.STRING(300),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Este campo não pode ser vazio' },
+        notEmpty: { msg: 'Este campo não pode ser vazio' }
+      }
     },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
-      allowNull: false,
+      allowNull: false
     },
     updatedAt: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
-      allowNull: false,
-    },
-  },{
+      allowNull: false
+    }
+  }, {
     sequelize,
     tableName: 'Publicacao',
     modelName: 'Publicacao',
-    timestamps: false,
-  });
+    timestamps: false
+  })
 
-
-  return Publicacao;
+  return Publicacao
 }
- 
-
-

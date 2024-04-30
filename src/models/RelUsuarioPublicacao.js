@@ -1,33 +1,33 @@
-'use strict';
-const { Model } = require('sequelize');
+'use strict'
+const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class RelUsuarioPublicacao extends Model {
-    static associate(models) {
+    static associate (models) {
 
     }
   }
   RelUsuarioPublicacao.init(
     {
-        idUsuario: {
+      idUsuario: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: 'Este campo não pode ser vazio' },
-        },
+          notNull: { msg: 'Este campo não pode ser vazio' }
+        }
       },
       idPublicacao: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: 'Este campo não pode ser vazio' },
-        },
-      },
+          notNull: { msg: 'Este campo não pode ser vazio' }
+        }
+      }
     },
     {
       sequelize,
       modelName: 'RelUsuarioPublicacao',
-      tableName: 'RelUsuarioPublicacao',
+      tableName: 'RelUsuarioPublicacao'
     }
-  );
-  return RelUsuarioPublicacao;
-};
+  )
+  return RelUsuarioPublicacao
+}

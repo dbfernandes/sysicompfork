@@ -1,11 +1,10 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
-const moment = require('moment');
-const bcrypt = require('bcrypt');
+} = require('sequelize')
+const bcrypt = require('bcrypt')
 
-const saltRounds = 10;
+const saltRounds = 10
 
 module.exports = (sequelize, DataTypes) => {
   class Candidate extends Model {
@@ -14,178 +13,178 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       // define association here
-      Candidate.belongsTo(models.LinhasDePesquisa, { foreignKey: 'linhaDePesquisaId', as: 'linhaDePesquisa'});
+      Candidate.belongsTo(models.LinhasDePesquisa, { foreignKey: 'linhaDePesquisaId', as: 'linhaDePesquisa' })
     }
   };
   Candidate.init({
     id: {
-      type:DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
-    editalPosition:{
-      type:DataTypes.INTEGER,
-      allowNull:true,
+    editalPosition: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     Nome: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    linhaDePesquisaId:{
-      type:DataTypes.INTEGER,
-      allowNull:true,
+    linhaDePesquisaId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
-    Nascimento:{
+    Nascimento: {
       type: DataTypes.DATEONLY,
-      allowNull: true,
+      allowNull: true
     },
-    Sexo:{
+    Sexo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     NomeSocial: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    CEP:{
+    CEP: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    UF:{
+    UF: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     Endereco: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Cidade:{
+    Cidade: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Bairro:{
+    Bairro: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Nacionalidade:{
+    Nacionalidade: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Telefone:{
+    Telefone: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    TelefoneSecundario:{
+    TelefoneSecundario: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    ComoSoube:{
+    ComoSoube: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Curso:{
+    Curso: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Regime:{
+    Regime: {
       type: DataTypes.STRING,
-      allowNull: true,
-    },  
-    Cotista:{
+      allowNull: true
+    },
+    Cotista: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: true
     },
-    CotistaTipo:{
+    CotistaTipo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Condicao:{
+    Condicao: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: true
     },
-    CondicaoTipo:{
+    CondicaoTipo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Bolsista:{
+    Bolsista: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: true
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     editalId: {
-      type:DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false
     },
     password: {
-      type:DataTypes.VIRTUAL,
-      allowNull: false,
+      type: DataTypes.VIRTUAL,
+      allowNull: false
     },
     passwordHash: {
-      type:DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false
     },
     CursoGraduacao: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     InstituicaoGraduacao: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     AnoEgressoGraduacao: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     CursoPos: {
       type: DataTypes.STRING,
-      allowNull: true,
-    },	
-    CursoPosTipo:{
+      allowNull: true
+    },
+    CursoPosTipo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    CursoInstituicaoPos:{
+    CursoInstituicaoPos: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    CursoAnoEgressoPos:{
+    CursoAnoEgressoPos: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
-    Curriculum :{
+    Curriculum: {
       type: DataTypes.BLOB,
-      allowNull: true,
+      allowNull: true
     },
-    CartaDoOrientador :{
+    CartaDoOrientador: {
       type: DataTypes.BLOB,
-      allowNull: true,
+      allowNull: true
     },
-    PropostaDeTrabalho :{
+    PropostaDeTrabalho: {
       type: DataTypes.BLOB,
-      allowNull: true,
-    },
-    
+      allowNull: true
+    }
+
   }, {
     sequelize,
     modelName: 'Candidate',
     freezeTableName: true,
-    timestamps: false,
-  });
+    timestamps: false
+  })
 
   Candidate.beforeSave(async (candidate, options) => {
     if (candidate.password) {
-      candidate.passwordHash = await bcrypt.hash(candidate.password, saltRounds);
+      candidate.passwordHash = await bcrypt.hash(candidate.password, saltRounds)
     }
-  });
+  })
 
-  Candidate.prototype.validPassword = async function(password) {
-    return await bcrypt.compare(password, this.passwordHash);
-  };
-  
-  return Candidate;
-};
+  Candidate.prototype.validPassword = async function (password) {
+    return await bcrypt.compare(password, this.passwordHash)
+  }
+
+  return Candidate
+}

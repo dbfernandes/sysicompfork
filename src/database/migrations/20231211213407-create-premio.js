@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -9,17 +9,17 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'Usuario', key: 'id' },
         onUpdate: 'restrict',
-        onDelete: 'restrict',
+        onDelete: 'restrict'
       },
       titulo: { type: Sequelize.STRING, allowNull: false },
       entidade: { type: Sequelize.STRING, allowNull: false },
-      ano: {type: Sequelize.INTEGER(4), allowNull: false },
+      ano: { type: Sequelize.INTEGER(4), allowNull: false },
       createdAt: { allowNull: false, type: Sequelize.DATE },
-      updatedAt: { allowNull: false, type: Sequelize.DATE },
-    });
+      updatedAt: { allowNull: false, type: Sequelize.DATE }
+    })
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Premios');
+    await queryInterface.dropTable('Premios')
   }
-};
+}

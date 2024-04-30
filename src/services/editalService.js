@@ -1,240 +1,225 @@
-import linhasDePesquisaService from './linhasDePesquisaService';
+const { Candidate } = require('../models')
+const moment = require('moment-timezone')
+/* eslint-disable camelcase */
 
-const { Candidate, LinhasDePesquisa } = require('../models');
-const moment = require('moment-timezone'); 
-
-var {
-    Edital
-} = require('../models');
+const {
+  Edital
+} = require('../models')
 
 class EditalService {
-    async criarEdital({
-        num_edital,
+  async criarEdital ({
+    num_edital,
+    documento,
+    data_inicio,
+    data_fim,
+    carta_recomendacao,
+    carta_orientador,
+    vaga_regular_mestrado,
+    vaga_regular_doutorado,
+    vaga_suplementar_mestrado,
+    vaga_suplementar_doutorado
+  }) {
+    const edital = await Edital.findOne({
+      where: {
+        editalId: num_edital
+      }
+    })
+
+    if (edital) {
+      console.log('edital ja existe')
+      throw new Error(`Edital de número ${num_edital} já existe`)
+    }
+
+    try {
+      const novo_edital = await Edital.create({
+        editalId: num_edital,
+        vagaDoutorado: vaga_regular_doutorado,
+        vagaMestrado: vaga_regular_mestrado,
+        cotasDoutorado: vaga_suplementar_doutorado,
+        cotasMestrado: vaga_suplementar_mestrado,
+        cartaOrientador: carta_orientador,
+        cartaRecomendacao: carta_recomendacao,
         documento,
-        data_inicio,
-        data_fim,
-        carta_recomendacao,
-        carta_orientador,
-        vaga_regular_mestrado,
-        vaga_regular_doutorado,
-        vaga_suplementar_mestrado,
-        vaga_suplementar_doutorado
-    }) {
+        dataInicio: data_inicio,
+        dataFim: data_fim,
+        status: '1',
+        inscricoesIniciadas: 0,
+        inscricoesEncerradas: 0,
+        createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
+        updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+      })
 
-        const edital = await Edital.findOne({
-            where: {
-                editalId: num_edital
-            }
-        });
+      return novo_edital
+    } catch (error) {
+      console.log(`[ERROR] Criar Edital: ${error}`)
+      throw new Error('Não foi possível criar o Edital')
+    }
+  }
 
-        if (edital) {
-            console.log("edital ja existe");
-            throw new Error(`Edital de número ${num_edital} já existe`);
+  async listEdital () {
+    // listagem dos editais
+    const editais = await Edital.findAll().catch(err => {
+      console.log(`[ERROR] Listar Editais: ${err}`)
+      throw new Error('Não foi possivel listar o edital')
+    })
+
+    return editais
+  }
+
+  async delete (id) {
+    try {
+      const edital = await Edital.findOne({
+        where: {
+          editalId: id
         }
+      })
 
-        try {
-            const novo_edital = await Edital.create({
-                editalId: num_edital,
-                vagaDoutorado: vaga_regular_doutorado,
-                vagaMestrado: vaga_regular_mestrado,
-                cotasDoutorado: vaga_suplementar_doutorado,
-                cotasMestrado: vaga_suplementar_mestrado,
-                cartaOrientador: carta_orientador,
-                cartaRecomendacao: carta_recomendacao,
-                documento: documento,
-                dataInicio: data_inicio,
-                dataFim: data_fim,                
-                status: "1",
-                inscricoesIniciadas: 0,
-                inscricoesEncerradas: 0,
-                createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-                updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-            });
-        
-            return novo_edital;
-        } catch (error) {
-            console.log(`[ERROR] Criar Edital: ${error}`);
-            throw new Error("Não foi possível criar o Edital");
-        }
-      
-        
+      if (!edital) {
+        console.log('Edital não existe')
+        throw new Error(`Não existe edital de número ${id}`)
+      }
+
+      edital.status = 0
+      await edital.save()
+
+      return edital
+    } catch (error) {
+      console.error('Erro ao arquivar edital:', error)
+      throw new Error(error)
+    }
+  }
+
+  async arquivar (id_edital, {
+    status
+  }) {
+    const edital = await Edital.findOne({
+      where: {
+        editalId: id_edital
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Buscar Edital: ${err}`)
+      console.log('{this.id_update}', id_edital)
+      throw new Error('Não foi possivel buscar o edital')
+    })
+
+    if (!edital) {
+      throw new Error('Edital não encontrado')
     }
 
+    await Edital.update({
+      status,
+      updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+    }, {
+      where: {
+        editalId: id_edital
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Atualizar Edital: ${err}`)
+      throw new Error('Não foi possivel alterar o status do edital')
+    })
 
-    async listEdital() {
-        // listagem dos editais
-        const editais = await Edital.findAll().catch(err => {
-            console.log(`[ERROR] Listar Editais: ${err}`)
-            throw new Error("Não foi possivel listar o edital");
-        })
+    return edital
+  }
 
+  async getEdital (id) {
+    const edital = await Edital.findOne({
+      where: {
+        editalId: id
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Buscar Edital: ${err}`)
+      throw new Error('Não foi possivel buscar o edital')
+    })
 
-        return editais;
+    return edital
+  }
+
+  async update (id_update, {
+    num_edital,
+    documento,
+    data_inicio,
+    data_fim,
+    carta_recomendacao,
+    carta_orientador,
+    vaga_regular_mestrado,
+    vaga_regular_doutorado,
+    vaga_suplementar_mestrado,
+    vaga_suplementar_doutorado
+  }) {
+    const edital = await Edital.findOne({
+      where: {
+        editalId: id_update
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Buscar Edital: ${err}`)
+      console.log('{this.id_update}', id_update)
+      throw new Error('Não foi possivel buscar o edital')
+    })
+
+    if (!edital) {
+      throw new Error('Edital não encontrado')
     }
 
-    async delete(id) {
-        try {
-            const edital = await Edital.findOne({
-                where: {
-                    editalId: id
-                }
-            });
-    
-            if (!edital) {
-                console.log("Edital não existe");
-                throw new Error(`Não existe edital de número ${id}`);
-            }
-    
-            edital.status = 0;
-            await edital.save();
-    
-            return edital;
-        } catch (error) {
-            console.error("Erro ao arquivar edital:", error);
-            throw new Error(error);
-        }
+    await Edital.update({
+      editalId: num_edital,
+      vagaDoutorado: vaga_regular_doutorado,
+      vagaMestrado: vaga_regular_mestrado,
+      cotasDoutorado: vaga_suplementar_doutorado,
+      cotasMestrado: vaga_suplementar_mestrado,
+      cartaOrientador: carta_orientador,
+      cartaRecomendacao: carta_recomendacao,
+      documento,
+      dataInicio: data_inicio,
+      dataFim: data_fim,
+      updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+    }, {
+      where: {
+        editalId: id_update
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Atualizar Edital: ${err}`)
+      throw new Error('Não foi possivel atualizar o edital')
+    })
+
+    return edital
+  }
+
+  async getEditalByNumber (number) {
+    const edital = await Edital.findOne({
+      where: {
+        editalId: number
+      }
+    }).catch(err => {
+      console.log(`[ERROR] Buscar Edital: ${err}`)
+      throw new Error('Não foi possivel buscar o edital')
+    })
+
+    return edital
+  }
+
+  async listCandidates (id) {
+    const candidates = await Candidate.findAll({
+      where: {
+        editalId: id
+      }
     }
+    ).catch(err => {
+      console.log(`[ERROR] Listar Candidatos: ${err}`)
+      throw new Error('Não foi possivel listar os candidatos')
+    })
 
-    async arquivar(id_edital, {
-        status
-    }) {
+    return candidates
+  }
 
-        const edital = await Edital.findOne({
-            where: {
-                editalId: id_edital
-            }
-        }).catch(err => {
-
-            console.log(`[ERROR] Buscar Edital: ${err}`)
-            console.log('{this.id_update}', id_edital)
-            throw new Error("Não foi possivel buscar o edital");
-        })
-
-        if (!edital) {
-            throw new Error("Edital não encontrado");
-        }
-
-        await Edital.update({
-            status,
-            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-        }, {
-            where: {
-                editalId: id_edital
-            }
-        }).catch(err => {
-            console.log(`[ERROR] Atualizar Edital: ${err}`)
-            throw new Error("Não foi possivel alterar o status do edital");
-        })
-
-        return edital;
+  async getCandidate (id) {
+    try {
+      const candidate = await Candidate.findByPk(id)
+      return candidate
+    } catch (error) {
+      console.log(`[ERROR] Buscar Candidato: ${error}`)
+      throw new Error('Não foi possivel buscar o candidato')
     }
-    
-
-    async getEdital(id) {
-        const edital = await Edital.findOne({
-            where: {
-                editalId: id
-            }
-        }).catch(err => {
-            console.log(`[ERROR] Buscar Edital: ${err}`)
-            throw new Error("Não foi possivel buscar o edital");
-        })
-        
-
-
-        return edital;
-    }
-
-    async update(id_update, {
-        num_edital,
-        documento,
-        data_inicio,
-        data_fim,
-        carta_recomendacao,
-        carta_orientador,
-        vaga_regular_mestrado,
-        vaga_regular_doutorado,
-        vaga_suplementar_mestrado,
-        vaga_suplementar_doutorado
-    }) {
-
-        const edital = await Edital.findOne({
-            where: {
-                editalId: id_update
-            }
-        }).catch(err => {
-
-            console.log(`[ERROR] Buscar Edital: ${err}`)
-            console.log('{this.id_update}', id_update)
-            throw new Error("Não foi possivel buscar o edital");
-        })
-
-        if (!edital) {
-            throw new Error("Edital não encontrado");
-        }
-
-        await Edital.update({
-            editalId: num_edital,
-            vagaDoutorado: vaga_regular_doutorado,
-            vagaMestrado: vaga_regular_mestrado,
-            cotasDoutorado: vaga_suplementar_doutorado,
-            cotasMestrado: vaga_suplementar_mestrado,
-            cartaOrientador: carta_orientador,
-            cartaRecomendacao: carta_recomendacao,
-            documento: documento,
-            dataInicio: data_inicio,
-            dataFim: data_fim,
-            updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-        }, {
-            where: {
-                editalId: id_update
-            }
-        }).catch(err => {
-            console.log(`[ERROR] Atualizar Edital: ${err}`)
-            throw new Error("Não foi possivel atualizar o edital");
-        })
-
-        return edital;
-    }
-
-    async getEditalByNumber(number) {
-        const edital = await Edital.findOne({
-            where: {
-                editalId: number
-            }
-        }).catch(err => {
-            console.log(`[ERROR] Buscar Edital: ${err}`)
-            throw new Error("Não foi possivel buscar o edital");
-        })
-
-        return edital;
-    }
-    
-    async listCandidates(id){
-        const candidates = await Candidate.findAll({
-            where: {
-                editalId: id
-            },
-        }
-        ).catch(err => {
-            console.log(`[ERROR] Listar Candidatos: ${err}`)
-            throw new Error("Não foi possivel listar os candidatos");
-        })
-
-        return candidates
-    }
-    
-    async getCandidate(id) {
-        try {
-            const candidate = await Candidate.findByPk(id);
-            return candidate;
-
-        } catch (error) {
-            console.log(`[ERROR] Buscar Candidato: ${err}`)
-            throw new Error("Não foi possivel buscar o candidato");
-        
-        }
-    }
+  }
 }
 
-export default new EditalService;
+export default new EditalService()

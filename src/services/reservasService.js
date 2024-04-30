@@ -1,27 +1,27 @@
-const { ReservaSala } = require('../models');
-const { Salas } = require('../models');
-const { Usuario } = require('../models');
+const { ReservaSala } = require('../models')
+const { Salas } = require('../models')
+const { Usuario } = require('../models')
 
 export default new class ReservaService {
-    async listarTodos() {
-        const reservas = await ReservaSala.findAll();
-        return reservas;
-    }
+  async listarTodos () {
+    const reservas = await ReservaSala.findAll()
+    return reservas
+  }
 
-    async listarReservasSalas() {
-        const reservas = await ReservaSala.findAll({
-            include: [
-                {
-                    model: Salas,
-                    as: 'salas',
-                }, {
-                    model: Usuario,
-                    as: 'usuario',
-                }
-            ]
-        });
-        return reservas;
-    }
+  async listarReservasSalas () {
+    const reservas = await ReservaSala.findAll({
+      include: [
+        {
+          model: Salas,
+          as: 'salas'
+        }, {
+          model: Usuario,
+          as: 'usuario'
+        }
+      ]
+    })
+    return reservas
+  }
 
     async listarReservasSalasPorUsuario(id) {
         const reserva = await ReservaSala.findOne({
@@ -38,43 +38,23 @@ export default new class ReservaService {
         return reserva;
     }
 
-    async listarUm(id) {
-        try {
-            const reserva = await ReservaSala.findByPk(id);
-            return reserva;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
+  async listarUm (id) {
+    const reserva = await ReservaSala.findByPk(id)
+    return reserva
+  }
 
-    async criar(reserva) {
-        try {
-            const reservaCriada = await ReservaSala.create(reserva);
-            return reservaCriada;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    
-    async atualizar(id, reserva) {
-        try {
-            const reservaAtualizada = await ReservaSala.update(reserva, { where: { id: id } });
-            return reservaAtualizada;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
+  async criar (reserva) {
+    const reservaCriada = await ReservaSala.create(reserva)
+    return reservaCriada
+  }
 
-    async remover(id) {
-        try {
-            const reservaExcluida = await ReservaSala.destroy({ where: { id: id } });
-            return reservaExcluida;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-}
+  async atualizar (id, reserva) {
+    const reservaAtualizada = await ReservaSala.update(reserva, { where: { id } })
+    return reservaAtualizada
+  }
+
+  async remover (id) {
+    const reservaExcluida = await ReservaSala.destroy({ where: { id } })
+    return reservaExcluida
+  }
+}()

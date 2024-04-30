@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -8,37 +8,35 @@ module.exports = {
         nome: 'Auditório',
         capacidade: 100,
         numero: 1,
-        bloco: "Icomp Tech",
+        bloco: 'Icomp Tech',
         andar: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         id: 2,
         nome: 'Laboratório de Graduação',
         capacidade: 50,
         numero: 2,
-        bloco: "Icomp 1",
+        bloco: 'Icomp 1',
         andar: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         id: 3,
         nome: 'Sala 4',
         capacidade: 40,
         numero: 4,
-        bloco: "Icomp 2",
+        bloco: 'Icomp 2',
         andar: 2,
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]);
+        updatedAt: new Date()
+      }
+    ])
   },
 
   down: async (queryInterface, Sequelize) => {
-
-    await queryInterface.bulkDelete('Salas', null, {});
-    
+    await queryInterface.bulkDelete('Salas', null, {})
   }
-};
+}

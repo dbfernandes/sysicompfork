@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -7,8 +7,8 @@ module.exports = {
       fields: ['SalaId'],
       name: 'reserva_sala_fk',
       references: {
-      table: 'Salas',
-      field: 'id'
+        table: 'Salas',
+        field: 'id'
       },
       onDelete: 'cascade',
       onUpdate: 'cascade'
@@ -17,6 +17,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeConstraint('ReservaSalas', 'reserva_sala_fk');
+    await queryInterface.removeConstraint('ReservaSalas', 'reserva_sala_fk')
   }
-};
+}

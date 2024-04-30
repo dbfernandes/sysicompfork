@@ -1,4 +1,4 @@
-
+/* eslint-disable*/
 function get_index(obj, idx){
     const keys = Object.keys(obj);
     for (var key in keys){
@@ -148,28 +148,28 @@ function getCompleteData(data, publicCallback){
                     if(sub_val.length > 0){
                         publicDict[j] = []
                         for (var m in sub_val){
-                            const public = get_publicDict(sub_val[m])
-                            publicDict[j].push(public)
+                            const publicValue = get_publicDict(sub_val[m])
+                            publicDict[j].push(publicValue)
 
                         }
                     }else{
                         if(sub_val.hasOwnProperty("AUTORES")){
                             publicDict[j] = []
-                            const public = get_publicDict(sub_val)
-                            publicDict[j].push(public)
+                            const publicValue = get_publicDict(sub_val)
+                            publicDict[j].push(publicValue)
                         }else{
                             for(var k in sub_val){
                                 if(sub_val[k].length > 0){
                                     publicDict[k] = []
                                     for (var l in sub_val[k]){
-                                        const public = get_publicDict(sub_val[k][l])
-                                        publicDict[k].push(public)
+                                        const publicValue = get_publicDict(sub_val[k][l])
+                                        publicDict[k].push(publicValue)
                                     }
                                 }else{
                                     if(sub_val[k].hasOwnProperty("AUTORES")){
                                         publicDict[k] = []
-                                        const public = get_publicDict(sub_val[k])
-                                        publicDict[k].push(public)
+                                        const publicValue = get_publicDict(sub_val[k])
+                                        publicDict[k].push(publicValue)
                                     }
                                 }
                             }
@@ -280,28 +280,28 @@ function getCompleteFormData(data, publicCallback){
                     if(sub_val.length > 0){
                         publicDict[j] = []
                         for (var m in sub_val){
-                            const public = get_publicDict(sub_val[m])
-                            publicDict[j].push(public)
+                            const publicValue = get_publicDict(sub_val[m])
+                            publicDict[j].push(publicValue)
                             
                         }
                     }else{
                         if(sub_val.hasOwnProperty("AUTORES")){
                             publicDict[j] = []
-                            const public = get_publicDict(sub_val)
-                            publicDict[j].push(public)
+                            const publicValue = get_publicDict(sub_val)
+                            publicDict[j].push(publicValue)
                         }else{
                             for(var k in sub_val){
                                 if(sub_val[k].length > 0){
                                     publicDict[k] = []
                                     for (var l in sub_val[k]){
-                                        const public = get_publicDict(sub_val[k][l])
-                                        publicDict[k].push(public)
+                                        const publicValue = get_publicDict(sub_val[k][l])
+                                        publicDict[k].push(publicValue)
                                     }
                                 }else{
                                     if(sub_val[k].hasOwnProperty("AUTORES")){
                                         publicDict[k] = []
-                                        const public = get_publicDict(sub_val[k])
-                                        publicDict[k].push(public)
+                                        const publicValue = get_publicDict(sub_val[k])
+                                        publicDict[k].push(publicValue)
                                     }
                                 }
                             }
