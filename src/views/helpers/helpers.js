@@ -1,7 +1,7 @@
 const moment = require('moment-timezone')
 
 const whichCourse = (course, lng) => {
-  const language = require('../../modules/i18n.js')
+  const language = require('../../utils/i18n.js')
   console.log(course)
   const i18n = language.default.i18next
   i18n.changeLanguage(lng)
@@ -29,7 +29,7 @@ const isEnLng = (lng) => {
 }
 
 const guidencesOnGoing = (course, lng) => {
-  const language = require('../../modules/i18n.js')
+  const language = require('../../utils/i18n.js')
   console.log(course)
   const i18n = language.default.i18next
   i18n.changeLanguage(lng)
@@ -47,7 +47,7 @@ const guidencesOnGoing = (course, lng) => {
 }
 
 const guidencesEnded = (course, lng) => {
-  const language = require('../../modules/i18n.js')
+  const language = require('../../utils/i18n.js')
   console.log(course)
   const i18n = language.default.i18next
   i18n.changeLanguage(lng)
