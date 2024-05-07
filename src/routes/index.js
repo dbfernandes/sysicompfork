@@ -18,6 +18,13 @@ import curriculoRoutes from './curriculo.routes'
 import alunosRoutes from './alunos.routes'
 const router = express.Router()
 
+// const { isUsuarioAutenticado } = require('../utils/autenticacaoMiddleware')
+
+/* Add routes */
+// router.use('/', isUsuarioAutenticado)
+// router.use('/', autenticacaoRoutes)
+// router.use('/inscricao', inscricaoRouter);
+
 // ROTAS DE AUTENTICAÇÃO
 
 router.get('/login', autenticacaoController.login)
@@ -30,6 +37,9 @@ router.use('/selecaoppgi', selecaoppgiRouter)
 
 router.use('/numerosIcomp', numerosIcompRouter)
 
+router.use(autenticacaoController.verificar)
+
+router.use('//', (req, res) => res.redirect('/inicio'))
 router.use('/inicio', inicioRoutes)
 router.use('/perfil', perfilRoutes)
 
