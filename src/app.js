@@ -8,7 +8,7 @@ import cors from 'cors'
 import * as path from 'path'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
-import logger from './utils/logger'
+import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
 
 dotenv.config()
 const app = express()
@@ -56,12 +56,7 @@ app.use(
   express.static(path.join(__dirname, '/../public/uploads/'))
 )
 
-app.use((req, res, next) => {
-  if (req.session.uid) {
-    logger.info(`SESSION ID: ${req.session.id}, USER ID:${req.session.uid}, URL: ${req.originalUrl}`)
-  }
-  next()
-})
-app.use('/', router)
+app.use(isUsuarioAutenticado)
+app.use(router)
 
 export default app
