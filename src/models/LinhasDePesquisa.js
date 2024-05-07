@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'LinhasDePesquisa',
       modelName: 'LinhasDePesquisa',
       freezeTableName: true,
-      timestamps: false
+      timestamps: true
     }
   )
 

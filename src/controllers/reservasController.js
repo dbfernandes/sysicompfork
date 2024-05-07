@@ -1,8 +1,5 @@
-import ReservaService from '../services/reservasService'
-import salasService from '../services/salasService'
-// const { ReservaSala } = require('../models');
-// const { Salas } = require('../models');
-// const { Usuario } = require('../models');
+import ReservaService from '../services/reservasService';
+import salasService from '../services/salasService';
 
 const listar = async (req, res) => {
   const reservas = await ReservaService.listarTodos()

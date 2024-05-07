@@ -17,3 +17,5 @@ public/candidato/uploads/*
 !src/candidato/uploads/.gitkeep 
 #Removing the .xlsx file
 /planilha.xlsx
+
+/logs/*

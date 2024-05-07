@@ -1,4 +1,4 @@
-import UsuarioService from '../services/usuarioService'
+import UsuarioService from "../services/usuarioService";
 import criarURL from '../utils/criarUrl'
 
 const adicionar = async (req, res) => {

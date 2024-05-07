@@ -57,7 +57,7 @@ export default new class LinhasDePesquisaService {
     return formatedAnswer
   }
 
-  async create (newResearchLine) {
+  async criar (newResearchLine) {
     const { nome, sigla } = newResearchLine
 
     await LinhasDePesquisa.create({

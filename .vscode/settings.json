@@ -5,8 +5,8 @@
                 "authProtocol": "default"
             },
             "previewLimit": 50,
-            "server": "localhost",
-            "port": 3327,
+            "server": "db",
+            "port": 3306,
             "driver": "MySQL",
             "name": "asd",
             "database": "db",

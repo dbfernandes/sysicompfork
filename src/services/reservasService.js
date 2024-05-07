@@ -38,10 +38,15 @@ export default new class ReservaService {
     return reserva
   }
 
-  async listarUm (id) {
-    const reserva = await ReservaSala.findByPk(id)
-    return reserva
-  }
+    async buscarReserva(id) {
+        try {
+            const reserva = await ReservaSala.findByPk(id);
+            return reserva;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
 
   async criar (reserva) {
     const reservaCriada = await ReservaSala.create(reserva)

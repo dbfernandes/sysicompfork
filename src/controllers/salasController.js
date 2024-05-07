@@ -1,5 +1,4 @@
-// const {Salas} = require('../models');
-import SalaService from '../services/salasService'
+import SalaService from '../services/salasService';
 
 const adicionar = async (req, res) => {
   if (req.method === 'GET') {
@@ -28,24 +27,6 @@ const adicionar = async (req, res) => {
 
       await SalaService.criar(nome, bloco, andar, numero, capacidade)
 
-      // const sala = await Salas
-      //     .create({
-      //         nome,
-      //         bloco,
-      //         andar,
-      //         numero,
-      //         capacidade
-      //     })
-      //     .catch((err) => {
-      //         responseError = err;
-      //     });
-
-      // if (!sala) {
-      //     return res.status(400).json({
-      //         error: responseError.message
-
-      //     });
-      // }
 
       res.redirect('/salas/gerenciar')
     } catch (e) {
@@ -62,14 +43,15 @@ const excluir = async (req, res) => {
   try {
     if (!sala) { throw new Error('Sala não encontrado!') }
 
-    // const sala_apagada = await Salas.destroy({where: {id: id}});
-    await SalaService.excluir(id)
-    res.redirect('/salas/gerenciar')
-  } catch (e) {
-    console.log(e)
-    res.status(500).json({ error: e })
-  }
-}
+        // const sala_apagada = await Salas.destroy({where: {id: id}});
+        const sala_apagada = await SalaService.excluir(id);
+        res.redirect('/salas/gerenciar')
+     
+    }catch(e){
+        console.log(e);
+        res.status(500).json({error: e});
+    }
+};
 
 const gerenciar = async (req, res) => {
   const salas = await SalaService.listarTodos()
