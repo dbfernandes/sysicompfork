@@ -10,7 +10,6 @@ import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
 
-
 dotenv.config()
 const app = express()
 // `${__dirname}/views/partials/`
@@ -21,6 +20,20 @@ app.engine('hbs', engine({
   partialsDir: path.join(__dirname, 'views', 'partials'),
   helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.js'))
 }))
+
+// Temporario até achar uma solução melhor
+declare module 'express-session' {
+  export interface SessionData {
+    tipoUsuario?: {
+      administrador: boolean
+      secretaria: boolean,
+      coordenador: boolean
+      professor: boolean
+    }| undefined,
+    uid: string,
+    nome: string
+  }
+}
 
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '/views'))

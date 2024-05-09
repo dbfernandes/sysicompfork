@@ -1,10 +1,10 @@
-// import {Request, Response} from 'express'
-import afastamentoService from '../services/afastamentoService.js'
+import {Request, Response} from 'express'
+import afastamentoService from '../services/afastamentoService'
 const pageTitle = 'Afastamento Temporário'
 
-const listar = async (req, res) => {
+const listar = async (req: Request, res: Response) => {
   try {
-    if (req.session.tipoUsuario.administrador) {
+    if (req.session.tipoUsuario?.administrador) {
       console.log('Acessando como Administrador')
       const afastamentos = await afastamentoService.listarTodos()
       const doesNotExists = !afastamentos || afastamentos.length === 0
@@ -21,7 +21,7 @@ const listar = async (req, res) => {
           })
     } else {
       console.log('Acessando como Usuário')
-      const afastamentos = await afastamentoService.listar(req.session.uid)
+      const afastamentos = await afastamentoService.listar(req.session.uid!)
       const doesNotExists = !afastamentos || afastamentos.length === 0
       if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado')
 
@@ -35,7 +35,7 @@ const listar = async (req, res) => {
             tipoUsuario: req.session.tipoUsuario
           })
     }
-  } catch (error) {
+  } catch (error: any) {
     return res.render('afastamentoTemporario/pedidos-afastamento', {
       pageTitle,
       csrfToken: req.csrfToken(),
@@ -45,7 +45,7 @@ const listar = async (req, res) => {
   }
 }
 
-const criar = async (req, res) => {
+const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     return res.status(200)
       .render('afastamentoTemporario/solicitar-afastamento', {
@@ -53,6 +53,8 @@ const criar = async (req, res) => {
       })
   } else {
     try {
+      const usuarioId = req.session.uid!
+      const usuarioNome = req.session.nome!
       const dataSaida = req.body.dataSaida
       const dataRetorno = req.body.dataRetorno
       const tipoViagem = req.body.tipoViagem
@@ -61,17 +63,17 @@ const criar = async (req, res) => {
       const planoReposicao = req.body.planoReposicao
 
       await afastamentoService.criar({
-        usuarioId: req.session.uid,
-        usuarioNome: req.session.nome,
+        usuarioId,
+        usuarioNome,
         dataSaida,
         dataRetorno,
         tipoViagem,
         localViagem,
         justificativa,
-        planoReposicao
+        planoReposicao,
+        createdAt: ''
       })
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
       return res.render('afastamentoTemporario/solicitar-afastamento', {
         pageTitle,
         csrfToken: req.csrfToken(),
@@ -83,7 +85,7 @@ const criar = async (req, res) => {
   return res.redirect('/afastamentoTemporario/listar')
 }
 
-const vizualizar = async (req, res) => {
+const vizualizar = async (req: Request, res: Response) => {
   try {
     const afastamento = await afastamentoService.vizualizar(req.params.id)
     if (!afastamento) return res.status(400).json({ message: 'Pedido de afastamento não encontrado' })
@@ -93,7 +95,7 @@ const vizualizar = async (req, res) => {
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario
     })
-  } catch (error) {
+  } catch (error: any) {
     return res.render('afastamentoTemporario/pedidos-afastamento', {
       pageTitle,
       csrfToken: req.csrfToken(),
@@ -103,13 +105,13 @@ const vizualizar = async (req, res) => {
   }
 }
 
-const remover = async (req, res) => {
+const remover = async (req:Request, res: Response) => {
   if (req.method === 'POST') {
     try {
       console.log(req.params.id)
       await afastamentoService.delete(req.params.id)
       return res.redirect('/afastamentoTemporario/listar')
-    } catch (error) {
+    } catch (error: any) {
       return res.render('afastamentoTemporario/pedidos-afastamento', {
         pageTitle,
         csrfToken: req.csrfToken(),

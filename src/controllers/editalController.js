@@ -1,12 +1,12 @@
-import EditalService from "../services/editalService";
-import editalGerarPlanilha from "../utils/editalGerarPlanilha";
-import linhasDePesquisaService from "../services/linhasDePesquisaService";
-const zip = require('express-zip');
-const StreamZip = require('node-stream-zip');
+import EditalService from '../services/editalService'
+import editalGerarPlanilha from '../utils/editalGerarPlanilha'
+// import linhasDePesquisaService from "../services/linhasDePesquisaService";
+const zip = require('express-zip')
+const StreamZip = require('node-stream-zip')
 /* eslint-disable camelcase */
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+const fs = require('fs')
+const path = require('path')
+const os = require('os')
 const locals = {
   layout: 'selecaoppgi'
 }

@@ -1,8 +1,8 @@
 import fs from 'fs'
 import moment from 'moment'
 import path from 'path'
-import afastamentoService from '../services/afastamentoService.js'
-import usuarioService from '../services/usuarioService.js'
+import afastamentoService from '../services/afastamentoService'
+import usuarioService from '../services/usuarioService'
 const compileHTML = require('handlebars').compile
 const compilePDF = require('html-pdf').create
 

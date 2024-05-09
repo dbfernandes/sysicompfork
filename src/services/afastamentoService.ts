@@ -1,24 +1,24 @@
 const { AfastamentoTemporario } = require('../models')
 
-const formatDbAnswer = (object) => {
+interface AfastamentoTemporario {
+  usuarioId: string
+  usuarioNome: string
+  dataSaida: string
+  dataRetorno: string
+  tipoViagem: string
+  localViagem: string
+  justificativa: string
+  planoReposicao: string
+  createdAt: any
+}
+
+const formatDbAnswer = (object: any) => {
   const array = Array.isArray(object)
 
   return array ? object.map((linha) => (linha.dataValues)) : object.dataValues
-  //   switch (array) {
-  //     case (true): {
-  //       return object.map((linha) => (linha.dataValues))
-  //     };
-
-  //     case (false): {
-  //       return object.dataValues
-  //     };
-
-//     default:
-//       return object.dataValues
-//   };
 }
 class AfastamentoService {
-  async listar (id) {
+  async listar (id:string) {
     const allResearchLines = await AfastamentoTemporario.findAll({
       where: {
         usuarioId: id
@@ -26,7 +26,7 @@ class AfastamentoService {
     })
     // console.log(allResearchLines);
     const formatedAnswer = formatDbAnswer(allResearchLines)
-    const dataFormatada = formatedAnswer.map((afastamento) => {
+    const dataFormatada = formatedAnswer.map((afastamento: AfastamentoTemporario) => {
       afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
         timeZone: 'America/Manaus'
       }).slice(0, 10)
@@ -45,7 +45,7 @@ class AfastamentoService {
     const allResearchLines = await AfastamentoTemporario.findAll()
     // console.log(allResearchLines);
     const formatedAnswer = formatDbAnswer(allResearchLines)
-    const dataFormatada = formatedAnswer.map((afastamento) => {
+    const dataFormatada = formatedAnswer.map((afastamento: AfastamentoTemporario) => {
       afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
         timeZone: 'America/Manaus'
       }).slice(0, 10)
@@ -60,7 +60,7 @@ class AfastamentoService {
     return dataFormatada
   }
 
-  async criar (newAfastamento) {
+  async criar (newAfastamento: AfastamentoTemporario) {
     const { usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao } = newAfastamento
     await AfastamentoTemporario.create({
       usuarioId,
@@ -74,12 +74,12 @@ class AfastamentoService {
     })
   }
 
-  async pegarAfastamento (id) {
+  async pegarAfastamento (id:string) {
     const afastamento = await AfastamentoTemporario.findByPk(id)
     return afastamento
   }
 
-  async vizualizar (id) {
+  async vizualizar (id:string) {
     const afastamento = await AfastamentoTemporario.findByPk(id)
     const dataFormatada = afastamento.get()
     dataFormatada.createdAt = new Date(dataFormatada.createdAt).toLocaleDateString('pt-BR', {
@@ -95,7 +95,7 @@ class AfastamentoService {
     return dataFormatada
   }
 
-  async delete (id) {
+  async delete (id:string) {
     await AfastamentoTemporario.destroy({
       where: {
         id
