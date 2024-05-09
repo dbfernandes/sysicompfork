@@ -1,5 +1,5 @@
 import express from 'express'
-import exphbs from 'express-handlebars'
+import { engine } from 'express-handlebars'
 import session from 'express-session'
 import router from './routes'
 import dotenv from 'dotenv'
@@ -10,11 +10,12 @@ import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
 
+
 dotenv.config()
 const app = express()
 // `${__dirname}/views/partials/`
 // `${__dirname}/views/helpers/helpers.js`
-app.engine('hbs', exphbs({
+app.engine('hbs', engine({
   defaultLayout: 'main',
   extname: '.hbs',
   partialsDir: path.join(__dirname, 'views', 'partials'),
@@ -57,6 +58,7 @@ app.use(
 )
 
 app.use(isUsuarioAutenticado)
+// Colocar o logger depois
 app.use(router)
 
 export default app

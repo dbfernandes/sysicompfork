@@ -1,3 +1,4 @@
+// import {Request, Response} from 'express'
 import afastamentoService from '../services/afastamentoService.js'
 const pageTitle = 'Afastamento Temporário'
 
