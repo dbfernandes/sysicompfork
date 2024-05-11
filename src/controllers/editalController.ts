@@ -1,8 +1,7 @@
+import {Response, Request} from 'express'
 import EditalService from '../services/editalService'
 import editalGerarPlanilha from '../utils/editalGerarPlanilha'
-// import linhasDePesquisaService from "../services/linhasDePesquisaService";
-const zip = require('express-zip')
-const StreamZip = require('node-stream-zip')
+
 /* eslint-disable camelcase */
 const fs = require('fs')
 const path = require('path')
@@ -11,7 +10,7 @@ const locals = {
   layout: 'selecaoppgi'
 }
 
-const addEditalSelecao = async (req, res) => {
+const addEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       console.log(req.session.nome)
@@ -49,13 +48,15 @@ const addEditalSelecao = async (req, res) => {
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
         })
-      } catch (error) {
+      } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
           error: error.message,
           req: req.body
         })
       }
+      
+      return res.redirect('/edital/listEdital')
     }
       break
 
@@ -69,7 +70,7 @@ const addEditalSelecao = async (req, res) => {
   }
 }
 
-const listEditalSelecao = async (req, res) => {
+const listEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.render('edital/listSelecao', {
@@ -92,14 +93,14 @@ const listEditalSelecao = async (req, res) => {
   }
 }
 
-const deleteEdital = async (req, res) => {
+const deleteEdital = async (req: Request, res: Response) => {
    switch (req.method) {
       case "DELETE":
          const { id } = req.params;
 
          try {
             await EditalService.delete(id);  
-         }catch (error) {
+         }catch (error: any) {
             return res.status(400).json({
                csrfToken: req.csrfToken(),
                error: error.message,
@@ -111,7 +112,7 @@ const deleteEdital = async (req, res) => {
    }
 };
 
-const arquivarEdital = async (req, res) => {
+const arquivarEdital = async (req: Request, res: Response) => {
   const { id_edital } = req.params
 
   console.log('no controler :' + id_edital)
@@ -133,7 +134,7 @@ const arquivarEdital = async (req, res) => {
   }
 }
 
-const viewEdital = async (req, res) => {
+const viewEdital = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const {
@@ -155,7 +156,7 @@ const viewEdital = async (req, res) => {
   }
 }
 
-const updateEdital = async (req, res) => {
+const updateEdital = async (req: Request, res: Response) => {
   const { id_update } = req.params
   switch (req.method) {
     case 'GET': {
@@ -209,7 +210,7 @@ const updateEdital = async (req, res) => {
   }
 }
 
-const listCandidatesEdital = async (req, res) => {
+const listCandidatesEdital = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':{
       const {
@@ -244,18 +245,18 @@ const listCandidatesEdital = async (req, res) => {
   }
 }
 
-const editalCandidates = async (req, res) => {
+const editalCandidates = async (req: Request, res: Response) => {
   const editalID = req.params.id
   const candidates = await EditalService.listCandidates(editalID).catch(
-    (err) => {
+    (err: any) => {
       return res.status(400).json({
         error: err.message
       })
     }
   )
 
-  const quantidaDeInscricaoAndamento = candidates.filter(candidate => candidate.editalPosition < 4).length
-  const quantidaIncricaoFinalizada = candidates.filter(candidate => candidate.editalPosition === 4).length
+  const quantidaDeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition < 4).length
+  const quantidaIncricaoFinalizada: number = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition === 4).length;
 
   return res.render('edital/listCandidates', {
     csrfToken: req.csrfToken(),
@@ -270,7 +271,7 @@ const editalCandidates = async (req, res) => {
   })
 }
 
-const geraPlanilha = async (req, res) => {
+const geraPlanilha = async (req: Request, res: Response) => {
    const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
    return res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -279,7 +280,7 @@ const geraPlanilha = async (req, res) => {
    }).status(200).send(planilha);
 }
 
-const gerarCandidatoPDF = async (req, res) => {
+const gerarCandidatoPDF = async (req: Request, res: Response) => {
    const candidate = await EditalService.getCandidate(req.params.id);
    const base64Documento = candidate[req.query.documento];
    const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
@@ -290,98 +291,116 @@ const gerarCandidatoPDF = async (req, res) => {
       'Content-Length': docPDF.length
    }).status(200).send(docPDF);
 }
+// Refazer função
+const getAllCandidatesDocuments = async (req: Request, res: Response) => {
+  // try {
+  //   // Pegue todos os candidatos do edital
+  //   const candidates = await EditalService.listCandidates(req.params.id)
 
-const getAllCandidatesDocuments = async (req, res) => {
-  try {
-    // Pegue todos os candidatos do edital
-    const candidates = await EditalService.listCandidates(req.params.id)
+  //   // Crie um diretório temporário para armazenar os documentos
+  //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
+  //   if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
+  //   fs.mkdirSync(tempDirPath)
 
-    // Crie um diretório temporário para armazenar os documentos
-    const tempDirPath = path.join(os.tmpdir(), 'documents-')
-    if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
-    fs.mkdirSync(tempDirPath)
+  //   // Para cada candidato, crie um arquivo PDF com os documentos
+  //   const candidatesDocuments = []
+  //   for (const candidate of candidates) {
+  //     if (candidate.Curriculum) {
+  //       const docCurriculumPath = path.join(tempDirPath, `${candidate.Nome}-Curriculum.pdf`)
+  //       fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64')
+  //       candidatesDocuments.push({ path: docCurriculumPath, name: `${candidate.Nome}/${candidate.Nome}-Curriculum.pdf` })
+  //     }
 
-    // Para cada candidato, crie um arquivo PDF com os documentos
-    const candidatesDocuments = []
-    for (const candidate of candidates) {
-      if (candidate.Curriculum) {
-        const docCurriculumPath = path.join(tempDirPath, `${candidate.Nome}-Curriculum.pdf`)
-        fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64')
-        candidatesDocuments.push({ path: docCurriculumPath, name: `${candidate.Nome}/${candidate.Nome}-Curriculum.pdf` })
-      }
+  //     if (candidate.CartaDoOrientador) {
+  //       const docCartaOrientadorPath = path.join(tempDirPath, `${candidate.Nome}-CartaDoOrientador.pdf`)
+  //       fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64')
+  //       candidatesDocuments.push({ path: docCartaOrientadorPath, name: `${candidate.Nome}/${candidate.Nome}-CartaDoOrientador.pdf` })
+  //     }
 
-      if (candidate.CartaDoOrientador) {
-        const docCartaOrientadorPath = path.join(tempDirPath, `${candidate.Nome}-CartaDoOrientador.pdf`)
-        fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64')
-        candidatesDocuments.push({ path: docCartaOrientadorPath, name: `${candidate.Nome}/${candidate.Nome}-CartaDoOrientador.pdf` })
-      }
-
-      if (candidate.PropostaDeTrabalho) {
-        const docPropostaPath = path.join(tempDirPath, `${candidate.Nome}-PropostaDeTrabalho.pdf`)
-        fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64')
-        candidatesDocuments.push({ path: docPropostaPath, name: `${candidate.Nome}/${candidate.Nome}-PropostaDeTrabalho.pdf` })
-      }
-    }
+  //     if (candidate.PropostaDeTrabalho) {
+  //       const docPropostaPath = path.join(tempDirPath, `${candidate.Nome}-PropostaDeTrabalho.pdf`)
+  //       fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64')
+  //       candidatesDocuments.push({ path: docPropostaPath, name: `${candidate.Nome}/${candidate.Nome}-PropostaDeTrabalho.pdf` })
+  //     }
+  //   }
 
 
-      // Compacte todos os arquivos em um arquivo ZIP
-      const zipFilePath = path.join(tempDirPath, 'documentos.zip');
-      await res.zip(candidatesDocuments, zipFilePath);
+  //     // Compacte todos os arquivos em um arquivo ZIP
+  //     const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+  //     await res.zip(candidatesDocuments, zipFilePath);
 
-      // Remova o diretório temporário
-      fs.rmdirSync(tempDirPath, { recursive: true });
+  //     // Remova o diretório temporário
+  //     fs.rmdirSync(tempDirPath, { recursive: true });
 
-      // Envie o arquivo ZIP para o cliente
-      return res.download(zipFilePath, 'documentos.zip');
-  } catch (error) {
-    res.status(400).json({
-      error: error.message
-    })
-  }
+  //     // Envie o arquivo ZIP para o cliente
+  //     return res.download(zipFilePath, 'documentos.zip');
+  // } catch (error: any) {
+  //   res.status(400).json({
+  //     error: error.message
+  //   })
+  // }
+  
+  /*Identifica usuarios*/
+  /*Busca documentos dos candidatos*/
+  /*Cria pastas temporaria para cada candidato*/
+  /*Cria arquivos PDF*/
+  /*Compacta arquivos em ZIP*/
+  /*Envia ZIP para o cliente*/
+  /*Remove pasta temporaria e arquivos temporarios*/
+
 }
+//Refazer função
+const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {  
+  // const candidate = await EditalService.getCandidate(req.params.id)
+  // try {
+  //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
+  //   if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
+  //   fs.mkdirSync(tempDirPath)
 
-const getAllDocumentsFromOneCandidate = async (req, res) => {
-  const candidate = await EditalService.getCandidate(req.params.id)
-  try {
-    const tempDirPath = path.join(os.tmpdir(), 'documents-')
-    if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
-    fs.mkdirSync(tempDirPath)
+  //     const candidateDocuments = [];
 
-      const candidateDocuments = [];
+  //     if (candidate.Curriculum) {
+  //        const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
+  //        fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
+  //        candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
+  //     }
 
-      if (candidate.Curriculum) {
-         const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
-         fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
-         candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
-      }
+  //     if (candidate.CartaDoOrientador) {
+  //        const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
+  //        fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
+  //        candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
+  //     }
 
-      if (candidate.CartaDoOrientador) {
-         const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
-         fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
-         candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
-      }
+  //     if (candidate.PropostaDeTrabalho) {
+  //        const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
+  //        fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
+  //        candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
+  //     }
 
-      if (candidate.PropostaDeTrabalho) {
-         const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
-         fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
-         candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
-      }
+  //     const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+  //     await res.zip(candidateDocuments, zipFilePath);
 
-      const zipFilePath = path.join(tempDirPath, 'documentos.zip');
-      await res.zip(candidateDocuments, zipFilePath);
-
-      fs.rmdirSync(tempDirPath, { recursive: true });
+  //     fs.rmdirSync(tempDirPath, { recursive: true });
       
-      return res.download(zipFilePath, 'documentos.zip');
+  //     return res.download(zipFilePath, 'documentos.zip');
    
-   } catch (error) {
-      res.status(400).json({
-         error: error.message,
-      });
-   }
+  //  } catch (error: any) {
+  //     res.status(400).json({
+  //        error: error.message,
+  //     });
+  //  }
+  
+  /*Identifica usuario*/ 
+  /*Busca documentos do candidato*/
+  /*Cria pasta temporaria*/
+  /*Cria arquivos PDF*/
+  /*Compacta arquivos em ZIP*/
+  /*Envia ZIP para o cliente*/
+  /*Remove pasta temporaria e arquivos temporarios*/
+
 }
 
-const candidateDetails = async (req, res) => {
+const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await EditalService.getCandidate(req.params.id)
 
@@ -392,7 +411,7 @@ const candidateDetails = async (req, res) => {
       ...locals,
       tipoUsuario: req.session.tipoUsuario
     })
-  } catch (error) {
+  } catch (error: any) {
     return res.status(400).json({
       error: error.message
     })

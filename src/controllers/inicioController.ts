@@ -1,4 +1,6 @@
-const inicio = (req, res) => {
+import { Request, Response } from 'express'
+
+const inicio = (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {

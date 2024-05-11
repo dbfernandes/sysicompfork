@@ -28,8 +28,8 @@ model Aluno {
   periodoIngresso  String   @db.VarChar(10)
   periodoConclusao String?  @db.VarChar(10)
   formado          Int      @db.SmallInt
-  createdAt        DateTime @db.DateTime(0)
-  updatedAt        DateTime @db.DateTime(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 }
 
 model Avatar {

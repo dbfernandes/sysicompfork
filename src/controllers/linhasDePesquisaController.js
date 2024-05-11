@@ -7,19 +7,28 @@ import linhasDePesquisaService from '../services/linhasDePesquisaService'
 const pageTitle = 'Linhas De Pesquisa'
 
 const listar = async (req, res) => {
-  const linhaDePesquisa = await linhasDePesquisaService.list()
-  const doesNotExists = !linhaDePesquisa || linhaDePesquisa.length === 0
+  try {
+    const linhaDePesquisa = await linhasDePesquisaService.list()
+    const doesNotExists = !linhaDePesquisa || linhaDePesquisa.length === 0
+  
+    if (doesNotExists) throw new Error('Nenhuma linha de pesquisa cadastrada')
 
-  if (doesNotExists) res.status(400).json({ message: 'Nenhuma linha de pesquisa cadastrada' })
-
-  return res
-    .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-listar', {
-      linhaDePesquisa,
+    return res
+      .status(200)
+      .render('linhasDePesquisa/linhasDePesquisa-listar', {
+        linhaDePesquisa,
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario
+      })
+  } catch (error) {
+    return res.status(400).render('linhasDePesquisa/linhasDePesquisa-listar', {
       pageTitle,
+      error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario
     })
+  }
 }
 
 const buscar = async (req, res) => {

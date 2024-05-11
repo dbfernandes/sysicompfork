@@ -29,7 +29,7 @@ async function HBStoPDF (afastamentoDoc, footerPath, caminho) {
 }
 
 async function getAfastamento (id) {
-  const afastamento = await afastamentoService.pegarAfastamento(id)
+  const afastamento = await afastamentoService.retornarAfastamento(id)
   const usuario = await usuarioService.listarUm(id)
   const email = usuario.email
   const { usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao, createdAt } = afastamento

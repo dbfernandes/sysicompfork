@@ -1,15 +1,20 @@
-const { AfastamentoTemporario } = require('../models')
+import { Prisma, PrismaClient } from "@prisma/client"
+const prisma = new PrismaClient()
 
 interface AfastamentoTemporario {
-  usuarioId: string
+  usuarioId: number
   usuarioNome: string
-  dataSaida: string
+  dataSaida: Date
   dataRetorno: string
   tipoViagem: string
   localViagem: string
   justificativa: string
   planoReposicao: string
-  createdAt: any
+  createdAt: Date
+  updatedAt: Date
+  dataCriacaoFormata: string
+  dataSaidaFormata: string
+  dataRetornoFormata: string
 }
 
 const formatDbAnswer = (object: any) => {
@@ -18,87 +23,156 @@ const formatDbAnswer = (object: any) => {
   return array ? object.map((linha) => (linha.dataValues)) : object.dataValues
 }
 class AfastamentoService {
-  async listar (id:string) {
-    const allResearchLines = await AfastamentoTemporario.findAll({
-      where: {
-        usuarioId: id
-      }
-    })
-    // console.log(allResearchLines);
-    const formatedAnswer = formatDbAnswer(allResearchLines)
-    const dataFormatada = formatedAnswer.map((afastamento: AfastamentoTemporario) => {
-      afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      afastamento.dataSaida = new Date(afastamento.dataSaida).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      afastamento.dataRetorno = new Date(afastamento.dataRetorno).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      return afastamento
-    })
-    return dataFormatada
+  async listarAfastamentosDoUsuario (id:string) {
+    try {
+      const allResearchLines = await prisma.afastamentoTemporarios.findMany({
+        where: {
+          usuarioId: parseInt(id)
+        }
+      })
+      // const formatedAnswer = formatDbAnswer(allResearchLines)
+      const dataFormatada = allResearchLines.map((afastamento: any) => {
+        afastamento.dataCriacaoFormata = new Date(afastamento.createdAt).toLocaleDateString(
+          'pt-BR', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+          }
+        )
+        afastamento.dataRetornoFormata = new Date(afastamento.dataRetorno).toLocaleDateString(
+          'pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'UTC'
+          }
+        )
+        afastamento.dataSaidaFormata = new Date(afastamento.dataSaida).toLocaleDateString(
+          'pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'UTC'
+          }
+        )
+
+        return afastamento
+      })
+      return dataFormatada
+    } catch (error: any) {
+      console.log(error.message || 'Não foi possível listar os pedidos de afastamento!')
+    }
   }
 
   async listarTodos () {
-    const allResearchLines = await AfastamentoTemporario.findAll()
-    // console.log(allResearchLines);
-    const formatedAnswer = formatDbAnswer(allResearchLines)
-    const dataFormatada = formatedAnswer.map((afastamento: AfastamentoTemporario) => {
-      afastamento.createdAt = new Date(afastamento.createdAt).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      afastamento.dataSaida = new Date(afastamento.dataSaida).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      afastamento.dataRetorno = new Date(afastamento.dataRetorno).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-      return afastamento
-    })
-    return dataFormatada
+    try {
+      const allResearchLines = await prisma.afastamentoTemporarios.findMany()
+      const dataFormatada = allResearchLines.map((afastamento: any) => {
+        afastamento.dataCriacaoFormata = new Date(afastamento.createdAt).toLocaleDateString(
+          'pt-BR', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+          }
+        )
+        afastamento.dataRetornoFormata = new Date(afastamento.dataRetorno).toLocaleDateString(
+          'pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'UTC'
+          }
+        )
+        afastamento.dataSaidaFormata = new Date(afastamento.dataSaida).toLocaleDateString(
+          'pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'UTC'
+          }
+        )
+        return afastamento
+      })
+      return dataFormatada
+    } catch (error: any) {
+      console.log(error.message || 'Não foi possível listar os pedidos de afastamento!')
+    }
+
   }
 
-  async criar (newAfastamento: AfastamentoTemporario) {
-    const { usuarioId, usuarioNome, dataSaida, dataRetorno, tipoViagem, localViagem, justificativa, planoReposicao } = newAfastamento
-    await AfastamentoTemporario.create({
-      usuarioId,
-      usuarioNome,
-      dataSaida,
-      dataRetorno,
-      tipoViagem,
-      localViagem,
-      justificativa,
-      planoReposicao
-    })
+  async criar (newAfastamento: Prisma.AfastamentoTemporariosCreateInput) {
+    try {
+      const { usuarioId, 
+        usuarioNome, 
+        dataSaida, 
+        dataRetorno,
+        tipoViagem, 
+        localViagem, justificativa, planoReposicao
+      } = newAfastamento
+      await prisma.afastamentoTemporarios.create({
+        data: {
+          usuarioId,
+          usuarioNome,
+          dataSaida,
+          dataRetorno,
+          tipoViagem,
+          localViagem,
+          justificativa,
+          planoReposicao,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      })
+    } catch (error: any) {
+      console.log(error.message || 'Não foi possível criar o pedido de afastamento!')
+    }
   }
 
-  async pegarAfastamento (id:string) {
-    const afastamento = await AfastamentoTemporario.findByPk(id)
+  async retornarAfastamento (id:string) {
+    const afastamento = await prisma.afastamentoTemporarios.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    })
     return afastamento
   }
 
   async vizualizar (id:string) {
-    const afastamento = await AfastamentoTemporario.findByPk(id)
-    const dataFormatada = afastamento.get()
-    dataFormatada.createdAt = new Date(dataFormatada.createdAt).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Manaus'
-    }).slice(0, 10)
-    dataFormatada.dataSaida = new Date(dataFormatada.dataSaida).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Manaus'
-    }).slice(0, 10)
-    dataFormatada.dataRetorno = new Date(dataFormatada.dataRetorno).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Manaus'
-    }).slice(0, 10)
-    // const formatedAnswer = formatDbAnswer(dataFormatada);
+    const afastamento = await prisma.afastamentoTemporarios.findUnique({where: { id: parseInt(id) }})
+    if (!afastamento) return null
+    const dataFormatada = {
+      ...afastamento,
+      dataCriacaoFormata: new Date(afastamento.createdAt).toLocaleDateString(
+        'pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }
+      ),
+      dataRetornoFormata: new Date(afastamento.dataRetorno).toLocaleDateString(
+        'pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          timeZone: 'UTC'
+        }
+      ),
+      dataSaidaFormata: new Date(afastamento.dataSaida).toLocaleDateString(
+        'pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          timeZone: 'UTC'
+        }
+      )
+    }
     return dataFormatada
   }
 
   async delete (id:string) {
-    await AfastamentoTemporario.destroy({
+    await prisma.afastamentoTemporarios.delete({
       where: {
-        id
+        id: parseInt(id)
       }
     })
   }
