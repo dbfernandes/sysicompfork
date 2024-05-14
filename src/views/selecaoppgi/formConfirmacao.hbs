@@ -220,25 +220,27 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+
+.container-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    margin-top: 3rem;
+    gap: 2rem;
+}
+
+.container-message .message-footer {
+    align-self: flex-end;
+}
+.container-message .message-buttons {
+    font-weight: bold;
+    color: #222;
+    text-align: center;
+    margin-top: 1rem;
+}
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-<div class="modal fade" id="confirm-register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-               <p>Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.</p>
-              </div>
-              <div class="modal-footer">
-                  <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Cancelar</a>
-                  <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarAT()">Confirmar</a>
-              </div>
-              <form name="postDelete" id="finish-register" method="POST">
-                  <input type="hidden" name="_csrf" value="{{csrfToken}}"> 
-              </form>
-          </div>
-      </div>
-</div>
 <div class="forms-page">
 	<header>
 		<h1>PPGI</h1>
@@ -247,12 +249,9 @@
 			<button id="btn_logout">Sair</button>
 		</div>
 	</header>
-
-
-
-  {{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
-
   <section class="content">
+    				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+ 
     <nav>
       <ul>
         <li>
@@ -268,198 +267,41 @@
           Proposta de Projeto
         </li>
         <li>
-          <i class="nav-icon fas fa-check"></i>
+          <i class="nav-icon fas fa-check active"></i>
           Confirmação
         </li>
       </ul>
       <div class="progress">
-        <div class="progress-bar pbar-3" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar pbar-5" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
         </div>
       </div>
     </nav>
+    <main class="container-message">
+        <h2>Inscrição realizada com sucesso !</h2>
+        <p>
+            Seus dados foram cadastrados com sucesso. Sua proposta será analisada e em breve teremos a divulgação dos aprovados no processo de seleção do PPGI.<br>
+            clique no link "Imprimir Formulário de Inscrição" e imprima a página contendo os dados de sua inscrição para seu controle. Quando solicitado, assine e entregue este formulário na secretaria do PPGI/UFAM que fica no Departamento de Ciência da Computação, localizado na Rua Gen. Rodrigo Octávio Jordão Ramos, 3000 SETOR NORTE do Campus Universitário Manaus - AM - CEP 69.077-00.
+        </p>
+        <span class="message-footer">
+            Ass: Coordenação do PPGI/UFAM
+        </span>
+        <p class="message-buttons">
+            Clique nos ícones abaixo para visualizar os respectivos documentos em formato pdf.
+        </p>
+        <div>
+
+        </div>
+    </main>
     <div class="container-fluid">
       <form id="candidato-formulario">
-        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
-        <input id="email" type="hidden" value="{{email}}">
-        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="idCandidato" type="hidden" value="{{id}}">
-
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Proposta do Candidato</h3>
-          </div>
-
-          <div class="card-body">
-            <div class="row">
-              <div class="form-group col-5">
-                <label for="candidato-curso">
-                  <font color="#FF0000">*</font>
-                  <b>Linha de Pesquisa:</b>
-                </label>
-                <select  id="candidato-pesquisa" class="custom-select" name="CandidatoSoube">
-                  <option value="" >Selecione uma Linha de Pesquisa:</option>
-                  {{#each linhasPesquisa}}
-                    <option value="{{id}}" {{#if (eq id ../linhaPesquisaId)}}selected{{/if}}>{{nome}}</option>
-                  {{/each}}
-                </select>
-              </div>
-
-              <div class="col-md-7 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Titulo da Proposta:</b>
-                </label>
-                <input class="form-control" id="candidato-titulo-proposta" type="text" name="Proposta" value="" maxlength="60">
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Orientador:</h3>
-          </div>
-
-
-          <div class="card-body">
-            <p>Caso o tema da proposta tenha sido definido em conjunto com algum orientador do PPGI, favor informar o
-              nome dele no campo abaixo.</p>
-            <div class="row">
-              <div class="form-group col-12">
-                <label for="candidato-curso-pos">
-                  <b>Nome do orientador:</b>
-                </label>
-                <input class="form-control" id="candidato-orientador" type="text" name="CandidatoOrientador" value=""
-                  maxlength="60">
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Carta de Recomendação</h3>
-          </div>
-
-          <div class="card-body">
-            <p>Você precisa apenas preencher corretamente o nome e email das pessoas que devem fornecer as cartas de
-              recomendação. Feito isso, assim que você finalizar e submeter sua inscrição os indicados receberão um
-              email com as instruções de como preencher de forma online sua carta de recomendação. Ao menos 2 nomes são
-              obrigatórios.</p>
-
-            <div class="row">
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Nome:</b>
-                </label>
-                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
-                  value="" maxlength="60">
-              </div>
-
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Email:</b>
-                </label>
-                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
-                  value="" maxlength="60">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Nome:</b>
-                </label>
-                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
-                  value="" maxlength="60">
-              </div>
-
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Email:</b>
-                </label>
-                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
-                  value="" maxlength="60">
-              </div>
-            </div>
-
-            <div id="dynamic-inputs">
-              <!-- Novos campos serão adicionados aqui -->
-            </div>
-
-            <button id="add-btn" class="btn btn-success">+</button>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label class="control-label" for="candidato-Motivo">
-                    Descreva os motivos que o levaram a se candidatar ao curso
-                    (<span id="charCount">1000</span> Caracteres Restantes):
-                  </label>
-                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="CandidatoMotivo"
-                    maxlength="1000"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
-                  <input type="file" class="custom-file-input" id="candidato-CartaAceite" name="CartaAceiteOrientador">
-                  <label class="custom-file-label" for="candidato-CartaAceite">
-                    Carta de Aceite do Orientador (obrigatório para doutorado):
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
-
-                <input type="file" class="custom-file-input" id="candidato-PropostaTrabalho" name="PropostaTrabalho">
-                <label class="custom-file-label" for="candidato-PropostaTrabalho">
-                  Proposta de Trabalho:
-                </label>
-              </div>
-                </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
-
-                <input type="file" class="custom-file-input" id="candidato-ComprovantePagamento"
-                  name="ComprovantePagamento">
-                <label class="custom-file-label" for="candidato-ComprovantePagamento">
-                  Comprovante de Pagamento:
-                </label>
-              </div>
-              </div>
-            </div>
-
-          </div>
-
-
-
           <div class="card-footer">
             <div class="col">
-              <button class="btn btn-success float-right custom-button">
-                Salvar e Continuar
-              </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
                 Passo Anterior
               </button>
-
             </div>
           </div>
         </div>
-
       </form>
     </div>
   </section>
@@ -487,10 +329,9 @@
             linhaDePesquisaId: linhaDePesquisaId,
             	_csrf: $("#csrfToken").val()
           },
-               success: function (response) {
-       	 window.location.href = '/selecaoppgi/formulario';
-        window.location.reload(true);
-      },
+          success: function (data) {
+            console.log(`Sucesso`)
+          },
           error: function (data) {
             console.error(data);
           }

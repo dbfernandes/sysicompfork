@@ -81,7 +81,6 @@
 				<h1 class="title">
 					Efetuar Login
 				</h1>
-				{{message}}
 				{{#if message}}
 				<div class="alert alert-{{type}}">
 					{{{message}}}
@@ -90,9 +89,6 @@
 
 				<p class="sub-title">Todos os campos são obrigatórios</p>
 				<form id="loginform">
-					{{message}}
-					{{teste}}
-					{{csrfToken}}
 					<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 
 					<div class="form-group">
@@ -181,7 +177,6 @@
 			$(element).removeClass('is-invalid');
 		},
 		submitHandler: function (form, e) {
-			console.log("teste")
 			e.preventDefault();
 			var email = $("#email").val();
 			var senha = $("#password").val();
@@ -201,18 +196,14 @@
 					window.location.href = "{{url}}/selecaoppgi/formulario";
 				},
 				error: function (res, status, error) {
-					console.log("Entrou no erro")
-					const err = res.responseJSON
 					errorSignin = err.error
+					message = 'teste'
 				}
 			});
 		}
 	})
 
-
-
 	function Formlogin() {
-
 		var email = $("#email").val();
 		var senha = $("#password").val();
 		var edital = $("#edital").val();
@@ -222,6 +213,5 @@
 		});
 
 	}
-
 
 </script>

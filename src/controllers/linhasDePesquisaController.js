@@ -63,8 +63,8 @@ const criar = async (req, res) => {
         error: error.message || 'Não foi possível criar a linha de pesquisa!'
       })
     }
-    
-    return res.redirect('/linhasDePesquisa/listar');
+
+    return res.redirect('/linhasDePesquisa/listar')
   }
 }
 
@@ -79,8 +79,8 @@ const remover = async (req, res) => {
   } else {
     console.log('Não foi possível remover a linha de pesquisa!')
   }
-  return res.redirect('/linhasDePesquisa/listar');
-};
+  return res.redirect('/linhasDePesquisa/listar')
+}
 
 const editar = async (req, res) => {
   const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id)
@@ -93,11 +93,11 @@ const editar = async (req, res) => {
       const nome = req.body.nome
       const sigla = req.body.sigla
 
-      if (await linhasDePesquisaService.findByName(nome)) throw new Error('Linha de Pesquisa já cadastrada!');
-      
-      if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
-      
-      await linhasDePesquisaService.update(req.params.id, { nome, sigla });
+      if (await linhasDePesquisaService.findByName(nome)) throw new Error('Linha de Pesquisa já cadastrada!')
+
+      if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!')
+
+      await linhasDePesquisaService.update(req.params.id, { nome, sigla })
     } catch (error) {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-editar', {

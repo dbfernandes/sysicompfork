@@ -43,6 +43,7 @@
   .forms-page header .options {
     display: flex;
     align-items: center;
+    gap: 16px;
   }
 
   .forms-page header .options button {
@@ -196,12 +197,13 @@
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 
 <div class="forms-page">
-  <header>
-    <h1>PPGI</h1>
-    <div class="options">
-      <button>Sair</button>
-    </div>
-  </header>
+	<header>
+		<h1>PPGI</h1>
+		<div class="options">
+			<button id="btn_inicio">Início</button>
+			<button id="btn_logout">Sair</button>
+		</div>
+	</header>
 
 
 
@@ -234,11 +236,11 @@
     </nav>
     <div class="container-fluid">
       <form id="candidato-formulario2">
-        <input id="csrfToken" name="_csrf" value="{{csrfToken}}">
+        <input id="csrfToken" type="hidden"  name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="idCandidato" value="{{id}}">
-        <input id="idCandidato" type="" value="{{message}}">
+        <input id="idCandidato" type="hidden"  value="{{id}}">
+        <input id="idCandidato" type="hidden" value="{{message}}">
         <p>{{message}}</p>
         <div class="card card-primary">
           <div class="card-header">
@@ -252,8 +254,6 @@
                   <font color="#FF0000">*</font>
                   <b>Curso:</b>
                 </label>
-                {{cursoGraduacao}}
-                {{instituicao}}
                 <input class="form-control" id="candidato-curso" placeholder="Insira seu curso" type="text" name="Curso"
                   maxlength="60" value="{{cursoGraduacao}}">
               </div>
@@ -303,17 +303,17 @@
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo1" name="CursoTipo" value="Mestrado Acadêmico">
+                    <input type="radio" id="Tipo1" name="CursoTipo" value="Mestrado Acadêmico" {{#if (eq "Mestrado Acadêmico" tipoCursoPos)}}checked{{/if}}>
                     <label for="Tipo1"> Mestrado Acadêmico </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo2" name="CursoTipo" value="Mestrado Profissional">
+                    <input type="radio" id="Tipo2" name="CursoTipo" value="Mestrado Profissional" {{#if (eq "Mestrado Profissional" tipoCursoPos)}}checked{{/if}}>
                     <label for="Tipo2"> Mestrado Profissional </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado">
+                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado" {{#if (eq "Doutorado" tipoCursoPos)}}checked{{/if}}>
                     <label for="Tipo3"> Doutorado </label>
                   </div>
 
@@ -356,6 +356,7 @@
                 <label class="control-label" for="vittaepdf">
                   <font color="#FF0000">*</font>
                   <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
+                         {{#if hasCurriculum}} Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo"> clique aqui</a> para visualiza-lo{{/if}}
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
@@ -363,7 +364,7 @@
                     <label class="custom-file-label" for="VitaePDF">Escolher arquivo</label>
                   </div>
                 </div>
-
+            
 
                 <label class="control-label" for="vittaexml">
                   <b>Curriculum Vittae XML no formato Lattes - http://lattes.cnpq.br (não incluir significa não ter
@@ -471,11 +472,13 @@
                     2
                     anos), pro favor faça o upload do PDF da prova através da opção abaixo:
                   </b>
+                         
                 </label>
               </div>
               <div class="col-6">
                 <div class="form-group">
                   <div class="custom-file">
+      
                     <input type="file" class="custom-file-input" id="candidato-prova" name="Prova">
                     <label class="custom-file-label" for="Prova">Escolher arquivo</label>
                   </div>
@@ -545,6 +548,27 @@
 
 <script>
 
+	$(document).ready(function () {
+		$("#btn_logout").click(function () {
+			$.ajax({
+				url: "/selecaoppgi/logout",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+		$("#btn_inicio").click(function () {
+			window.location.href = "/selecaoppgi";
+		});
+	});
+
   function mostrarPeriodicos() {
     var accordion = $("#accordion");
     if (accordion.hasClass("show")) {
@@ -574,30 +598,45 @@
 
 
   $(document).ready(function () {
-    $("#voltarForm").on("click", function (e) {
+    var downloadLink = document.getElementById('downloadLink');
+    downloadLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Impede o comportamento padrão de redirecionamento do navegador
+        // Aqui você pode fazer qualquer outra ação que desejar antes de iniciar o download do arquivo, como exibir uma mensagem ao usuário
+        console.log('Download do arquivo será iniciado...');
+        // Em seguida, você pode iniciar o download do arquivo programaticamente ou fazer qualquer outra ação necessária
+        // Por exemplo, você pode redirecionar o usuário para outra página após a confirmação do download:
+        //window.location.href = this.getAttribute('href');
+        $.ajax({
+          url: `/selecaoppgi/download/arquivo`,
+          type: 'GET',
+          success: function (data) {
+            console.log(data)
+          },
+          error: function (data) {
+            console.error(data)
+          }
+        });
+    });
+    $("#voltarForm").click(() => {
       const csrfToken = $("#csrfToken").val();
       const id = $("#idCandidato").val();
-      console.log(id)
       const editalPosicao = $("#editalPosicao").val();
-
-      console.log(editalPosicao)
 
       $.ajax({
         url: '/selecaoppgi/voltar',
         type: 'POST',
         data: {
           _csrf: csrfToken,
-          editalPosicao: editalPosicao,
+          editalPosicao: editalPosicao, 
           id: id
         }, success: function (data) {
           window.location.href = '/selecaoppgi/formulario';
           window.location.reload(true);
         },
         error: function (data) {
-          console.log(data)
+          console.error(data)
         }
       });
-
     });
   });
 
@@ -677,7 +716,7 @@
     formData.append('editalPosicao', $("#editalPosicao").val());
     formData.append('id', $("#idCandidato").val());
 
-    
+     
     const csrfToken = $("#csrfToken").val();
     const email = $("#email").val();
     const editalPosicao = $("#editalPosicao").val();
@@ -690,7 +729,8 @@
       contentType: false,
       processData: false,
       success: function (response) {
-       
+       	 window.location.href = '/selecaoppgi/formulario';
+        window.location.reload(true);
       },
       error: function (xhr, status, error) {
         // Trate o erro, se houver
@@ -725,7 +765,7 @@
 
 
   $('#vittaexml').change(function(){
-     var VitaeXML = document.querySelector("VitaeXML")
+    var VitaeXML = document.querySelector("VitaeXML")
     var formData = new FormData($('#candidato-formulario2')[0]);
 
     if (VitaeXML === "") {
@@ -836,9 +876,7 @@
         conjuntoPreenchido: true,
         anoPosValido: true
       },
-      "VitaePDF": {
-        required: true
-      }
+ 
     },
     messages: {
       "Curso": {

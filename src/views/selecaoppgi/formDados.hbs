@@ -43,6 +43,7 @@
 	.forms-page header .options {
 		display: flex;
 		align-items: center;
+		gap: 1rem;
 	}
 
 	.forms-page header .options button {
@@ -191,11 +192,10 @@
 	<header>
 		<h1>PPGI</h1>
 		<div class="options">
-			<button>Sair</button>
+			<button id="btn_inicio">Início</button>
+			<button id="btn_logout">Sair</button>
 		</div>
 	</header>
-
-
 
 	{{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
 
@@ -224,6 +224,7 @@
 				</div>
 			</div>
 		</nav>
+	
 		<div class="container-fluid">
 			<form id="candidato-formulario">
 				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -562,7 +563,7 @@
 									<option value="negro">Negro</option>
 									<option value="pardo">Pardo</option>
 									<option>Pessoa com deficiência(PCD)</option>
-								</select>
+								</select>  
 							</div>
 						</div>
 
@@ -630,17 +631,34 @@
 <footer>
 </footer>
 <script>
-
+	$(document).ready(function () {
+		$("#btn_logout").click(function () {
+			$.ajax({
+				url: "/selecaoppgi/logout",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+		$("#btn_inicio").click(function () {
+			window.location.href = "/selecaoppgi";
+		});
+	});
 
 
 	function FormAdicionarPage() {
-
 		$(document).ready(function () {
 			var comoSoubeValue = document.getElementById("ComoSoubeObj").value;
 
 			$("#como-soube").val(comoSoubeValue);
 		});
-
 
 		var cotistaValue = document.getElementById("CotistaObj").value;
 		var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
@@ -700,14 +718,16 @@
 
 
 		$(document).ready(function () {
-			var nascimentoValue = "{{Nascimento}}";
-			var formattedDate = moment(nascimentoValue, "YYYY-MM-DD").format("DD/MM/YYYY");
+			if("{{Nascimento}}"){
+				const nascimentoValue = "{{Nascimento}}";
+				const formattedDate = moment(nascimentoValue, "YYYY-MM-DD").format("DD/MM/YYYY");
 
-			$("#data-nascimento").val(formattedDate);
+				$("#data-nascimento").val(formattedDate);
 
-			$('#candidato-datanascimento').datetimepicker({
-				format: 'DD/MM/YYYY',
-			});
+				$('#candidato-datanascimento').datetimepicker({
+					format: 'DD/MM/YYYY',
+				});
+			}
 		});
 
 		$('#candidato-datanascimento').datetimepicker({

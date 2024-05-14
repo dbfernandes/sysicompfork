@@ -1,5 +1,5 @@
-import  afastamentoService  from '../services/afastamentoService.js'
-const pageTitle = 'Afastamento Temporário';
+import afastamentoService from '../services/afastamentoService.js'
+const pageTitle = 'Afastamento Temporário'
 
 const listar = async (req, res) => {
   try {
@@ -78,8 +78,8 @@ const criar = async (req, res) => {
         error: error.message || 'Não foi possível criar o pedido de afastamento!'
       })
     }
-  } 
-  return res.redirect('/afastamentoTemporario/listar');
+  }
+  return res.redirect('/afastamentoTemporario/listar')
 }
 
 const vizualizar = async (req, res) => {
@@ -103,19 +103,20 @@ const vizualizar = async (req, res) => {
 }
 
 const remover = async (req, res) => {
-    if (req.method == 'POST'){
-        try {
-            console.log(req.params.id)
-            await afastamentoService.delete(req.params.id);
-            return res.redirect('/afastamentoTemporario/listar');
-        } catch (error) {
-            return res.render('afastamentoTemporario/pedidos-afastamento', {
-                pageTitle, csrfToken: req.csrfToken(), 
-                tipoUsuario: req.session.tipoUsuario ,
-                error: error.message || 'Não foi possível remover o pedido de afastamento!'
-            });
-        }
+  if (req.method === 'POST') {
+    try {
+      console.log(req.params.id)
+      await afastamentoService.delete(req.params.id)
+      return res.redirect('/afastamentoTemporario/listar')
+    } catch (error) {
+      return res.render('afastamentoTemporario/pedidos-afastamento', {
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario,
+        error: error.message || 'Não foi possível remover o pedido de afastamento!'
+      })
     }
+  }
 }
 
 export default { criar, listar, vizualizar, remover }

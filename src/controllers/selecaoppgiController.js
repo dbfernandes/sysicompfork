@@ -1,6 +1,7 @@
 import EditalService from '../services/editalService'
 import CandidateService from '../services/candidateService'
 import candidatePublicacaoService from '../services/candidatePublicacaoService'
+import linhasDePesquisaService from '../services/linhasDePesquisaService'
 
 const locals = {
   layout: 'selecaoppgi'
@@ -12,24 +13,23 @@ const begin = async (req, res) => {
       return res.render('selecaoppgi/begin', {
         ...locals
       })
-    case 'POST':
-      return res.send('Erro 400')
+    default:
+      return res.status(404).send('Erro 400')
   }
 }
 
-const signin = async (req, res) => {
+// Rotas para cadastro de candidato
+const signUp = async (req, res) => {
   switch (req.method) {
     case 'GET': {
       const editais = await EditalService.listEdital()
+      const listEditais = editais.map((edital) => edital.dataValues)
+
       return res.render('selecaoppgi/signin', {
         csrfToken: req.csrfToken(),
-        ...locals,
-        editais: editais.map((edital) => {
-          return {
-            ...edital.get()
-          }
-        }),
-        errorSignin: null
+        editais: listEditais,
+        errorSignin: null,
+        ...locals
       })
     }
     case 'POST': {
@@ -70,17 +70,20 @@ const signin = async (req, res) => {
 const login = async (req, res) => {
   switch (req.method) {
     case 'GET': {
-      const editais = await EditalService.listEdital()
-      return res.render('selecaoppgi/login', {
-        csrfToken: req.csrfToken(),
-        teste: 'teste',
-        ...locals,
-        editais: editais.map((edital) => {
-          return {
-            ...edital.get()
-          }
+      if (req.session.email) {
+        res.redirect('/selecaoppgi/formulario')
+      }
+      try {
+        const editais = await EditalService.listEdital()
+        const listEditais = editais.map((edital) => edital.dataValues)
+        return res.render('selecaoppgi/login', {
+          ...locals,
+          csrfToken: req.csrfToken(),
+          editais: listEditais
         })
-      })
+      } catch (err) {
+        return res.status(500).send()
+      }
     }
     case 'POST':
       try {
@@ -88,82 +91,124 @@ const login = async (req, res) => {
           email, senha, edital
         } = req.body
 
-        console.log({
-          email,
-          senha,
-          edital
-        })
-
         if (!email || !senha || !edital) {
           return res.status(400).json({
             error: 'Dados incompletos ou mal formatados'
           })
         }
-        const IsCandidateValid = await CandidateService
+
+        const cadidate = await CandidateService
           .auth({
             email,
             password: senha,
             editalNumber: edital
           })
-
-        console.log('TESTE')
-        const editais2 = await EditalService.listEdital()
-
-        if (!IsCandidateValid) {
-          console.log('error teste')
-          console.log(req.csrfToken())
-
-          return res.render('selecaoppgi/login', {
-            csrfToken: req.csrfToken(),
-            message: 'Usuário não cadastrado',
-            type: 'danger',
+        const editais = await EditalService.listEdital()
+        const listEditais = editais.map((edital) => edital.dataValues)
+        if (!cadidate) {
+          return res.status(406).render('selecaoppgi/login', {
             ...locals,
-            editais: editais2.map((edital) => {
-              return {
-                ...edital.get()
-              }
-            })
+            csrfToken: req.csrfToken(),
+            editais: listEditais,
+            message: 'Login, Senha ou Edital incorretos',
+            type: 'danger'
           })
         }
 
-        req.session.email = IsCandidateValid.email
-        req.session.editalId = IsCandidateValid.editalId
-        req.session.uid = IsCandidateValid.id
-        req.session.editalPosition = IsCandidateValid.editalPosition
+        req.session.email = cadidate.email
+        req.session.editalId = cadidate.editalId
+        req.session.uid = cadidate.id
+        req.session.editalPosition = cadidate.editalPosition
         return res.status(200).send()
       } catch (err) {
-        console.log(err)
         return res.status(500).send()
       }
-
     default:
       return res.status(404).send()
   }
 }
 
-const forms = async (req, res) => {
-  console.log(req.method)
-  console.log('teste forms')
+function logout (req, res) {
+  switch (req.method) {
+    case 'POST':
+      console.log('logout')
+      req.session.destroy()
+      return res.status(200).redirect('/selecaoppgi/entrar')
+    default:
+      return res.status(404).send()
+  }
+}
 
+const formProposta = async (req, res) => {
+  switch (req.method) {
+    case 'GET': {
+      const candidate = await CandidateService.findOne({
+        id: req.session.uid
+      })
+      const linhas = await linhasDePesquisaService.list()
+
+      return res.render('selecaoppgi/forms3', {
+        ...locals,
+        csrfToken: req.csrfToken(),
+        editalPosicao: req.session.editalPosition,
+        email: req.session.email,
+        id: req.session.uid,
+        linhasPesquisa: linhas,
+        linhaPesquisaId: candidate.linhaDePesquisaId
+      })
+    }
+    case 'POST': {
+      console.log('POST PROPOSTA')
+      try {
+        const data = req.body
+        const id = req.session.uid
+        const candidate = {
+          linhaDePesquisaId: data.linhaDePesquisaId
+        }
+        await CandidateService.postProposta({
+          Candidato: candidate,
+          id
+        })
+        req.session.editalPosition = 4
+        return res.status(200).send()
+      } catch (err) {
+        return res.status(500).send()
+      }
+    }
+    default:
+      return res.status(400).send()
+  }
+}
+const fs = require('fs')
+const path = require('path')
+
+function verificarArquivoDiretorio (diretorio, nomeArquivo) {
+  const caminhoArquivo = path.join(diretorio, nomeArquivo)
+  try {
+    // Verifica se o arquivo existe
+    fs.accessSync(caminhoArquivo, fs.constants.F_OK)
+    return true
+  } catch (err) {
+    // Se houver algum erro ao acessar o arquivo, retorna false
+    return false
+  }
+}
+const forms = async (req, res) => {
   switch (req.method) {
     case 'GET':
-
       if (!req.session.email) {
         res.redirect('/selecaoppgi/entrar')
       }
+      console.log(req.session)
       if (req.session.editalPosition === 1) {
-        // console.log(req.session.email)
-        // console.log(req.session.editalId)
-        // console.log(req.session.uid)
         const id = req.session.uid
         const candidate = await CandidateService.findOne({
           id
         })
-        // console.log(candidate)
-        return res.render('selecaoppgi/forms1', {
+        return res.render('selecaoppgi/formDados', {
           ...locals,
           Nome: candidate.Nome,
-          Nascimento: candidate.Nascimento,
+          Nascimento: candidate.Nascimento ? candidate.Nascimento : '',
           Sexo: candidate.Sexo,
           NomeSocial: candidate.NomeSocial,
           CEP: candidate.CEP,
@@ -192,31 +237,32 @@ const forms = async (req, res) => {
         const candidate = await CandidateService.findOne({
           id: req.session.uid
         })
+        console.log('teste form2', candidate)
+        const caminhoDiretorioUsuario = path.join('uploads', 'candidatos', req.session.uid.toString())
 
         return res.render('selecaoppgi/forms2', {
           ...locals,
-          cursoGraduacao: candidate.cursoGraduacao,
-          instituicao: candidate.Instituicao,
-          anoEgresso: candidate.AnoEgresso,
+          cursoGraduacao: candidate.CursoGraduacao,
+          instituicao: candidate.InstituicaoGraduacao,
+          anoEgresso: candidate.AnoEgressoGraduacao,
           cursoPos: candidate.CursoPos,
-          tipoCursoPos: candidate.TipoCursoPos,
-          instituicaoPos: candidate.InstituicaoPos,
-          anoEgressoPos: candidate.AnoEgressoPos,
+          tipoCursoPos: candidate.CursoPosTipo,
+          instituicaoPos: candidate.CursoInstituicaoPos,
+          anoEgressoPos: candidate.CursoAnoEgressoPos,
           editalPosicao: req.session.editalPosition,
           email: req.session.email,
           id: req.session.uid,
           Curso: candidate.CursoDesejado,
-          csrfToken: req.csrfToken()
+          csrfToken: req.csrfToken(),
+          hasCurriculum: verificarArquivoDiretorio(caminhoDiretorioUsuario, 'VitaePDF.pdf')
         })
       }
 
       if (req.session.editalPosition === 3) {
-        await CandidateService.findOne({
-          id: req.session.uid
-        })
-
-        console.log('*************************************************')
-        return res.render('selecaoppgi/forms3', {
+        formProposta(req, res)
+      }
+      if (req.session.editalPosition === 4) {
+        return res.render('selecaoppgi/formConfirmacao', {
           ...locals,
           editalPosicao: req.session.editalPosition,
           email: req.session.email,
@@ -224,7 +270,6 @@ const forms = async (req, res) => {
           csrfToken: req.csrfToken()
         })
       }
-
     // case 'POST': {
     //   if (req.session.editalPosition == 1) {
     //     // console.log(req.body)
@@ -292,8 +337,6 @@ const form2 = async (req, res) => {
       break
     case 'POST': {
       try {
-        console.log('form2post')
-
         let VitaePDF = null
         let Prova = null
         if (req.files && req.files.Prova !== undefined) {
@@ -302,35 +345,22 @@ const form2 = async (req, res) => {
         if (req.files && req.files.VitaePDF !== undefined) {
           VitaePDF = req.files.VitaePDF[0]
         }
+        const id = req.session.uid
 
-        if (Prova) {
-          const caminhoDoArquivoVittae = VitaePDF.path
-
-          const ProvaPDF = Prova.path
-
-          const Candidato = {
-            CursoGraduacao: req.body.Curso,
-            InstituicaoGraduacao: req.body.Instituicao,
-            AnoEgressoGraduacao: req.body.AnoEgresso,
-            CursoPos: req.body.CursoPos,
-            CursoPosTipo: req.body.TipoCursoPos,
-            CursoInstituicaoPos: req.body.InstituicaoPos,
-            CursoAnoEgressoPos: req.body.AnoEgressoPos,
-            VitaePDF: caminhoDoArquivoVittae,
-            Prova: ProvaPDF
-          }
-          console.log(Candidato)
-          console.log('Caminho do arquivo:', ProvaPDF)
-        } else {
-          console.log('FILES__________________')
-          console.log(req.files)
-          console.log('EndFILES__________________')
-          console.log(req.body)
-          console.log('EndBody__________________')
-
-          console.log('Nenhum arquivo de prova encontrado.')
+        const Candidato = {
+          CursoGraduacao: req.body.Curso,
+          InstituicaoGraduacao: req.body.Instituicao,
+          AnoEgressoGraduacao: req.body.AnoEgresso,
+          CursoPos: req.body['Curso-Pos'],
+          CursoPosTipo: req.body.CursoTipo,
+          CursoInstituicaoPos: req.body.InstituicaoPos,
+          CursoAnoEgressoPos: req.body.AnoEgressoPos,
+          ...(VitaePDF ? { VitaePDF: VitaePDF.path } : {}),
+          ...(Prova ? { Prova: Prova.path } : {})
         }
 
+        const candidate = CandidateService.form2({ Candidato, id })
+        req.session.editalPosition = 3
         res.status(200).send()
       } catch { }
     }
@@ -417,22 +447,14 @@ const candidates = async (req, res) => {
 const voltar = async (req, res) => {
   switch (req.method) {
     case 'POST': {
-      const id = req.body.id
-      console.log(id)
-      let editalPosicao = req.body.editalPosicao
-      console.log(editalPosicao)
-      editalPosicao = parseInt(editalPosicao, 10) - 1
-
-      // res.redirect('/selecaoppgi')
-      console.log(editalPosicao)
-
-      await CandidateService.back({
+      const id = req.session.uid
+      const editalPosicao = parseInt(req.session.editalPosition, 10) - 1
+      await CandidateService.backEdital({
         id
       })
       req.session.editalPosition = editalPosicao
-      res.status(200).send()
+      return res.status(200).send()
     }
-      break
     default:
       return res.status(400).send()
   }
@@ -444,7 +466,7 @@ const refresh = async (req, res) => {
 }
 export default {
   begin,
-  signin,
+  signUp,
   login,
   forms,
   form1,
@@ -452,5 +474,7 @@ export default {
   candidates,
   voltar,
   refresh,
-  formPublicacoes
+  formPublicacoes,
+  logout,
+  formProposta
 }
