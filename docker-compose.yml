@@ -21,7 +21,7 @@ services:
   sysicomp:
     build: .
     env_file:
-      - src/.env
+      - .env
     ports: 
       - 3003:3000
     working_dir: /app

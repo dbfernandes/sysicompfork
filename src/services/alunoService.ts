@@ -10,10 +10,10 @@ class AlunoService {
     }
   }
 
-  async listarTodos(curso: string, formado: any): Promise<any[]> {
+  async listarTodos(curso: string | string[], formado: any): Promise<any[]> {
     return prisma.aluno.findMany({
       where: {
-        curso,
+        curso: Array.isArray(curso) ? { in: curso } : curso,
         formado
       }
     });

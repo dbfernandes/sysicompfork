@@ -75,7 +75,7 @@ const publicacoes = async (req: Request, res: Response) => {
         const anos = [...Array(11).keys()].map(i => i + currentYear - 10);
         const graficoArtigosConferencias = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const graficoArtigosPeriodicos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        publicacoes.artigosConferencias.forEach(artigo => {
+        publicacoes.artigosConferencias.forEach((artigo: any) => {
           const idx = anos.findIndex(e => e === artigo.ano);
           if (idx === -1) {
             graficoArtigosConferencias[0] = graficoArtigosConferencias[0] + 1;
@@ -84,7 +84,7 @@ const publicacoes = async (req: Request, res: Response) => {
           }
         });
 
-        publicacoes.artigosPeriodicos.forEach(artigo => {
+        publicacoes.artigosPeriodicos.forEach((artigo: any) => {
           const idx = anos.findIndex(e => e === artigo.ano);
           if (idx === -1) {
             graficoArtigosPeriodicos[0] = graficoArtigosPeriodicos[0] + 1;
@@ -131,7 +131,7 @@ const pesquisa = async (req: Request, res: Response) => {
 
         const graficoProjetos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        projetos.forEach(projeto => {
+        projetos.forEach((projeto: any) => {
           const anosProjeto = projeto.fim === 0
             ? [...Array(currentYear - projeto.inicio).keys()].map(i => i + currentYear - (currentYear - projeto.inicio - 1))
             : [...Array(projeto.fim - projeto.inicio).keys()].map(i => i + projeto.fim - (projeto.fim - projeto.inicio - 1));
@@ -183,7 +183,7 @@ const orientacao = async (req: Request, res: Response) => {
         const graficoOrientacoesConcluidas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const graficoOrientacoesAndamento = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        orientacoes.concluidas.forEach(orientacao => {
+        orientacoes.concluidas.forEach((orientacao: any) => {
           const idx = anos.findIndex(e => e === orientacao.ano);
           if (idx === -1) {
             graficoOrientacoesConcluidas[0] = graficoOrientacoesConcluidas[0] + 1;
@@ -192,7 +192,7 @@ const orientacao = async (req: Request, res: Response) => {
           }
         });
 
-        orientacoes.andamento.forEach(orientacao => {
+        orientacoes.andamento.forEach((orientacao: any) => {
           const idx = anos.findIndex(e => e === orientacao.ano);
           if (idx === -1) {
             graficoOrientacoesAndamento[0] = graficoOrientacoesAndamento[0] + 1;

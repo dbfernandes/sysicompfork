@@ -59,7 +59,7 @@ const verificarAvatar = async (req: Request, res: Response) => {
     case 'GET':
       try {
         const { id } = req.params;
-        const avatar = await AvatarService.listarUm(id);
+        const avatar = await AvatarService.listarUmAvatar(parseInt(id));
         return res.status(200).send(avatar);
       } catch (err) {
         return res.status(500).send();
