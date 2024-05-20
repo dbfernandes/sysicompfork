@@ -1,4 +1,5 @@
-const { CandidatePublications } = require('../models')
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 class CandidatePublicacaoService {
   async adicionarVarios (
@@ -20,7 +21,7 @@ class CandidatePublicacaoService {
 
       publicacoesParaInserir.forEach(async publicacao => {
         try {
-          const existingPublication = await CandidatePublications.findOne({
+          const existingPublication = await prisma.candidatePublications.findFirst({
             where: {
               idCandidate,
               titulo: publicacao.titulo,
@@ -30,14 +31,23 @@ class CandidatePublicacaoService {
           })
 
           if (existingPublication) {
-            await CandidatePublications.update(publicacao, {
+            // await CandidatePublications.update(publicacao, {
+            //   where: {
+            //     id: existingPublication.id
+            //   }
+            // })
+            await prisma.candidatePublications.update({
               where: {
                 id: existingPublication.id
-              }
+              },
+              data: publicacao
             })
             console.log(`Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`)
           } else {
-            await CandidatePublications.create(publicacao)
+            // await CandidatePublications.create(publicacao)
+            await prisma.candidatePublications.create({
+              data: publicacao
+            })
             console.log(`Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidate}!`)
           }
         } catch (error) {
@@ -50,14 +60,26 @@ class CandidatePublicacaoService {
 
   async ListarPublicacoesCandidate (idCandidate) {
     try {
-      const periodicos = await CandidatePublications.findAll({
+      // const periodicos = await CandidatePublications.findAll({
+      //   where: {
+      //     idCandidate,
+      //     tipo: 1
+      //   }
+      // })
+      const periodicos = await prisma.candidatePublications.findMany({
         where: {
           idCandidate,
           tipo: 1
         }
       })
 
-      const conferencias = await CandidatePublications.findAll({
+      // const conferencias = await CandidatePublications.findAll({
+      //   where: {
+      //     idCandidate,
+      //     tipo: 2
+      //   }
+      // })
+      const conferencias = await prisma.candidatePublications.findMany({
         where: {
           idCandidate,
           tipo: 2

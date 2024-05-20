@@ -1,17 +1,19 @@
+import { Request, Response } from 'express';
 import ReservaService from '../services/reservasService';
 import salasService from '../services/salasService';
 
-const listar = async (req, res) => {
+const listar = async (req:Request, res: Response) => {
   const reservas = await ReservaService.listarTodos()
-  res.json({ reservas: reservas.map(sala => sala.toJSON()) })
+  // res.json({ reservas: reservas.map((sala: { toJSON: () => any; }) => sala.toJSON()) })
+  res.json({ reservas: reservas })
 }
 
-const adicionar = async (req, res) => {
+const adicionar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos()
-
     res.render('reservas/reservas-adicionar', {
-      salas: salas.map(sala => sala.toJSON()),
+      // salas: salas.map((sala) => JSON.stringify(sala)),
+      salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
       csrf: req.csrfToken(),
@@ -37,18 +39,11 @@ const adicionar = async (req, res) => {
         ...req.body
       }
 
-      // const reserva = await ReservaSala
-      //     .create({
-      //         ...req.body,
-      //     })
-      //     .catch((err) => {
-      //         responseError = err;
-      //     });
-      const reserva = await ReservaService.criar(dados)
+      await ReservaService.criar(dados)
 
-      if (!reserva) {
-        res.redirect('/reservas/gerenciar')
-      }
+      // if (!reserva) {
+      //   res.redirect('/reservas/gerenciar')
+      // }
 
       res.redirect('/reservas/gerenciar')
     } catch (e) {
@@ -58,13 +53,13 @@ const adicionar = async (req, res) => {
   }
 }
 
-const excluir = async (req, res) => {
+const excluir = async (req:Request, res: Response) => {
   const { id } = req.params
-  const reserva = await ReservaService.listarUm(id)
+  const reserva = await ReservaService.buscarReserva(id)
   try {
     if (!reserva) throw new Error('Sala não encontrado!')
 
-    await ReservaService.remover(id)
+    await ReservaService.remover(parseInt(id))
     res.redirect('/reservas/gerenciar')
   } catch (e) {
     console.log(e)
@@ -72,35 +67,23 @@ const excluir = async (req, res) => {
   }
 }
 
-function converterData (data) {
-  const partes = data.split('-')
-  return partes[2] + '/' + partes[1] + '/' + partes[0]
-}
-
-const gerenciar = async (req, res) => {
-  // const reservas = await ReservaSala.findAll({
-  //     include: [
-  //         {
-  //             model: Salas,
-  //             as: 'salas',
-  //         }, {
-  //             model: Usuario,
-  //             as: 'usuario',
-  //         }
-  //     ],
-  // });
+const gerenciar = async (req:Request, res: Response) => {
   const reservas = await ReservaService.listarReservasSalas()
-  const reservasJSON = reservas.map(reserva => {
-    const reservaObj = reserva.toJSON()
-
-    reservaObj.dataInicio = converterData(reservaObj.dataInicio)
-    reservaObj.dataTermino = converterData(reservaObj.dataTermino)
+  // console.log(reservas)
+  const reservasJSON = reservas.map((reserva: any) => {
+    const reservaObj = {
+      ...reserva,
+      dataInicio: reserva.dataInicio ? reserva.dataInicio.toLocaleDateString('pt-BR') : null,
+      dataTermino: reserva.dataTermino ? reserva.dataTermino.toLocaleDateString('pt-BR') : null,
+      // horaInicio: reserva.horaInicio ? new Date(reserva.horaInicio).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null,
+      // horaTermino: reserva.horaTermino ? new Date(reserva.horaTermino).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null
+    };
     const dataAtual = new Date()
     const dataTerminoReserva = new Date(reservaObj.dataTermino + ' ' + reservaObj.horaTermino)
     reservaObj.terminou = dataTerminoReserva < dataAtual
 
     return reservaObj
-  })
+  });
 
   res.render('reservas/reservas-gerenciar', {
     reservas: reservasJSON,
@@ -111,32 +94,24 @@ const gerenciar = async (req, res) => {
   })
 }
 
-const editar = async (req, res) => {
+const editar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
       const reserva = await ReservaService.listarReservasSalasPorUsuario(req.params.id)
-      // const reserva = await ReservaSala.findOne({
-      //     where: {
-      //         id: req.params.id
-      //     },
-      //     include: [
-      //         {
-      //             model: Salas, // Include the associated "Post" model
-      //             as: 'salas', // Alias for the posts association (if defined in the User model)
-      //         }
-      //     ],
-      // })
-
+      if (!reserva) throw new Error('Reserva não encontrado!')
+      
       res.render('reservas/reservas-editar', {
-        salas: salas.map(sala => sala.toJSON()),
-        reserva: reserva.toJSON(),
+        // salas: salas.map((sala) => JSON.stringify(sala)),
+        salas: salas,
+        // reserva: reserva.toJSON(),
+        reserva: reserva,
         csrf: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario
 
       })
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).send({ message: error.message })
     }
   } else if (req.method === 'POST') {
@@ -157,7 +132,8 @@ const editar = async (req, res) => {
     }
 
     const dados = {
-      ...req.body
+      ...req.body,
+      dataInicio: req.body.dataInicio ? `${req.body.dataInicio}T00:00:00.000Z` : undefined
     }
 
     try {
@@ -166,7 +142,7 @@ const editar = async (req, res) => {
       // }, { where: { id: req.params.id } });
       await ReservaService.atualizar(req.params.id, dados)
       res.redirect('/reservas/gerenciar')
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).send({ message: error.message })
     }
   }

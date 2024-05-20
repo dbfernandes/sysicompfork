@@ -56,8 +56,7 @@ const excluir = async (req, res) => {
 const gerenciar = async (req, res) => {
   const salas = await SalaService.listarTodos()
   res.render('salas/salas-gerenciar', {
-    salas: salas.map(sala => sala.toJSON()),
-    nome: req.session.nome,
+    salas: salas,
     csrfToken: req.csrfToken(),
     tipoUsuario: req.session.tipoUsuario
   })

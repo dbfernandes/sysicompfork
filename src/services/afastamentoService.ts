@@ -1,27 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
-interface AfastamentoTemporario {
-  usuarioId: number
-  usuarioNome: string
-  dataSaida: Date
-  dataRetorno: string
-  tipoViagem: string
-  localViagem: string
-  justificativa: string
-  planoReposicao: string
-  createdAt: Date
-  updatedAt: Date
-  dataCriacaoFormata: string
-  dataSaidaFormata: string
-  dataRetornoFormata: string
-}
-
-const formatDbAnswer = (object: any) => {
-  const array = Array.isArray(object)
-
-  return array ? object.map((linha) => (linha.dataValues)) : object.dataValues
-}
 class AfastamentoService {
   async listarAfastamentosDoUsuario (id:string) {
     try {
@@ -118,9 +97,7 @@ class AfastamentoService {
           tipoViagem,
           localViagem,
           justificativa,
-          planoReposicao,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          planoReposicao
         }
       })
     } catch (error: any) {

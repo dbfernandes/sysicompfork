@@ -1,3 +1,4 @@
+import { Request, Response } from 'express'
 import AlunoService from '../services/alunoService'
 import PublicacaoService from '../services/publicacaoService'
 
@@ -8,7 +9,7 @@ const layoutMain = {
 
 // Home-page
 
-const inicio = async (req, res) => {
+const inicio = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {

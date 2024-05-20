@@ -1,3 +1,4 @@
+import { Request, Response } from 'express'
 import ProjetoService from '../services/projetoService'
 
 // Escolha do Layout
@@ -7,7 +8,7 @@ const layoutMain = {
 
 // Listagem Projetos
 
-const projetos = async (req, res) => {
+const projetos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {

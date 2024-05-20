@@ -47,7 +47,7 @@ const verificarAvatar = async (req, res) => {
     case 'GET':
       try {
         const { id } = req.params
-        const avatar = await AvatarService.listarUm(id)
+        const avatar = await AvatarService.listarUmAvatar(id)
         return res.status(200).send(avatar)
       } catch (err) {
         return res.status(500).send()

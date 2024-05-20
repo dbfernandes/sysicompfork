@@ -1,7 +1,8 @@
+import { Request, Response } from 'express'
 import UsuarioService from "../services/usuarioService";
 import criarURL from '../utils/criarUrl'
 
-const visualizar = async (req, res) => {
+const visualizar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {
@@ -34,7 +35,7 @@ const visualizar = async (req, res) => {
   }
 }
 
-const editar = async (req, res) => {
+const editar = async (req: Request, res: Response) => {
   const id = req.session.uid
   switch (req.method) {
     case 'GET':
@@ -68,6 +69,7 @@ const editar = async (req, res) => {
       const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
       const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
       const dados = {
+        id: id,
         nomeCompleto: req.body.nomeCompleto,
         cpf: req.body.cpf,
         email: req.body.email,
@@ -86,7 +88,7 @@ const editar = async (req, res) => {
       }
       try {
         await UsuarioService.alterar(id, dados)
-      } catch (error) {
+      } catch (error: any) {
         console.log(error)
         dados.id = id
         return res.status(500).render('perfil/perfil-editar', {
@@ -115,7 +117,7 @@ const editar = async (req, res) => {
   }
 }
 
-const deletar = async (req, res) => {
+const deletar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'POST':
       try {
@@ -123,7 +125,7 @@ const deletar = async (req, res) => {
         await UsuarioService.alterar(id, {
           status: 0
         })
-        req.session.uid = null
+        req.session.uid = undefined
         return res.redirect('/')
       } catch (error) {
         console.log(error)

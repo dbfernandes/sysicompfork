@@ -17,8 +17,8 @@ model AfastamentoTemporarios {
   localViagem    String   @db.VarChar(255)
   justificativa  String   @db.Text
   planoReposicao String   @db.Text
-  createdAt      DateTime @db.DateTime(0)
-  updatedAt      DateTime @db.DateTime(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Aluno {
@@ -29,7 +29,7 @@ model Aluno {
   periodoConclusao String?  @db.VarChar(10)
   formado          Int      @db.SmallInt
   createdAt        DateTime @default(now())
-  updatedAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Avatar {
@@ -37,8 +37,8 @@ model Avatar {
   idUsuario Int
   nome      String   @db.VarChar(255)
   caminho   String   @db.VarChar(255)
-  createdAt DateTime @db.DateTime(0)
-  updatedAt DateTime @db.DateTime(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   Usuario   Usuario  @relation(fields: [idUsuario], references: [id], onUpdate: Restrict, map: "Avatar_ibfk_1")
 
   @@index([idUsuario], map: "idUsuario")
@@ -66,11 +66,12 @@ model Candidate {
   ComoSoube            String?           @db.VarChar(255)
   Curso                String?           @db.VarChar(255)
   Regime               String?           @db.VarChar(255)
-  Cotista              Boolean?
+  Cotista              String?           @db.VarChar(255)
   CotistaTipo          String?           @db.VarChar(255)
-  Condicao             Boolean?
+  Condicao             String?           @db.VarChar(255)
   CondicaoTipo         String?           @db.VarChar(255)
-  Bolsista             Boolean?
+  etapaAtual           Int?              @db.TinyInt
+  Bolsista             String?           @db.VarChar(255)
   CursoGraduacao       String?           @db.VarChar(255)
   InstituicaoGraduacao String?           @db.VarChar(255)
   AnoEgressoGraduacao  String?           @db.VarChar(255)
@@ -78,9 +79,6 @@ model Candidate {
   CursoPosTipo         String?           @db.VarChar(255)
   CursoInstituicaoPos  String?           @db.VarChar(255)
   CursoAnoEgressoPos   String?           @db.VarChar(255)
-  Curriculum           Bytes?            @db.Blob
-  CartaDoOrientador    Bytes?            @db.Blob
-  PropostaDeTrabalho   Bytes?            @db.Blob
   LinhasDePesquisa     LinhasDePesquisa? @relation(fields: [linhaDePesquisaId], references: [id], onDelete: Cascade, map: "fk_Candidate_LinhaDePesquisa")
 
   @@index([linhaDePesquisaId], map: "fk_Candidate_LinhaDePesquisa")
@@ -104,8 +102,8 @@ model CandidatePublications {
   natureza    String   @db.VarChar(255)
   autores     String   @db.VarChar(255)
   ISSN        String?  @db.VarChar(300)
-  createdAt   DateTime @db.DateTime(0)
-  updatedAt   DateTime @db.DateTime(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@id([id, idCandidate])
 }
@@ -124,16 +122,16 @@ model Edital {
   status               String   @default("0") @db.VarChar(255)
   inscricoesIniciadas  Int      @default(0)
   inscricoesEncerradas Int      @default(0)
-  createdAt            DateTime @db.DateTime(0)
-  updatedAt            DateTime @db.DateTime(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model LinhasDePesquisa {
   id        Int         @id @default(autoincrement())
   nome      String      @db.VarChar(255)
   sigla     String      @db.VarChar(255)
-  createdAt DateTime    @db.DateTime(0)
-  updatedAt DateTime    @db.DateTime(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   Candidate Candidate[]
 }
 
@@ -146,8 +144,8 @@ model Orientacao {
   natureza    String?  @db.VarChar(1024)
   tipo        Int      @db.SmallInt
   status      Int      @db.SmallInt
-  createdAt   DateTime @db.DateTime(0)
-  updatedAt   DateTime @db.DateTime(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   Usuario     Usuario  @relation(fields: [idProfessor], references: [id], onUpdate: Restrict, map: "Orientacao_ibfk_1")
 
   @@index([idProfessor], map: "idProfessor")
@@ -159,8 +157,8 @@ model Premios {
   titulo      String   @db.VarChar(255)
   entidade    String   @db.VarChar(255)
   ano         Int
-  createdAt   DateTime @db.DateTime(0)
-  updatedAt   DateTime @db.DateTime(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   Usuario     Usuario  @relation(fields: [idProfessor], references: [id], onUpdate: Restrict, map: "Premios_ibfk_1")
 
   @@index([idProfessor], map: "idProfessor")
@@ -176,8 +174,8 @@ model Projeto {
   papel         String   @db.VarChar(500)
   financiadores String   @db.VarChar(1024)
   integrantes   String   @db.VarChar(1024)
-  createdAt     DateTime @db.DateTime(0)
-  updatedAt     DateTime @db.DateTime(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   Usuario       Usuario  @relation(fields: [idProfessor], references: [id], onUpdate: Restrict, map: "Projeto_ibfk_1")
 
   @@index([idProfessor], map: "idProfessor")
@@ -192,8 +190,8 @@ model Publicacao {
   natureza             String?                @db.VarChar(100)
   autores              String                 @db.VarChar(1024)
   ISSN                 String                 @db.VarChar(300)
-  createdAt            DateTime               @db.DateTime(0)
-  updatedAt            DateTime               @db.DateTime(0)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
   TipoPublicacao       TipoPublicacao         @relation(fields: [tipo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Publicacao_ibfk_1")
   RelUsuarioPublicacao RelUsuarioPublicacao[]
 
@@ -209,8 +207,8 @@ model RelUsuarioPublicacao {
   id           Int        @id @default(autoincrement())
   idUsuario    Int
   idPublicacao Int
-  createdAt    DateTime   @db.DateTime(0)
-  updatedAt    DateTime   @db.DateTime(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   Usuario      Usuario    @relation(fields: [idUsuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RelUsuarioPublicacao_ibfk_1")
   Publicacao   Publicacao @relation(fields: [idPublicacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RelUsuarioPublicacao_ibfk_2")
 
@@ -227,10 +225,10 @@ model ReservaSalas {
   dias        String?   @db.VarChar(255)
   dataInicio  DateTime? @db.Date
   dataTermino DateTime? @db.Date
-  horaInicio  DateTime? @db.Time(0)
-  horaTermino DateTime? @db.Time(0)
-  createdAt   DateTime  @db.DateTime(0)
-  updatedAt   DateTime  @db.DateTime(0)
+  horaInicio  String?   @db.VarChar(255)
+  horaTermino String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   Salas       Salas?    @relation(fields: [SalaId], references: [id], onDelete: Cascade, map: "reserva_sala_fk")
   Usuario     Usuario?  @relation(fields: [UsuarioId], references: [id], onDelete: Cascade, map: "reserva_usuario_fk")
 
@@ -243,10 +241,10 @@ model Salas {
   nome         String?        @db.VarChar(255)
   capacidade   Int?
   numero       Int?
-  andar        Int?
+  andar        String?        @db.VarChar(255)
   bloco        String?        @db.VarChar(255)
-  createdAt    DateTime       @db.DateTime(0)
-  updatedAt    DateTime       @db.DateTime(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   ReservaSalas ReservaSalas[]
 }
 
@@ -258,8 +256,8 @@ model TipoPublicacao {
   id         Int          @id @default(autoincrement())
   nome       String       @db.VarChar(255)
   chave      String       @db.VarChar(255)
-  createdAt  DateTime     @db.DateTime(0)
-  updatedAt  DateTime     @db.DateTime(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
   Publicacao Publicacao[]
 }
 
@@ -276,8 +274,8 @@ model Trancamentos {
   doc_anexo       String?   @db.VarChar(255)
   status          Int?      @db.TinyInt
   id_responsavel  Int?
-  createdAt       DateTime  @db.DateTime(0)
-  updatedAt       DateTime  @db.DateTime(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model Usuario {
@@ -306,8 +304,8 @@ model Usuario {
   resumo                  String?                @db.VarChar(5000)
   resumoIngles            String?                @db.VarChar(5000)
   ultimaAtualizacao       DateTime?              @db.DateTime(0)
-  createdAt               DateTime               @db.DateTime(0)
-  updatedAt               DateTime               @db.DateTime(0)
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
   Avatar                  Avatar[]
   Orientacao              Orientacao[]
   Premios                 Premios[]
@@ -327,6 +325,6 @@ model prorrogacoes {
   status          Boolean?
   data_termino    DateTime? @db.DateTime(0)
   id_responsavel  Int?
-  createdAt       DateTime  @db.DateTime(0)
-  updatedAt       DateTime  @db.DateTime(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

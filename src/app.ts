@@ -20,8 +20,10 @@ app.engine('hbs', engine({
   partialsDir: path.join(__dirname, 'views', 'partials'),
   helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.js'))
 }))
+app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, '/views'))
 
-// Temporario até achar uma solução melhor
+// To-Do: mover para um arquivo session.d.ts
 declare module 'express-session' {
   export interface SessionData {
     tipoUsuario?: {
@@ -29,19 +31,17 @@ declare module 'express-session' {
       secretaria: boolean,
       coordenador: boolean
       professor: boolean
-    }| undefined,
+    } | undefined,
     uid: string,
     nome: string
   }
 }
 
-app.set('view engine', 'hbs')
-app.set('views', path.join(__dirname, '/views'))
 
 app.use(cookieParser())
 
 app.use(session({
-  genid: (req) => {
+  genid: () => {
     return uuid.v4() // usamos UUIDs para gerar os SESSID
   },
   secret: 'eb9ac99d8a53fbfae6cae8e7a48c5b45',

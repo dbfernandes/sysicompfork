@@ -80,7 +80,7 @@ const criar = async (req, res) => {
 const remover = async (req, res) => {
   if (req.method === 'POST') {
     try {
-      linhasDePesquisaService.delete(req.params.id)
+      linhasDePesquisaService.delete(parseInt(req.params.id))
     } catch (error) {
       console.log(error)
       return res.redirect('/linhasDePesquisa/listar')
@@ -92,7 +92,7 @@ const remover = async (req, res) => {
 };
 
 const editar = async (req, res) => {
-  const linhaPesquisa = await linhasDePesquisaService.findById(req.params.id)
+  const linhaPesquisa = await linhasDePesquisaService.findById(parseInt(req.params.id))
   if (req.method === 'GET') {
     return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', {
       linhaPesquisa, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session.tipoUsuario
@@ -106,7 +106,7 @@ const editar = async (req, res) => {
       
       if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
       
-      await linhasDePesquisaService.update(req.params.id, { nome, sigla });
+      await linhasDePesquisaService.update(parseInt(req.params.id), { nome, sigla });
     } catch (error) {
       console.log(error)
       return res.render('linhasDePesquisa/linhasDePesquisa-editar', {

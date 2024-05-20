@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CandidatoService from '../services/candidateService.js';
+import CandidatoService from '../services/candidateService.ts';
 
 const exceljs = require('exceljs')
 

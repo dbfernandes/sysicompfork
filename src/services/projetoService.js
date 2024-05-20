@@ -1,4 +1,6 @@
-const { Projeto } = require('../models')
+// const { Projeto } = require('../models')
+import { PrismaClient } from "@prisma/client"
+const prisma = new PrismaClient()
 
 class ProjetoService {
   async adicionarVarios (
@@ -18,18 +20,32 @@ class ProjetoService {
           integrantes: p.integrantes
         }
       })
-      await Projeto.destroy({
+      // await Projeto.destroy({
+      //   where: {
+      //     idProfessor
+      //   }
+      // }).then(async () => {
+      //   await Projeto.bulkCreate(projetosArr)
+      // })
+      await prisma.projeto.deleteMany({
         where: {
           idProfessor
         }
       }).then(async () => {
-        await Projeto.bulkCreate(projetosArr)
+        await prisma.projeto.createMany({
+          data: projetosArr
+        })
       })
     }
   }
 
   async listarAtuais () {
-    let projetos = await Projeto.findAll({
+    // let projetos = await Projeto.findAll({
+    //   where: {
+    //     fim: 0
+    //   }
+    // })
+    let projetos = await prisma.projeto.findMany({
       where: {
         fim: 0
       }

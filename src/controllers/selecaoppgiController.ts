@@ -1,12 +1,14 @@
+import { Request, Response } from 'express'
 import EditalService from '../services/editalService'
 import CandidateService from '../services/candidateService'
 import candidatePublicacaoService from '../services/candidatePublicacaoService'
+import multer from 'multer'
 
 const locals = {
   layout: 'selecaoppgi'
 }
 
-const begin = async (req, res) => {
+const begin = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.render('selecaoppgi/begin', {
@@ -17,14 +19,14 @@ const begin = async (req, res) => {
   }
 }
 
-const signin = async (req, res) => {
+const signin = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const editais = await EditalService.listEdital()
       return res.render('selecaoppgi/signin', {
         csrfToken: req.csrfToken(),
         ...locals,
-        editais: editais.map((edital) => {
+        editais: editais.map((edital: { get: () => any }) => {
           return {
             ...edital.get()
           }
@@ -46,18 +48,18 @@ const signin = async (req, res) => {
       let responseError = null
 
       const candidate = await CandidateService
-        .create({
-          email,
-          password: senha,
-          editalNumber: edital
-        })
+        .create(
+          (email as string),
+          (senha as string),
+          (edital as string)
+        )
         .catch((err) => {
           responseError = err
         })
 
       if (!candidate) {
         return res.status(400).json({
-          error: responseError.message
+          error: responseError!.message
         })
       }
       return res.status(200).redirect('/selecaoppgi')
@@ -67,7 +69,7 @@ const signin = async (req, res) => {
   }
 }
 
-const login = async (req, res) => {
+const login = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const editais = await EditalService.listEdital()
@@ -75,7 +77,7 @@ const login = async (req, res) => {
         csrfToken: req.csrfToken(),
         teste: 'teste',
         ...locals,
-        editais: editais.map((edital) => {
+        editais: editais.map((edital: { get: () => any }) => {
           return {
             ...edital.get()
           }
@@ -100,13 +102,12 @@ const login = async (req, res) => {
           })
         }
         const IsCandidateValid = await CandidateService
-          .auth({
+          .auth(
             email,
-            password: senha,
-            editalNumber: edital
-          })
+            senha,
+            edital
+          )
 
-        console.log('TESTE')
         const editais2 = await EditalService.listEdital()
 
         if (!IsCandidateValid) {
@@ -118,7 +119,7 @@ const login = async (req, res) => {
             message: 'Usuário não cadastrado',
             type: 'danger',
             ...locals,
-            editais: editais2.map((edital) => {
+            editais: editais2.map((edital: { get: () => any }) => {
               return {
                 ...edital.get()
               }
@@ -126,10 +127,10 @@ const login = async (req, res) => {
           })
         }
 
-        req.session.email = IsCandidateValid.email
-        req.session.editalId = IsCandidateValid.editalId
-        req.session.uid = IsCandidateValid.id
-        req.session.editalPosition = IsCandidateValid.editalPosition
+        (req.session as any).email = IsCandidateValid.email;
+        (req.session as any).editalId = IsCandidateValid.editalId;
+        (req.session as any).uid = IsCandidateValid.id;
+        (req.session as any).editalPosition = IsCandidateValid.editalPosition;
         return res.status(200).send()
       } catch (err) {
         console.log(err)
@@ -141,24 +142,21 @@ const login = async (req, res) => {
   }
 }
 
-const forms = async (req, res) => {
+const forms = async (req: Request, res: Response) => {
   console.log(req.method)
   console.log('teste forms')
 
   switch (req.method) {
     case 'GET':
-
-      if (!req.session.email) {
+      const id = parseInt(req.session.uid!)
+      if (!(req.session as any).email) {
         res.redirect('/selecaoppgi/entrar')
       }
-      if (req.session.editalPosition === 1) {
-        // console.log(req.session.email)
-        // console.log(req.session.editalId)
+      if ((req.session as any).editalPosition === 1) {
+        // console.log((req.session as any).email)
+        // console.log((req.session as any).editalId)
         // console.log(req.session.uid)
-        const id = req.session.uid
-        const candidate = await CandidateService.findOne({
-          id
-        })
+        const candidate = await CandidateService.findOneCandidate(id)
         // console.log(candidate)
         return res.render('selecaoppgi/forms1', {
           ...locals,
@@ -175,51 +173,47 @@ const forms = async (req, res) => {
           Telefone: candidate.Telefone,
           TelefoneSecundario: candidate.TelefoneSecundario,
           ComoSoube: candidate.ComoSoube,
-          Curso: candidate.CursoDesejado,
-          Regime: candidate.RegimeDedicacao,
+          Curso: candidate.CursoGraduacao,
+          Regime: candidate.Regime,
           Cotista: candidate.Cotista,
           CotistaTipo: candidate.CotistaTipo,
           Condicao: candidate.Condicao,
           CondicaoTipo: candidate.CondicaoTipo,
           Bolsista: candidate.Bolsista,
-          editalPosicao: req.session.editalPosition,
-          email: req.session.email,
+          editalPosicao: (req.session as any).editalPosition,
+          email: (req.session as any).email,
           id: req.session.uid,
           csrfToken: req.csrfToken()
         })
       }
-      if (req.session.editalPosition === 2) {
-        const candidate = await CandidateService.findOne({
-          id: req.session.uid
-        })
+      if ((req.session as any).editalPosition === 2) {
+        const candidate = await CandidateService.findOneCandidate(id)
 
         return res.render('selecaoppgi/forms2', {
           ...locals,
-          cursoGraduacao: candidate.cursoGraduacao,
-          instituicao: candidate.Instituicao,
-          anoEgresso: candidate.AnoEgresso,
+          cursoGraduacao: candidate.CursoGraduacao,
+          instituicao: candidate.InstituicaoGraduacao,
+          anoEgresso: candidate.AnoEgressoGraduacao,
           cursoPos: candidate.CursoPos,
-          tipoCursoPos: candidate.TipoCursoPos,
-          instituicaoPos: candidate.InstituicaoPos,
-          anoEgressoPos: candidate.AnoEgressoPos,
-          editalPosicao: req.session.editalPosition,
-          email: req.session.email,
+          tipoCursoPos: candidate.CursoPos,
+          instituicaoPos: candidate.CursoInstituicaoPos,
+          anoEgressoPos: candidate.CursoAnoEgressoPos,
+          editalPosicao: (req.session as any).editalPosition,
+          email: (req.session as any).email,
           id: req.session.uid,
-          Curso: candidate.CursoDesejado,
+          Curso: candidate.CursoGraduacao,
           csrfToken: req.csrfToken()
         })
       }
 
-      if (req.session.editalPosition === 3) {
-        await CandidateService.findOne({
-          id: req.session.uid
-        })
+      if ((req.session as any).editalPosition === 3) {
+        await CandidateService.findOneCandidate(id)
 
         console.log('*************************************************')
         return res.render('selecaoppgi/forms3', {
           ...locals,
-          editalPosicao: req.session.editalPosition,
-          email: req.session.email,
+          editalPosicao: (req.session as any).editalPosition,
+          email: (req.session as any).email,
           id: req.session.uid,
           csrfToken: req.csrfToken()
         })
@@ -234,7 +228,7 @@ const forms = async (req, res) => {
   }
 }
 
-const form1 = async (req, res) => {
+const form1 = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       res.send('oi')
@@ -243,7 +237,7 @@ const form1 = async (req, res) => {
       console.log('******************************************** FORM 1 POST')
       const data = req.body.data
       // console.log(req.session.editalPosition)
-      if (req.session.editalPosition === 1) {
+      if ((req.session as any).editalPosition === 1) {
         console.log('teste form1')
         const Candidato = {
           Nome: data.Nome,
@@ -267,15 +261,11 @@ const form1 = async (req, res) => {
           CondicaoTipo: data.CondicaoTipo,
           Bolsa: data.Bolsa
         }
-        const id = req.session.uid
+        const id = parseInt(req.session.uid!)
 
-        const candidate = await CandidateService
-          .form1({
-            Candidato,
-            id
-          })
+        const candidate = await CandidateService.form1(Candidato, id);
 
-        req.session.editalPosition = candidate.editalPosition
+        (req.session as any).editalPosition = candidate!.editalPosition
         res.status(200).send()
 
         break
@@ -286,7 +276,7 @@ const form1 = async (req, res) => {
   }
 }
 
-const form2 = async (req, res) => {
+const form2 = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       break
@@ -296,15 +286,16 @@ const form2 = async (req, res) => {
 
         let VitaePDF = null
         let Prova = null
-        if (req.files && req.files.Prova !== undefined) {
+        console.log(req.files)
+        if (typeof req.files === 'object' && 'Prova' in req.files) {
           Prova = req.files.Prova[0]
         }
-        if (req.files && req.files.VitaePDF !== undefined) {
+        if (typeof req.files === 'object' && 'VitaePDF' in req.files) {
           VitaePDF = req.files.VitaePDF[0]
         }
 
         if (Prova) {
-          const caminhoDoArquivoVittae = VitaePDF.path
+          const caminhoDoArquivoVittae = VitaePDF!.path
 
           const ProvaPDF = Prova.path
 
@@ -337,22 +328,27 @@ const form2 = async (req, res) => {
   }
 }
 
-const formPublicacoes = async (req, res) => {
+const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const data = await candidatePublicacaoService.ListarPublicacoesCandidate(req.session.uid)
 
-      const periodicos = data.periodicos.map((periodico) => periodico.toJSON())
-      const conferencias = data.conferencias.map((conferencia) => conferencia.toJSON())
+      // const periodicos = data.periodicos.map((periodico: { toJSON: () => any }) => periodico.toJSON())
+      const periodicos = data.periodicos.map((periodico: any) => periodico.toJSON())
+      // const conferencias = data.conferencias.map((conferencia: { toJSON: () => any }) => conferencia.toJSON())
+      const conferencias = data.conferencias.map((conferencia: any) => conferencia.toJSON())
 
-      data.conferencias.forEach(publicacao => {
+      // data.conferencias.forEach((publicacao: { toJSON: () => any }) => {
+      //   console.log(publicacao.toJSON())
+      // })
+      data.conferencias.forEach((publicacao: any) => {
         console.log(publicacao.toJSON())
       })
 
       return res.render('selecaoppgi/forms2', {
         message: 'Dados salvos com sucesso',
-        editalPosicao: req.session.editalPosition,
-        email: req.session.email,
+        editalPosicao: (req.session as any).editalPosition,
+        email: (req.session as any).email,
         id: req.session.uid,
         csrfToken: req.csrfToken(),
         periodicos,
@@ -403,7 +399,7 @@ const formPublicacoes = async (req, res) => {
   }
 }
 
-const candidates = async (req, res) => {
+const candidates = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
@@ -414,7 +410,7 @@ const candidates = async (req, res) => {
   }
 }
 
-const voltar = async (req, res) => {
+const voltar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'POST': {
       const id = req.body.id
@@ -426,10 +422,8 @@ const voltar = async (req, res) => {
       // res.redirect('/selecaoppgi')
       console.log(editalPosicao)
 
-      await CandidateService.back({
-        id
-      })
-      req.session.editalPosition = editalPosicao
+      const candidate = await CandidateService.back(id);
+      (req.session as any).editalPosition = editalPosicao
       res.status(200).send()
     }
       break
@@ -438,7 +432,7 @@ const voltar = async (req, res) => {
   }
 }
 
-const refresh = async (req, res) => {
+const refresh = async (req: Request, res: Response) => {
   console.log('asdasdsadasd')
   res.redirect('/selecaoppgi/formulario')
 }

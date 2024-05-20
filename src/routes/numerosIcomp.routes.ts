@@ -5,20 +5,7 @@ import numerosICompProfessoresController from '../controllers/numerosIcompProfes
 import numerosICompProjetosController from '../controllers/numerosIcompProjetosController'
 import numerosICompAlunosController from '../controllers/numerosIcompAlunosController'
 import numerosICompPublicacoesController from '../controllers/numerosIcompPublicacoesController'
-import language from '../modules/i18n.js'
-
-const languageMiddleware = (req, res, next) => {
-  const { lng } = req.query
-  const availableLng = language.i18next.languages
-  const defaultLng = language.defaultLng
-  if (lng && availableLng.includes(lng)) {
-    language.i18next.changeLanguage(lng)
-  } else {
-    req.query.lng = defaultLng
-    language.i18next.changeLanguage(defaultLng)
-  }
-  next()
-}
+import { languageMiddleware } from '../middlewares/languageMiddleware'
 
 const router = express.Router()
 router.use(languageMiddleware)

@@ -890,16 +890,16 @@
 		data.Cidade = document.getElementById('candidato-cidade').value;
 		data.Bairro = document.getElementById('candidato-bairro').value;
 		data.Nacionalidade = getSelectedNacionalidade();
-		data.TelefonePrincipal = document.getElementById('candidato-telresidencial').value;
-		data.TelefoneAlternativo = document.getElementById('candidato-telcelular').value;
+		data.Telefone = document.getElementById('candidato-telresidencial').value;
+		data.TelefoneSecundario = document.getElementById('candidato-telcelular').value;
 		data.ComoSoube = getSelectedComoSoube();
-		data.CursoDesejado = getSelectedCurso();
-		data.RegimeDedicacao = getSelectedRegime();
+		data.Curso = getSelectedCurso();
+		data.Regime = getSelectedRegime();
 		data.Cotista = checkCotista();
 		data.CotistaTipo = getSelectedCota();
 		data.Condicao = checkCondicao()
 		data.CondicaoTipo = getCondicao();
-		data.Bolsa = getBolsa()
+		data.Bolsita = getBolsa()
 		return data;
 	}
 
