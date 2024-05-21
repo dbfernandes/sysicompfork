@@ -77,7 +77,7 @@ class PublicacaoService {
     }
   }
 
-  async listarTodos (conditions = null) {
+  async listarTodos (conditions) {
     const params = {
       include: {
         model: TipoPublicacao,

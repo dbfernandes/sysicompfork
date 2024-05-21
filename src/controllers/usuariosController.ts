@@ -1,14 +1,15 @@
-import UsuarioService from "../services/usuarioService";
-import criarURL from '../utils/criarUrl'
+import { Request, Response } from 'express';
+import UsuarioService from '../services/usuarioService';
+import criarURL from '../utils/criarUrl';
 
-const adicionar = async (req, res) => {
+const adicionar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       return res.render('usuarios/usuarios-adicionar', {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario
-      })
+      });
     case 'POST':
       try {
         let {
@@ -27,12 +28,12 @@ const adicionar = async (req, res) => {
           dateDeIngresso,
           unidade,
           turno
-        } = req.body
+        } = req.body;
 
-        administrador = req.body.administrador && req.body.administrador === 'on' ? 1 : 0
-        coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
-        secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
-        professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
+        administrador = req.body.administrador === 'on' ? 1 : 0;
+        coordenador = req.body.coordenador === 'on' ? 1 : 0;
+        secretaria = req.body.secretaria === 'on' ? 1 : 0;
+        professor = req.body.professor === 'on' ? 1 : 0;
 
         await UsuarioService.adicionar(
           nomeCompleto,
@@ -50,44 +51,40 @@ const adicionar = async (req, res) => {
           dateDeIngresso,
           unidade,
           turno
-        )
-      } catch (error) {
-        console.log(error)
+        );
+        return res.status(201).redirect(
+          criarURL('/usuarios/listar', {
+            messageTitle: 'Criação de usuário bem-sucedida!',
+            message: 'Usuário adicionado no sistema com sucesso.',
+            type: 'success',
+            tipoUsuario: req.session.tipoUsuario
+          })
+        );
+      } catch (error: unknown) {
+        console.log(error);
         return res.status(500).render('usuarios/usuarios-adicionar', {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
-          errors: error.errors,
-          message:
-                    'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
+          errors: (error as any).errors, // Type assertion to 'any' to access 'errors' property
+          message: 'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
           messageTitle: 'Criação de usuário indisponível!',
           tipoUsuario: req.session.tipoUsuario
-        })
+        });
       }
-
-      return res.status(201).redirect(
-        criarURL('/usuarios/listar', {
-          messageTitle: 'Criação de usuário bem-sucedida!',
-          message: 'Usuário adicionado no sistema com sucesso.',
-          type: 'success',
-          tipoUsuario: req.session.tipoUsuario
-        }
-        ))
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-const deletar = async (req, res) => {
+const deletar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
-    case 'POST' :
+    case 'POST':
       try {
-        const id = req.params.id
-        await UsuarioService.alterar(req.params.id, {
-          status: 0
-        })
-        if (req.session.uid === Number(id)) {
-          req.session.uid = null
+        const id = req.params.id;
+        await UsuarioService.alterar(id, { status: 0 });
+        if (req.session.uid === id) {
+          req.session.uid = undefined;
         }
 
         return res.redirect(
@@ -97,9 +94,9 @@ const deletar = async (req, res) => {
             messageTitle: 'Bloqueio de usuário bem-sucedido!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
-      } catch (error) {
-        console.log(error)
+        );
+      } catch (error: unknown) {
+        console.log(error);
         return res.status(500).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Bloqueio de usuário indisponível!',
@@ -107,20 +104,18 @@ const deletar = async (req, res) => {
             type: 'danger',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
+        );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-const restaurar = async (req, res) => {
+const restaurar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'POST':
       try {
-        await UsuarioService.alterar(req.params.id, {
-          status: 1
-        })
+        await UsuarioService.alterar(req.params.id, { status: 1 });
         return res.status(200).redirect(
           criarURL('/usuarios/listar', {
             message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
@@ -128,9 +123,9 @@ const restaurar = async (req, res) => {
             messageTitle: 'Desbloqueio de usuário bem-sucedido!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
-      } catch (error) {
-        console.log(error)
+        );
+      } catch (error: unknown) {
+        console.log(error);
         return res.status(500).redirect(
           criarURL('/usuarios/listar', {
             message: 'Não foi possível desbloquear este usuário.',
@@ -138,20 +133,19 @@ const restaurar = async (req, res) => {
             messageTitle: 'Desbloqueio de usuário indisponível!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
+        );
       }
-
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-const listar = async (req, res) => {
+const listar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
-        const usuarios = await UsuarioService.listarTodos()
+        const { message, type, messageTitle } = req.query;
+        const usuarios = await UsuarioService.listarTodos();
         return res.status(200).render('usuarios/usuarios-listar', {
           usuarios,
           csrfToken: req.csrfToken(),
@@ -160,9 +154,8 @@ const listar = async (req, res) => {
           type,
           messageTitle,
           tipoUsuario: req.session.tipoUsuario
-        })
-      } catch (error) {
-        console.log(error)
+        });
+      } catch (error: unknown) {
         return res.status(500).redirect(
           criarURL('/inicio', {
             message: 'Não foi possível listar os usuários.',
@@ -170,21 +163,20 @@ const listar = async (req, res) => {
             messageTitle: 'Listagem de usuários indisponível!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
+        );
       }
-
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-const visualizar = async (req, res) => {
+const visualizar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
+        const { message, type, messageTitle } = req.query;
 
-        const usuario = await UsuarioService.listarUm(req.params.id)
+        const usuario = await UsuarioService.listarUm(req.params.id);
         return res.status(200).render('usuarios/usuario-visualizar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -193,9 +185,9 @@ const visualizar = async (req, res) => {
           type,
           messageTitle,
           tipoUsuario: req.session.tipoUsuario
-        })
-      } catch (error) {
-        console.log(error)
+        });
+      } catch (error: unknown) {
+        console.log(error);
         return res.status(503).redirect(
           criarURL('/usuarios/listar', {
             message: 'Não foi possível visualizar este usuário.',
@@ -203,19 +195,19 @@ const visualizar = async (req, res) => {
             messageTitle: 'Visualização do usuário indisponível!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
+        );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-const editar = async (req, res) => {
+const editar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUm(req.params.id)
+        const { message, type, messageTitle } = req.query;
+        const usuario = await UsuarioService.listarUm(req.params.id);
         return res.status(200).render('usuarios/usuarios-editar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -224,9 +216,9 @@ const editar = async (req, res) => {
           type,
           messageTitle,
           tipoUsuario: req.session.tipoUsuario
-        })
-      } catch (error) {
-        console.log(error)
+        });
+      } catch (error: unknown) {
+        console.log(error);
         return res.status(503).redirect(
           criarURL('/usuarios/listar', {
             message: 'Não foi possível abrir formulário de edição para este usuário.',
@@ -234,35 +226,56 @@ const editar = async (req, res) => {
             messageTitle: 'Edição de usuário indisponível!',
             tipoUsuario: req.session.tipoUsuario
           })
-        )
+        );
       }
-    case 'POST': {
-      const administrador = req.body.administrador && req.body.administrador === 'on' ? 1 : 0
-      const coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
-      const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
-      const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
-      const dados = {
-        nomeCompleto: req.body.nomeCompleto,
-        cpf: req.body.cpf,
-        email: req.body.email,
-        senha: req.body.senha,
-        administrador,
-        coordenador,
-        secretaria,
-        professor,
-        endereco: req.body.endereco,
-        telResidencial: req.body.telefoneResidencial,
-        telCelular: req.body.telefoneCelular,
-        siape: req.body.siape,
-        dataIngresso: req.body.dateDeIngresso,
-        unidade: req.body.unidade,
-        turno: req.body.turno
-      }
+    case 'POST':
       try {
-        await UsuarioService.alterar(req.params.id, dados)
-      } catch (error) {
-        console.log(error)
-        dados.id = req.params.id
+        const administrador = req.body.administrador === 'on' ? 1 : 0;
+        const coordenador = req.body.coordenador === 'on' ? 1 : 0;
+        const secretaria = req.body.secretaria === 'on' ? 1 : 0;
+        const professor = req.body.professor === 'on' ? 1 : 0;
+        const dados = {
+          nomeCompleto: req.body.nomeCompleto,
+          cpf: req.body.cpf,
+          email: req.body.email,
+          senha: req.body.senha,
+          administrador,
+          coordenador,
+          secretaria,
+          professor,
+          endereco: req.body.endereco,
+          telResidencial: req.body.telefoneResidencial,
+          telCelular: req.body.telefoneCelular,
+          siape: req.body.siape,
+          dataIngresso: req.body.dateDeIngresso,
+          unidade: req.body.unidade,
+          turno: req.body.turno
+        };
+
+        await UsuarioService.alterar(req.params.id, dados);
+
+        return res.status(200).redirect(
+          criarURL(`/usuarios/dados/${req.params.id}`, {
+            message: 'Dados alterados com sucesso!',
+            type: 'success',
+            messageTitle: 'Edição de usuário bem-sucedida!',
+            tipoUsuario: req.session.tipoUsuario
+          })
+        );
+      } catch (error: unknown) {
+        console.log(error);
+        const administrador = req.body.administrador === 'on' ? 1 : 0;
+        const coordenador = req.body.coordenador === 'on' ? 1 : 0;
+        const secretaria = req.body.secretaria === 'on' ? 1 : 0;
+        const professor = req.body.professor === 'on' ? 1 : 0;
+        const dados = {
+          ...req.body,
+          administrador,
+          coordenador,
+          secretaria,
+          professor,
+          id: req.params.id
+        };
         return res.status(500).render('usuarios/usuarios-editar', {
           usuario: dados,
           csrfToken: req.csrfToken(),
@@ -270,22 +283,13 @@ const editar = async (req, res) => {
           message: 'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
           messageTitle: 'Edição de usuário indisponível!',
-          errors: error.errors,
+          errors: error,
           tipoUsuario: req.session.tipoUsuario
-        })
+        });
       }
-
-      return res.status(200).redirect(
-        criarURL(`/usuarios/dados/${req.params.id}`, {
-          message: 'Dados alterados com sucesso!',
-          type: 'success',
-          messageTitle: 'Edição de usuário bem-sucedida!',
-          tipoUsuario: req.session.tipoUsuario
-        }
-        ))
-    }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res.status(400).send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
-}
-export default { adicionar, listar, deletar, visualizar, editar, restaurar }
+};
+
+export default { adicionar, listar, deletar, visualizar, editar, restaurar };

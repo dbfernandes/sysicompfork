@@ -322,7 +322,7 @@ model prorrogacoes {
   qtdDias         Int?
   documento       String?   @db.Text
   justificativa   String?   @db.Text
-  status          Boolean?
+  status          Int?      @db.SmallInt
   data_termino    DateTime? @db.DateTime(0)
   id_responsavel  Int?
   createdAt       DateTime  @default(now())
