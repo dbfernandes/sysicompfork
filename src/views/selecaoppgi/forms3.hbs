@@ -299,7 +299,7 @@
                 <select  id="candidato-pesquisa" class="custom-select" name="CandidatoSoube">
                   <option value="" >Selecione uma Linha de Pesquisa:</option>
                   {{#each linhasPesquisa}}
-                    <option value="{{id}}" {{#if (eq id ../linhaPesquisaId)}}selected{{/if}}>{{nome}}</option>
+                    <option value="{{id}}" {{#if (eq id ../idLinhaPesquisa)}}selected{{/if}}>{{nome}}</option>
                   {{/each}}
                 </select>
               </div>
@@ -309,7 +309,7 @@
                   <font color="#FF0000">*</font>
                   <b>Titulo da Proposta:</b>
                 </label>
-                <input class="form-control" id="candidato-titulo-proposta" type="text" name="Proposta" value="" maxlength="60">
+                <input class="form-control" id="candidato-titulo-proposta" type="text" name="tituloProposta"  maxlength="60" value={{tituloProposta}}>
               </div>
             </div>
 
@@ -330,8 +330,7 @@
                 <label for="candidato-curso-pos">
                   <b>Nome do orientador:</b>
                 </label>
-                <input class="form-control" id="candidato-orientador" type="text" name="CandidatoOrientador" value=""
-                  maxlength="60">
+                <input class="form-control" id="candidato-orientador" type="text" name="nomeOrientador"  maxlength="60" value={{nomeOrientador}} >
               </div>
             </div>
 
@@ -401,8 +400,8 @@
                     Descreva os motivos que o levaram a se candidatar ao curso
                     (<span id="charCount">1000</span> Caracteres Restantes):
                   </label>
-                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="CandidatoMotivo"
-                    maxlength="1000"></textarea>
+                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="motivos" maxlength="1000">{{motivos}}
+                  </textarea>
                 </div>
               </div>
             </div>
@@ -410,8 +409,8 @@
             <div class="row">
               <div class="col-md-5">
                 <div class="form-group custom-file-container">
-                  <input type="file" class="custom-file-input" id="candidato-CartaAceite" name="CartaAceiteOrientador">
-                  <label class="custom-file-label" for="candidato-CartaAceite">
+                  <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador">
+                  <label class="custom-file-label" for="CartaAceiteOrientador">
                     Carta de Aceite do Orientador (obrigatório para doutorado):
                   </label>
                 </div>
@@ -421,22 +420,18 @@
             <div class="row">
               <div class="col-md-5">
                 <div class="form-group custom-file-container">
-
-                <input type="file" class="custom-file-input" id="candidato-PropostaTrabalho" name="PropostaTrabalho">
-                <label class="custom-file-label" for="candidato-PropostaTrabalho">
-                  Proposta de Trabalho:
-                </label>
-              </div>
+                  <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho">
+                  <label class="custom-file-label" for="PropostaTrabalho">Proposta de Trabalho:</label>
                 </div>
+              </div>
             </div>
 
             <div class="row">
               <div class="col-md-5">
                 <div class="form-group custom-file-container">
-
-                <input type="file" class="custom-file-input" id="candidato-ComprovantePagamento"
+                <input type="file" class="custom-file-input" id="ComprovantePagamento"
                   name="ComprovantePagamento">
-                <label class="custom-file-label" for="candidato-ComprovantePagamento">
+                <label class="custom-file-label" for="ComprovantePagamento">
                   Comprovante de Pagamento:
                 </label>
               </div>
@@ -451,15 +446,15 @@
             <div class="col">
               <button class="btn btn-success float-right custom-button">
                 Salvar e Continuar
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
                 Passo Anterior
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
-
             </div>
           </div>
         </div>
-
       </form>
     </div>
   </section>
@@ -471,26 +466,35 @@
 <script>
     function deletarAT(event){
         // document.postDelete.submit();
-       const linhaDePesquisaId = $("#candidato-pesquisa").val();
+        const linhaDePesquisaId = $("#candidato-pesquisa").val();
         const tituloProposta = $("#candidato-titulo-proposta").val();
+        const orientador = $("#candidato-orientador").val();
+        const motivos = $("#candidato-Motivo").val();
         const formData = new FormData();
         formData.append('csrfToken', $("#csrfToken").val());
         formData.append('email', $("#email").val());
         formData.append('editalPosicao', $("#editalPosicao").val());
         formData.append('id', $("#idCandidato").val());
-        formData.append('linhaDePesquisaId', linhaDePesquisaId);
-        
+        formData.append('idLinhaPesquisa', linhaDePesquisaId);
+        formData.append('tituloProposta', tituloProposta);
+        formData.append('nomeOrientador', orientador);
+        formData.append('motivos', motivos);
+        console.log(formData)
+        const propostaTrabalho = document.getElementById('PropostaTrabalho').files[0];
+        console.log(propostaTrabalho)
         $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $("#csrfToken").val()
+          },
           url: '/selecaoppgi/formulario/3',
           type: 'POST',
-          data: {
-            linhaDePesquisaId: linhaDePesquisaId,
-            	_csrf: $("#csrfToken").val()
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            window.location.href = '/selecaoppgi/formulario';
+            window.location.reload(true);
           },
-               success: function (response) {
-       	 window.location.href = '/selecaoppgi/formulario';
-        window.location.reload(true);
-      },
           error: function (data) {
             console.error(data);
           }
@@ -506,21 +510,17 @@
         formData.append('email', $("#email").val());
         formData.append('editalPosicao', $("#editalPosicao").val());
         formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
+        
         $('#confirm-register').modal()
       });
+
       $("#finish-register").on("click", function (e) {
         e.preventDefault();
         const linhaDePesquisaId = $("#candidato-pesquisa").val();
         const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
+        const formData = new FormData($('#candidato-formulario'));
         formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
+        
         $.ajax({
           url: '/selecaoppgi/form/4',
           type: 'POST',
@@ -537,6 +537,7 @@
       });
 
 		$("#btn_logout").click(function () {
+
 			$.ajax({
 				url: "/selecaoppgi/logout",
 				type: "POST",
@@ -552,19 +553,30 @@
 			});
 		});
 		$("#btn_inicio").click(function () {
-			window.location.href = "/selecaoppgi";
+			$.ajax({
+				url: "/selecaoppgi/voltarInicio",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi/formulario";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
 		});
 	});
 
   $(document).ready(function () {
      $("#voltarForm").on("click", function (e) {
+      const btnVoltar = $("#voltarForm");
+      btnVoltar.prop("disabled", true);
+      btnVoltar.find("span").prop("hidden", false);
       const csrfToken = $("#csrfToken").val();
       const id = $("#idCandidato").val();
-      console.log(id)
       const editalPosicao = $("#editalPosicao").val();
-
-      console.log("teste")
-      console.log(editalPosicao)
 
       $.ajax({    
         url: '/selecaoppgi/voltar',
@@ -578,11 +590,13 @@
           window.location.reload(true);
         },
         error: function (data) {
-          console.log(data)
+          console.error(data)
+          btnVoltar.prop("disabled", false);
+          btnVoltar.find("span").prop("hidden", true);
         }
       });
-
     });
+
     // Adicionar novo input
     $("#add-btn").click(function (e) {
       e.preventDefault();

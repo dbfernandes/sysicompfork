@@ -7,7 +7,6 @@
 		background-color: #fff;
 		overflow-y: auto;
 	}
-
 	.forms-page header {
 		width: 100%;
 		position: fixed;
@@ -185,8 +184,24 @@
 	.forms-page nav .active {
 		background-color: #006eff;
 	}
+
+	.toast-container {
+		top: 0;
+    	right: 0;
+    	position: fixed;
+   	 	margin-top: 3.5rem;
+		margin-right: 1rem;
+		z-index: 1050;
+	}
+
+	.alert {
+		display: flex;
+   		gap: 1rem;
+   		align-items: center;
+	}
 </style>
-<link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+
+<link href="/script-u/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 
 <div class="forms-page">
 	<header>
@@ -196,9 +211,18 @@
 			<button id="btn_logout">Sair</button>
 		</div>
 	</header>
-
 	{{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
-
+    <!-- Toast container -->
+    <div class="toast-container position-fixed ">
+        <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="alert alert-primary mb-0" role="alert">
+                <span id="toastMessage">This is a primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.</span>
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    				<span aria-hidden="true">&times;</span>
+  				</button>
+            </div>
+        </div>
+    </div>
 	<section class="content">
 		<nav>
 			<ul>
@@ -230,22 +254,19 @@
 				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 				<input id="email" type="hidden" value="{{email}}">
 				<input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-				<input id="ComoSoubeObj" type="hidden" value="{{ComoSoube}}">
-				<input id="NascimentoObj" type="hidden" value="{{Nascimento}}">
-				<input id="UFObj" type="hidden" value="{{UF}}">
-				<input id="CotistaObj" type="hidden" value="{{Cotista}}">
-				<input id="CotistaTipoObj" type="hidden" value="{{CotistaTipo}}">
-				<input id="CondicaoObj" type="hidden" value="{{Condicao}}">
-				<input id="CondicaoTipoObj" type="hidden" value="{{CondicaoTipo}}">
-				<input id="BolsaObj" type="hidden" value="{{Bolsista}}">
+				<input id="ComoSoubeObj" type="hidden" value="{{comoSoube}}">
+				<input id="NascimentoObj" type="hidden" value="{{dataNascimento}}">
+				<input id="UFObj" type="hidden" value="{{uf}}">
+				<input id="CotistaObj" type="hidden" value="{{cotista}}">
+				<input id="CotistaTipoObj" type="hidden" value="{{cotistaTipo}}">
+				<input id="CondicaoObj" type="hidden" value="{{condicao}}">
+				<input id="CondicaoTipoObj" type="hidden" value="{{condicaoTipo}}">
+				<input id="BolsaObj" type="hidden" value="{{bolsista}}">
 
 				<div class="card card-primary">
 					<div class="card-header">
 						<h3 class="card-title">Identificação do Candidato</h3>
 					</div>
-
-
-
 					<div class="card-body">
 						<div class="row">
 
@@ -254,8 +275,8 @@
 									<font color="#FF0000">*</font>
 									<b>Nome:</b>
 								</label>
-								<input class="form-control" id="candidato-nome" placeholder="Insira seu nome" type="text" name="Nome"
-									maxlength="60" value="{{Nome}}">
+								<input class="form-control" id="candidato-nome" placeholder="Insira seu nome" type="text" name="nome"
+									maxlength="60" value="{{nome}}">
 							</div>
 							<div class="col-md-3 campo-candidato-datanascimento">
 								<label class="control-label" for="data-nascimento">
@@ -263,10 +284,9 @@
 									<b>Data de Nascimento:</b>
 								</label>
 								<div class="input-group">
-
 									<div class="input-group date" id="candidato-datanascimento" data-target-input="nearest">
 										<input type="text" class="form-control datetimepicker-input" id="data-nascimento"
-											name="datanascimento" data-target="#candidato-datanascimento">
+											name="dataNascimento" data-target="#candidato-datanascimento">
 										<div class="input-group-append" data-target="#candidato-datanascimento"
 											data-toggle="datetimepicker">
 											<div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -286,15 +306,13 @@
 								<div id="candidato-sexo" role="radiogroup"
 									style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo" name="candidatoSexo" checked="">
-										<label for="Sexo"> Masculino
-										</label>
+										<input type="radio" id="Sexo" name="candidatoSexo" {{#if (eq sexo 'M')}} checked="true" {{/if}}>
+										<label for="Sexo"> Masculino</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo2" name="candidatoSexo">
-										<label for="Sexo2">Feminino
-										</label>
+										<input type="radio" id="Sexo2" name="candidatoSexo"  {{#if (eq sexo 'F')}} checked="true" {{/if}}>
+										<label for="Sexo2">Feminino</label>
 									</div>
 
 								</div>
@@ -303,13 +321,12 @@
 						</div>
 
 						<div class="form-group row">
-
 							<div class="col-6 campo-candidato-nomesocial">
 								<label class="control-label" for="candidato-nomesocial">
 									<b>Nome Social:</b>
 								</label>
 								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]"
-									maxlength="60" value="{{NomeSocial}}" />
+									maxlength="60" value="{{nomeSocial}}" />
 								<div class="help-block"></div>
 							</div>
 
@@ -319,7 +336,7 @@
 									<b>CEP:</b>
 								</label>
 								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" data-plugin-inputmask=""
-									value="{{CEP}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+									value="{{cep}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
 								<div class="invalid-feedback"></div>
 								<div class="help-block"></div>
 							</div>
@@ -365,14 +382,12 @@
 						</div>
 
 						<div class="form-group row">
-
 							<div class="col-md-6 field-candidato-endereco">
 								<label class="control-label" for="candidato-endereco">
 									<font color="#FF0000">*</font> <b>Endereço:</b>
 								</label>
 								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco" maxlength="160"
-									value="{{Endereco}}">
-
+									value="{{endereco}}">
 								<div class="help-block"></div>
 							</div>
 
@@ -381,7 +396,7 @@
 									<font color="#FF0000">*</font> <b>Cidade:</b>
 								</label>
 								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" maxlength="40"
-									aria-invalid="true" value="{{Cidade}}">
+									aria-invalid="true" value="{{cidade}}">
 							</div>
 
 							<div class="col-md-3 field-candidato-bairro">
@@ -389,10 +404,9 @@
 									<font color="#FF0000">*</font> <b>Bairro:</b>
 								</label>
 								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" maxlength="50"
-									value="{{Bairro}}">
+									value="{{bairro}}">
 								<div class="help-block"></div>
 							</div>
-
 						</div>
 
 						<div class="row">
@@ -432,14 +446,14 @@
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
 								</label>
 								<input type="text" id="candidato-telresidencial" class="form-control" name="candidatoTelresidencial"
-									value="{{Telefone}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+									value="{{telefone}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 								<div class="help-block"></div>
 							</div>
 
 							<div class="form-group col-3 ">
 								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
 								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
-									value="{{TelefoneSecundario}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+									value="{{telefoneSecundario}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 
 								<div class="help-block"></div>
 							</div>
@@ -455,8 +469,6 @@
 
 					<div class="card-body">
 						<div class="row form-group col-sm-6">
-
-
 							<div>
 								<label>
 									<font color="#FF0000">*</font> <b>Como você soube do edital de seleção?</b>
@@ -474,7 +486,6 @@
 									<option value="Outro">Outro</option>
 								</select>
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -483,55 +494,44 @@
 					<div class="card-header">
 						<h3 class="card-title">Dados da Inscrição</h3>
 					</div>
-
-
 					<div class="card-body">
-
 						<div class="row form-group">
 							<div class="form-group col-md-5">
-
 								<label class="control-label">
 									<font color="#FF0000">*</font> <b>Curso Desejado:</b>
 								</label>
 
 								<div id="cadidato-curso" role="radiogroup">
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Curso1" name="candidatoCurso" checked="">
+										<input type="radio" id="Curso1" name="candidatoCurso"  {{#if (eq cursoDesejado 'Mestrado')}} checked="true" {{/if}}>
 										<label for="Curso1" style="margin-right: 20px;"> Mestrado
 										</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Curso2" name="candidatoCurso">
+										<input type="radio" id="Curso2" name="candidatoCurso" {{#if (eq cursoDesejado 'Doutorado')}} checked="true" {{/if}}>
 										<label for="Curso2"> Doutorado
 										</label>
 									</div>
-
 								</div>
-
 							</div>
 
 							<div class="col-md-12">
 								<label class="control-label">
-									<font color="#FF0000">*</font> <b>Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar
-										pelo
-										regime integral):</b>
+									<font color="#FF0000">*</font>
+									 <b>Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar pelo regime integral):</b>
 								</label>
 
 								<input type="hidden" name="candidatoRegime" value="">
 								<div id="candidato-regime" role="radiogroup">
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Regime1" name="candidatoRegime" checked="">
-										<label for="Regime1" style="margin-right: 20px;"> Integral
-										</label>
+										<input type="radio" id="Regime1" name="candidatoRegime" {{#if (eq regime 'Integral')}} checked="true" {{/if}}>
+										<label for="Regime1" style="margin-right: 20px;"> Integral </label>
 									</div>
-
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Regime2" name="candidatoRegime" checked="">
-										<label for="Regime2"> Parcial
-										</label>
+										<input type="radio" id="Regime2" name="candidatoRegime" {{#if (eq regime 'Parcial')}} checked="true" {{/if}}>
+										<label for="Regime2"> Parcial </label>
 									</div>
-
 								</div>
 								<div class="help-block"></div>
 							</div>
@@ -546,7 +546,7 @@
 								</div>
 
 								<div>
-									<input type="checkbox" id="cotista" name="cotista" checked data-bootstrap-switch-cotista
+									<input type="checkbox" id="cotista" name="cotista" data-bootstrap-switch-cotista
 										data-off-color="danger" data-on-color="success" data-on-text="Sim" data-off-text="Não">
 								</div>
 
@@ -576,7 +576,7 @@
 								</label>
 
 								<div>
-									<input type="checkbox" id="candidato-deficiencia1" name="deficiencia" checked
+									<input type="checkbox" id="candidato-deficiencia1" name="deficiencia"
 										data-bootstrap-switch-deficiencia data-off-color="danger" data-on-color="success" data-on-text="Sim"
 										data-off-text="Não">
 
@@ -587,20 +587,18 @@
 									<font color="#FF0000">*</font> <b>Qual:</b>
 								</label>
 								<input type="text" id="candidato-condicao" class="form-control" name="candidatoCondicao"
-									data-plugin-inputmask="inputmask_32e8983f" value="{{CondicaoTipo}}">
+									data-plugin-inputmask="inputmask_32e8983f" value="{{condicaoTipo}}">
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-md-5">
 								<label for="candidato-bolsa">
-									<font color="#FF0000">*</font> <b>Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa
-										alunos
-										sem vínculo empregatício e que não possuam outro tipo de bolsa)
+									<font color="#FF0000">*</font> <b>Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)
 									</b>
 								</label>
 
-								<input type="checkbox" id="candidato-bolsa" name="bolsa" unchecked data-bootstrap-switch-bolsa
+								<input type="checkbox" id="candidato-bolsa" name="bolsa" data-bootstrap-switch-bolsa
 									data-off-color="danger" data-on-color="success" data-on-text="Sim" data-off-text="Não">
 							</div>
 
@@ -610,49 +608,26 @@
 
 					<div class="card-footer">
 						<div class="col">
-							<button type="submit" class="btn btn-success float-right">
+							<button id="btn-save-continue" type="submit" class="btn btn-success float-right" >
 								Salvar e Continuar
+								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 							</button>
-
+							<button id="btn-save" type="button" class=" btn btn-secondary float-right" style="margin-right: 1rem;"> 
+								Salvar
+								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
+							</button>
 						</div>
 					</div>
 			</form>
 		</div>
 	</section>
 </div>
-
-
-
-
-
-
 </div>
 
 <footer>
 </footer>
+
 <script>
-	$(document).ready(function () {
-		$("#btn_logout").click(function () {
-			$.ajax({
-				url: "/selecaoppgi/logout",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-		$("#btn_inicio").click(function () {
-			window.location.href = "/selecaoppgi";
-		});
-	});
-
-
 	function FormAdicionarPage() {
 		$(document).ready(function () {
 			var comoSoubeValue = document.getElementById("ComoSoubeObj").value;
@@ -662,10 +637,7 @@
 
 		var cotistaValue = document.getElementById("CotistaObj").value;
 		var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
-
-		if (cotistaValue == "false")
-			document.getElementById("cotista").checked = false;
-
+		
 		var select = document.getElementById("tipo-cota");
 		for (var i = 0; i < select.options.length; i++) {
 			if (select.options[i].value === cotistaTipoValue) {
@@ -673,8 +645,6 @@
 				break;
 			}
 		}
-
-
 
 		var ufValue = document.getElementById('UFObj').value;
 		var selectElement = document.getElementById('candidato-uf');
@@ -685,19 +655,18 @@
 			}
 		}
 
+		if ({{condicao}}){
+			document.getElementById("candidato-deficiencia1").checked = true;		
+		}
 
-		var condicaocheck = document.getElementById("CondicaoObj").value;
-		console.log(condicaocheck)
-		if (condicaocheck == "false")
-			document.getElementById("candidato-deficiencia1").checked = false;
+		if({{cotista}}){
+			document.getElementById("cotista").checked = true;
+		}
 
-
-		var bolsacheck = document.getElementById("BolsaObj").value;
-		if (bolsacheck == "false")
-			document.getElementById("candidato-bolsa").checked = false;
-		else
+		if({{bolsista}}){
 			document.getElementById("candidato-bolsa").checked = true;
-
+		}
+		
 		$(document).ready(function () {
 			var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
 
@@ -713,13 +682,9 @@
 
 		});
 
-
-
-
-
-		$(document).ready(function () {
-			if("{{Nascimento}}"){
-				const nascimentoValue = "{{Nascimento}}";
+		$(document).ready(function () { 
+			if("{{dataNascimento}}"){
+				const nascimentoValue = "{{dataNascimento}}";
 				const formattedDate = moment(nascimentoValue, "YYYY-MM-DD").format("DD/MM/YYYY");
 
 				$("#data-nascimento").val(formattedDate);
@@ -771,13 +736,7 @@
 			})
 		})
 
-		$("input[data-bootstrap-switch-bolsa]").each(function () {
-			if ($(this).prop('checked')) {
-				$("#Regime2").prop("checked", false).prop("disabled", true);
-			} else {
-				$("#Regime2").prop("disabled", false);
-			}
-		});
+		
 
 		$("input[data-bootstrap-switch-bolsa]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -794,14 +753,14 @@
 	}
 
 	function getSelectedSexo() {
-		let masculinoRadio = document.getElementById("Sexo");
-		let femininoRadio = document.getElementById("Sexo2");
+		const masculinoRadio = document.getElementById("Sexo");
+		const femininoRadio = document.getElementById("Sexo2");
 		let selectedSexo = "";
 
 		if (masculinoRadio.checked) {
-			selectedSexo = "Masculino";
+			selectedSexo = "M";
 		} else if (femininoRadio.checked) {
-			selectedSexo = "Feminino";
+			selectedSexo = "F";
 		}
 
 		return selectedSexo;
@@ -897,46 +856,65 @@
 	}
 
 	function getValueFromForm() {
-
 		const form = document.getElementById('candidato-formulario');
-		let data = {}
-		data.Nome = document.getElementById('candidato-nome').value;
-		data.Nascimento = document.getElementById('data-nascimento').value;
-		data.Sexo = getSelectedSexo()
-		data.NomeSocial = document.getElementById('candidato-nomesocial').value;
-		data.CEP = document.getElementById('candidato-cep').value;
-		data.UF = document.getElementById('candidato-uf').value;
-		data.Endereco = document.getElementById('candidato-endereco').value;
-		data.Cidade = document.getElementById('candidato-cidade').value;
-		data.Bairro = document.getElementById('candidato-bairro').value;
-		data.Nacionalidade = getSelectedNacionalidade();
-		data.TelefonePrincipal = document.getElementById('candidato-telresidencial').value;
-		data.TelefoneAlternativo = document.getElementById('candidato-telcelular').value;
-		data.ComoSoube = getSelectedComoSoube();
-		data.CursoDesejado = getSelectedCurso();
-		data.RegimeDedicacao = getSelectedRegime();
-		data.Cotista = checkCotista();
-		data.CotistaTipo = getSelectedCota();
-		data.Condicao = checkCondicao()
-		data.CondicaoTipo = getCondicao();
-		data.Bolsa = getBolsa()
+		const data = {}
+		data.nome = document.getElementById('candidato-nome').value;
+		data.dataNascimento = document.getElementById('data-nascimento').value;
+		data.sexo = getSelectedSexo()
+		data.nomeSocial = document.getElementById('candidato-nomesocial').value;
+		data.cep = document.getElementById('candidato-cep').value;
+		data.uf = document.getElementById('candidato-uf').value;
+		data.endereco = document.getElementById('candidato-endereco').value;
+		data.cidade = document.getElementById('candidato-cidade').value;
+		data.bairro = document.getElementById('candidato-bairro').value;
+		data.nacionalidade = getSelectedNacionalidade();
+		data.telefone = document.getElementById('candidato-telresidencial').value;
+		data.telefoneSecundario = document.getElementById('candidato-telcelular').value;
+		data.comoSoube = getSelectedComoSoube();
+		data.cursoDesejado = getSelectedCurso();
+		data.regime = getSelectedRegime();
+		data.cotista = checkCotista();
+		data.cotistaTipo = getSelectedCota();
+		data.condicao = checkCondicao()
+		data.condicaoTipo = getCondicao();
+		data.bolsista = getBolsa()
 		return data;
 	}
 
 
 	$(document).ready(function () {
+		$("#btn_logout").click(function () {
+			$.ajax({
+				url: "/selecaoppgi/logout",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+		
+		$("#btn_inicio").click(function () {
+			window.location.href = "/selecaoppgi";
+		});
+
 		$("#candidato-formulario").validate({
 			ignore: ':hidden',
 			rules: {
-				Nome: {
+				nome: {
 					required: true,
 					minlength: 3,
 					maxlength: 50
 				},
-				datanascimento: {
+				dataNascimento: {
 					required: true,
 					dateBR: true
-				},
+				}, 
 				candidatoSexo: {
 					required: true
 				},
@@ -983,12 +961,12 @@
 
 			},
 			messages: {
-				Nome: {
+				nome: {
 					required: "Por favor, informe seu nome",
 					minlength: "O nome deve ter pelo menos 3 caracteres",
 					maxlength: "O nome deve ter no máximo 50 caracteres"
 				},
-				datanascimento: {
+				dataNascimento: {
 					required: "Por favor, informe sua data de nascimento",
 				},
 				candidatoSexo: "Por favor, selecione seu sexo",
@@ -1018,12 +996,14 @@
 			},
 			submitHandler: function (form, e) {
 				e.preventDefault();
+				const btnSave = $("#btn-save-continue");
+				btnSave.find("span").prop("hidden", false);
+				btnSave.prop("disabled", true);
 				const data = getValueFromForm();
 				const csrfToken = $("#csrfToken").val();
 				const email = $("#email").val();
 				const editalPosicao = $("#editalPosicao").val();
 				const id = $("#id").val();
-				console.log(data);
 
 				$.ajax({
 					url: '/selecaoppgi/formulario/1',
@@ -1040,21 +1020,64 @@
 						window.location.reload(true);
 					},
 					error: function (data) {
+						btnSave.find("span").prop("hidden", true);
+						btnSave.prop("disabled", false);
 						console.log(data)
 					}
 				});
 			}
 		});
+		function showToast(message, alertClass) {
+            const toastElement = $('#myToast');
+            const toastBody = toastElement.find('.alert');
+            
+            // Remove qualquer classe de alerta existente
+            toastBody.removeClass('alert-primary alert-success alert-warning alert-danger alert-info');
+            // Adiciona a classe de alerta apropriada
+            toastBody.addClass(alertClass);
+            // Define a mensagem do toast
+            $('#toastMessage').text(message);
+            // Inicializa e configura o delay do toast
+            const toast = new bootstrap.Toast(toastElement[0], {
+                delay: 5000 // Tempo em milissegundos (por exemplo, 5000 ms = 5 segundos)
+            });
+            toast.show();
+        }
+
+		$("#btn-save").click(function () {
+			const btnSave = $("#btn-save");
+			btnSave.find("span").prop("hidden", false);
+			btnSave.prop("disabled", true);
+
+			const data = getValueFromForm();
+			const csrfToken = $("#csrfToken").val();
+			const email = $("#email").val();
+			const editalPosicao = $("#editalPosicao").val();
+			const id = $("#id").val();
+			$.ajax({ 
+				url: '/selecaoppgi/editCandidate',
+				type: "PUT",
+				data: {
+					data: data,
+					_csrf: csrfToken,
+					email: email,
+					editalPosicao: editalPosicao,
+					id: id
+				},
+				success: function (data) {
+					btnSave.find("span").prop("hidden", true);
+					btnSave.prop("disabled", false);
+					showToast("Dados salvos com sucesso!", "alert-success");
+				},
+				error: function (data) {
+					btnSave.find("span").prop("hidden", true);
+					btnSave.prop("disabled", false);
+					console.error(data)
+				}
+			});
+			
+		});
 	});
-
-
-	/*$('#candidato-formulario').submit(function (e) {
-		e.preventDefault();
-
-		data = getValueFromForm();
-
-		console.log(data)
-	})*/
 
 	function pesquisarCep() {
 		const cep = document.getElementById('candidato-cep').value;
@@ -1094,8 +1117,4 @@
 	}
 
 	document.getElementById('candidato-cep').addEventListener('blur', pesquisarCep);
-
-
-
-
 </script>

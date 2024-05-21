@@ -177,8 +177,10 @@
 							</div>
 							<spam class="erro"></spam>
 							<div class="row actions">
-								<button type="submit" class="btn btn-success col-md-5 col-xs-12">Salvar
-									Candidato</button>
+								<button type="submit" class="btn btn-success col-md-5 col-xs-12">
+									Salvar Candidato
+									<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
+								</button>
 								<button type="button" onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
 							</div>
 						</form>
@@ -190,21 +192,15 @@
 	</div>
 </div>
 <script>
-
 	function back() {
 		window.location.href = "{{url}}/selecaoppgi";
 	}
 
-
-
 	$(document).ready(function () {
-
-
 		$.validator.addMethod("strongPassword", function (value, element) {
 			return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value);
 		}, "A senha deve conter letras maiúsculas, minúsculas e números.");
-
-		console.log("Entrou no ready")
+		
 		$("#subscription").validate({
 			ignore: ':hidden',
 			rules: {
@@ -258,12 +254,14 @@
 			},
 			submitHandler: function (form, e) {
 				e.preventDefault();
-				console.log("Prevente2")
+				const buttonSubmit = $("button[type='submit']")
+				buttonSubmit.prop("disabled", true)
+				buttonSubmit.find("span").prop("hidden", false)
 				const email = $("#email").val();
 				const senha = $("#senha").val();
 				const edital = $("#edital").val();
 				const csrfToken = $("#csrfToken").val();
-				console.log(csrfToken)
+				
 				$.ajax({
 					url: "{{url}}/selecaoppgi/cadastro",
 					type: "POST",
@@ -274,92 +272,19 @@
 						_csrf: csrfToken,
 					},
 					success: function (data) {
-						window.location.href = "{{url}}/selecaoppgi/";
+						window.location.href = "{{url}}/selecaoppgi/formulario";		
 					},
 					error: function (res, status, error) {
-						console.log("Entrou no erro")
 						const err = res.responseJSON
+						buttonSubmit.prop("disabled", false)
+						buttonSubmit.find("span").prop("hidden", true)
 						errorSignin = err.error
-						window.alert(errorSignin)
+						setTimeout(function() {
+							window.alert(errorSignin);
+						}, 20);
 					}
-				});
-
+				})
 			}
 		})
-
 	})
-
-	function signin() {
-
-		var email = $("#email").val();
-		var senha = $("#senha").val();
-		var repetir_senha = $("#repetir_senha").val();
-		var edital = $("#edital").val();
-
-		if (email == "") {
-			$(".erro").html("O campo <b>E-mail</b> é obrigatório.");
-			return false;
-		}
-
-		if (senha == "") {
-			$(".erro").html("O campo <b>Senha</b> é obrigatório.");
-			return false;
-		}
-
-		if (repetir_senha == "") {
-			$(".erro").html("O campo <b>Repetir Senha</b> é obrigatório.");
-			return false;
-		}
-
-		if (senha.length < 6) {
-			$(".erro").html("O campo <b>Senha</b> precisa ter no mínimo 6 caracteres.");
-			return false;
-		}
-
-		if (senha != repetir_senha) {
-			$(".erro").html("O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo <b>Senha</b>.");
-			return false;
-		}
-
-		if (edital == "") {
-			$(".erro").html("O campo <b>Edital</b> é obrigatório.");
-			return false;
-		}
-
-
-
-		$("#subscription").submit(function (event) {
-			console.log("Prevente1")
-			event.preventDefault();
-			console.log("Prevente2")
-			const email = $("#email").val();
-			const senha = $("#senha").val();
-			const edital = $("#edital").val();
-			const csrfToken = $("#csrfToken").val();
-			console.log(csrfToken)
-			$.ajax({
-				url: "{{url}}/selecaoppgi/cadastro",
-				type: "POST",
-				data: {
-					email: email,
-					senha: senha,
-					edital: edital,
-					_csrf: csrfToken,
-				},
-				success: function (data) {
-					window.location.href = "{{url}}/selecaoppgi/";
-				},
-				error: function (res, status, error) {
-					console.log("Entrou no erro")
-					const err = res.responseJSON
-					errorSignin = err.error
-					window.alert(errorSignin)
-				}
-			});
-
-		});
-
-
-
-	}
 </script>

@@ -70,11 +70,11 @@ class CandidateService {
         editalId: editalNumber
       }
     })
-
-    const candidateValid = candidate
-      ? candidate.validPassword(password)
-      : false
-    return candidateValid ? candidate : null
+    if(!candidate) {
+      return null
+    }
+    const validPassword = await candidate.validPassword(password)
+    return validPassword
   }
 
   async form1 ({ Candidato, id }) {

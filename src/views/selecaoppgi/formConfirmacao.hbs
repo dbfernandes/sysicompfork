@@ -245,7 +245,6 @@
 	<header>
 		<h1>PPGI</h1>
 		<div class="options">
-			<button id="btn_inicio">Início</button>
 			<button id="btn_logout">Sair</button>
 		</div>
 	</header>
@@ -392,20 +391,14 @@
 				}
 			});
 		});
-		$("#btn_inicio").click(function () {
-			window.location.href = "/selecaoppgi";
-		});
+
 	});
 
   $(document).ready(function () {
      $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
       const id = $("#idCandidato").val();
-      console.log(id)
       const editalPosicao = $("#editalPosicao").val();
-
-      console.log("teste")
-      console.log(editalPosicao)
 
       $.ajax({    
         url: '/selecaoppgi/voltar',

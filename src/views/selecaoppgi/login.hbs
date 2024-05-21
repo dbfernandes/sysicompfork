@@ -74,18 +74,13 @@
 </style>
 <div class="login-page">
 	<div class="box">
-
-
 		<div class="card">
 			<div class="card-body">
 				<h1 class="title">
 					Efetuar Login
 				</h1>
-				{{#if message}}
-				<div class="alert alert-{{type}}">
-					{{{message}}}
+				<div id="error-msg" class="alert alert-danger" hidden="true">
 				</div>
-				{{/if}}
 
 				<p class="sub-title">Todos os campos são obrigatórios</p>
 				<form id="loginform">
@@ -115,8 +110,9 @@
 						<div class="help-block"></div>
 
 					</div>
-					<button type="submit" name="logar" id="login" class="btn btn-primary btn-block btn-flat">
+					<button type="submit" name="logar" id="login-btn" class="btn btn-primary btn-block btn-flat">
 						Continuar Inscrição
+						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 					</button>
 					<button name="voltar" type="button" id="voltar" onclick="back()" class="btn btn-block btn-flat btn-default"
 						role="button">
@@ -133,9 +129,12 @@
 		window.location.href = "{{url}}/selecaoppgi";
 	}
 
-	function teste() {
-		window.alert("teste")
-	}
+  	$("#loginform input").on("input", function() {
+        const divError = $("#error-msg");
+        if (!divError.prop("hidden")) {
+            divError.prop("hidden", true);
+        }
+    });
 
 	$("#loginform").validate({
 		ignore: ':hidden',
@@ -170,6 +169,7 @@
 			error.addClass('invalid-feedback');
 			element.closest('div').append(error);
 		},
+
 		highlight: function (element, errorClass, validClass) {
 			$(element).addClass('is-invalid');
 		},
@@ -178,6 +178,10 @@
 		},
 		submitHandler: function (form, e) {
 			e.preventDefault();
+			const buttonLogin = $("#login-btn");
+			buttonLogin.attr("disabled", true);
+			buttonLogin.find("span").prop("hidden", false);
+
 			var email = $("#email").val();
 			var senha = $("#password").val();
 			var edital = $("#edital").val();
@@ -196,22 +200,24 @@
 					window.location.href = "{{url}}/selecaoppgi/formulario";
 				},
 				error: function (res, status, error) {
-					errorSignin = err.error
-					message = 'teste'
+					buttonLogin.attr("disabled", false);
+					buttonLogin.find("span").prop("hidden", true);
+					if(res.status === 400){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Email, senha e/ou edital imcompletos");
+					} else if(res.status === 406){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Email, senha e/ou edital incorretos");
+					} else if (res.status === 401){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Candidato já finalizou a inscrição neste edital");
+					}
 				}
-			});
+
+			})
 		}
 	})
-
-	function Formlogin() {
-		var email = $("#email").val();
-		var senha = $("#password").val();
-		var edital = $("#edital").val();
-		$("#loginform").submit(function (event) {
-
-
-		});
-
-	}
-
 </script>

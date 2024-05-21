@@ -44,9 +44,19 @@ router.all('/', selecaoppgiController.begin)
 router.all('/cadastro', selecaoppgiController.signUp)
 router.all('/entrar', selecaoppgiController.login)
 router.all('/logout', selecaoppgiController.logout)
+router.all('/editCandidate', selecaoppgiController.editCandidate)
 router.all('/formulario/1', selecaoppgiController.form1)
-router.all('/formulario/3', selecaoppgiController.formProposta)
-router.all('/formulario/2', (req, res) => {
+router.all('/formulario/3', (req, res) => { 
+  uploads(req, res, function (err) {
+    if (err) {
+      console.error('Erro ao fazer upload de arquivos:')
+      console.error(err)
+      throw err
+    }
+    selecaoppgiController.formProposta(req, res)
+  })
+})
+router.all('/formulario/2', (req, res) => { 
   uploads(req, res, function (err) {
     if (err) {
       console.error('Erro ao fazer upload de arquivos:')
@@ -70,7 +80,7 @@ router.all('/formulario/publicacoes', (req, res) => {
 router.all('/formulario', selecaoppgiController.forms)
 router.all('/candidates', selecaoppgiController.candidates)
 router.all('/voltar', selecaoppgiController.voltar)
-
+router.all('/voltarInicio', selecaoppgiController.backToStart)
 router.get('/download/arquivo', (req, res) => {
   const userId = req.session.uid.toString() // ID do usuário
   console.log(req.session)
