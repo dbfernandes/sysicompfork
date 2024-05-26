@@ -1,5 +1,5 @@
 // const { Projeto } = require('../models')
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 class ProjetoService {
@@ -56,6 +56,7 @@ class ProjetoService {
       projetos.forEach((projeto) => {
         let flag = true
         projetosFiltrados.every((p) => {
+          // eslint-disable-next-line eqeqeq, no-mixed-operators
           flag = p.titulo == projeto.titulo || (p.descricao == projeto.descricao && projeto.descricao != '') && p.id != projeto.id ? false : flag
           return flag
         })

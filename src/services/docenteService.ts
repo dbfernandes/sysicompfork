@@ -119,10 +119,10 @@ class DocenteService {
       orderBy: { inicio: 'desc' },
     });
 
-    if (pesquisas) {
-      return pesquisas;
+    if (!pesquisas) {
+      return null;
     }
-    return null;
+    return pesquisas;
   }
 
   async listarOrientacoes(id: number, tipo: number) {

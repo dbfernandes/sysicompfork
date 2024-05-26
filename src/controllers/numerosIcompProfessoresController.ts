@@ -42,7 +42,8 @@ const perfil = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
@@ -65,11 +66,12 @@ const publicacoes = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const publicacoes = await DocenteService.listarPublicacoes(id);
+        const publicacoes = await DocenteService.listarPublicacoes(userId);
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(11).keys()].map(i => i + currentYear - 10);
@@ -120,11 +122,15 @@ const pesquisa = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const projetos = await DocenteService.listarPesquisas(id);
+        const projetos = await DocenteService.listarPesquisas(userId);
+        if (!projetos){
+          return res.status(404).send('Não encontrou as pesquisas')
+        }
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(10).keys()].map(i => i + currentYear - 9);
@@ -166,16 +172,17 @@ const orientacao = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id, tipo } = req.params;
+        const userId = Number(id)
         const tipos = ['graduacao', 'mestrado', 'doutorado'];
         const t = tipos.findIndex(e => e === tipo) + 1;
         if (t === 0) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const professor = await DocenteService.listarPerfil(id);
+        const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const orientacoes = await DocenteService.listarOrientacoes(id, t);
+        const orientacoes = await DocenteService.listarOrientacoes(userId, t);
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(10).keys()].map(i => i + currentYear - 9);
@@ -227,11 +234,15 @@ const premios = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const premios = await DocenteService.listarPremios(id);
+        const premios = await DocenteService.listarPremios(userId);
+        if (!premios){
+          return res.status(404).send('Não encontrou premios')
+        }
 
         return res.render('numerosIcomp/perfil/perfil-premio', {
           lng,

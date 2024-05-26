@@ -1,99 +1,71 @@
-import { Prisma, PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { Prisma, PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 // CRUD da pagina de linhas de pesquisa
 
 export default new class LinhasDePesquisaService {
-  async list () {
-    try {
-      const linhasDePesquisa = await prisma.linhasDePesquisa.findMany()
-      return linhasDePesquisa
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível listar as linhas de pesquisa!')
-    }
+  async list() {
+    const linhasDePesquisa = await prisma.linhasDePesquisa.findMany();
+    return linhasDePesquisa;
   }
 
-  async findById (id: number) {
-    try {
-      const researchLine = await prisma.linhasDePesquisa.findFirst({
-        where: {
-          id
-        }
-      })
-      return researchLine
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível encontrar a linha de pesquisa!')
-    }
+  async findById(id: number) {
+    const researchLine = await prisma.linhasDePesquisa.findFirst({
+      where: {
+        id
+      }
+    });
+    return researchLine;
   }
 
-  async findByName (name: string) {
-    try {
-      const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
-        where: {
-          nome: name
-        }
-      })
-      return linhaDePesquisa
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível encontrar a linha de pesquisa!')
-    }
+  async findByName(name: string) {
+    const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
+      where: {
+        nome: name
+      }
+    });
+    return linhaDePesquisa;
   }
 
-  async findBySigla (sigla: string) {
-    try {
-      const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
-        where: {
-          sigla
-        }
-      })
-      return linhaDePesquisa
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível encontrar a linha de pesquisa!')
-    }
+  async findBySigla(sigla: string) {
+    const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
+      where: {
+        sigla
+      }
+    });
+    return linhaDePesquisa;
   }
 
   async criar(nome: string, sigla: string) {
-    try {
-      await prisma.linhasDePesquisa.create({
-        data: {
-          nome,
-          sigla,
-          createdAt: new Date(),
-          updatedAt: new Date() 
-        }
-      });
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível criar a linha de pesquisa!');
-    }
+    await prisma.linhasDePesquisa.create({
+      data: {
+        nome,
+        sigla,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
   }
 
-  async update (id: number, newInfo: Prisma.LinhasDePesquisaUpdateInput) {
-    try {
-      const { nome, sigla } = newInfo
-      await prisma.linhasDePesquisa.update({
-        where: {
-          id
-        },
-        data: {
-          nome,
-          sigla,
-          updatedAt: new Date()
-        }
-      })
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível atualizar a linha de pesquisa!')
-    }
+  async update(id: number, newInfo: Prisma.LinhasDePesquisaUpdateInput) {
+    const { nome, sigla } = newInfo;
+    await prisma.linhasDePesquisa.update({
+      where: {
+        id
+      },
+      data: {
+        nome,
+        sigla,
+        updatedAt: new Date()
+      }
+    });
   }
 
-  async delete (id: number) {
-    try {
-      await prisma.linhasDePesquisa.delete({
-        where: {
-          id
-        }
-      })
-    } catch (error: any) {
-      console.log(error.message || 'Não foi possível deletar a linha de pesquisa!')
-    }
+  async delete(id: number) {
+    await prisma.linhasDePesquisa.delete({
+      where: {
+        id
+      }
+    });
   }
-}()
+}();
