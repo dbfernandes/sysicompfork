@@ -52,17 +52,18 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async criar (newResearchLine: Prisma.LinhasDePesquisaCreateInput) {
+  async criar(nome: string, sigla: string) {
     try {
-      const { nome, sigla } = newResearchLine
       await prisma.linhasDePesquisa.create({
         data: {
           nome,
-          sigla
+          sigla,
+          createdAt: new Date(),
+          updatedAt: new Date() 
         }
-      })
+      });
     } catch (error: any) {
-      console.log(error.message || 'Não foi possível criar a linha de pesquisa!')
+      console.log(error.message || 'Não foi possível criar a linha de pesquisa!');
     }
   }
 

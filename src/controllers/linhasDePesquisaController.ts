@@ -44,35 +44,38 @@ const buscar = async (req: Request, res: Response) => {
 
 const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(200)
-      .render('linhasDePesquisa/linhasDePesquisa-criar', {
-        pageTitle,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session?.tipoUsuario
-      });
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-criar', {
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session?.tipoUsuario,
+    });
   } else {
     try {
-      const nome = req.body.nome;
-      const sigla = req.body.sigla;
+      const { nome, sigla } = req.body;
 
-      if (await linhasDePesquisaService.findByName(nome)) throw new Error('Linha de Pesquisa já cadastrada!');
+      if (await linhasDePesquisaService.findByName(nome)) {
+        throw new Error('Linha de Pesquisa já cadastrada!');
+      }
 
-      if (await linhasDePesquisaService.findBySigla(sigla)) throw new Error('Sigla já cadastrada!');
+      if (await linhasDePesquisaService.findBySigla(sigla)) {
+        throw new Error('Sigla já cadastrada!');
+      }
 
-      await linhasDePesquisaService.criar({ nome, sigla });
-    } catch (error: any) { // Definindo o tipo da variável error como Error
+      await linhasDePesquisaService.criar(nome, sigla);
+    } catch (error: any) {
       console.log(error);
       return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
-        error: error.message || 'Não foi possível criar a linha de pesquisa!'
+        error: error.message || 'Não foi possível criar a linha de pesquisa!',
       });
     }
 
     return res.redirect('/linhasDePesquisa/listar');
   }
 };
+
 
 const remover = async (req: Request, res: Response) => {
   if (req.method === 'POST') {
