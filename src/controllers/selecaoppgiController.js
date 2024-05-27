@@ -1,9 +1,9 @@
-import EditalService from "../services/editalService";
-import CandidateService from "../services/candidateService";
 import candidatePublicacaoService from "../services/candidatePublicacaoService";
-import linhasDePesquisaService from "../services/linhasDePesquisaService";
+import CandidateService from "../services/candidateService";
+import candidatoExperienciaAcademicaService from "../services/candidatoExperienciaAcademicaService";
 import candidatoService from "../services/candidatoService";
-import candidateService from "../services/candidateService";
+import EditalService from "../services/editalService";
+import linhasDePesquisaService from "../services/linhasDePesquisaService";
 const fs = require("fs");
 const path = require("path");
 
@@ -117,7 +117,7 @@ const login = async (req, res) => {
           return res.status(406).send();
         } 
 
-        if(candidate.posicaoEdital >= 4){
+        if(candidate.posicaoEdital > 4){
           return res.status(401).send();
         }
 
@@ -148,6 +148,12 @@ const formProposta = async (req, res) => {
   switch (req.method) {
     case "POST": {
         const id = req.session.uid;
+        const hasProposta = req.files["CartaAceiteOrientador"] !== undefined;
+        if (!hasProposta) { 
+          if(fs.existsSync(path.join("uploads", "candidatos", id.toString(), "CartaAceiteOrientador.pdf"))){
+            fs.unlinkSync(path.join("uploads", "candidatos", id.toString(), "CartaAceiteOrientador.pdf"));
+          }
+        }
         const candidate = {
           ...req.body, 
           posicaoEdital: 4,
@@ -182,9 +188,6 @@ function verificarArquivoDiretorio(diretorio, nomeArquivo) {
 async function editCandidate(req, res) {
   switch (req.method) {
     case "PUT":
-      const { uid } = req.session;
-      const { data } = req.body;
-      console.log(data);
       return res.status(200).send();
     default:
       return res.status(405).send();
@@ -238,8 +241,7 @@ const forms = async (req, res) => {
           "candidatos",
           uid.toString()
         );
-        console.log("Entrou aqui"); 
-
+        const experienciasAcademicas = await candidatoExperienciaAcademicaService.listByCandidateId(uid);
         return res.render("selecaoppgi/forms2", {
           ...locals,
           ...candidate.get(),
@@ -251,29 +253,42 @@ const forms = async (req, res) => {
             caminhoDiretorioUsuario,
             "VitaePDF.pdf"
           ),
+          hasProvaAnterior: verificarArquivoDiretorio(
+            caminhoDiretorioUsuario,
+            "ProvaAnterior.pdf"
+          ),
+          experienciasAcademicas: experienciasAcademicas.map((experiencia) => experiencia.toJSON())
         });
       }
 
       if (req.session.editalPosition === 3) {
         const linhas = await linhasDePesquisaService.list();
-  
         return res.render("selecaoppgi/forms3", {
           ...locals,
           ...candidate.get(),
-           editalPosicao: req.session.editalPosition,
+          editalPosicao: req.session.editalPosition,
           email: req.session.email,
           id: req.session.uid,
-          linhasPesquisa: linhas,
+          linhasPesquisa: linhas, 
           csrfToken: req.csrfToken(),
         });
       }
       if (req.session.editalPosition === 4) {
+        const caminhoDiretorioUsuario = path.join(
+          "uploads",
+          "candidatos",
+          uid.toString()
+        );
         return res.render("selecaoppgi/formConfirmacao", {
           ...locals,
           editalPosicao: req.session.editalPosition,
           email: req.session.email,
           id: req.session.uid,
           csrfToken: req.csrfToken(),
+          hasCartaAceiteOrientador: verificarArquivoDiretorio(
+            caminhoDiretorioUsuario,
+            "CartaAceiteOrientador.pdf"
+          ),
         });
       }
       break;
@@ -332,10 +347,29 @@ const form2 = async (req, res) => {
         if (req.files && req.files.VitaePDF !== undefined) {
           VitaePDF = req.files.VitaePDF[0];
         }
-        console.log(req.body);
         const { uid } = req.session;
+        console.log(req.body);
+        const experienciaInstituicao = req.body.experienciaInstituicao;
+        const experienciasAtividade = req.body.experienciaAtividade;
+        const experienciasPeriodo = req.body.experienciaPeriodo;
+        console.log(experienciaInstituicao, experienciasAtividade, experienciasPeriodo);
 
-        const candidato = {
+        if(experienciaInstituicao && experienciasAtividade && experienciasPeriodo){
+          await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid)
+          await Promise.all(
+            experienciaInstituicao.map((_, index) => {
+              return candidatoExperienciaAcademicaService.create({
+                data: {
+                  instituicao: experienciaInstituicao[index],
+                  atividade: experienciasAtividade[index],
+                  periodo: experienciasPeriodo[index],
+                },
+                idCandidato: uid,
+              });
+            })
+          ); 
+        }
+        const candidato = { 
           ...req.body,
           ...(VitaePDF ? { VitaePDF: VitaePDF.path } : {}),
           ...(Prova ? { Prova: Prova.path } : {}),
@@ -345,13 +379,13 @@ const form2 = async (req, res) => {
           id: uid,
           data: candidato,
         }).catch((err) => {
-          console.error(err);
           return res.status(500).send();
         });
 
         req.session.editalPosition = 3;
         return res.status(200).send();
-      } catch {
+      } catch(err) {
+        console.error(err)
         return res.status(500).send();
       }
     }
@@ -391,7 +425,6 @@ const formPublicacoes = async (req, res) => {
     case "POST":
       try {
         const dados = req.body;
-        console.log(dados);
         const periodicos = dados.publicacoes["ARTIGO-PUBLICADO"];
         const eventos = dados.publicacoes["TRABALHO-EM-EVENTOS"];
         const livros = dados.publicacoes["LIVRO-PUBLICADO-OU-ORGANIZADO"];
@@ -399,7 +432,6 @@ const formPublicacoes = async (req, res) => {
         const outras = dados.publicacoes["OUTRA-PRODUCAO-BIBLIOGRAFICA"];
         const prefacios = dados.publicacoes["PREFACIO-POSFACIO"];
 
-        console.log("Capitulos", prefacios);
 
         const promises = [];
 
@@ -485,7 +517,6 @@ const voltar = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
-  console.log("asdasdsadasd");
   res.redirect("/selecaoppgi/formulario");
 };
 export default {

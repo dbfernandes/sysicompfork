@@ -273,8 +273,8 @@
                   <font color="#FF0000">*</font>
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="anoEgressoGraduacao"
-                  value="{{anoEgressoGraduacao}}" maxlength="60" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="number" name="anoEgressoGraduacao"
+                  value="{{anoEgressoGraduacao}}" maxlength="60" >
               </div>
             </div>
           </div>
@@ -337,8 +337,7 @@
                 <label class="control-label" for="candidato-ano-pos">
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano-pos" type="text" name="anoEgressoPos"
-                  oninput="permitirApenasNumeros(this)" value="{{anoEgressoPos}}">
+                <input class="form-control" id="candidato-ano-pos" type="number" name="anoEgressoPos" value="{{anoEgressoPos}}">
               </div>
             </div>
 
@@ -468,40 +467,78 @@
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="candidato-prova">
-                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo
-                    2
-                    anos), pro favor faça o upload do PDF da prova através da opção abaixo:
+                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), 
+                    pro favor faça o upload do PDF da prova através da opção abaixo:
                   </b>
                          
                 </label>
               </div>
-              <div class="col-6">
+              {{#if hasProvaAnterior}}
+                <div class="col-6">
+                  <a href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary">Baixar Prova Anterior</a>
+                  <input type="hidden" name="ProvaAnterior" value="{{hasProvaAnterior}}">
+
+                </div>
+              {{else}}
+                <div class="col-6" >
                 <div class="form-group">
                   <div class="custom-file">
       
-                    <input type="file" class="custom-file-input" id="candidato-prova" name="Prova">
-                    <label class="custom-file-label" for="Prova">Escolher arquivo</label>
+                    <input type="file" class="custom-file-input" id="candidato-prova" name="ProvaAnterior">
+                    <label class="custom-file-label" for="ProvaAnterior">Escolher arquivo</label>
                   </div>
                 </div>
               </div>
+              {{/if}}
+
+             
             </div>
           </div>
         </div>
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Experiência Acadêmica</h3>
+            <h3 class="card-title">Experiência Acadêmica{{experienciasAcademicas}}</h3>
           </div>
 
           <div class="card-body">
             <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
+            {{#each experienciasAcademicas}}
+              <div class="row experiencia-row">
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-instituicao">
+                    Instituição Acadêmica:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]" maxlength="60" value="{{instituicao}}">
+                </div>
+
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-atividade">
+                    Atividade:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-atividade" type="text"
+                    name="experienciaAtividade[]" maxlength="60" value="{{atividade}}">
+                </div>
+
+                <div class="col-4">
+                  <label class="control-label" for="candidato-experiencia-periodo">
+                    Período:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]"
+                    maxlength="30" value="{{periodo}}">
+                </div>
+                <div class="col-1" style="margin-top:10px">
+                  <button class="btn btn-danger delete-experiencia-button">Excluir</button>
+                </div>
+              </div>
+            {{/each}}
             <div id="experiencia-container">
               <div class="row experiencia-row">
                 <div class="col-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
                     Instituição Academica:
                   </label>
-                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="Experiencia"
+                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]"
                     maxlength="60">
                 </div>
 
@@ -510,15 +547,14 @@
                     Atividade:
                   </label>
                   <input class="form-control" id="candidato-experiencia-atividade" type="text"
-                    name="ExperienciaAtividade" maxlength="60">
+                    name="experienciaAtividade[]" maxlength="60">
                 </div>
 
                 <div class="col-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
                     Período:
                   </label>
-                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="ExperienciaPeriodo"
-                    maxlength="60">
+                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
                 </div>
                 <div class="col-1" style="margin-top:10px">
                   <button class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
@@ -548,8 +584,20 @@
 </footer>
 
 <script>
+  function changeYear(event) {
+    const year = event.target.value;
+    if (year.length === 4) { 
+      const currentYear = new Date().getFullYear();
+      if (year > currentYear) {
+        $(event.target).addClass("is-invalid");
+      } else {
+        $(event.target).removeClass("is-invalid");
+      }
+    }
+  }
+
   $(document).ready(function () {
-    		$("#btn_logout").click(function () {
+    $("#btn_logout").click(function () {
 			$.ajax({
 				url: "/selecaoppgi/logout",
 				type: "POST",
@@ -608,9 +656,10 @@
 
     $("#limparSelecao").on("click", function (e) {
       e.preventDefault()
-
       $("#candidato-curso-tipo input[type='radio']").prop("checked", false);
     });
+    $("#candidato-ano-pos").change(changeYear);
+    $("#candidato-ano").change(changeYear);
   });
 
   function mostrarPeriodicos() {
@@ -621,6 +670,7 @@
       accordion.collapse("show");
     }
   }
+
   $(".accordion").on("show.bs.collapse", function () {
     $(this).find(".collapse").slideDown(20000);
   });
@@ -633,10 +683,6 @@
   function mostrarConferencias() {
     document.getElementById("periodicos").style.display = "none";
     document.getElementById("conferencias").style.display = "block";
-  }
-
-  function permitirApenasNumeros(input) {
-    input.value = input.value.replace(/[^0-9]/g, '');
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -731,7 +777,6 @@
       getCompleteData(formData, GetDataPubli)
     }
   })
-
 
   function GetDataPubli(data) {
     const DataForm = data;
@@ -864,17 +909,15 @@
         required: "Este campo é obrigatório."
       }
     },
-    submitHandler: function (form) {
-      form.preventDefault()
+    submitHandler: (form, e) => {
+      e.preventDefault()
       const VitaeXML = $("#vittaexml").val()
-
       const formData = new FormData($('#candidato-formulario2')[0]);
       if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
         reqAjax(formData)
       } else {
         getCompleteData(formData, reqAjax)
       }
-
     }
   });
 

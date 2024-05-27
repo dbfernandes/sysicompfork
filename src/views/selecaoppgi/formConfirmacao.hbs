@@ -239,6 +239,21 @@
     text-align: center;
     margin-top: 1rem;
 }
+.container-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.container-button {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 1rem;
+    max-width: 150px;
+    text-align: center;
+}
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 <div class="forms-page">
@@ -287,8 +302,30 @@
         <p class="message-buttons">
             Clique nos ícones abaixo para visualizar os respectivos documentos em formato pdf.
         </p>
-        <div>
+        <div class="container-buttons">
+          <div class="container-button">
+            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <href="">Imprimir Formulário  de Inscrição</href=>
+          </div>
+          <div class="container-button">
+            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <a href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf">Imprimir Proposta  de Trabalho</a>
+          </div>
+         {{#if hasCartaAceiteOrientador}}
+          <div class="container-button">
+            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <a href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf">Carta Orientador</a>
+          </div>
+          {{/if}}
 
+          <div class="container-button">
+            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <a href="">Imprimir Curriculum Lattes</a>
+          </div>
+          <div class="container-button">
+            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <a href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf">Imprimir Comprovante de Pagamento</a>
+          </div>
         </div>
     </main>
     <div class="container-fluid">

@@ -23,11 +23,13 @@ const ensureDirectoryExistence = (filePath) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
+    console.log(file) 
     const uploadDir = `./uploads/candidatos/${req.session.uid}`
     ensureDirectoryExistence(uploadDir)
     callback(null, uploadDir)
   },
   filename: function (req, file, callback) {
+    console.log(file)
     const name = `${file.fieldname}.pdf`
     callback(null, name)
   }
@@ -35,8 +37,14 @@ const storage = multer.diskStorage({
 
 const uploads = multer({ storage }).fields([
   { name: 'VitaePDF', maxCount: 1 },
-  { name: 'Prova', maxCount: 1 },
+  { name: 'ProvaAnterior', maxCount: 1 },
   { name: 'VitaeXML', maxCount: 1 }
+])
+
+const uploadsProposta = multer({ storage }).fields([
+  { name: 'PropostaTrabalho', maxCount: 1 },
+  { name: 'ComprovantePagamento', maxCount: 1 },
+  { name: 'CartaAceiteOrientador', maxCount: 1 }
 ])
 
 /* TODO - Add routes */
@@ -46,16 +54,6 @@ router.all('/entrar', selecaoppgiController.login)
 router.all('/logout', selecaoppgiController.logout)
 router.all('/editCandidate', selecaoppgiController.editCandidate)
 router.all('/formulario/1', selecaoppgiController.form1)
-router.all('/formulario/3', (req, res) => { 
-  uploads(req, res, function (err) {
-    if (err) {
-      console.error('Erro ao fazer upload de arquivos:')
-      console.error(err)
-      throw err
-    }
-    selecaoppgiController.formProposta(req, res)
-  })
-})
 router.all('/formulario/2', (req, res) => { 
   uploads(req, res, function (err) {
     if (err) {
@@ -64,6 +62,17 @@ router.all('/formulario/2', (req, res) => {
       throw err
     }
     selecaoppgiController.form2(req, res)
+  })
+})
+
+router.all('/formulario/3', (req, res) => { 
+  uploadsProposta(req, res, function (err) {
+    if (err) {
+      console.error('Erro ao fazer upload de arquivos:')
+      console.error(err)
+      throw err
+    }
+    selecaoppgiController.formProposta(req, res)
   })
 })
 
@@ -81,13 +90,12 @@ router.all('/formulario', selecaoppgiController.forms)
 router.all('/candidates', selecaoppgiController.candidates)
 router.all('/voltar', selecaoppgiController.voltar)
 router.all('/voltarInicio', selecaoppgiController.backToStart)
-router.get('/download/arquivo', (req, res) => {
-  const userId = req.session.uid.toString() // ID do usuário
-  console.log(req.session)
-  console.log(userId)
-  const nomeArquivo = 'VitaePDF.pdf' // Nome do arquivo
+router.get('/download/arquivo/:name', (req, res) => {
+  // Define o caminho do arquivo
+
+  const userId = req.session.uid.toString() 
+  const nomeArquivo = req.params.name
   const caminhoArquivo = path.join(__dirname, '..', '..', 'uploads', 'candidatos', userId, nomeArquivo)
-  console.log(caminhoArquivo)
   // Verifica se o arquivo existe
   if (fs.existsSync(caminhoArquivo)) {
     // Define o cabeçalho para o download

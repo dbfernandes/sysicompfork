@@ -62,7 +62,7 @@ class CandidateService {
     })
     return candidate
   }
-
+ 
   async auth ({ email, password, editalNumber }) {
     const candidate = await Candidate.findOne({
       where: {
