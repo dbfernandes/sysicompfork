@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 class EditalService {
   async criarEdital (
     num_edital: any,
-    documento: any | undefined,
+    documento: any ,
     data_inicio: Date,
     data_fim: Date,
     carta_recomendacao: any,
@@ -44,8 +44,8 @@ class EditalService {
           status: '1',
           inscricoesIniciadas: 0,
           inscricoesEncerradas: 0,
-          createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-          updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+          // createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
+          // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
         }
       })
 

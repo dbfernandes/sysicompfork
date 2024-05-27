@@ -36,7 +36,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       } = await req.body
 
       try {
-        await EditalService.criarEdital({
+        await EditalService.criarEdital(
           num_edital,
           documento,
           data_inicio,
@@ -47,7 +47,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
           vaga_suplementar_mestrado,
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
-        })
+        )
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
