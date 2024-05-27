@@ -36,7 +36,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       } = await req.body
 
       try {
-        await EditalService.criarEdital({
+        await EditalService.criarEdital(
           num_edital,
           documento,
           data_inicio,
@@ -47,7 +47,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
           vaga_suplementar_mestrado,
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
-        })
+        )
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
@@ -254,15 +254,23 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
 }
 
 const editalCandidates = async (req: Request, res: Response) => {
-  const editalID = req.params.id;
-  const candidates = await EditalService.listCandidates(editalID);
-
-  if (!candidates) {
-    return res.status(404).json({ error: 'Edital não encontrado' });
-  }
-
-  const quantidadeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition !== null && candidate.editalPosition < 4).length;
-  const quantidadeInscricaoFinalizada = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition !== null && candidate.editalPosition === 4).length;
+  const editalID = req.params.id
+  const candidates = await EditalService.listCandidates(editalID).catch(
+    (err: any) => {
+      return res.status(400).json({
+        error: err.message
+      })
+    }
+  )
+  if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos')
+  const quantidadeInscricaoAndamento = candidates.filter((candidate: { 
+    editalPosition: number | null }) => candidate.editalPosition !== null && 
+    candidate.editalPosition < 4
+  ).length
+  const quantidadeInscricaoFinalizada: number = candidates.filter((candidate: { 
+    editalPosition: number | null}) =>candidate.editalPosition !== null && 
+    candidate.editalPosition === 4
+  ).length;
 
   return res.render('edital/listCandidates', {
     csrfToken: req.csrfToken(),
@@ -286,26 +294,17 @@ const geraPlanilha = async (req: Request, res: Response) => {
 }
 
 const gerarCandidatoPDF = async (req: Request, res: Response) => {
-  const candidateId = Number(req.params.id);
-  const candidate = await EditalService.getCandidate(candidateId);
-
-  if (!candidate) {
-    return res.status(404).json({ error: 'Candidato não encontrado' });
-  }
-
-  const documentoKey = req.query.documento as string;
-  if (!(documentoKey in candidate)) {
-    return res.status(400).json({ error: 'Documento não encontrado' });
-  }
-
-  const base64Documento = (candidate as any)[documentoKey] as string;
-  const docPDF = Buffer.from(base64Documento, 'base64');
-  
-  return res.set({
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': `attachment; filename=index.pdf`,
-    'Content-Length': docPDF.length
-  }).status(200).send(docPDF);
+   const candidate = await EditalService.getCandidate(req.params.id);
+   if (!candidate) return res.status(404).send('Candidato não encontrado');
+   const base64Documento = (candidate as any)[(req.query.documento as string)];
+   if (!base64Documento) return res.status(404).send('Documento não encontrado');
+   const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
+   
+   return res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=index.pdf`,
+      'Content-Length': docPDF.length
+   }).status(200).send(docPDF);
 }
 // Refazer função
 const getAllCandidatesDocuments = async (req: Request, res: Response) => {
@@ -418,8 +417,7 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 
 const candidateDetails = async (req: Request, res: Response) => {
   try {
-    const candidateId = Number(req.params.id);
-    const candidate = await EditalService.getCandidate(candidateId);
+    const candidate = await EditalService.getCandidate(req.params.id);
 
     return res.render('edital/candidateDetails', {
       candidate: candidate,

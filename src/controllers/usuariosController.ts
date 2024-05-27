@@ -35,9 +35,6 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         secretaria = req.body.secretaria === 'on' ? 1 : 0;
         professor = req.body.professor === 'on' ? 1 : 0;
 
-        const createdAt = new Date();
-        const updatedAt = new Date();
-
         await UsuarioService.adicionar(
           nomeCompleto,
           cpf,
@@ -53,9 +50,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           siape,
           dateDeIngresso,
           unidade,
-          turno,
-          createdAt,
-          updatedAt
+          turno
         );
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
@@ -181,9 +176,9 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query;
-        const userId = Number(req.params.id)
-        const usuario = await UsuarioService.listarUm(userId);
+        const { message, type, messageTitle } = req.query
+
+        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
         return res.status(200).render('usuarios/usuario-visualizar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -213,9 +208,8 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query;
-        const userId = Number(req.params.id)
-        const usuario = await UsuarioService.listarUm(userId);
+        const { message, type, messageTitle } = req.query
+        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
         return res.status(200).render('usuarios/usuarios-editar', {
           usuario,
           csrfToken: req.csrfToken(),

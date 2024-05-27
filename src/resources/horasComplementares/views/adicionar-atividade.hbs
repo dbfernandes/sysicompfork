@@ -1,0 +1,178 @@
+{{> header}}
+{{> sidebar module='horasComplementares' page='adicionar-atividade'}}
+
+<style>
+    .inputFile {
+    border: none
+    }
+</style>
+
+<div class="content-wrapper">
+ 
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Adicionar Atividade</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/horasComplementares/listar">Atividades Complementares</a></li>
+                        <li class="breadcrumb-item active">Adicionar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Nova Solicitação</h3>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card-body">
+                                <form role="form" id="adicionarAtividadesForm">
+                                    <div class="form-group">
+                                        <label for="descricao">
+                                            <font color="#FF0000">*</font> Descrição da Solicitação
+                                        </label>
+                                        <input type="text" name="descricao" class="form-control" id="descricao" placeholder="Descrição...">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                            <div class="col-sm-6">
+                                                <font color="#FF0000">*</font>
+                                                <label>Data do Início</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="date" class="form-control" placeholder="Data do Início"
+                                                        data-inputmask-inputformat="dd/mm/yyyy" required
+                                                        id="data_inicio">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <font color="#FF0000">*</font> <label>Data do Término</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="date" class="form-control"
+                                                        placeholder="Data do Término" required id="data_termino">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edital">
+                                            <font color="#FF0000">*</font>Atividade
+                                        </label>
+                                        <select class="form-control" name="atividade" id="atividade">
+                                            <option>Selecione Atividade</option>
+                                            {{#each atividades}}
+                                                <option>{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="horaTotal">
+                                            <font color="#FF0000">*</font> Total de Horas
+                                        </label>
+                                        <input type="text" name="horaTotal" class="form-control" id="horaTotal"
+                                            placeholder="">
+                                        <p>Este total de horas lançadas não representam as horas que serão computadas se
+                                            a solicitação for deferida. As horas computadas dependem das regras
+                                            definidas em cada curso.</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="observacoes"> Observações</label>
+                                        <input type="text" name="observacoes" class="form-control" id="observacoes"
+                                            placeholder="Observações...">
+                                    </div>
+
+                                    <div>
+                                        <label for="arquivo">
+                                            <font color="#FF0000">*</font>Arquivo
+                                        </label>
+                                        <input type="file" name="arquivo" class="form-control inputFile" id="arquivo">
+                                    </div>
+
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-success float-right"
+                                            onclick="submitForm()">
+                                            Enviar
+                                        </button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+</div>
+
+
+
+<script>
+    function getValueFromForm() {
+        const dataFromForm = Array.from(document.querySelectorAll('#adicionarAtividadesForm input')).reduce((acc, input) =>
+        ({
+            ...acc,
+            [input.id]: input.value
+        }), {});
+        return dataFromForm;
+    }
+
+    function verificarEntradaForm(dataFromForm) {
+        if (dataFromForm.descricao == "" || dataFromForm.horaTotal == "" || dataFromForm.data_inicio == "" || dataFromForm
+            .data_fim == "" || dataFromForm.atividade || dataFromForm.arquivo) {
+           alert("Campos obrigatorios não preenchidos!");
+            return false;
+        }
+
+        if(!dataFromForm.arquivo){
+            alert("Nenhum arquivo adicionado");
+            return false;
+        }
+        return true;
+    }
+
+    function submitForm() {
+
+        const dataFromForm = getValueFromForm();
+        console.log(dataFromForm)
+        if (verificarEntradaForm(dataFromForm)) {
+            $.ajax({
+                url: '{{url}}/add-url-aqui',
+                type: 'POST',
+                data: dataFromForm,
+                success: function (data) {
+                    $.validator.setDefaults({
+                        submitHandler: function () {
+                            alert("Form successful submitted!");
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+
+    }
+</script>
+
+
+
+
+{{> footer}}

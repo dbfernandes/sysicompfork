@@ -1,0 +1,107 @@
+<style>
+  .error {
+    color: red
+  }
+
+  .success {
+    color: green;
+  }
+
+  body {
+    background-color: lightgray;
+  }
+</style>
+<div class="login-box container card border-0 shadow rounded-3 my-5">
+
+  <div class="login-box-body card-body p-4 p-sm-5">
+    <div class="login-logo">
+      <a href="#"><b>ICOMP</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <p class="login-box-msg">Insira suas credenciais para realizar login</p>
+    {{#if message}}
+    <div class="alert alert-{{type}}">
+      {{{message}}}
+    </div>
+    {{/if}}
+
+    <form action="/login" method="post" id="loginForm">
+      <input type="hidden" name="_csrf" value="{{csrfToken}}">
+      <div class="form-group">
+        <label for="cpfInput">CPF</label>
+        <input id="cpfInput" name="cpf" type="text" class="form-control cpf" placeholder="___.___.___-__">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="senhaInput" name="senha" type="password" class="form-control" placeholder="*********">
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="checkbox icheck">
+            <label>
+              <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+    <a href="/recuperar-senha">Esqueci minha senha</a><br>
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<script>
+  function loginPage() {
+    $.validator.addMethod("cpfLength", function (el) {
+      const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
+      return cpfValue.length === 11
+    })
+
+    $.validator.setDefaults({
+      onfocusout: function (el) {
+        this.element(el);
+      },
+    });
+
+    $('#loginForm').validate({
+      rules: {
+        cpf: {
+          required: true,
+          cpfLength: true,
+        },
+        senha: {
+          required: true,
+          minlength: 6,
+        },
+      },
+      messages: {
+        cpf: {
+          required: '"CPF (Digite somente números)" não pode ficar em branco.',
+          cpfLength: '"CPF" deve ter 11 dígitos.',
+        },
+        senha: {
+          required: '"Senha" não pode ficar em branco',
+          minlength: '"Senha" deve conter pelo menos 6 caracteres'
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+  }
+</script>

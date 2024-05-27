@@ -79,10 +79,10 @@ const login = async (req: Request, res: Response) => {
         ...locals,
         editais: editais.map((edital) => {
           return {
-            ...edital,
-          };
-        }),
-      });
+            ...edital
+          }
+        })
+      })
     }
     case 'POST':
       try {
@@ -120,12 +120,17 @@ const login = async (req: Request, res: Response) => {
             message: 'Usuário não cadastrado',
             type: 'danger',
             ...locals,
+            // editais: editais2.map((edital: { get: () => any }) => {
+            //   return {
+            //     ...edital.get()
+            //   }
+            // })
             editais: editais2.map((edital) => {
               return {
-                ...edital,
-              };
-            }),
-          });
+                ...edital
+              }
+            })
+          })
         }
 
         (req.session as any).email = IsCandidateValid.email;

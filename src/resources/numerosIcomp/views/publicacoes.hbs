@@ -1,0 +1,146 @@
+    {{> numerosIcomp/navbar page="publicacoes"}}
+<div class="flex-wrapper bg-primary">
+     <section class="success"  id="docentes">
+        <div class="container pb-4" >
+            <div class="row ">
+                <div class="col-md-12 text-center">
+                    <h2 class="text-white">{{publicacoes.length}} {{__ "publications.publicacoesDosProfessores"}} {{#if ano}}{{__ "publications.noAnoDe"}} {{ano}}{{/if}}</h2>
+                    <h5 class="text-white">{{__ "publications.paraConferir"}}</h5>
+                    <hr style="border-top: 3px solid; opacity: 70%; border-color: #fff;">
+                </div>
+                <div class="text-center" id="loading">
+                    <div class="spinner-border text-light mt-5 text-center" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="datatable-wrapper">
+                    <table id="example" class="table table-hover table-striped w-100 bg-white wrap rounded">
+                    <thead>
+                        <tr id="filters">
+                            <th id="name">{{__ "publications.titulo"}}</th>
+                            <th id="period">{{__ "publications.ano"}}</th>
+                            <th id="type-hidden">{{__ "publications.tipo"}}:</th>
+                            <th id="about-hidden">{{__ "publications.local"}}:</th>
+                            <th id="financers-hidden">{{__ "publications.autor"}}:</th>
+                            <th id="team-hidden">ISSN/ISBN:</th>
+                        </tr>
+                        <tr id="header">
+                            <th>{{__ "publications.titulo"}}</th>
+                            <th>{{__ "publications.ano"}}</th>
+                            <th>{{__ "publications.tipo"}}:</th>
+                            <th>{{__ "publications.local"}}:</th>
+                            <th>{{__ "publications.autor"}}:</th>
+                            <th>ISSN/ISBN:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each publicacoes}}
+                        <tr data-key={{id}}>
+                            <td class="ps-4" style="word-break: break-word; white-space: normal;">{{titulo}}</td>
+                            <td class="ps-4"><b>{{ano}}</b></td>
+                            <td class="ps-4">{{__ Tipo.dataValues.nome}}</td>
+                            <td class="ps-4">{{local}}</td>
+                            <td class="ps-4">{{autores}}</td>
+                            <td class="ps-4">{{#if ('!=' ISSN "0")}}{{ISSN}}{{else}} {{__ "publications.naoInformado"}}{{/if}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+      </section>
+
+
+      <script>
+
+    var table = ''
+    $(document).ready(function() {
+        // Setup - add a text input to each footer cell
+        $('#example thead #filters th').each( function (i) {
+            var title = $('#example thead #header th').eq( $(this).index() ).text();
+            $(this).html( '<div id="input'+i+'" class="input-group input-group-outline"><input type="text" class="form-control" data-index="'+i+'" placeholder="'+title+'" /></div>')
+        } );
+        $('#datatable-wrapper').addClass('d-none') 
+
+        // DataTable
+        table = $('#example').DataTable( {
+            dom: 'tp',
+            bLengthChange: false,
+            paginationType: "simple_numbers",
+            pageLength: 20,
+            responsive: true,
+            initComplete: function() {
+                setTimeout(() => {
+                    $('#datatable-wrapper').removeClass('d-none') 
+                    $("#loading").html('')
+                }, 500)
+            }, 
+            columns: [
+                { responsivePriority: 1 },
+                { responsivePriority: 2 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+                { responsivePriority: 3 },
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+                "paginate": {
+                    "previous": "<",
+                    "next": ">"
+                }
+            },
+            autoWidth: false,
+            columnDefs: [
+            { width: "100px", targets: 1 },
+            { className: 'text-dark', targets: [0,1] },
+            { className: 'none text-dark', targets: [2,3,4,5] },
+            ],
+            order: [[1, 'desc']],
+        } );
+        
+
+        table.columns().every(function(){
+            const column = this;
+            const title = column.header().textContent;
+            const idx = column.index()
+
+            const input = $(`#filters th #input${idx} input`)
+            input.on('keyup', function () {
+
+                if (table.column(idx).search() !== this.value) {
+                    table.column(idx).search(this.value).draw()
+                }
+             })
+
+        })
+
+    } );
+
+    window.addEventListener("resize", verifyColumns)
+
+    function verifyColumns() {
+        setTimeout(()=>{
+            const period = $("#period")
+            const headerHidden = [$('#type-hidden'), $('#about-hidden'), $('#financers-hidden'), $('#team-hidden')]
+            headerHidden.forEach(h => {
+                if(!h.hasClass('d-none')){
+                    h.addClass('d-none')
+                }
+            })
+            const header =  $('#example #header .dtr-hidden').length
+            if(header == 4 && period.hasClass("d-none")){
+                period.removeClass("d-none")
+            }else if(header==5 && !period.hasClass("d-none")){
+                period.addClass("d-none")
+            }
+        }, 200)
+        
+    }
+    verifyColumns()
+        
+
+</script>
+    {{> numerosIcomp/footer}}
+</div>
