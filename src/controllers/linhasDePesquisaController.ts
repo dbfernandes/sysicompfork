@@ -61,7 +61,7 @@ const criar = async (req: Request, res: Response) => {
         throw new Error('Sigla já cadastrada!');
       }
 
-      await linhasDePesquisaService.criar(nome, sigla);
+      await linhasDePesquisaService.criar({nome, sigla});
     } catch (error: any) {
       console.log(error);
       return res.render('linhasDePesquisa/linhasDePesquisa-criar', {
