@@ -11,7 +11,7 @@
     "prisma:init:dev": "npx prisma migrate dev && npx prisma db seed",
     "db:reset:dev": "npx sequelize-cli db:migrate:undo:all",
     "db:init:dev": "sequelize-cli db:migrate && sequelize-cli db:seed:all",
-    "start:dev": "nodemon -L -r esm src/server.js",
+    "start:dev": "nodemon --watch src --exec npx ts-node src/server.ts",
     "criar-modulo": "node src/utils/criarNovoModulo.js",
     "test": "jest"
   },

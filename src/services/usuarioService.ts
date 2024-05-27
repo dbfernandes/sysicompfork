@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
-import { PrismaClient, Usuario } from '@prisma/client';
+import bcrypt from 'bcrypt'; 
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 class UsuarioService {
   async adicionar(
-    nomeCompleto: string,
+    nomeCompleto: string, 
     cpf: string,
     email: string,
     senha: string,
@@ -80,7 +80,7 @@ class UsuarioService {
 
   async listarTodos() {
     const usuarios = await prisma.usuario.findMany();
-    return usuarios.map((usuario) => {
+    return usuarios.map((usuario: any) => {
       return {
         perfis: usuario,
         ...usuario,
@@ -158,7 +158,7 @@ class UsuarioService {
       },
     });
 
-    return usuarios.map((usuario) => {
+    return usuarios.map((usuario: any) => {
       return {
         perfis: usuario,
         ...usuario,

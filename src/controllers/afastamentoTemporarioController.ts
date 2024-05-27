@@ -118,7 +118,7 @@ const remover = async (req:Request, res: Response) => {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         error: error.message || 'Não foi possível remover o pedido de afastamento!'
-      })
+      })  
     }
   }
 }

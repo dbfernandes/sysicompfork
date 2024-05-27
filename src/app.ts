@@ -70,7 +70,7 @@ app.use(
   express.static(path.join(__dirname, '/../public/uploads/'))
 )
 
-app.use(isUsuarioAutenticado)
+// app.use(isUsuarioAutenticado)
 // Colocar o logger depois
 app.use(router)
 

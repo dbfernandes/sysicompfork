@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import candidatePublicacaoService from "../services/candidatePublicacaoService";
 import CandidateService from "../services/candidateService";
 import candidatoExperienciaAcademicaService from "../services/candidatoExperienciaAcademicaService";
@@ -7,11 +8,21 @@ import linhasDePesquisaService from "../services/linhasDePesquisaService";
 const fs = require("fs");
 const path = require("path");
 
+type CustomRequest = Request & {
+  session:  {
+    email: string,
+    uid: string,
+    editalId: string,
+    editalPosition: number
+  };
+}
+
+
 const locals = {
   layout: "selecaoppgi",
 };
 
-const begin = async (req: Request, res: Response) => {
+const begin = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET":
       return res.render("selecaoppgi/begin", {
@@ -23,11 +34,10 @@ const begin = async (req: Request, res: Response) => {
 };
 
 // Rotas para cadastro de candidato
-const signUp = async (req, res) => {
+const signUp = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET": {
-      const editais = await EditalService.listEdital();
-      const listEditais = editais.map((edital) => edital.dataValues);
+      const listEditais = await EditalService.listEdital();
 
       return res.render("selecaoppgi/signUp", {
         csrfToken: req.csrfToken(),
@@ -81,7 +91,7 @@ const signUp = async (req, res) => {
   }
 };
 
-const login = async (req: Request, res: Response) => {
+const login = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET": {
       if (req.session.email) {
@@ -89,8 +99,7 @@ const login = async (req: Request, res: Response) => {
         break;
       }
       try {
-        const editais = await EditalService.listEdital();
-        const listEditais = editais.map((edital) => edital.dataValues);
+        const listEditais = await EditalService.listEdital();
         return res.render("selecaoppgi/login", {
           ...locals,
           csrfToken: req.csrfToken(),
@@ -115,9 +124,9 @@ const login = async (req: Request, res: Response) => {
         });
         if (!candidate) {
           return res.status(406).send();
-        } 
+        }
 
-        if(candidate.posicaoEdital > 4){
+        if (candidate.posicaoEdital > 4) {
           return res.status(401).send();
         }
 
@@ -134,46 +143,67 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-function logout(req, res) {
+function logout(req: CustomRequest, res: Response) {
   switch (req.method) {
     case "POST":
-      req.session.destroy();
+      req.session.destroy((err) => {
+        console.error(err);
+        return res.status(500).send();
+      });
       return res.status(200).redirect("/selecaoppgi/entrar");
     default:
       return res.status(404).send();
   }
-};
+}
 
-const formProposta = async (req, res) => {
+const formProposta = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "POST": {
-        const id = req.session.uid;
-        const hasProposta = req.files["CartaAceiteOrientador"] !== undefined;
-        if (!hasProposta) { 
-          if(fs.existsSync(path.join("uploads", "candidatos", id.toString(), "CartaAceiteOrientador.pdf"))){
-            fs.unlinkSync(path.join("uploads", "candidatos", id.toString(), "CartaAceiteOrientador.pdf"));
-          }
+      const id = req.session.uid;
+      const hasProposta = req.files && !Array.isArray(req.files) && req.files["CartaAceiteOrientador"] !== undefined;
+      if (!hasProposta) {
+        if (
+          fs.existsSync(
+            path.join(
+              "uploads",
+              "candidatos",
+              id?.toString(),
+              "CartaAceiteOrientador.pdf"
+            )
+          )
+        ) {
+          fs.unlinkSync(
+            path.join(
+              "uploads",
+              "candidatos",
+              id?.toString(),
+              "CartaAceiteOrientador.pdf"
+            )
+          );
         }
-        const candidate = {
-          ...req.body, 
-          posicaoEdital: 4,
-        };
-        await candidatoService.update({
+      }
+      const candidate = {
+        ...req.body,
+        posicaoEdital: 4,
+      };
+      await candidatoService
+        .update({
           id,
           data: candidate,
-        }).catch((err) => {
+        })
+        .catch((err) => {
           console.error(err);
           return res.status(500).send();
         });
-        req.session.editalPosition = 4;
-        return res.status(200).send();
+      req.session.editalPosition = 4;
+      return res.status(200).send();
     }
     default:
       return res.status(405).send();
   }
 };
 
-function verificarArquivoDiretorio(diretorio, nomeArquivo) {
+function verificarArquivoDiretorio(diretorio: string, nomeArquivo: string) {
   const caminhoArquivo = path.join(diretorio, nomeArquivo);
   try {
     // Verifica se o arquivo existe
@@ -185,7 +215,7 @@ function verificarArquivoDiretorio(diretorio, nomeArquivo) {
   }
 }
 
-async function editCandidate(req, res) {
+async function editCandidate(req: CustomRequest, res: Response) {
   switch (req.method) {
     case "PUT":
       return res.status(200).send();
@@ -194,7 +224,7 @@ async function editCandidate(req, res) {
   }
 }
 
-async function backToStart(req, res) {
+async function backToStart(req: CustomRequest, res: Response) {
   switch (req.method) {
     case "POST":
       const id = req.session.uid;
@@ -210,7 +240,7 @@ async function backToStart(req, res) {
       return res.status(405).send();
   }
 }
-const forms = async (req, res) => {
+const forms = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET":
       if (!req.session.uid || !req.session.editalPosition) {
@@ -241,7 +271,8 @@ const forms = async (req, res) => {
           "candidatos",
           uid.toString()
         );
-        const experienciasAcademicas = await candidatoExperienciaAcademicaService.listByCandidateId(uid);
+        const experienciasAcademicas =
+          await candidatoExperienciaAcademicaService.listByCandidateId(uid);
         return res.render("selecaoppgi/forms2", {
           ...locals,
           ...candidate.get(),
@@ -257,7 +288,9 @@ const forms = async (req, res) => {
             caminhoDiretorioUsuario,
             "ProvaAnterior.pdf"
           ),
-          experienciasAcademicas: experienciasAcademicas.map((experiencia) => experiencia.toJSON())
+          experienciasAcademicas: experienciasAcademicas.map((experiencia: any) =>
+            experiencia.toJSON() 
+          ),
         });
       }
 
@@ -269,7 +302,7 @@ const forms = async (req, res) => {
           editalPosicao: req.session.editalPosition,
           email: req.session.email,
           id: req.session.uid,
-          linhasPesquisa: linhas, 
+          linhasPesquisa: linhas,
           csrfToken: req.csrfToken(),
         });
       }
@@ -297,7 +330,7 @@ const forms = async (req, res) => {
       return res.status(405).send();
   }
 };
-function parseDate(dateString) {
+function parseDate(dateString: string) {
   const parts = dateString.split("/");
   // Supondo que a data está no formato DD/MM/YYYY
   const day = parseInt(parts[0], 10);
@@ -306,7 +339,7 @@ function parseDate(dateString) {
 
   return new Date(year, month, day);
 }
-const form1 = async (req, res) => {
+const form1 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "POST": {
       const { data } = req.body;
@@ -335,16 +368,16 @@ const form1 = async (req, res) => {
   }
 };
 
-const form2 = async (req: Request, res: Response) => {
+const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "POST": {
       try {
         let VitaePDF = null;
         let Prova = null;
-        if (req.files && req.files.Prova !== undefined) {
+        if (!Array.isArray(req.files) && req.files && req.files.Prova !== undefined) {
           Prova = req.files.Prova[0];
-        }
-        if (req.files && req.files.VitaePDF !== undefined) {
+        } 
+        if (!Array.isArray(req.files) && req.files && req.files.VitaePDF !== undefined) {
           VitaePDF = req.files.VitaePDF[0];
         }
         const { uid } = req.session;
@@ -352,12 +385,20 @@ const form2 = async (req: Request, res: Response) => {
         const experienciaInstituicao = req.body.experienciaInstituicao;
         const experienciasAtividade = req.body.experienciaAtividade;
         const experienciasPeriodo = req.body.experienciaPeriodo;
-        console.log(experienciaInstituicao, experienciasAtividade, experienciasPeriodo);
+        console.log(
+          experienciaInstituicao,
+          experienciasAtividade,
+          experienciasPeriodo
+        );
 
-        if(experienciaInstituicao && experienciasAtividade && experienciasPeriodo){
-          await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid)
-          await Promise.all(
-            experienciaInstituicao.map((_, index) => {
+        if (
+          experienciaInstituicao &&
+          experienciasAtividade &&
+          experienciasPeriodo
+        ) {
+          await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid);
+          await Promise.all( 
+            experienciaInstituicao.map((_:any, index: any) => {
               return candidatoExperienciaAcademicaService.create({
                 data: {
                   instituicao: experienciaInstituicao[index],
@@ -367,25 +408,27 @@ const form2 = async (req: Request, res: Response) => {
                 idCandidato: uid,
               });
             })
-          ); 
+          );
         }
-        const candidato = { 
+        const candidato = {
           ...req.body,
           ...(VitaePDF ? { VitaePDF: VitaePDF.path } : {}),
           ...(Prova ? { Prova: Prova.path } : {}),
           posicaoEdital: 3,
         };
-        await candidatoService.update({
-          id: uid,
-          data: candidato,
-        }).catch((err) => {
-          return res.status(500).send();
-        });
+        await candidatoService
+          .update({
+            id: uid,
+            data: candidato,
+          })
+          .catch((err) => {
+            return res.status(500).send();
+          });
 
         req.session.editalPosition = 3;
         return res.status(200).send();
-      } catch(err) {
-        console.error(err)
+      } catch (err) {
+        console.error(err);
         return res.status(500).send();
       }
     }
@@ -395,21 +438,14 @@ const form2 = async (req: Request, res: Response) => {
   }
 };
 
-const formPublicacoes = async (req: Request, res: Response) => {
+const formPublicacoes = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET": {
       const data = await candidatePublicacaoService.ListarPublicacoesCandidate(
         req.session.uid
       );
 
-      const periodicos = data.periodicos.map((periodico) => periodico.toJSON());
-      const conferencias = data.conferencias.map((conferencia) =>
-        conferencia.toJSON()
-      );
-
-      data.conferencias.forEach((publicacao) => {
-        console.log(publicacao.toJSON());
-      });
+      const { periodicos, conferencias } = data;
 
       return res.render("selecaoppgi/forms2", {
         message: "Dados salvos com sucesso",
@@ -431,7 +467,6 @@ const formPublicacoes = async (req: Request, res: Response) => {
         const capitulos = dados.publicacoes["CAPITULO-DE-LIVRO-PUBLICADO"];
         const outras = dados.publicacoes["OUTRA-PRODUCAO-BIBLIOGRAFICA"];
         const prefacios = dados.publicacoes["PREFACIO-POSFACIO"];
-
 
         const promises = [];
 
@@ -489,7 +524,7 @@ const formPublicacoes = async (req: Request, res: Response) => {
   }
 };
 
-const candidates = async (req: Request, res: Response) => {
+const candidates = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET":
       return res.json({
@@ -500,13 +535,13 @@ const candidates = async (req: Request, res: Response) => {
   }
 };
 
-const voltar = async (req: Request, res: Response) => {
+const voltar = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "POST": {
       const id = req.session.uid;
-      const editalPosicao = parseInt(req.session.editalPosition, 10) - 1;
+      const editalPosicao = parseInt(req.session.editalPosition?.toString() ?? '1', 10) - 1;
       await candidatoService.backEdital({
-        id,
+        id, 
       });
       req.session.editalPosition = editalPosicao;
       return res.status(200).send();
@@ -516,7 +551,7 @@ const voltar = async (req: Request, res: Response) => {
   }
 };
 
-const refresh = async (req, res) => {
+const refresh = async (req: CustomRequest, res: Response) => {
   res.redirect("/selecaoppgi/formulario");
 };
 export default {
@@ -533,5 +568,5 @@ export default {
   logout,
   formProposta,
   editCandidate,
-  backToStart
+  backToStart,
 };
