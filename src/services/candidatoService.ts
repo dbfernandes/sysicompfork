@@ -1,5 +1,7 @@
 import { genSalt, hash } from "bcrypt";
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 const { Candidato } = require("../models");
 
 class CandidatoService {

@@ -130,6 +130,7 @@ model Candidato {
   Edital                Edital     @relation(fields: [idEdital], references: [editalId])
   LinhasDePesquisa      LinhasDePesquisa?   @relation(fields: [idLinhaPesquisa], references: [id])
 
+  CandidatoExperienciaAcademica CandidatoExperienciaAcademica[] @relation(fields: [], references: [])
   @@map("Candidato")
 }
 
@@ -141,6 +142,14 @@ model CandidateAcademicExperience {
   periodo     String @db.VarChar(255)
 }
 
+model CandidatoExperienciaAcademica {
+  id          Int    @id @default(autoincrement())
+  idCandidato BigInt
+  instituicao String? @db.VarChar(60)
+  atividade   String? @db.VarChar(60)
+  periodo     String? @db.VarChar(30)
+  Candidato   Candidato @relation(fields: [idCandidato], references: [id])
+}
 model CandidatePublications {
   id          Int      @default(autoincrement())
   idCandidate Int
