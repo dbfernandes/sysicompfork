@@ -27,10 +27,10 @@ app.set('views', path.join(__dirname, '/views'))
 declare module 'express-session' {
   export interface SessionData {
     tipoUsuario?: {
-      administrador: boolean
-      secretaria: boolean,
-      coordenador: boolean
-      professor: boolean
+      administrador: number
+      secretaria: number,
+      coordenador: number
+      professor: number
     } | undefined,
     uid: string,
     nome: string

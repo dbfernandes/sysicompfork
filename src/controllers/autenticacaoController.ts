@@ -61,7 +61,7 @@ const login = async (req: Request, res: Response) => {
         })
       }
 
-      req.session.uid = usuario.id.toString()
+      req.session.uid = String(usuario.id)
       req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
         usuario.nomeCompleto.split(' ').length > 1
           ? ' ' +
@@ -71,12 +71,12 @@ const login = async (req: Request, res: Response) => {
           : ' '
       }`
       req.session.tipoUsuario = {
-        administrador: Boolean(usuario.administrador),
-        coordenador: Boolean(usuario.coordenador),
-        secretaria:Boolean(usuario.secretaria),
-        professor:Boolean(usuario.professor)
+        administrador: usuario.administrador,
+        coordenador: usuario.coordenador,
+        secretaria: usuario.secretaria,
+        professor: usuario.professor
       }
-      req.session.uid = usuario.id.toString()
+      req.session.uid = String(usuario.id)
       return res.redirect('/inicio')
     } catch (err) {
       console.log(err)

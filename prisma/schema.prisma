@@ -342,6 +342,7 @@ model Usuario {
   coordenador             Int                    @default(0) @db.SmallInt
   secretaria              Int                    @default(0) @db.SmallInt
   professor               Int                    @default(0) @db.SmallInt
+  perfil                  String?                @db.VarChar(255)
   siape                   String?                @db.VarChar(10)
   dataIngresso            String?                @db.VarChar(10)
   endereco                String?                @db.VarChar(255)

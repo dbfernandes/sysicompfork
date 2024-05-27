@@ -8,7 +8,7 @@ const visualizar = async (req: Request, res: Response) => {
       try {
         const { message, type, messageTitle } = req.query
         const id = req.session.uid
-        const usuario = await UsuarioService.listarUm(Number(id))
+        const usuario = await UsuarioService.listarUmUsuario(parseInt(id!))
         return res.render('perfil/perfil-dados', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -41,7 +41,7 @@ const editar = async (req: Request, res: Response) => {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUm(Number(id))
+        const usuario = await UsuarioService.listarUmUsuario(parseInt(id!))
         return res.render('perfil/perfil-editar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -87,7 +87,7 @@ const editar = async (req: Request, res: Response) => {
         turno: req.body.turno
       }
       try {
-        await UsuarioService.alterar(Number(id), dados)
+        await UsuarioService.alterar(parseInt(id!), dados)
       } catch (error: any) {
         console.log(error)
         dados.id = id
@@ -122,7 +122,7 @@ const deletar = async (req: Request, res: Response) => {
     case 'POST':
       try {
         const id = req.session.uid
-        await UsuarioService.alterar(Number(id), {
+        await UsuarioService.alterar(parseInt(id!), { 
           status: 0
         })
         req.session.uid = undefined

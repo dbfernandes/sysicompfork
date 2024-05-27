@@ -1,0 +1,153 @@
+{{> header}}
+{{> sidebar module='alunos'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-3">
+                <div class="col-sm-9">
+                    <h1>Upload Lista de Alunos - SIE</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Alunos</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-warning color-white" href="/inicio">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div style="text-align:left">
+                    <font color="#FF0000">*</font> Campos Obrigatórios
+            </div>
+            <form id="formAdicionarLattes">
+                <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+                <div class="card card-primary w-50">
+                    <div class="card-header">
+                        <h3 class="card-title"><b>Lista de Alunos</b></h3>
+                    </div>
+                    <div class="card-body ">
+
+                        <div class="form-group">
+                            <label class="form-label" ><font color="#FF0000">*</font> Listagem dos Alunos ICOMP em CSV (Disponível no SIE):</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" accept=".csv" id="formCSV" name="CSV">
+                                <label class="custom-file-label" for="CSV">Selecione o arquivo</label>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <div style="margin-right: auto;" class="d-flex justify-content-end">
+                            <button class="btn btn-success float-right">
+                                Enviar
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        bsCustomFileInput.init()
+    })
+
+
+
+    $.validator.addMethod("verificarArquivo", function (el) {
+        return (document.querySelector("input[type=file]").files.length > 0)
+    })
+
+    $.validator.setDefaults({
+            submitHandler: function () {
+                FormSubmit()    
+            },
+        });
+
+    function reqAjax(data){
+        $.ajax({
+                type: "POST",
+                url: 'alunos/upload',
+                data,
+                success: function(data) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-success",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Currículo adiconado com sucesso!',
+                        body: 'O arquivo CSV foi adicionado corretamente.'
+                    })
+
+                },
+                error: function(err) {
+                    $(document).Toasts('create', {
+                        icon: 'success',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 10000,
+                        title: 'Ocorreu um problema!',
+                        body: 'O arquivo CSV não pôde ser adicionado ao sistema.'
+                    })
+                }
+            });
+    }
+
+    function FormSubmit(){
+        const csrfToken = $("#csrfToken").val();
+        const data = {
+            _csrf: csrfToken
+        }
+
+        getCSVData(data, reqAjax)     
+    }
+
+
+    const formValidation = $('#formAdicionarLattes').validate({
+        rules: {
+            CSV: {
+                verificarArquivo: true,
+                accept: "text/csv",
+            },
+        },
+        messages: {
+            CSV: {
+                verificarArquivo: 'É necessário submeter um arquivo CSV.',
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('div').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        },
+    });
+    
+
+
+</script>
+
+{{> footer}}

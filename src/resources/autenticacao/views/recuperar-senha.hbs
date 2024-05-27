@@ -1,0 +1,47 @@
+<style>
+  .error {
+    color: red
+  }
+  .success {
+    color: green;
+  }
+</style>
+<div class="login-box container card border-0 shadow rounded-3 my-5">
+  
+  <div class="login-box-body card-body p-4 p-sm-5">
+    <div class="login-logo">
+        <a href="#"><b>ICOMP</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail cadastrado e obtenha uma nova</p>
+    {{#if message}}
+      <div class="alert alert-{{type}}">
+        {{{message}}}
+      </div>
+    {{/if}}
+
+    <form action="/recuperar-senha" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <div class="input-group mb-3">
+          <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Solicitar nova senha</button>
+          </div>
+          <!-- /.col -->
+        </div>
+    </form>
+
+    <a href="/login">Login</a><br>
+    <a href="/registrar" class="text-center">Registre-se</a>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->

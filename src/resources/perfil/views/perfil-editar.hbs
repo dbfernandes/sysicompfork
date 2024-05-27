@@ -1,0 +1,389 @@
+ {{> header}}
+{{> sidebar module='perfil' page='perfil-editar' }}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Editar perfil: {{usuario.nomeCompleto}}</h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/perfil">Perfil</a></li>
+                        <li class="breadcrumb-item active">Editar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+                    <a class="btn btn-warning color-white" href="/perfil">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                    <a class="btn btn-danger color-white" href="#"  id="removerUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
+                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
+                        <i class="fas fa-user-lock"></i>
+                        Bloquear
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+        <form name="postDeleteOnEdit" id="postDeleteOnEdit" method="POST">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        </form>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div style="text-align:left">
+                <font color="#FF0000">*</font> Campos Obrigatórios
+            </div>
+            <form action="/perfil/editar" method="post" id="editarUsuarioForm" name="editarUsuarioForm">
+                <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados da Conta</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="nomeCompletoInput">
+                                <font color="#FF0000">*</font> Nome Completo:
+                            </label>
+                            <input type="text" name="nomeCompleto" class="form-control" id="nomeCompletoInput"
+                                placeholder="Nome Completo..." value="{{usuario.nomeCompleto}}">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="cpfInput">
+                                        <font color="#FF0000">*</font> CPF:
+                                    </label>
+                                    <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
+                                        placeholder="000.000.000-00" value="{{usuario.cpf}}">
+                                    <div id="cpfErrors" class="text-danger"><small>{{showError errors 'cpf'}}</small></div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="emailInput">
+                                        <font color="#FF0000">*</font> E-mail:
+                                    </label>
+                                    <input type="email" name="email" class="form-control" id="emailInput"
+                                        placeholder="E-mail" value="{{usuario.email}}">
+                                    <div id="emailErrors" class="text-danger"><small>{{showError errors 'email'}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="senhaInput">
+                                        Senha:
+                                    </label>
+                                    <input type="password" name="senha" class="form-control" id="senhaInput"
+                                        placeholder="Senha...">
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label for="repetirSenhaInput">
+                                        Repetir senha:
+                                    </label>
+                                    <input type="password" name="repetirSenha" class="form-control" id="repetirSenhaInput"
+                                        placeholder="Repetir senha">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="margin-bottom: 20px;">
+                                <label for="">
+                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
+                                </label>
+                            </div>
+                            <div class="row space-between" style="padding-left: 10px; padding-right: 9px">
+                                
+                                <div>
+                                    <label for="administrador"> Administrador </label>
+                                    <input type="checkbox" name="administrador" data-bootstrap-switch
+                                        {{#if usuario.administrador}}
+                                            checked
+                                        {{else}}
+                                            unchecked
+                                        {{/if}}
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+
+                                <div>
+                                    <label for="coordenador"> Coordenador </label>
+                                    <input type="checkbox" name="coordenador" data-bootstrap-switch
+                                        {{#if usuario.coordenador}}
+                                            checked
+                                        {{else}}
+                                            unchecked
+                                        {{/if}}
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                                <div>
+                                    <label for="secretaria"> Secretaria </label>
+                                    <input type="checkbox" name="secretaria" data-bootstrap-switch
+                                        {{#if usuario.secretaria}}
+                                            checked
+                                        {{else}}
+                                            unchecked
+                                        {{/if}}
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                                <div>
+                                    <label for="professor"> Professor </label>
+                                    <input type="checkbox" name="professor" data-bootstrap-switch
+                                         {{#if usuario.professor}}
+                                            checked
+                                        {{else}}
+                                            unchecked
+                                        {{/if}}
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados Pessoais</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="enderecoInput">Endereço:</label>
+                            <input type="text" name="endereco" class="form-control" id="enderecoInput"
+                                placeholder="Rua, Avenida..." value="{{usuario.endereco}}">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="telefoneResidencialInput">Telefone Residencial:</label>
+                                    <input type="text" name="telefoneResidencial" class="form-control telefone"
+                                        id="telefoneResidencialInput" placeholder="(99)9999-9999" value="{{usuario.telResidencial}}">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="telefoneCelularInput">Telefone Celular:</label>
+                                    <input type="text" name="telefoneCelular" class="form-control telefone"
+                                        id="telefoneCelularInput" placeholder="(99)99999-99909" value="{{usuario.telCelular}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dados Profissionais</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="siapeInput">SIAPE:</label>
+                                    <input type="text" name="siape" class="form-control" id="siapeInput" value="{{usuario.siape}}">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="dateDeIngressoInput">Data de Ingresso:</label>
+                                    <input type="text" name="dateDeIngresso" class="form-control datemask"
+                                        id="dateDeIngressoInput" data-inputmask-alias="datetime"
+                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy" value="{{usuario.dataIngresso}}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="unidadeInput">Unidade:</label>
+                                    <input type="text" name="unidade" class="form-control" id="unidadeInput" value="{{usuario.unidade}}">
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <label for="turnoInput">Turno:</label>
+                                    <select name="turno" class="form-control" id="turnoInput">
+                                        <option value="Sem turno selecionado">Selecione o turno</option>
+                                        <option value="Matutino e Vespertino">Matutino e Vespertino</option>
+                                        <option value="Matutino e Noturno">Matutino e Noturno</option>
+                                        <option value="Vespertino e Noturno">Vespertino e Noturno</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="card-footer">
+                            <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success float-right">
+                                    Editar Perfil
+                                </button>
+
+                            </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- /.card -->
+    </section>
+</div>
+<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModal2"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>
+
+    function usuariosAdicionarPage() {
+        $.validator.addMethod("repetirSenha", function (el) {
+            return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
+        })
+
+        $.validator.addMethod("cpfLength", function (el) {
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
+            return cpfValue.length === 11
+        })
+
+         $.validator.addMethod("cpfVerificador", function (el){
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')    
+            var result = true
+            const arr = [9, 10]
+            arr.forEach(function(j){
+                var soma = 0, r, rep
+                rep = true
+                cpfValue.split("").splice(0,j).forEach(function(e, i){
+                    if(cpfValue.charAt(0) != e) rep = false 
+                    soma += parseInt(e) * ((j+2)-(i+1))
+                });
+                r = soma % 11
+                r = (r <2)?0:11-r
+                if(r != cpfValue.substring(j, j+1) || rep) result = false
+            });
+            return result
+        })
+
+        $('#editarUsuarioForm').validate({
+            rules: {
+                nomeCompleto: {
+                    required: true,
+                    minlength: 5,
+                },
+                cpf: {
+                    required: true,
+                    cpfLength: true,
+                    cpfVerificador: true,
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                senha: {
+                    minlength: 6,
+                },
+                repetirSenha: {
+                    repetirSenha: true,
+                    minlength: 6,
+                },
+            },
+            messages: {
+                nomeCompleto: {
+                    required: '"Nome" não pode ficar em branco."',
+                    minlength: '"Nome" deve ter pelo menos 5 caracteres.'
+                },
+                cpf: {
+                    required: '"CPF (Digite somente números)" não pode ficar em branco.',
+                    cpfLength: '"CPF" deve ter 11 dígitos.',
+                    cpfVerificador: 'Insira um CPF válido.'
+                },
+                email: {
+                    required: '"E-mail" não pode ficar em branco.',
+                    email: '"E-mail" não é um endereço de e-mail válido.'
+                },
+                senha: {
+                    required: '"Senha" não pode ficar em branco',
+                    minlength: '"Senha" deve conter pelo menos 6 caracteres'
+                },
+                repetirSenha: {
+                    required: '"Senha" não pode ficar em branco',
+                    repetirSenha: '"Repetir senha" deve ser igual ao campo "Senha"',
+                    minlength: '"Senha" deve conter pelo menos 6 caracteres',
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                $("#emailErrors").remove()
+                $("#cpfErrors").remove()
+                error.addClass('invalid-feedback');
+                element.closest('div').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        const turno = "{{usuario.turno}}"
+        if(turno != "Sem turno selecionado"){
+            $('select option[value="Sem turno selecionado"]').attr("selected",false);
+            $(`select option[value="${turno}"]`).attr("selected",true);
+
+        }
+    });
+    function deleteUser(){
+        document.postDeleteOnEdit.submit();
+    }
+
+    function addLink(event) {
+        const prefixo = "<b>Deseja realmente bloquear o seu perfil?</b> <br/><b>Atenção: </b>a página será redirecionada para o login do sistema. Para desbloquear o seu acesso contate o Suporte!</b>" 
+        document.getElementById("tituloModal2").innerHTML =  prefixo;
+        const formDelete = document.getElementById("postDeleteOnEdit")
+        const url = `/perfil/deletar`
+        formDelete.setAttribute('action', url);
+    }
+    if("{{message}}"){
+        $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-{{type}}",
+            autohide: true,
+            delay: 10000,
+            title: '{{messageTitle}}',
+            body: '{{message}}'
+            })
+
+    }
+</script>
+{{> footer}}

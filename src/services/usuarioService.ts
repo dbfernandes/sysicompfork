@@ -1,34 +1,29 @@
-import bcrypt from 'bcrypt'; 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client"
+import bcrypt from 'bcrypt'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 class UsuarioService {
-  async adicionar(
-    nomeCompleto: string, 
+  async adicionar (
+    nomeCompleto: string,
     cpf: string,
     email: string,
     senha: string,
-    administrador: boolean,
-    coordenador: boolean,
-    secretaria: boolean,
-    professor: boolean,
+    administrador: number,
+    coordenador: number,
+    secretaria: number,
+    professor: number,
     endereco: string,
     telResidencial: string,
     telCelular: string,
     siape: string,
-    dataIngresso: Date,
+    dataIngresso: string,
     unidade: string,
-    turno: string,
-    createdAt: Date,
-    updatedAt: Date
+    turno: string
   ) {
-    const salt = await bcrypt.genSalt(12);
-    const senhaHash = await bcrypt.hash(senha, salt);
-  
-    // Convertendo dataIngresso para string
-    const dataIngressoString = dataIngresso.toISOString();
-  
+    const salt = await bcrypt.genSalt(12)
+    const senhaHash = await bcrypt.hash(senha, salt)
+
     await prisma.usuario.create({
       data: {
         nomeCompleto,
@@ -44,56 +39,46 @@ class UsuarioService {
         telResidencial,
         telCelular,
         siape,
-        dataIngresso: dataIngressoString, // Utiliza a data convertida para string
+        dataIngresso,
         unidade,
         turno,
-        idLattes: null,
-        createdAt,
-        updatedAt
-      },
-    });
+        idLattes: null
+      }
+    })
   }
 
-
-  async alterar(id: number, user: any) {
+  async alterar (id: number, user: any) {
     if ('senha' in user && user.senha !== '') {
-      const salt = await bcrypt.genSalt(12);
-      user.senhaHash = await bcrypt.hash(user.senha, salt);
+      const salt = await bcrypt.genSalt(12)
+      user.senhaHash = await bcrypt.hash(user.senha, salt)
     }
     await prisma.usuario.update({
-      where: { id },
-      data: user,
-    });
+      where: {
+        id: id
+      },
+      data: user
+    })
   }
 
-  async alterarInfo(id: number, user: any) {
-    let usuario = await prisma.usuario.findUnique({
-      where: { id },
-    });
-    usuario = await prisma.usuario.update({
-      where: { id },
-      data: user,
-    });
-
-    return usuario;
+  async alterarInfo (id: number, user: any) {
+    await prisma.usuario.update({
+      where: {
+        id: id
+      },
+      data: user
+    })
   }
 
-  async listarTodos() {
-    const usuarios = await prisma.usuario.findMany();
-    return usuarios.map((usuario: any) => {
-      return {
-        perfis: usuario,
-        ...usuario,
-        createdAt: usuario.createdAt?.toLocaleString('pt-BR', {
-          timeZone: 'America/Manaus',
-        }).slice(0, 10),
-      };
-    });
+  async listarTodos () {
+    const usuarios = await prisma.usuario.findMany()
+    return usuarios;
   }
 
-  async listarUm(id: number) {
+  async listarUmUsuario (id: number) {
     const usuario = await prisma.usuario.findUnique({
-      where: { id },
+      where: {
+        id: Number(id)
+      },
       select: {
         id: true,
         nomeCompleto: true,
@@ -112,26 +97,40 @@ class UsuarioService {
         unidade: true,
         turno: true,
         idLattes: true,
-        createdAt: true,
-      },
-    });
+        perfil: true,
+        createdAt: true
+      }
+    })
+    const usuarioDict = usuario
+    if (!usuarioDict) throw new Error('Usuário não encontrado')
+    if (usuarioDict.status === 1) {
+      if (usuarioDict.administrador === 1) usuarioDict.perfil += ' Administrador |'
+      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |'
+      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |'
+      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |'
 
-    if (!usuario) return null;
+      if (usuarioDict.perfil!.endsWith(' |')) {
+        usuarioDict.perfil = usuarioDict.perfil!.substring(0, usuarioDict.perfil!.length - 2)
+      }
+    }
+    // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
+    //   timeZone: 'America/Manaus'
+    // }).slice(0, 10)
+    let usuarioComDataFormatada = {
+      ...usuarioDict,
+      DateFormatada: new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
+        timeZone: 'America/Manaus'
+      }).slice(0, 10)
+    }
 
-    return {
-      ...usuario,
-      perfis: usuario,
-      createdAt: usuario.createdAt?.toLocaleString('pt-BR', {
-        timeZone: 'America/Manaus',
-      }).slice(0, 10),
-    };
+    return usuarioComDataFormatada
   }
 
-  async listarTodosPorCondicao(data: any) {
+  async listarTodosPorCondicao (data: any) {
     const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
-        nomeCompleto: 'asc',
+        nomeCompleto: 'asc'
       },
       select: {
         id: true,
@@ -154,37 +153,33 @@ class UsuarioService {
         formacao: true,
         formacaoIngles: true,
         ultimaAtualizacao: true,
-        createdAt: true,
-      },
-    });
+        createdAt: true
+      }
+    })
 
-    return usuarios.map((usuario: any) => {
-      return {
-        perfis: usuario,
-        ...usuario,
-        createdAt: usuario.createdAt?.toLocaleString('pt-BR', {
-          timeZone: 'America/Manaus',
-        }).slice(0, 10),
-      };
-    });
+    return usuarios
   }
-
-  async buscarUsuarioPor(busca: any) {
-    const usuario = await prisma.usuario.findFirst({ where: busca });
-    return usuario;
+  
+  async buscarUsuarioPor(busca: any){
+    try {
+      const usuario = await prisma.usuario.findFirst({ where: busca})
+      return usuario
+    } catch (error) {
+      throw error
+    }
   }
-
-  async recuperarSenha(token: string, data: Date, id: number) {
-    const user = await prisma.usuario.findUnique({ where: { id } });
-    if (!user) return null;
+  
+  async recuperarSenha(token: string, data: any, id: number) {
     await prisma.usuario.update({
-      where: { id: user.id },
+      where: {
+        id: id
+      },
       data: {
         tokenResetSenha: token,
-        validadeTokenResetSenha: data,
-      },
-    });
+        validadeTokenResetSenha: data
+      }
+    })
   }
 }
 
-export default new UsuarioService();
+export default new UsuarioService()
