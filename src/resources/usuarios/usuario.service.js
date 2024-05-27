@@ -68,7 +68,7 @@ class UsuarioService {
     })
   }
 
-  async listarUm (id) {
+  async listarUmUsuario (id) {
     const usuario = await Usuario.findByPk(id, {
       atributes: ['id', 'nomeCompleto', 'cpf', 'email', 'status', 'siape',
         'administrador', 'secretaria', 'professor', 'coordenador',

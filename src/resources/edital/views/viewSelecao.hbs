@@ -1,0 +1,297 @@
+{{> header}}
+
+{{> sidebar module='edital' page='edital-listar'}}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <h1>Edital: {{edital.editalId}} </h1>
+                </div>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Selecoes</a></li>
+                        <li class="breadcrumb-item active">Listar</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mb-2">
+
+                <div class="col-sm-12">
+                    <a class="btn btn-warning color-white" id="voltarBtnView">
+                        <i class="fa fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                    <a class="btn btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
+                        <i class="fas fa-edit color-white"></i>
+                        Editar
+                    </a>
+                    <a id="btn-{{edital.editalId}}" class="btn
+                        {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}" onclick="abrirModal()">
+                        <i id="icone-{{edital.editalId}}" class="fa color-white
+                            {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}">
+                        </i>
+                        {{#ifEqual edital.status '1'}}Não Suspenso{{else}}Suspenso{{/ifEqual}} 
+                    </a>
+                    {{!-- Editar aqui --}}
+                    <a id="test" class="btn btn-info" href="/edital/listEditalCandidates/{{edital.editalId}}">
+                        <i class="fas fa-list color-white"></i>
+                        Lista de Inscritos
+                    </a>
+                    <a class="btn bg-success" href="/edital/geraPlanilha/{{edital.editalId}}">
+                        <i class="fas fa-file-csv color-white"></i>
+                        Planilha Excel para Avaliação (Excel)
+                    </a>     
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example2" class="table table-striped table-bordered table-hover">
+
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>Nº edital</td>
+                                        <td>{{edital.editalId}}</td>
+                                    </tr>
+
+                                     <tr>
+                                        <td>Status</td>
+                                        <td id="labelStatus"> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Data início</td>
+                                        <td>{{formataData edital.dataInicio}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Data fim</td>
+                                        <td>{{formataData edital.dataFim}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Nº de Inscrições Iniciadas</td>
+                                        <td> {{edital.inscricoesIniciadas}}</td>
+                                    </tr>
+                                    
+                                    <tr>                                
+                                        <td>Nº de Inscrições Encerradas</td>
+                                        <td> {{edital.inscricoesEncerradas}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Carta de Recomendação</td>
+                                        <td>{{#ifEqual edital.cartaRecomendacao '1'}}Sim{{else}}Não{{/ifEqual}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Carta do Orientador</td>
+                                        <td>{{#ifEqual edital.cartaOrientador '1'}}Sim{{else}}Não{{/ifEqual}}</td>                                    
+                                    </tr>
+
+                                    <tr>
+                                        <td>Curso</td>
+                                        <td id="curso"> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Vagas para Mestrado</td>
+                                        <td>REG: {{edital.vagaMestrado}} / SUP: {{edital.cotasMestrado}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Vagas para Doutorado</td>
+                                        <td>REG: {{edital.vagaDoutorado}} / SUP: {{edital.cotasDoutorado}}</td>
+                                    </tr>
+                                        
+                                    <tr>
+                                        <td>Edital em PDF</td>
+                                        <td>
+                                            <a href='{{edital.documento}}' target="_blank" >
+                                                Baixar
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+         <div id="modalArquivar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalArquivarLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalArquivarLabel">Status do Edital</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalArquivarBody">
+                            <!-- mensagem -->                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="confirmButton" onclick="arquivarEdital()">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+<script>
+
+        let status = "{{edital.status}}";
+
+        const regMestrado = "{{edital.vagaMestrado}}";
+        const supMestrado = "{{edital.cotasMestrado}}";
+
+        const regDoutorado = "{{edital.vagaDoutorado}}";
+        const supDoutorado = "{{edital.cotasDoutorado}}";
+
+        let curso;
+
+        if((regMestrado > 0 || supMestrado > 0) && (regDoutorado > 0 || supDoutorado > 0)){
+            curso = 'Mestrado e  Doutorado';
+        }
+        else if((regMestrado == 0 && supMestrado == 0) && (regDoutorado > 0 || supDoutorado > 0 )){
+            curso = 'Doutorado';
+        }
+        else{
+            curso = 'Mestrado';
+        }
+
+        document.getElementById("curso").innerText = curso;
+
+
+
+
+        const dataInicio = "{{edital.dataInicio}}";
+        const dataFim = "{{edital.dataFim}}";
+       
+        const dataAtual= moment.tz('America/Manaus').format('YYYY-MM-DD');
+
+
+        let labelStatus;
+        if( status == '1'){
+            if( dataInicio > dataAtual){
+                labelStatus = 'Não Iniciado';
+            }
+            else if( dataFim < dataAtual){
+                labelStatus = 'Encerrado';
+            }
+            else{
+                labelStatus = 'Aberto';
+            }
+        }else{
+             labelStatus = 'Suspenso';
+        }
+
+        
+        document.getElementById("labelStatus").innerText = labelStatus;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        let csrfToken = "{{csrfToken}}";
+        let editalId = "{{edital.editalId}}";
+ 
+
+       
+
+        function abrirModal() {
+        
+            if (status == '1') {
+                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + editalId + "?");
+                $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+            } else {
+                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + editalId + "?");
+                $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
+            }
+            
+            $('#modalArquivar').modal('show');
+        }
+
+        function arquivarEdital() {
+
+            let novoStatus = (status == '1'? '0' : '1');
+            
+            const dataFromForm = {
+                status: novoStatus,
+                _csrf: csrfToken
+            };
+
+
+            // Fechar o modal
+            $('#modalArquivar').modal('hide');
+
+            $.ajax({
+                url: `/edital/arquivarEdital/${editalId}`,
+                type: 'PUT',
+                data: dataFromForm,
+                success: function (data) {
+
+                    const mensagem = "Status do Edital alterado no sistema com sucesso";            
+                    const expirationTime = new Date(new Date().getTime() + 5000);
+
+                    document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                    document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+                    window.location.href = '/edital/listEdital';
+                    
+                },
+                error: function (data) {
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    });
+                }
+            });
+        }        
+
+
+        document.getElementById("voltarBtnView").addEventListener("click", function() {
+            window.history.back();
+        });
+
+</script>
+
+{{> footer}}

@@ -55,7 +55,7 @@ const adicionar = async (req:Request, res: Response) => {
 
 const excluir = async (req:Request, res: Response) => {
   const { id } = req.params
-  const reserva = await ReservaService.buscarReserva(id)
+  const reserva = await ReservaService.buscarReserva(parseInt(id))
   try {
     if (!reserva) throw new Error('Sala não encontrado!')
 
@@ -98,7 +98,7 @@ const editar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
-      const reserva = await ReservaService.listarReservasSalasPorUsuario(req.params.id)
+      const reserva = await ReservaService.listarReservasSalasPorUsuario(parseInt(req.params.id))
       if (!reserva) throw new Error('Reserva não encontrado!')
       
       res.render('reservas/reservas-editar', {
@@ -140,7 +140,7 @@ const editar = async (req:Request, res: Response) => {
       // const reserva = await ReservaSala.update({
       //     ...req.body
       // }, { where: { id: req.params.id } });
-      await ReservaService.atualizar(req.params.id, dados)
+      await ReservaService.atualizar(parseInt(req.params.id), dados)
       res.redirect('/reservas/gerenciar')
     } catch (error: any) {
       res.status(500).send({ message: error.message })

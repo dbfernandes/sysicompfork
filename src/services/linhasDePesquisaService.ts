@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 // CRUD da pagina de linhas de pesquisa
 
 export default new class LinhasDePesquisaService {
-  async list () {
+  async list() {
     try {
       const linhasDePesquisa = await prisma.linhasDePesquisa.findMany()
       return linhasDePesquisa
@@ -13,7 +13,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async findById (id: number) {
+  async findById(id: number) {
     try {
       const researchLine = await prisma.linhasDePesquisa.findFirst({
         where: {
@@ -26,7 +26,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async findByName (name: string) {
+  async findByName(name: string) {
     try {
       const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
         where: {
@@ -39,7 +39,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async findBySigla (sigla: string) {
+  async findBySigla(sigla: string) {
     try {
       const linhaDePesquisa = await prisma.linhasDePesquisa.findFirst({
         where: {
@@ -52,7 +52,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async criar (newResearchLine: Prisma.LinhasDePesquisaCreateInput) {
+  async criar(newResearchLine: Prisma.LinhasDePesquisaCreateInput) {
     try {
       const { nome, sigla } = newResearchLine
       await prisma.linhasDePesquisa.create({
@@ -66,7 +66,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async update (id: number, newInfo: Prisma.LinhasDePesquisaUpdateInput) {
+  async update(id: number, newInfo: Prisma.LinhasDePesquisaUpdateInput) {
     try {
       const { nome, sigla } = newInfo
       await prisma.linhasDePesquisa.update({
@@ -84,7 +84,7 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async delete (id: number) {
+  async delete(id: number) {
     try {
       await prisma.linhasDePesquisa.delete({
         where: {

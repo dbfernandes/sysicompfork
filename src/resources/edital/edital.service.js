@@ -1,10 +1,11 @@
-const { Candidate } = require('../models')
-const moment = require('moment-timezone')
+import { PrismaClient } from '@prisma/client'
 /* eslint-disable camelcase */
 
-const {
-  Edital
-} = require('../models')
+const { Candidate } = require('../models')
+const { Edital } = require('../models')
+const moment = require('moment-timezone')
+
+const prisma = new PrismaClient()
 
 class EditalService {
   async criarEdital ({

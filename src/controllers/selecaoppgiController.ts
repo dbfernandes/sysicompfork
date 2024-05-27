@@ -26,9 +26,9 @@ const signin = async (req: Request, res: Response) => {
       return res.render('selecaoppgi/signin', {
         csrfToken: req.csrfToken(),
         ...locals,
-        editais: editais.map((edital: { get: () => any }) => {
+        editais: editais.map((edital) => {
           return {
-            ...edital.get()
+            ...edital
           }
         }),
         errorSignin: null
@@ -77,9 +77,9 @@ const login = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         teste: 'teste',
         ...locals,
-        editais: editais.map((edital: { get: () => any }) => {
+        editais: editais.map((edital) => {
           return {
-            ...edital.get()
+            ...edital
           }
         })
       })
@@ -119,9 +119,14 @@ const login = async (req: Request, res: Response) => {
             message: 'Usuário não cadastrado',
             type: 'danger',
             ...locals,
-            editais: editais2.map((edital: { get: () => any }) => {
+            // editais: editais2.map((edital: { get: () => any }) => {
+            //   return {
+            //     ...edital.get()
+            //   }
+            // })
+            editais: editais2.map((edital) => {
               return {
-                ...edital.get()
+                ...edital
               }
             })
           })

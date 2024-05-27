@@ -184,7 +184,7 @@ const visualizar = async (req, res) => {
       try {
         const { message, type, messageTitle } = req.query
 
-        const usuario = await UsuarioService.listarUm(req.params.id)
+        const usuario = await UsuarioService.listarUmUsuario(req.params.id)
         return res.status(200).render('usuarios/usuario-visualizar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -215,7 +215,7 @@ const editar = async (req, res) => {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUm(req.params.id)
+        const usuario = await UsuarioService.listarUmUsuario(req.params.id)
         return res.status(200).render('usuarios/usuarios-editar', {
           usuario,
           csrfToken: req.csrfToken(),

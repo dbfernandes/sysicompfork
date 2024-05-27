@@ -20,13 +20,6 @@ class ProjetoService {
           integrantes: p.integrantes
         }
       })
-      // await Projeto.destroy({
-      //   where: {
-      //     idProfessor
-      //   }
-      // }).then(async () => {
-      //   await Projeto.bulkCreate(projetosArr)
-      // })
       await prisma.projeto.deleteMany({
         where: {
           idProfessor
@@ -40,11 +33,6 @@ class ProjetoService {
   }
 
   async listarAtuais () {
-    // let projetos = await Projeto.findAll({
-    //   where: {
-    //     fim: 0
-    //   }
-    // })
     let projetos = await prisma.projeto.findMany({
       where: {
         fim: 0
