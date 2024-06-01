@@ -1,8 +1,8 @@
 import sequelize, { Op } from 'sequelize'
 import { distance } from 'fastest-levenshtein'
 
-import getPublicationsArr from '../utils/listaPublicacoes'
-const { Publicacao, Usuario, TipoPublicacao, RelUsuarioPublicacao } = require('../models')
+import getPublicationsArr from '../../utils/listaPublicacoes'
+const { Publicacao, Usuario, TipoPublicacao, RelUsuarioPublicacao } = require('../../models')
 /* eslint-disable eqeqeq */
 class PublicacaoService {
   async adicionarVarios (

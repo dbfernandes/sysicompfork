@@ -1,5 +1,5 @@
-async function getPublicationsArr (publicacoes, id, tipos) {
-  const publicArr = []
+async function getPublicationsArr (publicacoes: any, id: number, tipos: any[]) {
+  const publicArr:any = []
   tipos.forEach(tipo => {
     const { chave } = tipo
     const publicacoesChave = publicacoes[chave]

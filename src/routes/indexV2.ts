@@ -9,6 +9,7 @@ import linhasDePesquisaRouter from '../resources/linhasDePesquisa/linhasDePesqui
 import salasRoutes from '../resources/salas/salas.routes'
 import perfilRoutes from '../resources/perfil/perfil.routes'
 import autenticacaoController from '../resources/autenticacao/autenticacao.controller'
+import autenticacaoRoutes from '../resources/autenticacao/autenticacao.routes'
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes'
 import horasComplementaresRoutes from '../resources/horasComplementares/horasComplementares.routes'
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamentoTemporario.routes';
@@ -32,9 +33,9 @@ router.post('/login', autenticacaoController.login)
 router.get('/recuperar-senha', autenticacaoController.recuperarSenha)
 router.post('/recuperar-senha', autenticacaoController.recuperarSenha)
 router.get('/logout', autenticacaoController.logout)
-
 router.use('/selecaoppgi', selecaoppgiRouter)
 
+router.use('/auth', autenticacaoRoutes)
 router.use('/numerosIcomp', numerosIcompRouter)
 
 router.use(autenticacaoController.verificar)

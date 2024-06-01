@@ -1,4 +1,4 @@
-const construirStringPerfisDeUsuario = (usuario) => {
+export default function construirStringPerfisDeUsuario (usuario: any) {
   let perfis = ''
   if (usuario.get().administrador === '1') perfis += ' Administrador |'
   if (usuario.get().coordenador === '1') perfis += ' Coordenador |'
@@ -13,4 +13,4 @@ const construirStringPerfisDeUsuario = (usuario) => {
   }
 }
 
-module.exports = { construirStringPerfisDeUsuario }
+// module.exports = { construirStringPerfisDeUsuario }

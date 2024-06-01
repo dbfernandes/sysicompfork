@@ -1,5 +1,5 @@
 import UsuarioService from "./usuario.service"
-import criarURL from '../utils/criarUrl'
+import criarURL from '../../utils/criarUrl'
 import path from 'path'
 
 function resolveView(viewName) {

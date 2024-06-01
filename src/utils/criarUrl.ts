@@ -1,4 +1,4 @@
-export default function criarURL (root, params = {}) {
+export default function criarURL (root: any, params = {}) {
   if (root instanceof URL) root = root.href
   params = new URLSearchParams(params).toString()
   const token = !root.endsWith('?') && params ? '?' : ''

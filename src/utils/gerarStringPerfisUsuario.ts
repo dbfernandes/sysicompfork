@@ -1,4 +1,4 @@
-const construirStringPerfisDeUsuario = (usuario) => {
+const construirStringPerfisDeUsuario = (usuario: any) => {
   let perfis = ''
   if (usuario.get().administrador === '1') perfis += ' Administrador |'
   if (usuario.get().coordenador === '1') perfis += ' Coordenador |'

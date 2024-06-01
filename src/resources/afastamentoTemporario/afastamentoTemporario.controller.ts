@@ -1,6 +1,7 @@
 import {Request, Response} from 'express'
 import afastamentoService from './afastamentoTemporario.service'
 import path from 'path'
+import { CreateAfastamentoTemporarioDto } from './afastamentoTemporario.types'
 const pageTitle = 'Afastamento Temporário'
 
 function resolveView(viewName: string): string {
@@ -27,7 +28,7 @@ const listar = async (req: Request, res: Response) => {
           })
     } else {
       console.log('Acessando como Usuário')
-      const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(req.session.uid!)
+      const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(parseInt(req.session.uid!))
       const doesNotExists = !afastamentos || afastamentos.length === 0
       if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado')
 
@@ -59,27 +60,34 @@ const criar = async (req: Request, res: Response) => {
       })
   } else {
     try {
-      const usuarioId = parseInt(req.session.uid!)
-      const usuarioNome = req.session.nome!
-      const dataSaida = new Date(req.body.dataSaida)
-      const dataRetorno = new Date(req.body.dataRetorno)
-      const tipoViagem = req.body.tipoViagem
-      const localViagem = req.body.localViagem
-      const justificativa = req.body.justificativa
-      const planoReposicao = req.body.planoReposicao
-
-      await afastamentoService.criar({
-        usuarioId,
-        usuarioNome,
-        dataSaida,
-        dataRetorno,
+      // const usuarioId = parseInt(req.session.uid!)
+      // const usuarioNome = req.session.nome!
+      // const dataSaida = new Date(req.body.dataSaida)
+      // const dataRetorno = new Date(req.body.dataRetorno)
+      // const tipoViagem = req.body.tipoViagem
+      // const localViagem = req.body.localViagem
+      // const justificativa = req.body.justificativa
+      // const planoReposicao = req.body.planoReposicao
+      const { uid, nome } = req.session
+      const { 
+        dataSaida, 
+        dataRetorno, 
+        tipoViagem, 
+        localViagem, 
+        justificativa, 
+        planoReposicao 
+      } = req.body
+      const afastamento: CreateAfastamentoTemporarioDto = {
+        usuarioId: Number(uid),
+        usuarioNome: nome!,
+        dataSaida: new Date(dataSaida),
+        dataRetorno: new Date(dataRetorno),
         tipoViagem,
         localViagem,
         justificativa,
-        planoReposicao,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      })
+        planoReposicao
+      }
+      await afastamentoService.criar(afastamento)
     } catch (error: any) {
       return res.render(resolveView('solicitar-afastamento'), {
         pageTitle,
@@ -94,7 +102,7 @@ const criar = async (req: Request, res: Response) => {
 
 const vizualizar = async (req: Request, res: Response) => {
   try {
-    const afastamento = await afastamentoService.vizualizar(req.params.id)
+    const afastamento = await afastamentoService.vizualizar(parseInt(req.params.id))
     if (!afastamento) return res.status(400).json({ message: 'Pedido de afastamento não encontrado' })
     return res.render(resolveView('vizualizar-afastamento'), {
       afastamento,
@@ -116,7 +124,7 @@ const remover = async (req:Request, res: Response) => {
   if (req.method === 'POST') {
     try {
       console.log(req.params.id)
-      await afastamentoService.delete(req.params.id)
+      await afastamentoService.delete(parseInt(req.params.id))
       return res.redirect('/afastamentoTemporario/listar')
     } catch (error: any) {
       return res.render(resolveView('pedidos-afastamento'), {

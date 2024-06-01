@@ -40,7 +40,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       } = await req.body
 
       try {
-        await EditalService.criarEdital({
+        await EditalService.criarEdital(
           num_edital,
           documento,
           data_inicio,
@@ -51,7 +51,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
           vaga_suplementar_mestrado,
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
-        })
+        )
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
@@ -153,7 +153,7 @@ const viewEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -173,7 +173,7 @@ const updateEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -229,7 +229,7 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -258,10 +258,13 @@ const editalCandidates = async (req: Request, res: Response) => {
       })
     }
   )
-
-  const quantidaDeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition < 4).length
-  const quantidaIncricaoFinalizada: number = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition === 4).length;
-
+  // Isso aqui não deveria estar no controller, devia estar no service
+  let quantidaDeInscricaoAndamento: number = 0
+  let quantidaIncricaoFinalizada: number = 0
+  if (Array.isArray(candidates) && candidates.length === 0) {
+    quantidaDeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition! < 4).length
+    quantidaIncricaoFinalizada = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition! === 4).length;
+  }
   return res.render(resolveView('/listCandidates'), {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
@@ -286,14 +289,14 @@ const geraPlanilha = async (req: Request, res: Response) => {
 
 const gerarCandidatoPDF = async (req: Request, res: Response) => {
    const candidate = await EditalService.getCandidate(req.params.id);
-   const base64Documento = candidate[req.query.documento];
-   const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
+  //  const base64Documento = candidate[req.query.documento];
+  //  const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
    
-   return res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=index.pdf`,
-      'Content-Length': docPDF.length
-   }).status(200).send(docPDF);
+  //  return res.set({
+  //     'Content-Type': 'application/pdf',
+  //     'Content-Disposition': `attachment; filename=index.pdf`,
+  //     'Content-Length': docPDF.length
+  //  }).status(200).send(docPDF);
 }
 // Refazer função
 const getAllCandidatesDocuments = async (req: Request, res: Response) => {
@@ -409,7 +412,7 @@ const candidateDetails = async (req: Request, res: Response) => {
     const candidate = await EditalService.getCandidate(req.params.id)
 
     return res.render(resolveView('/candidateDetails'), {
-      candidate: candidate.dataValues,
+      candidate: candidate,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
       ...locals,

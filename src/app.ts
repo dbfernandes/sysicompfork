@@ -2,6 +2,7 @@ import express from 'express'
 import { engine } from 'express-handlebars'
 import session from 'express-session'
 import router from './routes'
+import routerV2 from './routes/indexV2'
 import dotenv from 'dotenv'
 import * as uuid from 'uuid'
 import cors from 'cors'
@@ -9,6 +10,7 @@ import * as path from 'path'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
+import resgistro from './middlewares/logger'
 
 dotenv.config()
 const app = express()
@@ -71,7 +73,9 @@ app.use(
 )
 
 app.use(isUsuarioAutenticado)
-// Colocar o logger depois
-app.use(router)
+
+app.use(resgistro)
+// app.use(router)
+app.use(routerV2)
 
 export default app
