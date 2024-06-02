@@ -60,14 +60,6 @@ const criar = async (req: Request, res: Response) => {
       })
   } else {
     try {
-      // const usuarioId = parseInt(req.session.uid!)
-      // const usuarioNome = req.session.nome!
-      // const dataSaida = new Date(req.body.dataSaida)
-      // const dataRetorno = new Date(req.body.dataRetorno)
-      // const tipoViagem = req.body.tipoViagem
-      // const localViagem = req.body.localViagem
-      // const justificativa = req.body.justificativa
-      // const planoReposicao = req.body.planoReposicao
       const { uid, nome } = req.session
       const { 
         dataSaida, 
@@ -123,7 +115,6 @@ const vizualizar = async (req: Request, res: Response) => {
 const remover = async (req:Request, res: Response) => {
   if (req.method === 'POST') {
     try {
-      console.log(req.params.id)
       await afastamentoService.delete(parseInt(req.params.id))
       return res.redirect('/afastamentoTemporario/listar')
     } catch (error: any) {
