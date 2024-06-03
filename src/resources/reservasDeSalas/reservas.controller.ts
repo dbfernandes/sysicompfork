@@ -3,6 +3,11 @@ import { CreateReservaDto } from './reservas.types';
 
 import ReservaService from './reservas.service';
 import salasService from '../salas/salas.service';
+import path from 'path';
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
 
 const listar = async (req:Request, res: Response) => {
   const reservas = await ReservaService.listarTodos()
@@ -13,8 +18,7 @@ const listar = async (req:Request, res: Response) => {
 const adicionar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos()
-    res.render('reservas/reservas-adicionar', {
-      // salas: salas.map((sala) => JSON.stringify(sala)),
+    res.render(resolveView('reservas-adicionar'), {
       salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
@@ -37,11 +41,22 @@ const adicionar = async (req:Request, res: Response) => {
           req.body.dias = ''
         }
       }
-      const dados = {
-        ...req.body
+      // const dados = {
+      //   ...req.body
+      // }
+      const novaReserva: CreateReservaDto = {
+        SalaId: parseInt(req.body.SalaId),
+        UsuarioId: parseInt(req.body.UsuarioId),
+        atividade: req.body.atividade,
+        dataInicio: req.body.dataInicio ? new Date(`${req.body.dataInicio}T00:00:00.000Z`) : null,
+        dataTermino: req.body.dataTermino ? new Date(`${req.body.dataTermino}T00:00:00.000Z`) : null,
+        tipo: req.body.tipo,
+        horaInicio: req.body.horaInicio,
+        horaTermino: req.body.horaTermino,
+        dias: req.body.dias
       }
 
-      await ReservaService.criar(dados)
+      await ReservaService.criar(novaReserva)
 
       // if (!reserva) {
       //   res.redirect('/reservas/gerenciar')
@@ -86,12 +101,11 @@ const gerenciar = async (req:Request, res: Response) => {
     return reservaObj
   });
 
-  res.render('reservas/reservas-gerenciar', {
+  res.render(resolveView('reservas-gerenciar'), {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
     tipoUsuario: req.session.tipoUsuario
-
   })
 }
 
@@ -99,18 +113,18 @@ const editar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
-      const reserva = await ReservaService.listarReservasSalasPorUsuario(parseInt(req.params.id))
-      if (!reserva) throw new Error('Reserva não encontrado!')
+      const reserva = await ReservaService.listarReservasDeUmUsuario(parseInt(req.session.uid!))
       
-      res.render('reservas/reservas-editar', {
+      if (!reserva) throw new Error('Reserva não encontrado!')
+    
+      res.render(resolveView('reservas-editar'), {
         // salas: salas.map((sala) => JSON.stringify(sala)),
-        salas: salas,
+        // salas: salas,
         // reserva: reserva.toJSON(),
         reserva: reserva,
         csrf: req.csrfToken(),
-        nome: req.session.nome,
+        // nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario
-
       })
     } catch (error: any) {
       res.status(500).send({ message: error.message })

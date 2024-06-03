@@ -356,6 +356,7 @@
     async function buscarReservas() {
         try {
             const response = await fetch('/reservas/listar'); // Rota para buscar reservas
+            console.log(response,'oioioioioio')
             if (!response.ok) {
                 throw new Error('Erro ao buscar reservas');
             }

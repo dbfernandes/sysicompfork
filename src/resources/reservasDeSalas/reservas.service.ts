@@ -1,4 +1,4 @@
-import { PrismaClient, ReservaSalas, Salas } from '@prisma/client'
+import { PrismaClient, ReservaSalas, Salas, Usuario } from '@prisma/client'
 import { CreateReservaDto } from './reservas.types'
 
 const prisma = new PrismaClient()
@@ -9,17 +9,25 @@ export default new class ReservaService {
   }
 
   async listarReservasSalas(): Promise<ReservaSalas[]> {
-    return await prisma.reservaSalas.findMany({ include: { Salas: true } })
+    return await prisma.reservaSalas.findMany({ include: { 
+      Salas: true, 
+      Usuario: { 
+        select: {id: true, nomeCompleto: true}
+      } 
+    }})
   }
 
-    async listarReservasSalasPorUsuario(id: number): Promise<ReservaSalas[]> {
-      return await prisma.reservaSalas.findMany({
-        where: {
-          id: id
-        },
+    async listarReservasDeUmUsuario(id: number): Promise<ReservaSalas[]> {
+      return await prisma.reservaSalas.findMany({ 
+        where: { UsuarioId: id },
         include: {
           Salas: true,
-          Usuario: true
+          Usuario: {
+            select: {
+              id: true,
+              nomeCompleto: true
+            }
+          }
         }
       })
     }
