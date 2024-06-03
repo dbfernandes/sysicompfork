@@ -1,14 +1,14 @@
 // const { Projeto } = require('../models')
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 class ProjetoService {
   async adicionarVarios (
-    idProfessor,
-    projetos
+    idProfessor: number,
+    projetos: any
   ) {
     if (projetos !== undefined) {
-      const projetosArr = projetos.projetos.map((p) => {
+      const projetosArr = projetos.projetos.map((p: any) => {
         return {
           idProfessor,
           descricao: p.descricao,
@@ -38,14 +38,14 @@ class ProjetoService {
         fim: 0
       }
     })
-    projetos = projetos.length > 0 ? projetos.map((p) => p.get()) : null
-    const projetosFiltrados = []
+    // projetos = projetos.length > 0 ? projetos.map((p) => p.get()) : []
+    const projetosFiltrados: any = []
     if (projetos) {
       projetos.forEach((projeto) => {
         let flag = true
-        projetosFiltrados.every((p) => {
-          // eslint-disable-next-line eqeqeq, no-mixed-operators
-          flag = p.titulo == projeto.titulo || (p.descricao == projeto.descricao && projeto.descricao != '') && p.id != projeto.id ? false : flag
+        projetosFiltrados.every((p: any) => {
+          flag = p.titulo == projeto.titulo || 
+          (p.descricao == projeto.descricao && projeto.descricao != '') && p.id != projeto.id ? false : flag
           return flag
         })
         if (flag) {
