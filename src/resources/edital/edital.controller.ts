@@ -1,10 +1,12 @@
 import {Response, Request} from 'express'
+import { CreateEditalDto, UpdateEditalDto } from './edital.types'
 import EditalService from './edital.service'
 import editalGerarPlanilha from '../../utils/editalGerarPlanilha'
 import path from 'path'
 /* eslint-disable camelcase */
 const fs = require('fs')
 const os = require('os')
+import moment from 'moment-timezone'
 const locals = {
   layout: 'selecaoppgi'
 }
@@ -17,8 +19,7 @@ function resolveView(viewName: string): string {
 const addEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      console.log(req.session.nome)
-      return res.render(resolveView('/addNewSelecao'), {
+      return res.render(resolveView('addNewSelecao'), {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
@@ -26,38 +27,29 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       })
 
     case 'POST': {
-      const {
-        num_edital,
-        documento,
-        data_inicio,
-        data_fim,
-        carta_recomendacao,
-        carta_orientador,
-        vaga_regular_mestrado,
-        vaga_suplementar_mestrado,
-        vaga_regular_doutorado,
-        vaga_suplementar_doutorado
-      } = await req.body
-
+      const novoEdital: CreateEditalDto = {
+        editalId: req.body.num_edital,
+        documento: req.body.documento,
+        dataInicio: req.body.data_inicio,
+        dataFim: req.body.data_fim,
+        cartaRecomendacao: req.body.carta_recomendacao,
+        cartaOrientador: req.body.carta_orientador,
+        vagaMestrado: Number(req.body.vaga_regular_mestrado),
+        cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
+        vagaDoutorado: Number(req.body.vaga_regular_doutorado),
+        cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
+        status: '',
+        inscricoesEncerradas: 0,
+        inscricoesIniciadas: 0
+      }
       try {
-        await EditalService.criarEdital(
-          num_edital,
-          documento,
-          data_inicio,
-          data_fim,
-          carta_recomendacao,
-          carta_orientador,
-          vaga_regular_mestrado,
-          vaga_suplementar_mestrado,
-          vaga_regular_doutorado,
-          vaga_suplementar_doutorado
-        )
+        await EditalService.criarEdital(novoEdital)
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
           error: error.message,
           req: req.body
-        })
+        }).send({ error: error.message})
       }
       
       return res.redirect('/edital/listEdital')
@@ -178,31 +170,24 @@ const updateEdital = async (req: Request, res: Response) => {
       })
     }
     case 'PUT':{
-      const {
-        num_edital,
-        documento,
-        data_inicio,
-        data_fim,
-        carta_recomendacao,
-        carta_orientador,
-        vaga_regular_mestrado,
-        vaga_suplementar_mestrado,
-        vaga_regular_doutorado,
-        vaga_suplementar_doutorado
-      } = await req.body
-
-      const updateEdital = await EditalService.update(id_update, {
-        num_edital,
-        documento,
-        data_inicio,
-        data_fim,
-        carta_recomendacao,
-        carta_orientador,
-        vaga_regular_mestrado,
-        vaga_suplementar_mestrado,
-        vaga_regular_doutorado,
-        vaga_suplementar_doutorado
-      }).catch((err) => {
+      const editalAtualizado: UpdateEditalDto = {
+        editalId: req.body.num_edital,
+        documento: req.body.documento,
+        dataInicio: req.body.data_inicio,
+        dataFim: req.body.data_fim,
+        cartaRecomendacao: req.body.carta_recomendacao,
+        cartaOrientador: req.body.carta_orientador,
+        vagaMestrado: parseInt(req.body.vaga_regular_mestrado),
+        cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
+        vagaDoutorado: parseInt(req.body.vaga_regular_doutorado),
+        cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
+        status: '',
+        inscricoesEncerradas: 0,
+        inscricoesIniciadas: 0,
+        // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
+      }
+      console.log(editalAtualizado)
+      const updateEdital = await EditalService.update(id_update, editalAtualizado).catch((err) => {
         return res.status(400).json({
           error: err.message
         })

@@ -1,50 +1,16 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Usuario } from "@prisma/client"
+import { CreateUsuarioDto, UpdateUsuarioDto } from "./usuario.types"
+
 import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
 
 class UsuarioService {
-  async adicionar (
-    nomeCompleto: string,
-    cpf: string,
-    email: string,
-    senha: string,
-    administrador: number,
-    coordenador: number,
-    secretaria: number,
-    professor: number,
-    endereco: string,
-    telResidencial: string,
-    telCelular: string,
-    siape: string,
-    dataIngresso: string,
-    unidade: string,
-    turno: string
-  ) {
+  async adicionar (usuario: CreateUsuarioDto): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12)
-    const senhaHash = await bcrypt.hash(senha, salt)
+    const senhaHash = await bcrypt.hash(usuario.senhaHash, salt)
 
-    await prisma.usuario.create({
-      data: {
-        nomeCompleto,
-        cpf,
-        email,
-        senhaHash,
-        status: 1,
-        administrador: administrador ? 1 : 0,
-        coordenador: coordenador ? 1 : 0,
-        secretaria: secretaria ? 1 : 0,
-        professor: professor ? 1 : 0,
-        endereco,
-        telResidencial,
-        telCelular,
-        siape,
-        dataIngresso,
-        unidade,
-        turno,
-        idLattes: null
-      }
-    })
+    return await prisma.usuario.create({ data: { ...usuario, senhaHash } })
   }
 
   async alterar (id: number, user: any) {
@@ -69,12 +35,11 @@ class UsuarioService {
     })
   }
 
-  async listarTodos () {
-    const usuarios = await prisma.usuario.findMany()
-    return usuarios;
+  async listarTodos (): Promise<Usuario[]> {
+    return await prisma.usuario.findMany()
   }
 
-  async listarUmUsuario (id: number) {
+  async listarUmUsuario (id: number): Promise<any>{
     const usuario = await prisma.usuario.findUnique({
       where: {
         id: Number(id)
@@ -126,7 +91,7 @@ class UsuarioService {
     return usuarioComDataFormatada
   }
 
-  async listarTodosPorCondicao (data: any) {
+  async listarTodosPorCondicao (data: any): Promise<any[]> {
     const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
@@ -160,7 +125,7 @@ class UsuarioService {
     return usuarios
   }
   
-  async buscarUsuarioPor(busca: any){
+  async buscarUsuarioPor(busca: any): Promise<Usuario | null>{
     try {
       const usuario = await prisma.usuario.findFirst({ where: busca})
       return usuario

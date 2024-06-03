@@ -117,8 +117,8 @@ model Edital {
   cartaOrientador      String   @db.VarChar(255)
   cartaRecomendacao    String   @db.VarChar(255)
   documento            String   @db.VarChar(255)
-  dataInicio           DateTime @db.Date
-  dataFim              DateTime @db.Date
+  dataInicio           String   @db.VarChar(255)
+  dataFim              String   @db.VarChar(255)
   status               String   @default("0") @db.VarChar(255)
   inscricoesIniciadas  Int      @default(0)
   inscricoesEncerradas Int      @default(0)

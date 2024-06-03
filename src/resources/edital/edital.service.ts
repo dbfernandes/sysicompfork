@@ -1,62 +1,32 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Edital, Candidate } from '@prisma/client'
+import { CreateEditalDto, UpdateEditalDto } from './edital.types'
 const moment = require('moment-timezone')
 /* eslint-disable camelcase */
 
 const prisma = new PrismaClient()
 
 class EditalService {
-  async criarEdital (
-    num_edital: any,
-    documento: any ,
-    data_inicio: Date,
-    data_fim: Date,
-    carta_recomendacao: any,
-    carta_orientador: any,
-    vaga_regular_mestrado:number | undefined,
-    vaga_regular_doutorado: number | undefined,
-    vaga_suplementar_mestrado: number | undefined,
-    vaga_suplementar_doutorado: number | undefined
-  ) {
-    const edital = await prisma.edital.findFirst({
-      where: {
-        editalId: num_edital
-      }
-    })
-
-    if (edital) {
-      console.log('edital ja existe')
-      throw new Error(`Edital de número ${num_edital} já existe`)
-    }
-
+  async criarEdital(editalDados: CreateEditalDto): Promise<Edital> {
     try {
-      const novo_edital = await prisma.edital.create({
-        data: {
-          editalId: num_edital,
-          vagaDoutorado: Number(vaga_regular_doutorado),
-          vagaMestrado: Number(vaga_regular_mestrado),
-          cotasDoutorado: Number(vaga_suplementar_doutorado),
-          cotasMestrado: Number(vaga_suplementar_mestrado),
-          cartaOrientador: carta_orientador,
-          cartaRecomendacao: carta_recomendacao,
-          documento,
-          dataInicio: new Date(data_inicio),
-          dataFim: new Date(data_fim),
-          status: '1',
-          inscricoesIniciadas: 0,
-          inscricoesEncerradas: 0,
-          // createdAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'),
-          // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+      const edital = await prisma.edital.findFirst({
+        where: {
+          editalId: editalDados.editalId
         }
       })
 
-      return novo_edital
-    } catch (error) {
-      console.log(`[ERROR] Criar Edital: ${error}`)
-      throw new Error('Não foi possível criar o Edital')
+      if (edital) {
+        console.log('edital ja existe')
+        throw new Error(`Edital de número ${editalDados.editalId} já existe`)
+      }
+
+      return await prisma.edital.create({ data: editalDados })
+    } catch (error: any) {
+      console.error('Erro ao criar edital:', error)
+      throw new Error(error)
     }
   }
 
-  async listEdital () {
+  async listEdital(): Promise<Edital[]> {
     const editais = await prisma.edital.findMany().catch(err => {
       console.log(`[ERROR] Listar Editais: ${err}`)
       throw new Error('Não foi possivel listar o edital')
@@ -64,7 +34,7 @@ class EditalService {
     return editais
   }
 
-  async delete (id: string) {
+  async delete(id: string) {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
@@ -89,7 +59,7 @@ class EditalService {
     }
   }
 
-  async arquivar (id_edital: string, {
+  async arquivar(id_edital: string, {
     status
   }: { status: any }) {
     const edital = await prisma.edital.findFirst({
@@ -122,7 +92,7 @@ class EditalService {
     return edital
   }
 
-  async getEdital (id: string) {
+  async getEdital(id: string): Promise<Edital | null> {
     console.log('id', id)
     const edital = await prisma.edital.findFirst({
       where: {
@@ -136,57 +106,53 @@ class EditalService {
     return edital
   }
 
-  async update (id_update: string, {
-    num_edital,
-    documento,
-    data_inicio,
-    data_fim,
-    carta_recomendacao,
-    carta_orientador,
-    vaga_regular_mestrado,
-    vaga_regular_doutorado,
-    vaga_suplementar_mestrado,
-    vaga_suplementar_doutorado
-  }: { num_edital: any; documento: any; data_inicio: any; data_fim: any; carta_recomendacao: any; carta_orientador: any; vaga_regular_mestrado: any; vaga_suplementar_mestrado: any; vaga_regular_doutorado: any; vaga_suplementar_doutorado: any }) {
-    const edital = await prisma.edital.findFirst({
-      where: {
-        editalId: id_update
-      }
-    }).catch(err => {
-      console.log(`[ERROR] Buscar Edital: ${err}`)
-      console.log('{this.id_update}', id_update)
-      throw new Error('Não foi possivel buscar o edital')
-    })
+  async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
+    // const edital = await prisma.edital.findFirst({
+    //   where: {
+    //     editalId: id_update
+    //   }
+    // }).catch(err => {
+    //   console.log(`[ERROR] Buscar Edital: ${err}`)
+    //   console.log('{this.id_update}', id_update)
+    //   throw new Error('Não foi possivel buscar o edital')
+    // })
 
-    if (!edital) {
-      throw new Error('Edital não encontrado')
+    // if (!edital) {
+    //   throw new Error('Edital não encontrado')
+    // }
+    // await prisma.edital.update({
+    //   where: {
+    //     editalId: id_update
+    //   },
+    //   data: dados
+    //   // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+    // }).catch(err => {
+    //   console.log(`[ERROR] Atualizar Edital: ${err}`)
+    //   throw new Error('Não foi possivel atualizar o edital')
+    // })
+
+    // return edital
+    try {
+      const edital = await prisma.edital.findFirst({
+        where: {
+          editalId: dados.editalId
+        }
+      })
+
+      if (!edital) {
+        throw new Error('Edital não encontrado')
+      }
+      return await prisma.edital.update({
+        where: { editalId: id_update },
+        data: dados
+      })
+    } catch (error: any) {
+      console.error('Erro ao atualizar edital:', error)
+      throw new Error(error)
     }
-    await prisma.edital.update({
-      where: {
-        editalId: id_update
-      },
-      data: {
-        editalId: num_edital,
-        vagaDoutorado: vaga_regular_doutorado,
-        vagaMestrado: vaga_regular_mestrado,
-        cotasDoutorado: vaga_suplementar_doutorado,
-        cotasMestrado: vaga_suplementar_mestrado,
-        cartaOrientador: carta_orientador,
-        cartaRecomendacao: carta_recomendacao,
-        documento,
-        dataInicio: data_inicio,
-        dataFim: data_fim,
-        updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
-      }
-    }).catch(err => {
-      console.log(`[ERROR] Atualizar Edital: ${err}`)
-      throw new Error('Não foi possivel atualizar o edital')
-    })
-
-    return edital
   }
 
-  async getEditalByNumber (number: any) {
+  async getEditalByNumber(number: any): Promise<Edital | null> {
     const edital = await prisma.edital.findFirst({
       where: {
         editalId: number
@@ -199,7 +165,7 @@ class EditalService {
     return edital
   }
 
-  async listCandidates (id: string) {
+  async listCandidates(id: string): Promise<Candidate[]> {
     const candidates = await prisma.candidate.findMany({
       where: {
         editalId: id
@@ -213,7 +179,7 @@ class EditalService {
     return candidates
   }
 
-  async getCandidate (id: string) {
+  async getCandidate(id: string): Promise<Candidate | null> {
     try {
       const candidate = await prisma.candidate.findFirst({
         where: {

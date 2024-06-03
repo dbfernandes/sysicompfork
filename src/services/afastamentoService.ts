@@ -105,10 +105,10 @@ class AfastamentoService {
     }
   }
 
-  async retornarAfastamento (id:string) {
+  async retornarAfastamento (id:number) {
     const afastamento = await prisma.afastamentoTemporarios.findUnique({
       where: {
-        id: parseInt(id)
+        id
       }
     })
     return afastamento

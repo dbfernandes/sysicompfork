@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { CreateUsuarioDto, UpdateUsuarioDto } from './usuario.types';
 import UsuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
@@ -34,24 +35,34 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         coordenador = req.body.coordenador === 'on' ? 1 : 0;
         secretaria = req.body.secretaria === 'on' ? 1 : 0;
         professor = req.body.professor === 'on' ? 1 : 0;
-
-        await UsuarioService.adicionar(
+        const novoUsuario: CreateUsuarioDto = {
           nomeCompleto,
           cpf,
           email,
-          senha,
           administrador,
           coordenador,
           secretaria,
           professor,
+          senhaHash: senha,
           endereco,
-          telefoneResidencial,
-          telefoneCelular,
+          telResidencial: telefoneResidencial,
+          telCelular: telefoneCelular,
           siape,
-          dateDeIngresso,
+          dataIngresso: dateDeIngresso,
           unidade,
-          turno
-        );
+          turno,
+          tokenResetSenha: null,
+          validadeTokenResetSenha: null,
+          status: 0,
+          perfil: null,
+          idLattes: null,
+          formacao: null,
+          formacaoIngles: null,
+          resumo: null,
+          resumoIngles: null,
+          ultimaAtualizacao: null
+        }
+        await UsuarioService.adicionar(novoUsuario);
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Criação de usuário bem-sucedida!',
