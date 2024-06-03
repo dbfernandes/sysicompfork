@@ -1,84 +1,32 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Salas } from "@prisma/client"
+import { CreateSalaDto, UpdateSalaDto } from "./salas.types"
+
 const prisma = new PrismaClient()
 
 
 export default new class SalaService {
   // Pegar todas as Salas
-  async listarTodos () {
-    // const salas = await Salas.findAll()
-    try {
-      const salas = await prisma.salas.findMany()
-      return salas
-    }
-    catch (error) {
-      throw error
-    }
+  async listarTodos (): Promise<Salas[]> {
+    return await prisma.salas.findMany()
   }
 
   // Pegar uma sala
-  async listarUm (id: number) {
-    // const sala = await Salas.findByPk(id)
-    const sala = await prisma.salas.findUnique({
-      where: {
-        id: id
-      }
-    })
-    return sala
+  async listarUmaSala (id: number): Promise<Salas | null>{
+    return await prisma.salas.findUnique({ where: { id } })
   }
 
   // Criar salas
-  async criar (nome: string, bloco: string, andar: string, numero: number, capacidade: number) {
-    try {
-      // const salaCriada = await Salas.create(sala)
-      await prisma.salas.create({
-        data: {
-          nome: nome,
-          bloco: bloco,
-          andar: andar,
-          numero: numero,
-          capacidade: capacidade
-        }
-      })
-    } catch (error) {
-      throw error
-    }
+  async criar (sala: CreateSalaDto): Promise<Salas> {
+    return await prisma.salas.create({ data: sala })
   }
 
   // Editar salas
-  async editar (id: number, sala: any) {
-    // const salaEditada = await Salas.update(sala, { where: { id } })
-    // return salaEditada
-    try {
-      await prisma.salas.update({
-        where: {
-          id: id
-        },
-        data: {
-          nome: sala.nome,
-          bloco: sala.bloco,
-          andar: sala.andar,
-          numero: sala.numero,
-          capacidade: sala.capacidade,
-          updatedAt: new Date(),
-        }
-      })
-    
-    } catch (error) {
-      throw error
-    }
+  async editar (id: number, sala: UpdateSalaDto): Promise<Salas> {
+    return await prisma.salas.update({ where: { id }, data: sala })
   }
 
   // Excluir salas
-  async excluir (id: number) {
-    try {
-      // const salaExcluida = await Salas.destroy({ where: { id } })
-      await prisma.salas.delete({
-        where: {
-          id: id
-        }
-      })
-    } catch (error) {
-      throw error
-    }
+  async excluir (id: number): Promise<Salas>{
+    return await prisma.salas.delete({ where: { id } })
   }
 }()

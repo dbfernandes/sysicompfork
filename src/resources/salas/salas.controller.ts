@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { CreateSalaDto } from "./salas.types";
 import SalaService from "./salas.service";
 import path from "path";
 
@@ -24,16 +25,14 @@ const adicionar = async (req: Request, res: Response) => {
           error: 'Dados incompletos ou mal formatados'
         })
       }
-
       // numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
       numero = parseInt(req.body.numero, 10) || 0
       // capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
       capacidade = parseInt(req.body.capacidade, 10) || 0
-      // let responseError = null;
-
-      await SalaService.criar(nome, bloco, andar, numero, capacidade)
-
-
+      const sala: CreateSalaDto = {
+        andar, bloco, nome, numero, capacidade
+      }
+      await SalaService.criar(sala)
       res.redirect('/salas/gerenciar')
     } catch (e) {
       console.log(e)
@@ -44,19 +43,15 @@ const adicionar = async (req: Request, res: Response) => {
 
 const excluir = async (req: Request, res: Response) => {
   const { id } = req.params
-  // const sala = await Salas.findOne({where : {id: req.params.id}});
-  const sala = await SalaService.listarUm(parseInt(id))
+  const sala = await SalaService.listarUmaSala(parseInt(id))
   try {
-    if (!sala) { throw new Error('Sala não encontrado!') }
-
-        // const sala_apagada = await Salas.destroy({where: {id: id}});
-        const sala_apagada = await SalaService.excluir(parseInt(id));
-        res.redirect('/salas/gerenciar')
-     
-    }catch(e){
-        console.log(e);
-        res.status(500).json({error: e});
-    }
+    if (!sala) throw new Error('Sala não encontrado!')
+    await SalaService.excluir(parseInt(id));
+    res.redirect('/salas/gerenciar')
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: e });
+  }
 };
 
 const gerenciar = async (req: Request, res: Response) => {
@@ -71,15 +66,9 @@ const gerenciar = async (req: Request, res: Response) => {
 const editar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     try {
-      // const sala = await Salas.findOne({
-      //     where: {
-      //         id: req.params.id
-      //     }
-      // })
-      const sala = await SalaService.listarUm(parseInt(req.params.id))
+      const sala = await SalaService.listarUmaSala(parseInt(req.params.id))
       res.render(resolveView('salas-editar'), {
-        // sala: sala!.toJSON(),
-        sala: JSON.stringify(sala),
+        sala: sala,
         csrf: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario
@@ -90,7 +79,14 @@ const editar = async (req: Request, res: Response) => {
     }
   } else if (req.method === 'POST') {
     try {
-      await SalaService.editar(parseInt(req.params.id), req.body)
+      const sala = {
+        andar: req.body.andar,
+        bloco: req.body.bloco,
+        nome: req.body.nome,
+        numero: parseInt(req.body.numero, 10),
+        capacidade: parseInt(req.body.capacidade, 10)
+      }
+      await SalaService.editar(parseInt(req.params.id), sala)
       res.redirect('/salas/gerenciar')
     } catch (error: any) {
       res.status(500).send({ message: error.message })
