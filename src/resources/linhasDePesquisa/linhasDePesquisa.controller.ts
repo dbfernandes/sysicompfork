@@ -9,22 +9,24 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
+
 const listar = async (req: Request, res: Response) => {
   try {
     const linhaDePesquisa = await linhasDePesquisaService.list();
     const doesNotExists = !linhaDePesquisa || linhaDePesquisa.length === 0;
 
     if (doesNotExists) throw new Error('Nenhuma linha de pesquisa cadastrada');
+
     return res
       .status(200)
-      .render(resolveView('linhasDePesquisa-listar.hbs'), {
+      .render(resolveView('linhasDePesquisa-listar'), {
         linhaDePesquisa,
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario
       });
   } catch (error: any) { // Definindo o tipo da variável error como Error
-    return res.status(400).render(resolveView('linhasDePesquisa-listar.hbs'), {
+    return res.status(400).render(resolveView('linhasDePesquisa-listar'), {
       pageTitle,
       error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
@@ -57,12 +59,11 @@ const buscar = async (req: Request, res: Response) => {
 
 const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(200)
-      .render(resolveView('linhasDePesquisa-criar.hbs'), {
-        pageTitle,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session?.tipoUsuario
-      });
+    return res.status(200).render(resolveView('linhasDePesquisa-criar'), {
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session?.tipoUsuario,
+    });
   } else {
     try {
       const novaLinhaPesquisa: CreateLinhaDePesquisaDto = { 
@@ -81,13 +82,14 @@ const criar = async (req: Request, res: Response) => {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
-        error: error.message || 'Não foi possível criar a linha de pesquisa!'
+        error: error.message || 'Não foi possível criar a linha de pesquisa!',
       });
     }
 
     return res.redirect('/linhasDePesquisa/listar');
   }
 };
+
 
 const remover = async (req: Request, res: Response) => {
   if ( req.method === 'POST' ) {
@@ -108,7 +110,7 @@ const remover = async (req: Request, res: Response) => {
 const editar = async (req: Request, res: Response) => {
   const linhaPesquisa = await linhasDePesquisaService.findById(parseInt(req.params.id));
   if (req.method === 'GET') {
-    return res.status(200).render(resolveView('linhasDePesquisa-editar'), {
+    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', {
       linhaPesquisa, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session?.tipoUsuario
     });
   } else {
