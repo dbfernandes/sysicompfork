@@ -18,7 +18,9 @@ class AvatarService {
       data: {
         idUsuario,
         nome,
-        caminho: caminhoFormated
+        caminho: caminhoFormated,
+        createdAt: new Date(),
+        updatedAt: new Date()  
       }
     })
   }

@@ -1,5 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { Prisma, PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 // CRUD da pagina de linhas de pesquisa
 
@@ -52,13 +52,14 @@ export default new class LinhasDePesquisaService {
     }
   }
 
-  async criar (newResearchLine: Prisma.LinhasDePesquisaCreateInput) {
+  async criar (nome: string, sigla: string) {
     try {
-      const { nome, sigla } = newResearchLine
       await prisma.linhasDePesquisa.create({
         data: {
           nome,
-          sigla
+          sigla,
+          createdAt: new Date(),
+          updatedAt: new Date() 
         }
       })
     } catch (error: any) {
@@ -95,4 +96,4 @@ export default new class LinhasDePesquisaService {
       console.log(error.message || 'Não foi possível deletar a linha de pesquisa!')
     }
   }
-}()
+}();
