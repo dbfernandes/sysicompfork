@@ -1,13 +1,8 @@
 import { Request, Response } from 'express';
-// import ReservaService from '../services/reservasService';
-// import salasService from '../services/salasService';
-import ReservaService from '../reservasDeSalas/reservas.service';
-import salasService from '../salas/salas.service';
-import path from 'path'
+import { CreateReservaDto } from './reservas.types';
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
+import ReservaService from './reservas.service';
+import salasService from '../salas/salas.service';
 
 const listar = async (req:Request, res: Response) => {
   const reservas = await ReservaService.listarTodos()
@@ -18,7 +13,7 @@ const listar = async (req:Request, res: Response) => {
 const adicionar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos()
-    res.render(resolveView('reservas-adicionar'), {
+    res.render('reservas/reservas-adicionar', {
       // salas: salas.map((sala) => JSON.stringify(sala)),
       salas: salas,
       nome: req.session.nome,
@@ -62,7 +57,7 @@ const adicionar = async (req:Request, res: Response) => {
 
 const excluir = async (req:Request, res: Response) => {
   const { id } = req.params
-  const reserva = await ReservaService.buscarReserva(id)
+  const reserva = await ReservaService.buscarReserva(parseInt(id))
   try {
     if (!reserva) throw new Error('Sala não encontrado!')
 
@@ -76,7 +71,6 @@ const excluir = async (req:Request, res: Response) => {
 
 const gerenciar = async (req:Request, res: Response) => {
   const reservas = await ReservaService.listarReservasSalas()
-  // console.log(reservas)
   const reservasJSON = reservas.map((reserva: any) => {
     const reservaObj = {
       ...reserva,
@@ -92,7 +86,7 @@ const gerenciar = async (req:Request, res: Response) => {
     return reservaObj
   });
 
-  res.render(resolveView('reservas-gerenciar'), {
+  res.render('reservas/reservas-gerenciar', {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
@@ -105,10 +99,10 @@ const editar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
-      const reserva = await ReservaService.listarReservasSalasPorUsuario(req.params.id)
+      const reserva = await ReservaService.listarReservasSalasPorUsuario(parseInt(req.params.id))
       if (!reserva) throw new Error('Reserva não encontrado!')
       
-      res.render(resolveView('reservas-editar'), {
+      res.render('reservas/reservas-editar', {
         // salas: salas.map((sala) => JSON.stringify(sala)),
         salas: salas,
         // reserva: reserva.toJSON(),
@@ -147,7 +141,7 @@ const editar = async (req:Request, res: Response) => {
       // const reserva = await ReservaSala.update({
       //     ...req.body
       // }, { where: { id: req.params.id } });
-      await ReservaService.atualizar(req.params.id, dados)
+      await ReservaService.atualizar(parseInt(req.params.id), dados)
       res.redirect('/reservas/gerenciar')
     } catch (error: any) {
       res.status(500).send({ message: error.message })
