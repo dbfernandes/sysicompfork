@@ -201,7 +201,7 @@
 	}
 </style>
 
-<link href="/script-u/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
 
 <div class="forms-page">
 	<header>
@@ -654,18 +654,17 @@
 				break;
 			}
 		}
-
-		if ({{condicao}}){
+		console.log({{condicao}})
+		{{#if condicao}}
 			document.getElementById("candidato-deficiencia1").checked = true;		
-		}
-
-		if({{cotista}}){
+		{{/if}}
+		{{#if cotista}}
 			document.getElementById("cotista").checked = true;
-		}
+		{{/if}}
 
-		if({{bolsista}}){
+		{{#if bolsista}}
 			document.getElementById("candidato-bolsa").checked = true;
-		}
+		{{/if}}
 		
 		$(document).ready(function () {
 			var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
@@ -829,10 +828,7 @@
 
 	function getBolsa() {
 		let bolsa = document.getElementById("candidato-bolsa").checked;
-		if (!bolsa) {
-			return 0;
-		}
-		return bolsa;
+		return Boolean(bolsa);
 	}
 
 	function checkCondicao() {
@@ -840,9 +836,8 @@
 		let condicaoInput = document.getElementById("candidato-condicao");
 		if (!deficiencia) {
 			condicaoInput.value = "";
-			return 0;
 		}
-		return deficiencia;
+		return Boolean(deficiencia);
 	}
 
 	function checkCotista() {
@@ -850,9 +845,8 @@
 		let cotistaCota = document.getElementById("tipo-cota");
 		if (!cotista) {
 			cotistaCota.value = "";
-			return 0;
 		}
-		return cotista;
+		return Boolean(cotista);
 	}
 
 	function getValueFromForm() {

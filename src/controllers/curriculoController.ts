@@ -30,12 +30,12 @@ const visualizar = async (req: Request, res: Response) => {
         return res.render('curriculo/curriculo-adicionar', {
           professores,
           csrfToken: req.csrfToken(),
-          nome: (req.session as SessionData).nome,
-          usuarioId: (req.session as SessionData).uid,
+          nome: req.session.nome,
+          usuarioId: req.session.uid,
           message,
           type,
           messageTitle,
-          tipoUsuario: (req.session as SessionData).tipoUsuario,
+          tipoUsuario: req.session.tipoUsuario,
           avatar: null
         });
       } catch (error) {
@@ -45,7 +45,7 @@ const visualizar = async (req: Request, res: Response) => {
             message: 'Não foi possível abrir o envio de currículo.',
             type: 'danger',
             messageTitle: 'Envio de currículo indisponível!',
-            tipoUsuario: (req.session as SessionData).tipoUsuario
+            tipoUsuario: req.session.tipoUsuario
           })
         );
       }

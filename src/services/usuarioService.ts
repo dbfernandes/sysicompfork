@@ -59,7 +59,7 @@ class UsuarioService {
       data: user
     })
   }
-
+ 
   async alterarInfo (id: number, user: any) {
     await prisma.usuario.update({
       where: {
