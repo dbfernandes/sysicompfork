@@ -89,10 +89,12 @@ router.all('/formulario/publicacoes', (req, res) => {
 router.all('/formulario', selecaoppgiController.forms)
 router.all('/candidates', selecaoppgiController.candidates)
 router.all('/voltar', selecaoppgiController.voltar)
+router.all('/recuperarSenha',selecaoppgiController.recuperarSenha)
+
 router.all('/voltarInicio', selecaoppgiController.backToStart)
 router.get('/download/arquivo/:name', (req, res) => {
   // Define o caminho do arquivo
-
+ 
   const userId = req.session.uid.toString() 
   const nomeArquivo = req.params.name
   const caminhoArquivo = path.join(__dirname, '..', '..', 'uploads', 'candidatos', userId, nomeArquivo)

@@ -1,0 +1,67 @@
+<style>
+  .error {
+    color: red
+  }
+  .success {
+    color: green;
+  }
+
+   #btn-voltar{
+        width: 100%;
+        margin-top: 20px;
+        background-color: #3c8dbc;
+        border-color: #3c8dbc;
+        color: #fff;
+    }
+</style>
+<div class="login-box container card border-0 shadow rounded-3 my-5">
+  
+  <div class="login-box-body card-body p-4 p-sm-5">
+    <div class="login-logo">
+        <a href="#"><b>ICOMP</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail cadastrado e obtenha uma nova</p>
+    {{#if message}}
+      <div class="alert alert-{{type}}">
+        {{{message}}}
+      </div>
+    {{/if}}
+
+    <form action="/selecaoppgi/recuperarSenha" method="post">
+        <div class="input-group mb-3">
+          
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+            <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Solicitar nova senha</button>
+          </div>
+          <!-- /.col -->
+        </div>
+    </form>
+     <button 
+        name="voltar" id="btn-voltar" 
+        onclick="back()"
+        class="btn btn-block btn-flat btn-default"
+        role="button">
+        Voltar
+      </button>
+
+
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<script>
+    function back(){
+        window.location.href = "{{url}}/selecaoppgi";
+    }
+</script>

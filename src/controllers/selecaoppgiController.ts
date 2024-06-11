@@ -5,6 +5,8 @@ import candidatoExperienciaAcademicaService from "../services/candidatoExperienc
 import candidatoService from "../services/candidatoService";
 import EditalService from "../services/editalService";
 import linhasDePesquisaService from "../services/linhasDePesquisaService";
+import mailer from '../utils/mailer'
+import crypto from 'crypto'
 const fs = require("fs");
 const path = require("path");
 
@@ -581,6 +583,65 @@ const voltar = async (req: CustomRequest, res: Response) => {
 const refresh = async (req: CustomRequest, res: Response) => {
   res.redirect("/selecaoppgi/formulario");
 };
+
+
+const recuperarSenha = async (req, res) => {
+  if (req.method === 'POST') {
+
+      const { email } = req.body
+
+      try {
+          // const user = await CandidateService.findOne({ where: { email } })
+
+          // if (!user)
+          //     return res.render('selecaoppgi/recuperar-senha', {
+          //         message: "Usuário não encontrado", type: 'danger'
+          //     })
+
+          const token = crypto.randomBytes(20).toString('hex')
+
+          const now = new Date()
+
+          now.setHours(now.getHours() + 1)
+
+          // await CandidateService.update({
+          //     password_reset_token: token,
+          //     password_reset_expires: now
+          // }, {
+          //     where: { id: user.id }
+          // })
+
+        
+          mailer.sendMail({
+              to: email,
+              from: 'api@test.com.br',
+              subject: 'Forgot Password?',
+              template: 'auth/forgot_password',
+              context: { token }
+          }, (err) => {
+              if (err)
+                  return res.render('selecaoppgi/recuperarSenha', {
+                      message: "Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde",
+                      type: 'danger'
+                  })
+
+              return res.render('selecaoppgi/recuperarSenha', {
+                  message: "Token enviado para o e-mail cadastrado", type: 'success'
+              })
+          })
+
+      } catch (err) {
+          console.log(err)
+          return res.render('selecaoppgi/recuperarSenha', {
+              message: "Erro durante a recuperação de senha, tente novamente.",
+              type: 'danger'
+          })
+      }
+  }
+  else if (req.method === 'GET'){
+      return res.render('selecaoppgi/recuperarSenha')
+  }
+}
 export default {
   begin,
   signUp,
@@ -596,4 +657,5 @@ export default {
   formProposta,
   editCandidate,
   backToStart,
-};
+  recuperarSenha
+}; 
