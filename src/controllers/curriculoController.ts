@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import AvatarService from '../services/avatarService';
-import PublicacaoService from '../services/publicacaoService';
+import PublicacaoService from '../services/publicacaoService.js';
 import PremioService from '../services/premioService';
 import UsuarioService from '../services/usuarioService';
 import ProjetoService from '../services/projetoService';

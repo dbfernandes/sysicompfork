@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
+
 import candidatePublicacaoService from "../services/candidatePublicacaoService";
 import CandidateService from "../services/candidateService";
 import candidatoExperienciaAcademicaService from "../services/candidatoExperienciaAcademicaService";
 import candidatoService from "../services/candidatoService";
 import EditalService from "../services/editalService";
-import linhasDePesquisaService from "../services/linhasDePesquisaService";
+import linhasDePesquisaService from "../resources/linhasDePesquisa/linhasDePesquisa.service";
 import mailer from '../utils/mailer'
 import crypto from 'crypto'
 const fs = require("fs");
@@ -465,7 +466,7 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET": {
       const data = await candidatePublicacaoService.ListarPublicacoesCandidate(
-        req.session.uid
+        Number(req.session.uid)
       );
 
       const { periodicos, conferencias } = data;
@@ -495,34 +496,34 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
 
         promises.push(
           candidatePublicacaoService.adicionarVarios(
-            req.session.uid,
+            Number(req.session.uid),
             periodicos,
             1
           )
         );
         promises.push(
           candidatePublicacaoService.adicionarVarios(
-            req.session.uid,
+            Number(req.session.uid),
             eventos,
             2
           )
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(req.session.uid, livros, 3)
+          candidatePublicacaoService.adicionarVarios(Number(req.session.uid), livros, 3)
         );
         promises.push(
           candidatePublicacaoService.adicionarVarios(
-            req.session.uid,
+            Number(req.session.uid),
             capitulos,
             4
           )
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(req.session.uid, outras, 5)
+          candidatePublicacaoService.adicionarVarios(Number(req.session.uid), outras, 5)
         );
         promises.push(
           candidatePublicacaoService.adicionarVarios(
-            req.session.uid,
+            Number(req.session.uid),
             prefacios,
             6
           )

@@ -1,10 +1,10 @@
 FROM node:20-alpine3.20
 
 WORKDIR /app
-COPY package*.json .
+COPY package*.json ./
 
 # Add support for https on wget
-RUN apk update && apk add --no-cache wget && apk --no-cache add openssl wget && apk add ca-certificates && update-ca-certificates
+RUN apk update && apk add --no-cache wget openssl ca-certificates && update-ca-certificates
 
 # Add phantomjs
 # RUN wget -qO- "https://github.com/DaniSanT17/phantomized/releases/download/2.1.1a/phantomized-2.1.1a.tar.gz" | tar xz -C / \
@@ -24,6 +24,6 @@ ENV OPENSSL_CONF=/etc/ssl/
 # RUN useradd -m appuser
 # USER appuser
 RUN npm install
-# Rest of your Dockerfile, Instructions like COPY . /
+
 # alterar para 'npm start' quando o sistema entrar em produção
-CMD npm run start:dev
+CMD ["npm", "run", "start:dev"]
