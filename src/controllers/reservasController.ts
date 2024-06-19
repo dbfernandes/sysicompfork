@@ -137,9 +137,6 @@ const editar = async (req:Request, res: Response) => {
     }
 
     try {
-      // const reserva = await ReservaSala.update({
-      //     ...req.body
-      // }, { where: { id: req.params.id } });
       await ReservaService.atualizar(parseInt(req.params.id), dados)
       res.redirect('/reservas/gerenciar')
     } catch (error: any) {
