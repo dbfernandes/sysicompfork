@@ -12,7 +12,7 @@ function getArgs () {
   return args[0].toString().toLowerCase()
 }
 
-function addLine (lines, line, section) {
+function addLine (lines: string[], line: string, section: string) {
   const start = lines.findIndex(line => line === section)
   const newIndex = start + lines.slice(start + 1).findIndex(line => line === '') + 1
 
@@ -20,11 +20,11 @@ function addLine (lines, line, section) {
   return lines
 }
 
-function isModuleExists (nomeDoModulo) {
+function isModuleExists (nomeDoModulo: string) {
   return fs.existsSync(`./src/views/${nomeDoModulo}`)
 }
 
-function isNameModuleValid (nomeDoModulo) {
+function isNameModuleValid (nomeDoModulo: string) {
   nomeDoModulo = nomeDoModulo.replace(/\n/g, '')
   return nomeDoModulo &&
         typeof (nomeDoModulo) === 'string' &&
@@ -45,7 +45,7 @@ const newIndexHBS = [
   '</script>'
 ].join('\n')
 
-const newRouter = (nomeDoModulo) => [
+const newRouter = (nomeDoModulo: string) => [
   "import express from 'express';",
     `import ${nomeDoModulo}Controller from '../controllers/${nomeDoModulo}';`,
     'const router = express.Router()\n',
@@ -53,7 +53,7 @@ const newRouter = (nomeDoModulo) => [
     'export default router;'
 ].join('\n')
 
-const newControler = (nomeDoModulo) => [
+const newControler = (nomeDoModulo: string) => [
   'const locals = {',
   "\t//layout:'layout'",
   '}\n',
@@ -68,7 +68,7 @@ const newControler = (nomeDoModulo) => [
     'export default {control};'
 ].join('\n')
 
-const criarArquivos = async (nomeDoModulo) => {
+const criarArquivos = async (nomeDoModulo: string) => {
   if (!isNameModuleValid(nomeDoModulo)) {
     console.log('Erro: Informe o nome do módulo válido')
     console.log('Necessário uma string não vazia')

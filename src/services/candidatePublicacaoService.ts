@@ -3,12 +3,12 @@ const prisma = new PrismaClient()
 
 class CandidatePublicacaoService {
   async adicionarVarios (
-    idCandidate,
-    publicacoes,
-    tipoPublicacao
+    idCandidate: number,
+    publicacoes: any,
+    tipoPublicacao: number
   ) {
     if (publicacoes && publicacoes.length > 0) {
-      const publicacoesParaInserir = publicacoes.map(publicacao => ({
+      const publicacoesParaInserir = publicacoes.map((publicacao:any) => ({
         idCandidate,
         titulo: publicacao.titulo || '',
         ano: parseInt(publicacao.ano) || '',
@@ -19,7 +19,7 @@ class CandidatePublicacaoService {
         ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : ''
       }))
 
-      publicacoesParaInserir.forEach(async publicacao => {
+      publicacoesParaInserir.forEach(async (publicacao:any) => {
         try {
           const existingPublication = await prisma.candidatePublications.findFirst({
             where: {
@@ -38,7 +38,10 @@ class CandidatePublicacaoService {
             // })
             await prisma.candidatePublications.update({
               where: {
-                id: existingPublication.id
+                id_idCandidate: {
+                  id: Number(existingPublication.id),
+                  idCandidate
+                }
               },
               data: publicacao
             })
@@ -58,7 +61,7 @@ class CandidatePublicacaoService {
     }
   }
 
-  async ListarPublicacoesCandidate (idCandidate) {
+  async ListarPublicacoesCandidate (idCandidate: number) {
     try {
       // const periodicos = await CandidatePublications.findAll({
       //   where: {

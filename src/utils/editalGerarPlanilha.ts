@@ -1,11 +1,12 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
 import CandidatoService from '../resources/candidate/candidate.service'
+import { CreateCandidateDto } from '../resources/candidate/candidate.types';
 
 const exceljs = require('exceljs')
 
-function formatarDados (dados) {
-  return dados.map((dado) => ({
+function formatarDados (dados:any) {
+  return dados.map((dado: any) => ({
     nome: dado.name,
     email: dado.email,
     inscricao: dado.inscricaoposcomp,
@@ -13,9 +14,6 @@ function formatarDados (dados) {
     orientador: dado.orientador,
     bolsa: dado.bolsa,
     nivel: dado.nivel,
-    comprovante: dado.comprovante,
-    curriculum: dado.curriculum,
-    historico: dado.historico,
     proposto: dado.proposto,
 
     provaInscricao: { formula: '=Candidato!B:B' },
@@ -31,12 +29,12 @@ function formatarDados (dados) {
   }))
 }
 
-function insertData (worksheet, dados, filtro = null) {
-  dados.forEach((dado) => {
+function insertData (worksheet: any, dados: any, filtro: string | null) {
+  dados.forEach((dado: any) => {
     if (filtro) {
       if (dado.nivel === filtro) {
         const row = worksheet.addRow(dado)
-        row.eachCell((cell, number) => {
+        row.eachCell((cell:any, number: any) => {
           cell.alignment = { vertical: 'middle', horizontal: 'center' }
         })
       }
@@ -44,13 +42,13 @@ function insertData (worksheet, dados, filtro = null) {
   })
 }
 // Pegar o canditatos pelo editalId do banco de dados
-async function getCandidatos (EditalId) {
+async function getCandidatos (EditalId: string) {
   const candidatos = await CandidatoService.listCanditatesByEdital(EditalId)
   const candidatosFormatado = formatarDados(candidatos)
   return candidatosFormatado
 }
 
-function createSeparador (worksheet, header, cellValue, line, limit) {
+function createSeparador (worksheet:any, header:any, cellValue:any, line:any, limit:any) {
   worksheet.mergeCells(`A${line}:${String.fromCharCode(65 + Math.min(header.length, limit) - 1)}${line}`)
   // worksheet.mergeCells(`A${line}:${String.fromCharCode(65 + header.length - 1)}${line}`);
   worksheet.getCell(`A${line}`).value = cellValue
@@ -65,8 +63,8 @@ function createSeparador (worksheet, header, cellValue, line, limit) {
   worksheet.getRow(line).height = 20
 }
 
-function createWorksheetTitulo (header, dados, worksheet) {
-  worksheet.columns = header.map((item) => {
+function createWorksheetTitulo (header:any, dados:CreateCandidateDto[], worksheet:any) {
+  worksheet.columns = header.map((item: any) => {
     return { header: item.header, key: item.key, width: item.width }
   })
 
@@ -89,8 +87,8 @@ function createWorksheetTitulo (header, dados, worksheet) {
   const headerRow = worksheet.getRow(2)
   worksheet.getRow(3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   worksheet.getRow(3).height = 30
-  const secondHeaderRow = header.map((item) => item.header)
-  headerRow.eachCell((cell, number) => {
+  const secondHeaderRow = header.map((item: any) => item.header)
+  headerRow.eachCell((cell: any, number: any) => {
     cell.font = { bold: true, color: { argb: '00000' } }
     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   })
@@ -116,7 +114,7 @@ function createWorksheetTitulo (header, dados, worksheet) {
   worksheet.getRow(worksheet.rowCount).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   worksheet.getRow(worksheet.rowCount).height = 30
 
-  linhaHeaderDoutorados.eachCell((cell, number) => {
+  linhaHeaderDoutorados.eachCell((cell: any, number: any) => {
     cell.font = { bold: true, color: { argb: '00000' } }
     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   }
@@ -126,8 +124,8 @@ function createWorksheetTitulo (header, dados, worksheet) {
 }
 
 // Axuliar na formatação dos dados na tabela
-function createWorksheet (header, dados, worksheet) {
-  worksheet.columns = header.map((item) => {
+function createWorksheet (header: any, dados: any , worksheet: any) {
+  worksheet.columns = header.map((item:any) => {
     return { header: item.header, key: item.key, width: item.width }
   })
 
@@ -136,10 +134,10 @@ function createWorksheet (header, dados, worksheet) {
   createSeparador(worksheet, header, 'Mestrados', 1, 14)
 
   const headerRow = worksheet.getRow(2)
-  const secondHeaderRow = header.map((item) => item.header)
+  const secondHeaderRow = header.map((item:any) => item.header)
   // secondHeaderRow = secondHeaderRow.filter((item) => item !== 'Homologado');
 
-  headerRow.eachCell((cell, number) => {
+  headerRow.eachCell((cell:any, number:any) => {
     cell.font = { bold: true, color: { argb: '00000' } }
     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   })
@@ -151,7 +149,7 @@ function createWorksheet (header, dados, worksheet) {
 
   const linhaHeaderDoutorados = worksheet.addRow(secondHeaderRow)
 
-  linhaHeaderDoutorados.eachCell((cell, number) => {
+  linhaHeaderDoutorados.eachCell((cell:any, number:any) => {
     cell.font = { bold: true, color: { argb: '00000' } }
     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   }
@@ -161,7 +159,7 @@ function createWorksheet (header, dados, worksheet) {
   insertData(worksheet, dados, 'Doutorado')
 }
 
-async function gerarPlanilha (editalId) {
+async function gerarPlanilha (editalId: string) {
   // Create a new instance of a Workbook class
   const workbook = new exceljs.Workbook()
   // Novas abas na planilhas
@@ -250,7 +248,7 @@ async function gerarPlanilha (editalId) {
   await workbook.xlsx.writeFile('planilha.xlsx')
     .then(function () {
       console.log('Arquivo salvo!')
-    }).catch(function (error) {
+    }).catch(function (error: any) {
       console.log(error.message)
     })
 
