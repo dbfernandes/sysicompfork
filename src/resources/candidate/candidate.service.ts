@@ -1,58 +1,53 @@
 const moment = require('moment')
 import { compare, genSalt, hash } from 'bcrypt'
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Candidate } from "@prisma/client"
+import { CreateCandidateDto, CandidateSemSenha } from './candidate.types'
 const prisma = new PrismaClient()
 
 async function validPassword( password: string, passwordHash: string) {
   return await compare(password, passwordHash)
 }
 
+function excludePassword(candidade: Candidate): CandidateSemSenha {
+  // return Object.fromEntries(
+  //   Object.entries(candidade).filter(([key]) => key !== 'passwordHash')
+  // )
+  const { passwordHash, ...CandidateSemSenha } = candidade
+  return CandidateSemSenha as CandidateSemSenha
+}
+
 class CandidateService {
-  async create(email: string, password: string, editalNumber: string) {
-    try {
-      const step = 0
-      const salt = await genSalt(10)
-      const passwordHash = await hash(password, salt)
+  async create(novoCandidate: CreateCandidateDto): Promise<Candidate> {
+    // const step = 0
+    const salt = await genSalt(10)
+    // const passwordHash = await hash(novoCandidate.passwordHash, salt)
+    novoCandidate.passwordHash = await hash(novoCandidate.passwordHash, salt)
+    novoCandidate.etapaAtual = 0
 
-      let candidate = await prisma.candidate.findFirst({
-        where: {
-          email,
-          editalId: editalNumber
-        }
-      }).catch(err => {
-        console.log(err)
-        throw new Error('Não foi possivel criar o candidato erro no find one ')
-      })
-
-      if (candidate) {
-        throw new Error('Candidato já existe')
+    let candidate = await prisma.candidate.findFirst({
+      where: {
+        email: novoCandidate.email,
+        editalId: novoCandidate.editalId
       }
+    }).catch(err => {
+      console.log(err)
+      throw new Error('Não foi possivel criar o candidato erro no find one ')
+    })
 
-      candidate = await prisma.candidate.create({
-        data: {
-          email,
-          passwordHash,
-          editalId: editalNumber,
-          editalPosition: 1,
-          etapaAtual: step
-        }
-      }).catch(err => {
-        console.log(`[ERROR] Criar de candidato: ${err}`)
-        throw new Error('Não foi possivel criar o candidato erro no create')
-      })
-
-      // delete candidate.password
-      // delete candidate.passwordHash
-
-      return candidate
-    } catch (error) {
-      console.log(error)
+    if (candidate) {
+      throw new Error('Candidato já existe')
     }
-
+    
+    return await prisma.candidate.create({
+      data: novoCandidate
+    }).catch(err => {
+      console.log(`[ERROR] Criar de candidato: ${err}`)
+      throw new Error('Não foi possivel criar o candidato erro no create')
+    })
   }
 
-  async list() {
-    const candidates = await prisma.candidate.findMany({
+  async list(){
+    return await prisma.candidate.findMany({
       select: {
         passwordHash: false
       }
@@ -60,7 +55,6 @@ class CandidateService {
       console.log(`[ERROR] Listar Candidatos: ${err}`)
       throw new Error('Não foi possivel listar o candidato')
     })
-    return candidates
   }
 
   async auth(
@@ -122,7 +116,7 @@ class CandidateService {
     return candidate
   }
 
-  async findOneCandidate(id: number) {
+  async findOneCandidate(id: number): Promise<Candidate>{
     const candidate = await prisma.candidate.findUnique({
       where: {
         id
@@ -137,31 +131,17 @@ class CandidateService {
     return candidate
   }
 
-  async back(id: number) {
-    const candidate = await prisma.candidate.findUnique({
-      where: {
-        id
-      }
-    }).catch(err => {
-      console.log(err)
-      throw new Error('Não foi possivel encontrar o candidato')
-    })
-    return candidate
-  }
-
-  async listCanditatesByEdital(editalId: string) {
+  async listCanditatesByEdital(editalId: string): Promise<CandidateSemSenha[]>{
     const candidates = await prisma.candidate.findMany({
       where: {
         editalId
       },
-      select: {
-        passwordHash: false
-      }
     }).catch(err => {
       console.log(`[ERROR] Listar Candidatos: ${err}`)
       throw new Error('Não foi possivel listar o candidato')
     })
-    return candidates
+    
+    return candidates.map(candidate => excludePassword(candidate))
   }
 }
 
