@@ -82,7 +82,7 @@ class EditalService {
       },
       data: {
         status,
-        updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+        // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
       }
     }).catch(err => {
       console.log(`[ERROR] Atualizar Edital: ${err}`)

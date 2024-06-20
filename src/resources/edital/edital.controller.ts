@@ -49,7 +49,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
           csrfToken: req.csrfToken(),
           error: error.message,
           req: req.body
-        }).send({ error: error.message})
+        }).send({ message: error.message })
       }
       
       return res.redirect('/edital/listEdital')
@@ -161,7 +161,7 @@ const updateEdital = async (req: Request, res: Response) => {
           error: err.message
         })
       })
-      return res.render(resolveView('/editSelecao'), {
+      return res.render(resolveView('editSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -250,7 +250,7 @@ const editalCandidates = async (req: Request, res: Response) => {
     quantidaDeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition! < 4).length
     quantidaIncricaoFinalizada = candidates.filter((candidate: { editalPosition: number | null }) => candidate.editalPosition! === 4).length;
   }
-  return res.render(resolveView('/listCandidates'), {
+  return res.render(resolveView('listCandidates'), {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
     ...locals,
@@ -382,13 +382,13 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
   //     });
   //  }
   
-  /*Identifica usuario*/ 
-  /*Busca documentos do candidato*/
-  /*Cria pasta temporaria*/
-  /*Cria arquivos PDF*/
-  /*Compacta arquivos em ZIP*/
-  /*Envia ZIP para o cliente*/
-  /*Remove pasta temporaria e arquivos temporarios*/
+  /**
+   * Procurar usuario
+   * Pegar documentos da pasta do candidado
+   * Criar pasta para cada tipo de documento
+   * Compactar em .zip
+   * Enviar
+   */
 
 }
 
@@ -396,7 +396,7 @@ const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await EditalService.getCandidate(req.params.id)
 
-    return res.render(resolveView('/candidateDetails'), {
+    return res.render(resolveView('candidateDetails'), {
       candidate: candidate,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
