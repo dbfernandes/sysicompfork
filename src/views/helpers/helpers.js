@@ -112,7 +112,7 @@ const checked = (a, b) => {
 
 const checkedIn = (a, b) => {
   console.log(a)
-  if (a !== '' & a.includes(b)) { return 'checked' }
+  if (a && a.includes(b)) { return 'checked' }
   return ''
 }
 
