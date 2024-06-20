@@ -1,8 +1,14 @@
 import { Request, Response } from 'express'
+import { CreateCandidateDto } from '../candidate/candidate.types'
 import EditalService from '../edital/edital.service'
 import CandidateService from '../candidate/candidate.service'
 import candidatePublicacaoService from '../candidate/candidatePublicacao.service'
 import multer from 'multer'
+import path from "path";
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
 
 const locals = {
   layout: 'selecaoppgi'
@@ -11,7 +17,7 @@ const locals = {
 const begin = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render('selecaoppgi/begin', {
+      return res.render(resolveView('begin'), {
         ...locals
       })
     case 'POST':
@@ -23,7 +29,7 @@ const signin = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const editais = await EditalService.listEdital()
-      return res.render('selecaoppgi/signin', {
+      return res.render(resolveView('signin'), {
         csrfToken: req.csrfToken(),
         ...locals,
         editais: editais.map((edital) => {
@@ -35,11 +41,43 @@ const signin = async (req: Request, res: Response) => {
       })
     }
     case 'POST': {
-      const {
-        email, senha, edital
-      } = req.body
+      const novoCandidate: CreateCandidateDto = {
+        email: req.body.email,
+        passwordHash: req.body.senha,
+        editalId: req.body.edital,
+        editalPosition: 1,
+        etapaAtual: null,
+        linhaDePesquisaId: null,
+        Telefone: null,
+        Nome: null,
+        Bairro: null,
+        CEP: null,
+        Cidade: null,
+        Bolsista: null,
+        AnoEgressoGraduacao: null,
+        CursoPos: null,
+        InstituicaoGraduacao: null,
+        ComoSoube: null,
+        Condicao: null,
+        CondicaoTipo: null,
+        Cotista: null,
+        CotistaTipo: null,
+        Curso: null,
+        CursoAnoEgressoPos: null,
+        CursoGraduacao: null,
+        CursoInstituicaoPos: null,
+        CursoPosTipo: null,
+        Endereco: null,
+        Nacionalidade: null,
+        Nascimento: null,
+        NomeSocial: null,
+        Regime: null,
+        Sexo: null,
+        TelefoneSecundario: null,
+        UF: null
+      }
 
-      if (!email || !senha || !edital) {
+      if (!novoCandidate.email || !novoCandidate.passwordHash || !novoCandidate.editalId) {
         return res.status(400).json({
           error: 'Dados incompletos ou mal formatados'
         })
@@ -47,15 +85,9 @@ const signin = async (req: Request, res: Response) => {
 
       let responseError = null
 
-      const candidate = await CandidateService
-        .create(
-          (email as string),
-          (senha as string),
-          (edital as string)
-        )
-        .catch((err) => {
-          responseError = err
-        })
+      const candidate = await CandidateService.create(novoCandidate).catch((error) => {
+        responseError = error
+      })
 
       if (!candidate) {
         return res.status(400).json({
@@ -73,7 +105,7 @@ const login = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const editais = await EditalService.listEdital()
-      return res.render('selecaoppgi/login', {
+      return res.render(resolveView('login'), {
         csrfToken: req.csrfToken(),
         teste: 'teste',
         ...locals,
@@ -114,7 +146,7 @@ const login = async (req: Request, res: Response) => {
           console.log('error teste')
           console.log(req.csrfToken())
 
-          return res.render('selecaoppgi/login', {
+          return res.render(resolveView('login'), {
             csrfToken: req.csrfToken(),
             message: 'Usuário não cadastrado',
             type: 'danger',
@@ -152,13 +184,14 @@ const forms = async (req: Request, res: Response) => {
       if (!(req.session as any).email) {
         res.redirect('/selecaoppgi/entrar')
       }
+      if (!(req.session as any).editalPosition) throw new Error('Edital não encontrado')
       if ((req.session as any).editalPosition === 1) {
         // console.log((req.session as any).email)
         // console.log((req.session as any).editalId)
         // console.log(req.session.uid)
         const candidate = await CandidateService.findOneCandidate(id)
         // console.log(candidate)
-        return res.render('selecaoppgi/forms1', {
+        return res.render(resolveView('forms1'), {
           ...locals,
           Nome: candidate.Nome,
           Nascimento: candidate.Nascimento,
@@ -189,7 +222,7 @@ const forms = async (req: Request, res: Response) => {
       if ((req.session as any).editalPosition === 2) {
         const candidate = await CandidateService.findOneCandidate(id)
 
-        return res.render('selecaoppgi/forms2', {
+        return res.render(resolveView('forms2'), {
           ...locals,
           cursoGraduacao: candidate.CursoGraduacao,
           instituicao: candidate.InstituicaoGraduacao,
@@ -210,7 +243,7 @@ const forms = async (req: Request, res: Response) => {
         await CandidateService.findOneCandidate(id)
 
         console.log('*************************************************')
-        return res.render('selecaoppgi/forms3', {
+        return res.render(resolveView('forms3'), {
           ...locals,
           editalPosicao: (req.session as any).editalPosition,
           email: (req.session as any).email,
@@ -345,7 +378,7 @@ const formPublicacoes = async (req: Request, res: Response) => {
         console.log(publicacao.toJSON())
       })
 
-      return res.render('selecaoppgi/forms2', {
+      return res.render(resolveView('forms2'), {
         message: 'Dados salvos com sucesso',
         editalPosicao: (req.session as any).editalPosition,
         email: (req.session as any).email,
@@ -422,7 +455,7 @@ const voltar = async (req: Request, res: Response) => {
       // res.redirect('/selecaoppgi')
       console.log(editalPosicao)
 
-      const candidate = await CandidateService.back(id);
+      const candidate = await CandidateService.findOneCandidate(id);
       (req.session as any).editalPosition = editalPosicao
       res.status(200).send()
     }

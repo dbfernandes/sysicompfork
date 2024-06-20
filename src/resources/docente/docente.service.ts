@@ -1,39 +1,27 @@
 import { PrismaClient } from '@prisma/client';
+import { tipoOrientacao, tipoPublicacao } from './docente.types';
 
 const prisma = new PrismaClient();
 
-interface Orientacao {
-  id: number;
-  idProfessor: number;
-  titulo: string;
-  aluno: string;
-  ano: number;
-  natureza: string | null;
-  tipo: number;
-  status: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface Publicacao {
-  id: number;
-  titulo: string;
-  ano: number;
-  local: string | null;
-  tipo: number;
-  natureza: string | null;
-  autores: string;
-  ISSN: string;
-  createdAt: Date;
-  updatedAt: Date;
-  TipoPublicacao: {
-    id: number;
-    nome: string;
-    chave: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-}
+// interface Publicacao extends tipoPublicacao {
+//   id: number;
+//   titulo: string;
+//   ano: number;
+//   local: string | null;
+//   tipo: number;
+//   natureza: string | null;
+//   autores: string;
+//   ISSN: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   TipoPublicacao: {
+//     id: number;
+//     nome: string;
+//     chave: string;
+//     createdAt: Date;
+//     updatedAt: Date;
+//   };
+// }
 
 class DocenteService {
   async listarPerfil(id: number) {
@@ -87,15 +75,15 @@ class DocenteService {
     });
 
     const publicacoesDict = {
-      artigosConferencias: [] as Publicacao[],
-      artigosPeriodicos: [] as Publicacao[],
-      livros: [] as Publicacao[],
-      capitulos: [] as Publicacao[],
+      artigosConferencias: [] as tipoPublicacao[],
+      artigosPeriodicos: [] as tipoPublicacao[],
+      livros: [] as tipoPublicacao[],
+      capitulos: [] as tipoPublicacao[],
     };
 
     relacoesPublicacoes.forEach((rel) => {
-      const publi: Publicacao = rel.Publicacao;
-      const publiDict: Publicacao = {
+      const publi: tipoPublicacao = rel.Publicacao;
+      const publiDict: tipoPublicacao = {
         ...publi,
         TipoPublicacao: publi.TipoPublicacao,
       };
@@ -126,7 +114,7 @@ class DocenteService {
   }
 
   async listarOrientacoes(id: number, tipo: number) {
-    const orientacoes: Orientacao[] = await prisma.orientacao.findMany({
+    const orientacoes: tipoOrientacao[] = await prisma.orientacao.findMany({
       where: {
         idProfessor: id,
         tipo,
@@ -135,12 +123,12 @@ class DocenteService {
     });
 
     const orientacoesDict = {
-      concluidas: [] as Orientacao[],
-      andamento: [] as Orientacao[],
+      concluidas: [] as tipoOrientacao[],
+      andamento: [] as tipoOrientacao[],
     };
 
     if (orientacoes) {
-      orientacoes.forEach((orientacao: Orientacao) => {
+      orientacoes.forEach((orientacao: tipoOrientacao) => {
         if (orientacao.status === 1) {
           orientacoesDict.andamento.push(orientacao);
         } else {

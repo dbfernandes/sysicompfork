@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CreateReservaDto } from './reservas.types';
+import { CreateReservaDto, UpdateReservaDto } from './reservas.types';
 
 import ReservaService from './reservas.service';
 import salasService from '../salas/salas.service';
@@ -113,17 +113,14 @@ const editar = async (req:Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
-      const reserva = await ReservaService.listarReservasDeUmUsuario(parseInt(req.session.uid!))
-      
+      const reserva = await ReservaService.buscarReserva(parseInt(req.params.id))
       if (!reserva) throw new Error('Reserva não encontrado!')
-    
+      console.log(reserva)
+      
       res.render(resolveView('reservas-editar'), {
-        // salas: salas.map((sala) => JSON.stringify(sala)),
-        // salas: salas,
-        // reserva: reserva.toJSON(),
+        salas: salas,
         reserva: reserva,
         csrf: req.csrfToken(),
-        // nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario
       })
     } catch (error: any) {
@@ -146,9 +143,20 @@ const editar = async (req:Request, res: Response) => {
       }
     }
 
-    const dados = {
-      ...req.body,
-      dataInicio: req.body.dataInicio ? `${req.body.dataInicio}T00:00:00.000Z` : undefined
+    // const dados = {
+    //   ...req.body,
+    //   dataInicio: req.body.dataInicio ? `${req.body.dataInicio}T00:00:00.000Z` : undefined
+    // }
+    const dados: UpdateReservaDto = {
+      SalaId: parseInt(req.body.SalaId),
+      UsuarioId: parseInt(req.body.UsuarioId),
+      atividade: req.body.atividade,
+      dataInicio: req.body.dataInicio ? new Date(`${req.body.dataInicio}T00:00:00.000Z`) : null,
+      dataTermino: req.body.dataTermino ? new Date(`${req.body.dataTermino}T00:00:00.000Z`) : null,
+      tipo: req.body.tipo,
+      horaInicio: req.body.horaInicio,
+      horaTermino: req.body.horaTermino,
+      dias: req.body.dias
     }
 
     try {

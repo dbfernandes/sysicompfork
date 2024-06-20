@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { UpdatePerfilDto } from './perfil.types';
 import UsuarioService from "../usuarios/usuario.service";
 import criarURL from '../../utils/criarUrl'
 import path from 'path'
@@ -73,12 +74,12 @@ const editar = async (req: Request, res: Response) => {
       const coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
       const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
       const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
-      const dados = {
-        id: id,
+      const dados: UpdatePerfilDto = {
+        id: parseInt(id!),
         nomeCompleto: req.body.nomeCompleto,
         cpf: req.body.cpf,
         email: req.body.email,
-        senha: req.body.senha,
+        senhaHash: req.body.senha,
         administrador,
         coordenador,
         secretaria,
@@ -95,7 +96,7 @@ const editar = async (req: Request, res: Response) => {
         await UsuarioService.alterar(parseInt(id!), dados)
       } catch (error: any) {
         console.log(error)
-        dados.id = id
+        dados.id = Number(id)
         return res.status(500).render(resolveView('perfil-editar'), {
           usuario: dados,
           csrfToken: req.csrfToken(),

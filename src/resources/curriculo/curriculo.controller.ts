@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { CreateAvatarDto } from '../avatar/avatar.types';
+
 import AvatarService from '../avatar/avatar.service';
 import PublicacaoService from '../publicacao/publicacao.service';
 import PremioService from '../premio/premio.service';
@@ -7,17 +9,6 @@ import ProjetoService from '../projetos/projetos.service';
 import OrientacaoService from '../orientacao/orientacao.service'
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
-
-interface SessionData {
-  tipoUsuario?: {
-    administrador: boolean;
-    secretaria: boolean;
-    coordenador: boolean;
-    professor: boolean;
-  } | undefined;
-  uid: string;
-  nome: string;
-}
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -35,12 +26,12 @@ const visualizar = async (req: Request, res: Response) => {
         return res.render(resolveView('curriculo-adicionar'), {
           professores,
           csrfToken: req.csrfToken(),
-          nome: (req.session as SessionData).nome,
-          usuarioId: (req.session as SessionData).uid,
+          nome: req.session.nome,
+          usuarioId: req.session.uid,
           message,
           type,
           messageTitle,
-          tipoUsuario: (req.session as SessionData).tipoUsuario,
+          tipoUsuario: req.session.tipoUsuario,
           avatar: null
         });
       } catch (error) {
@@ -50,7 +41,7 @@ const visualizar = async (req: Request, res: Response) => {
             message: 'Não foi possível abrir o envio de currículo.',
             type: 'danger',
             messageTitle: 'Envio de currículo indisponível!',
-            tipoUsuario: (req.session as SessionData).tipoUsuario
+            tipoUsuario: req.session.tipoUsuario
           })
         );
       }
@@ -91,7 +82,12 @@ const carregar = async (req: Request, res: Response) => {
         await PremioService.adicionarVarios(idProfessor, premiosParsed);
         await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed);
         if (req.file) {
-          await AvatarService.adicionar(idProfessor, req.file.filename, req.file.path);
+          const avatar: CreateAvatarDto = {
+            idUsuario: idProfessor,
+            nome: req.file.filename,
+            caminho: req.file.path
+          };
+          await AvatarService.adicionar(avatar);
         }
         return res.status(201).send();
       } catch (error) {
