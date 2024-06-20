@@ -79,6 +79,7 @@ class AfastamentoService {
   async criar (newAfastamento: CreateAfastamentoTemporarioDto) {
     await prisma.afastamentoTemporarios.create({ data: newAfastamento })
   }
+  
 
   async retornarAfastamento (id: number) {
     const afastamento = await prisma.afastamentoTemporarios.findUnique({

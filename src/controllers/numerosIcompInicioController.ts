@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import AlunoService from '../services/alunoService'
-import PublicacaoService from '../services/publicacaoService'
+import PublicacaoService from '../services/publicacaoService.js'
 
 // Escolha do Layout
 const layoutMain = {
