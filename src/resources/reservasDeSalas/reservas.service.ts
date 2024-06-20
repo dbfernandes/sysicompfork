@@ -21,7 +21,6 @@ export default new class ReservaService {
       return await prisma.reservaSalas.findMany({ 
         where: { UsuarioId: id },
         include: {
-          Salas: true,
           Usuario: {
             select: {
               id: true,
