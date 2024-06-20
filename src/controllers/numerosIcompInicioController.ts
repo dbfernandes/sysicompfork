@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import AlunoService from '../services/alunoService'
-import PublicacaoService from '../services/publicacaoService.js'
+import PublicacaoService from '../services/publicacaoService'
 
 // Escolha do Layout
 const layoutMain = {
   layout: 'numerosIcompMain'
-}
+}  
 
 // Home-page
 

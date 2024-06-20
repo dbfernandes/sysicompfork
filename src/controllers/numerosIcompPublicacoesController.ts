@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PublicacaoService from '../services/publicacaoService.js';
+import PublicacaoService from '../services/publicacaoService';
 
 // Escolha do Layout
 const layoutMain = {

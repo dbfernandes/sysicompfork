@@ -64,7 +64,7 @@ router.all('/formulario/2', (req, res) => {
     selecaoppgiController.form2(req, res)
   })
 })
-
+router.all('/trocarSenha', selecaoppgiController.trocarSenha)
 router.all('/formulario/3', (req, res) => { 
   uploadsProposta(req, res, function (err) {
     if (err) {

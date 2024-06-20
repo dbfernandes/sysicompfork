@@ -63,6 +63,15 @@ class CandidateService {
     return candidates
   }
 
+  async getByEmailAndEdital(email: string, editalNumber: string) {
+    const candidate = await prisma.candidate.findFirst({
+      where: {
+        email,
+        editalId: editalNumber
+      }
+    })
+    return candidate
+  }
   async auth(
     email: string,
     password: string,
