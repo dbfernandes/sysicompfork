@@ -1,38 +1,28 @@
 import fs from 'fs'
 import path from 'path'
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Avatar } from "@prisma/client"
+// import { CreateAvatarDto } from './avatar.types'
+
 const prisma = new PrismaClient()
 
 class AvatarService {
-  async adicionar (
-    idUsuario: number,
-    nome: string,
-    caminho: string
-  ) {
-    await this.remover(idUsuario)
-    const caminhoArr = caminho.split('/')
+  async adicionar (avatar: any): Promise<Avatar>{
+    await this.remover(avatar.idUsuario)
+    const caminhoArr = avatar.caminho.split('/')
     const caminhoParsed = caminhoArr.slice(caminhoArr.length - 3).join('/')
     const caminhoFormated = '/' + caminhoParsed
+    const avatarFormated = { ...avatar, caminho: caminhoFormated }
 
-    await prisma.avatar.create({
-      data: {
-        idUsuario,
-        nome,
-        caminho: caminhoFormated
-      }
+    return await prisma.avatar.create({
+      data: avatarFormated
     })
   }
 
-  async listarUmAvatar (idUsuario: number) {
-    const avatar = await prisma.avatar.findFirst({
-      where: {
-        idUsuario
-      }
-    })
-    return avatar
+  async listarUmAvatar (idUsuario: number): Promise<Avatar | null>{
+    return await prisma.avatar.findFirst({ where: { idUsuario } })
   }
 
-  async remover (idUsuario: number) {
+  async remover (idUsuario: number): Promise<void>{
     const avatar = await prisma.avatar.findFirst({
       where: {
         idUsuario
