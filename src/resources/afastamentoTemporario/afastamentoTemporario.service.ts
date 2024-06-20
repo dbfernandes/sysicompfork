@@ -79,31 +79,18 @@ class AfastamentoService {
 
   }
 
-  async criar (newAfastamento: Prisma.AfastamentoTemporariosCreateInput) {
+  async criar(newAfastamento: Prisma.AfastamentoTemporariosCreateInput) {
     try {
-      const { usuarioId, 
-        usuarioNome, 
-        dataSaida, 
-        dataRetorno,
-        tipoViagem, 
-        localViagem, justificativa, planoReposicao
-      } = newAfastamento
       await prisma.afastamentoTemporarios.create({
         data: {
-          usuarioId,
-          usuarioNome,
-          dataSaida,
-          dataRetorno,
-          tipoViagem,
-          localViagem,
-          justificativa,
-          planoReposicao
+          ...newAfastamento
         }
       })
     } catch (error: any) {
       console.log(error.message || 'Não foi possível criar o pedido de afastamento!')
     }
   }
+  
 
   async retornarAfastamento (id:string) {
     const afastamento = await prisma.afastamentoTemporarios.findUnique({
