@@ -3,10 +3,16 @@ import { CreateUsuarioDto, UpdateUsuarioDto } from './usuario.types';
 import UsuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
+import path from "path";
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
+
 const adicionar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
-      return res.render('usuarios/usuarios-adicionar', {
+      return res.render(resolveView('usuarios-adicionar'), {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario
@@ -73,7 +79,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.status(500).render('usuarios/usuarios-adicionar', {
+        return res.status(500).render(resolveView('usuarios-adicionar'), {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
           errors: (error as any).errors, // Type assertion to 'any' to access 'errors' property
@@ -159,7 +165,7 @@ const listar = async (req: Request, res: Response): Promise<any> => {
       try {
         const { message, type, messageTitle } = req.query;
         const usuarios = await UsuarioService.listarTodos();
-        return res.status(200).render('usuarios/usuarios-listar', {
+        return res.status(200).render(resolveView('usuarios-listar'), {
           usuarios,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -190,7 +196,7 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
         const { message, type, messageTitle } = req.query
 
         const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
-        return res.status(200).render('usuarios/usuario-visualizar', {
+        return res.status(200).render(resolveView('usuario-visualizar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -215,13 +221,13 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const editar = async (req: Request, res: Response): Promise<any> => {
+const editar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
         const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
-        return res.status(200).render('usuarios/usuarios-editar', {
+        return res.status(200).render(resolveView('usuarios-editar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -247,11 +253,11 @@ const editar = async (req: Request, res: Response): Promise<any> => {
         const coordenador = req.body.coordenador === 'on' ? 1 : 0;
         const secretaria = req.body.secretaria === 'on' ? 1 : 0;
         const professor = req.body.professor === 'on' ? 1 : 0;
-        const dados = {
+        const dados: UpdateUsuarioDto = {
           nomeCompleto: req.body.nomeCompleto,
           cpf: req.body.cpf,
           email: req.body.email,
-          senha: req.body.senha,
+          senhaHash: req.body.senha,
           administrador,
           coordenador,
           secretaria,
@@ -262,7 +268,17 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           siape: req.body.siape,
           dataIngresso: req.body.dateDeIngresso,
           unidade: req.body.unidade,
-          turno: req.body.turno
+          turno: req.body.turno,
+          tokenResetSenha: null,
+          validadeTokenResetSenha: null,
+          status: 0,
+          perfil: null,
+          idLattes: null,
+          formacao: null,
+          formacaoIngles: null,
+          resumo: null,
+          resumoIngles: null,
+          ultimaAtualizacao: null
         };
         const userId = Number(req.params.id)
         await UsuarioService.alterar(userId, dados);
@@ -289,7 +305,7 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           professor,
           id: req.params.id
         };
-        return res.status(500).render('usuarios/usuarios-editar', {
+        return res.status(500).render(resolveView('usuarios-editar'), {
           usuario: dados,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
