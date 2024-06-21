@@ -1,5 +1,4 @@
 import express from 'express'
-// import salasController from '../controllers/salasController'
 import salasController from './salas.controller'
 
 const router = express.Router()

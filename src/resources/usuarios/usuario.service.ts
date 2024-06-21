@@ -160,9 +160,9 @@ class UsuarioService {
     return usuarios
   }
   
-  async buscarUsuarioPor(busca: any){
+  async buscarUsuarioPor(cpf: any){
     try {
-      const usuario = await prisma.usuario.findFirst({ where: busca})
+      const usuario = await prisma.usuario.findFirst({ where: cpf})
       return usuario
     } catch (error) {
       throw error

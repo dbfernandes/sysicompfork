@@ -1,24 +1,20 @@
 import {Response, Request} from 'express'
-import EditalService from './edital.service'
 import editalGerarPlanilha from '../../utils/editalGerarPlanilha'
-import path from 'path'
+import editalService from './edital.service'
+
 /* eslint-disable camelcase */
 const fs = require('fs')
+const path = require('path')
 const os = require('os')
 const locals = {
   layout: 'selecaoppgi'
 }
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
-
-
 const addEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       console.log(req.session.nome)
-      return res.render(resolveView('/addNewSelecao'), {
+      return res.render('edital/addNewSelecao', {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
@@ -40,7 +36,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       } = await req.body
 
       try {
-        await EditalService.criarEdital({
+        await editalService.criarEdital(
           num_edital,
           documento,
           data_inicio,
@@ -51,7 +47,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
           vaga_suplementar_mestrado,
           vaga_regular_doutorado,
           vaga_suplementar_doutorado
-        })
+        )
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
@@ -77,15 +73,15 @@ const addEditalSelecao = async (req: Request, res: Response) => {
 const listEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('listSelecao'), {
+      return res.render('edital/listSelecao', {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
-        editais: await EditalService.listEdital(),
+        editais: await editalService.listEdital(),
         tipoUsuario: req.session.tipoUsuario
       })
 
     case 'POST': {
-      const editais = await EditalService.listEdital().catch((err) => {
+      const editais = await editalService.listEdital().catch((err) => {
         return res.status(400).json({
           error: err.message
         })
@@ -103,7 +99,7 @@ const deleteEdital = async (req: Request, res: Response) => {
          const { id } = req.params;
 
          try {
-            await EditalService.delete(id);  
+            await editalService.delete(id);  
          }catch (error: any) {
             return res.status(400).json({
                csrfToken: req.csrfToken(),
@@ -124,7 +120,7 @@ const arquivarEdital = async (req: Request, res: Response) => {
     case 'PUT': {
       const { status } = await req.body
 
-      const edital_update = await EditalService.arquivar(id_edital, {
+      const edital_update = await editalService.arquivar(id_edital, {
         status
       }).catch((err) => {
         return res.status(400).json({
@@ -144,16 +140,20 @@ const viewEdital = async (req: Request, res: Response) => {
       const {
         id
       } = req.params
-      const edital = await EditalService.getEdital(id).catch((err) => {
-        return res.status(400).json({
-          error: err.message
-        })
-      })
-      return res.render(resolveView('viewSelecao'), {
+      if (!id) {
+        return res.status(400).json({ error: 'ID not found' });
+      }
+      const edital = await editalService.getEdital(id)
+
+      if (!edital) {
+        return res.status(404).json({ error: 'Edital não encontrado' });
+      }
+
+      return res.render('edital/viewSelecao', {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -164,16 +164,19 @@ const updateEdital = async (req: Request, res: Response) => {
   const { id_update } = req.params
   switch (req.method) {
     case 'GET': {
-      const edital = await EditalService.getEdital(id_update).catch((err) => {
-        return res.status(400).json({
-          error: err.message
-        })
-      })
-      return res.render(resolveView('/editSelecao'), {
+      if (!id_update) {
+        return res.status(404).json({ error: 'id não encontrado' });
+      }
+      const edital = await editalService.getEdital(id_update)
+
+      if (!edital) {
+        return res.status(404).json({ error: 'Edital não encontrado' });
+      }
+      return res.render('edital/editSelecao', {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -191,7 +194,7 @@ const updateEdital = async (req: Request, res: Response) => {
         vaga_suplementar_doutorado
       } = await req.body
 
-      const updateEdital = await EditalService.update(id_update, {
+      const updateEdital = await editalService.update(id_update, {
         num_edital,
         documento,
         data_inicio,
@@ -220,16 +223,20 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       const {
         id
       } = req.params
-      const edital = await EditalService.getEdital(id).catch((err) => {
-        return res.status(400).json({
-          error: err.message
-        })
-      })
-      return res.render(resolveView('listCandidates'), {
+      if (!id) {
+        return res.status(404).json({ error: 'id não encontrado' });
+      }
+      const edital = await editalService.getEdital(id)
+
+      if (!edital) {
+        return res.status(404).json({ error: 'Edital não encontrado' });
+      }
+
+      return res.render('edital/listCandidates', {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital.dataValues,
+        edital: edital,
         tipoUsuario: req.session.tipoUsuario
       })
     }
@@ -237,13 +244,10 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       const {
         id_edital
       } = req.params
-      const candidates = await EditalService.listCandidates(id_edital).catch(
-        (err) => {
-          return res.status(400).json({
-            error: err.message
-          })
-        }
-      )
+      const candidates = await editalService.listCandidates(id_edital)
+      if (!candidates) {
+        return candidates
+      }
       return res.status(200).json(candidates)
     }
   }
@@ -251,28 +255,33 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
 
 const editalCandidates = async (req: Request, res: Response) => {
   const editalID = req.params.id
-  const candidates = await EditalService.listCandidates(editalID).catch(
+  const candidates = await editalService.listCandidates(editalID).catch(
     (err: any) => {
       return res.status(400).json({
         error: err.message
       })
     }
   )
+  if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos')
+  const quantidadeInscricaoAndamento = candidates.filter((candidate: { 
+    editalPosition: number | null }) => candidate.editalPosition !== null && 
+    candidate.editalPosition < 4
+  ).length
+  const quantidadeInscricaoFinalizada: number = candidates.filter((candidate: { 
+    editalPosition: number | null}) =>candidate.editalPosition !== null && 
+    candidate.editalPosition === 4
+  ).length;
 
-  const quantidaDeInscricaoAndamento = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition < 4).length
-  const quantidaIncricaoFinalizada: number = candidates.filter((candidate: { editalPosition: number }) => candidate.editalPosition === 4).length;
-
-  return res.render(resolveView('/listCandidates'), {
+  return res.render('edital/listCandidates', {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
     ...locals,
     candidates,
     editalID,
     tipoUsuario: req.session.tipoUsuario,
-    quantidaDeInscricaoAndamento,
-    quantidaIncricaoFinalizada
-
-  })
+    quantidadeInscricaoAndamento,
+    quantidadeInscricaoFinalizada
+  });
 }
 
 const geraPlanilha = async (req: Request, res: Response) => {
@@ -285,8 +294,10 @@ const geraPlanilha = async (req: Request, res: Response) => {
 }
 
 const gerarCandidatoPDF = async (req: Request, res: Response) => {
-   const candidate = await EditalService.getCandidate(req.params.id);
-   const base64Documento = candidate[req.query.documento];
+   const candidate = await editalService.getCandidate(req.params.id);
+   if (!candidate) return res.status(404).send('Candidato não encontrado');
+   const base64Documento = (candidate as any)[(req.query.documento as string)];
+   if (!base64Documento) return res.status(404).send('Documento não encontrado');
    const docPDF = Buffer.from(base64Documento.toString('utf-8'),'base64')
    
    return res.set({
@@ -299,7 +310,7 @@ const gerarCandidatoPDF = async (req: Request, res: Response) => {
 const getAllCandidatesDocuments = async (req: Request, res: Response) => {
   // try {
   //   // Pegue todos os candidatos do edital
-  //   const candidates = await EditalService.listCandidates(req.params.id)
+  //   const candidates = await editalService.listCandidates(req.params.id)
 
   //   // Crie um diretório temporário para armazenar os documentos
   //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
@@ -355,7 +366,7 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
 }
 //Refazer função
 const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {  
-  // const candidate = await EditalService.getCandidate(req.params.id)
+  // const candidate = await editalService.getCandidate(req.params.id)
   // try {
   //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
   //   if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
@@ -406,10 +417,10 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 
 const candidateDetails = async (req: Request, res: Response) => {
   try {
-    const candidate = await EditalService.getCandidate(req.params.id)
+    const candidate = await editalService.getCandidate(req.params.id);
 
-    return res.render(resolveView('/candidateDetails'), {
-      candidate: candidate.dataValues,
+    return res.render('edital/candidateDetails', {
+      candidate: candidate,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
       ...locals,

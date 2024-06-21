@@ -4,6 +4,7 @@ import mailer from '../../modules/mailer'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import path from 'path'
+import usuarioService from '../usuarios/usuario.service'
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -41,7 +42,7 @@ const login = async (req: Request, res: Response) => {
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body
-      const usuario = await UsuarioService.buscarUsuarioPor({ cpf: cpf })
+      const usuario = await usuarioService.buscarUsuarioPor({ cpf: cpf })
 
       if (!usuario) {
         return res.render(resolveView('login'), {
@@ -66,7 +67,7 @@ const login = async (req: Request, res: Response) => {
         })
       }
 
-      req.session.uid = usuario.id
+      req.session.uid = String(usuario.id)
       req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
         usuario.nomeCompleto.split(' ').length > 1
           ? ' ' +
@@ -81,7 +82,7 @@ const login = async (req: Request, res: Response) => {
         secretaria: usuario.secretaria,
         professor: usuario.professor
       }
-      req.session.uid = usuario.id
+      req.session.uid = String(usuario.id)
       return res.redirect('/inicio')
     } catch (err) {
       console.log(err)

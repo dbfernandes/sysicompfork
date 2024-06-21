@@ -1,11 +1,6 @@
 import { Request, Response } from 'express'
-import UsuarioService from "../usuarios/usuario.service";
-import criarURL from '../../utils/criarUrl'
-import path from 'path'
-
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
+import criarURL from '../../utils/criarUrl';
+import usuarioService from '../usuarios/usuario.service';
 
 const visualizar = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -13,8 +8,8 @@ const visualizar = async (req: Request, res: Response) => {
       try {
         const { message, type, messageTitle } = req.query
         const id = req.session.uid
-        const usuario = await UsuarioService.listarUmUsuario(parseInt(id!))
-        return res.render(resolveView('perfil-dados'), {
+        const usuario = await usuarioService.listarUmUsuario(parseInt(id!))
+        return res.render('perfil/perfil-dados', {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -46,8 +41,8 @@ const editar = async (req: Request, res: Response) => {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUmUsuario(parseInt(id!))
-        return res.render(resolveView('perfil-editar'), {
+        const usuario = await usuarioService.listarUmUsuario(parseInt(id!))
+        return res.render('perfil/perfil-editar', {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -92,11 +87,11 @@ const editar = async (req: Request, res: Response) => {
         turno: req.body.turno
       }
       try {
-        await UsuarioService.alterar(parseInt(id!), dados)
+        await usuarioService.alterar(parseInt(id!), dados)
       } catch (error: any) {
         console.log(error)
         dados.id = id
-        return res.status(500).render(resolveView('perfil-editar'), {
+        return res.status(500).render('perfil/perfil-editar', {
           usuario: dados,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -127,7 +122,7 @@ const deletar = async (req: Request, res: Response) => {
     case 'POST':
       try {
         const id = req.session.uid
-        await UsuarioService.alterar(parseInt(id!), { 
+        await usuarioService.alterar(parseInt(id!), { 
           status: 0
         })
         req.session.uid = undefined

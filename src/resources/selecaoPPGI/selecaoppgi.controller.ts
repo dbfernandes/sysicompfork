@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import EditalService from '../edital/edital.service'
-import CandidateService from '../candidate/candidate.service'
-import candidatePublicacaoService from '../candidate/candidatePublicacao.service'
 import multer from 'multer'
+import editalService from '../edital/edital.service'
+import candidateService from '../candidate/candidate.service'
+import candidatePublicacaoService from '../candidate/candidatePublicacao.service'
 
 const locals = {
   layout: 'selecaoppgi'
@@ -22,13 +22,13 @@ const begin = async (req: Request, res: Response) => {
 const signin = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const editais = await EditalService.listEdital()
+      const editais = await editalService.listEdital()
       return res.render('selecaoppgi/signin', {
         csrfToken: req.csrfToken(),
         ...locals,
-        editais: editais.map((edital: { get: () => any }) => {
+        editais: editais.map((edital) => {
           return {
-            ...edital.get()
+            ...edital
           }
         }),
         errorSignin: null
@@ -47,13 +47,13 @@ const signin = async (req: Request, res: Response) => {
 
       let responseError = null
 
-      const candidate = await CandidateService
+      const candidate = await candidateService
         .create(
           (email as string),
           (senha as string),
           (edital as string)
         )
-        .catch((err) => {
+        .catch((err: any) => {
           responseError = err
         })
 
@@ -72,56 +72,62 @@ const signin = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const editais = await EditalService.listEdital()
+      const editais = await editalService.listEdital();
       return res.render('selecaoppgi/login', {
         csrfToken: req.csrfToken(),
         teste: 'teste',
         ...locals,
-        editais: editais.map((edital: { get: () => any }) => {
+        editais: editais.map((edital) => {
           return {
-            ...edital.get()
+            ...edital
           }
         })
       })
     }
     case 'POST':
       try {
-        const {
-          email, senha, edital
-        } = req.body
+        const { email, senha, edital } = req.body;
 
         console.log({
           email,
           senha,
-          edital
-        })
+          edital,
+        });
 
         if (!email || !senha || !edital) {
           return res.status(400).json({
-            error: 'Dados incompletos ou mal formatados'
-          })
+            error: 'Dados incompletos ou mal formatados',
+          });
         }
-        const IsCandidateValid = await CandidateService
-          .auth(
-            email,
-            senha,
-            edital
-          )
+        const IsCandidateValid = await candidateService.auth(
+          email,
+          senha,
+          edital
+        );
 
-        const editais2 = await EditalService.listEdital()
+        const editais2 = await editalService.listEdital();
+
+        if (!editais2) {
+          return res.status(404).send('Não encontrou premios');
+        }
 
         if (!IsCandidateValid) {
-          console.log('error teste')
-          console.log(req.csrfToken())
+          console.log('error teste');
+          console.log(req.csrfToken());
 
           return res.render('selecaoppgi/login', {
             csrfToken: req.csrfToken(),
             message: 'Usuário não cadastrado',
             type: 'danger',
             ...locals,
-            editais: editais2.map((edital: { get: () => any }) => {
+            // editais: editais2.map((edital: { get: () => any }) => {
+            //   return {
+            //     ...edital.get()
+            //   }
+            // })
+            editais: editais2.map((edital) => {
               return {
-                ...edital.get()
+                ...edital
               }
             })
           })
@@ -131,16 +137,16 @@ const login = async (req: Request, res: Response) => {
         (req.session as any).editalId = IsCandidateValid.editalId;
         (req.session as any).uid = IsCandidateValid.id;
         (req.session as any).editalPosition = IsCandidateValid.editalPosition;
-        return res.status(200).send()
+        return res.status(200).send();
       } catch (err) {
-        console.log(err)
-        return res.status(500).send()
+        console.log(err);
+        return res.status(500).send();
       }
 
     default:
-      return res.status(404).send()
+      return res.status(404).send();
   }
-}
+};
 
 const forms = async (req: Request, res: Response) => {
   console.log(req.method)
@@ -156,7 +162,7 @@ const forms = async (req: Request, res: Response) => {
         // console.log((req.session as any).email)
         // console.log((req.session as any).editalId)
         // console.log(req.session.uid)
-        const candidate = await CandidateService.findOneCandidate(id)
+        const candidate = await candidateService.findOneCandidate(id)
         // console.log(candidate)
         return res.render('selecaoppgi/forms1', {
           ...locals,
@@ -187,7 +193,7 @@ const forms = async (req: Request, res: Response) => {
         })
       }
       if ((req.session as any).editalPosition === 2) {
-        const candidate = await CandidateService.findOneCandidate(id)
+        const candidate = await candidateService.findOneCandidate(id)
 
         return res.render('selecaoppgi/forms2', {
           ...locals,
@@ -207,7 +213,7 @@ const forms = async (req: Request, res: Response) => {
       }
 
       if ((req.session as any).editalPosition === 3) {
-        await CandidateService.findOneCandidate(id)
+        await candidateService.findOneCandidate(id)
 
         console.log('*************************************************')
         return res.render('selecaoppgi/forms3', {
@@ -263,7 +269,7 @@ const form1 = async (req: Request, res: Response) => {
         }
         const id = parseInt(req.session.uid!)
 
-        const candidate = await CandidateService.form1(Candidato, id);
+        const candidate = await candidateService.form1(Candidato, id);
 
         (req.session as any).editalPosition = candidate!.editalPosition
         res.status(200).send()
@@ -331,7 +337,8 @@ const form2 = async (req: Request, res: Response) => {
 const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(Number(req.session.uid))
+      const uid = Number(req.session.uid)
+      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(uid)
 
       // const periodicos = data.periodicos.map((periodico: { toJSON: () => any }) => periodico.toJSON())
       const periodicos = data.periodicos.map((periodico: any) => periodico.toJSON())
@@ -371,12 +378,14 @@ const formPublicacoes = async (req: Request, res: Response) => {
 
         const promises = []
 
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), periodicos, 1))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), eventos, 2))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), livros, 3))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), capitulos, 4))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), outras, 5))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), prefacios, 6))
+        const uid = Number(req.session.uid)
+
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, periodicos, 1))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, eventos, 2))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, livros, 3))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, capitulos, 4))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, outras, 5))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, prefacios, 6))
 
         const results = await Promise.allSettled(promises)
 
@@ -403,7 +412,7 @@ const candidates = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
-        candidates: await CandidateService.list()
+        candidates: await candidateService.list()
       })
     default:
       return res.status(400).send()
@@ -422,7 +431,7 @@ const voltar = async (req: Request, res: Response) => {
       // res.redirect('/selecaoppgi')
       console.log(editalPosicao)
 
-      const candidate = await CandidateService.back(id);
+      const candidate = await candidateService.back(id);
       (req.session as any).editalPosition = editalPosicao
       res.status(200).send()
     }

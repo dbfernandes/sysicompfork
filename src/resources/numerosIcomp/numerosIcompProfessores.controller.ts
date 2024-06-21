@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
-import UsuarioService from '../usuarios/usuario.service';
-import DocenteService from '../docente/docente.service';
-import path from 'path'
+import docenteService from '../docente/docente.service';
+import usuarioService from '../usuarios/usuario.service';
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
 
 // Escolha do Layout
 const layoutMain = {
@@ -23,10 +19,10 @@ const professores = async (req: Request, res: Response) => {
     case 'GET':
       try {
         const { lng } = req.query;
-        const professores = await UsuarioService.listarTodosPorCondicao({
+        const professores = await usuarioService.listarTodosPorCondicao({
           professor: 1
         });
-        return res.status(200).render(resolveView('docentes'), {
+        return res.status(200).render('numerosIcomp/docentes', {
           lng,
           professores,
           ...layoutMain
@@ -47,11 +43,12 @@ const perfil = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await docenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        return res.render(resolveView('perfil/perfil'), {
+        return res.render('numerosIcomp/perfil/perfil', {
           lng,
           professor,
           ...layoutDashboard
@@ -70,11 +67,12 @@ const publicacoes = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await docenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const publicacoes = await DocenteService.listarPublicacoes(id);
+        const publicacoes = await docenteService.listarPublicacoes(userId);
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(11).keys()].map(i => i + currentYear - 10);
@@ -98,7 +96,7 @@ const publicacoes = async (req: Request, res: Response) => {
           }
         });
 
-        return res.render(resolveView('perfil/perfil-publicacao'), {
+        return res.render('numerosIcomp/perfil/perfil-publicacao', {
           lng,
           professor,
           publicacoes,
@@ -125,11 +123,15 @@ const pesquisa = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await docenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const projetos = await DocenteService.listarPesquisas(id);
+        const projetos = await docenteService.listarPesquisas(userId);
+        if (!projetos){
+          return res.status(404).send('Não encontrou as pesquisas')
+        }
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(10).keys()].map(i => i + currentYear - 9);
@@ -147,7 +149,7 @@ const pesquisa = async (req: Request, res: Response) => {
             }
           });
         });
-        return res.render(resolveView('perfil/perfil-projeto'), {
+        return res.render('numerosIcomp/perfil/perfil-projeto', {
           lng,
           professor,
           projetos,
@@ -171,16 +173,17 @@ const orientacao = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id, tipo } = req.params;
+        const userId = Number(id)
         const tipos = ['graduacao', 'mestrado', 'doutorado'];
         const t = tipos.findIndex(e => e === tipo) + 1;
         if (t === 0) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const professor = await DocenteService.listarPerfil(id);
+        const professor = await docenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const orientacoes = await DocenteService.listarOrientacoes(id, t);
+        const orientacoes = await docenteService.listarOrientacoes(userId, t);
 
         const currentYear = new Date().getFullYear();
         const anos = [...Array(10).keys()].map(i => i + currentYear - 9);
@@ -206,7 +209,7 @@ const orientacao = async (req: Request, res: Response) => {
           }
         });
 
-        return res.render(resolveView('perfil/perfil-orientacao'), {
+        return res.render('numerosIcomp/perfil/perfil-orientacao', {
           lng,
           professor,
           orientacoes,
@@ -232,13 +235,17 @@ const premios = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const professor = await DocenteService.listarPerfil(id);
+        const userId = Number(id)
+        const professor = await docenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
-        const premios = await DocenteService.listarPremios(id);
+        const premios = await docenteService.listarPremios(userId);
+        if (!premios){
+          return res.status(404).send('Não encontrou premios')
+        }
 
-        return res.render(resolveView('perfil/perfil-premio'), {
+        return res.render('numerosIcomp/perfil/perfil-premio', {
           lng,
           premios,
           professor,

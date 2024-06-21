@@ -1,7 +1,7 @@
 import express from 'express'
 import { engine } from 'express-handlebars'
 import session from 'express-session'
-import router from './routes'
+import router from './routes/index'
 import dotenv from 'dotenv'
 import * as uuid from 'uuid'
 import cors from 'cors'
