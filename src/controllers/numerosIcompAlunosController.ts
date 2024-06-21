@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import AlunoService from '../services/alunoService'
+import AlunoService from '../resources/alunos/aluno.service'
 
 // Escolha do Layout
 const layoutMain = {

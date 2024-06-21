@@ -11,7 +11,7 @@
   <div class="login-box-body card-body p-4 p-sm-5">
     <div class="login-logo">
         <a href="#"><b>ICOMP</b></a>
-    </div>
+    </div> 
     <!-- /.login-logo -->
     <p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail cadastrado e obtenha uma nova</p>
     {{#if message}}
@@ -20,7 +20,7 @@
       </div>
     {{/if}}
 
-    <form action="/recuperar-senha" method="post">
+    <form action="/recuperarSenha" method="post">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="input-group mb-3">
           <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">

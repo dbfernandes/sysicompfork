@@ -595,7 +595,7 @@ const recuperarSenha = async (req, res) => {
           // const user = await CandidateService.findOne({ where: { email } })
 
           // if (!user)
-          //     return res.render('selecaoppgi/recuperar-senha', {
+          //     return res.render('selecaoppgi/recuperarSenha', {
           //         message: "Usuário não encontrado", type: 'danger'
           //     })
 

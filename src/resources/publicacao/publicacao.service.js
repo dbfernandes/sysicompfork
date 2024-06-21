@@ -1,13 +1,13 @@
 import sequelize, { Op } from 'sequelize'
 import { distance } from 'fastest-levenshtein'
 
-import getPublicationsArr from '../utils/listaPublicacoes'
-const { Publicacao, Usuario, TipoPublicacao, RelUsuarioPublicacao } = require('../models')
-/* eslint-disable eqeqeq */
+import getPublicationsArr from '../../utils/listaPublicacoes'
+const { Publicacao, Usuario, TipoPublicacao, RelUsuarioPublicacao } = require('../../models')
+/* eslint-disable eqeqeq */ 
 class PublicacaoService {
   async adicionarVarios (
     idProfessor,
-    publicacoes
+    publicacoes 
   ) {
     if (publicacoes !== undefined) {
       let tipos = await TipoPublicacao.findAll()

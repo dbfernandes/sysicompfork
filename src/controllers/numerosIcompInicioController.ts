@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
-import AlunoService from '../services/alunoService'
-import PublicacaoService from '../services/publicacaoService.js'
-
-// Escolha do Layout
+import AlunoService from '../resources/alunos/aluno.service'
+import PublicacaoService from '../resources/publicacao/publicacao.service'
+ 
+// Escolha do Layout 
 const layoutMain = {
   layout: 'numerosIcompMain'
 }
 
 // Home-page
-
+ 
 const inicio = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':

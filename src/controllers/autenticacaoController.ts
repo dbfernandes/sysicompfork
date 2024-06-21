@@ -1,13 +1,8 @@
-import UsuarioService from '../usuarios/usuario.service'
+import UsuarioService from '../services/usuarioService'
 import { Request, Response, NextFunction } from 'express'
-import mailer from '../../modules/mailer'
+import mailer from '../modules/mailer'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
-import path from 'path'
-
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
 
 const autorizarAdmin = async (req: Request, res: Response, next: NextFunction) => {
   if (req.session.tipoUsuario?.administrador || req.session.tipoUsuario?.secretaria) next()
@@ -35,7 +30,7 @@ const autorizarProf = async (req: Request, res: Response, next: NextFunction) =>
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     if (req.session.uid) return res.redirect('/')
-    return res.render(resolveView('login'), {
+    return res.render('autenticacao/login', {
       csrfToken: req.csrfToken()
     })
   } else if (req.method === 'POST') {
@@ -44,13 +39,13 @@ const login = async (req: Request, res: Response) => {
       const usuario = await UsuarioService.buscarUsuarioPor({ cpf: cpf })
 
       if (!usuario) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
           csrfToken: req.csrfToken(),
           message: 'Usuário não cadastrado',
           type: 'danger'
         })
       } else if (usuario.status === 0) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
           csrfToken: req.csrfToken(),
           message: 'Usuário bloqueado. Contate a administração.',
           type: 'danger'
@@ -59,14 +54,14 @@ const login = async (req: Request, res: Response) => {
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash)
       if (!isSenhaCorreta) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
           csrfToken: req.csrfToken(),
           message: 'Senha inválida',
           type: 'danger'
         })
       }
 
-      req.session.uid = usuario.id
+      req.session.uid = String(usuario.id)
       req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
         usuario.nomeCompleto.split(' ').length > 1
           ? ' ' +
@@ -81,7 +76,7 @@ const login = async (req: Request, res: Response) => {
         secretaria: usuario.secretaria,
         professor: usuario.professor
       }
-      req.session.uid = usuario.id
+      req.session.uid = String(usuario.id)
       return res.redirect('/inicio')
     } catch (err) {
       console.log(err)
@@ -97,7 +92,7 @@ const recuperarSenha = async (req: Request, res: Response) => {
       const user = await UsuarioService.buscarUsuarioPor({ email: email })
 
       if (!user) {
-        return res.render(resolveView('recuperarSenha'), {
+        return res.render('autenticacao/recuperarSenha', {
           csrfToken: req.csrfToken(),
           message: 'Usuário não encontrado',
           type: 'danger'
@@ -121,7 +116,7 @@ const recuperarSenha = async (req: Request, res: Response) => {
         },
         (err: any) => {
           if (err) {
-            return res.render(resolveView('recuperarSenha'), {
+            return res.render('autenticacao/recuperarSenha', {
               csrfToken: req.csrfToken(),
               message:
                 'Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde',
@@ -129,7 +124,7 @@ const recuperarSenha = async (req: Request, res: Response) => {
             })
           }
 
-          return res.render(resolveView('recuperarSenha'), {
+          return res.render('autenticacao/recuperarSenha', {
             csrfToken: req.csrfToken(),
             message: 'Token enviado para o e-mail cadastrado',
             type: 'success'
@@ -138,14 +133,14 @@ const recuperarSenha = async (req: Request, res: Response) => {
       )
     } catch (err) {
       console.log(err)
-      return res.render(resolveView('recuperarSenha'), {
+      return res.render('autenticacao/recuperarSenha', {
         csrfToken: req.csrfToken(),
         message: 'Erro durante a recuperação de senha, tente novamente.',
         type: 'danger'
       })
     }
   } else if (req.method === 'GET') {
-    return res.render(resolveView('recuperarSenha'), {
+    return res.render('autenticacao/recuperarSenha', {
       csrfToken: req.csrfToken()
     })
   }

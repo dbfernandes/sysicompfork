@@ -54,7 +54,7 @@ router.all('/entrar', selecaoppgiController.login)
 router.all('/logout', selecaoppgiController.logout)
 router.all('/editCandidate', selecaoppgiController.editCandidate)
 router.all('/formulario/1', selecaoppgiController.form1)
-router.all('/formulario/2', (req, res) => { 
+router.all('/formulario/2', (req: any, res) => { 
   uploads(req, res, function (err) {
     if (err) {
       console.error('Erro ao fazer upload de arquivos:')
@@ -65,7 +65,7 @@ router.all('/formulario/2', (req, res) => {
   })
 })
 
-router.all('/formulario/3', (req, res) => { 
+router.all('/formulario/3', (req: any, res) => { 
   uploadsProposta(req, res, function (err) {
     if (err) {
       console.error('Erro ao fazer upload de arquivos:')
@@ -76,7 +76,7 @@ router.all('/formulario/3', (req, res) => {
   })
 })
 
-router.all('/formulario/publicacoes', (req, res) => {
+router.all('/formulario/publicacoes', (req: any, res) => {
   uploads(req, res, function (err) {
     if (err) {
       console.log(err)

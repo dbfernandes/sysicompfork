@@ -1,5 +1,5 @@
 import {Request, Response} from 'express'
-import afastamentoService from '../services/afastamentoService'
+import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service'
 const pageTitle = 'Afastamento Temporário'
 
 const listar = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ const listar = async (req: Request, res: Response) => {
       const doesNotExists = !afastamentos || afastamentos.length === 0
       if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado')
 
-      return res
+      return res 
         .status(200)
         .render('afastamentoTemporario/pedidos-afastamento',
           {
@@ -81,7 +81,7 @@ const criar = async (req: Request, res: Response) => {
         tipoUsuario: req.session.tipoUsuario,
         error: error.message || 'Não foi possível criar o pedido de afastamento!'
       })
-    }
+    } 
   }
   return res.redirect('/afastamentoTemporario/listar')
 }

@@ -7,7 +7,7 @@ import selecaoppgiRouter from './selecaoppgi.routes'
 import numerosIcompRouter from './numerosIcomp.routes'
 import linhasDePesquisaRouter from '../resources/linhasDePesquisa/linhasDePesquisa.router'
 import salasRoutes from './salas.routes'
-import perfilRoutes from './perfil.routes'
+import perfilRoutes from './perfil.routes' 
 import autenticacaoController from '../controllers/autenticacaoController'
 import reservasRoutes from './reservas.routes'
 import horasComplementaresRoutes from './horasComplementares.routes'
@@ -29,8 +29,8 @@ const router = express.Router()
 
 router.get('/login', autenticacaoController.login)
 router.post('/login', autenticacaoController.login)
-router.get('/recuperar-senha', autenticacaoController.recuperarSenha)
-router.post('/recuperar-senha', autenticacaoController.recuperarSenha)
+router.get('/recuperarSenha', autenticacaoController.recuperarSenha)
+router.post('/recuperarSenha', autenticacaoController.recuperarSenha)
 router.get('/logout', autenticacaoController.logout)
 
 router.use('/selecaoppgi', selecaoppgiRouter)

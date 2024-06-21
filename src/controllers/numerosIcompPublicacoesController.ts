@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PublicacaoService from '../services/publicacaoService.js';
+import PublicacaoService from '../resources/numerosIcomp/numerosIcomp.routes';
 
 // Escolha do Layout
 const layoutMain = {
@@ -27,13 +27,13 @@ const publicacao = async (req: Request, res: Response): Promise<Response | void>
           }
         }
 
-        const publicacoes = await PublicacaoService.listarTodos(conditions);
+        // const publicacoes = await PublicacaoService.listarTodos(conditions);
 
         return res.render('numerosIcomp/publicacoes', {
           lng,
           ...layoutMain,
-          publicacoes,
-          ano
+          // publicacoes,
+          ano 
         });
       } catch (error) {
         return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
