@@ -89,6 +89,8 @@ model Candidato {
   id                    BigInt    @id @default(autoincrement())
   posicaoEdital         Int?      @db.SmallInt
   senhaHash             String    @db.VarChar(255)
+  tokenResetSenha       String?   @db.VarChar(255)
+  validadeTokenReset    DateTime? @db.DateTime(0)
   idEdital              String    @db.VarChar(255)
   idLinhaPesquisa       Int?      @db.Int
   nome                  String?   @db.VarChar(60)

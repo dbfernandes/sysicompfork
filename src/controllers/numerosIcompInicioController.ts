@@ -5,7 +5,7 @@ import PublicacaoService from '../resources/publicacao/publicacao.service'
 // Escolha do Layout 
 const layoutMain = {
   layout: 'numerosIcompMain'
-}
+}  
 
 // Home-page
  

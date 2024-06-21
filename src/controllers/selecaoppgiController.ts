@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
 
 import candidatePublicacaoService from "../services/candidatePublicacaoService";
 import CandidateService from "../services/candidateService";
@@ -6,8 +7,7 @@ import candidatoExperienciaAcademicaService from "../services/candidatoExperienc
 import candidatoService from "../services/candidatoService";
 import EditalService from "../services/editalService";
 import linhasDePesquisaService from "../resources/linhasDePesquisa/linhasDePesquisa.service";
-import mailer from '../utils/mailer'
-import crypto from 'crypto'
+import mailerGrid from "../utils/mailerGrid";
 const fs = require("fs");
 const path = require("path");
 
@@ -440,7 +440,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
           instituicaoGraduacao: body.instituicaoGraduacao,
           anoEgressoGraduacao: body.anoEgressoGraduacao,
           cursoPos: body.cursoPos,
-          instituicaoPos : body.instituicaoPos,
+          instituicaoPos: body.instituicaoPos,
           anoEgressoPos: body.anoEgressoPos,
           posicaoEdital: 3,
         };
@@ -509,7 +509,11 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
           )
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(Number(req.session.uid), livros, 3)
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            livros,
+            3
+          )
         );
         promises.push(
           candidatePublicacaoService.adicionarVarios(
@@ -519,7 +523,11 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
           )
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(Number(req.session.uid), outras, 5)
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            outras,
+            5
+          )
         );
         promises.push(
           candidatePublicacaoService.adicionarVarios(
@@ -585,64 +593,112 @@ const refresh = async (req: CustomRequest, res: Response) => {
   res.redirect("/selecaoppgi/formulario");
 };
 
-
 const recuperarSenha = async (req, res) => {
-  if (req.method === 'POST') {
-
-      const { email } = req.body
-
-      try {
-          // const user = await CandidateService.findOne({ where: { email } })
-
-          // if (!user)
-          //     return res.render('selecaoppgi/recuperarSenha', {
-          //         message: "Usuário não encontrado", type: 'danger'
-          //     })
-
-          const token = crypto.randomBytes(20).toString('hex')
-
-          const now = new Date()
-
-          now.setHours(now.getHours() + 1)
-
-          // await CandidateService.update({
-          //     password_reset_token: token,
-          //     password_reset_expires: now
-          // }, {
-          //     where: { id: user.id }
-          // })
-
-        
-          mailer.sendMail({
-              to: email,
-              from: 'api@test.com.br',
-              subject: 'Forgot Password?',
-              template: 'auth/forgot_password',
-              context: { token }
-          }, (err) => {
-              if (err)
-                  return res.render('selecaoppgi/recuperarSenha', {
-                      message: "Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde",
-                      type: 'danger'
-                  })
-
-              return res.render('selecaoppgi/recuperarSenha', {
-                  message: "Token enviado para o e-mail cadastrado", type: 'success'
-              })
-          })
-
-      } catch (err) {
-          console.log(err)
-          return res.render('selecaoppgi/recuperarSenha', {
-              message: "Erro durante a recuperação de senha, tente novamente.",
-              type: 'danger'
-          })
+  switch (req.method) {
+    case "GET": {
+      const listEditais = await EditalService.listEdital();
+      return res.render("selecaoppgi/recuperarSenha", {
+        editais: listEditais,
+        csrfToken: req.csrfToken(),
+        ...locals,
+      });
+    }
+    case "POST": {
+      // const { email } = req.body;
+      if (!req.body.email || !req.body.editalId) {
+        return res.status(400).send();
       }
+      const { email, editalId: edital } = req.body;
+      const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+        email,
+        edital,
+      });
+      if (!candidate) {
+        return res.status(404).send();
+      }
+
+      const token = await candidatoService.updateTokenPassword({
+        id: candidate.id,
+      });
+
+      const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
+      mailerGrid
+        .send({
+          to: email, // Change to your recipient
+          from: {
+            email: process.env.SENDGRID_EMAIL_SEND,
+            name: "Coordenação do PPGI",
+          }, // Change to your verified sender
+          subject: "[PPGI] Troca de senha",
+          text: "and easy to do anywhere, even with Node.js",
+          html: `
+        <div>
+          Prezando(a) candidato
+          <br>
+          Por favor, clique no link abaixo para criar uma nova senha:
+          <br>
+          <p><a href="${url}">${url}</a></p>
+          <br>
+          Atenciosamente,
+          <br>
+          Coordenação do Icomp
+          <br>
+          Instituto de Computação (IComp)
+          <br>
+          Universidade Federal do Amazonas (UFAM)
+        </div>`,
+        })
+        .catch((error) => {
+          console.error(error);
+          return res.status(500).send();
+        });
+      return res.status(200).send();
+    }
+    default:
+      return res.status(405).send();
   }
-  else if (req.method === 'GET'){
-      return res.render('selecaoppgi/recuperarSenha')
+};
+
+const trocarSenha = async (req, res: Response) => {
+  switch (req.method) {
+    case "GET": {
+      const candidate = await candidatoService.findByTokenPassword(req.query.token as string);
+
+      if (!candidate) {
+        return res.render("selecaoppgi/trocarSenha", { 
+          error: "Token inválido",
+          csrfToken: req.csrfToken(),
+          ...locals,
+        });
+      }
+      return res.render("selecaoppgi/trocarSenha",
+        { 
+          csrfToken: req.csrfToken(),
+          token: req.query.token,
+          ...locals,
+        });
+    }
+    case "PUT": {
+      const { password, token } = req.body;
+      if (!password || !token) {
+        return res.status(400).send();
+      }
+      const result = await candidatoService.changePasswordWithToken({
+        token,
+        password,
+      });
+
+      if (!result) {
+        return res.status(404).send();
+      }
+
+      return res.status(200).send();
+    }
+    default:
+      return res.status(405).send();
   }
-}
+};
+
 export default {
   begin,
   signUp,
@@ -658,5 +714,6 @@ export default {
   formProposta,
   editCandidate,
   backToStart,
-  recuperarSenha
-}; 
+  recuperarSenha,
+  trocarSenha,
+};
