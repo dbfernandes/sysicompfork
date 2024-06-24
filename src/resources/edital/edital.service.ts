@@ -179,14 +179,13 @@ class EditalService {
     return candidates
   }
 
-  async getCandidate(id: string): Promise<Candidate | null> {
+  async getCandidate(id: number): Promise<Candidate | null> {
     try {
-      const candidate = await prisma.candidate.findFirst({
+      return await prisma.candidate.findFirst({
         where: {
-          id: Number(id)
+          id: id
         }
       })
-      return candidate
     } catch (error) {
       console.log(`[ERROR] Buscar Candidato: ${error}`)
       throw new Error('Não foi possivel buscar o candidato')

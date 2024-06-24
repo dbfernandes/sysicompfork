@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import PublicacaoService from '../publicacao/publicacao.service'
+import { tipoConditions } from './numerosIcomp.types';
 import path from 'path'
 
 function resolveView(viewName: string): string {
@@ -23,7 +24,7 @@ const publicacao = async (req: Request, res: Response) => {
         // if (ano) {
         //   conditions.ano = ano
         // }
-        const conditions: { tipo: number[]; ano?: string } = {
+        const conditions: tipoConditions = {
           tipo: [1, 2],
           ano: ''
         }

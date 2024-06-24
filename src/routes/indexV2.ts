@@ -56,7 +56,7 @@ router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes)
 router.use('/horascomplementares', autenticacaoController.autorizarProf, horasComplementaresRoutes)
 router.use('/afastamentotemporario', autenticacaoController.autorizarProf, afastamentoTemporarioRoutes)
 router.use('/gerarPDF/:id', pdfController.gerarPDF)
-router.use('/gerarCandidatoPDF/:id', editalController.gerarCandidatoPDF)
+router.use('/downloadCandidateDocument/:id', editalController.getCandidateDocument)
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes)
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes)
