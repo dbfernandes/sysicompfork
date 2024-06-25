@@ -4,6 +4,7 @@ import mailer from '../../modules/mailer'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import path from 'path'
+import usuarioService from '../usuarios/usuario.service'
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -41,7 +42,7 @@ const login = async (req: Request, res: Response) => {
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body
-      const usuario = await UsuarioService.buscarUsuarioPor({ cpf: cpf })
+      const usuario = await usuarioService.buscarUsuarioPor({ cpf: cpf })
 
       if (!usuario) {
         return res.render(resolveView('login'), {

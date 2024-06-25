@@ -1,7 +1,6 @@
 import express from 'express'
 import multer from 'multer'
 import curriculoController from './curriculo.controller'
-import { Request, Response } from 'express'
 import path from 'path'
 const storage = multer.diskStorage({ // configuração do armazenamento das imagens
   destination: (req, file, callback) => {

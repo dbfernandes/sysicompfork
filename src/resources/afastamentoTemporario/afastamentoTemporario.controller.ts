@@ -5,59 +5,55 @@ import { CreateAfastamentoTemporarioDto } from './afastamentoTemporario.types'
 const pageTitle = 'Afastamento Temporário'
 
 function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
+  return path.resolve(__dirname, "views", viewName);
 }
-
 
 const listar = async (req: Request, res: Response) => {
   try {
     if (req.session.tipoUsuario?.administrador) {
-      console.log('Acessando como Administrador')
-      const afastamentos = await afastamentoService.listarTodos()
-      const doesNotExists = !afastamentos || afastamentos.length === 0
-      if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado')
+      console.log("Acessando como Administrador");
+      const afastamentos = await afastamentoService.listarTodos();
+      const doesNotExists = !afastamentos || afastamentos.length === 0;
+      if (doesNotExists)
+        throw new Error("Nenhum pedido de afastamento encontrado");
 
-      return res
-        .status(200)
-        .render(resolveView('pedidos-afastamento'),
-          {
-            afastamentos,
-            pageTitle,
-            csrfToken: req.csrfToken(),
-            tipoUsuario: req.session.tipoUsuario
-          })
+      return res.status(200).render(resolveView("pedidos-afastamento"), {
+        afastamentos,
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario,
+      });
     } else {
       console.log('Acessando como Usuário')
       const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(parseInt(req.session.uid!))
       const doesNotExists = !afastamentos || afastamentos.length === 0
       if (doesNotExists) throw new Error('Nenhum pedido de afastamento encontrado')
 
-      return res
-        .status(200)
-        .render(resolveView('pedidos-afastamento'),
-          {
-            afastamentos,
-            pageTitle,
-            csrfToken: req.csrfToken(),
-            tipoUsuario: req.session.tipoUsuario
-          })
+      return res.status(200).render(resolveView("pedidos-afastamento"), {
+        afastamentos,
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario,
+      });
     }
   } catch (error: any) {
-    return res.render(resolveView('pedidos-afastamento'), {
+    return res.render(resolveView("pedidos-afastamento"), {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
-      error: error.message || 'Não foi possível listar os pedidos de afastamento!'
-    })
+      error:
+        error.message || "Não foi possível listar os pedidos de afastamento!",
+    });
   }
-}
+};
 
 const criar = async (req: Request, res: Response) => {
-  if (req.method === 'GET') {
-    return res.status(200)
-      .render(resolveView('solicitar-afastamento'), {
-        pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session.tipoUsuario
-      })
+  if (req.method === "GET") {
+    return res.status(200).render(resolveView("solicitar-afastamento"), {
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session.tipoUsuario,
+    });
   } else {
     try {
       const { uid, nome } = req.session
@@ -81,16 +77,17 @@ const criar = async (req: Request, res: Response) => {
       }
       await afastamentoService.criar(afastamento)
     } catch (error: any) {
-      return res.render(resolveView('solicitar-afastamento'), {
+      return res.render(resolveView("solicitar-afastamento"), {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
-        error: error.message || 'Não foi possível criar o pedido de afastamento!'
-      })
+        error:
+          error.message || "Não foi possível criar o pedido de afastamento!",
+      });
     }
   }
-  return res.redirect('/afastamentoTemporario/listar')
-}
+  return res.redirect("/afastamentoTemporario/listar");
+};
 
 const vizualizar = async (req: Request, res: Response) => {
   try {
@@ -100,32 +97,34 @@ const vizualizar = async (req: Request, res: Response) => {
       afastamento,
       pageTitle,
       csrfToken: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario
-    })
+      tipoUsuario: req.session.tipoUsuario,
+    });
   } catch (error: any) {
-    return res.render(resolveView('pedidos-afastamento'), {
+    return res.render(resolveView("pedidos-afastamento"), {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
-      error: error.message || 'Não foi possível vizualizar o pedido de afastamento!'
-    })
+      error:
+        error.message || "Não foi possível vizualizar o pedido de afastamento!",
+    });
   }
-}
+};
 
-const remover = async (req:Request, res: Response) => {
-  if (req.method === 'POST') {
+const remover = async (req: Request, res: Response) => {
+  if (req.method === "POST") {
     try {
       await afastamentoService.delete(parseInt(req.params.id))
       return res.redirect('/afastamentoTemporario/listar')
     } catch (error: any) {
-      return res.render(resolveView('pedidos-afastamento'), {
+      return res.render(resolveView("pedidos-afastamento"), {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
-        error: error.message || 'Não foi possível remover o pedido de afastamento!'
-      })
+        error:
+          error.message || "Não foi possível remover o pedido de afastamento!",
+      });
     }
   }
-}
+};
 
-export default { criar, listar, vizualizar, remover }
+export default { criar, listar, vizualizar, remover };

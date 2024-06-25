@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './usuario.types';
-import UsuarioService from './usuario.service';
+import usuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
 import path from "path";
@@ -68,7 +68,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           resumoIngles: null,
           ultimaAtualizacao: null
         }
-        await UsuarioService.adicionar(novoUsuario);
+        await usuarioService.adicionar(novoUsuario);
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Criação de usuário bem-sucedida!',
@@ -100,7 +100,7 @@ const deletar = async (req: Request, res: Response): Promise<any> => {
       try {
         const id = req.params.id;
         const userId = Number(id)
-        await UsuarioService.alterar(userId, { status: 0 });
+        await usuarioService.alterar(userId, { status: 0 });
         if (req.session.uid === id) {
           req.session.uid = undefined;
         }
@@ -134,7 +134,7 @@ const restaurar = async (req: Request, res: Response): Promise<any> => {
     case 'POST':
       try {
         const userId = Number(req.params.id)
-        await UsuarioService.alterar(userId, { status: 1 });
+        await usuarioService.alterar(userId, { status: 1 });
         return res.status(200).redirect(
           criarURL('/usuarios/listar', {
             message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
@@ -164,7 +164,7 @@ const listar = async (req: Request, res: Response): Promise<any> => {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query;
-        const usuarios = await UsuarioService.listarTodos();
+        const usuarios = await usuarioService.listarTodos();
         return res.status(200).render(resolveView('usuarios-listar'), {
           usuarios,
           csrfToken: req.csrfToken(),
@@ -195,7 +195,7 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
       try {
         const { message, type, messageTitle } = req.query
 
-        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
+        const usuario = await usuarioService.listarUmUsuario(Number(req.params.id))
         return res.status(200).render(resolveView('usuario-visualizar'), {
           usuario,
           csrfToken: req.csrfToken(),
@@ -221,12 +221,12 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const editar = async (req: Request, res: Response) => {
+const editar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
+        const usuario = await usuarioService.listarUmUsuario(Number(req.params.id))
         return res.status(200).render(resolveView('usuarios-editar'), {
           usuario,
           csrfToken: req.csrfToken(),
@@ -281,7 +281,7 @@ const editar = async (req: Request, res: Response) => {
           ultimaAtualizacao: null
         };
         const userId = Number(req.params.id)
-        await UsuarioService.alterar(userId, dados);
+        await usuarioService.alterar(userId, dados);
 
         return res.status(200).redirect(
           criarURL(`/usuarios/dados/${req.params.id}`, {

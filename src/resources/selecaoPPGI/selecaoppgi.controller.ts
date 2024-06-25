@@ -118,33 +118,34 @@ const login = async (req: Request, res: Response) => {
     }
     case 'POST':
       try {
-        const {
-          email, senha, edital
-        } = req.body
+        const { email, senha, edital } = req.body;
 
         console.log({
           email,
           senha,
-          edital
-        })
+          edital,
+        });
 
         if (!email || !senha || !edital) {
           return res.status(400).json({
-            error: 'Dados incompletos ou mal formatados'
-          })
+            error: 'Dados incompletos ou mal formatados',
+          });
         }
-        const IsCandidateValid = await CandidateService
-          .auth(
-            email,
-            senha,
-            edital
-          )
+        const IsCandidateValid = await CandidateService.auth(
+          email,
+          senha,
+          edital
+        );
 
-        const editais2 = await EditalService.listEdital()
+        const editais2 = await EditalService.listEdital();
+
+        if (!editais2) {
+          return res.status(404).send('Não encontrou premios');
+        }
 
         if (!IsCandidateValid) {
-          console.log('error teste')
-          console.log(req.csrfToken())
+          console.log('error teste');
+          console.log(req.csrfToken());
 
           return res.render(resolveView('login'), {
             csrfToken: req.csrfToken(),
@@ -163,16 +164,16 @@ const login = async (req: Request, res: Response) => {
         (req.session as any).editalId = IsCandidateValid.editalId;
         (req.session as any).uid = IsCandidateValid.id;
         (req.session as any).editalPosition = IsCandidateValid.editalPosition;
-        return res.status(200).send()
+        return res.status(200).send();
       } catch (err) {
-        console.log(err)
-        return res.status(500).send()
+        console.log(err);
+        return res.status(500).send();
       }
 
     default:
-      return res.status(404).send()
+      return res.status(404).send();
   }
-}
+};
 
 const forms = async (req: Request, res: Response) => {
   console.log(req.method)
@@ -364,7 +365,8 @@ const form2 = async (req: Request, res: Response) => {
 const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(Number(req.session.uid))
+      const uid = Number(req.session.uid)
+      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(uid)
 
       // const periodicos = data.periodicos.map((periodico: { toJSON: () => any }) => periodico.toJSON())
       const periodicos = data.periodicos.map((periodico: any) => periodico.toJSON())
@@ -404,12 +406,14 @@ const formPublicacoes = async (req: Request, res: Response) => {
 
         const promises = []
 
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), periodicos, 1))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), eventos, 2))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), livros, 3))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), capitulos, 4))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), outras, 5))
-        promises.push(candidatePublicacaoService.adicionarVarios(Number(req.session.uid), prefacios, 6))
+        const uid = Number(req.session.uid)
+
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, periodicos, 1))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, eventos, 2))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, livros, 3))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, capitulos, 4))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, outras, 5))
+        promises.push(candidatePublicacaoService.adicionarVarios(uid, prefacios, 6))
 
         const results = await Promise.allSettled(promises)
 

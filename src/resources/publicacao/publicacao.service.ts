@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
-import getPublicationsArr from '../utils/listaPublicacoes';
+import getPublicationsArr from '../../utils/listaPublicacoes';
 
 const prisma = new PrismaClient();
 

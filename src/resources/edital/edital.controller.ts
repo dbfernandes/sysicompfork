@@ -5,7 +5,7 @@ import editalGerarPlanilha from '../../utils/editalGerarPlanilha'
 import archiver from 'archiver'
 import path from 'path'
 import editalService from './edital.service'
-import { error } from 'console'
+
 /* eslint-disable camelcase */
 const fs = require('fs')
 const os = require('os')
@@ -14,9 +14,8 @@ const locals = {
 }
 
 function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
+  return path.resolve(__dirname, 'views', viewName)
 }
-
 
 const addEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -74,12 +73,12 @@ const listEditalSelecao = async (req: Request, res: Response) => {
       return res.render(resolveView('listSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
-        editais: await EditalService.listEdital(),
+        editais: await editalService.listEdital(),
         tipoUsuario: req.session.tipoUsuario
       })
 
     case 'POST': {
-      const editais = await EditalService.listEdital().catch((err) => {
+      const editais = await editalService.listEdital().catch((err) => {
         return res.status(400).json({
           error: err.message
         })
@@ -97,7 +96,7 @@ const deleteEdital = async (req: Request, res: Response) => {
          const { id } = req.params;
 
          try {
-            await EditalService.delete(id);  
+            await editalService.delete(id);  
          }catch (error: any) {
             return res.status(400).json({
                csrfToken: req.csrfToken(),
@@ -118,7 +117,7 @@ const arquivarEdital = async (req: Request, res: Response) => {
     case 'PUT': {
       const { status } = await req.body
 
-      const edital_update = await EditalService.arquivar(id_edital, {
+      const edital_update = await editalService.arquivar(id_edital, {
         status
       }).catch((err) => {
         return res.status(400).json({
@@ -138,11 +137,15 @@ const viewEdital = async (req: Request, res: Response) => {
       const {
         id
       } = req.params
-      const edital = await EditalService.getEdital(id).catch((err) => {
-        return res.status(400).json({
-          error: err.message
-        })
-      })
+      if (!id) {
+        return res.status(400).json({ error: 'ID not found' });
+      }
+      const edital = await editalService.getEdital(id)
+
+      if (!edital) {
+        return res.status(404).json({ error: 'Edital não encontrado' });
+      }
+
       return res.render(resolveView('viewSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -207,12 +210,16 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       const {
         id
       } = req.params
-      const edital = await EditalService.getEdital(id).catch((err) => {
-        return res.status(400).json({
-          error: err.message
-        })
-      })
-      return res.render(resolveView('listCandidates'), {
+      if (!id) {
+        return res.status(404).json({ error: 'id não encontrado' });
+      }
+      const edital = await editalService.getEdital(id)
+
+      if (!edital) {
+        return res.status(404).json({ error: 'Edital não encontrado' });
+      }
+
+      return res.render('edital/listCandidates', {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -224,13 +231,10 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       const {
         id_edital
       } = req.params
-      const candidates = await EditalService.listCandidates(id_edital).catch(
-        (err) => {
-          return res.status(400).json({
-            error: err.message
-          })
-        }
-      )
+      const candidates = await editalService.listCandidates(id_edital)
+      if (!candidates) {
+        return candidates
+      }
       return res.status(200).json(candidates)
     }
   }
@@ -238,7 +242,7 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
 
 const editalCandidates = async (req: Request, res: Response) => {
   const editalID = req.params.id
-  const candidates = await EditalService.listCandidates(editalID).catch(
+  const candidates = await editalService.listCandidates(editalID).catch(
     (err: any) => {
       return res.status(400).json({
         error: err.message
@@ -261,8 +265,7 @@ const editalCandidates = async (req: Request, res: Response) => {
     tipoUsuario: req.session.tipoUsuario,
     quantidaDeInscricaoAndamento,
     quantidaIncricaoFinalizada
-
-  })
+  });
 }
 
 const geraPlanilha = async (req: Request, res: Response) => {

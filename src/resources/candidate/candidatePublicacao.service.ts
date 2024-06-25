@@ -1,105 +1,113 @@
 import { PrismaClient } from '@prisma/client'
 import { CreateCandidatePublicationsDto } from './candidatePublicacao.types'
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
+// import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+interface Publicacao {
+  titulo?: string;
+  ano?: string | number;
+  local?: string;
+  natureza?: string;
+  autores: {
+    nomeCompleto: string[];
+  };
+  ISSN?: string;
+}
 
 class CandidatePublicacaoService {
-  async adicionarVarios (
+  async adicionarVarios(
     idCandidate: number,
-    publicacoes: any[],
+    publicacoes: Publicacao[],
     tipoPublicacao: number
-  ) {
+  ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
-      const publicacoesParaInserir = publicacoes.map(publicacao => ({
-        idCandidate,
-        titulo: publicacao.titulo || '',
-        ano: parseInt(publicacao.ano) || '',
-        local: publicacao.local || '',
-        tipo: tipoPublicacao,
-        natureza: publicacao.natureza || '',
-        autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-        ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : ''
-      }))
+      const publicacoesParaInserir = publicacoes.map((publicacao) => {
+        const ano = publicacao.ano ? parseInt(publicacao.ano.toString()) : null;
 
-      publicacoesParaInserir.forEach(async publicacao => {
+        const publicacaoData: any = {
+          idCandidate,
+          titulo: publicacao.titulo || '',
+          local: publicacao.local || '',
+          tipo: tipoPublicacao,
+          natureza: publicacao.natureza || '',
+          autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
+          ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : '',
+        };
+
+        if (ano !== null) {
+          publicacaoData.ano = ano;
+        }
+
+        return publicacaoData;
+      });
+
+      for (const publicacao of publicacoesParaInserir) {
         try {
           const existingPublication = await prisma.candidatePublications.findFirst({
             where: {
               idCandidate,
               titulo: publicacao.titulo,
-              ano: Number(publicacao.ano),
-              tipo: tipoPublicacao
-            }
-          })
+              ano: publicacao.ano,
+              tipo: tipoPublicacao,
+            },
+          });
 
           if (existingPublication) {
             await prisma.candidatePublications.update({
               where: {
                 id_idCandidate: {
-                  id: Number(existingPublication.id),
-                  idCandidate: Number(existingPublication.idCandidate)
-                }
+                  id: existingPublication.id,
+                  idCandidate: existingPublication.idCandidate,
+                },
               },
-              data: {
-                titulo: publicacao.titulo,
-                ano: Number(publicacao.ano),
-                local: publicacao.local,
-                natureza: publicacao.natureza,
-                autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-                ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : ''
-              }
-            })
-            console.log(`Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`)
+              data: publicacao,
+            });
+            console.log(`Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`);
           } else {
-            // await CandidatePublications.create(publicacao)
             await prisma.candidatePublications.create({
-              data: {
-                idCandidate,
-                titulo: publicacao.titulo,
-                ano: Number(publicacao.ano),
-                local: publicacao.local,
-                tipo: tipoPublicacao,
-                natureza: publicacao.natureza,
-                autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-                ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : ''
-              }
-            })
-            console.log(`Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidate}!`)
+              data: publicacao,
+            });
+            console.log(`Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidate}!`);
           }
         } catch (error) {
-          console.error(`Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidate}: ${error}`)
-          throw new Error('Não foi possível criar/atualizar a publicação')
+          console.error(
+            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidate}: ${error}`
+          );
+          throw new Error('Não foi possível criar/atualizar a publicação');
         }
-      })
+      }
     }
   }
 
-  async ListarPublicacoesCandidate (idCandidate: number) {
+  async ListarPublicacoesCandidate(idCandidate: number): Promise<{ periodicos: any[]; conferencias: any[] }> {
     try {
       const periodicos = await prisma.candidatePublications.findMany({
         where: {
           idCandidate,
-          tipo: 1
-        }
-      })
+          tipo: 1,
+        },
+      });
 
       const conferencias = await prisma.candidatePublications.findMany({
         where: {
           idCandidate,
-          tipo: 2
-        }
-      })
+          tipo: 2,
+        },
+      });
 
       const data = {
         periodicos,
-        conferencias
-      }
-      return data
+        conferencias,
+      };
+      return data;
     } catch (error) {
-      console.error(`Erro ao listar publicações do candidato ${idCandidate}: ${error}`)
-      throw new Error('Não foi possível listar as publicações')
+      console.error(`Erro ao listar publicações do candidato ${idCandidate}: ${error}`);
+      throw new Error('Não foi possível listar as publicações');
     }
   }
 }
 
-export default new CandidatePublicacaoService()
+export default new CandidatePublicacaoService();

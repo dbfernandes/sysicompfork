@@ -3,26 +3,6 @@ import { tipoOrientacao, tipoPublicacao } from './docente.types';
 
 const prisma = new PrismaClient();
 
-// interface Publicacao extends tipoPublicacao {
-//   id: number;
-//   titulo: string;
-//   ano: number;
-//   local: string | null;
-//   tipo: number;
-//   natureza: string | null;
-//   autores: string;
-//   ISSN: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   TipoPublicacao: {
-//     id: number;
-//     nome: string;
-//     chave: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-//   };
-// }
-
 class DocenteService {
   async listarPerfil(id: number) {
     const usuario = await prisma.usuario.findUnique({

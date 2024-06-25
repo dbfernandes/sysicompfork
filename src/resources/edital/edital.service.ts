@@ -34,7 +34,7 @@ class EditalService {
     return editais
   }
 
-  async delete(id: string) {
+  async delete (id: string) {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
@@ -59,7 +59,7 @@ class EditalService {
     }
   }
 
-  async arquivar(id_edital: string, {
+  async arquivar (id_edital: string, {
     status
   }: { status: any }) {
     const edital = await prisma.edital.findFirst({
@@ -107,31 +107,6 @@ class EditalService {
   }
 
   async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
-    // const edital = await prisma.edital.findFirst({
-    //   where: {
-    //     editalId: id_update
-    //   }
-    // }).catch(err => {
-    //   console.log(`[ERROR] Buscar Edital: ${err}`)
-    //   console.log('{this.id_update}', id_update)
-    //   throw new Error('Não foi possivel buscar o edital')
-    // })
-
-    // if (!edital) {
-    //   throw new Error('Edital não encontrado')
-    // }
-    // await prisma.edital.update({
-    //   where: {
-    //     editalId: id_update
-    //   },
-    //   data: dados
-    //   // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
-    // }).catch(err => {
-    //   console.log(`[ERROR] Atualizar Edital: ${err}`)
-    //   throw new Error('Não foi possivel atualizar o edital')
-    // })
-
-    // return edital
     try {
       const edital = await prisma.edital.findFirst({
         where: {

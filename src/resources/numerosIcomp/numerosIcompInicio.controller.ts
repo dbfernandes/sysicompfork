@@ -1,11 +1,7 @@
 import { Request, Response } from 'express'
-import AlunoService from '../alunos/aluno.service'
-import PublicacaoService from '../publicacao/publicacao.service'
-import path from 'path'
+import alunoService from '../alunos/aluno.service'
+import publicacaoService from '../publicacao/publicacao.service'
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
 // Escolha do Layout
 const layoutMain = {
   layout: 'numerosIcompMain'
@@ -18,9 +14,9 @@ const inicio = async (req: Request, res: Response) => {
     case 'GET':
       try {
         const { lng } = req.query
-        const contagem = await AlunoService.contarTodos()
-        const contagemPublicacoes = await PublicacaoService.contarTodos()
-        return res.status(200).render(resolveView('inicio'), {
+        const contagem = await alunoService.contarTodos()
+        const contagemPublicacoes = await publicacaoService.contarTodos()
+        return res.status(200).render('numerosIcomp/inicio', {
           ...layoutMain,
           contagem,
           contagemPublicacoes,
