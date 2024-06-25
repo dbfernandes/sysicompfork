@@ -2,7 +2,6 @@ import express from 'express'
 import { engine } from 'express-handlebars'
 import session from 'express-session'
 import router from './routes'
-import routerV2 from './routes/indexV2'
 import dotenv from 'dotenv'
 import * as uuid from 'uuid'
 import cors from 'cors'
@@ -75,7 +74,6 @@ app.use(
 app.use(isUsuarioAutenticado)
 
 app.use(resgistro)
-// app.use(router)
-app.use(routerV2)
+app.use(router)
 
 export default app
