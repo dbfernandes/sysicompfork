@@ -219,7 +219,7 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
 
-      return res.render('edital/listCandidates', {
+      return res.render(resolveView('listCandidates'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,

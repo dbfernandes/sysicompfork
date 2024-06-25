@@ -48,7 +48,7 @@ const editar = async (req: Request, res: Response) => {
       try {
         const { message, type, messageTitle } = req.query
         const usuario = await usuarioService.listarUmUsuario(parseInt(id!))
-        return res.render('perfil/perfil-editar', {
+        return res.render(resolveView('perfil-editar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,

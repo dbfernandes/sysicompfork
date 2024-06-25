@@ -3,6 +3,10 @@ import publicacaoService from '../publicacao/publicacao.service'
 import { tipoConditions } from './numerosIcomp.types';
 import path from 'path'
 
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName)
+}
+
 // Escolha do Layout
 const layoutMain = {
   layout: 'numerosIcompMain'
@@ -31,7 +35,7 @@ const publicacao = async (req: Request, res: Response): Promise<Response | void>
 
         const publicacoes = await publicacaoService.listarTodos(conditions);
 
-        return res.render('numerosIcomp/publicacoes', {
+        return res.render(resolveView('publicacoes'), {
           lng,
           ...layoutMain,
           publicacoes,

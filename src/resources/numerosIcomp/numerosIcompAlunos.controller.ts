@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
 import alunoService from "../alunos/aluno.service";
+import path from "path";
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, "views", viewName);
+}
 
 // Escolha do Layout
 const layoutMain = {
@@ -41,7 +45,7 @@ const alunos = async (req: Request, res: Response) => {
             1
           );
           const alunosFormados = alunosInfo.length;
-          return res.status(200).render("numerosIcomp/alunos", {
+          return res.status(200).render(resolveView('alunos'), {
             lng,
             alunosInfo,
             alunosFormados,

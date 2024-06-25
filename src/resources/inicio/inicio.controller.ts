@@ -1,11 +1,16 @@
 import { Request, Response } from 'express'
+import path from 'path'
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName)
+}
 
 const inicio = (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query
-        return res.render('inicio/inicio', {
+        return res.render(resolveView('inicio'), {
           nome: req.session.nome,
           message,
           type,

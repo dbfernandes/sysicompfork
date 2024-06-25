@@ -1,4 +1,9 @@
 import { Request, Response } from 'express';
+import path from 'path';
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
 
 // Escolha do Layout
 const layoutMain = {
@@ -7,7 +12,7 @@ const layoutMain = {
 
 const erro404 = async (req: Request, res: Response) => {
   const { lng } = req.query;
-  return res.status(404).render('numerosIcomp/error404', { ...layoutMain, lng });
+  return res.status(404).render(resolveView('error404'), { ...layoutMain, lng });
 };
 
 // Redirect Routes

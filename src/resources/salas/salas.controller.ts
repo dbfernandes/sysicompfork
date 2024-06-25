@@ -9,7 +9,7 @@ function resolveView(viewName: string): string {
 
 const adicionar = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
-    res.render('salas/salas-adicionar', {
+    res.render(resolveView('salas-adicionar'), {
       nome: req.session.nome,
       csrf: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario
