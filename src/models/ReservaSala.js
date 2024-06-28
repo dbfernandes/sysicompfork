@@ -1,7 +1,5 @@
-'use strict'
-const {
-  Model
-} = require('sequelize')
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ReservaSala extends Model {
     /**
@@ -9,53 +7,57 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate (models) {
-      this.belongsTo(models.Salas, { as: 'salas', foreignKey: 'SalaId' })
-      this.belongsTo(models.Usuario, { as: 'usuario', foreignKey: 'UsuarioId' })
+    static associate(models) {
+      this.belongsTo(models.Salas, { as: 'salas', foreignKey: 'SalaId' });
+      this.belongsTo(models.Usuario, {
+        as: 'usuario',
+        foreignKey: 'UsuarioId',
+      });
     }
-  };
-  ReservaSala.init({
-    SalaId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-
+  }
+  ReservaSala.init(
+    {
+      SalaId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      UsuarioId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      atividade: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      tipo: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      dias: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      dataInicio: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      dataTermino: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      horaInicio: {
+        type: DataTypes.TIME,
+        allowNull: false,
+      },
+      horaTermino: {
+        type: DataTypes.TIME,
+        allowNull: false,
+      },
     },
-    UsuarioId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-
+    {
+      sequelize,
+      modelName: 'ReservaSala',
     },
-    atividade: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    tipo: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    dias: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    dataInicio: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    dataTermino: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    horaInicio: {
-      type: DataTypes.TIME,
-      allowNull: false
-    },
-    horaTermino: {
-      type: DataTypes.TIME,
-      allowNull: false
-    }
-  }, {
-    sequelize,
-    modelName: 'ReservaSala'
-  })
-  return ReservaSala
-}
+  );
+  return ReservaSala;
+};

@@ -1,17 +1,19 @@
 {
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "db",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "asd",
-            "database": "db",
-            "username": "user",
-            "password": "user"
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "db",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "asd",
+      "database": "db",
+      "username": "user",
+      "password": "user"
+    }
+  ],
+  "prettier.requireConfig": true
 }
+  

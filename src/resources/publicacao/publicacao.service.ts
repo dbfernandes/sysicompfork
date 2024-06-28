@@ -5,10 +5,17 @@ import getPublicationsArr from '../../utils/listaPublicacoes';
 const prisma = new PrismaClient();
 
 class PublicacaoService {
-  async adicionarVarios(idProfessor: number, publicacoes: any[]): Promise<void> {
+  async adicionarVarios(
+    idProfessor: number,
+    publicacoes: any[],
+  ): Promise<void> {
     if (publicacoes !== undefined) {
       const tipos = await prisma.tipoPublicacao.findMany();
-      const publicArr = await getPublicationsArr(publicacoes, idProfessor, tipos);
+      const publicArr = await getPublicationsArr(
+        publicacoes,
+        idProfessor,
+        tipos,
+      );
 
       const professor = await prisma.usuario.findUnique({
         where: { id: idProfessor },
@@ -21,9 +28,10 @@ class PublicacaoService {
         },
       });
 
-      const publicacoesExistentes = professor?.RelUsuarioPublicacao.map(rel => rel.Publicacao) || [];
+      const publicacoesExistentes =
+        professor?.RelUsuarioPublicacao.map((rel) => rel.Publicacao) || [];
       if (publicacoesExistentes.length > 0) {
-        const idPublicacoesExistentes = publicacoesExistentes.map(p => p.id);
+        const idPublicacoesExistentes = publicacoesExistentes.map((p) => p.id);
 
         const todasRelacoes = await prisma.relUsuarioPublicacao.findMany({
           where: {
@@ -31,10 +39,15 @@ class PublicacaoService {
           },
         });
 
-        const idPublicacoesAExcluir = idPublicacoesExistentes.filter(publicacaoId => {
-          const outraRelacao = todasRelacoes.find(e => e.idPublicacao === publicacaoId && e.idUsuario !== idProfessor);
-          return !outraRelacao;
-        });
+        const idPublicacoesAExcluir = idPublicacoesExistentes.filter(
+          (publicacaoId) => {
+            const outraRelacao = todasRelacoes.find(
+              (e) =>
+                e.idPublicacao === publicacaoId && e.idUsuario !== idProfessor,
+            );
+            return !outraRelacao;
+          },
+        );
 
         await prisma.usuario.update({
           where: { id: idProfessor },
@@ -63,7 +76,9 @@ class PublicacaoService {
           },
         });
 
-        let unicaPublicacao = publicacoesMesmoAno.find(p => distance(p.titulo, publicacao.titulo) <= 3);
+        let unicaPublicacao = publicacoesMesmoAno.find(
+          (p) => distance(p.titulo, publicacao.titulo) <= 3,
+        );
 
         if (!unicaPublicacao) {
           unicaPublicacao = await prisma.publicacao.create({
@@ -109,8 +124,14 @@ class PublicacaoService {
     });
 
     const contagemTotal = {
-      Conferencia: anos.map(ano => counts.find(c => c.ano === ano && c.tipo === 1)?._count._all || 0),
-      Periodico: anos.map(ano => counts.find(c => c.ano === ano && c.tipo === 2)?._count._all || 0),
+      Conferencia: anos.map(
+        (ano) =>
+          counts.find((c) => c.ano === ano && c.tipo === 1)?._count._all || 0,
+      ),
+      Periodico: anos.map(
+        (ano) =>
+          counts.find((c) => c.ano === ano && c.tipo === 2)?._count._all || 0,
+      ),
     };
 
     return {

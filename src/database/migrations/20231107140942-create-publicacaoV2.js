@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -7,50 +7,50 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       titulo: {
         type: Sequelize.STRING(1024),
-        allowNull: false
+        allowNull: false,
       },
       ano: {
         type: Sequelize.INTEGER(4),
-        allowNull: false
+        allowNull: false,
       },
       local: {
         type: Sequelize.STRING(1024),
         allowNull: true,
-        default: null
+        default: null,
       },
       tipo: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'TipoPublicacao', key: 'id' }
+        references: { model: 'TipoPublicacao', key: 'id' },
       },
       natureza: {
         type: Sequelize.STRING(100),
         allowNull: true,
-        default: null
+        default: null,
       },
       autores: {
         type: Sequelize.STRING(1024),
-        allowNull: false
+        allowNull: false,
       },
       ISSN: {
         type: Sequelize.STRING(300),
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Publicacao')
-  }
-}
+    await queryInterface.dropTable('Publicacao');
+  },
+};

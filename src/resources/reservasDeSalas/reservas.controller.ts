@@ -2,105 +2,112 @@ import { Request, Response } from 'express';
 import salasService from '../salas/salas.service';
 import reservasService from './reservas.service';
 
-const listar = async (req:Request, res: Response) => {
-  const reservas = await reservasService.listarTodos()
+const listar = async (req: Request, res: Response) => {
+  const reservas = await reservasService.listarTodos();
   // res.json({ reservas: reservas.map((sala: { toJSON: () => any; }) => sala.toJSON()) })
-  res.json({ reservas: reservas })
-}
+  res.json({ reservas: reservas });
+};
 
-const adicionar = async (req:Request, res: Response) => {
+const adicionar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    const salas = await salasService.listarTodos()
+    const salas = await salasService.listarTodos();
     res.render('reservas/reservas-adicionar', {
       // salas: salas.map((sala) => JSON.stringify(sala)),
       salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
       csrf: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario
-    })
+      tipoUsuario: req.session.tipoUsuario,
+    });
   } else if (req.method === 'POST') {
     try {
       if (req.body.dataTermino === '') {
-        req.body.dataTermino = req.body.dataInicio
-        req.body.dias = ''
+        req.body.dataTermino = req.body.dataInicio;
+        req.body.dias = '';
       } else {
         if (typeof req.body.dia === 'string') {
-          const dias = req.body.dia
-          req.body.dias = dias
+          const dias = req.body.dia;
+          req.body.dias = dias;
         } else if (req.body.dia) {
-          const dias = req.body.dia.join(', ')
-          req.body.dias = dias
+          const dias = req.body.dia.join(', ');
+          req.body.dias = dias;
         } else {
-          req.body.dias = ''
+          req.body.dias = '';
         }
       }
       const dados = {
-        ...req.body
-      }
+        ...req.body,
+      };
 
-      await reservasService.criar(dados)
+      await reservasService.criar(dados);
 
       // if (!reserva) {
       //   res.redirect('/reservas/gerenciar')
       // }
 
-      res.redirect('/reservas/gerenciar')
+      res.redirect('/reservas/gerenciar');
     } catch (e) {
-      console.log(e)
-      res.status(500).send({ error: e })
+      console.log(e);
+      res.status(500).send({ error: e });
     }
   }
-}
+};
 
-const excluir = async (req:Request, res: Response) => {
-  const { id } = req.params
-  const reserva = await reservasService.buscarReserva(parseInt(id))
+const excluir = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const reserva = await reservasService.buscarReserva(parseInt(id));
   try {
-    if (!reserva) throw new Error('Sala não encontrado!')
+    if (!reserva) throw new Error('Sala não encontrado!');
 
-    await reservasService.remover(parseInt(id))
-    res.redirect('/reservas/gerenciar')
+    await reservasService.remover(parseInt(id));
+    res.redirect('/reservas/gerenciar');
   } catch (e) {
-    console.log(e)
-    res.status(500).json({ error: e })
+    console.log(e);
+    res.status(500).json({ error: e });
   }
-}
+};
 
-const gerenciar = async (req:Request, res: Response) => {
-  const reservas = await reservasService.listarReservasSalas()
+const gerenciar = async (req: Request, res: Response) => {
+  const reservas = await reservasService.listarReservasSalas();
   // console.log(reservas)
   const reservasJSON = reservas.map((reserva: any) => {
     const reservaObj = {
       ...reserva,
-      dataInicio: reserva.dataInicio ? reserva.dataInicio.toLocaleDateString('pt-BR') : null,
-      dataTermino: reserva.dataTermino ? reserva.dataTermino.toLocaleDateString('pt-BR') : null,
+      dataInicio: reserva.dataInicio
+        ? reserva.dataInicio.toLocaleDateString('pt-BR')
+        : null,
+      dataTermino: reserva.dataTermino
+        ? reserva.dataTermino.toLocaleDateString('pt-BR')
+        : null,
       // horaInicio: reserva.horaInicio ? new Date(reserva.horaInicio).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null,
       // horaTermino: reserva.horaTermino ? new Date(reserva.horaTermino).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null
     };
-    const dataAtual = new Date()
-    const dataTerminoReserva = new Date(reservaObj.dataTermino + ' ' + reservaObj.horaTermino)
-    reservaObj.terminou = dataTerminoReserva < dataAtual
+    const dataAtual = new Date();
+    const dataTerminoReserva = new Date(
+      reservaObj.dataTermino + ' ' + reservaObj.horaTermino,
+    );
+    reservaObj.terminou = dataTerminoReserva < dataAtual;
 
-    return reservaObj
+    return reservaObj;
   });
 
   res.render('reservas/reservas-gerenciar', {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
-    tipoUsuario: req.session.tipoUsuario
+    tipoUsuario: req.session.tipoUsuario,
+  });
+};
 
-  })
-}
-
-const editar = async (req:Request, res: Response) => {
+const editar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     try {
-      const salas = await salasService.listarTodos()
-      const reserva = await reservasService.listarReservasSalasPorUsuario(parseInt(req.params.id))
-      if (!reserva) throw new Error('Reserva não encontrado!')
-      
+      const salas = await salasService.listarTodos();
+      const reserva = await reservasService.listarReservasSalasPorUsuario(
+        parseInt(req.params.id),
+      );
+      if (!reserva) throw new Error('Reserva não encontrado!');
+
       res.render('reservas/reservas-editar', {
         // salas: salas.map((sala) => JSON.stringify(sala)),
         salas: salas,
@@ -108,44 +115,45 @@ const editar = async (req:Request, res: Response) => {
         reserva: reserva,
         csrf: req.csrfToken(),
         nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario
-
-      })
+        tipoUsuario: req.session.tipoUsuario,
+      });
     } catch (error: any) {
-      res.status(500).send({ message: error.message })
+      res.status(500).send({ message: error.message });
     }
   } else if (req.method === 'POST') {
     if (req.body.dataTermino === '') {
-      req.body.dataTermino = req.body.dataInicio
-      req.body.dias = ''
+      req.body.dataTermino = req.body.dataInicio;
+      req.body.dias = '';
     } else {
       if (typeof req.body.dia === 'string') {
-        const dias = req.body.dia
-        req.body.dias = dias
+        const dias = req.body.dia;
+        req.body.dias = dias;
       } else if (req.body.dia) {
-        const dias = req.body.dia.join(', ')
-        req.body.dias = dias
-        console.log(req.body.dias)
+        const dias = req.body.dia.join(', ');
+        req.body.dias = dias;
+        console.log(req.body.dias);
       } else {
-        req.body.dias = ''
+        req.body.dias = '';
       }
     }
 
     const dados = {
       ...req.body,
-      dataInicio: req.body.dataInicio ? `${req.body.dataInicio}T00:00:00.000Z` : undefined
-    }
+      dataInicio: req.body.dataInicio
+        ? `${req.body.dataInicio}T00:00:00.000Z`
+        : undefined,
+    };
 
     try {
       // const reserva = await ReservaSala.update({
       //     ...req.body
       // }, { where: { id: req.params.id } });
-      await reservasService.atualizar(parseInt(req.params.id), dados)
-      res.redirect('/reservas/gerenciar')
+      await reservasService.atualizar(parseInt(req.params.id), dados);
+      res.redirect('/reservas/gerenciar');
     } catch (error: any) {
-      res.status(500).send({ message: error.message })
+      res.status(500).send({ message: error.message });
     }
   }
-}
+};
 
-export default { adicionar, excluir, gerenciar, editar, listar }
+export default { adicionar, excluir, gerenciar, editar, listar };

@@ -3,18 +3,24 @@ import publicacaoService from '../publicacao/publicacao.service';
 
 // Escolha do Layout
 const layoutMain = {
-  layout: 'numerosIcompMain'
+  layout: 'numerosIcompMain',
 };
 
 // Listagem Publicações
 
-const publicacao = async (req: Request, res: Response): Promise<Response | void> => {
+const publicacao = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
   switch (req.method) {
     case 'GET': {
       const { ano, lng } = req.query;
       try {
-        const conditions: { tipo: number[]; ano?: string | string[] | undefined } = {
-          tipo: [1, 2]
+        const conditions: {
+          tipo: number[];
+          ano?: string | string[] | undefined;
+        } = {
+          tipo: [1, 2],
         };
 
         // Verificação de tipo e conversão apropriada
@@ -23,7 +29,7 @@ const publicacao = async (req: Request, res: Response): Promise<Response | void>
             conditions.ano = ano;
           } else if (Array.isArray(ano)) {
             // Converter ParsedQs[] para string[]
-            conditions.ano = ano.map(item => item.toString());
+            conditions.ano = ano.map((item) => item.toString());
           }
         }
 
@@ -33,10 +39,12 @@ const publicacao = async (req: Request, res: Response): Promise<Response | void>
           lng,
           ...layoutMain,
           publicacoes,
-          ano
+          ano,
         });
       } catch (error) {
-        return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        return res
+          .status(502)
+          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
       }
     }
     default:

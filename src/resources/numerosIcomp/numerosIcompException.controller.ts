@@ -2,12 +2,14 @@ import { Request, Response } from 'express';
 
 // Escolha do Layout
 const layoutMain = {
-  layout: 'numerosIcompMain'
+  layout: 'numerosIcompMain',
 };
 
 const erro404 = async (req: Request, res: Response) => {
   const { lng } = req.query;
-  return res.status(404).render('numerosIcomp/error404', { ...layoutMain, lng });
+  return res
+    .status(404)
+    .render('numerosIcomp/error404', { ...layoutMain, lng });
 };
 
 // Redirect Routes
@@ -37,5 +39,5 @@ export default {
   redirectAlunos,
   redirectProfessores,
   redirectProjetos,
-  redirectPublicacoes
+  redirectPublicacoes,
 };

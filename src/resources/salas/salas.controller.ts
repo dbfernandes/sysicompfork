@@ -6,7 +6,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
     res.render('salas/salas-adicionar', {
       nome: req.session.nome,
       csrf: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario
+      tipoUsuario: req.session.tipoUsuario,
     });
   } else if (req.method === 'POST') {
     try {
@@ -14,7 +14,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
 
       if (!andar || !bloco || !nome) {
         res.status(400).json({
-          error: 'Dados incompletos ou mal formatados'
+          error: 'Dados incompletos ou mal formatados',
         });
         return;
       }
@@ -22,7 +22,13 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
       const parsedNumero = parseInt(numero, 10) || 0;
       const parsedCapacidade = parseInt(capacidade, 10) || 0;
 
-      await salasService.criar(nome, bloco, andar, parsedNumero, parsedCapacidade);
+      await salasService.criar(
+        nome,
+        bloco,
+        andar,
+        parsedNumero,
+        parsedCapacidade,
+      );
 
       res.redirect('/salas/gerenciar');
     } catch (e) {
@@ -35,7 +41,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
 const excluir = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
-    const salaId = parseInt(id)
+    const salaId = parseInt(id);
     const sala = await salasService.listarUm(salaId);
     if (!sala) {
       throw new Error('Sala não encontrada!');
@@ -54,7 +60,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   res.render('salas/salas-gerenciar', {
     salas,
     csrfToken: req.csrfToken(),
-    tipoUsuario: req.session.tipoUsuario
+    tipoUsuario: req.session.tipoUsuario,
   });
 };
 
@@ -74,7 +80,7 @@ const editar = async (req: Request, res: Response): Promise<void> => {
         sala,
         csrf: req.csrfToken(),
         nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario
+        tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Aluno', {
@@ -6,39 +6,39 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       nomeCompleto: {
         type: Sequelize.STRING(1024),
-        allowNull: false
+        allowNull: false,
       },
       curso: {
         type: Sequelize.STRING(50),
-        allowNull: false
+        allowNull: false,
       },
       periodoIngresso: {
         type: Sequelize.STRING(10),
-        allowNull: false
+        allowNull: false,
       },
       periodoConclusao: {
         type: Sequelize.STRING(10),
-        allowNull: true
+        allowNull: true,
       },
       formado: {
         type: Sequelize.SMALLINT,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Aluno')
-  }
-}
+    await queryInterface.dropTable('Aluno');
+  },
+};
