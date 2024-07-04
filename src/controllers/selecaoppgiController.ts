@@ -7,7 +7,9 @@ import candidatoExperienciaAcademicaService from "../services/candidatoExperienc
 import candidatoService from "../services/candidatoService";
 import EditalService from "../services/editalService";
 import linhasDePesquisaService from "../resources/linhasDePesquisa/linhasDePesquisa.service";
-import mailerGrid from "../utils/mailerGrid";
+import mailerGrid, {
+  sendEmailRecoveryPasswordCandidate,
+} from "../utils/mailerGrid";
 const fs = require("fs");
 const path = require("path");
 
@@ -23,6 +25,10 @@ type CustomRequest = Request & {
 const locals = {
   layout: "selecaoppgi",
 };
+
+const localsBegin  = {
+  layout: "begin",
+}
 
 const begin = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
@@ -103,7 +109,7 @@ const login = async (req: CustomRequest, res: Response) => {
       try {
         const listEditais = await EditalService.listEdital();
         return res.render("selecaoppgi/login", {
-          ...locals,
+          ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
         });
@@ -600,11 +606,10 @@ const recuperarSenha = async (req, res) => {
       return res.render("selecaoppgi/recuperarSenha", {
         editais: listEditais,
         csrfToken: req.csrfToken(),
-        ...locals,
+        ...localsBegin,
       });
     }
     case "POST": {
-      // const { email } = req.body;
       if (!req.body.email || !req.body.editalId) {
         return res.status(400).send();
       }
@@ -622,36 +627,16 @@ const recuperarSenha = async (req, res) => {
       });
 
       const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
-      mailerGrid
-        .send({
-          to: email, // Change to your recipient
-          from: {
-            email: process.env.SENDGRID_EMAIL_SEND,
-            name: "Coordenação do PPGI",
-          }, // Change to your verified sender
-          subject: "[PPGI] Troca de senha",
-          text: "and easy to do anywhere, even with Node.js",
-          html: `
-        <div>
-          Prezando(a) candidato
-          <br>
-          Por favor, clique no link abaixo para criar uma nova senha:
-          <br>
-          <p><a href="${url}">${url}</a></p>
-          <br>
-          Atenciosamente,
-          <br>
-          Coordenação do Icomp
-          <br>
-          Instituto de Computação (IComp)
-          <br>
-          Universidade Federal do Amazonas (UFAM)
-        </div>`,
-        })
-        .catch((error) => {
-          console.error(error);
-          return res.status(500).send();
+      try {
+        sendEmailRecoveryPasswordCandidate({
+          email: candidate.email,
+          url,
         });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: "Erro ao enviar e-mail" });
+      }
+
       return res.status(200).send();
     }
     default:
@@ -662,36 +647,48 @@ const recuperarSenha = async (req, res) => {
 const trocarSenha = async (req, res: Response) => {
   switch (req.method) {
     case "GET": {
-      const candidate = await candidatoService.findByTokenPassword(req.query.token as string);
+      const candidate = await candidatoService.findByTokenPassword(
+        req.query.token as string
+      );
 
       if (!candidate) {
-        return res.render("selecaoppgi/trocarSenha", { 
+        return res.render("selecaoppgi/trocarSenha", {
           error: "Token inválido",
           csrfToken: req.csrfToken(),
-          ...locals,
+          ...localsBegin,
         });
       }
-      return res.render("selecaoppgi/trocarSenha",
-        { 
+
+      if (candidate.validadeTokenReset < new Date()) {
+        return res.render("selecaoppgi/trocarSenha", {
+          error: "Token expirado",
           csrfToken: req.csrfToken(),
-          token: req.query.token,
-          ...locals,
+          ...localsBegin,
         });
+      }
+      return res.render("selecaoppgi/trocarSenha", {
+        csrfToken: req.csrfToken(),
+        token: req.query.token,
+        ...localsBegin,
+      });
     }
     case "PUT": {
       const { password, token } = req.body;
       if (!password || !token) {
         return res.status(400).send();
       }
-      const result = await candidatoService.changePasswordWithToken({
-        token,
-        password,
-      });
-
-      if (!result) {
-        return res.status(404).send();
+      try {
+       await candidatoService.changePasswordWithToken({
+          token,
+          password,
+        });
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          return res.status(400).send({ message: err.message });
+        }
+        return res.status(500).send();
       }
-
       return res.status(200).send();
     }
     default:

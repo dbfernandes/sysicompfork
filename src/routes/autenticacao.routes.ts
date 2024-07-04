@@ -13,4 +13,7 @@ router.post('/recuperarSenha', autenticacaoController.recuperarSenha)
 
 router.get('/logout', autenticacaoController.logout)
 
+router.get('/alterarSenha', autenticacaoController.trocaSenha)
+
+router.put('/alterarSenha', autenticacaoController.trocaSenha)
 export default router

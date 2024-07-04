@@ -5,43 +5,127 @@
   .success {
     color: green;
   }
-</style>
-<div class="login-box container card border-0 shadow rounded-3 my-5">
-  
-  <div class="login-box-body card-body p-4 p-sm-5">
-    <div class="login-logo">
-        <a href="#"><b>ICOMP</b></a>
-    </div> 
-    <!-- /.login-logo -->
-    <p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail cadastrado e obtenha uma nova</p>
-    {{#if message}}
-      <div class="alert alert-{{type}}">
-        {{{message}}}
-      </div>
-    {{/if}}
+  .container-cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    img {
+      max-width: 200px;
+      height: 100px;  
+    }
+  }
 
-    <form action="/recuperarSenha" method="post">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <div class="input-group mb-3">
-          <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+</style>
+<div class="login-box">
+  <div class="login-logo container-cards">
+    <img src="/public/img//logo-icomp.png" alt="">
+    <img src="/public/img//logo-ufam.png" alt="">
+  </div>
+
+  <div class="card">
+    <div class="card-body login-card-body">
+      <div class="login-logo">
+          <a href="#"><b>Recuperar Senha</b></a>
+      </div> 
+      <div id="error-msg" class="alert alert-danger" hidden="true"></div>
+      <div id="success-msg" class="alert alert-success" hidden></div>
+
+      <!-- /.login-logo -->
+      <p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail cadastrado e obtenha uma nova</p>
+      <form id="form-recuperar-senha">
+          <input type="hidden" name="_csrf" value="{{csrfToken}}">
+          <div class="input-group mb-3">
+            <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-block">Solicitar nova senha</button>
+          <div class="row">
+            <div class="col-12">
+              <button id="btn-form-submit" type="submit" class="btn btn-primary btn-block">Solicitar nova senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.col -->
-        </div>
-    </form>
+      </form>
 
-    <a href="/login">Login</a><br>
-    <a href="/registrar" class="text-center">Registre-se</a>
+      <a href="/login">Login</a><br>
+      <a href="/registrar" class="text-center">Registre-se</a>
 
+    </div>
   </div>
+  
   <!-- /.login-box-body -->
 </div>
-<!-- /.login-box -->
+<script>
+  $("#form-recuperar-senha input").on("input", function() {
+    const divError = $("#error-msg");
+    if (!divError.prop("hidden")) {
+      divError.prop("hidden", true);
+    }
+  });
+
+	$("#form-recuperar-senha").validate({
+		ignore: ':hidden',
+		rules: {
+			email: {
+				required: true,
+				email: true
+			}
+		},
+		messages: {
+			email: {
+				required: "Campo obrigatório",
+				email: "Digite um email válido"
+			}
+		},
+		errorElement: 'span',
+		errorPlacement: function (error, element) {
+			error.addClass('invalid-feedback');
+			element.closest('div').append(error);
+		},
+		highlight: function (element, errorClass, validClass) {
+			$(element).addClass('is-invalid');
+		},
+		unhighlight: function (element, errorClass, validClass) {
+			$(element).removeClass('is-invalid');
+		},
+		submitHandler: function (form, e) {
+			e.preventDefault();
+      const buttonLogin = $("#btn-form-submit");
+      const formData = new FormData(form);
+    
+			buttonLogin.attr("disabled", true);
+			buttonLogin.find("span").prop("hidden", false);
+      $.ajax({
+          url: "{{url}}/recuperarSenha?_csrf={{csrfToken}}",
+          type: "POST",
+          data: {
+            email: formData.get("email"),
+          },
+          success: function (data) {
+            const divSuccess = $("#success-msg");
+			      const divError = $("#error-msg");
+			      divError.prop("hidden", true);
+            divSuccess.prop("hidden", false);
+            divSuccess.text("Email para recuperação de senha enviado para o email com sucesso!");
+            buttonLogin.attr("disabled", false);
+            buttonLogin.find("span").prop("hidden", true);
+            //window.location.href = "{{url}}/selecaoppgi";
+          },
+          error: function (res, status, error) {
+            buttonLogin.attr("disabled", false);
+            buttonLogin.find("span").prop("hidden", true);
+			      const divError = $("#error-msg");
+			      const divSuccess = $("#success-msg");
+            if(res.status === 404){
+              divSuccess.prop("hidden", true);
+              divError.prop("hidden", false);
+              divError.text("Usuário não encontrado");
+            } 
+          }
+      })
+		}
+	})
+</script>

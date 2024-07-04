@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM</title>
+  <title>SysIcomp</title>
+
+  <!-- Favicon -->
+  <link href="/public/img/favicon 2.ico" rel="icon" type="image/png">
+
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
@@ -16,34 +20,55 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
 
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+  <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet">
+
+
   <link rel="stylesheet" href="/public/css/styles.css">
-
-  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-
-  <!-- Plugin do Date Range -->
-  <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css">
 
   <!-- Toasts -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+  
   <!-- XML2JSON -->
   <script type='text/javascript' src="/public/js/xml2json.js"></script>
-
+  
   <!-- Lattes Loader -->
   <script type='text/javascript' src="/public/js/lattesExtractor.js"></script>
 
-</head>
+  <!-- CSV Loader -->
+  <script type='text/javascript' src="/public/js/csvExtractor.js"></script>
 
-<body>
+</head>
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="login-page">
 
 
   <!-- jQuery -->
   <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
+  <!-- jQuery DataTables-->
+  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+  <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
+
+
   <!-- jquery-validation -->
   <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
   <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
+
+  <!-- jquery-CSV -->
+  <script src="/public/js/jquery-csv.js"></script>
 
   <!-- Bootstrap 4 -->
   <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -57,52 +82,35 @@
   <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
   <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
 
-  <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
-  <!-- Fuso horario Data -->
+  <!-- Cunstom-File-Input -->
+  <script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
-
-  <!-- Plugin do Date Range -->
-  <script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
-  <script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-  <script>
-    $(function () {
-      bsCustomFileInput.init();
-    });
-  </script>
   {{{ body }}}
-
   <script>
     $(function () {
       try {
         masks();
       } catch { }
+
       try {
         usuariosAdicionarPage();
       } catch { }
+
       try {
-        FormAdicionarPage();
+        pesquisaCriarPage()();
       } catch { }
-      try {
-        voltarFormulario();
-      } catch { }
+
       try {
         loginPage();
       } catch { }
-      try{
-        enviarDocumentos();
-      }catch { }
     });
 
     function masks() {
+      //Datemask dd/mm/yyyy
       $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
       $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
       $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
-      $('.edital').inputmask('999-9999', { 'placeholder': '001-2023' })
     }
-
   </script>
 
 </body>

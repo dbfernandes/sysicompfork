@@ -71,47 +71,56 @@
 		color: #666;
 		width: 100%;
 	}
+	.container-cards {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		img {
+		max-width: 200px;
+		height: 100px;  
+		}
+  	}
 </style>
-<div class="login-page">  
-  <div class="box">
-		<div class="card">
-			<div class="card-body">
-        <div class="login-logo">
-            <b>ICOMP</b>
-        </div>
-        <div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
-			{{#if error}}
-				{{{error}}}
-			{{/if}}
-		</div>
-        <div id="success-msg" class="alert alert-success" hidden>
+<div class="login-box"> 
+	<div class="login-logo container-cards">
+    	<img src="/public/img//logo-icomp.png" alt="">
+    	<img src="/public/img//logo-ufam.png" alt="">
+	</div>
+	<div class="card">
+		<div class="card-body login-card-body">
+      		<div class="login-logo">
+            	<b>Nova Senha</b>
+        	</div>
+			<div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
+				{{#if error}}
+					{{{error}}}
+				{{/if}}
+			</div>
+			<div id="success-msg" class="alert alert-success" hidden></div>
 
-        </div>
-        <!-- /.login-logo -->
-        <p class="login-box-msg">Digite nova senha para o email e edital
-        {{#if message}}
-          <div class="alert alert-{{type}}">
-            {{{message}}}
-          </div>
-        {{/if}}
-        {{!-- <form action="/selecaoppgi/recuperarSenha" method="post"> --}}
-         <form id="form-recuperar-senha" >
-          <input type="hidden" name="_csrf" value="{{csrfToken}}">
-          	<div class="form-group">	
-				<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="Senha">
-				<div class="help-block"></div>
-			</div>
-			<div class="form-group">	
-				<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="Confirmar Senha">
-				<div class="help-block"></div>
-			</div>
-           
-          <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block btn-flat">Trocar senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
-          <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-flat btn-default" role="button">Voltar</button>
-        </form>
-      </div>
-    </div>
-  </div>
+        	<p class="login-box-msg">Digite nova senha para o email e edital
+        	{{#if message}}
+        	  <div class="alert alert-{{type}}">
+        	    {{{message}}}
+        	  </div>
+        	{{/if}}
+        	{{!-- <form action="/selecaoppgi/recuperarSenha" method="post"> --}}
+        	 <form id="form-recuperar-senha" >
+        	  <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        	  	<div class="form-group">	
+					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="Senha">
+					<div class="help-block"></div>
+				</div>
+				<div class="form-group">	
+					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="Confirmar Senha">
+					<div class="help-block"></div>
+				</div>
+	
+        	  <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">Trocar senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
+        	  <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-default" role="button">Voltar</button>
+        	</form>
+		</div>
+	</div>
 </div>
 <!-- /.login-box -->
 
@@ -148,7 +157,7 @@
 				required: "Campo obrigatório",
 				equalTo: "As senhas não coincidem"
 			}
-		},
+		}, 
 		errorElement: 'span',
 		errorPlacement: function (error, element) {
 			error.addClass('invalid-feedback');
@@ -165,7 +174,9 @@
 			e.preventDefault();
 			const formData = new FormData(form);
 			const password = formData.get("password");
-
+			const btnSubmit = $("#btn-form-submit");
+			btnSubmit.attr("disabled", true);
+			btnSubmit.find("span").prop("hidden", false);
 			$.ajax({
 				url: "{{url}}/selecaoppgi/trocarSenha?_csrf={{csrfToken}}",
 				type: "PUT",
@@ -178,13 +189,13 @@
 
 				},
 				error: function (res, status, error) {
-					buttonLogin.attr("disabled", false);
-					buttonLogin.find("span").prop("hidden", true);
-					if(res.status === 500){
-						const divError = $("#error-msg");
-						divError.prop("hidden", false);
-						divError.text("Erro ao alterar senha, tente novamente.");
-					} 
+					btnSubmit.attr("disabled", false);
+					btnSubmit.find("span").prop("hidden", true);
+					if(res.responseJSON.message) {
+						divError.text(res.responseJSON.message);
+					} else {
+						divError.text("Erro ao alterar senha");
+					}
 				}
 			})	
 		}

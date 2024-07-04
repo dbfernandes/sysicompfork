@@ -7,13 +7,13 @@ import selecaoppgiRouter from './selecaoppgi.routes'
 import numerosIcompRouter from './numerosIcomp.routes'
 import linhasDePesquisaRouter from '../resources/linhasDePesquisa/linhasDePesquisa.router'
 import salasRoutes from './salas.routes'
-import perfilRoutes from './perfil.routes' 
+import perfilRoutes from './perfil.routes'
 import autenticacaoController from '../controllers/autenticacaoController'
 import reservasRoutes from './reservas.routes'
 import horasComplementaresRoutes from './horasComplementares.routes'
-import afastamentoTemporarioRoutes from './afastamentoTemporario.routes';
-import pdfController from '../utils/exportToPDF';
-import editalController from "../controllers/editalController";
+import afastamentoTemporarioRoutes from './afastamentoTemporario.routes'
+import pdfController from '../utils/exportToPDF'
+import editalController from '../controllers/editalController'
 import curriculoRoutes from './curriculo.routes'
 import alunosRoutes from './alunos.routes'
 const router = express.Router()
@@ -29,12 +29,16 @@ const router = express.Router()
 
 router.get('/login', autenticacaoController.login)
 router.post('/login', autenticacaoController.login)
+
 router.get('/recuperarSenha', autenticacaoController.recuperarSenha)
 router.post('/recuperarSenha', autenticacaoController.recuperarSenha)
+
 router.get('/logout', autenticacaoController.logout)
 
-router.use('/selecaoppgi', selecaoppgiRouter)
+router.get('/alterarSenha', autenticacaoController.trocaSenha)
+router.put('/alterarSenha', autenticacaoController.trocaSenha)
 
+router.use('/selecaoppgi', selecaoppgiRouter)
 router.use('/numerosIcomp', numerosIcompRouter)
 
 router.use(autenticacaoController.verificar)
