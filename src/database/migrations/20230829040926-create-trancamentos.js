@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Trancamentos', {
@@ -6,52 +6,52 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       idAluno: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       tipo: {
-        type: Sequelize.TINYINT
+        type: Sequelize.TINYINT,
       },
       dataSolicitacao: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       dataInicio: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       prevTermino: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       dataTermino: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       justificativa: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       documento: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       doc_anexo: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.TINYINT
+        type: Sequelize.TINYINT,
       },
       id_responsavel: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Trancamentos')
-  }
-}
+    await queryInterface.dropTable('Trancamentos');
+  },
+};

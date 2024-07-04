@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import UsuarioService from '../services/usuarioService';
-import criarURL from '../utils/criarUrl';
+import criarURL from '../../utils/criarUrl';
+import usuarioService from './usuario.service';
 
 const adicionar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
@@ -8,7 +8,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
       return res.render('usuarios/usuarios-adicionar', {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
-        tipoUsuario: req.session.tipoUsuario
+        tipoUsuario: req.session.tipoUsuario,
       });
     case 'POST':
       try {
@@ -35,7 +35,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         secretaria = req.body.secretaria === 'on' ? 1 : 0;
         professor = req.body.professor === 'on' ? 1 : 0;
 
-        await UsuarioService.adicionar(
+        await usuarioService.adicionar(
           nomeCompleto,
           cpf,
           email,
@@ -50,15 +50,15 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           siape,
           dateDeIngresso,
           unidade,
-          turno
+          turno,
         );
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Criação de usuário bem-sucedida!',
             message: 'Usuário adicionado no sistema com sucesso.',
             type: 'success',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       } catch (error: unknown) {
         console.log(error);
@@ -66,14 +66,17 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
           errors: (error as any).errors, // Type assertion to 'any' to access 'errors' property
-          message: 'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
+          message:
+            'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
           messageTitle: 'Criação de usuário indisponível!',
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 
@@ -82,19 +85,20 @@ const deletar = async (req: Request, res: Response): Promise<any> => {
     case 'POST':
       try {
         const id = req.params.id;
-        const userId = Number(id)
-        await UsuarioService.alterar(userId, { status: 0 });
+        const userId = Number(id);
+        await usuarioService.alterar(userId, { status: 0 });
         if (req.session.uid === id) {
           req.session.uid = undefined;
         }
 
         return res.redirect(
           criarURL('/usuarios/listar', {
-            message: 'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
+            message:
+              'Acesso deste usuário ao sistema foi bloqueado com sucesso.',
             type: 'success',
             messageTitle: 'Bloqueio de usuário bem-sucedido!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       } catch (error: unknown) {
         console.log(error);
@@ -103,12 +107,14 @@ const deletar = async (req: Request, res: Response): Promise<any> => {
             messageTitle: 'Bloqueio de usuário indisponível!',
             message: 'Não foi possível bloquear este usuário.',
             type: 'danger',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 
@@ -116,15 +122,16 @@ const restaurar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'POST':
       try {
-        const userId = Number(req.params.id)
-        await UsuarioService.alterar(userId, { status: 1 });
+        const userId = Number(req.params.id);
+        await usuarioService.alterar(userId, { status: 1 });
         return res.status(200).redirect(
           criarURL('/usuarios/listar', {
-            message: 'Acesso deste usuário ao sistema foi restaurado com sucesso.',
+            message:
+              'Acesso deste usuário ao sistema foi restaurado com sucesso.',
             type: 'success',
             messageTitle: 'Desbloqueio de usuário bem-sucedido!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       } catch (error: unknown) {
         console.log(error);
@@ -133,12 +140,14 @@ const restaurar = async (req: Request, res: Response): Promise<any> => {
             message: 'Não foi possível desbloquear este usuário.',
             type: 'danger',
             messageTitle: 'Desbloqueio de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 
@@ -147,7 +156,7 @@ const listar = async (req: Request, res: Response): Promise<any> => {
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query;
-        const usuarios = await UsuarioService.listarTodos();
+        const usuarios = await usuarioService.listarTodos();
         return res.status(200).render('usuarios/usuarios-listar', {
           usuarios,
           csrfToken: req.csrfToken(),
@@ -155,7 +164,7 @@ const listar = async (req: Request, res: Response): Promise<any> => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       } catch (error: unknown) {
         return res.status(500).redirect(
@@ -163,12 +172,14 @@ const listar = async (req: Request, res: Response): Promise<any> => {
             message: 'Não foi possível listar os usuários.',
             type: 'danger',
             messageTitle: 'Listagem de usuários indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 
@@ -176,9 +187,11 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
+        const { message, type, messageTitle } = req.query;
 
-        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
+        const usuario = await usuarioService.listarUmUsuario(
+          Number(req.params.id),
+        );
         return res.status(200).render('usuarios/usuario-visualizar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -186,7 +199,7 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       } catch (error: unknown) {
         console.log(error);
@@ -195,12 +208,14 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
             message: 'Não foi possível visualizar este usuário.',
             type: 'danger',
             messageTitle: 'Visualização do usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 
@@ -208,8 +223,10 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
-        const usuario = await UsuarioService.listarUmUsuario(Number(req.params.id))
+        const { message, type, messageTitle } = req.query;
+        const usuario = await usuarioService.listarUmUsuario(
+          Number(req.params.id),
+        );
         return res.status(200).render('usuarios/usuarios-editar', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -217,17 +234,18 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       } catch (error: unknown) {
         console.log(error);
         return res.status(503).redirect(
           criarURL('/usuarios/listar', {
-            message: 'Não foi possível abrir formulário de edição para este usuário.',
+            message:
+              'Não foi possível abrir formulário de edição para este usuário.',
             type: 'danger',
             messageTitle: 'Edição de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
     case 'POST':
@@ -251,18 +269,18 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           siape: req.body.siape,
           dataIngresso: req.body.dateDeIngresso,
           unidade: req.body.unidade,
-          turno: req.body.turno
+          turno: req.body.turno,
         };
-        const userId = Number(req.params.id)
-        await UsuarioService.alterar(userId, dados);
+        const userId = Number(req.params.id);
+        await usuarioService.alterar(userId, dados);
 
         return res.status(200).redirect(
           criarURL(`/usuarios/dados/${req.params.id}`, {
             message: 'Dados alterados com sucesso!',
             type: 'success',
             messageTitle: 'Edição de usuário bem-sucedida!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       } catch (error: unknown) {
         console.log(error);
@@ -276,21 +294,24 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           coordenador,
           secretaria,
           professor,
-          id: req.params.id
+          id: req.params.id,
         };
         return res.status(500).render('usuarios/usuarios-editar', {
           usuario: dados,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
-          message: 'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
+          message:
+            'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
           messageTitle: 'Edição de usuário indisponível!',
           errors: error,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é inválida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
 

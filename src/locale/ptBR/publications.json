@@ -1,11 +1,11 @@
 {
-    "publicacoesDosProfessores": "Publicações dos professores do IComp",
-    "noAnoDe": "no ano de",
-    "paraConferir": "Para conferir os detalhes das publicações, clique no seu título.",
-    "titulo": "Título",
-    "ano": "Ano",
-    "tipo": "Tipo",
-    "local": "Local",
-    "autor": "Autor(es)",
-    "naoInformado": "Não informado"
+  "publicacoesDosProfessores": "Publicações dos professores do IComp",
+  "noAnoDe": "no ano de",
+  "paraConferir": "Para conferir os detalhes das publicações, clique no seu título.",
+  "titulo": "Título",
+  "ano": "Ano",
+  "tipo": "Tipo",
+  "local": "Local",
+  "autor": "Autor(es)",
+  "naoInformado": "Não informado"
 }

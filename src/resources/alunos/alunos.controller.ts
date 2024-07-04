@@ -19,7 +19,7 @@ const inicio = async (req: Request, res: Response): Promise<any> => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
+          tipoUsuario: req.session.tipoUsuario,
         });
       } catch (error) {
         console.log(error);
@@ -28,13 +28,15 @@ const inicio = async (req: Request, res: Response): Promise<any> => {
             message: 'Não foi possível acessar o gerenciamento de alunos.',
             type: 'danger',
             messageTitle: 'Gerenciamento de alunos indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
+            tipoUsuario: req.session.tipoUsuario,
+          }),
         );
       }
 
     default:
-      return res.status(400).send('A requisição enviada ao servidor é inválida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
 
@@ -52,7 +54,9 @@ const carregar = async (req: Request, res: Response): Promise<Response> => {
       }
 
     default:
-      return res.status(400).send('A requisição enviada ao servidor é inválida. Bad Request (400)');
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
 

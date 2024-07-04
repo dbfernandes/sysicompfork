@@ -1,13 +1,13 @@
 {
-    "projetosEmAndamento": "Ongoing Research Projects",
-    "paraConferir": "To check the details of the projects, click on the project title.",
-    "titulo": "Title",
-    "periodo": "Period",
-    "descricao": "Description",
-    "financiadores": "Financier(s)",
-    "integrantes": "Member(s)",
-    "atual": "Current",
-    "semDescricaoDisponivel": "No description available",
-    "semFinanciadores": "No financiers",
-    "semEquipe": "No team of members available"
+  "projetosEmAndamento": "Ongoing Research Projects",
+  "paraConferir": "To check the details of the projects, click on the project title.",
+  "titulo": "Title",
+  "periodo": "Period",
+  "descricao": "Description",
+  "financiadores": "Financier(s)",
+  "integrantes": "Member(s)",
+  "atual": "Current",
+  "semDescricaoDisponivel": "No description available",
+  "semFinanciadores": "No financiers",
+  "semEquipe": "No team of members available"
 }

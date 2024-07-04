@@ -1,15 +1,14 @@
-import express from 'express'
-// import salasController from '../controllers/salasController'
-import salasController from './salas.controller'
+import express from 'express';
+import salasController from './salas.controller';
 
-const router = express.Router()
+const router = express.Router();
 
-router.all('/adicionar', salasController.adicionar)
+router.all('/adicionar', salasController.adicionar);
 
-router.post('/excluir/:id', salasController.excluir)
+router.post('/excluir/:id', salasController.excluir);
 
-router.get('/gerenciar', salasController.gerenciar)
+router.get('/gerenciar', salasController.gerenciar);
 
-router.all('/editar/:id', salasController.editar)
+router.all('/editar/:id', salasController.editar);
 
-export default router
+export default router;

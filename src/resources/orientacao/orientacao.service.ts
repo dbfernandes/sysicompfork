@@ -1,12 +1,9 @@
 // const { Orientacao } = require('../models')
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 class OrientacaoService {
-  async adicionarVarios (
-    idProfessor: number,
-    orientacoes: any
-  ) {
+  async adicionarVarios(idProfessor: number, orientacoes: any) {
     if (orientacoes !== undefined) {
       const orientacoesArr = orientacoes.orientacoes.map((o: any) => {
         return {
@@ -16,9 +13,9 @@ class OrientacaoService {
           ano: o.ano,
           natureza: o.natureza,
           tipo: o.tipo,
-          status: o.status
-        }
-      })
+          status: o.status,
+        };
+      });
       // await Orientacao.destroy({
       //   where: {
       //     idProfessor
@@ -26,17 +23,19 @@ class OrientacaoService {
       // }).then(async () => {
       //   await Orientacao.bulkCreate(orientacoesArr)
       // })
-      await prisma.orientacao.deleteMany({
-        where: {
-          idProfessor
-        }
-      }).then(async () => {
-        await prisma.orientacao.createMany({
-          data: orientacoesArr
+      await prisma.orientacao
+        .deleteMany({
+          where: {
+            idProfessor,
+          },
         })
-      })
+        .then(async () => {
+          await prisma.orientacao.createMany({
+            data: orientacoesArr,
+          });
+        });
     }
   }
 }
 
-export default new OrientacaoService()
+export default new OrientacaoService();

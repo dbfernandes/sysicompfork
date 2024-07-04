@@ -1,20 +1,19 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
-const prisma = new PrismaClient()
-
-export default new class ReservaService {
-  async listarTodos () {
+export default new (class ReservaService {
+  async listarTodos() {
     // const reservas = await ReservaSala.findAll()
     // return reservas
     try {
-      const reservas = await prisma.reservaSalas.findMany()
-      return reservas
+      const reservas = await prisma.reservaSalas.findMany();
+      return reservas;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async listarReservasSalas () {
+  async listarReservasSalas() {
     // const reservas = await ReservaSala.findAll({
     //   include: [
     //     {
@@ -31,33 +30,33 @@ export default new class ReservaService {
       const reservas = await prisma.reservaSalas.findMany({
         include: {
           Salas: true,
-          Usuario: true
-        }
-      })
-      return reservas
+          Usuario: true,
+        },
+      });
+      return reservas;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async listarReservasSalasPorUsuario (id) {
+  async listarReservasSalasPorUsuario(id: number) {
     try {
       const reserva = await prisma.reservaSalas.findUnique({
         where: {
-          id: parseInt(id)
+          id: id,
         },
         include: {
-          Salas: true
-        }
-      })
-      return reserva
+          Salas: true,
+        },
+      });
+      return reserva;
     } catch (error) {
-      console.log(error)
-      throw error
+      console.log(error);
+      throw error;
     }
   }
 
-  async buscarReserva (id) {
+  async buscarReserva(id: number) {
     // try {
     //     const reserva = await ReservaSala.findByPk(id);
     //     return reserva;
@@ -68,16 +67,16 @@ export default new class ReservaService {
     try {
       const reserva = await prisma.reservaSalas.findUnique({
         where: {
-          id: parseInt(id)
-        }
-      })
-      return reserva
+          id: id,
+        },
+      });
+      return reserva;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async criar (reserva) {
+  async criar(reserva: any) {
     // const reservaCriada = await ReservaSala.create(reserva)
     // return reservaCriada
     const {
@@ -89,9 +88,9 @@ export default new class ReservaService {
       dataTermino,
       horaInicio,
       horaTermino,
-      dias
-    } = reserva
-    console.log(reserva)
+      dias,
+    } = reserva;
+    console.log(reserva);
     try {
       await prisma.reservaSalas.create({
         data: {
@@ -103,54 +102,48 @@ export default new class ReservaService {
           dataTermino: new Date(dataTermino),
           horaInicio,
           horaTermino,
-          dias
-        }
-      })
+          dias,
+        },
+      });
       // return novaReserva
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async atualizar (id, reserva) {
-    const {
-      idSala,
-      idUsuario,
-      dataInicio,
-      dataFim
-    } = reserva
+  async atualizar(id: number, reserva: any) {
+    const { idSala, idUsuario, dataInicio, dataFim } = reserva;
 
     try {
       const reservaAtualizada = await prisma.reservaSalas.update({
         where: {
-          id: parseInt(id)
+          id: id,
         },
         data: {
-          idSala,
-          idUsuario,
+          SalaId: idSala,
+          UsuarioId: idUsuario,
           dataInicio,
-          dataFim,
-          updatedAt: new Date()
-        }
-      })
-      return reservaAtualizada
+          dataTermino: dataFim,
+        },
+      });
+      return reservaAtualizada;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async remover (id) {
+  async remover(id: number) {
     // const reservaExcluida = await ReservaSala.destroy({ where: { id } })
     // return reservaExcluida
     try {
       const reservaExcluida = await prisma.reservaSalas.delete({
         where: {
-          id
-        }
-      })
-      return reservaExcluida
+          id: id,
+        },
+      });
+      return reservaExcluida;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
-}()
+})();

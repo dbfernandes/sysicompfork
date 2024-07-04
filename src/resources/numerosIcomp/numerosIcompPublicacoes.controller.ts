@@ -1,50 +1,55 @@
-import { Request, Response } from 'express'
-import PublicacaoService from '../publicacao/publicacao.service'
-import path from 'path'
+import { Request, Response } from 'express';
+import publicacaoService from '../publicacao/publicacao.service';
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
 // Escolha do Layout
 const layoutMain = {
-  layout: 'numerosIcompMain'
-}
+  layout: 'numerosIcompMain',
+};
 
 // Listagem Publicações
 
-const publicacao = async (req: Request, res: Response) => {
+const publicacao = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
   switch (req.method) {
     case 'GET': {
-      const { ano, lng } = req.query
+      const { ano, lng } = req.query;
       try {
-        // const conditions = {
-        //   tipo: [1, 2]
-        // }
-        // if (ano) {
-        //   conditions.ano = ano
-        // }
-        const conditions: { tipo: number[]; ano?: string } = {
+        const conditions: {
+          tipo: number[];
+          ano?: string | string[] | undefined;
+        } = {
           tipo: [1, 2],
-          ano: ''
-        }
-        if (ano && typeof ano === 'string') {
-          conditions.ano = ano
-        }
-        const publicacoes = await PublicacaoService.listarTodos(conditions)
+        };
 
-        return res.render(resolveView('publicacoes'), {
+        // Verificação de tipo e conversão apropriada
+        if (ano !== undefined) {
+          if (typeof ano === 'string') {
+            conditions.ano = ano;
+          } else if (Array.isArray(ano)) {
+            // Converter ParsedQs[] para string[]
+            conditions.ano = ano.map((item) => item.toString());
+          }
+        }
+
+        const publicacoes = await publicacaoService.listarTodos(conditions);
+
+        return res.render('numerosIcomp/publicacoes', {
           lng,
           ...layoutMain,
           publicacoes,
-          ano
-        })
+          ano,
+        });
       } catch (error) {
-        return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)')
+        return res
+          .status(502)
+          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
       }
     }
     default:
-      return res.status(400)
+      return res.status(400).send('Método não suportado');
   }
-}
+};
 
-export default publicacao
+export default publicacao;

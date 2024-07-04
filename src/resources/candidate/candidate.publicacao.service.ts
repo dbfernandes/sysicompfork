@@ -17,7 +17,7 @@ class CandidatePublicacaoService {
   async adicionarVarios(
     idCandidate: number,
     publicacoes: Publicacao[],
-    tipoPublicacao: number
+    tipoPublicacao: number,
   ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
       const publicacoesParaInserir = publicacoes.map((publicacao) => {
@@ -42,14 +42,15 @@ class CandidatePublicacaoService {
 
       for (const publicacao of publicacoesParaInserir) {
         try {
-          const existingPublication = await prisma.candidatePublications.findFirst({
-            where: {
-              idCandidate,
-              titulo: publicacao.titulo,
-              ano: publicacao.ano,
-              tipo: tipoPublicacao,
-            },
-          });
+          const existingPublication =
+            await prisma.candidatePublications.findFirst({
+              where: {
+                idCandidate,
+                titulo: publicacao.titulo,
+                ano: publicacao.ano,
+                tipo: tipoPublicacao,
+              },
+            });
 
           if (existingPublication) {
             await prisma.candidatePublications.update({
@@ -61,16 +62,20 @@ class CandidatePublicacaoService {
               },
               data: publicacao,
             });
-            console.log(`Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`);
+            console.log(
+              `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`,
+            );
           } else {
             await prisma.candidatePublications.create({
               data: publicacao,
             });
-            console.log(`Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidate}!`);
+            console.log(
+              `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidate}!`,
+            );
           }
         } catch (error) {
           console.error(
-            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidate}: ${error}`
+            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidate}: ${error}`,
           );
           throw new Error('Não foi possível criar/atualizar a publicação');
         }
@@ -78,7 +83,9 @@ class CandidatePublicacaoService {
     }
   }
 
-  async ListarPublicacoesCandidate(idCandidate: number): Promise<{ periodicos: any[]; conferencias: any[] }> {
+  async ListarPublicacoesCandidate(
+    idCandidate: number,
+  ): Promise<{ periodicos: any[]; conferencias: any[] }> {
     try {
       const periodicos = await prisma.candidatePublications.findMany({
         where: {
@@ -100,7 +107,9 @@ class CandidatePublicacaoService {
       };
       return data;
     } catch (error) {
-      console.error(`Erro ao listar publicações do candidato ${idCandidate}: ${error}`);
+      console.error(
+        `Erro ao listar publicações do candidato ${idCandidate}: ${error}`,
+      );
       throw new Error('Não foi possível listar as publicações');
     }
   }
