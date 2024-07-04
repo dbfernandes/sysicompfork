@@ -29,12 +29,16 @@ const router = express.Router();
 
 router.get('/login', autenticacaoController.login);
 router.post('/login', autenticacaoController.login);
-router.get('/recuperar-senha', autenticacaoController.recuperarSenha);
-router.post('/recuperar-senha', autenticacaoController.recuperarSenha);
+
+router.get('/recuperarSenha', autenticacaoController.recuperarSenha);
+router.post('/recuperarSenha', autenticacaoController.recuperarSenha);
+
 router.get('/logout', autenticacaoController.logout);
 
-router.use('/selecaoppgi', selecaoppgiRouter);
+router.get('/alterarSenha', autenticacaoController.trocaSenha);
+router.put('/alterarSenha', autenticacaoController.trocaSenha);
 
+router.use('/selecaoppgi', selecaoppgiRouter);
 router.use('/numerosIcomp', numerosIcompRouter);
 
 router.use(autenticacaoController.verificar);

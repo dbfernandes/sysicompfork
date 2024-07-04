@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      - 3327:3306
+      - "${MYSQL_PORT}:3306"
     expose:
       - '3327'
   
@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     ports: 
-      - 3003:3000
+      - "${PORT}:${PORT}"
     working_dir: /app
     volumes: 
       - .:/app
