@@ -20,4 +20,6 @@ uploads/*
 #Removing the .xlsx file
 /planilha.xlsx
 
+!/logs/.gitkeep
 /logs/*
+

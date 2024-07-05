@@ -110,7 +110,7 @@ const remover = async (req: Request, res: Response) => {
 const editar = async (req: Request, res: Response) => {
   const linhaPesquisa = await linhasDePesquisaService.findById(parseInt(req.params.id));
   if (req.method === 'GET') {
-    return res.status(200).render('linhasDePesquisa/linhasDePesquisa-editar', {
+    return res.status(200).render(resolveView('linhasDePesquisa-editar'), {
       linhaPesquisa, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session?.tipoUsuario
     });
   } else {

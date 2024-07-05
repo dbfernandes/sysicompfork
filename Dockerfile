@@ -24,5 +24,5 @@ COPY . .
 
 RUN npm install
 
-# alterar para 'npm start' quando o sistema entrar em produção
-CMD ["npm", "run", "start:dev"]
+# alterar para 'npm start:prod' quando o sistema entrar em produção
+CMD ["npm", "run", "start"]

@@ -1,7 +1,9 @@
 import {Response, Request} from 'express'
 import { CreateEditalDto, UpdateEditalDto } from './edital.types'
 import EditalService from './edital.service'
-import editalGerarPlanilha from '../../utils/editalGerarPlanilha'
+// import editalGerarPlanilha from '../../utils/editalGerarPlanilha'
+// import editalGerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain'
+import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain'
 import archiver from 'archiver'
 import path from 'path'
 import editalService from './edital.service'
@@ -269,7 +271,7 @@ const editalCandidates = async (req: Request, res: Response) => {
 }
 
 const geraPlanilha = async (req: Request, res: Response) => {
-   const planilha = await editalGerarPlanilha.gerarPlanilha(req.params.id);
+   const planilha = await gerarPlanilha(req.params.id);
    return res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': 'attachment; filename=planilha.xlsx',
