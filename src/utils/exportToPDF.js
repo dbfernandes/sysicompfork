@@ -1,9 +1,8 @@
 import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
-import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
-import usuarioService from '../controllers/usuariosController';
-import afastamentoTemporarioService from '../resources/afastamentoTemporario/afastamento.temporario.service';
+import usuarioService from '../resources/usuarios/usuario.service.ts';
+import afastamentoTemporarioService from '../resources/afastamentoTemporario/afastamento.temporario.service.ts';
 
 const compileHTML = require('handlebars').compile;
 const compilePDF = require('html-pdf').create;

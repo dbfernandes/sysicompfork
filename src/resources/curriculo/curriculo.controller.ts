@@ -8,18 +8,6 @@ import OrientacaoService from '../orientacao/orientacao.service';
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
 
-interface SessionData {
-  tipoUsuario?:
-    | {
-        administrador: boolean;
-        secretaria: boolean;
-        coordenador: boolean;
-        professor: boolean;
-      }
-    | undefined;
-  uid: string;
-  nome: string;
-}
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -37,12 +25,12 @@ const visualizar = async (req: Request, res: Response) => {
         return res.render(resolveView('curriculo-adicionar'), {
           professores,
           csrfToken: req.csrfToken(),
-          nome: (req.session as SessionData).nome,
-          usuarioId: (req.session as SessionData).uid,
+          nome: req.session.nome,
+          usuarioId: req.session.uid,
           message,
           type,
           messageTitle,
-          tipoUsuario: (req.session as SessionData).tipoUsuario,
+          tipoUsuario: req.session.tipoUsuario,
           avatar: null,
         });
       } catch (error) {
@@ -52,7 +40,7 @@ const visualizar = async (req: Request, res: Response) => {
             message: 'Não foi possível abrir o envio de currículo.',
             type: 'danger',
             messageTitle: 'Envio de currículo indisponível!',
-            tipoUsuario: (req.session as SessionData).tipoUsuario,
+            tipoUsuario: req.session.tipoUsuario,
           }),
         );
       }

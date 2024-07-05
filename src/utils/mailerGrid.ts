@@ -49,6 +49,7 @@ export function sendEmailRecoveryPasswordUser({
       Por favor, clique no link abaixo para criar uma nova senha:
       <br>
       <p><a href="${url}">${url}</a></p>
+      <p>Este link irá expira em 1 hora.</p>
       <br>
       Atenciosamente,
       <br>
@@ -75,12 +76,13 @@ export function sendEmailRecoveryPasswordCandidate({
           subject: "[PPGI] Troca de senha",
           text: "and easy to do anywhere, even with Node.js",
           html: `
-        <div>
+          <div>
           Prezando(a) candidato
           <br>
           Por favor, clique no link abaixo para criar uma nova senha:
           <br>
           <p><a href="${url}">${url}</a></p>
+          <p>Este link irá expira em 1 hora.</p>
           <br>
           Atenciosamente,
           <br>

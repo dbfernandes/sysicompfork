@@ -1,16 +1,12 @@
-import { PrismaClient, Usuario } from "@prisma/client";
-import bcrypt from "bcrypt";
+import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+
+import { generateHashPassword } from "../../utils/utils";
 const prisma = new PrismaClient();
 
-const roundsSalt = process.env.SALT_ROUNDS || 10;
 
-export async function generateHashPassword(password: string) {
-  const salt = await bcrypt.genSalt(Number(roundsSalt));
-  return await bcrypt.hash(password, salt);
-}
 class UsuarioService {
-  async adicionar(
+  async adicionar( 
     nomeCompleto: string,
     cpf: string,
     email: string,

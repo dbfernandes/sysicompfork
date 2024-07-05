@@ -107,6 +107,13 @@
 		padding: 0 5%;
 	}
 
+
+	@media (max-width: 576px) {
+	.forms-page section form {
+		padding: 0;
+	}
+	}
+
 	.forms-page section button {
 		position: relative;
 		bottom: 0;
@@ -211,8 +218,6 @@
 			<button id="btn_logout">Sair</button>
 		</div>
 	</header>
-	{{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
-    <!-- Toast container -->
     <div class="toast-container position-fixed ">
         <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="alert alert-primary mb-0" role="alert">
@@ -270,7 +275,7 @@
 					<div class="card-body">
 						<div class="row">
 
-							<div class="form-group col-6">
+							<div class="form-group col-md-6">
 								<label for="candidato-nome">
 									<font color="#FF0000">*</font>
 									<b>Nome:</b>
@@ -293,7 +298,6 @@
 										</div>
 									</div>
 								</div>
-
 
 								<div class="help-block"></div>
 							</div>
@@ -321,7 +325,7 @@
 						</div>
 
 						<div class="form-group row">
-							<div class="col-6 campo-candidato-nomesocial">
+							<div class="col-md-6 campo-candidato-nomesocial">
 								<label class="control-label" for="candidato-nomesocial">
 									<b>Nome Social:</b>
 								</label>
@@ -341,7 +345,7 @@
 								<div class="help-block"></div>
 							</div>
 
-							<div class="col-3 campo-candidato-uf">
+							<div class="col-md-3 campo-candidato-uf">
 								<label class="control-label" for="candidato-uf">
 									<font color="#FF0000">*</font>
 									<b>Estado:</b>
@@ -441,7 +445,7 @@
 					<div class="card-body">
 						<div class="row">
 
-							<div class="form-group col-3 ">
+							<div class="form-group col-md-3  col-sm-6">
 								<label class="control-label" for="candidato-telresidencial">
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
 								</label>
@@ -450,7 +454,7 @@
 								<div class="help-block"></div>
 							</div>
 
-							<div class="form-group col-3 ">
+							<div class="form-group col-md-3 col-sm-6">
 								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
 								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
 									value="{{telefoneSecundario}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
@@ -654,7 +658,6 @@
 				break;
 			}
 		}
-		console.log({{condicao}})
 		{{#if condicao}}
 			document.getElementById("candidato-deficiencia1").checked = true;		
 		{{/if}}
@@ -684,7 +687,7 @@
 		$(document).ready(function () { 
 			if("{{dataNascimento}}"){
 				const nascimentoValue = "{{dataNascimento}}";
-				const formattedDate = moment(nascimentoValue, "YYYY-MM-DD").format("DD/MM/YYYY");
+				const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
 
 				$("#data-nascimento").val(formattedDate);
 
@@ -894,7 +897,19 @@
 		});
 		
 		$("#btn_inicio").click(function () {
-			window.location.href = "/selecaoppgi";
+				$.ajax({
+				url: "/selecaoppgi/voltarInicio",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi/formulario";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
 		});
 
 		$("#candidato-formulario").validate({

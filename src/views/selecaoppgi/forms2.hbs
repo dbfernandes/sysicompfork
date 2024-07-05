@@ -249,7 +249,7 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-6">
+              <div class="form-group col-md-6">
                 <label for="candidato-curso">
                   <font color="#FF0000">*</font>
                   <b>Curso:</b>
@@ -258,7 +258,7 @@
                   maxlength="60" value="{{cursoGraduacao}}">
               </div>
 
-              <div class="col-md-6 ">
+              <div class="col-md-6 form-group">
                 <label class="control-label" for="candidato-instituicao">
                   <font color="#FF0000">*</font>
                   <b>Instituição:</b>
@@ -288,7 +288,7 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-6">
+              <div class="form-group col-md-6">
                 <label for="candidato-curso-pos">
                   <b>Curso:</b>
                 </label>
@@ -351,7 +351,7 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="col-6">
+              <div class="col-md-6">
                 <label class="control-label" for="vittaepdf">
                   <font color="#FF0000">*</font> 
                   <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
@@ -474,13 +474,13 @@
                 </label>
               </div>
               {{#if hasProvaAnterior}}
-                <div class="col-6">
+                <div class="col-md-6">
                   <a href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary">Baixar Prova Anterior</a>
                   <input type="hidden" name="ProvaAnterior" value="{{hasProvaAnterior}}">
 
                 </div>
               {{else}}
-                <div class="col-6" >
+                <div class="col-md-6" >
                 <div class="form-group">
                   <div class="custom-file">
       
@@ -505,14 +505,14 @@
             <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
             {{#each experienciasAcademicas}}
               <div class="row experiencia-row">
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
                     Instituição Acadêmica:
                   </label>
                   <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]" maxlength="60" value="{{instituicao}}">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-atividade">
                     Atividade:
                   </label>
@@ -520,7 +520,7 @@
                     name="experienciaAtividade[]" maxlength="60" value="{{atividade}}">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
                     Período:
                   </label>
@@ -534,7 +534,7 @@
             {{/each}}
             <div id="experiencia-container">
               <div class="row experiencia-row">
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
                     Instituição Academica:
                   </label>
@@ -542,7 +542,7 @@
                     maxlength="60">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-atividade">
                     Atividade:
                   </label>
@@ -550,7 +550,7 @@
                     name="experienciaAtividade[]" maxlength="60">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
                     Período:
                   </label>
