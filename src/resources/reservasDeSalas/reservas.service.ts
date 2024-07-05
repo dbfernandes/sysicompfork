@@ -43,7 +43,7 @@ export default new (class ReservaService {
     try {
       const reserva = await prisma.reservaSalas.findUnique({
         where: {
-          id: id,
+          id,
         },
         include: {
           Salas: true,
@@ -67,7 +67,7 @@ export default new (class ReservaService {
     try {
       const reserva = await prisma.reservaSalas.findUnique({
         where: {
-          id: id,
+          id,
         },
       });
       return reserva;
@@ -117,7 +117,7 @@ export default new (class ReservaService {
     try {
       const reservaAtualizada = await prisma.reservaSalas.update({
         where: {
-          id: id,
+          id,
         },
         data: {
           SalaId: idSala,
@@ -138,7 +138,7 @@ export default new (class ReservaService {
     try {
       const reservaExcluida = await prisma.reservaSalas.delete({
         where: {
-          id: id,
+          id,
         },
       });
       return reservaExcluida;

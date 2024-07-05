@@ -154,7 +154,7 @@ const viewEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital,
+        edital,
         tipoUsuario: req.session.tipoUsuario,
       });
     }
@@ -177,7 +177,7 @@ const updateEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital,
+        edital,
         tipoUsuario: req.session.tipoUsuario,
       });
     }
@@ -313,100 +313,100 @@ const gerarCandidatoPDF = async (req: Request, res: Response) => {
     .send(docPDF);
 };
 // Refazer função
-const getAllCandidatesDocuments = async (req: Request, res: Response) => {
-  // try {
-  //   // Pegue todos os candidatos do edital
-  //   const candidates = await editalService.listCandidates(req.params.id)
-  //   // Crie um diretório temporário para armazenar os documentos
-  //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
-  //   if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
-  //   fs.mkdirSync(tempDirPath)
-  //   // Para cada candidato, crie um arquivo PDF com os documentos
-  //   const candidatesDocuments = []
-  //   for (const candidate of candidates) {
-  //     if (candidate.Curriculum) {
-  //       const docCurriculumPath = path.join(tempDirPath, `${candidate.Nome}-Curriculum.pdf`)
-  //       fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64')
-  //       candidatesDocuments.push({ path: docCurriculumPath, name: `${candidate.Nome}/${candidate.Nome}-Curriculum.pdf` })
-  //     }
-  //     if (candidate.CartaDoOrientador) {
-  //       const docCartaOrientadorPath = path.join(tempDirPath, `${candidate.Nome}-CartaDoOrientador.pdf`)
-  //       fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64')
-  //       candidatesDocuments.push({ path: docCartaOrientadorPath, name: `${candidate.Nome}/${candidate.Nome}-CartaDoOrientador.pdf` })
-  //     }
-  //     if (candidate.PropostaDeTrabalho) {
-  //       const docPropostaPath = path.join(tempDirPath, `${candidate.Nome}-PropostaDeTrabalho.pdf`)
-  //       fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64')
-  //       candidatesDocuments.push({ path: docPropostaPath, name: `${candidate.Nome}/${candidate.Nome}-PropostaDeTrabalho.pdf` })
-  //     }
-  //   }
-  //     // Compacte todos os arquivos em um arquivo ZIP
-  //     const zipFilePath = path.join(tempDirPath, 'documentos.zip');
-  //     await res.zip(candidatesDocuments, zipFilePath);
-  //     // Remova o diretório temporário
-  //     fs.rmdirSync(tempDirPath, { recursive: true });
-  //     // Envie o arquivo ZIP para o cliente
-  //     return res.download(zipFilePath, 'documentos.zip');
-  // } catch (error: any) {
-  //   res.status(400).json({
-  //     error: error.message
-  //   })
-  // }
-  /*Identifica usuarios*/
-  /*Busca documentos dos candidatos*/
-  /*Cria pastas temporaria para cada candidato*/
-  /*Cria arquivos PDF*/
-  /*Compacta arquivos em ZIP*/
-  /*Envia ZIP para o cliente*/
-  /*Remove pasta temporaria e arquivos temporarios*/
-};
-//Refazer função
-const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
-  // const candidate = await editalService.getCandidate(req.params.id)
-  // try {
-  //   const tempDirPath = path.join(os.tmpdir(), 'documents-')
-  //   if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
-  //   fs.mkdirSync(tempDirPath)
-  //     const candidateDocuments = [];
-  //     if (candidate.Curriculum) {
-  //        const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
-  //        fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
-  //        candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
-  //     }
-  //     if (candidate.CartaDoOrientador) {
-  //        const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
-  //        fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
-  //        candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
-  //     }
-  //     if (candidate.PropostaDeTrabalho) {
-  //        const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
-  //        fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
-  //        candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
-  //     }
-  //     const zipFilePath = path.join(tempDirPath, 'documentos.zip');
-  //     await res.zip(candidateDocuments, zipFilePath);
-  //     fs.rmdirSync(tempDirPath, { recursive: true });
-  //     return res.download(zipFilePath, 'documentos.zip');
-  //  } catch (error: any) {
-  //     res.status(400).json({
-  //        error: error.message,
-  //     });
-  //  }
-  /*Identifica usuario*/
-  /*Busca documentos do candidato*/
-  /*Cria pasta temporaria*/
-  /*Cria arquivos PDF*/
-  /*Compacta arquivos em ZIP*/
-  /*Envia ZIP para o cliente*/
-  /*Remove pasta temporaria e arquivos temporarios*/
-};
+// const getAllCandidatesDocuments = async (req: Request, res: Response) => {
+//   try {
+//     // Pegue todos os candidatos do edital
+//     const candidates = await editalService.listCandidates(req.params.id)
+//     // Crie um diretório temporário para armazenar os documentos
+//     const tempDirPath = path.join(os.tmpdir(), 'documents-')
+//     if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
+//     fs.mkdirSync(tempDirPath)
+//     // Para cada candidato, crie um arquivo PDF com os documentos
+//     const candidatesDocuments = []
+//     for (const candidate of candidates) {
+//       if (candidate.Curriculum) {
+//         const docCurriculumPath = path.join(tempDirPath, `${candidate.Nome}-Curriculum.pdf`)
+//         fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64')
+//         candidatesDocuments.push({ path: docCurriculumPath, name: `${candidate.Nome}/${candidate.Nome}-Curriculum.pdf` })
+//       }
+//       if (candidate.CartaDoOrientador) {
+//         const docCartaOrientadorPath = path.join(tempDirPath, `${candidate.Nome}-CartaDoOrientador.pdf`)
+//         fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64')
+//         candidatesDocuments.push({ path: docCartaOrientadorPath, name: `${candidate.Nome}/${candidate.Nome}-CartaDoOrientador.pdf` })
+//       }
+//       if (candidate.PropostaDeTrabalho) {
+//         const docPropostaPath = path.join(tempDirPath, `${candidate.Nome}-PropostaDeTrabalho.pdf`)
+//         fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64')
+//         candidatesDocuments.push({ path: docPropostaPath, name: `${candidate.Nome}/${candidate.Nome}-PropostaDeTrabalho.pdf` })
+//       }
+//     }
+//       // Compacte todos os arquivos em um arquivo ZIP
+//       const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+//       await res.zip(candidatesDocuments, zipFilePath);
+//       // Remova o diretório temporário
+//       fs.rmdirSync(tempDirPath, { recursive: true });
+//       // Envie o arquivo ZIP para o cliente
+//       return res.download(zipFilePath, 'documentos.zip');
+//   } catch (error: any) {
+//     res.status(400).json({
+//       error: error.message
+//     })
+//   }
+//   /* Identifica usuarios */
+//   /* Busca documentos dos candidatos */
+//   /* Cria pastas temporaria para cada candidato */
+//   /* Cria arquivos PDF */
+//   /* Compacta arquivos em ZIP */
+//   /* Envia ZIP para o cliente */
+//   /* Remove pasta temporaria e arquivos temporarios */
+// };
+// Refazer função
+// const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
+//   const candidate = await editalService.getCandidate(req.params.id)
+//   try {
+//     const tempDirPath = path.join(os.tmpdir(), 'documents-')
+//     if (fs.existsSync(tempDirPath)) fs.rmdirSync(tempDirPath, { recursive: true })
+//     fs.mkdirSync(tempDirPath)
+//       const candidateDocuments = [];
+//       if (candidate.Curriculum) {
+//          const docCurriculumPath = path.join(tempDirPath, 'Curriculum.pdf');
+//          fs.writeFileSync(docCurriculumPath, candidate.Curriculum.toString('utf-8'), 'base64');
+//          candidateDocuments.push({ path: docCurriculumPath, name: 'Curriculum.pdf' });
+//       }
+//       if (candidate.CartaDoOrientador) {
+//          const docCartaOrientadorPath = path.join(tempDirPath, 'CartaDoOrientador.pdf');
+//          fs.writeFileSync(docCartaOrientadorPath, candidate.CartaDoOrientador.toString('utf-8'), 'base64');
+//          candidateDocuments.push({ path: docCartaOrientadorPath, name: 'CartaDoOrientador.pdf' });
+//       }
+//       if (candidate.PropostaDeTrabalho) {
+//          const docPropostaPath = path.join(tempDirPath, 'PropostaDeTrabalho.pdf');
+//          fs.writeFileSync(docPropostaPath, candidate.PropostaDeTrabalho.toString('utf-8'), 'base64');
+//          candidateDocuments.push({ path: docPropostaPath, name: 'PropostaDeTrabalho.pdf' });
+//       }
+//       const zipFilePath = path.join(tempDirPath, 'documentos.zip');
+//       await res.zip(candidateDocuments, zipFilePath);
+//       fs.rmdirSync(tempDirPath, { recursive: true });
+//       return res.download(zipFilePath, 'documentos.zip');
+//    } catch (error: any) {
+//       res.status(400).json({
+//          error: error.message,
+//       });
+//    }
+//   /* Identifica usuario */
+//   /* Busca documentos do candidato */
+//   /* Cria pasta temporaria */
+//   /* Cria arquivos PDF */
+//   /* Compacta arquivos em ZIP */
+//   /* Envia ZIP para o cliente */
+//   /* Remove pasta temporaria e arquivos temporarios */
+// };
 
 const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await editalService.getCandidate(req.params.id);
 
     return res.render('edital/candidateDetails', {
-      candidate: candidate,
+      candidate,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
       ...locals,

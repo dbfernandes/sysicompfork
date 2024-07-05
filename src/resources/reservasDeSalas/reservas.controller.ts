@@ -5,7 +5,7 @@ import reservasService from './reservas.service';
 const listar = async (req: Request, res: Response) => {
   const reservas = await reservasService.listarTodos();
   // res.json({ reservas: reservas.map((sala: { toJSON: () => any; }) => sala.toJSON()) })
-  res.json({ reservas: reservas });
+  res.json({ reservas });
 };
 
 const adicionar = async (req: Request, res: Response) => {
@@ -13,7 +13,7 @@ const adicionar = async (req: Request, res: Response) => {
     const salas = await salasService.listarTodos();
     res.render('reservas/reservas-adicionar', {
       // salas: salas.map((sala) => JSON.stringify(sala)),
-      salas: salas,
+      salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
       csrf: req.csrfToken(),
@@ -110,9 +110,9 @@ const editar = async (req: Request, res: Response) => {
 
       res.render('reservas/reservas-editar', {
         // salas: salas.map((sala) => JSON.stringify(sala)),
-        salas: salas,
+        salas,
         // reserva: reserva.toJSON(),
-        reserva: reserva,
+        reserva,
         csrf: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,

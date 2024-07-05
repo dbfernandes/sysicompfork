@@ -15,7 +15,7 @@ class PremioService {
     // })
     await prisma.premios.deleteMany({
       where: {
-        idProfessor: idProfessor,
+        idProfessor,
       },
     });
 

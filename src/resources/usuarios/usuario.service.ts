@@ -54,7 +54,7 @@ class UsuarioService {
     }
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: user,
     });
@@ -63,7 +63,7 @@ class UsuarioService {
   async alterarInfo(id: number, user: any) {
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: user,
     });
@@ -120,7 +120,7 @@ class UsuarioService {
     // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
     //   timeZone: 'America/Manaus'
     // }).slice(0, 10)
-    let usuarioComDataFormatada = {
+    const usuarioComDataFormatada = {
       ...usuarioDict,
       DateFormatada: new Date(usuarioDict.createdAt)
         .toLocaleString('pt-BR', {
@@ -178,7 +178,7 @@ class UsuarioService {
   async recuperarSenha(token: string, data: any, id: number) {
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: {
         tokenResetSenha: token,

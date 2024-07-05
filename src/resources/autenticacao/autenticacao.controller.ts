@@ -60,7 +60,7 @@ const login = async (req: Request, res: Response) => {
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body;
-      const usuario = await usuarioService.buscarUsuarioPor({ cpf: cpf });
+      const usuario = await usuarioService.buscarUsuarioPor({ cpf });
 
       if (!usuario) {
         return res.render(resolveView('login'), {
@@ -113,7 +113,7 @@ const recuperarSenha = async (req: Request, res: Response) => {
     const { email } = req.body;
 
     try {
-      const user = await UsuarioService.buscarUsuarioPor({ email: email });
+      const user = await UsuarioService.buscarUsuarioPor({ email });
 
       if (!user) {
         return res.render(resolveView('recuperar-senha'), {

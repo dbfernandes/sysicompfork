@@ -18,7 +18,7 @@ export default new (class SalaService {
     // const sala = await Salas.findByPk(id)
     const sala = await prisma.salas.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
     return sala;
@@ -36,11 +36,11 @@ export default new (class SalaService {
       // const salaCriada = await Salas.create(sala)
       await prisma.salas.create({
         data: {
-          nome: nome,
-          bloco: bloco,
-          andar: andar,
-          numero: numero,
-          capacidade: capacidade,
+          nome,
+          bloco,
+          andar,
+          numero,
+          capacidade,
         },
       });
     } catch (error) {
@@ -55,7 +55,7 @@ export default new (class SalaService {
     try {
       await prisma.salas.update({
         where: {
-          id: id,
+          id,
         },
         data: {
           nome: sala.nome,
@@ -77,7 +77,7 @@ export default new (class SalaService {
       // const salaExcluida = await Salas.destroy({ where: { id } })
       await prisma.salas.delete({
         where: {
-          id: id,
+          id,
         },
       });
     } catch (error) {

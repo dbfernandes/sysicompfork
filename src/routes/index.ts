@@ -32,13 +32,9 @@ router.post('/login', autenticacaoController.login);
 router.get('/recuperar-senha', autenticacaoController.recuperarSenha);
 router.post('/recuperar-senha', autenticacaoController.recuperarSenha);
 router.get('/logout', autenticacaoController.logout);
-
 router.use('/selecaoppgi', selecaoppgiRouter);
-
 router.use('/numerosIcomp', numerosIcompRouter);
-
 router.use(autenticacaoController.verificar);
-
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);

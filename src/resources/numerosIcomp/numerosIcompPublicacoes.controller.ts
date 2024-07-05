@@ -7,7 +7,6 @@ const layoutMain = {
 };
 
 // Listagem Publicações
-
 const publicacao = async (
   req: Request,
   res: Response,
@@ -22,19 +21,15 @@ const publicacao = async (
         } = {
           tipo: [1, 2],
         };
-
         // Verificação de tipo e conversão apropriada
         if (ano !== undefined) {
           if (typeof ano === 'string') {
             conditions.ano = ano;
           } else if (Array.isArray(ano)) {
-            // Converter ParsedQs[] para string[]
             conditions.ano = ano.map((item) => item.toString());
           }
         }
-
         const publicacoes = await publicacaoService.listarTodos(conditions);
-
         return res.render('numerosIcomp/publicacoes', {
           lng,
           ...layoutMain,

@@ -32,7 +32,7 @@ class ProjetoService {
   }
 
   async listarAtuais() {
-    let projetos = await prisma.projeto.findMany({
+    const projetos = await prisma.projeto.findMany({
       where: {
         fim: 0,
       },

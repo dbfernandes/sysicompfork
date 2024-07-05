@@ -38,14 +38,12 @@ const buscar = async (req: Request, res: Response) => {
 
   const { nome, sigla } = result;
 
-  return res
-    .status(200)
-    .render('linhasDePesquisa/linhasDePesquisa-busca', {
-      nome,
-      sigla,
-      pageTitle,
-      tipoUsuario: req.session?.tipoUsuario,
-    });
+  return res.status(200).render('linhasDePesquisa/linhasDePesquisa-busca', {
+    nome,
+    sigla,
+    pageTitle,
+    tipoUsuario: req.session?.tipoUsuario,
+  });
 };
 
 const criar = async (req: Request, res: Response) => {

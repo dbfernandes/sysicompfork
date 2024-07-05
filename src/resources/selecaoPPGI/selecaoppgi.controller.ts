@@ -441,7 +441,7 @@ const voltar = async (req: Request, res: Response) => {
         // res.redirect('/selecaoppgi')
         console.log(editalPosicao);
 
-        const candidate = await candidateService.back(id);
+        await candidateService.back(id);
         (req.session as any).editalPosition = editalPosicao;
         res.status(200).send();
       }
