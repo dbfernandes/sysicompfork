@@ -1,9 +1,11 @@
 import express from 'express';
-import perfilRouter from './perfil.controller';
+import perfilController from './perfil.controller';
+
 const router = express.Router();
 
-router.all('/', perfilRouter.visualizar);
-router.all('/editar', perfilRouter.editar);
-router.all('/deletar', perfilRouter.deletar);
+router.get('/', perfilController.visualizar);
+router.get('/editar', perfilController.editar);
+router.post('/editar', perfilController.editar);
+router.post('/deletar', perfilController.deletar);
 
 export default router;

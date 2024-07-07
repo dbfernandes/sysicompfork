@@ -1,7 +1,11 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from 'express';
 
-export async function isUsuarioAutenticado(req: Request, res: Response, next: NextFunction) {
-  const rotasSemAutenticacao = ['/login', '/logout']
+const isUsuarioAutenticado = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const rotasSemAutenticacao = ['/login', '/logout'];
   if (rotasSemAutenticacao.includes(req.path)) {
     return next();
   }
@@ -11,3 +15,5 @@ export async function isUsuarioAutenticado(req: Request, res: Response, next: Ne
 
   return res.redirect('/login');
 };
+
+export default isUsuarioAutenticado;

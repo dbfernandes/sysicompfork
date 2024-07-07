@@ -11,7 +11,7 @@ function resolveView(viewName: string): string {
 const listar = async (req: Request, res: Response) => {
   const reservas = await reservasService.listarTodos();
   // res.json({ reservas: reservas.map((sala: { toJSON: () => any; }) => sala.toJSON()) })
-  res.json({ reservas: reservas });
+  res.json({ reservas });
 };
 
 const adicionar = async (req: Request, res: Response) => {

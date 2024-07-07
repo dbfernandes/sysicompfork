@@ -1,12 +1,15 @@
 import express from 'express';
-import usurarioRouter from './usuarios.controller';
+import usuariosController from './usuarios.controller';
+
 const router = express.Router();
 
-router.all('/adicionar', usurarioRouter.adicionar);
-router.all('/listar', usurarioRouter.listar);
-router.all('/deletar/:id', usurarioRouter.deletar);
-router.all('/restaurar/:id', usurarioRouter.restaurar);
-router.all('/dados/:id', usurarioRouter.visualizar);
-router.all('/editar/:id', usurarioRouter.editar);
+router.get('/adicionar', usuariosController.adicionar);
+router.post('/adicionar', usuariosController.adicionar);
+router.get('/listar', usuariosController.listar);
+router.post('/deletar/:id', usuariosController.deletar);
+router.post('/restaurar/:id', usuariosController.restaurar);
+router.get('/dados/:id', usuariosController.visualizar);
+router.get('/editar/:id', usuariosController.editar);
+router.post('/editar/:id', usuariosController.editar);
 
 export default router;

@@ -147,7 +147,7 @@ const viewEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital,
+        edital,
         tipoUsuario: req.session.tipoUsuario,
       });
     }
@@ -167,7 +167,7 @@ const updateEdital = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
-        edital: edital,
+        edital,
         tipoUsuario: req.session.tipoUsuario,
       });
     }
