@@ -49,7 +49,6 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           professor,
           senhaHash: senha,
           endereco,
-          telResidencial: telefoneResidencial,
           telCelular: telefoneCelular,
           siape,
           dataIngresso: dateDeIngresso,

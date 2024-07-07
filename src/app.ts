@@ -8,7 +8,7 @@ import cors from 'cors'
 import * as path from 'path'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
-import { isUsuarioAutenticado } from './middlewares/usuarioAutenticacaoMiddleware'
+import isUsuarioAutenticado from './middlewares/usuarioAutenticacaoMiddleware'
 import resgistro from './middlewares/logger'
 
 dotenv.config();

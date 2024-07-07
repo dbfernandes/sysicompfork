@@ -1,9 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { CreateCandidatePublicationsDto } from './candidatePublicacao.types'
-
-// const prisma = new PrismaClient()
-// import { PrismaClient } from '@prisma/client';
-
 const prisma = new PrismaClient();
 
 interface Publicacao {
