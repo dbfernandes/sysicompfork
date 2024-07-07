@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Orientacao', {
@@ -6,50 +6,50 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       idProfessor: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: { model: 'Usuario', key: 'id' },
         onUpdate: 'restrict',
-        onDelete: 'restrict'
+        onDelete: 'restrict',
       },
       titulo: {
         type: Sequelize.STRING(1024),
-        allowNull: false
+        allowNull: false,
       },
       aluno: {
         type: Sequelize.STRING(500),
-        allowNull: false
+        allowNull: false,
       },
       ano: {
         type: Sequelize.INTEGER(4),
-        allowNull: false
+        allowNull: false,
       },
       natureza: {
         type: Sequelize.STRING(1024),
-        allowNull: true
+        allowNull: true,
       },
       tipo: {
         type: Sequelize.SMALLINT,
-        allowNull: false
+        allowNull: false,
       },
       status: {
         type: Sequelize.SMALLINT,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Orientacao')
-  }
-}
+    await queryInterface.dropTable('Orientacao');
+  },
+};

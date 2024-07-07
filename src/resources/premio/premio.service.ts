@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client"
-import { CreatePremioDto } from "./premio.types"
 const prisma = new PrismaClient()
 
 class PremioService {
-  async adicionarUm (
+  async adicionarUm(
     idProfessor: number,
     titulo: string,
     ano: number,
@@ -14,7 +13,7 @@ class PremioService {
         idProfessor: idProfessor
       }
     })
-    const premio: CreatePremioDto = {
+    const premio: any = {
       idProfessor,
       titulo,
       ano,
@@ -27,7 +26,7 @@ class PremioService {
 
   async adicionarVarios (
     idProfessor: number,
-    premios: CreatePremioDto[]
+    premios: any[]
   ): Promise<void> {
     if (premios !== undefined) {
       const premiosArr = premios.map((p: any) => {
@@ -35,20 +34,22 @@ class PremioService {
           idProfessor,
           entidade: p.entidade,
           titulo: p.titulo,
-          ano: p.ano
-        }
-      })
-      await prisma.premios.deleteMany({
-        where: {
-          idProfessor
-        }
-      }).then(async () => {
-        await prisma.premios.createMany({
-          data: premiosArr
+          ano: p.ano,
+        };
+      });
+      await prisma.premios
+        .deleteMany({
+          where: {
+            idProfessor,
+          },
         })
-      })
+        .then(async () => {
+          await prisma.premios.createMany({
+            data: premiosArr,
+          });
+        });
     }
   }
 }
 
-export default new PremioService()
+export default new PremioService();

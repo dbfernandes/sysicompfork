@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
-import { CreateCandidateDto } from '../candidate/candidate.types'
 import EditalService from '../edital/edital.service'
-import CandidateService from '../candidate/candidate.service'
-import candidatePublicacaoService from '../candidate/candidatePublicacao.service'
+import CandidateService from '../candidate/candidato.service'
+import candidatePublicacaoService from '../candidate/candidate.publicacao.service'
 import multer from 'multer'
 import path from "path";
 
@@ -11,8 +10,8 @@ function resolveView(viewName: string): string {
 }
 
 const locals = {
-  layout: 'selecaoppgi'
-}
+  layout: 'selecaoppgi',
+};
 
 const begin = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -21,9 +20,9 @@ const begin = async (req: Request, res: Response) => {
         ...locals
       })
     case 'POST':
-      return res.send('Erro 400')
+      return res.send('Erro 400');
   }
-}
+};
 
 const signin = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -34,72 +33,44 @@ const signin = async (req: Request, res: Response) => {
         ...locals,
         editais: editais.map((edital) => {
           return {
-            ...edital
-          }
+            ...edital,
+          };
         }),
-        errorSignin: null
-      })
+        errorSignin: null,
+      });
     }
     case 'POST': {
-      const novoCandidate: CreateCandidateDto = {
-        email: req.body.email,
-        passwordHash: req.body.senha,
-        editalId: req.body.edital,
-        editalPosition: 1,
-        etapaAtual: null,
-        linhaDePesquisaId: null,
-        Telefone: null,
-        Nome: null,
-        Bairro: null,
-        CEP: null,
-        Cidade: null,
-        Bolsista: null,
-        AnoEgressoGraduacao: null,
-        CursoPos: null,
-        InstituicaoGraduacao: null,
-        ComoSoube: null,
-        Condicao: null,
-        CondicaoTipo: null,
-        Cotista: null,
-        CotistaTipo: null,
-        Curso: null,
-        CursoAnoEgressoPos: null,
-        CursoGraduacao: null,
-        CursoInstituicaoPos: null,
-        CursoPosTipo: null,
-        Endereco: null,
-        Nacionalidade: null,
-        Nascimento: null,
-        NomeSocial: null,
-        Regime: null,
-        Sexo: null,
-        TelefoneSecundario: null,
-        UF: null
-      }
+      
+      const { email, senha, edital } = req.body;
 
-      if (!novoCandidate.email || !novoCandidate.passwordHash || !novoCandidate.editalId) {
+      // if (!novoCandidate.email || !novoCandidate.passwordHash || !novoCandidate.editalId) {
+      //   return res.status(400).json({
+      //     error: 'Dados incompletos ou mal formatados',
+      //   });
+      // }
+      if (!email || !senha || !edital) {
         return res.status(400).json({
-          error: 'Dados incompletos ou mal formatados'
-        })
+          error: 'Dados incompletos ou mal formatados',
+        });
       }
 
-      let responseError = null
+      let responseError = null;
 
-      const candidate = await CandidateService.create(novoCandidate).catch((error) => {
+      const candidate = await CandidateService.create(email, senha, edital).catch((error: any) => {
         responseError = error
       })
 
       if (!candidate) {
         return res.status(400).json({
-          error: responseError!.message
-        })
+          error: responseError!.message,
+        });
       }
-      return res.status(200).redirect('/selecaoppgi')
+      return res.status(200).redirect('/selecaoppgi');
     }
     default:
-      return res.status(404).send()
+      return res.status(404).send();
   }
-}
+};
 
 const login = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -111,10 +82,10 @@ const login = async (req: Request, res: Response) => {
         ...locals,
         editais: editais.map((edital) => {
           return {
-            ...edital
-          }
-        })
-      })
+            ...edital,
+          };
+        }),
+      });
     }
     case 'POST':
       try {
@@ -134,7 +105,7 @@ const login = async (req: Request, res: Response) => {
         const IsCandidateValid = await CandidateService.auth(
           email,
           senha,
-          edital
+          edital,
         );
 
         const editais2 = await EditalService.listEdital();
@@ -154,10 +125,10 @@ const login = async (req: Request, res: Response) => {
             ...locals,
             editais: editais2.map((edital) => {
               return {
-                ...edital
-              }
-            })
-          })
+                ...edital,
+              };
+            }),
+          });
         }
 
         (req.session as any).email = IsCandidateValid.email;
@@ -176,14 +147,14 @@ const login = async (req: Request, res: Response) => {
 };
 
 const forms = async (req: Request, res: Response) => {
-  console.log(req.method)
-  console.log('teste forms')
+  console.log(req.method);
+  console.log('teste forms');
 
   switch (req.method) {
     case 'GET':
-      const id = parseInt(req.session.uid!)
+      const id = parseInt(req.session.uid!);
       if (!(req.session as any).email) {
-        res.redirect('/selecaoppgi/entrar')
+        res.redirect('/selecaoppgi/entrar');
       }
       if (!(req.session as any).editalPosition) throw new Error('Edital não encontrado')
       if ((req.session as any).editalPosition === 1) {
@@ -217,8 +188,8 @@ const forms = async (req: Request, res: Response) => {
           editalPosicao: (req.session as any).editalPosition,
           email: (req.session as any).email,
           id: req.session.uid,
-          csrfToken: req.csrfToken()
-        })
+          csrfToken: req.csrfToken(),
+        });
       }
       if ((req.session as any).editalPosition === 2) {
         const candidate = await CandidateService.findOneCandidate(id)
@@ -236,8 +207,8 @@ const forms = async (req: Request, res: Response) => {
           email: (req.session as any).email,
           id: req.session.uid,
           Curso: candidate.CursoGraduacao,
-          csrfToken: req.csrfToken()
-        })
+          csrfToken: req.csrfToken(),
+        });
       }
 
       if ((req.session as any).editalPosition === 3) {
@@ -249,8 +220,8 @@ const forms = async (req: Request, res: Response) => {
           editalPosicao: (req.session as any).editalPosition,
           email: (req.session as any).email,
           id: req.session.uid,
-          csrfToken: req.csrfToken()
-        })
+          csrfToken: req.csrfToken(),
+        });
       }
 
     // case 'POST': {
@@ -260,19 +231,19 @@ const forms = async (req: Request, res: Response) => {
     // }
     //   break
   }
-}
+};
 
 const form1 = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      res.send('oi')
-      break
+      res.send('oi');
+      break;
     case 'POST': {
-      console.log('******************************************** FORM 1 POST')
-      const data = req.body.data
+      console.log('******************************************** FORM 1 POST');
+      const data = req.body.data;
       // console.log(req.session.editalPosition)
       if ((req.session as any).editalPosition === 1) {
-        console.log('teste form1')
+        console.log('teste form1');
         const Candidato = {
           Nome: data.Nome,
           Nascimento: data.Nascimento,
@@ -293,45 +264,45 @@ const form1 = async (req: Request, res: Response) => {
           CotistaTipo: data.CotistaTipo,
           Condicao: data.Condicao,
           CondicaoTipo: data.CondicaoTipo,
-          Bolsa: data.Bolsa
-        }
-        const id = parseInt(req.session.uid!)
+          Bolsa: data.Bolsa,
+        };
+        const id = parseInt(req.session.uid!);
 
         const candidate = await CandidateService.form1(Candidato, id);
 
-        (req.session as any).editalPosition = candidate!.editalPosition
-        res.status(200).send()
+        (req.session as any).editalPosition = candidate!.editalPosition;
+        res.status(200).send();
 
-        break
+        break;
       }
 
-      return res.send('Erro 400 begin')
+      return res.send('Erro 400 begin');
     }
   }
-}
+};
 
 const form2 = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      break
+      break;
     case 'POST': {
       try {
-        console.log('form2post')
+        console.log('form2post');
 
-        let VitaePDF = null
-        let Prova = null
-        console.log(req.files)
+        let VitaePDF = null;
+        let Prova = null;
+        console.log(req.files);
         if (typeof req.files === 'object' && 'Prova' in req.files) {
-          Prova = req.files.Prova[0]
+          Prova = req.files.Prova[0];
         }
         if (typeof req.files === 'object' && 'VitaePDF' in req.files) {
-          VitaePDF = req.files.VitaePDF[0]
+          VitaePDF = req.files.VitaePDF[0];
         }
 
         if (Prova) {
-          const caminhoDoArquivoVittae = VitaePDF!.path
+          const caminhoDoArquivoVittae = VitaePDF!.path;
 
-          const ProvaPDF = Prova.path
+          const ProvaPDF = Prova.path;
 
           const Candidato = {
             CursoGraduacao: req.body.Curso,
@@ -342,43 +313,48 @@ const form2 = async (req: Request, res: Response) => {
             CursoInstituicaoPos: req.body.InstituicaoPos,
             CursoAnoEgressoPos: req.body.AnoEgressoPos,
             VitaePDF: caminhoDoArquivoVittae,
-            Prova: ProvaPDF
-          }
-          console.log(Candidato)
-          console.log('Caminho do arquivo:', ProvaPDF)
+            Prova: ProvaPDF,
+          };
+          console.log(Candidato);
+          console.log('Caminho do arquivo:', ProvaPDF);
         } else {
-          console.log('FILES__________________')
-          console.log(req.files)
-          console.log('EndFILES__________________')
-          console.log(req.body)
-          console.log('EndBody__________________')
+          console.log('FILES__________________');
+          console.log(req.files);
+          console.log('EndFILES__________________');
+          console.log(req.body);
+          console.log('EndBody__________________');
 
-          console.log('Nenhum arquivo de prova encontrado.')
+          console.log('Nenhum arquivo de prova encontrado.');
         }
 
-        res.status(200).send()
-      } catch { }
+        res.status(200).send();
+      } catch {}
     }
   }
-}
+};
 
 const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const uid = Number(req.session.uid)
-      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(uid)
+      const uid = Number(req.session.uid);
+      const data =
+        await candidatePublicacaoService.ListarPublicacoesCandidate(uid);
 
       // const periodicos = data.periodicos.map((periodico: { toJSON: () => any }) => periodico.toJSON())
-      const periodicos = data.periodicos.map((periodico: any) => periodico.toJSON())
+      const periodicos = data.periodicos.map((periodico: any) =>
+        periodico.toJSON(),
+      );
       // const conferencias = data.conferencias.map((conferencia: { toJSON: () => any }) => conferencia.toJSON())
-      const conferencias = data.conferencias.map((conferencia: any) => conferencia.toJSON())
+      const conferencias = data.conferencias.map((conferencia: any) =>
+        conferencia.toJSON(),
+      );
 
       // data.conferencias.forEach((publicacao: { toJSON: () => any }) => {
       //   console.log(publicacao.toJSON())
       // })
       data.conferencias.forEach((publicacao: any) => {
-        console.log(publicacao.toJSON())
-      })
+        console.log(publicacao.toJSON());
+      });
 
       return res.render(resolveView('forms2'), {
         message: 'Dados salvos com sucesso',
@@ -387,54 +363,64 @@ const formPublicacoes = async (req: Request, res: Response) => {
         id: req.session.uid,
         csrfToken: req.csrfToken(),
         periodicos,
-        conferencias
-      })
+        conferencias,
+      });
     }
 
     case 'POST':
       try {
-        const dados = req.body
-        console.log(dados)
-        const periodicos = dados.publicacoes['ARTIGO-PUBLICADO']
-        const eventos = dados.publicacoes['TRABALHO-EM-EVENTOS']
-        const livros = dados.publicacoes['LIVRO-PUBLICADO-OU-ORGANIZADO']
-        const capitulos = dados.publicacoes['CAPITULO-DE-LIVRO-PUBLICADO']
-        const outras = dados.publicacoes['OUTRA-PRODUCAO-BIBLIOGRAFICA']
-        const prefacios = dados.publicacoes['PREFACIO-POSFACIO']
+        const dados = req.body;
+        console.log(dados);
+        const periodicos = dados.publicacoes['ARTIGO-PUBLICADO'];
+        const eventos = dados.publicacoes['TRABALHO-EM-EVENTOS'];
+        const livros = dados.publicacoes['LIVRO-PUBLICADO-OU-ORGANIZADO'];
+        const capitulos = dados.publicacoes['CAPITULO-DE-LIVRO-PUBLICADO'];
+        const outras = dados.publicacoes['OUTRA-PRODUCAO-BIBLIOGRAFICA'];
+        const prefacios = dados.publicacoes['PREFACIO-POSFACIO'];
 
-        console.log('Capitulos', prefacios)
+        console.log('Capitulos', prefacios);
 
-        const promises = []
+        const promises = [];
 
-        const uid = Number(req.session.uid)
+        const uid = Number(req.session.uid);
 
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, periodicos, 1))
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, eventos, 2))
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, livros, 3))
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, capitulos, 4))
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, outras, 5))
-        promises.push(candidatePublicacaoService.adicionarVarios(uid, prefacios, 6))
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, periodicos, 1),
+        );
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, eventos, 2),
+        );
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, livros, 3),
+        );
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, capitulos, 4),
+        );
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, outras, 5),
+        );
+        promises.push(
+          candidatePublicacaoService.adicionarVarios(uid, prefacios, 6),
+        );
 
-        const results = await Promise.allSettled(promises)
+        const results = await Promise.allSettled(promises);
 
         results.forEach((result, index) => {
           if (result.status === 'fulfilled') {
-            console.log(`Operação ${index + 1} concluída com sucesso.`)
-            console.log('Resultado:', result.value)
+            console.log(`Operação ${index + 1} concluída com sucesso.`);
+            console.log('Resultado:', result.value);
           } else {
-            console.error(`Operação ${index + 1} falhou.`)
-            console.error('Erro:', result.reason)
+            console.error(`Operação ${index + 1} falhou.`);
+            console.error('Erro:', result.reason);
           }
-        })
+        });
 
-        res.status(200).send('Dados salvos com sucesso.')
-      } catch {
+        res.status(200).send('Dados salvos com sucesso.');
+      } catch {}
 
-      }
-
-// res.status(400).send(data);
+    // res.status(400).send(data);
   }
-}
+};
 
 const candidates = async (req: Request, res: Response) => {
   switch (req.method) {
@@ -443,21 +429,22 @@ const candidates = async (req: Request, res: Response) => {
         candidates: await CandidateService.list()
       })
     default:
-      return res.status(400).send()
+      return res.status(400).send();
   }
-}
+};
 
 const voltar = async (req: Request, res: Response) => {
   switch (req.method) {
-    case 'POST': {
-      const id = req.body.id
-      console.log(id)
-      let editalPosicao = req.body.editalPosicao
-      console.log(editalPosicao)
-      editalPosicao = parseInt(editalPosicao, 10) - 1
+    case 'POST':
+      {
+        const id = req.body.id;
+        console.log(id);
+        let editalPosicao = req.body.editalPosicao;
+        console.log(editalPosicao);
+        editalPosicao = parseInt(editalPosicao, 10) - 1;
 
-      // res.redirect('/selecaoppgi')
-      console.log(editalPosicao)
+        // res.redirect('/selecaoppgi')
+        console.log(editalPosicao);
 
       const candidate = await CandidateService.findOneCandidate(id);
       (req.session as any).editalPosition = editalPosicao
@@ -465,14 +452,14 @@ const voltar = async (req: Request, res: Response) => {
     }
       break
     default:
-      return res.status(400).send()
+      return res.status(400).send();
   }
-}
+};
 
 const refresh = async (req: Request, res: Response) => {
-  console.log('asdasdsadasd')
-  res.redirect('/selecaoppgi/formulario')
-}
+  console.log('asdasdsadasd');
+  res.redirect('/selecaoppgi/formulario');
+};
 export default {
   begin,
   signin,
@@ -483,5 +470,5 @@ export default {
   candidates,
   voltar,
   refresh,
-  formPublicacoes
-}
+  formPublicacoes,
+};

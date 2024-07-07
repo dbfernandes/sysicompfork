@@ -11,11 +11,12 @@
     "start:prod": "nodemon --watch src --exec npx ts-node src/server.ts",
     "build": "npx tsc",
     "prisma:init:dev": "npx prisma migrate dev && npx prisma db seed",
-    "db:reset:dev": "npx sequelize-cli db:migrate:undo:all",
-    "db:init:dev": "sequelize-cli db:migrate && sequelize-cli db:seed:all",
     "start:dev": "nodemon -L -r esm src/server.js",
     "criar-modulo": "node src/utils/criarNovoModulo.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.{js,ts,json,css,md}\""
   },
   "repository": {
     "type": "git",

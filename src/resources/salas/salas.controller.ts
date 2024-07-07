@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { CreateSalaDto } from "./salas.types";
 import SalaService from "./salas.service";
 import path from "path";
 
@@ -12,7 +11,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
     res.render(resolveView('salas-adicionar'), {
       nome: req.session.nome,
       csrf: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario
+      tipoUsuario: req.session.tipoUsuario,
     });
   } else if (req.method === 'POST') {
     try {
@@ -20,7 +19,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
 
       if (!andar || !bloco || !nome) {
         res.status(400).json({
-          error: 'Dados incompletos ou mal formatados'
+          error: 'Dados incompletos ou mal formatados',
         });
         return;
       }
@@ -28,7 +27,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
       numero = parseInt(req.body.numero, 10) || 0
       // capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
       capacidade = parseInt(req.body.capacidade, 10) || 0
-      const sala: CreateSalaDto = {
+      const sala = {
         andar, bloco, nome, numero, capacidade
       }
       await SalaService.criar(sala)
@@ -62,7 +61,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   res.render(resolveView('salas-gerenciar'), {
     salas,
     csrfToken: req.csrfToken(),
-    tipoUsuario: req.session.tipoUsuario
+    tipoUsuario: req.session.tipoUsuario,
   });
 };
 
@@ -74,7 +73,7 @@ const editar = async (req: Request, res: Response): Promise<void> => {
         sala: sala,
         csrf: req.csrfToken(),
         nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario
+        tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {

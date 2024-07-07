@@ -1,11 +1,10 @@
 import { PrismaClient } from "@prisma/client"
-import { CreateOrientacaoDto } from "./orientacao.types"
 const prisma = new PrismaClient()
 
 class OrientacaoService {
   async adicionarVarios (
     idProfessor: number,
-    orientacoes: CreateOrientacaoDto[]
+    orientacoes: any[]
   ): Promise<void>{
     if (orientacoes !== undefined) {
       const orientacoesArr = orientacoes.map(o => {
@@ -16,21 +15,22 @@ class OrientacaoService {
           ano: o.ano,
           natureza: o.natureza,
           tipo: o.tipo,
-          status: o.status
-        }
-      })
-
-      await prisma.orientacao.deleteMany({
-        where: {
-          idProfessor
-        }
-      }).then(async () => {
-        await prisma.orientacao.createMany({
-          data: orientacoesArr
+          status: o.status,
+        };
+      });
+      await prisma.orientacao
+        .deleteMany({
+          where: {
+            idProfessor,
+          },
         })
-      })
+        .then(async () => {
+          await prisma.orientacao.createMany({
+            data: orientacoesArr,
+          });
+        });
     }
   }
 }
 
-export default new OrientacaoService()
+export default new OrientacaoService();

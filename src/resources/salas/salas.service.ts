@@ -1,10 +1,8 @@
 import { PrismaClient, Salas } from "@prisma/client"
-import { CreateSalaDto, UpdateSalaDto } from "./salas.types"
 
 const prisma = new PrismaClient()
 
-
-export default new class SalaService {
+export default new (class SalaService {
   // Pegar todas as Salas
   async listarTodos (): Promise<Salas[]> {
     return await prisma.salas.findMany()
@@ -16,12 +14,12 @@ export default new class SalaService {
   }
 
   // Criar salas
-  async criar (sala: CreateSalaDto): Promise<Salas> {
+  async criar (sala: any): Promise<Salas> {
     return await prisma.salas.create({ data: sala })
   }
 
   // Editar salas
-  async editar (id: number, sala: UpdateSalaDto): Promise<Salas> {
+  async editar (id: number, sala: any): Promise<Salas> {
     return await prisma.salas.update({ where: { id }, data: sala })
   }
 
@@ -29,4 +27,4 @@ export default new class SalaService {
   async excluir (id: number): Promise<Salas>{
     return await prisma.salas.delete({ where: { id } })
   }
-}()
+})();

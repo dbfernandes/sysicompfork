@@ -8,8 +8,8 @@ function resolveView(viewName: string): string {
 
 // Escolha do Layout
 const layoutMain = {
-  layout: 'numerosIcompMain'
-}
+  layout: 'numerosIcompMain',
+};
 
 // Home-page
 
@@ -24,15 +24,19 @@ const inicio = async (req: Request, res: Response) => {
           ...layoutMain,
           contagem,
           contagemPublicacoes,
-          lng
-        })
+          lng,
+        });
       } catch (error) {
-        console.log(error)
-        return res.status(502).send('O Servidor não obteve uma resposta válida. Bad Gateway (502)')
+        console.log(error);
+        return res
+          .status(502)
+          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
       }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-export default inicio
+export default inicio;

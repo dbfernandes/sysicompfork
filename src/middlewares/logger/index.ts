@@ -7,12 +7,12 @@ import { Request, Response, NextFunction } from 'express'
 // });
 
 // Caminho para a pasta de logs
-const logDir = path.join(__dirname, '../../../logs')
+const logDir = path.join(__dirname, '../../../logs');
 
 const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.json()
+    winston.format.json(),
   ),
   // level: 'info',
   transports: [new winston.transports.File({ filename: path.join(logDir, 'info.log') })]

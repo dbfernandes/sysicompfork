@@ -9,17 +9,24 @@ async function getPublicationsArr (publicacoes: any, id: number, tipos: any[]) {
           idProfessor: id,
           idCandidate: id,
           titulo: publicacoesChave[k].titulo,
-          ano: publicacoesChave[k].ano !== '' && parseInt(publicacoesChave[k].ano) ? parseInt(publicacoesChave[k].ano) : 0,
+          ano:
+            publicacoesChave[k].ano !== '' && parseInt(publicacoesChave[k].ano)
+              ? parseInt(publicacoesChave[k].ano)
+              : 0,
           local: publicacoesChave[k].local,
           tipo: tipo.id,
           natureza: publicacoesChave[k].natureza,
           autores: publicacoesChave[k].autores.nomeCompleto.join('; '),
-          ISSN: publicacoesChave[k].issn !== '' && parseInt(publicacoesChave[k].issn) ? parseInt(publicacoesChave[k].issn) : 0
-        })
+          ISSN:
+            publicacoesChave[k].issn !== '' &&
+            parseInt(publicacoesChave[k].issn)
+              ? parseInt(publicacoesChave[k].issn)
+              : 0,
+        });
       }
     }
-  })
-  return publicArr
+  });
+  return publicArr;
 }
 
-export default getPublicationsArr
+export default getPublicationsArr;

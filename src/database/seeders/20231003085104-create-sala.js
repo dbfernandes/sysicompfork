@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,7 +11,7 @@ module.exports = {
         bloco: 'Icomp Tech',
         andar: 1,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         id: 2,
@@ -21,7 +21,7 @@ module.exports = {
         bloco: 'Icomp 1',
         andar: 1,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         id: 3,
@@ -31,12 +31,12 @@ module.exports = {
         bloco: 'Icomp 2',
         andar: 2,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ])
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Salas', null, {})
-  }
-}
+    await queryInterface.bulkDelete('Salas', null, {});
+  },
+};

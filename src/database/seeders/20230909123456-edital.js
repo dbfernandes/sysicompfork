@@ -1,7 +1,7 @@
-'use strict'
-const moment = require('moment-timezone')
+'use strict';
+const moment = require('moment-timezone');
 
-const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
+const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -21,7 +21,7 @@ module.exports = {
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data
+        updatedAt: data,
       },
       {
         editalId: '002-2023',
@@ -38,7 +38,7 @@ module.exports = {
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data
+        updatedAt: data,
       },
       {
         editalId: '003-2023',
@@ -55,7 +55,7 @@ module.exports = {
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data
+        updatedAt: data,
       },
       {
         editalId: '004-2023',
@@ -72,13 +72,10 @@ module.exports = {
         inscricoesIniciadas: 0,
         inscricoesEncerradas: 0,
         createdAt: data,
-        updatedAt: data
-      }
-
-    ])
+        updatedAt: data,
+      },
+    ]);
   },
 
-  down: async (queryInterface, Sequelize) => {
-
-  }
-}
+  down: async (queryInterface, Sequelize) => {},
+};

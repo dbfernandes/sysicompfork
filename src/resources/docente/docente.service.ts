@@ -28,9 +28,11 @@ class DocenteService {
         ...usuario,
         Avatar: usuario.Avatar,
         perfil: this.perfis(usuario),
-        createdAt: new Date(usuario.createdAt).toLocaleString('pt-BR', {
-          timeZone: 'America/Manaus',
-        }).slice(0, 10),
+        createdAt: new Date(usuario.createdAt)
+          .toLocaleString('pt-BR', {
+            timeZone: 'America/Manaus',
+          })
+          .slice(0, 10),
       };
       return usuarioDict;
     }

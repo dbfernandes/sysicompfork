@@ -1,22 +1,21 @@
-'use strict'
+'use strict';
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addConstraint('ReservaSalas', {
       type: 'foreign key',
       fields: ['SalaId'],
       name: 'reserva_sala_fk',
       references: {
         table: 'Salas',
-        field: 'id'
+        field: 'id',
       },
       onDelete: 'cascade',
-      onUpdate: 'cascade'
-    }
-    )
+      onUpdate: 'cascade',
+    });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.removeConstraint('ReservaSalas', 'reserva_sala_fk')
-  }
-}
+  async down(queryInterface, Sequelize) {
+    await queryInterface.removeConstraint('ReservaSalas', 'reserva_sala_fk');
+  },
+};

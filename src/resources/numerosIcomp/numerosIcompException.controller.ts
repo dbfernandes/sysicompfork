@@ -7,7 +7,7 @@ function resolveView(viewName: string): string {
 
 // Escolha do Layout
 const layoutMain = {
-  layout: 'numerosIcompMain'
+  layout: 'numerosIcompMain',
 };
 
 const erro404 = async (req: Request, res: Response) => {
@@ -42,5 +42,5 @@ export default {
   redirectAlunos,
   redirectProfessores,
   redirectProjetos,
-  redirectPublicacoes
+  redirectPublicacoes,
 };

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { UpdatePerfilDto } from './perfil.types';
 import usuarioService from "../usuarios/usuario.service";
 import criarURL from '../../utils/criarUrl'
 import path from 'path'
@@ -12,9 +11,9 @@ const visualizar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
-        const id = req.session.uid
-        const usuario = await usuarioService.listarUmUsuario(parseInt(id!))
+        const { message, type, messageTitle } = req.query;
+        const id = req.session.uid;
+        const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
         return res.render('perfil/perfil-dados', {
           usuario,
           csrfToken: req.csrfToken(),
@@ -22,27 +21,29 @@ const visualizar = async (req: Request, res: Response) => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
-        })
+          tipoUsuario: req.session.tipoUsuario,
+        });
       } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(503).redirect(
           criarURL('/inicio', {
             message: 'Não foi possível visualizar o seu perfil.',
             type: 'danger',
             messageTitle: 'Visualização do perfil indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
-        )
+            tipoUsuario: req.session.tipoUsuario,
+          }),
+        );
       }
 
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
 const editar = async (req: Request, res: Response) => {
-  const id = req.session.uid
+  const id = req.session.uid;
   switch (req.method) {
     case 'GET':
       try {
@@ -55,18 +56,19 @@ const editar = async (req: Request, res: Response) => {
           message,
           type,
           messageTitle,
-          tipoUsuario: req.session.tipoUsuario
-        })
+          tipoUsuario: req.session.tipoUsuario,
+        });
       } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(503).redirect(
           criarURL('/inicio', {
-            message: 'Não foi possível abrir formulário de edição para este usuário.',
+            message:
+              'Não foi possível abrir formulário de edição para este usuário.',
             type: 'danger',
             messageTitle: 'Edição de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario
-          })
-        )
+            tipoUsuario: req.session.tipoUsuario,
+          }),
+        );
       }
 
     case 'POST': {
@@ -74,7 +76,7 @@ const editar = async (req: Request, res: Response) => {
       const coordenador = req.body.coordenador && req.body.coordenador === 'on' ? 1 : 0
       const secretaria = req.body.secretaria && req.body.secretaria === 'on' ? 1 : 0
       const professor = req.body.professor && req.body.professor === 'on' ? 1 : 0
-      const dados: UpdatePerfilDto = {
+      const dados: any = {
         id: parseInt(id!),
         nomeCompleto: req.body.nomeCompleto,
         cpf: req.body.cpf,
@@ -90,10 +92,10 @@ const editar = async (req: Request, res: Response) => {
         siape: req.body.siape,
         dataIngresso: req.body.dateDeIngresso,
         unidade: req.body.unidade,
-        turno: req.body.turno
-      }
+        turno: req.body.turno,
+      };
       try {
-        await usuarioService.alterar(parseInt(id!), dados)
+        await usuarioService.alterar(parseInt(id!), dados);
       } catch (error: any) {
         console.log(error)
         dados.id = Number(id)
@@ -101,12 +103,13 @@ const editar = async (req: Request, res: Response) => {
           usuario: dados,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
-          message: 'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
+          message:
+            'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
           messageTitle: 'Edição de usuário indisponível!',
           errors: error.errors,
-          tipoUsuario: req.session.tipoUsuario
-        })
+          tipoUsuario: req.session.tipoUsuario,
+        });
       }
 
       return res.status(200).redirect(
@@ -114,40 +117,44 @@ const editar = async (req: Request, res: Response) => {
           message: 'Dados alterados com sucesso!',
           type: 'success',
           messageTitle: 'Edição de usuário bem-sucedida!',
-          tipoUsuario: req.session.tipoUsuario
-        }
-        ))
+          tipoUsuario: req.session.tipoUsuario,
+        }),
+      );
     }
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
 const deletar = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'POST':
       try {
-        const id = req.session.uid
-        await usuarioService.alterar(parseInt(id!), { 
-          status: 0
-        })
-        req.session.uid = undefined
-        return res.redirect('/')
+        const id = req.session.uid;
+        await usuarioService.alterar(parseInt(id!), {
+          status: 0,
+        });
+        req.session.uid = undefined;
+        return res.redirect('/');
       } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(503).redirect(
           criarURL('/perfil', {
             messageTitle: 'Bloqueio de perfil indisponível!',
             message: 'Não foi possível bloquear o seu perfil.',
             type: 'danger',
-            tipoUsuario: req.session.tipoUsuario
-          })
-        )
+            tipoUsuario: req.session.tipoUsuario,
+          }),
+        );
       }
 
     default:
-      return res.status(400).send('A requisição enviada ao servidor é invalida. Bad Request (400)')
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
-}
+};
 
-export default { visualizar, editar, deletar }
+export default { visualizar, editar, deletar };

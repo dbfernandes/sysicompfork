@@ -30,7 +30,7 @@ const listar = async (req: Request, res: Response) => {
       pageTitle,
       error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
-      tipoUsuario: req.session?.tipoUsuario
+      tipoUsuario: req.session?.tipoUsuario,
     });
   }
 };
@@ -90,7 +90,6 @@ const criar = async (req: Request, res: Response) => {
   }
 };
 
-
 const remover = async (req: Request, res: Response) => {
   if ( req.method === 'POST' ) {
     try {
@@ -108,7 +107,9 @@ const remover = async (req: Request, res: Response) => {
 };
 
 const editar = async (req: Request, res: Response) => {
-  const linhaPesquisa = await linhasDePesquisaService.findById(parseInt(req.params.id));
+  const linhaPesquisa = await linhasDePesquisaService.findById(
+    parseInt(req.params.id),
+  );
   if (req.method === 'GET') {
     return res.status(200).render(resolveView('linhasDePesquisa-editar'), {
       linhaPesquisa, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session?.tipoUsuario
@@ -134,7 +135,7 @@ const editar = async (req: Request, res: Response) => {
         linhaPesquisa,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
-        error: error.message || 'Não foi possível editar a linha de pesquisa!'
+        error: error.message || 'Não foi possível editar a linha de pesquisa!',
       });
     }
   }

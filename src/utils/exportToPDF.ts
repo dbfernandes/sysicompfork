@@ -3,13 +3,16 @@ import moment from 'moment'
 import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 // import afastamentoService from '../services/afastamentoService'
-import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service'
+import afastamentoService from '../resources/afastamentoTemporario/afastamento.temporario.service'
 // import usuarioService from '../services/usuarioService'
 import usuarioService from '../resources/usuarios/usuario.service'
 const compileHTML = require('handlebars').compile
 const compilePDF = require('html-pdf').create
 
-const PDF_DIR = path.join(process.cwd(), '/src/views/layouts/modeloAfastamento')
+const PDF_DIR = path.join(
+  process.cwd(),
+  '/src/views/layouts/modeloAfastamento',
+);
 
 function PDFOptions (footer: any) {
   return {
@@ -18,10 +21,10 @@ function PDFOptions (footer: any) {
       height: '3cm',
       contents: {
         first: footer,
-        default: ''
-      }
-    }
-  }
+        default: '',
+      },
+    },
+  };
 }
 // Geração de PDF
 async function HBStoPDF (afastamentoDoc: any, footerPath: any, caminho: any) {
@@ -32,7 +35,7 @@ async function HBStoPDF (afastamentoDoc: any, footerPath: any, caminho: any) {
 }
 
 async function getAfastamento (id: number) {
-  const afastamento = await afastamentoService.retornarAfastamento(id)
+  const afastamento = await afastamentoService.retornarAfastamento(String(id))
   const usuario = await usuarioService.listarUmUsuario(id)
   const email = usuario.email
 
@@ -58,9 +61,9 @@ async function getAfastamento (id: number) {
     planoReposicao,
     data: moment(createdAt).format('DD/MM/YYYY'),
     hora: moment(createdAt).format('HH:mm'),
-    email
-  }
-  return afastamentoDoc
+    email,
+  };
+  return afastamentoDoc;
 }
 
 async function gerarPDF (req: Request, res: Response, next: NextFunction) {
@@ -70,16 +73,18 @@ async function gerarPDF (req: Request, res: Response, next: NextFunction) {
   const contentPath = path.join(PDF_DIR, 'afastamentoPDF.hbs')
 
   try {
-    const pdfBuffer = await HBStoPDF(relatorio, footerPath, contentPath)
-    return res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename=${filename}`
-      // 'Content-Disposition': `attachment; filename=${filename}`
-    }).send(pdfBuffer)
+    const pdfBuffer = await HBStoPDF(relatorio, footerPath, contentPath);
+    return res
+      .set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `inline; filename=${filename}`,
+        // 'Content-Disposition': `attachment; filename=${filename}`
+      })
+      .send(pdfBuffer);
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: 500, details: error })
+    console.log(error);
+    return res.status(500).json({ error: 500, details: error });
   }
 }
 
-export default { gerarPDF }
+export default { gerarPDF };

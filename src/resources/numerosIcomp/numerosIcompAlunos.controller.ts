@@ -7,42 +7,42 @@ function resolveView(viewName: string): string {
 
 // Escolha do Layout
 const layoutMain = {
-  layout: "numerosIcompMain",
+  layout: 'numerosIcompMain',
 };
 
 // Listagem de Alunos
 
 const alunos = async (req: Request, res: Response) => {
   switch (req.method) {
-    case "GET":
+    case 'GET':
       try {
         const { lng } = req.query;
         const { curso } = req.params;
         const cursos = [
-          "processamento-de-dados",
-          "ciencia-computacao",
-          "engenharia-de-software",
-          "mestrado",
-          "doutorado",
+          'processamento-de-dados',
+          'ciencia-computacao',
+          'engenharia-de-software',
+          'mestrado',
+          'doutorado',
         ];
         const c = cursos.findIndex((e) => e === curso) + 1;
         if (c) {
           const cursoSearch =
-            curso === "ciencia-computacao"
-              ? "Ciência Da Computação"
+            curso === 'ciencia-computacao'
+              ? 'Ciência Da Computação'
               : curso
-                  .split("-")
+                  .split('-')
                   .map((p) => {
                     const palavra =
-                      p === "de" ? p : p.charAt(0).toUpperCase() + p.slice(1);
+                      p === 'de' ? p : p.charAt(0).toUpperCase() + p.slice(1);
                     return palavra;
                   })
-                  .join(" ");
+                  .join(' ');
           const alunosInfo = await alunoService.listarTodos(
-            cursoSearch === "Engenharia de Software"
-              ? ["Engenharia de Software", "Sistemas de Informação"]
+            cursoSearch === 'Engenharia de Software'
+              ? ['Engenharia de Software', 'Sistemas de Informação']
               : cursoSearch,
-            1
+            1,
           );
           const alunosFormados = alunosInfo.length;
           return res.status(200).render(resolveView('alunos'), {
@@ -51,8 +51,8 @@ const alunos = async (req: Request, res: Response) => {
             alunosFormados,
             ...layoutMain,
             curso:
-              cursoSearch === "Engenharia de Software"
-                ? cursoSearch + " / Sistemas de Informação"
+              cursoSearch === 'Engenharia de Software'
+                ? cursoSearch + ' / Sistemas de Informação'
                 : cursoSearch,
           });
         } else {
@@ -61,12 +61,12 @@ const alunos = async (req: Request, res: Response) => {
       } catch (error) {
         return res
           .status(502)
-          .send("O Servidor não obteve uma resposta válida. Bad Gateway (502)");
+          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
       }
     default:
       return res
         .status(400)
-        .send("A requisição enviada ao servidor é invalida. Bad Request (400)");
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 

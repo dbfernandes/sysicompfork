@@ -1,15 +1,15 @@
-import express from 'express'
-import linhasDePesquisaController from './linhasDePesquisa.controller'
-const router = express.Router()
+import express from 'express';
+import linhasDePesquisaController from './linhasDePesquisa.controller';
+const router = express.Router();
 
-router.get('/listar', linhasDePesquisaController.listar)
+router.get('/listar', linhasDePesquisaController.listar);
 
-router.get('/busca/:id', linhasDePesquisaController.buscar)
+router.get('/busca/:id', linhasDePesquisaController.buscar);
 
-router.get('/criar', linhasDePesquisaController.criar)
-router.post('/criar', linhasDePesquisaController.criar)
-router.post('/remover/:id', linhasDePesquisaController.remover)
-router.get('/editar/:id', linhasDePesquisaController.editar)
-router.post('/editar/:id', linhasDePesquisaController.editar)
+router.get('/criar', linhasDePesquisaController.criar);
+router.post('/criar', linhasDePesquisaController.criar);
+router.post('/remover/:id', linhasDePesquisaController.remover);
+router.get('/editar/:id', linhasDePesquisaController.editar);
+router.post('/editar/:id', linhasDePesquisaController.editar);
 
-export default router
+export default router;

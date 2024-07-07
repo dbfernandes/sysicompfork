@@ -1,5 +1,4 @@
 import { PrismaClient, LinhasDePesquisa } from "@prisma/client"
-import { CreateLinhaDePesquisaDto, UpdateLinhaDePesquisaDto } from "./linhaDePesquisa.types"
 const prisma = new PrismaClient()
 
 // CRUD da pagina de linhas de pesquisa
@@ -21,11 +20,11 @@ export default new class LinhasDePesquisaService {
     return await prisma.linhasDePesquisa.findFirst({ where: { sigla } })
   }
 
-  async criar (newResearchLine: CreateLinhaDePesquisaDto): Promise<LinhasDePesquisa> {
+  async criar (newResearchLine: any): Promise<LinhasDePesquisa> {
     return await prisma.linhasDePesquisa.create({ data: newResearchLine })
   }
 
-  async update (id: number, linhaDePesquisa: UpdateLinhaDePesquisaDto): Promise<LinhasDePesquisa> {
+  async update (id: number, linhaDePesquisa: any): Promise<LinhasDePesquisa> {
     return await prisma.linhasDePesquisa.update({ where: { id }, data: linhaDePesquisa })
   }
 

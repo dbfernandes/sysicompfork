@@ -15,8 +15,8 @@ class AlunoService {
     return prisma.aluno.findMany({
       where: {
         curso: Array.isArray(curso) ? { in: curso } : curso,
-        formado
-      }
+        formado,
+      },
     });
   }
 
@@ -27,7 +27,7 @@ class AlunoService {
         SI: 0,
         ES: 0,
         D: 0,
-        M: 0
+        M: 0,
       },
       egressos: {
         PD: 254,
@@ -35,27 +35,27 @@ class AlunoService {
         SI: 0,
         ES: 0,
         D: 0,
-        M: 0
+        M: 0,
       },
-      data: new Date()
+      data: new Date(),
     };
 
     const alunos = await prisma.aluno.findMany({
       where: {
         curso: {
-          not: 'Processamento de Dados'
-        }
+          not: 'Processamento de Dados',
+        },
       },
       select: {
         formado: true,
         curso: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (alunos.length > 0) {
       contagem.data = alunos[0].createdAt;
-      alunos.forEach(aluno => {
+      alunos.forEach((aluno) => {
         if (!aluno.formado) {
           switch (aluno.curso) {
             case 'Ciência da Computação':

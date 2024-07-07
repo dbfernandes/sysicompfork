@@ -10,7 +10,7 @@ const adicionar = (req: Request, res: Response): any => {
   if (req.method === 'GET') {
     res.render(resolveView('projetos-adicionar'), {
       nome: req.session.nome,
-      tipoUsuario: req.session.tipoUsuario
+      tipoUsuario: req.session.tipoUsuario,
     });
   } else {
     console.log('cadastrar no banco');
@@ -20,9 +20,8 @@ const adicionar = (req: Request, res: Response): any => {
 const listar = (req: Request, res: Response): any => {
   res.render(resolveView('projetos-listar'), {
     nome: req.session.nome,
-    tipoUsuario: req.session.tipoUsuario
+    tipoUsuario: req.session.tipoUsuario,
   });
 };
 
 export default { adicionar, listar };
-

@@ -1,38 +1,37 @@
 import { PrismaClient, Usuario } from "@prisma/client"
-import { CreateUsuarioDto, UpdateUsuarioDto } from "./usuario.types"
 
 import bcrypt from 'bcrypt'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 class UsuarioService {
-  async adicionar (usuario: CreateUsuarioDto): Promise<Usuario> {
+  async adicionar (usuario: any): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12)
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt)
 
     return await prisma.usuario.create({ data: { ...usuario, senhaHash } })
   }
 
-  async alterar (id: number, user: any) {
+  async alterar(id: number, user: any) {
     if ('senha' in user && user.senha !== '') {
-      const salt = await bcrypt.genSalt(12)
-      user.senhaHash = await bcrypt.hash(user.senha, salt)
+      const salt = await bcrypt.genSalt(12);
+      user.senhaHash = await bcrypt.hash(user.senha, salt);
     }
     await prisma.usuario.update({
       where: {
-        id: id
+        id: id,
       },
-      data: user
-    })
+      data: user,
+    });
   }
 
-  async alterarInfo (id: number, user: any) {
+  async alterarInfo(id: number, user: any) {
     await prisma.usuario.update({
       where: {
-        id: id
+        id: id,
       },
-      data: user
-    })
+      data: user,
+    });
   }
 
   async listarTodos (): Promise<Usuario[]> {
@@ -42,7 +41,7 @@ class UsuarioService {
   async listarUmUsuario (id: number): Promise<any>{
     const usuario = await prisma.usuario.findUnique({
       where: {
-        id: Number(id)
+        id: Number(id),
       },
       select: {
         id: true,
@@ -63,19 +62,23 @@ class UsuarioService {
         turno: true,
         idLattes: true,
         perfil: true,
-        createdAt: true
-      }
-    })
-    const usuarioDict = usuario
-    if (!usuarioDict) throw new Error('Usuário não encontrado')
+        createdAt: true,
+      },
+    });
+    const usuarioDict = usuario;
+    if (!usuarioDict) throw new Error('Usuário não encontrado');
     if (usuarioDict.status === 1) {
-      if (usuarioDict.administrador === 1) usuarioDict.perfil += ' Administrador |'
-      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |'
-      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |'
-      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |'
+      if (usuarioDict.administrador === 1)
+        usuarioDict.perfil += ' Administrador |';
+      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |';
+      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |';
+      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |';
 
       if (usuarioDict.perfil!.endsWith(' |')) {
-        usuarioDict.perfil = usuarioDict.perfil!.substring(0, usuarioDict.perfil!.length - 2)
+        usuarioDict.perfil = usuarioDict.perfil!.substring(
+          0,
+          usuarioDict.perfil!.length - 2,
+        );
       }
     }
     // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
@@ -83,19 +86,21 @@ class UsuarioService {
     // }).slice(0, 10)
     let usuarioComDataFormatada = {
       ...usuarioDict,
-      DateFormatada: new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
-        timeZone: 'America/Manaus'
-      }).slice(0, 10)
-    }
+      DateFormatada: new Date(usuarioDict.createdAt)
+        .toLocaleString('pt-BR', {
+          timeZone: 'America/Manaus',
+        })
+        .slice(0, 10),
+    };
 
-    return usuarioComDataFormatada
+    return usuarioComDataFormatada;
   }
 
   async listarTodosPorCondicao (data: any): Promise<any[]> {
     const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
-        nomeCompleto: 'asc'
+        nomeCompleto: 'asc',
       },
       select: {
         id: true,
@@ -118,11 +123,11 @@ class UsuarioService {
         formacao: true,
         formacaoIngles: true,
         ultimaAtualizacao: true,
-        createdAt: true
-      }
-    })
+        createdAt: true,
+      },
+    });
 
-    return usuarios
+    return usuarios;
   }
   
   async buscarUsuarioPor(busca: any): Promise<Usuario | null>{
@@ -130,21 +135,21 @@ class UsuarioService {
       const usuario = await prisma.usuario.findFirst({ where: busca})
       return usuario
     } catch (error) {
-      throw error
+      throw error;
     }
   }
-  
+
   async recuperarSenha(token: string, data: any, id: number) {
     await prisma.usuario.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
         tokenResetSenha: token,
-        validadeTokenResetSenha: data
-      }
-    })
+        validadeTokenResetSenha: data,
+      },
+    });
   }
 }
 
-export default new UsuarioService()
+export default new UsuarioService();

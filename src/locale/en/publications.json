@@ -1,11 +1,11 @@
 {
-    "publicacoesDosProfessores": "Publications of IComp's professors",
-    "noAnoDe": "in the year of",
-    "paraConferir": "To check the details of the publications, click on its title.",
-    "titulo": "Title",
-    "ano": "Year",
-    "tipo": "Type",
-    "local": "Location",
-    "autor": "Author(s)",
-    "naoInformado": "Not informed"
+  "publicacoesDosProfessores": "Publications of IComp's professors",
+  "noAnoDe": "in the year of",
+  "paraConferir": "To check the details of the publications, click on its title.",
+  "titulo": "Title",
+  "ano": "Year",
+  "tipo": "Type",
+  "local": "Location",
+  "autor": "Author(s)",
+  "naoInformado": "Not informed"
 }

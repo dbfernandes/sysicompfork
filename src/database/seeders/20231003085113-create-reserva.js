@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -15,13 +15,12 @@ module.exports = {
         horaInicio: '10:00',
         horaTermino: '12:00',
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
-
-    ])
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('ReservaSalas', null, {})
-  }
-}
+    await queryInterface.bulkDelete('ReservaSalas', null, {});
+  },
+};

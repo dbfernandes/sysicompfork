@@ -35,17 +35,17 @@ export default new class ReservaService {
       return await prisma.reservaSalas.findUnique({ where: { id } })
     }
 
-  async criar (reserva: CreateReservaDto): Promise<ReservaSalas> {
+  async criar (reserva: any): Promise<ReservaSalas> {
     return await prisma.reservaSalas.create({
       data: reserva
     })
   }
 
-  async atualizar (id: number, reserva: CreateReservaDto): Promise<ReservaSalas> {
+  async atualizar (id: number, reserva: any): Promise<ReservaSalas> {
     return await prisma.reservaSalas.update({ where: {id}, data: reserva})
   }
 
   async remover (id: number): Promise<ReservaSalas> {
     return await prisma.reservaSalas.delete({ where: {id} })
   }
-}()
+}();

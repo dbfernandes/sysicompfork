@@ -6,12 +6,11 @@ COPY package*.json ./
 # Add support for https on wget
 RUN apk update && apk add --no-cache wget openssl ca-certificates && update-ca-certificates
 
-# Add phantomjs
+# Add PhantomJS manually
 RUN wget -qO- "https://github.com/DaniSanT17/phantomized/releases/download/2.1.1a/phantomized-2.1.1a.tar.gz" | tar xz -C / \
-    && npm config set user 0 \
-    && npm install -g phantomjs-prebuilt
-    
-# Add fonts required by phantomjs to render html correctly
+    && ln -s /phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
+
+# Add fonts required by PhantomJS to render HTML correctly
 RUN apk add --update ttf-dejavu ttf-droid ttf-freefont ttf-liberation fontconfig font-noto terminus-font && rm -rf /var/cache/apk/* \
     && fc-cache -f \
     && fc-list | sort
