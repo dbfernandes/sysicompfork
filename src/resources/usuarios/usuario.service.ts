@@ -1,51 +1,18 @@
-import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+import { PrismaClient, Usuario } from "@prisma/client"
+
+import bcrypt from 'bcrypt'
 
 import { generateHashPassword } from "../../utils/utils";
 const prisma = new PrismaClient();
 
 
 class UsuarioService {
-  async adicionar( 
-    nomeCompleto: string,
-    cpf: string,
-    email: string,
-    senha: string,
-    administrador: number,
-    coordenador: number,
-    secretaria: number,
-    professor: number,
-    endereco: string,
-    telResidencial: string,
-    telCelular: string,
-    siape: string,
-    dataIngresso: string,
-    unidade: string,
-    turno: string,
-  ) {
-    const senhaHash = await generateHashPassword(senha);
+  async adicionar (usuario: any): Promise<Usuario> {
+    const salt = await bcrypt.genSalt(12)
+    const senhaHash = await bcrypt.hash(usuario.senhaHash, salt)
 
-    await prisma.usuario.create({
-      data: {
-        nomeCompleto,
-        cpf,
-        email,
-        senhaHash,
-        status: 1,
-        administrador: administrador ? 1 : 0,
-        coordenador: coordenador ? 1 : 0,
-        secretaria: secretaria ? 1 : 0,
-        professor: professor ? 1 : 0,
-        endereco,
-        telResidencial,
-        telCelular,
-        siape,
-        dataIngresso,
-        unidade,
-        turno,
-        idLattes: null,
-      },
-    });
+    return await prisma.usuario.create({ data: { ...usuario, senhaHash } })
   }
 
   async alterar(id: number, user: any) {
@@ -54,7 +21,7 @@ class UsuarioService {
     }
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: user,
     });
@@ -63,18 +30,17 @@ class UsuarioService {
   async alterarInfo(id: number, user: any) {
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: user,
     });
   }
 
-  async listarTodos() {
-    const usuarios = await prisma.usuario.findMany();
-    return usuarios;
+  async listarTodos (): Promise<Usuario[]> {
+    return await prisma.usuario.findMany()
   }
 
-  async listarUmUsuario(id: number) {
+  async listarUmUsuario (id: number): Promise<any>{
     const usuario = await prisma.usuario.findUnique({
       where: {
         id: Number(id),
@@ -117,8 +83,10 @@ class UsuarioService {
         );
       }
     }
-
-    let usuarioComDataFormatada = {
+    // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
+    //   timeZone: 'America/Manaus'
+    // }).slice(0, 10)
+    const usuarioComDataFormatada = {
       ...usuarioDict,
       DateFormatada: new Date(usuarioDict.createdAt)
         .toLocaleString("pt-BR", {
@@ -130,7 +98,7 @@ class UsuarioService {
     return usuarioComDataFormatada;
   }
 
-  async listarTodosPorCondicao(data: any) {
+  async listarTodosPorCondicao (data: any): Promise<any[]> {
     const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
@@ -163,11 +131,11 @@ class UsuarioService {
 
     return usuarios;
   }
-
-  async buscarUsuarioPor(busca: any) {
+  
+  async buscarUsuarioPor(busca: any): Promise<Usuario | null>{
     try {
-      const usuario = await prisma.usuario.findFirst({ where: busca });
-      return usuario;
+      const usuario = await prisma.usuario.findFirst({ where: busca})
+      return usuario
     } catch (error) {
       throw error;
     }
@@ -176,7 +144,7 @@ class UsuarioService {
   async recuperarSenha(token: string, data: any, id: number) {
     await prisma.usuario.update({
       where: {
-        id: id,
+        id,
       },
       data: {
         tokenResetSenha: token,

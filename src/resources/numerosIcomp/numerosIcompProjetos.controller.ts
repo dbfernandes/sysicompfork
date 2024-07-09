@@ -1,5 +1,10 @@
-import { Request, Response } from 'express';
-import projetosService from '../projetos/projetos.service';
+import { Request, Response } from 'express'
+import projetosService from '../projetos/projetos.service'
+import path from 'path'
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName)
+}
 
 // Escolha do Layout
 const layoutMain = {
@@ -15,7 +20,7 @@ const projetos = async (req: Request, res: Response) => {
         const { lng } = req.query;
         const projetosFiltrados = await projetosService.listarAtuais();
 
-        return res.status(200).render('numerosIcomp/projetos', {
+        return res.status(200).render(resolveView('projetos'), {
           lng,
           ...layoutMain,
           projetosFiltrados,

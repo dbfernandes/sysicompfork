@@ -104,12 +104,10 @@ const checked = (a, b) => {
 };
 
 const checkedIn = (a, b) => {
-  console.log(a);
-  if ((a !== '') & a.includes(b)) {
-    return 'checked';
-  }
-  return '';
-};
+  console.log(a)
+  if (a && a.includes(b)) { return 'checked' }
+  return ''
+}
 
 const checkedUnica = (a) => {
   if (a !== '') {

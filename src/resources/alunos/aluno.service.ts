@@ -1,16 +1,17 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Aluno } from '@prisma/client';
+import { CreateAlunoDto } from './alunos.types';
 
 const prisma = new PrismaClient();
 
 class AlunoService {
-  async adicionarVarios(alunos: any[]): Promise<void> {
+  async adicionarVarios(alunos: CreateAlunoDto[]): Promise<void> {
     if (alunos !== undefined && alunos.length > 0) {
       await prisma.aluno.deleteMany(); // Remove todos os registros existentes
       await prisma.aluno.createMany({ data: alunos }); // Cria os novos registros
     }
   }
 
-  async listarTodos(curso: string | string[], formado: any): Promise<any[]> {
+  async listarTodos(curso: string | string[], formado: any): Promise<Aluno[]> {
     return prisma.aluno.findMany({
       where: {
         curso: Array.isArray(curso) ? { in: curso } : curso,

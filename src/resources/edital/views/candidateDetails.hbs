@@ -150,9 +150,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Carta do Orientador (PDF)</th>
-                                    <td><span class="{{#if candidate.CartaDoOrientador}}">
+                                    <td><span class="{{#if candidatoDocs.CartaDoOrientador}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=CartaDoOrientador"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=CartaDoOrientador"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -160,9 +160,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Proposta de Trabalho (PDF)</th>
-                                    <td><span class="{{#if candidate.PropostaDeTrabalho}}">
+                                    <td><span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=PropostaDeTrabalho"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=PropostaDeTrabalho"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -170,9 +170,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curriculum (PDF)</th>
-                                    <td><span class="{{#if candidate.Curriculum}}">
+                                    <td><span class="{{#if candidatoDocs.Curriculum}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=Curriculum"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=Curriculum"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -180,9 +180,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Prova de seleção anterior para aproveitamento de nota (PDF)</th>
-                                    <td><span class="{{#if candidate.prova_anterior}}">
+                                    <td><span class="{{#if candidatoDocs.ProvaAnteriorSelecao}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=prova_anterior"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=prova_anterior"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -190,9 +190,9 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Comprovante de Pagamento (PDF)</th>
-                                    <td><span class="{{#if candidate.recommendationLetter}}">
+                                    <td><span class="{{#if candidatoDocs.ComprovantePagamento}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=comprovante"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=comprovante"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -201,9 +201,9 @@
                                 <tr>
                                     <th class="col-3">Cartas de Recomendação (PDF)</th>
                                     <td>
-                                        <span class="{{#if candidate.recommendationLetter}}">
+                                        <span class="{{#if candidatoDocs.Recomendacao}}">
                                             <a  style="margin-right: 3px"
-                                                href="/gerarCandidatoPDF/{{candidate.id}}?documento=recommendationLetter"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=recommendationLetter"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}

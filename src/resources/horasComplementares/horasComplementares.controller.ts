@@ -1,4 +1,10 @@
 import { Request, Response } from 'express';
+import path from 'path';
+
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
+
 
 const listarHoras = async (_req: Request, res: Response) => {
   const MockHoras = [
@@ -26,7 +32,7 @@ const listarHoras = async (_req: Request, res: Response) => {
 
   return res
     .status(200)
-    .render('horasComplementares/main', {
+    .render(resolveView('main'), {
       atividadesRealizadas: MockHoras,
       tipoUsuario: _req.session?.tipoUsuario,
     });
@@ -45,7 +51,7 @@ const adicionarAtividade = async (_req: Request, res: Response) => {
 
   return res
     .status(200)
-    .render('horasComplementares/adicionar-atividade', {
+    .render(resolveView('adicionar-atividade'), {
       atividades: MockAtividades,
       tipoUsuario: _req.session?.tipoUsuario,
     });

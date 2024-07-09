@@ -1,37 +1,35 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { PrismaClient } from "@prisma/client"
+const prisma = new PrismaClient()
 
 class PremioService {
   async adicionarUm(
     idProfessor: number,
     titulo: string,
     ano: number,
-    entidade: string,
-  ) {
-    // await Premio.destroy({
-    //   where: {
-    //     idProfessor
-    //   }
-    // })
+    entidade: string
+  ): Promise<void>{
     await prisma.premios.deleteMany({
       where: {
-        idProfessor: idProfessor,
-      },
-    });
-
+        idProfessor: idProfessor
+      }
+    })
+    const premio: any = {
+      idProfessor,
+      titulo,
+      ano,
+      entidade
+    }
     await prisma.premios.create({
-      data: {
-        idProfessor,
-        titulo,
-        ano,
-        entidade,
-      },
-    });
+      data: premio
+    })
   }
 
-  async adicionarVarios(idProfessor: number, premios: any) {
+  async adicionarVarios (
+    idProfessor: number,
+    premios: any[]
+  ): Promise<void> {
     if (premios !== undefined) {
-      const premiosArr = premios.premios.map((p: any) => {
+      const premiosArr = premios.map((p: any) => {
         return {
           idProfessor,
           entidade: p.entidade,
@@ -39,13 +37,6 @@ class PremioService {
           ano: p.ano,
         };
       });
-      // await Premio.destroy({
-      //   where: {
-      //     idProfessor
-      //   }
-      // }).then(async () => {
-      //   await Premio.bulkCreate(premiosArr)
-      // })
       await prisma.premios
         .deleteMany({
           where: {

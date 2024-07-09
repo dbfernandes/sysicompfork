@@ -1,10 +1,10 @@
-import express from 'express'
-import alunosController from '../controllers/alunosController'
+import express from 'express';
+import alunosController from '../controllers/alunosController';
 
-const router = express.Router()
+const router = express.Router();
 
-router.all('/', alunosController.inicio)
+router.all('/', alunosController.inicio);
 
-router.all('/upload', alunosController.carregar)
+router.all('/upload', alunosController.carregar);
 
-export default router
+export default router;

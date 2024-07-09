@@ -1,4 +1,10 @@
-module.exports.isUsuarioAutenticado = async function (req, res, next) {
+import { Request, Response, NextFunction } from 'express';
+
+const isUsuarioAutenticado = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const rotasSemAutenticacao = ['/login', '/logout'];
   if (rotasSemAutenticacao.includes(req.path)) {
     return next();
@@ -9,3 +15,5 @@ module.exports.isUsuarioAutenticado = async function (req, res, next) {
 
   return res.redirect('/login');
 };
+
+export default isUsuarioAutenticado;

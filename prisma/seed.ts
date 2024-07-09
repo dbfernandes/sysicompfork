@@ -3,8 +3,10 @@ import moment from 'moment-timezone';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.usuario.create({
-    data: {
+  await prisma.usuario.upsert({
+    where: { email: 'user@icomp.ufam.edu.br' },
+    update: {},
+    create: {
       nomeCompleto: 'Usuario de teste inicial',
       cpf: '111.111.111-11',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
@@ -29,8 +31,11 @@ async function main() {
       updatedAt: new Date(),
     },
   });
-  await prisma.usuario.create({
-    data: {
+
+  await prisma.usuario.upsert({
+    where: { email: 'Jhoe@icomp.ufam.edu.br' },
+    update: {},
+    create: {
       nomeCompleto: 'JhonDoe',
       cpf: '222.222.222-22',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
@@ -55,8 +60,11 @@ async function main() {
       updatedAt: new Date(),
     },
   });
-  await prisma.linhasDePesquisa.create({
-    data: {
+
+  await prisma.linhasDePesquisa.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
       id: 1,
       nome: 'Banco de Dados e Recuperacao de Informacao',
       sigla: 'BD e RI',
@@ -65,81 +73,88 @@ async function main() {
     },
   });
 
-  const data = moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss');
+  const data = moment.tz('America/Manaus').format('YYYY-MM-DDTHH:mm:ssZ');
 
-  await prisma.edital.createMany({
-    data: [
-      {
-        editalId: '001-2023',
-        vagaDoutorado: 2,
-        cotasDoutorado: 2,
-        vagaMestrado: 5,
-        cotasMestrado: 5,
-        cartaOrientador: '1',
-        cartaRecomendacao: '1',
-        documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '2023-08-23',
-        dataFim: '2023-09-09',
-        status: '1',
-        inscricoesIniciadas: 0,
-        inscricoesEncerradas: 0,
-        createdAt: data,
-        updatedAt: data,
-      },
-      {
-        editalId: '002-2023',
-        vagaDoutorado: 6,
-        cotasDoutorado: 8,
-        vagaMestrado: 1,
-        cotasMestrado: 3,
-        cartaOrientador: '0',
-        cartaRecomendacao: '1',
-        documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '2023-05-27',
-        dataFim: '2023-06-027',
-        status: '0',
-        inscricoesIniciadas: 0,
-        inscricoesEncerradas: 0,
-        createdAt: data,
-        updatedAt: data,
-      },
-      {
-        editalId: '003-2023',
-        vagaDoutorado: 9,
-        cotasDoutorado: 2,
-        vagaMestrado: 2,
-        cotasMestrado: 3,
-        cartaOrientador: '1',
-        cartaRecomendacao: '0',
-        documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '2023-07-14',
-        dataFim: '2023-08-01',
-        status: '1',
-        inscricoesIniciadas: 0,
-        inscricoesEncerradas: 0,
-        createdAt: data,
-        updatedAt: data,
-      },
-      {
-        editalId: '004-2023',
-        vagaDoutorado: 5,
-        cotasDoutorado: 2,
-        vagaMestrado: 10,
-        cotasMestrado: 3,
-        cartaOrientador: '0',
-        cartaRecomendacao: '0',
-        documento: 'http://www.propesp.ufam.edu.br',
-        dataInicio: '2023-08-02',
-        dataFim: '2023-09-30',
-        status: '1',
-        inscricoesIniciadas: 0,
-        inscricoesEncerradas: 0,
-        createdAt: data,
-        updatedAt: data,
-      },
-    ],
-  });
+  const editais = [
+    {
+      editalId: '001-2023',
+      vagaDoutorado: 2,
+      cotasDoutorado: 2,
+      vagaMestrado: 5,
+      cotasMestrado: 5,
+      cartaOrientador: '1',
+      cartaRecomendacao: '1',
+      documento: 'http://www.propesp.ufam.edu.br',
+      dataInicio: new Date('2023-08-23').toISOString(),
+      dataFim: new Date('2023-09-09').toISOString(),
+      status: '1',
+      inscricoesIniciadas: 0,
+      inscricoesEncerradas: 0,
+      createdAt: data,
+      updatedAt: data,
+    },
+    {
+      editalId: '002-2023',
+      vagaDoutorado: 6,
+      cotasDoutorado: 8,
+      vagaMestrado: 1,
+      cotasMestrado: 3,
+      cartaOrientador: '0',
+      cartaRecomendacao: '1',
+      documento: 'http://www.propesp.ufam.edu.br',
+      dataInicio: new Date(2023, 5, 1).toISOString(),
+      dataFim: new Date(2023, 5, 27).toISOString(),
+      status: '0',
+      inscricoesIniciadas: 0,
+      inscricoesEncerradas: 0,
+      createdAt: data,
+      updatedAt: data,
+    },
+    {
+      editalId: '003-2023',
+      vagaDoutorado: 9,
+      cotasDoutorado: 2,
+      vagaMestrado: 2,
+      cotasMestrado: 3,
+      cartaOrientador: '1',
+      cartaRecomendacao: '0',
+      documento: 'http://www.propesp.ufam.edu.br',
+      dataInicio: new Date('2023-07-14').toISOString(),
+      dataFim: new Date('2023-08-01').toISOString(),
+      status: '1',
+      inscricoesIniciadas: 0,
+      inscricoesEncerradas: 0,
+      createdAt: data,
+      updatedAt: data,
+    },
+    {
+      editalId: '004-2023',
+      vagaDoutorado: 5,
+      cotasDoutorado: 2,
+      vagaMestrado: 10,
+      cotasMestrado: 3,
+      cartaOrientador: '0',
+      cartaRecomendacao: '0',
+      documento: 'http://www.propesp.ufam.edu.br',
+      dataInicio: new Date('2023-08-02').toISOString(),
+      dataFim: new Date('2023-09-30').toISOString(),
+      status: '1',
+      inscricoesIniciadas: 0,
+      inscricoesEncerradas: 0,
+      createdAt: data,
+      updatedAt: data,
+    },
+  ];
+
+  for (const edital of editais) {
+    await prisma.edital.upsert({
+      where: { editalId: edital.editalId },
+      update: {},
+      create: edital,
+    });
+  }
 }
+
 // Gera todas as seeds
 main()
   .then(async () => {

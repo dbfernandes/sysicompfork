@@ -1,6 +1,6 @@
-const moment = require('moment');
 import { compare, genSalt, hash } from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+const moment = require('moment');
 const prisma = new PrismaClient();
 
 async function validPassword(password: string, passwordHash: string) {
@@ -180,3 +180,4 @@ class CandidatoService {
   }
 }
 
+export default new CandidatoService();

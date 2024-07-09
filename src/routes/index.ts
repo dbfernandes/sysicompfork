@@ -40,9 +40,7 @@ router.put('/alterarSenha', autenticacaoController.trocaSenha);
 
 router.use('/selecaoppgi', selecaoppgiRouter);
 router.use('/numerosIcomp', numerosIcompRouter);
-
 router.use(autenticacaoController.verificar);
-
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);
@@ -65,14 +63,14 @@ router.use(
   autenticacaoController.autorizarProf,
   horasComplementaresRoutes,
 );
-router.use(
+router.use( 
   '/afastamentotemporario',
   autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use('/gerarPDF/:id', pdfController.gerarPDF);
-router.use('/gerarCandidatoPDF/:id', editalController.gerarCandidatoPDF);
-router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
+router.use("/gerarPDF/:id", pdfController.gerarPDF);
+router.use('/downloadCandidateDocument/:id', editalController.getCandidateDocument)
+router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
 export default router;

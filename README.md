@@ -35,7 +35,9 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
 	-  [MySQL](https://www.mysql.com/) - Banco de Dados (OBS: O mysql fica num container docker, não se preocupe em instalá-lo)
 
-	-  [Sequelize](https://sequelize.org/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) para facilitar a conexão e gerenciamento do banco de dados
+	<!-- -  [Sequelize](https://sequelize.org/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) para facilitar a conexão e gerenciamento do banco de dados -->
+
+	- [Prisma](https://www.prisma.io/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) é a ferramenta mais moderna para atividades de conexão e gerenciamento do banco de dados, oferecendo uma API (Aplication Programming Interface) intuitiva e recursos como migrações de banco de dados, consultas tipadas e um modelo de dados declarativo.
 
 ## Desenvolvimento
  ### Requisitos
@@ -70,7 +72,8 @@ Se seu docker e docker-compose estiverem configurados corretamente, o comando de
 ```
 docker-compose up -d db
 npm install 
-npm run start:dev
+<!-- npm run start:dev -->
+npm start
 ```
 **Acesse a aplicação na url http://localhost:3000/**
 
@@ -83,7 +86,8 @@ npm run criar-modulo nome-modulo
 Para atualizar as tabelas e popular o banco, utilize os seguintes comandos:
 
 ```
-npx sequelize db:migrate && sequelize db:seed:all
+<!-- npx sequelize db:migrate && sequelize db:seed:all -->
+npm prisma:init:dev
 ```
 
 

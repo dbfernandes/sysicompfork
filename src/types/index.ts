@@ -34,3 +34,16 @@ export interface Premio {
   ano: number;
   [key: string]: any;
 }
+
+export interface SessionData {
+  tipoUsuario?:
+    | {
+        administrador: boolean;
+        secretaria: boolean;
+        coordenador: boolean;
+        professor: boolean;
+      }
+    | undefined;
+  uid: string;
+  nome: string;
+}

@@ -54,8 +54,9 @@
                                         <label for="atividade">
                                             <font color="#FF0000">*</font> Atividade:
                                         </label>
-                                        <input type="text" class="form-control" value={{reserva.atividade}}
-                                            id="atividade" name="atividade" placeholder="Ex: Seminários ">
+                                        <input type="text" class="form-control" id="atividade" name="atividade"
+                                            value="{{reserva.atividade}}" placeholder="Ex: Seminários " required
+                                        >
                                     </div>
 
                                     <div class="form-group col-md-6 ">
@@ -158,7 +159,7 @@
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
 
                                             <input type="date" class="form-control datetimepicker-input "
-                                                placeholder="Data de Início" value={{reserva.dataInicio}}
+                                                placeholder="Data de Início" value="{{reserva.dataInicio}}"
                                                 id="dataInicio" name="dataInicio"
                                                 data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy"
                                                 required id="data_inicio">
@@ -356,6 +357,7 @@
     async function buscarReservas() {
         try {
             const response = await fetch('/reservas/listar'); // Rota para buscar reservas
+            console.log(response,'oioioioioio')
             if (!response.ok) {
                 throw new Error('Erro ao buscar reservas');
             }
@@ -386,7 +388,7 @@
                     const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
                     dias = nomesDosDias[diaDaSemana];
                 }
-
+                console.log(novaReserva)
                 const diasEmComum = reserva.dias.split(', ').some(dia => novaReserva.dias.includes(dia));
 
                 // Verifica se há sobreposição nas horas
@@ -408,6 +410,7 @@
 
         const dataInputElement = document.getElementById("dataInicio");
         const dataInputValue = dataInputElement.value;
+        console.log(dataInputValue)
 
         // Cria a data assumindo que a entrada é uma data local sem horário.
         // Isso vai evitar a interpretação da string como uma data UTC.

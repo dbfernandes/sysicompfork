@@ -1,10 +1,14 @@
 // Rota desativada - funcionalidade removida
 
 import { Request, Response } from 'express';
+import path from 'path';
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
 
 const adicionar = (req: Request, res: Response): any => {
   if (req.method === 'GET') {
-    res.render('projetos/projetos-adicionar', {
+    res.render(resolveView('projetos-adicionar'), {
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
@@ -14,7 +18,7 @@ const adicionar = (req: Request, res: Response): any => {
 };
 
 const listar = (req: Request, res: Response): any => {
-  res.render('projetos/projetos-listar', {
+  res.render(resolveView('projetos-listar'), {
     nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
   });

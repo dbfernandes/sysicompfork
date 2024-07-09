@@ -21,7 +21,7 @@ function sendEmail(destination: string) {
     .catch((error) => {
       console.error(error);
     });
-}
+} 
 
 interface EmailRecoveryProps {
   email: string;

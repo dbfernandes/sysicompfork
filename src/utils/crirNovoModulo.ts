@@ -12,24 +12,23 @@ function getArgs() {
   return args[0].toString().toLowerCase();
 }
 
-function addLine(lines, line, section) {
-  const start = lines.findIndex((line) => line === section);
-  const newIndex =
-    start + lines.slice(start + 1).findIndex((line) => line === '') + 1;
+function addLine (lines: string[], line: string, section: string) {
+  const start = lines.findIndex(line => line === section)
+  const newIndex = start + lines.slice(start + 1).findIndex(line => line === '') + 1
 
   lines.splice(newIndex, 0, line);
   return lines;
 }
 
-function isModuleExists(nomeDoModulo) {
-  return fs.existsSync(`./src/views/${nomeDoModulo}`);
+function isModuleExists (nomeDoModulo: string) {
+  return fs.existsSync(`./src/views/${nomeDoModulo}`)
 }
 
-function isNameModuleValid(nomeDoModulo) {
-  nomeDoModulo = nomeDoModulo.replace(/\n/g, '');
-  return (
-    nomeDoModulo && typeof nomeDoModulo === 'string' && nomeDoModulo.length > 0
-  );
+function isNameModuleValid (nomeDoModulo: string) {
+  nomeDoModulo = nomeDoModulo.replace(/\n/g, '')
+  return nomeDoModulo &&
+        typeof (nomeDoModulo) === 'string' &&
+        nomeDoModulo.length > 0
 }
 
 const nomeDoModulo = getArgs();
@@ -46,23 +45,21 @@ const newIndexHBS = [
   '</script>',
 ].join('\n');
 
-const newRouter = (nomeDoModulo) =>
-  [
-    "import express from 'express';",
+const newRouter = (nomeDoModulo: string) => [
+  "import express from 'express';",
     `import ${nomeDoModulo}Controller from '../controllers/${nomeDoModulo}';`,
     'const router = express.Router()\n',
     '/* TODO - Add routes */\n',
     'export default router;',
   ].join('\n');
 
-const newControler = (nomeDoModulo) =>
-  [
-    'const locals = {',
-    "\t//layout:'layout'",
-    '}\n',
-    'const control = async(req, res) => {',
-    '\tswitch (req.method) {',
-    "\t\tcase 'GET':",
+const newControler = (nomeDoModulo: string) => [
+  'const locals = {',
+  "\t//layout:'layout'",
+  '}\n',
+  'const control = async(req, res) => {',
+  '\tswitch (req.method) {',
+  "\t\tcase 'GET':",
     `\t\t\treturn res.render('${nomeDoModulo}/index', locals);`,
     "\t\tcase 'POST':",
     "\t\t\treturn res.json({message: 'cant post here'});",
@@ -71,7 +68,7 @@ const newControler = (nomeDoModulo) =>
     'export default {control};',
   ].join('\n');
 
-const criarArquivos = async (nomeDoModulo) => {
+const criarArquivos = async (nomeDoModulo: string) => {
   if (!isNameModuleValid(nomeDoModulo)) {
     console.log('Erro: Informe o nome do módulo válido');
     console.log('Necessário uma string não vazia');

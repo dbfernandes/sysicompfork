@@ -35,5 +35,5 @@ ENV OPENSSL_CONF=/etc/ssl/
 # USER appuser
 RUN npm install
 
-# Alterar para 'npm start' quando o sistema entrar em produção
-CMD ["npm", "run", "start:dev"]
+# alterar para 'npm start:prod' quando o sistema entrar em produção
+CMD ["npm", "run", "start"]
