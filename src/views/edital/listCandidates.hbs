@@ -39,7 +39,7 @@
                 <div class="col-12">
                     
                     <div class="card-body mr-auto ml-n3">
-                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidaIncricaoFinalizada}}</b></h4>
+                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidadeInscricaoFinalizada}}</b></h4>
                     </div>
 
                     <div class="card card-primary">
@@ -59,13 +59,13 @@
                                 </thead>
                                 <tbody>
                                     {{#each candidates}}
-                                    {{#if (eq editalPosition 4) }}
+                                    {{#if (eq posicaoEdital 4) }}
                                     <tr>
                                         <td>{{id}}</td>
                                         <td>{{editalId}}</td>
-                                        <td>{{Nome}}</td>
-                                        <td>{{inscricaoposcomp}}</td>
-                                        <td>{{linhaDePesquisaId}}</td>
+                                        <td>{{nome}}</td>
+                                        <td>{{cursoDesejado}}</td>
+                                        <td>{{idLinhaPesquisa}}</td>
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
                                             <div class="d-flex justify-content-between">
@@ -91,7 +91,7 @@
                     </div>
                     
                     <div class="card-body mr-auto ml-n3" >
-                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidaDeInscricaoAndamento}}</b></h4>
+                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidadeInscricaoAndamento}}</b></h4>
                     </div>
 
                     <div class="card card-primary">
@@ -113,15 +113,15 @@
                                 </thead>
                                 <tbody>
                                     {{#each candidates}}
-                                        {{#if (ne editalPosition 4) }}
+                                        {{#if (ne posicaoEdital 4) }}
                                         <tr>
                                             <td>{{id}}</td>
                                             <td>{{editalId}}</td>
-                                            <td>{{Nome}}</td>
+                                            <td>{{nome}}</td>
                                             <td>{{email}}</td>
-                                            <td>{{inscricaoposcomp}}</td>
-                                            <td>{{linhaDePesquisaId}}</td>
-                                            <td>{{editalPosition}}/4</td>
+                                            <td>{{cursoDesejado}}</td>
+                                            <td>{{idLinhaPesquisa}}</td>
+                                            <td>{{posicaoEdital}}</td>
                                             <td>
                                                 <div class="d-flex justify-content-between">
                                                     <a  style="margin-right: 0px"

@@ -224,10 +224,10 @@ class EditalService {
   }
 
   async listCandidates(id: string) {
-    const candidates = await prisma.candidate
+    const candidates = await prisma.candidato
       .findMany({
         where: {
-          editalId: id,
+          idEdital: id,
         },
       })
       .catch((err) => {
@@ -240,7 +240,7 @@ class EditalService {
 
   async getCandidate(id: string) {
     try {
-      const candidate = await prisma.candidate.findFirst({
+      const candidate = await prisma.candidato.findFirst({
         where: {
           id: Number(id),
         },

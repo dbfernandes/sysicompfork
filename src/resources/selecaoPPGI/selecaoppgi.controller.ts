@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 
 import candidatePublicacaoService from "../candidate/candidate.publicacao.service";
-import CandidateService from "../candidate/candidato.service";
 import candidatoExperienciaAcademicaService from "../../services/candidatoExperienciaAcademicaService";
 import candidatoService from "../candidato/candidato.service";
 import EditalService from "../edital/edital.service";
@@ -566,7 +565,7 @@ const candidates = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case "GET":
       return res.json({
-        candidates: await CandidateService.list(),
+        candidates: await candidatoService.list(),
       });
     default:
       return res.status(400).send();

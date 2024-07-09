@@ -263,14 +263,13 @@ const editalCandidates = async (req: Request, res: Response) => {
     });
   if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos');
   const quantidadeInscricaoAndamento = candidates.filter(
-    (candidate: { editalPosition: number | null }) =>
-      candidate.editalPosition !== null && candidate.editalPosition < 4,
+    (candidate) =>
+      candidate.posicaoEdital !== null && candidate.posicaoEdital < 4,
   ).length;
-  const quantidadeInscricaoFinalizada: number = candidates.filter(
-    (candidate: { editalPosition: number | null }) =>
-      candidate.editalPosition !== null && candidate.editalPosition === 4,
+  const quantidadeInscricaoFinalizada = candidates.filter(
+    (candidate) =>
+      candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
   ).length;
-
   return res.render('edital/listCandidates', {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
@@ -404,7 +403,7 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await editalService.getCandidate(req.params.id);
-
+console.log(candidate)
     return res.render('edital/candidateDetails', {
       candidate: candidate,
       csrfToken: req.csrfToken(),

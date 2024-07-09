@@ -180,4 +180,3 @@ class CandidatoService {
   }
 }
 
-export default new CandidatoService();

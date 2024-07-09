@@ -9,6 +9,10 @@ class CandidatoService {
     return candidate.validPassword(password);
   }
 
+  async list() {
+    return await prisma.candidato.findMany();
+  }
+
   async create({ email, password, editalNumber }) {
     const step = 1;
 
