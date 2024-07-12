@@ -1,0 +1,297 @@
+<style>
+	.signin-page {
+		height: 100vh;
+		display: flex;
+		background-color: #d2d6de;
+		overflow-y: auto;
+	}
+
+	.signin-page .box {
+		width: 70%;
+		margin: auto;
+		margin-top: 7%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+	@media (max-width: 576px) {
+		.signin-page .box {
+			width: 90%;
+		}
+	}
+
+	.signin-page .box .title {
+		font-size: 24px;
+		margin-bottom: 16px;
+		text-align: center;
+	}
+
+	.signin-page .box .line {
+		width: 100%;
+		height: 1px;
+		background-color: rgb(16, 1, 36);
+		margin: 10px 0 10px 0;
+	}
+
+	.signin-page .box .card {
+		width: 100%;
+		background-color: #fff;
+		border-radius: 2px;
+		box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+	}
+
+	.signin-page .box .card .card-body {
+		padding: 20px;
+		color: #666;
+	}
+
+	.signin-page .box .card .card-body .erro {
+		color: rgb(255, 0, 0);
+		font-weight: bold;
+	}
+
+	.signin-page .box .card .card-body .actions {
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	.signin-page .editais h1 {
+		color: red;
+		text-align: center;
+		font-weight: bold;
+		font-size: 15px;
+		padding: 20px;
+	}
+
+	.signin-page .editais-list {
+		height: 400px;
+		overflow-y: auto;
+		background-color: #f5f5f5;
+		border: solid 1px #e2e2e2;
+		padding: 10px;
+	}
+
+	.signin-page .editais-list .edital-item {
+		border-bottom: solid 1px #555555;
+		margin-bottom: 8px;
+	}
+
+	.signin-page button {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.signin-page button:hover {
+		color: #fff;
+		text-decoration: none;
+	}
+</style>
+<div class="signin-page">
+	<div class="box">
+		{{#if errorSignin}}
+			<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				{{errorSignin}}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		{{/if}}
+
+		<h1 class="title">
+			Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
+		</h1>
+
+		<div class="card">
+			<div class="card-body">
+				<h3><b>Instruções:</b></h3>
+				<ul>
+					<li>Preencha os campos <b>e-mail, senha, repetir senha e escolha um edital</b> para cadastrar um
+						novo candidato.</li>
+					<li>O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo
+						<b>Senha</b>.
+					</li>
+					<li>O e-mail de cadastro não pode ser repetido para um mesmo edital. Caso tenha iniciado sua
+						inscrição em um edital, acesse a opção Continuar Inscrição, acessando o botão <b>Voltar</b>.
+					</li>
+					<li>Após confirmar o cadastro, você será direcionado ao formulário de inscrição.</li>
+				</ul>
+
+				<div class="line"></div>
+				{{#unless editais}}
+					<span class="erro">Não há editais disponíveis nesta presente data.</span>
+				{{else}}
+					<div class="row editais">
+
+						<div class=" col-md-5 col-xs-12">
+							<h1>Editais Disponíveis</h1>
+							<div class="editais-list">
+								{{#each editais}}
+								<div class="edital-item">
+									<div class="edital-item-body">
+										<b>Numero do Edital:</b> {{editalId}}<br>
+										<b>Período das Inscrições:</b><br>
+										<ul>
+											<li><b>Início:</b> {{dataInicio}}</li>
+											<li><b>Fim:</b> {{dataFim}}</li>
+										</ul>
+										<b>Cursos:</b> {{cursos}}<br>
+										<b>Vagas para Mestrado:</b><br>
+										<ul>
+											<li><b>Vagas Regulares:</b> {{vagaMestrado}}</li>
+											<li><b>Vagas Suplementares:</b> {{cotasMestrado}}</li>
+										</ul>
+										<b>Vagas para Doutorado:</b><br>
+										<ul>
+											<li><b>Vagas Regulares:</b> {{vagaDoutorado}}</li>
+											<li><b>Vagas Suplementares:</b> {{cotasDoutorado}}</li>
+										</ul>
+										<b>Baixe o edital:</b> <a href="{{documento}}" target="_blank">Clique aqui</a>
+									</div>
+								</div>
+								{{/each}}
+							</div>
+						</div>
+
+						<div class="col-md-7 col-xs-12">
+							<h1>Formulário de Inscrição</h1>
+							<form id="subscription">
+								<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+								<div class="form-group">
+									<label for="email">E-mail</label>
+									<input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
+
+									<div class="help-block"></div>
+
+								</div>
+								<div class="form-group">
+									<label for="senha">Senha</label>
+									<input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
+								</div>
+								<div class="form-group">
+									<label for="repetir_senha">Repetir Senha</label>
+									<input type="password" class="form-control" id="repetir_senha" name="repetir_senha"
+										placeholder="Repetir Senha">
+								</div>
+								<div class="form-group">
+									<label for="edital">Edital</label>
+									<select class="form-control" id="edital" name="edital">
+										<option value="">Selecione um edital</option>
+										{{#each editais}}
+										<option value="{{editalId}}">{{editalId}}</option>
+										{{/each}}
+									</select>
+								</div>
+								<spam class="erro"></spam>
+								<div class="row actions">
+									<button type="submit" class="btn btn-success col-md-5 col-xs-12">
+										Salvar Candidato
+										<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
+									</button>
+									<button type="button" onclick="back()" class="btn btn-warning col-md-5 col-xs-12">Voltar</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				{{/unless}}
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function back() {
+		window.location.href = "{{url}}/selecaoppgi";
+	}
+
+	$(document).ready(function () {
+		$.validator.addMethod("strongPassword", function (value, element) {
+			return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value);
+		}, "A senha deve conter letras maiúsculas, minúsculas e números.");
+		
+		$("#subscription").validate({
+			ignore: ':hidden',
+			rules: {
+				email: {
+					required: true,
+					email: true
+				},
+				senha: {
+					required: true,
+					minlength: 6,
+					strongPassword: true,
+				},
+				repetir_senha: {
+					required: true,
+					minlength: 6,
+					equalTo: "#senha"
+				},
+				edital: {
+					required: true
+				}
+			},
+			messages: {
+				email: {
+					required: "O campo <b>E-mail</b> é obrigatório.",
+					email: "O campo <b>E-mail</b> deve ser um e-mail válido."
+				},
+				senha: {
+					required: "O campo <b>Senha</b> é obrigatório.",
+					minlength: "O campo <b>Senha</b> precisa ter no mínimo 6 caracteres.",
+					strongPassword: "A senha deve conter letras maiúsculas, minúsculas e números.",
+				},
+				repetir_senha: {
+					required: "O campo <b>Repetir Senha</b> é obrigatório.",
+					minlength: "O campo <b>Repetir Senha</b> precisa ter no mínimo 6 caracteres.",
+					equalTo: "O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor preenchido no campo <b>Senha</b>."
+				},
+				edital: {
+					required: "O campo <b>Edital</b> é obrigatório."
+				},
+			},
+			errorElement: 'span',
+			errorPlacement: function (error, element) {
+				error.addClass('invalid-feedback');
+				element.closest('div').append(error);
+			},
+			highlight: function (element, errorClass, validClass) {
+				$(element).addClass('is-invalid');
+			},
+			unhighlight: function (element, errorClass, validClass) {
+				$(element).removeClass('is-invalid');
+			},
+			submitHandler: function (form, e) {
+				e.preventDefault();
+				const buttonSubmit = $("button[type='submit']")
+				buttonSubmit.prop("disabled", true)
+				buttonSubmit.find("span").prop("hidden", false)
+				const email = $("#email").val();
+				const senha = $("#senha").val();
+				const edital = $("#edital").val();
+				const csrfToken = $("#csrfToken").val();
+				
+				$.ajax({
+					url: "{{url}}/selecaoppgi/cadastro",
+					type: "POST",
+					data: {
+						email: email,
+						senha: senha,
+						edital: edital,
+						_csrf: csrfToken,
+					},
+					success: function (data) {
+						window.location.href = "{{url}}/selecaoppgi/formulario";		
+					},
+					error: function (res, status, error) {
+						const err = res.responseJSON
+						buttonSubmit.prop("disabled", false)
+						buttonSubmit.find("span").prop("hidden", true)
+						errorSignin = err.error
+						setTimeout(function() {
+							window.alert(errorSignin);
+						}, 20);
+					}
+				})
+			}
+		})
+	})
+</script>

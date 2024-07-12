@@ -1,5 +1,4 @@
 const path = require('path');
-const { request } = require('express');
 const nodemailer = require('nodemailer');
 const hbs = require('nodemailer-express-handlebars');
 

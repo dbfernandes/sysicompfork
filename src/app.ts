@@ -1,15 +1,15 @@
-import express from 'express'
-import { engine } from 'express-handlebars'
-import session from 'express-session'
-import router from './routes'
-import dotenv from 'dotenv'
-import * as uuid from 'uuid'
-import cors from 'cors'
-import * as path from 'path'
-import csrf from 'csurf'
-import cookieParser from 'cookie-parser'
-import isUsuarioAutenticado from './middlewares/usuarioAutenticacaoMiddleware'
-import resgistro from './middlewares/logger'
+import express from 'express';
+import { engine } from 'express-handlebars';
+import session from 'express-session';
+import router from './routes';
+import dotenv from 'dotenv';
+import * as uuid from 'uuid';
+import cors from 'cors';
+import * as path from 'path';
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
+import isUsuarioAutenticado from './middlewares/usuarioAutenticacaoMiddleware';
+import resgistro from './middlewares/logger';
 
 dotenv.config();
 const app = express();
@@ -21,7 +21,7 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.js')),
+    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.ts')),
   }),
 );
 app.set('view engine', 'hbs');
@@ -31,13 +31,13 @@ app.set('views', path.join(__dirname, '/views'));
 declare module 'express-session' {
   export interface SessionData {
     tipoUsuario?:
-    | {
-      administrador: number;
-      secretaria: number;
-      coordenador: number;
-      professor: number;
-    }
-    | undefined;
+      | {
+          administrador: number;
+          secretaria: number;
+          coordenador: number;
+          professor: number;
+        }
+      | undefined;
     uid: string;
     nome: string;
   }
@@ -74,9 +74,13 @@ app.use(
   express.static(path.join(__dirname, '/../public/uploads/')),
 );
 
-app.use(isUsuarioAutenticado)
+// app.use(isUsuarioAutenticado)
+// Colocar o logger depois
+app.use(router);
 
-app.use(resgistro)
-app.use(router)
+// app.use(isUsuarioAutenticado)
+
+// app.use(resgistro)
+// app.use(router)
 
 export default app;

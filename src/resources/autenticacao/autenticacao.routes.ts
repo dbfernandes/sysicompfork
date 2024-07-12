@@ -9,4 +9,12 @@ router.get('/recuperar-senha', autenticacaoController.recuperarSenha);
 router.post('/login', autenticacaoController.login);
 router.post('/recuperar-senha', autenticacaoController.recuperarSenha);
 
+router.post('/login', autenticacaoController.login);
+
+router.get('/recuperarSenha', autenticacaoController.recuperarSenha);
+
+router.post('/recuperarSenha', autenticacaoController.recuperarSenha);
+
+router.get('/logout', autenticacaoController.logout);
+
 export default router;

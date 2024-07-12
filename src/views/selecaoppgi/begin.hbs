@@ -1,9 +1,9 @@
 <style>
-    .begin-page{
+    .login-page{
         height: 100vh;
         display: flex;
-        background-color: #d2d6de;
         overflow-y: hidden;
+        background-color: #d2d6de;
     }
     .begin-page .box{
         width: 360px;
@@ -14,10 +14,13 @@
         align-items: center;
         justify-content: center;
     }
-    .begin-page .box .title{
-        font-size: 24px;
-        margin-bottom: 16px;
+    .card .title{
+        font-size: 1.5rem;
         text-align: center;
+        margin-top: 1rem;
+        margin-bottom: 0px;
+        margin-left: 0.125rem;
+                margin-right: 0.125rem;
     }
 
     .begin-page .box .line{
@@ -52,25 +55,40 @@
     .begin-page .box .card .card-body .options .btn-primary{
         background-color: #3c8dbc;
     }
+	.container-cards {
+    	display: flex;
+    	flex-direction: row;
+    	justify-content: space-between; 
+   		img {
+      		max-width: 200px;
+      		height: 100px;  
+    	}
+	}
 </style>
-<div class="begin-page">
-    <div class="box">
-        <h1 class="title">
-            Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
-        </h1>
-
-        <div class="line"></div>
-
+<div class="login-box">
+    <div class="login-logo container-cards">
+		<img src="/public/img//logo-icomp.png" alt="">
+    	<img src="/public/img//logo-ufam.png" alt="">
+  	</div>
+    <div class="card">
+        
+  
         <div class="card">
-            <div class="card-body">
+            <h2 class="title">
+                Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
+            </h2>
+
+            
+            <div class="card-body login-card-body">
+
                 <div class="info">
-                    <h2>Candidato, clique em:</h2>
+                    <span>Candidato, clique em:</span>
                     <li><b>Nova Inscrição:</b> caso você ainda não tenha iniciado a inscrição. Lembrando que para cada edital do PPGI deve ser realizada uma inscrição independente.</li>
                     <li><b>Continuar Inscrição:</b> caso você já tenha iniciado a inscrição, porém ainda não a finalizou.</li>
                 
                 </div>
-                <div class="options row row-cols-2">
-                    <div class="col-sm-6">
+                <div class="options row  mt-2">
+                    <div class="col-md-6">
                         <a name="nova-inscricao" id="" 
                             class="btn btn-primary btn-block btn-flat" 
                             href="/selecaoppgi/cadastro" role="button">
@@ -78,9 +96,9 @@
                         </a>
                         <br/>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-md-6">
                         <a name="nova-inscricao" id="" 
-                            class="btn btn-block btn-flat bg-green" 
+                            class="btn btn-block btn-flat bg-green px-0" 
                             href="/selecaoppgi/entrar" role="button">
                             Continuar Inscrição
                         </a>
@@ -91,6 +109,3 @@
         </div>
     </div>
 </div>
-<script>
-    // Your code here
-</script>

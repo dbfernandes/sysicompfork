@@ -1,46 +1,66 @@
-import { Request, Response } from 'express'
-import EditalService from '../edital/edital.service'
-import CandidateService from '../candidate/candidato.service'
-import candidatePublicacaoService from '../candidate/candidate.publicacao.service'
-import multer from 'multer'
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+import { Request, Response } from 'express';
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
+import candidatePublicacaoService from '../candidate/candidate.publicacao.service';
+import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
+import candidatoService from '../candidato/candidato.service';
+import EditalService from '../edital/edital.service';
+import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
+import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
+
+// function resolveView(viewName: string): string {
+//   return path.resolve(__dirname, 'views', viewName);
+// }
+
+type CustomRequest = Request & {
+  session: {
+    email: string;
+    uid: string;
+    editalId: string;
+    editalPosition: number;
+  };
+};
 
 const locals = {
   layout: 'selecaoppgi',
 };
 
-const begin = async (req: Request, res: Response) => {
+const localsBegin = {
+  layout: 'begin',
+};
+
+const begin = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('begin'), {
-        ...locals
-      })
-    case 'POST':
-      return res.send('Erro 400');
+      return res.render('selecaoppgi/begin', {
+        ...localsBegin,
+      });
+    default:
+      return res.status(405).send();
   }
 };
 
-const signin = async (req: Request, res: Response) => {
+// Rotas para cadastro de candidato
+const signUp = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const editais = await EditalService.listEdital()
-      return res.render(resolveView('signin'), {
+      const dataToday = new Date();
+      const listEditais = (await EditalService.listEdital()).filter(
+        (edital) => {
+          const dateEnd = new Date(edital.dataFim);
+          return dateEnd >= dataToday && edital.status === '1';
+        },
+      );
+
+      return res.render('selecaoppgi/signUp', {
         csrfToken: req.csrfToken(),
-        ...locals,
-        editais: editais.map((edital) => {
-          return {
-            ...edital,
-          };
-        }),
+        editais: listEditais,
         errorSignin: null,
+        ...locals,
       });
     }
     case 'POST': {
-      
       const { email, senha, edital } = req.body;
 
       // if (!novoCandidate.email || !novoCandidate.passwordHash || !novoCandidate.editalId) {
@@ -49,317 +69,431 @@ const signin = async (req: Request, res: Response) => {
       //   });
       // }
       if (!email || !senha || !edital) {
-        return res.status(400).json({
+        return res.status(403).json({
           error: 'Dados incompletos ou mal formatados',
         });
       }
 
-      let responseError = null;
+      try {
+        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+          email,
+          edital,
+        });
 
-      const candidate = await CandidateService.create(email, senha, edital).catch((error: any) => {
-        responseError = error
-      })
+        if (candidate) {
+          return res.status(409).json({
+            error: 'Candidato já existe para este edital',
+          });
+        }
 
-      if (!candidate) {
-        return res.status(400).json({
-          error: responseError!.message,
+        const candidateCreated = await candidatoService.create({
+          email,
+          password: senha,
+          editalNumber: edital,
+        });
+
+        req.session.email = candidateCreated.email;
+        req.session.editalId = candidateCreated.idEdital;
+        req.session.uid = candidateCreated.id.toString();
+        req.session.editalPosition = candidateCreated.posicaoEdital;
+
+        return res.status(201).send();
+      } catch (err) {
+        console.error(`[ERROR] Criar de candidato: ${err}`);
+        return res.status(500).json({
+          error: 'Não foi possível criar o candidato',
         });
       }
-      return res.status(200).redirect('/selecaoppgi');
     }
     default:
       return res.status(404).send();
   }
 };
 
-const login = async (req: Request, res: Response) => {
+const login = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const editais = await EditalService.listEdital()
-      return res.render(resolveView('login'), {
-        csrfToken: req.csrfToken(),
-        teste: 'teste',
-        ...locals,
-        editais: editais.map((edital) => {
-          return {
-            ...edital,
-          };
-        }),
-      });
+      if (req.session.uid) {
+        res.redirect('/selecaoppgi/formulario');
+        break;
+      }
+      try {
+        const listEditais = await EditalService.listEdital();
+        return res.render('selecaoppgi/signIn', {
+          ...localsBegin,
+          csrfToken: req.csrfToken(),
+          editais: listEditais,
+        });
+      } catch (err) {
+        return res.status(500).send();
+      }
     }
     case 'POST':
       try {
         const { email, senha, edital } = req.body;
 
-        console.log({
-          email,
-          senha,
-          edital,
-        });
-
         if (!email || !senha || !edital) {
-          return res.status(400).json({
-            error: 'Dados incompletos ou mal formatados',
-          });
+          return res.status(400).send();
         }
-        const IsCandidateValid = await CandidateService.auth(
+
+        const candidate = await candidatoService.auth({
           email,
-          senha,
-          edital,
-        );
-
-        const editais2 = await EditalService.listEdital();
-
-        if (!editais2) {
-          return res.status(404).send('Não encontrou premios');
+          password: senha,
+          editalNumber: edital,
+        });
+        if (!candidate) {
+          return res.status(406).send();
         }
 
-        if (!IsCandidateValid) {
-          console.log('error teste');
-          console.log(req.csrfToken());
-
-          return res.render(resolveView('login'), {
-            csrfToken: req.csrfToken(),
-            message: 'Usuário não cadastrado',
-            type: 'danger',
-            ...locals,
-            editais: editais2.map((edital) => {
-              return {
-                ...edital,
-              };
-            }),
-          });
+        if (candidate.posicaoEdital > 4) {
+          return res.status(401).send();
         }
 
-        (req.session as any).email = IsCandidateValid.email;
-        (req.session as any).editalId = IsCandidateValid.editalId;
-        (req.session as any).uid = IsCandidateValid.id;
-        (req.session as any).editalPosition = IsCandidateValid.editalPosition;
+        req.session.email = candidate.email;
+        req.session.editalId = candidate.idEdital;
+        req.session.uid = candidate.id.toString();
+        req.session.editalPosition = candidate.posicaoEdital;
         return res.status(200).send();
       } catch (err) {
-        console.log(err);
         return res.status(500).send();
       }
+    default:
+      return res.status(405).send();
+  }
+};
 
+function logout(req: CustomRequest, res: Response) {
+  switch (req.method) {
+    case 'POST':
+      req.session.destroy((err) => {
+        console.error(err);
+        return res.status(500).send();
+      });
+      return res.status(200).redirect('/selecaoppgi/entrar');
     default:
       return res.status(404).send();
   }
-};
+}
 
-const forms = async (req: Request, res: Response) => {
-  console.log(req.method);
-  console.log('teste forms');
-
+const formProposta = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'GET':
-      const id = parseInt(req.session.uid!);
-      if (!(req.session as any).email) {
-        res.redirect('/selecaoppgi/entrar');
+    case 'POST': {
+      const id = req.session.uid;
+      const hasProposta =
+        req.files &&
+        !Array.isArray(req.files) &&
+        req.files['CartaAceiteOrientador'] !== undefined;
+      if (!hasProposta) {
+        if (
+          fs.existsSync(
+            path.join(
+              'uploads',
+              'candidatos',
+              id?.toString(),
+              'CartaAceiteOrientador.pdf',
+            ),
+          )
+        ) {
+          fs.unlinkSync(
+            path.join(
+              'uploads',
+              'candidatos',
+              id?.toString(),
+              'CartaAceiteOrientador.pdf',
+            ),
+          );
+        }
       }
-      if (!(req.session as any).editalPosition) throw new Error('Edital não encontrado')
-      if ((req.session as any).editalPosition === 1) {
-        // console.log((req.session as any).email)
-        // console.log((req.session as any).editalId)
-        // console.log(req.session.uid)
-        const candidate = await CandidateService.findOneCandidate(id)
-        // console.log(candidate)
-        return res.render(resolveView('forms1'), {
-          ...locals,
-          Nome: candidate.Nome,
-          Nascimento: candidate.Nascimento,
-          Sexo: candidate.Sexo,
-          NomeSocial: candidate.NomeSocial,
-          CEP: candidate.CEP,
-          UF: candidate.UF,
-          Endereco: candidate.Endereco,
-          Cidade: candidate.Cidade,
-          Bairro: candidate.Bairro,
-          Nacionalidade: candidate.Nacionalidade,
-          Telefone: candidate.Telefone,
-          TelefoneSecundario: candidate.TelefoneSecundario,
-          ComoSoube: candidate.ComoSoube,
-          Curso: candidate.CursoGraduacao,
-          Regime: candidate.Regime,
-          Cotista: candidate.Cotista,
-          CotistaTipo: candidate.CotistaTipo,
-          Condicao: candidate.Condicao,
-          CondicaoTipo: candidate.CondicaoTipo,
-          Bolsista: candidate.Bolsista,
-          editalPosicao: (req.session as any).editalPosition,
-          email: (req.session as any).email,
-          id: req.session.uid,
-          csrfToken: req.csrfToken(),
+      const candidate = {
+        idLinhaPesquisa: Number(req.body.idLinhaPesquisa),
+        tituloProposta: req.body.tituloProposta,
+        nomeOrientador: req.body.nomeOrientador,
+        motivos: req.body.motivos,
+        posicaoEdital: 4,
+      };
+      await candidatoService
+        .update({
+          id,
+          data: candidate,
+        })
+        .catch((err) => {
+          console.error(err);
+          return res.status(500).send();
         });
-      }
-      if ((req.session as any).editalPosition === 2) {
-        const candidate = await CandidateService.findOneCandidate(id)
-
-        return res.render(resolveView('forms2'), {
-          ...locals,
-          cursoGraduacao: candidate.CursoGraduacao,
-          instituicao: candidate.InstituicaoGraduacao,
-          anoEgresso: candidate.AnoEgressoGraduacao,
-          cursoPos: candidate.CursoPos,
-          tipoCursoPos: candidate.CursoPos,
-          instituicaoPos: candidate.CursoInstituicaoPos,
-          anoEgressoPos: candidate.CursoAnoEgressoPos,
-          editalPosicao: (req.session as any).editalPosition,
-          email: (req.session as any).email,
-          id: req.session.uid,
-          Curso: candidate.CursoGraduacao,
-          csrfToken: req.csrfToken(),
-        });
-      }
-
-      if ((req.session as any).editalPosition === 3) {
-        await CandidateService.findOneCandidate(id)
-
-        console.log('*************************************************')
-        return res.render(resolveView('forms3'), {
-          ...locals,
-          editalPosicao: (req.session as any).editalPosition,
-          email: (req.session as any).email,
-          id: req.session.uid,
-          csrfToken: req.csrfToken(),
-        });
-      }
-
-    // case 'POST': {
-    //   if (req.session.editalPosition == 1) {
-    //     // console.log(req.body)
-    //   }
-    // }
-    //   break
+      req.session.editalPosition = 4;
+      return res.status(200).send();
+    }
+    default:
+      return res.status(405).send();
   }
 };
 
-const form1 = async (req: Request, res: Response) => {
+function verificarArquivoDiretorio(diretorio: string, nomeArquivo: string) {
+  const caminhoArquivo = path.join(diretorio, nomeArquivo);
+  try {
+    // Verifica se o arquivo existe
+    fs.accessSync(caminhoArquivo, fs.constants.F_OK);
+    return true;
+  } catch (err) {
+    // Se houver algum erro ao acessar o arquivo, retorna false
+    return false;
+  }
+}
+
+async function editCandidate(req: CustomRequest, res: Response) {
+  switch (req.method) {
+    case 'PUT':
+      return res.status(200).send();
+    default:
+      return res.status(405).send();
+  }
+}
+
+async function backToStart(req: CustomRequest, res: Response) {
+  switch (req.method) {
+    case 'POST':
+      const id = req.session.uid;
+      await candidatoService.update({
+        id,
+        data: {
+          posicaoEdital: 1,
+        },
+      });
+      req.session.editalPosition = 1;
+      return res.status(200).send();
+    default:
+      return res.status(405).send();
+  }
+}
+const forms = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
-      res.send('oi');
-      break;
-    case 'POST': {
-      console.log('******************************************** FORM 1 POST');
-      const data = req.body.data;
-      // console.log(req.session.editalPosition)
-      if ((req.session as any).editalPosition === 1) {
-        console.log('teste form1');
-        const Candidato = {
-          Nome: data.Nome,
-          Nascimento: data.Nascimento,
-          Sexo: data.Sexo,
-          NomeSocial: data.NomeSocial,
-          CEP: data.CEP,
-          UF: data.UF,
-          Endereco: data.Endereco,
-          Cidade: data.Cidade,
-          Bairro: data.Bairro,
-          Nacionalidade: data.Nacionalidade,
-          TelefonePrincipal: data.TelefonePrincipal,
-          TelefoneAlternativo: data.TelefoneAlternativo,
-          ComoSoube: data.ComoSoube,
-          CursoDesejado: data.CursoDesejado,
-          RegimeDedicacao: data.RegimeDedicacao,
-          Cotista: data.Cotista,
-          CotistaTipo: data.CotistaTipo,
-          Condicao: data.Condicao,
-          CondicaoTipo: data.CondicaoTipo,
-          Bolsa: data.Bolsa,
-        };
-        const id = parseInt(req.session.uid!);
-
-        const candidate = await CandidateService.form1(Candidato, id);
-
-        (req.session as any).editalPosition = candidate!.editalPosition;
-        res.status(200).send();
-
+      if (!req.session.uid) {
+        res.status(500).redirect('/selecaoppgi/entrar');
+        break;
+      }
+      const { uid, editalPosition } = req.session;
+      const candidate = await candidatoService.findById(uid).catch((err) => {
+        console.error(err);
+        return res.status(500).send();
+      });
+      if (!candidate) {
+        res.redirect('/selecaoppgi/entrar');
         break;
       }
 
-      return res.send('Erro 400 begin');
+      console.log(candidate);
+      console.log({ ...candidate });
+      if (editalPosition === 1) {
+        return res.status(200).render('selecaoppgi/formDados', {
+          ...locals,
+          ...candidate,
+          csrfToken: req.csrfToken(),
+        });
+      }
+
+      if (editalPosition === 2) {
+        const caminhoDiretorioUsuario = path.join(
+          'uploads',
+          'candidatos',
+          uid.toString(),
+        );
+        const experienciasAcademicas =
+          await candidatoExperienciaAcademicaService.listByCandidateId(
+            Number(uid),
+          );
+        return res.render('selecaoppgi/forms2', {
+          ...locals,
+          ...candidate,
+          editalPosicao: editalPosition,
+          email: req.session.email,
+          id: req.session.uid,
+          csrfToken: req.csrfToken(),
+          hasCurriculum: verificarArquivoDiretorio(
+            caminhoDiretorioUsuario,
+            'VitaePDF.pdf',
+          ),
+          hasProvaAnterior: verificarArquivoDiretorio(
+            caminhoDiretorioUsuario,
+            'ProvaAnterior.pdf',
+          ),
+          experienciasAcademicas: experienciasAcademicas.map(
+            (experiencia: any) => experiencia.toJSON(),
+          ),
+        });
+      }
+
+      if (req.session.editalPosition === 3) {
+        const linhas = await linhasDePesquisaService.list();
+        return res.render('selecaoppgi/forms3', {
+          ...locals,
+          ...candidate,
+          editalPosicao: req.session.editalPosition,
+          email: req.session.email,
+          id: req.session.uid,
+          linhasPesquisa: linhas,
+          csrfToken: req.csrfToken(),
+        });
+      }
+      if (req.session.editalPosition === 4) {
+        const caminhoDiretorioUsuario = path.join(
+          'uploads',
+          'candidatos',
+          uid.toString(),
+        );
+        return res.render('selecaoppgi/formConfirmacao', {
+          ...locals,
+          editalPosicao: (req.session as any).editalPosition,
+          email: (req.session as any).email,
+          id: req.session.uid,
+          csrfToken: req.csrfToken(),
+          hasCartaAceiteOrientador: verificarArquivoDiretorio(
+            caminhoDiretorioUsuario,
+            'CartaAceiteOrientador.pdf',
+          ),
+        });
+      }
+      break;
+
+    default:
+      return res.status(405).send();
+  }
+};
+function parseDate(dateString: string) {
+  const parts = dateString.split('/');
+  // Supondo que a data está no formato DD/MM/YYYY
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é 0-indexed
+  const year = parseInt(parts[2], 10);
+
+  return new Date(year, month, day);
+}
+const form1 = async (req: CustomRequest, res: Response) => {
+  switch (req.method) {
+    case 'POST': {
+      const { data } = req.body;
+      if (req.session.editalPosition === 1) {
+        const dataNascimento = data.dataNascimento
+          ? new Date(parseDate(data.dataNascimento))
+          : null;
+        const candidato = {
+          ...data,
+          dataNascimento,
+          posicaoEdital: 2,
+          condicao: data.condicao === 'true',
+          bolsista: data.bolsista === 'true',
+          cotista: data.cotista === 'true',
+        };
+        const { uid } = req.session;
+        await candidatoService.update({
+          id: uid,
+          data: candidato,
+        });
+        req.session.editalPosition = 2;
+        return res.status(200).send();
+      }
+
+      return res.status(400).send();
     }
+    default:
+      return res.status(405).send();
   }
 };
 
-const form2 = async (req: Request, res: Response) => {
+const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'GET':
-      break;
     case 'POST': {
       try {
-        console.log('form2post');
-
         let VitaePDF = null;
         let Prova = null;
-        console.log(req.files);
-        if (typeof req.files === 'object' && 'Prova' in req.files) {
+        if (
+          !Array.isArray(req.files) &&
+          req.files &&
+          req.files.Prova !== undefined
+        ) {
           Prova = req.files.Prova[0];
         }
-        if (typeof req.files === 'object' && 'VitaePDF' in req.files) {
+        if (
+          !Array.isArray(req.files) &&
+          req.files &&
+          req.files.VitaePDF !== undefined
+        ) {
           VitaePDF = req.files.VitaePDF[0];
         }
+        const { uid } = req.session;
+        console.log(req.body);
+        const experienciaInstituicao = req.body.experienciaInstituicao;
+        const experienciasAtividade = req.body.experienciaAtividade;
+        const experienciasPeriodo = req.body.experienciaPeriodo;
+        console.log(
+          experienciaInstituicao,
+          experienciasAtividade,
+          experienciasPeriodo,
+        );
 
-        if (Prova) {
-          const caminhoDoArquivoVittae = VitaePDF!.path;
+        // if (
+        //   experienciaInstituicao &&
+        //   experienciasAtividade &&
+        //   experienciasPeriodo && experienciaInstituicao.length > 0
+        // ) {
+        //   await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid);
+        //   await Promise.all(
+        //     experienciaInstituicao.map((_: any, index: any) => {
+        //       return candidatoExperienciaAcademicaService.create({
+        //         data: {
+        //           instituicao: experienciaInstituicao[index],
+        //           atividade: experienciasAtividade[index],
+        //           periodo: experienciasPeriodo[index],
+        //         },
+        //         idCandidato: uid,
+        //       });
+        //     })
+        //   ).catch((err) => {
+        //     console.error(err);
+        //     return res.status(500).send();
+        //   })
+        // }
+        const { body } = req;
+        const candidato = {
+          cursoGraduacao: body.cursoGraduacao,
+          instituicaoGraduacao: body.instituicaoGraduacao,
+          anoEgressoGraduacao: body.anoEgressoGraduacao,
+          cursoPos: body.cursoPos,
+          instituicaoPos: body.instituicaoPos,
+          anoEgressoPos: body.anoEgressoPos,
+          posicaoEdital: 3,
+        };
+        await candidatoService.update({
+          id: uid,
+          data: candidato,
+        });
 
-          const ProvaPDF = Prova.path;
-
-          const Candidato = {
-            CursoGraduacao: req.body.Curso,
-            InstituicaoGraduacao: req.body.Instituicao,
-            AnoEgressoGraduacao: req.body.AnoEgresso,
-            CursoPos: req.body.CursoPos,
-            CursoPosTipo: req.body.TipoCursoPos,
-            CursoInstituicaoPos: req.body.InstituicaoPos,
-            CursoAnoEgressoPos: req.body.AnoEgressoPos,
-            VitaePDF: caminhoDoArquivoVittae,
-            Prova: ProvaPDF,
-          };
-          console.log(Candidato);
-          console.log('Caminho do arquivo:', ProvaPDF);
-        } else {
-          console.log('FILES__________________');
-          console.log(req.files);
-          console.log('EndFILES__________________');
-          console.log(req.body);
-          console.log('EndBody__________________');
-
-          console.log('Nenhum arquivo de prova encontrado.');
-        }
-
-        res.status(200).send();
-      } catch {}
+        req.session.editalPosition = 3;
+        return res.status(200).send();
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send();
+      }
+    }
+    default: {
+      return res.status(405).send();
     }
   }
 };
 
-const formPublicacoes = async (req: Request, res: Response) => {
+const formPublicacoes = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const uid = Number(req.session.uid);
-      const data =
-        await candidatePublicacaoService.ListarPublicacoesCandidate(uid);
-
-      // const periodicos = data.periodicos.map((periodico: { toJSON: () => any }) => periodico.toJSON())
-      const periodicos = data.periodicos.map((periodico: any) =>
-        periodico.toJSON(),
-      );
-      // const conferencias = data.conferencias.map((conferencia: { toJSON: () => any }) => conferencia.toJSON())
-      const conferencias = data.conferencias.map((conferencia: any) =>
-        conferencia.toJSON(),
+      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(
+        Number(req.session.uid),
       );
 
-      // data.conferencias.forEach((publicacao: { toJSON: () => any }) => {
-      //   console.log(publicacao.toJSON())
-      // })
-      data.conferencias.forEach((publicacao: any) => {
-        console.log(publicacao.toJSON());
-      });
+      const { periodicos, conferencias } = data;
 
-      return res.render(resolveView('forms2'), {
+      return res.render('selecaoppgi/forms2', {
         message: 'Dados salvos com sucesso',
-        editalPosicao: (req.session as any).editalPosition,
-        email: (req.session as any).email,
+        editalPosicao: req.session.editalPosition,
+        email: req.session.email,
         id: req.session.uid,
         csrfToken: req.csrfToken(),
         periodicos,
@@ -370,7 +504,6 @@ const formPublicacoes = async (req: Request, res: Response) => {
     case 'POST':
       try {
         const dados = req.body;
-        console.log(dados);
         const periodicos = dados.publicacoes['ARTIGO-PUBLICADO'];
         const eventos = dados.publicacoes['TRABALHO-EM-EVENTOS'];
         const livros = dados.publicacoes['LIVRO-PUBLICADO-OU-ORGANIZADO'];
@@ -378,29 +511,49 @@ const formPublicacoes = async (req: Request, res: Response) => {
         const outras = dados.publicacoes['OUTRA-PRODUCAO-BIBLIOGRAFICA'];
         const prefacios = dados.publicacoes['PREFACIO-POSFACIO'];
 
-        console.log('Capitulos', prefacios);
-
         const promises = [];
 
-        const uid = Number(req.session.uid);
-
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, periodicos, 1),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            periodicos,
+            1,
+          ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, eventos, 2),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            eventos,
+            2,
+          ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, livros, 3),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            livros,
+            3,
+          ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, capitulos, 4),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            capitulos,
+            4,
+          ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, outras, 5),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            outras,
+            5,
+          ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(uid, prefacios, 6),
+          candidatePublicacaoService.adicionarVarios(
+            Number(req.session.uid),
+            prefacios,
+            6,
+          ),
         );
 
         const results = await Promise.allSettled(promises);
@@ -422,47 +575,143 @@ const formPublicacoes = async (req: Request, res: Response) => {
   }
 };
 
-const candidates = async (req: Request, res: Response) => {
+const candidates = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
-        candidates: await CandidateService.list()
-      })
+        candidates: await candidatoService.list(),
+      });
     default:
       return res.status(400).send();
   }
 };
 
-const voltar = async (req: Request, res: Response) => {
+const voltar = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'POST':
-      {
-        const id = req.body.id;
-        console.log(id);
-        let editalPosicao = req.body.editalPosicao;
-        console.log(editalPosicao);
-        editalPosicao = parseInt(editalPosicao, 10) - 1;
-
-        // res.redirect('/selecaoppgi')
-        console.log(editalPosicao);
-
-      const candidate = await CandidateService.findOneCandidate(id);
-      (req.session as any).editalPosition = editalPosicao
-      res.status(200).send()
+    case 'POST': {
+      try {
+        const id = req.session.uid;
+        const editalPosicao =
+          parseInt(req.session.editalPosition?.toString() ?? '1', 10) - 1;
+        await candidatoService.backEdital({
+          id,
+        });
+        req.session.editalPosition = editalPosicao;
+        return res.status(200).send();
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send();
+      }
     }
-      break
     default:
-      return res.status(400).send();
+      return res.status(405).send();
   }
 };
 
-const refresh = async (req: Request, res: Response) => {
-  console.log('asdasdsadasd');
+const refresh = async (req: CustomRequest, res: Response) => {
   res.redirect('/selecaoppgi/formulario');
 };
+
+const recuperarSenha = async (req, res) => {
+  switch (req.method) {
+    case 'GET': {
+      const listEditais = await EditalService.listEdital();
+      return res.render('selecaoppgi/recuperarSenha', {
+        editais: listEditais,
+        csrfToken: req.csrfToken(),
+        ...localsBegin,
+      });
+    }
+    case 'POST': {
+      if (!req.body.email || !req.body.editalId) {
+        return res.status(400).send();
+      }
+      const { email, editalId: edital } = req.body;
+      const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+        email,
+        edital,
+      });
+      if (!candidate) {
+        return res.status(404).send();
+      }
+
+      const token = await candidatoService.updateTokenPassword({
+        id: candidate.id,
+      });
+
+      const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
+      try {
+        sendEmailRecoveryPasswordCandidate({
+          email: candidate.email,
+          url,
+        });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Erro ao enviar e-mail' });
+      }
+
+      return res.status(200).send();
+    }
+    default:
+      return res.status(405).send();
+  }
+};
+
+const trocarSenha = async (req, res: Response) => {
+  switch (req.method) {
+    case 'GET': {
+      const candidate = await candidatoService.findByTokenPassword(
+        req.query.token as string,
+      );
+
+      if (!candidate) {
+        return res.render('selecaoppgi/trocarSenha', {
+          error: 'Token inválido',
+          csrfToken: req.csrfToken(),
+          ...localsBegin,
+        });
+      }
+
+      if (candidate.validadeTokenReset < new Date()) {
+        return res.render('selecaoppgi/trocarSenha', {
+          error: 'Token expirado',
+          csrfToken: req.csrfToken(),
+          ...localsBegin,
+        });
+      }
+      return res.render('selecaoppgi/trocarSenha', {
+        csrfToken: req.csrfToken(),
+        token: req.query.token,
+        ...localsBegin,
+      });
+    }
+    case 'PUT': {
+      const { password, token } = req.body;
+      if (!password || !token) {
+        return res.status(400).send();
+      }
+      try {
+        await candidatoService.changePasswordWithToken({
+          token,
+          password,
+        });
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          return res.status(400).send({ message: err.message });
+        }
+        return res.status(500).send();
+      }
+      return res.status(200).send();
+    }
+    default:
+      return res.status(405).send();
+  }
+};
+
 export default {
   begin,
-  signin,
+  signUp,
   login,
   forms,
   form1,
@@ -471,4 +720,10 @@ export default {
   voltar,
   refresh,
   formPublicacoes,
+  logout,
+  formProposta,
+  editCandidate,
+  backToStart,
+  recuperarSenha,
+  trocarSenha,
 };

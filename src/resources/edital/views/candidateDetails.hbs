@@ -20,7 +20,7 @@
             </div>
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.editalId}}">
+                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.idEdital}}">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a> 
@@ -42,7 +42,7 @@
                                 <tbody>
                                 <tr>
                                     <th class="col-3">Nome Completo</th>
-                                    <td>{{candidate.Nome}}</td>
+                                    <td>{{candidate.nome}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">Data da Inicialização da Inscrição</th>
@@ -54,23 +54,23 @@
                                 </tr> --}}
                                 <tr>
                                     <th class="col-3">Endereço</th>
-                                    <td>{{candidate.Endereco}}</td>
+                                    <td>{{candidate.endereco}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Bairro</th>
-                                    <td>{{candidate.Bairro}}</td>
+                                    <td>{{candidate.bairro}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Cidade</th>
-                                    <td>{{candidate.Cidade}}</td>
+                                    <td>{{candidate.cidade}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Estado</th>
-                                    <td>{{candidate.UF}}</td>
+                                    <td>{{candidate.uf}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">CEP</th>
-                                    <td>{{candidate.CEP}}</td>
+                                    <td>{{candidate.cep}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">E-mail</th>
@@ -78,11 +78,11 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Data de nascimento</th>
-                                    <td>{{candidate.Nascimento}}</td>
+                                    <td>{{#if (notEmpty candidate.dataNascimento)}} {{formataData candidate.dataNascimento}}{{/if}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Nacionalidade</th>
-                                    <td>{{candidate.Nacionalidade}}</td>
+                                    <td>{{candidate.nacionalidade}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">País</th>
@@ -94,15 +94,16 @@
                                 </tr> --}}
                                 <tr>
                                     <th class="col-3">Sexo</th>
-                                    <td>{{candidate.Sexo}}</td>
+                                    <td><span class="{{#if (notEmpty candidate.sexo)}}">{{formataBioSex candidate.sexo}}
+                                        {{else}}badge bg-danger">Não Informado{{/if}}</span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Principal</th>
-                                    <td>{{candidate.Telefone}}</td>
+                                    <td>{{candidate.telefone}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Alternativo</th>
-                                    <td>{{candidate.TelefoneSecundario}}</td>
+                                    <td>{{candidate.telefoneSecundario}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">Curso desejado</th>
@@ -110,11 +111,11 @@
                                 </tr> --}}
                                 <tr>
                                     <th class="col-3">Regime de Dedicação</th>
-                                    <td>Parcial</td>
+                                    <td>{{candidate.regime}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Incrição poscomp</th>
-                                    <td>{{candidate.CursoInstituicaoPos}}</td>
+                                    <td>{{candidate.cursoDesejado}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano poscomp</th>
@@ -126,23 +127,25 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Solicita Bolsa?</th>
-                                    <td>{{candidate.solicitabolsa}}</td>
+                                    {{!-- <td>{{#if (eq candidate.bolsista '1')}} Sim {{else}} Não {{/if}}</td> --}}
+                                    <td><span class="{{#if (eq candidate.bolsista '1')}} badge bg-success">Sim{{else}}badge bg-danger">Não{{/if}}</span></td>
+
                                 </tr>
                                 <tr>
                                     <th class="col-3">Cotista?</th>
-                                    <td>{{candidate.cotas}}</td>
+                                    <td><span class="{{#if (eq candidate.cotista '1')}} badge bg-success">{{candidate.cotistaTipo}}{{else}}badge bg-danger">Não{{/if}}</span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Possui algum tipo de problema de saúde física ou psiquiátrica?</th>
-                                    <td>{{candidate.status}}</td>
+                                    <td><span class="{{#if (eq candidate.condicao '1')}} badge bg-success">{{candidate.condicaoTipo}}{{else}}badge bg-danger">Não{{/if}}</span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Linha de Pesquisa</th>
-                                    <td>{{candidate.linhaDePesquisaId}}</td>
+                                    <td>{{candidate.idLinhaPesquisa}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Título da Proposta</th>
-                                    <td>{{candidate.tituloproposta}}</td>
+                                    <td>{{candidate.tituloProposta}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Motivos</th>
@@ -220,37 +223,44 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curso de graduação</th>
-                                    <td><span class="{{#if candidato.desiredCourse}}">{{candidate.desiredCourse}}
+                                    <td><span class="{{#if (notEmpty candidate.cursoGraduacao)}}">{{candidate.cursoGraduacao}}
                                         {{else}}badge bg-danger">Não Registrado{{/if}}
 
                                     </span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Instituição da graduação</th>
-                                    <td>{{candidate.status}}</td>
+                                    <td><span class="{{#if (notEmpty candidate.instituicaoGraduacao)}}">{{candidate.instituicaoGraduacao}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano de Egresso na Graduação</th>
-                                    <td>{{candidate.anoposcomp}}</td>
+                                    <td><span class="{{#if (notEmpty candidate.anoEgressoGraduacao)}}">{{candidate.anoEgressoGraduacao}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curso de Pós Graduação</th>
-                                    <td><span class="{{#if candidate.status}}">{{candidate.status}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                    <td><span class="{{#if (notEmpty candidate.cursoPos)}}">{{candidate.cursoPos}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
                                 </tr>
                                 <tr>
                                     <th class="col-3">Tipo de Pós Graduação</th>
-                                    <td><span class="{{#if candidate.inscricaoposcomp}}">{{candidate.inscricaoposcomp}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                    <td><span class="{{#if (notEmpty candidate.tipoPos)}}">{{candidate.tipoPos}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
                                 </tr>
                                 <tr>
                                     <th class="col-3">Instituição da Pós Graduação</th>
-                                    <td><span class="{{#if candidate.status}}">{{candidate.status}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                    <td><span class="{{#if (notEmpty candidate.instituicaoPos)}}">{{candidate.instituicaoPos}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano de Egresso na Pós Graduação</th>
-                                    <td><span class="{{#if candidate.anoposcomp}}">{{candidate.anoposcomp}}{{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                    <td><span class="{{#if (notEmpty candidate.anoEgressoPos)}}">{{candidate.anoEgressoPos}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
                                 </tr>
                                 <tr>
                                     <th class="col-3">Resultado da Avaliação</th>
+                                    
                                     <td><span class="{{#if candidate.notaposcomp}}">{{candidate.notaposcomp}}{{else}}badge bg-danger">Não Julgado{{/if}}</span></td>
                                 </tr>
                                 </tbody>

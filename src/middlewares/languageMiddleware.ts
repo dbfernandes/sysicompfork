@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import language from '../modules/i18n.js';
+import language from '../utils/i18n';
 
 export const languageMiddleware = (
   req: Request,

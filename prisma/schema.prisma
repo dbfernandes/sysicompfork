@@ -84,6 +84,58 @@ model Candidate {
   @@index([linhaDePesquisaId], map: "fk_Candidate_LinhaDePesquisa")
 }
 
+
+model Candidato {
+  id                    BigInt    @id @default(autoincrement())
+  posicaoEdital         Int?      @db.SmallInt
+  senhaHash             String    @db.VarChar(255)
+  tokenResetSenha       String?   @db.VarChar(255)
+  validadeTokenReset    DateTime? @db.DateTime(0)
+  idEdital              String    @db.VarChar(255)
+  idLinhaPesquisa       Int?      @db.Int
+  nome                  String?   @db.VarChar(60)
+  email                 String?   @db.VarChar(50)
+  dataNascimento        DateTime? @db.Date
+  sexo                  String?   @db.VarChar(1)
+  nomeSocial            String?   @db.VarChar(60)
+  cep                   String?   @db.VarChar(9)
+  uf                    String?   @db.VarChar(2)
+  endereco              String?   @db.VarChar(160)
+  cidade                String?   @db.VarChar(40)
+  bairro                String?   @db.VarChar(50)
+  nacionalidade         String?   @db.VarChar(11)
+  telefone              String?   @db.VarChar(18)
+  telefoneSecundario    String?   @db.VarChar(18)
+  comoSoube             String?   @db.VarChar(100)
+  cursoDesejado         String?
+  regime                String?
+  cotista               Boolean?
+  cotistaTipo           String?   @db.VarChar(100)
+  condicao              Boolean?
+  condicaoTipo          String?   @db.VarChar(100)
+  bolsista              Boolean?
+  cursoGraduacao        String?   @db.VarChar(50)
+  instituicaoGraduacao  String?   @db.VarChar(50)
+  anoEgressoGraduacao   String?
+  cursoPos              String?   @db.VarChar(50)
+  tipoPos               String?   @db.VarChar(30)
+  instituicaoPos        String?   @db.VarChar(50)
+  anoEgressoPos         String?
+  tituloProposta        String?   @db.VarChar(100)
+  motivos               String?   @db.VarChar(1001)
+  nomeOrientador        String?   @db.VarChar(200)
+  Curriculum            Bytes?
+  CartaDoOrientador     Bytes?
+  PropostaDeTrabalho    Bytes?
+
+  // Relations
+  Edital                Edital     @relation(fields: [idEdital], references: [editalId])
+  LinhasDePesquisa      LinhasDePesquisa?   @relation(fields: [idLinhaPesquisa], references: [id])
+
+  CandidatoExperienciaAcademica CandidatoExperienciaAcademica[] @relation(fields: [], references: [])
+  @@map("Candidato")
+}
+
 model CandidateAcademicExperience {
   id          Int    @id @default(autoincrement())
   idCandidate Int
@@ -92,6 +144,14 @@ model CandidateAcademicExperience {
   periodo     String @db.VarChar(255)
 }
 
+model CandidatoExperienciaAcademica {
+  id          Int    @id @default(autoincrement())
+  idCandidato BigInt
+  instituicao String? @db.VarChar(60)
+  atividade   String? @db.VarChar(60)
+  periodo     String? @db.VarChar(30)
+  Candidato   Candidato @relation(fields: [idCandidato], references: [id])
+}
 model CandidatePublications {
   id          Int      @default(autoincrement())
   idCandidate Int
@@ -124,6 +184,7 @@ model Edital {
   inscricoesEncerradas Int      @default(0)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+  Candidato            Candidato[] @relation(fields: [], references: [])
 }
 
 model LinhasDePesquisa {
@@ -132,7 +193,8 @@ model LinhasDePesquisa {
   sigla     String      @db.VarChar(255)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  Candidate Candidate[]
+  Candidate Candidate[] 
+  Candidato Candidato[] @relation(fields: [], references: [])
 }
 
 model Orientacao {

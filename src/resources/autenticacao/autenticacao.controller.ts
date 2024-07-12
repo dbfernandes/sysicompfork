@@ -1,15 +1,11 @@
-import UsuarioService from '../usuarios/usuario.service';
-import { Request, Response, NextFunction } from 'express';
-import mailer from '../../modules/mailer';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-import path from 'path';
-import usuarioService from '../usuarios/usuario.service';
+import { NextFunction, Request, Response } from 'express';
+import UsuarioService from '../usuarios/usuario.service';
+import { sendEmailRecoveryPasswordUser } from '../../utils/mailerGrid';
 
-function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName);
-}
-
+const optionsLogin = {
+  layout: 'begin',
+};
 const autorizarAdmin = async (
   req: Request,
   res: Response,
@@ -54,22 +50,27 @@ const autorizarProf = async (
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     if (req.session.uid) return res.redirect('/');
-    return res.render(resolveView('login'), {
+    return res.render('autenticacao/login', {
+      ...optionsLogin,
       csrfToken: req.csrfToken(),
     });
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body;
-      const usuario = await usuarioService.buscarUsuarioPor({ cpf });
+      const usuario = await UsuarioService.buscarUsuarioPor({ cpf });
 
       if (!usuario) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
+          ...optionsLogin,
+
           csrfToken: req.csrfToken(),
           message: 'Usuário não cadastrado',
           type: 'danger',
         });
       } else if (usuario.status === 0) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
+          ...optionsLogin,
+
           csrfToken: req.csrfToken(),
           message: 'Usuário bloqueado. Contate a administração.',
           type: 'danger',
@@ -78,7 +79,9 @@ const login = async (req: Request, res: Response) => {
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
       if (!isSenhaCorreta) {
-        return res.render(resolveView('login'), {
+        return res.render('autenticacao/login', {
+          ...optionsLogin,
+
           csrfToken: req.csrfToken(),
           message: 'Senha inválida',
           type: 'danger',
@@ -109,64 +112,106 @@ const login = async (req: Request, res: Response) => {
 };
 
 const recuperarSenha = async (req: Request, res: Response) => {
-  if (req.method === 'POST') {
-    const { email } = req.body;
+  switch (req.method) {
+    case 'GET': {
+      return res.render('autenticacao/recuperarSenha', {
+        ...optionsLogin,
+        csrfToken: req.csrfToken(),
+      });
+    }
+    case 'POST': {
+      const { email } = req.body;
+      try {
+        const user = await UsuarioService.buscarUsuarioPor({ email });
+        if (!user) {
+          return res.status(404).send({ message: 'Usuário não encontrado' });
+        }
+        const token = await UsuarioService.atualizarTokenSenha(user.id);
 
-    try {
-      const user = await UsuarioService.buscarUsuarioPor({ email });
+        const url = `http://${req.headers.host}/alterarSenha?token=${token}`;
+        try {
+          sendEmailRecoveryPasswordUser({
+            email: user.email,
+            userName: user.nomeCompleto,
+            url,
+          });
+        } catch (err) {
+          console.error(err);
+          return res.status(500).send({ message: 'Erro ao enviar e-mail' });
+        }
 
-      if (!user) {
-        return res.render(resolveView('recuperar-senha'), {
+        return res
+          .status(200)
+          .send({ message: 'Token enviado para o e-mail cadastrado' });
+      } catch (err) {
+        console.error(err);
+        return res.render('autenticacao/recuperarSenha', {
+          ...optionsLogin,
           csrfToken: req.csrfToken(),
-          message: 'Usuário não encontrado',
+          message: 'Erro durante a recuperação de senha, tente novamente.',
           type: 'danger',
         });
       }
-      const token = crypto.randomBytes(20).toString('hex');
+    }
+    default:
+      return res.status(405).send({ message: 'Método não permitido' });
+  }
+};
 
-      const now = new Date();
+const trocaSenha = async (req: Request, res: Response) => {
+  switch (req.method) {
+    case 'GET': {
+      if (!req.query.token) return res.redirect('/login');
+      const user = await UsuarioService.buscarUsuarioPor({
+        tokenResetSenha: String(req.query.token),
+      });
+      const hasUser = Boolean(user);
+      if (!hasUser) {
+        return res.render('autenticacao/trocarSenha', {
+          csrfToken: req.csrfToken(),
+          error: 'Token invalido',
+          ...optionsLogin,
+        });
+      }
 
-      now.setHours(now.getHours() + 1);
+      const isTokenValid = user.validadeTokenResetSenha > new Date();
+      if (!isTokenValid) {
+        return res.render('autenticacao/trocarSenha', {
+          csrfToken: req.csrfToken(),
+          error: 'Token expirado',
+          ...optionsLogin,
+        });
+      }
 
-      await UsuarioService.recuperarSenha(token, now, user.id);
-
-      mailer.sendMail(
-        {
-          to: email,
-          from: 'api@test.com.br',
-          subject: 'Forgot Password?',
-          template: 'auth/forgot_password',
-          context: { token },
-        },
-        (err: any) => {
-          if (err) {
-            return res.render(resolveView('recuperar-senha'), {
-              csrfToken: req.csrfToken(),
-              message:
-                'Não foi possível enviar o e-mail de recuperação de senha. Por favor, tente mais tarde',
-              type: 'danger',
-            });
-          }
-
-          return res.render(resolveView('recuperar-senha'), {
-            csrfToken: req.csrfToken(),
-            message: 'Token enviado para o e-mail cadastrado',
-            type: 'success',
-          });
-        },
-      );
-    } catch (err) {
-      console.log(err);
-      return res.render(resolveView('recuperar-senha'), {
+      return res.render('autenticacao/trocarSenha', {
         csrfToken: req.csrfToken(),
-        message: 'Erro durante a recuperação de senha, tente novamente.',
-        type: 'danger',
+        nome: user.nomeCompleto,
+        token: req.query.token,
+        ...optionsLogin,
       });
     }
-  } else if (req.method === 'GET') {
-    return res.render(resolveView('recuperar-senha'), {
-      csrfToken: req.csrfToken(),
-    });
+    case 'PUT': {
+      const { password, token } = req.body;
+      try {
+        if (!password || !token) {
+          return res.status(400).send();
+        }
+        await UsuarioService.mudarSenhaComToken({
+          password,
+          token,
+        });
+
+        return res.status(200).send();
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          return res.status(400).send({ message: err.message });
+        }
+        return res.status(500).send();
+      }
+    }
+    default:
+      return res.status(405).send({ message: 'Método não permitido' });
   }
 };
 
@@ -185,12 +230,14 @@ const verificar = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.uid) return res.redirect('/login');
   next();
 };
+
 export default {
-  logout,
-  recuperarSenha,
-  login,
-  verificar,
   autorizarAdmin,
   autorizarCoord,
   autorizarProf,
+  login,
+  logout,
+  recuperarSenha,
+  verificar,
+  trocaSenha,
 };
