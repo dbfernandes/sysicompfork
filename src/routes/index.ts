@@ -63,14 +63,17 @@ router.use(
   autenticacaoController.autorizarProf,
   horasComplementaresRoutes,
 );
-router.use( 
+router.use(
   '/afastamentotemporario',
   autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use("/gerarPDF/:id", pdfController.gerarPDF);
-router.use('/downloadCandidateDocument/:id', editalController.getCandidateDocument)
-router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes);
+router.use('/gerarPDF/:id', pdfController.gerarPDF);
+router.use(
+  '/downloadCandidateDocument/:id',
+  editalController.getCandidateDocument,
+);
+router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
 export default router;

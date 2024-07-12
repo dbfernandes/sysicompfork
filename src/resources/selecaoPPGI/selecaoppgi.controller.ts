@@ -3,7 +3,7 @@ import path from 'path';
 import { Request, Response } from 'express';
 
 import candidatePublicacaoService from '../candidate/candidate.publicacao.service';
-import candidatoExperienciaAcademicaService from '../../services/candidatoExperienciaAcademicaService';
+import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import candidatoService from '../candidato/candidato.service';
 import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
