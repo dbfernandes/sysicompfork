@@ -11,15 +11,13 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - "${MYSQL_PORT}:3306"
-    expose:
-      - '3327'
   
   sysicomp:
     build: .
     env_file:
       - .env
     ports: 
-      - "${PORT}:${PORT}"
+      - "${PORT}:3000"
     working_dir: /app
     volumes: 
       - .:/app
