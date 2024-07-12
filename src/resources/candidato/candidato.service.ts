@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Candidato } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
@@ -27,6 +27,16 @@ class CandidatoService {
     });
 
     delete candidate.senhaHash;
+    await prisma.edital.update({
+      where: {
+        editalId: editalNumber,
+      },
+      data: {
+        inscricoesIniciadas: {
+          increment: 1,
+        },
+      },
+    });
     return candidate;
   }
 
@@ -143,6 +153,20 @@ class CandidatoService {
         validadeTokenReset: null,
       },
     });
+  }
+
+  async listCanditatesByEdital(editalId: string) {
+    const candidates = await prisma.candidato
+      .findMany({
+        where: {
+          idEdital: editalId,
+        },
+      })
+      .catch((err) => {
+        console.log(`[ERROR] Listar Candidatos: ${err}`);
+        throw new Error('Não foi possivel listar o candidato');
+      });
+    return candidates;
   }
 }
 

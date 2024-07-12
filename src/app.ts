@@ -21,7 +21,7 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.js')),
+    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.ts')),
   }),
 );
 app.set('view engine', 'hbs');

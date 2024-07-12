@@ -1,9 +1,8 @@
-const moment = require('moment-timezone');
-
+import moment from 'moment-timezone';
+import language from '../../utils/i18n';
 const whichCourse = (course, lng) => {
-  const language = require('../../utils/i18n.js');
   console.log(course);
-  const i18n = language.default.i18next;
+  const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Processamento de Dados':
@@ -24,9 +23,7 @@ const isEnLng = (lng) => {
 };
 
 const guidencesOnGoing = (course, lng) => {
-  const language = require('../../utils/i18n.js');
-  console.log(course);
-  const i18n = language.default.i18next;
+  const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -39,9 +36,8 @@ const guidencesOnGoing = (course, lng) => {
 };
 
 const guidencesEnded = (course, lng) => {
-  const language = require('../../utils/i18n.js');
-  console.log(course);
-  const i18n = language.default.i18next;
+  const i18n = language.i18next;
+
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -77,6 +73,7 @@ const ops = {
   '<': (v1, v2) => v1 < v2,
   lte: (v1, v2) => v1 <= v2,
   '<=': (v1, v2) => v1 <= v2,
+  notEmpty: (v1) => v1 !== undefined && v1 !== null && v1 !== '',
 };
 
 const autorizarUsuario = (tipos, autorizacao) => {
@@ -104,10 +101,12 @@ const checked = (a, b) => {
 };
 
 const checkedIn = (a, b) => {
-  console.log(a)
-  if (a && a.includes(b)) { return 'checked' }
-  return ''
-}
+  console.log(a);
+  if (a && a.includes(b)) {
+    return 'checked';
+  }
+  return '';
+};
 
 const checkedUnica = (a) => {
   if (a !== '') {
@@ -135,7 +134,15 @@ const showError = function (errors, field) {
 const add = (a, b) => {
   return a + b;
 };
-
+const formataBioSex = (data) => {
+  if (data === 'M') {
+    return 'Masculino';
+  } else if (data === 'F') {
+    return 'Feminino';
+  } else {
+    return 'Outro';
+  }
+};
 const formataData = (data) => {
   return moment(data).format('DD/MM/YYYY');
 };
@@ -204,6 +211,7 @@ module.exports = {
   checkedIn,
   checkedUnica,
   autorizarUsuario,
+  formataBioSex,
   formataData,
   formataDataLng,
   validaLabel,

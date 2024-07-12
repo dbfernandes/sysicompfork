@@ -36,8 +36,8 @@ const begin = async (req: CustomRequest, res: Response) => {
       return res.render('selecaoppgi/begin', {
         ...localsBegin,
       });
-    case 'POST':
-      return res.send('Erro 400');
+    default:
+      return res.status(405).send();
   }
 };
 
@@ -45,7 +45,13 @@ const begin = async (req: CustomRequest, res: Response) => {
 const signUp = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const listEditais = await EditalService.listEdital();
+      const dataToday = new Date();
+      const listEditais = (await EditalService.listEdital()).filter(
+        (edital) => {
+          const dateEnd = new Date(edital.dataFim);
+          return dateEnd >= dataToday && edital.status === '1';
+        },
+      );
 
       return res.render('selecaoppgi/signUp', {
         csrfToken: req.csrfToken(),
@@ -293,7 +299,9 @@ const forms = async (req: CustomRequest, res: Response) => {
           uid.toString(),
         );
         const experienciasAcademicas =
-          await candidatoExperienciaAcademicaService.listByCandidateId(uid);
+          await candidatoExperienciaAcademicaService.listByCandidateId(
+            Number(uid),
+          );
         return res.render('selecaoppgi/forms2', {
           ...locals,
           ...candidate,

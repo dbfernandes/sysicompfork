@@ -19,7 +19,7 @@ class CandidatoExperienciaAcademicaService {
     });
   }
 
-  async listByCandidateId(idCandidate) {
+  async listByCandidateId(idCandidate: number) {
     return await prisma.candidateAcademicExperience.findMany({
       where: {
         idCandidate,
