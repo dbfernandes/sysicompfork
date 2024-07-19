@@ -1,128 +1,53 @@
 import express from 'express';
+import {
+  uploads,
+  uploadsProposta,
+} from '../../middlewares/multer.selecaoppgi.config';
+import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
 import selecaoppgiController from './selecaoppgi.controller';
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
 
 const router = express.Router();
 
-// Função para garantir que o diretório exista, se não, cria-o
-const ensureDirectoryExistence = (filePath) => {
-  const parts = filePath.split('/');
-  let currentPath = '';
+router.get('/', selecaoppgiController.begin);
 
-  for (let i = 0; i < parts.length; i++) {
-    currentPath += parts[i] + '/';
+router.get('/cadastro', selecaoppgiController.signUp);
+router.post('/cadastro', selecaoppgiController.signUp);
 
-    if (!fs.existsSync(currentPath)) {
-      console.log('Diretório não existe, criando:', currentPath);
-      fs.mkdirSync(currentPath);
-    }
-  }
-};
+router.get('/entrar', selecaoppgiController.login);
+router.post('/entrar', selecaoppgiController.login);
 
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    console.log(file);
-    const uploadDir = `./uploads/candidatos/${req.session.uid}`;
-    ensureDirectoryExistence(uploadDir);
-    callback(null, uploadDir);
-  },
-  filename: function (req, file, callback) {
-    console.log(file);
-    const name = `${file.fieldname}.pdf`;
-    callback(null, name);
-  },
-});
+router.get('/recuperarSenha', selecaoppgiController.recuperarSenha);
+router.post('/recuperarSenha', selecaoppgiController.recuperarSenha);
 
-const uploads = multer({ storage }).fields([
-  { name: 'VitaePDF', maxCount: 1 },
-  { name: 'ProvaAnterior', maxCount: 1 },
-  { name: 'VitaeXML', maxCount: 1 },
-]);
+router.get('/trocarSenha', selecaoppgiController.trocarSenha);
+router.put('/trocarSenha', selecaoppgiController.trocarSenha);
 
-const uploadsProposta = multer({ storage }).fields([
-  { name: 'PropostaTrabalho', maxCount: 1 },
-  { name: 'ComprovantePagamento', maxCount: 1 },
-  { name: 'CartaAceiteOrientador', maxCount: 1 },
-]);
+router.use(isAuthSelecao);
 
-/* TODO - Add routes */
-router.all('/', selecaoppgiController.begin);
-router.all('/cadastro', selecaoppgiController.signUp);
-router.all('/entrar', selecaoppgiController.login);
-router.all('/logout', selecaoppgiController.logout);
-router.all('/editCandidate', selecaoppgiController.editCandidate);
-router.all('/formulario/1', selecaoppgiController.form1);
-router.all('/formulario/2', (req: any, res) => {
-  uploads(req, res, function (err) {
-    if (err) {
-      console.error('Erro ao fazer upload de arquivos:');
-      console.error(err);
-      throw err;
-    }
-    selecaoppgiController.form2(req, res);
-  });
-});
-router.all('/trocarSenha', selecaoppgiController.trocarSenha);
-router.all('/formulario/3', (req: any, res) => {
-  uploadsProposta(req, res, function (err) {
-    if (err) {
-      console.error('Erro ao fazer upload de arquivos:');
-      console.error(err);
-      throw err;
-    }
-    selecaoppgiController.formProposta(req, res);
-  });
-});
+router.get('/formulario', selecaoppgiController.forms);
 
-router.all('/formulario/publicacoes', (req: any, res) => {
-  uploads(req, res, function (err) {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-    selecaoppgiController.formPublicacoes(req, res);
-  });
-});
+router.put('/formulario/1', selecaoppgiController.form1);
+router.put('/formulario/2', uploads, selecaoppgiController.form2);
+router.put(
+  '/formulario/3',
+  uploadsProposta,
+  selecaoppgiController.formProposta,
+);
 
-router.all('/formulario', selecaoppgiController.forms);
-router.all('/candidates', selecaoppgiController.candidates);
-router.all('/voltar', selecaoppgiController.voltar);
-router.all('/recuperarSenha', selecaoppgiController.recuperarSenha);
+router.get('/formulario/publicacoes', selecaoppgiController.formPublicacoes);
+router.post(
+  '/formulario/publicacoes',
+  uploads,
+  selecaoppgiController.formPublicacoes,
+);
 
-router.all('/voltarInicio', selecaoppgiController.backToStart);
-router.get('/download/arquivo/:name', (req, res) => {
-  // Define o caminho do arquivo
+router.get('/candidates', selecaoppgiController.candidates);
 
-  const userId = req.session.uid.toString();
-  const nomeArquivo = req.params.name;
-  const caminhoArquivo = path.join(
-    __dirname,
-    '..',
-    '..',
-    'uploads',
-    'candidatos',
-    userId,
-    nomeArquivo,
-  );
-  // Verifica se o arquivo existe
-  if (fs.existsSync(caminhoArquivo)) {
-    // Define o cabeçalho para o download
-    // Define os cabeçalhos para evitar o armazenamento em cache
-    res.setHeader(
-      'Cache-Control',
-      'no-store, no-cache, must-revalidate, max-age=0',
-    );
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
-    res.setHeader('Content-Type', 'application/octet-stream');
+router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
 
-    // Envia o arquivo como resposta
-    res.sendFile(caminhoArquivo);
-  } else {
-    res.status(404).send('Arquivo não encontrado.');
-  }
-});
+/////////
+router.post('/logout', selecaoppgiController.logout);
+router.post('/voltar', selecaoppgiController.backStep);
+router.post('/voltarInicio', selecaoppgiController.backToStart);
+
 export default router;

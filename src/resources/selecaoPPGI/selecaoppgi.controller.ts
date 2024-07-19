@@ -41,17 +41,10 @@ const begin = async (req: CustomRequest, res: Response) => {
   }
 };
 
-// Rotas para cadastro de candidato
 const signUp = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const dataToday = new Date();
-      const listEditais = (await EditalService.listEdital()).filter(
-        (edital) => {
-          const dateEnd = new Date(edital.dataFim);
-          return dateEnd >= dataToday && edital.status === '1';
-        },
-      );
+      const listEditais = await EditalService.listEditalsAvailable();
 
       return res.render('selecaoppgi/signUp', {
         csrfToken: req.csrfToken(),
@@ -63,11 +56,6 @@ const signUp = async (req: CustomRequest, res: Response) => {
     case 'POST': {
       const { email, senha, edital } = req.body;
 
-      // if (!novoCandidate.email || !novoCandidate.passwordHash || !novoCandidate.editalId) {
-      //   return res.status(400).json({
-      //     error: 'Dados incompletos ou mal formatados',
-      //   });
-      // }
       if (!email || !senha || !edital) {
         return res.status(403).json({
           error: 'Dados incompletos ou mal formatados',
@@ -113,10 +101,6 @@ const signUp = async (req: CustomRequest, res: Response) => {
 const login = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      if (req.session.uid) {
-        res.redirect('/selecaoppgi/formulario');
-        break;
-      }
       try {
         const listEditais = await EditalService.listEdital();
         return res.render('selecaoppgi/signIn', {
@@ -177,7 +161,7 @@ function logout(req: CustomRequest, res: Response) {
 
 const formProposta = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'POST': {
+    case 'PUT': {
       const id = req.session.uid;
       const hasProposta =
         req.files &&
@@ -237,15 +221,6 @@ function verificarArquivoDiretorio(diretorio: string, nomeArquivo: string) {
   } catch (err) {
     // Se houver algum erro ao acessar o arquivo, retorna false
     return false;
-  }
-}
-
-async function editCandidate(req: CustomRequest, res: Response) {
-  switch (req.method) {
-    case 'PUT':
-      return res.status(200).send();
-    default:
-      return res.status(405).send();
   }
 }
 
@@ -370,7 +345,7 @@ function parseDate(dateString: string) {
 }
 const form1 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'POST': {
+    case 'PUT': {
       const { data } = req.body;
       if (req.session.editalPosition === 1) {
         const dataNascimento = data.dataNascimento
@@ -402,7 +377,7 @@ const form1 = async (req: CustomRequest, res: Response) => {
 
 const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
-    case 'POST': {
+    case 'PUT': {
       try {
         let VitaePDF = null;
         let Prova = null;
@@ -586,7 +561,7 @@ const candidates = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const voltar = async (req: CustomRequest, res: Response) => {
+const backStep = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'POST': {
       try {
@@ -709,6 +684,38 @@ const trocarSenha = async (req, res: Response) => {
   }
 };
 
+const downloadFile = (req, res) => {
+  // Define o caminho do arquivo
+  const userId = req.session.uid.toString();
+  const nomeArquivo = req.params.name;
+  const caminhoArquivo = path.join(
+    __dirname,
+    '..',
+    '..',
+    'uploads',
+    'candidatos',
+    userId,
+    nomeArquivo,
+  );
+  // Verifica se o arquivo existe
+  if (fs.existsSync(caminhoArquivo)) {
+    // Define o cabeçalho para o download
+    // Define os cabeçalhos para evitar o armazenamento em cache
+    res.setHeader(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, max-age=0',
+    );
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+
+    // Envia o arquivo como resposta
+    res.sendFile(caminhoArquivo);
+  } else {
+    res.status(404).send('Arquivo não encontrado.');
+  }
+};
 export default {
   begin,
   signUp,
@@ -717,13 +724,13 @@ export default {
   form1,
   form2,
   candidates,
-  voltar,
+  backStep,
   refresh,
   formPublicacoes,
   logout,
   formProposta,
-  editCandidate,
   backToStart,
   recuperarSenha,
   trocarSenha,
+  downloadFile,
 };

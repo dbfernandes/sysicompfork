@@ -32,6 +32,18 @@ class EditalService {
     return editais;
   }
 
+  async listEditalsAvailable(): Promise<Edital[]> {
+    const dataToday = new Date();
+    const editais = await prisma.edital.findMany().catch((err) => {
+      console.error(`[ERROR] Listar Editais: ${err}`);
+      throw new Error('Não foi possivel listar o edital');
+    });
+    return editais.filter((edital) => {
+      const dateEnd = new Date(edital.dataFim);
+      return dateEnd >= dataToday && edital.status === '1';
+    });
+  }
+
   async delete(id: string) {
     try {
       const edital = await prisma.edital.findFirst({
