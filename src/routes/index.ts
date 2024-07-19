@@ -16,6 +16,7 @@ import pdfController from '../utils/exportToPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/alunos.routes';
+import { isAuth } from '../middlewares/usuarioAutenticacaoMiddleware';
 const router = express.Router();
 
 // const { isUsuarioAutenticado } = require('../utils/autenticacaoMiddleware')
@@ -40,7 +41,8 @@ router.put('/alterarSenha', autenticacaoController.trocaSenha);
 
 router.use('/selecaoppgi', selecaoppgiRouter);
 router.use('/numerosIcomp', numerosIcompRouter);
-router.use(autenticacaoController.verificar);
+
+router.use(isAuth);
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);
