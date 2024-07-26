@@ -70,29 +70,51 @@
 		border-color: #ccc;
 		color: #666;
 		width: 100%;
+	} 
+
+	 form i {
+            margin-left: -30px;
+            cursor: pointer;
+        }
+
+		.input-password {
+			position: relative;
+		}
+
+		.input-password i {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			cursor: pointer;
+		}
+	.container-cards {
+    	display: flex;
+    	flex-direction: row;
+    	justify-content: space-between; 
+   		img {
+      		max-width: 200px;
+      		height: 100px;  
+    	}
 	}
 </style>
-<div class="login-page">
-	<div class="box">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 
 
-		<div class="card">
-			<div class="card-body">
-				<h1 class="title">
-					Efetuar Login
-				</h1>
-				{{message}}
-				{{#if message}}
-				<div class="alert alert-{{type}}">
-					{{{message}}}
+<div class="login-box">
+	<div class="login-logo container-cards">
+		<img src="/public/img//logo-icomp.png" alt="">
+    	<img src="/public/img//logo-ufam.png" alt="">
+  	</div>
+	<div class="card">
+			<div class="card-body login-card-body">
+     			<div class="login-logo">
+					<b>Login</b>
 				</div>
-				{{/if}}
+				<div id="error-msg" class="alert alert-danger" hidden="true">
+				</div>
 
 				<p class="sub-title">Todos os campos são obrigatórios</p>
 				<form id="loginform">
-					{{message}}
-					{{teste}}
-					{{csrfToken}}
 					<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 
 					<div class="form-group">
@@ -103,32 +125,42 @@
 					</div>
 
 					<div class="form-group">
-						<input type="password" class="form-control" name="password" id="password" aria-describedby="senha"
-							placeholder="Senha">
+						<div class="input-group mb-3">
+							<input type="password" class="form-control" name="password" id="password" aria-describedby="senha"
+								placeholder="Senha">
+						 	<div class="input-group-append" >
+   						 		<span  id="togglePassword" class="input-group-text"style="color: transparent;" id="basic-addon2">====
+									<i  class="bi bi-eye-slash" style="color: gray;" id="togglePasswordIcon"></i>
+								</span>
+  							</div>
+						</div>
 						<div class="help-block"></div>
-
+						<div class="col-md-6">
+                        	<div class="form-group">
+                            	<a href="/selecaoppgi/recuperarSenha">Esqueci minha senha</a>
+                        	</div>
+                    	</div>
 					</div>
 
 					<div class="form-group">
 						<select class="form-control" name="edital" id="edital">
 							<option value="">Selecione um edital</option>
 							{{#each editais}}
-							<option value="{{editalId}}">{{editalId}}</option>
+								<option value="{{editalId}}">{{editalId}}</option>
 							{{/each}}
 						</select>
 						<div class="help-block"></div>
 
 					</div>
-					<button type="submit" name="logar" id="login" class="btn btn-primary btn-block btn-flat">
+					<button type="submit" name="logar" id="login-btn" class="btn btn-primary btn-block">
 						Continuar Inscrição
+						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 					</button>
-					<button name="voltar" type="button" id="voltar" onclick="back()" class="btn btn-block btn-flat btn-default"
-						role="button">
+					<button name="voltar" type="button" id="voltar" onclick="back()" class="btn btn-block  btn-default" role="button">
 						Voltar
 					</button>
-				</form>
+				</form> 
 			</div>
-		</div>
 	</div>
 </div>
 
@@ -137,9 +169,24 @@
 		window.location.href = "{{url}}/selecaoppgi";
 	}
 
-	function teste() {
-		window.alert("teste")
-	}
+	$("#togglePassword").click(function() {
+		
+		const typeActual = $("#password").attr("type");
+		if (typeActual === "password") {
+			$("#password").attr("type", "text");
+			$(this).children().toggleClass("bi-eye-slash bi-eye");
+		} else {
+			$("#password").attr("type", "password");
+			$(this).children().toggleClass("bi-eye bi-eye-slash");
+		}
+	
+	});
+  	$("#loginform input").on("input", function() {
+        const divError = $("#error-msg");
+        if (!divError.prop("hidden")) {
+            divError.prop("hidden", true);
+        }
+    });
 
 	$("#loginform").validate({
 		ignore: ':hidden',
@@ -174,6 +221,7 @@
 			error.addClass('invalid-feedback');
 			element.closest('div').append(error);
 		},
+
 		highlight: function (element, errorClass, validClass) {
 			$(element).addClass('is-invalid');
 		},
@@ -181,8 +229,11 @@
 			$(element).removeClass('is-invalid');
 		},
 		submitHandler: function (form, e) {
-			console.log("teste")
 			e.preventDefault();
+			const buttonLogin = $("#login-btn");
+			buttonLogin.attr("disabled", true);
+			buttonLogin.find("span").prop("hidden", false);
+
 			var email = $("#email").val();
 			var senha = $("#password").val();
 			var edital = $("#edital").val();
@@ -199,29 +250,26 @@
 				},
 				success: function (data) {
 					window.location.href = "{{url}}/selecaoppgi/formulario";
-				},
+				 	}, 
 				error: function (res, status, error) {
-					console.log("Entrou no erro")
-					const err = res.responseJSON
-					errorSignin = err.error
+					buttonLogin.attr("disabled", false);
+					buttonLogin.find("span").prop("hidden", true);
+					if(res.status === 400){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Email, senha e/ou edital imcompletos");
+					} else if(res.status === 406){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Email, senha e/ou edital incorretos");
+					} else if (res.status === 401){
+						const divError = $("#error-msg");
+						divError.prop("hidden", false);
+						divError.text("Candidato já finalizou a inscrição neste edital");
+					}
 				}
-			});
+
+			})
 		}
 	})
-
-
-
-	function Formlogin() {
-
-		var email = $("#email").val();
-		var senha = $("#password").val();
-		var edital = $("#edital").val();
-		$("#loginform").submit(function (event) {
-
-
-		});
-
-	}
-
-
 </script>

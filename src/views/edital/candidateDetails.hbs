@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Candidato {{candidate.id}} - Edital {{candidate.editalId}} </h1>
+                    <h1>Candidato {{candidate.id}} - Edital {{candidate.idEdital}} </h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
@@ -17,10 +17,10 @@
                         <li class="breadcrumb-item active">Detalhes do Canditado</li>
                     </ol>
                 </div>
-            </div>
+            </div> 
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.editalId}}">
+                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.idEdital}}">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a> 
@@ -42,7 +42,7 @@
                                 <tbody>
                                 <tr>
                                     <th class="col-3">Nome Completo</th>
-                                    <td>{{candidate.Nome}}</td>
+                                    <td>{{candidate.nome}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">Data da Inicialização da Inscrição</th>
@@ -54,23 +54,23 @@
                                 </tr> --}}
                                 <tr>
                                     <th class="col-3">Endereço</th>
-                                    <td>{{candidate.Endereco}}</td>
+                                    <td>{{candidate.endereco}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Bairro</th>
-                                    <td>{{candidate.Bairro}}</td>
+                                    <td>{{candidate.bairro}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Cidade</th>
-                                    <td>{{candidate.Cidade}}</td>
+                                    <td>{{candidate.cidade}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Estado</th>
-                                    <td>{{candidate.UF}}</td>
+                                    <td>{{candidate.uf}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">CEP</th>
-                                    <td>{{candidate.CEP}}</td>
+                                    <td>{{candidate.cep}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">E-mail</th>
@@ -78,11 +78,11 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Data de nascimento</th>
-                                    <td>{{candidate.Nascimento}}</td>
+                                    <td>{{candidate.dataNascimento}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Nacionalidade</th>
-                                    <td>{{candidate.Nacionalidade}}</td>
+                                    <td>{{candidate.nacionalidade}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">País</th>
@@ -94,15 +94,15 @@
                                 </tr> --}}
                                 <tr>
                                     <th class="col-3">Sexo</th>
-                                    <td>{{candidate.Sexo}}</td>
+                                    <td>{{candidate.sexo}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Principal</th>
-                                    <td>{{candidate.Telefone}}</td>
+                                    <td>{{candidate.telefone}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Telefone Alternativo</th>
-                                    <td>{{candidate.TelefoneSecundario}}</td>
+                                    <td>{{candidate.telefoneSecundario}}</td>
                                 </tr>
                                 {{!-- <tr>
                                     <th class="col-3">Curso desejado</th>
@@ -114,7 +114,7 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Incrição poscomp</th>
-                                    <td>{{candidate.CursoInstituicaoPos}}</td>
+                                    <td>{{candidate.instituicaoPos}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano poscomp</th>

@@ -16,6 +16,7 @@ import pdfController from '../utils/exportToPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/alunos.routes';
+import { isAuth } from '../middlewares/usuarioAutenticacaoMiddleware';
 const router = express.Router();
 
 // const { isUsuarioAutenticado } = require('../utils/autenticacaoMiddleware')
@@ -29,12 +30,19 @@ const router = express.Router();
 
 router.get('/login', autenticacaoController.login);
 router.post('/login', autenticacaoController.login);
-router.get('/recuperar-senha', autenticacaoController.recuperarSenha);
-router.post('/recuperar-senha', autenticacaoController.recuperarSenha);
+
+router.get('/recuperarSenha', autenticacaoController.recuperarSenha);
+router.post('/recuperarSenha', autenticacaoController.recuperarSenha);
+
 router.get('/logout', autenticacaoController.logout);
+
+router.get('/alterarSenha', autenticacaoController.trocaSenha);
+router.put('/alterarSenha', autenticacaoController.trocaSenha);
+
 router.use('/selecaoppgi', selecaoppgiRouter);
 router.use('/numerosIcomp', numerosIcompRouter);
-router.use(autenticacaoController.verificar);
+
+router.use(isAuth);
 router.use('//', (req, res) => res.redirect('/inicio'));
 router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);
@@ -62,9 +70,12 @@ router.use(
   autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use("/gerarPDF/:id", pdfController.gerarPDF);
-router.use('/downloadCandidateDocument/:id', editalController.getCandidateDocument)
-router.use("/lattes", autenticacaoController.autorizarProf, curriculoRoutes);
+router.use('/gerarPDF/:id', pdfController.gerarPDF);
+router.use(
+  '/downloadCandidateDocument/:id',
+  editalController.getCandidateDocument,
+);
+router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
 export default router;

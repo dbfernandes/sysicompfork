@@ -1,19 +1,27 @@
 {
-  "sqltools.connections": [
-    {
-      "mysqlOptions": {
-        "authProtocol": "default"
-      },
-      "previewLimit": 50,
-      "server": "db",
-      "port": 3306,
-      "driver": "MySQL",
-      "name": "asd",
-      "database": "db",
-      "username": "user",
-      "password": "user"
-    }
-  ],
-  "prettier.requireConfig": true
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "db",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "asd",
+            "database": "db",
+            "username": "user",
+            "password": "user"
+        }
+    ],
+    "cSpell.words": [
+        "endereco",
+        "Graduacao",
+        "insituticao",
+        "instituicao",
+        "posicao",
+        "Secundario"
+    ],
+    "prettier.requireConfig": true
+
 }
-  

@@ -12,51 +12,46 @@ import criarURL from '../../utils/criarUrl';
 import path from 'path';
 import upload from '../../middlewares/multer.config';
 
-interface SessionData {
-  tipoUsuario?:
-    | {
-        administrador: boolean;
-        secretaria: boolean;
-        coordenador: boolean;
-        professor: boolean;
-      }
-    | undefined;
-  uid: string;
-  nome: string;
-}
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
 const visualizar = async (req: Request, res: Response) => {
-  try {
-    const { message, type, messageTitle } = req.query;
-    const professores = await UsuarioService.listarTodosPorCondicao({
-      professor: 1,
-      status: 1,
-    });
-    return res.render(resolveView('curriculo-adicionar'), {
-      professores,
-      csrfToken: req.csrfToken(),
-      nome: (req.session as SessionData).nome,
-      usuarioId: (req.session as SessionData).uid,
-      message,
-      type,
-      messageTitle,
-      tipoUsuario: (req.session as SessionData).tipoUsuario,
-      avatar: null,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(503).redirect(
-      criarURL('/inicio', {
-        message: 'Não foi possível abrir o envio de currículo.',
-        type: 'danger',
-        messageTitle: 'Envio de currículo indisponível!',
-        tipoUsuario: (req.session as SessionData).tipoUsuario,
-      }),
-    );
+  switch (req.method) {
+    case 'GET':
+      try {
+        const { message, type, messageTitle } = req.query;
+        const professores = await UsuarioService.listarTodosPorCondicao({
+          professor: 1,
+          status: 1,
+        });
+        return res.render(resolveView('curriculo-adicionar'), {
+          professores,
+          csrfToken: req.csrfToken(),
+          nome: req.session.nome,
+          usuarioId: req.session.uid,
+          message,
+          type,
+          messageTitle,
+          tipoUsuario: req.session.tipoUsuario,
+          avatar: null,
+        });
+      } catch (error) {
+        console.log(error);
+        return res.status(503).redirect(
+          criarURL('/inicio', {
+            message: 'Não foi possível abrir o envio de currículo.',
+            type: 'danger',
+            messageTitle: 'Envio de currículo indisponível!',
+            tipoUsuario: req.session.tipoUsuario,
+          }),
+        );
+      }
+    default:
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
 

@@ -1,50 +1,53 @@
 import express from 'express';
+import {
+  uploads,
+  uploadsProposta,
+} from '../../middlewares/multer.selecaoppgi.config';
+import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
 import selecaoppgiController from './selecaoppgi.controller';
-import multer from 'multer';
+
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, './uploads/candidatos');
-  },
-  filename: function (req, file, callback) {
-    callback(null, `${new Date().getTime()}-` + file.originalname);
-  },
-});
+router.get('/', selecaoppgiController.begin);
 
-const uploads = multer({ storage }).fields([
-  { name: 'VitaePDF', maxCount: 1 },
-  { name: 'Prova', maxCount: 1 },
-  { name: 'VitaeXML', maxCount: 1 },
-]);
+router.get('/cadastro', selecaoppgiController.signUp);
+router.post('/cadastro', selecaoppgiController.signUp);
 
-/* TODO - Add routes */
-router.all('/', selecaoppgiController.begin);
-router.all('/cadastro', selecaoppgiController.signin);
-router.all('/entrar', selecaoppgiController.login);
-router.all('/formulario/1', selecaoppgiController.form1);
-router.all('/formulario/2', (req, res) => {
-  uploads(req, res, function (err) {
-    if (err) {
-      console.log('error aqui');
-      console.log(err);
-      throw err;
-    }
-    selecaoppgiController.form2(req, res);
-  });
-});
+router.get('/entrar', selecaoppgiController.login);
+router.post('/entrar', selecaoppgiController.login);
 
-router.all('/formulario/publicacoes', (req, res) => {
-  uploads(req, res, function (err) {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-    selecaoppgiController.formPublicacoes(req, res);
-  });
-});
+router.get('/recuperarSenha', selecaoppgiController.recuperarSenha);
+router.post('/recuperarSenha', selecaoppgiController.recuperarSenha);
 
-router.all('/formulario', selecaoppgiController.forms);
-router.all('/candidates', selecaoppgiController.candidates);
-router.all('/voltar', selecaoppgiController.voltar);
+router.get('/trocarSenha', selecaoppgiController.trocarSenha);
+router.put('/trocarSenha', selecaoppgiController.trocarSenha);
+
+router.use(isAuthSelecao);
+
+router.get('/formulario', selecaoppgiController.forms);
+
+router.put('/formulario/1', selecaoppgiController.form1);
+router.put('/formulario/2', uploads, selecaoppgiController.form2);
+router.put(
+  '/formulario/3',
+  uploadsProposta,
+  selecaoppgiController.formProposta,
+);
+
+router.get('/formulario/publicacoes', selecaoppgiController.formPublicacoes);
+router.post(
+  '/formulario/publicacoes',
+  uploads,
+  selecaoppgiController.formPublicacoes,
+);
+
+router.get('/candidates', selecaoppgiController.candidates);
+
+router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
+
+/////////
+router.post('/logout', selecaoppgiController.logout);
+router.post('/voltar', selecaoppgiController.backStep);
+router.post('/voltarInicio', selecaoppgiController.backToStart);
+
 export default router;

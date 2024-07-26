@@ -9,7 +9,7 @@ const construirStringPerfisDeUsuario = (usuario: any) => {
     perfis = perfis.substring(0, perfis.length - 2);
   }
 
-  return {
+      return {
     ...usuario.get(),
     perfis,
   };

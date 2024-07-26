@@ -10,7 +10,7 @@
 
   .forms-page header {
     width: 100%;
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     z-index: 1;
@@ -43,6 +43,7 @@
   .forms-page header .options {
     display: flex;
     align-items: center;
+    gap: 16px;
   }
 
   .forms-page header .options button {
@@ -55,19 +56,6 @@
 
   .forms-page header .options button:hover {
     color: #fff;
-  }
-
-  .forms-page nav {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 250px;
-
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgb(27, 27, 27);
   }
 
   .forms-page section {
@@ -121,71 +109,6 @@
     background-color: #000;
   }
 
-  .forms-page .progress {
-    width: 100%;
-    height: 10px;
-    border-radius: 5px;
-    background-color: rgba(0, 110, 255, 0.5);
-    margin-top: -105px;
-  }
-
-  .forms-page .progress .progress-bar {
-    background-color: #006eff;
-  }
-
-  .forms-page .pbar-1 {
-    width: 12%;
-  }
-
-  .forms-page .pbar-2 {
-    width: 38%;
-  }
-
-  .forms-page .pbar-3 {
-    width: 62%;
-  }
-
-  .forms-page .pbar-4 {
-    width: 88%;
-  }
-
-  .forms-page .pbar-5 {
-    width: 100%;
-  }
-
-  .forms-page nav ul {
-    list-style-type: none;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    z-index: 1;
-  }
-
-  .forms-page nav ul li {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-  }
-
-  .nav-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90px;
-    height: 90px;
-    font-size: 1.8rem !important;
-    border-radius: 50%;
-    background-color: #7FB6FF;
-    color: #fff;
-  }
-
-  .nav-icon.active {
-    background-color: #006eff;
-    color: #fff;
-  }
-
   .custom-button {
     margin-right: 10px;
     /* Adicione a margem desejada entre os botões */
@@ -196,16 +119,14 @@
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 
 <div class="forms-page">
-  <header>
-    <h1>PPGI</h1>
-    <div class="options">
-      <button>Sair</button>
-    </div>
-  </header>
+	<header>
+		<h1>PPGI</h1>
+		<div class="options">
+			<button id="btn_inicio">Início</button>
+			<button id="btn_logout">Sair</button>
+		</div>
+	</header>
 
-
-
-  {{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
 
   <section class="content">
     <nav>
@@ -228,17 +149,17 @@
         </li>
       </ul>
       <div class="progress">
-        <div class="progress-bar pbar-2" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar progress-bar-striped progress-bar-animated pbar-2" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
         </div>
       </div>
     </nav>
     <div class="container-fluid">
       <form id="candidato-formulario2">
-        <input id="csrfToken" name="_csrf" value="{{csrfToken}}">
+        <input id="csrfToken" type="hidden"  name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="idCandidato" value="{{id}}">
-        <input id="idCandidato" type="" value="{{message}}">
+        <input id="idCandidato" type="hidden"  value="{{id}}">
+        <input id="idCandidato" type="hidden" value="{{message}}">
         <p>{{message}}</p>
         <div class="card card-primary">
           <div class="card-header">
@@ -247,24 +168,22 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-6">
+              <div class="form-group col-md-6">
                 <label for="candidato-curso">
                   <font color="#FF0000">*</font>
                   <b>Curso:</b>
                 </label>
-                {{cursoGraduacao}}
-                {{instituicao}}
-                <input class="form-control" id="candidato-curso" placeholder="Insira seu curso" type="text" name="Curso"
+                <input class="form-control" id="candidato-curso" placeholder="Insira seu curso" type="text" name="cursoGraduacao"
                   maxlength="60" value="{{cursoGraduacao}}">
               </div>
 
-              <div class="col-md-6 ">
+              <div class="col-md-6 form-group">
                 <label class="control-label" for="candidato-instituicao">
                   <font color="#FF0000">*</font>
                   <b>Instituição:</b>
                 </label>
                 <input class="form-control" id="candidato-instituicao" placeholder="Insira sua instituição" type="text"
-                  name="Instituicao" maxlength="60" value="{{instituicao}}">
+                  name="instituicaoGraduacao" maxlength="60" value="{{instituicaoGraduacao}}">
               </div>
             </div>
             <div class="row">
@@ -273,8 +192,8 @@
                   <font color="#FF0000">*</font>
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="text" name="AnoEgresso"
-                  value="{{anoEgresso}}" maxlength="60" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="number" name="anoEgressoGraduacao"
+                  value="{{anoEgressoGraduacao}}" maxlength="60" >
               </div>
             </div>
           </div>
@@ -288,11 +207,11 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-6">
+              <div class="form-group col-md-6">
                 <label for="candidato-curso-pos">
                   <b>Curso:</b>
                 </label>
-                <input class="form-control" id="candidato-curso-pos" type="text" name="Curso-Pos" maxlength="60"
+                <input class="form-control" id="candidato-curso-pos" type="text" name="cursoPos" maxlength="60"
                   value="{{cursoPos}}">
               </div>
 
@@ -303,17 +222,17 @@
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo1" name="CursoTipo" value="Mestrado Acadêmico">
+                    <input type="radio" id="Tipo1" name="tipoPos" value="Mestrado Acadêmico" {{#if (eq "Mestrado Acadêmico" tipoPos)}}checked{{/if}}>
                     <label for="Tipo1"> Mestrado Acadêmico </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo2" name="CursoTipo" value="Mestrado Profissional">
+                    <input type="radio" id="Tipo2" name="tipoPos" value="Mestrado Profissional" {{#if (eq "Mestrado Profissional" tipoPos)}}checked{{/if}}>
                     <label for="Tipo2"> Mestrado Profissional </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo3" name="CursoTipo" value="Doutorado">
+                    <input type="radio" id="Tipo3" name="tipoPos" value="Doutorado" {{#if (eq "Doutorado" tipoPos)}}checked{{/if}}>
                     <label for="Tipo3"> Doutorado </label>
                   </div>
 
@@ -330,15 +249,14 @@
                 <label class="control-label" for="candidato-instituicao-pos">
                   <b>Instituição:</b>
                 </label>
-                <input class="form-control" id="candidato-instituicao-pos" type="text" name="InstituicaoPos"
+                <input class="form-control" id="candidato-instituicao-pos" type="text" name="instituicaoPos"
                   maxlength="60" value="{{instituicaoPos}}">
               </div>
               <div class="col-md-3">
                 <label class="control-label" for="candidato-ano-pos">
                   <b>Ano de Egresso:</b>
                 </label>
-                <input class="form-control" id="candidato-ano-pos" type="text" name="AnoEgressoPos"
-                  oninput="permitirApenasNumeros(this)" value="{{anoEgressoPos}}">
+                <input class="form-control" id="candidato-ano-pos" type="number" name="anoEgressoPos" value="{{anoEgressoPos}}">
               </div>
             </div>
 
@@ -352,10 +270,11 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="col-6">
+              <div class="col-md-6">
                 <label class="control-label" for="vittaepdf">
-                  <font color="#FF0000">*</font>
+                  <font color="#FF0000">*</font> 
                   <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
+                         {{#if hasCurriculum}} Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/VitaePDF.pdf"> clique aqui</a> para visualiza-lo{{/if}}
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
@@ -363,7 +282,7 @@
                     <label class="custom-file-label" for="VitaePDF">Escolher arquivo</label>
                   </div>
                 </div>
-
+            
 
                 <label class="control-label" for="vittaexml">
                   <b>Curriculum Vittae XML no formato Lattes - http://lattes.cnpq.br (não incluir significa não ter
@@ -467,55 +386,94 @@
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="candidato-prova">
-                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo
-                    2
-                    anos), pro favor faça o upload do PDF da prova através da opção abaixo:
+                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), 
+                    pro favor faça o upload do PDF da prova através da opção abaixo:
                   </b>
+                         
                 </label>
               </div>
-              <div class="col-6">
+              {{#if hasProvaAnterior}}
+                <div class="col-md-6">
+                  <a href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary">Baixar Prova Anterior</a>
+                  <input type="hidden" name="ProvaAnterior" value="{{hasProvaAnterior}}">
+
+                </div>
+              {{else}}
+                <div class="col-md-6" >
                 <div class="form-group">
                   <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="candidato-prova" name="Prova">
-                    <label class="custom-file-label" for="Prova">Escolher arquivo</label>
+      
+                    <input type="file" class="custom-file-input" id="candidato-prova" name="ProvaAnterior">
+                    <label class="custom-file-label" for="ProvaAnterior">Escolher arquivo</label>
                   </div>
                 </div>
               </div>
+              {{/if}}
+
+             
             </div>
           </div>
         </div>
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Experiência Acadêmica</h3>
+            <h3 class="card-title">Experiência Acadêmica{{experienciasAcademicas}}</h3>
           </div>
 
           <div class="card-body">
             <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
-            <div id="experiencia-container">
+            {{#each experienciasAcademicas}}
               <div class="row experiencia-row">
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
-                    Instituição Academica:
+                    Instituição Acadêmica:
                   </label>
-                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="Experiencia"
-                    maxlength="60">
+                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]" maxlength="60" value="{{instituicao}}">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-atividade">
                     Atividade:
                   </label>
                   <input class="form-control" id="candidato-experiencia-atividade" type="text"
-                    name="ExperienciaAtividade" maxlength="60">
+                    name="experienciaAtividade[]" maxlength="60" value="{{atividade}}">
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
                     Período:
                   </label>
-                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="ExperienciaPeriodo"
+                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]"
+                    maxlength="30" value="{{periodo}}">
+                </div>
+                <div class="col-1" style="margin-top:10px">
+                  <button class="btn btn-danger delete-experiencia-button">Excluir</button>
+                </div>
+              </div>
+            {{/each}}
+            <div id="experiencia-container">
+              <div class="row experiencia-row">
+                <div class="col-md-4">
+                  <label class="control-label" for="candidato-experiencia-instituicao">
+                    Instituição Academica:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]"
                     maxlength="60">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="control-label" for="candidato-experiencia-atividade">
+                    Atividade:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-atividade" type="text"
+                    name="experienciaAtividade[]" maxlength="60">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="control-label" for="candidato-experiencia-periodo">
+                    Período:
+                  </label>
+                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
                 </div>
                 <div class="col-1" style="margin-top:10px">
                   <button class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
@@ -525,13 +483,14 @@
           </div>
           <div class="card-footer">
             <div class="col">
-              <button class="btn btn-success float-right custom-button">
+              <button id="btn-submit" class="btn btn-success float-right custom-button">
                 Salvar e Continuar
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
                 Passo Anterior
+								<span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
-
             </div>
           </div>
         </div>
@@ -544,6 +503,83 @@
 </footer>
 
 <script>
+  function changeYear(event) {
+    const year = event.target.value;
+    if (year.length === 4) { 
+      const currentYear = new Date().getFullYear();
+      if (year > currentYear) {
+        $(event.target).addClass("is-invalid");
+      } else {
+        $(event.target).removeClass("is-invalid");
+      }
+    }
+  }
+
+  $(document).ready(function () {
+    $("#btn_logout").click(function () {
+			$.ajax({
+				url: "/selecaoppgi/logout",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+		$("#btn_inicio").click(function () {
+				$.ajax({
+				url: "/selecaoppgi/voltarInicio",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi/formulario";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+    $("#voltarForm").click(() => {
+      const btnVoltar = $("#voltarForm");
+      btnVoltar.attr("disabled", true);
+      btnVoltar.find("span").prop("hidden", false);
+      const csrfToken = $("#csrfToken").val();
+      const id = $("#idCandidato").val();
+      const editalPosicao = $("#editalPosicao").val();
+
+      $.ajax({
+        url: '/selecaoppgi/voltar',
+        type: 'POST',
+        data: {
+          _csrf: csrfToken,
+          editalPosicao: editalPosicao, 
+          id: id
+        }, success: function (data) {
+          window.location.href = '/selecaoppgi/formulario';
+          window.location.reload(true);
+        },
+        error: function (data) {
+          btnVoltar.attr("disabled", false);
+          btnVoltar.find("span").prop("hidden", true);
+          console.error(data)
+        }
+      });
+    });
+
+    $("#limparSelecao").on("click", function (e) {
+      e.preventDefault()
+      $("#candidato-curso-tipo input[type='radio']").prop("checked", false);
+    });
+    $("#candidato-ano-pos").change(changeYear);
+    $("#candidato-ano").change(changeYear);
+  });
 
   function mostrarPeriodicos() {
     var accordion = $("#accordion");
@@ -553,6 +589,7 @@
       accordion.collapse("show");
     }
   }
+
   $(".accordion").on("show.bs.collapse", function () {
     $(this).find(".collapse").slideDown(20000);
   });
@@ -566,42 +603,6 @@
     document.getElementById("periodicos").style.display = "none";
     document.getElementById("conferencias").style.display = "block";
   }
-
-  function permitirApenasNumeros(input) {
-    input.value = input.value.replace(/[^0-9]/g, '');
-  }
-
-
-
-  $(document).ready(function () {
-    $("#voltarForm").on("click", function (e) {
-      const csrfToken = $("#csrfToken").val();
-      const id = $("#idCandidato").val();
-      console.log(id)
-      const editalPosicao = $("#editalPosicao").val();
-
-      console.log(editalPosicao)
-
-      $.ajax({
-        url: '/selecaoppgi/voltar',
-        type: 'POST',
-        data: {
-          _csrf: csrfToken,
-          editalPosicao: editalPosicao,
-          id: id
-        }, success: function (data) {
-          window.location.href = '/selecaoppgi/formulario';
-          window.location.reload(true);
-        },
-        error: function (data) {
-          console.log(data)
-        }
-      });
-
-    });
-  });
-
-
 
   document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.getElementById("add-experiencia-button");
@@ -630,54 +631,17 @@
     });
   });
 
-  $(document).ready(function () {
-    $("#limparSelecao").on("click", function (e) {
-      e.preventDefault()
-
-      $("#candidato-curso-tipo input[type='radio']").prop("checked", false);
-    });
-  });
-
-  $.validator.addMethod("conjuntoPreenchido", function (value, element) {
-    const cursoPos = $("#candidato-curso-pos").val();
-    const instituicaoPos = $("#candidato-instituicao-pos").val();
-    const anoEgressoPos = $("#candidato-ano-pos").val();
-    const cursoTipoChecked = $("#Tipo1").is(":checked") || $("#Tipo2").is(":checked") || $("#Tipo3").is(":checked");
-
-    return (!cursoPos && !instituicaoPos && !anoEgressoPos && !cursoTipoChecked) || (cursoPos && instituicaoPos && anoEgressoPos && cursoTipoChecked);
-  }, "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios.");
-
-
-  $.validator.setDefaults({
-    submitHandler: function () {
-      SubmitForm(event)
-    },
-  });
-
-  function SubmitForm(e) {
-    e.preventDefault()
-    console.log("submit")
-    var VitaeXML = $("#vittaexml").val()
-    var formData = new FormData($('#candidato-formulario2')[0]);
-    console.log(VitaeXML)
-    if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
-      reqAjax(formData)
-    } else {
-      console.log(formData)
-      getCompleteData(formData, reqAjax)
-    }
-
-  }
-
   function reqAjax(data) {
+    const btnSubmit = $("#btn-submit");
+    btnSubmit.attr("disabled", true);
+    btnSubmit.find("span").prop("hidden", false);
 
-    var formData = new FormData($('#candidato-formulario2')[0]);
+    const formData = new FormData($('#candidato-formulario2')[0]);
     formData.append('csrfToken', $("#csrfToken").val());
     formData.append('email', $("#email").val());
     formData.append('editalPosicao', $("#editalPosicao").val());
     formData.append('id', $("#idCandidato").val());
-
-    
+     
     const csrfToken = $("#csrfToken").val();
     const email = $("#email").val();
     const editalPosicao = $("#editalPosicao").val();
@@ -685,21 +649,20 @@
 
     $.ajax({
       url: '/selecaoppgi/formulario/2?_csrf={{csrfToken}}',
-      type: "POST",
+      type: "PUT",
       data: formData, 
       contentType: false,
       processData: false,
       success: function (response) {
-       
+       	window.location.href = '/selecaoppgi/formulario';
+        window.location.reload(true);
       },
       error: function (xhr, status, error) {
-        // Trate o erro, se houver
+        console.error(xhr);
+        btnSubmit.attr("disabled", false);
+        btnSubmit.find("span").prop("hidden", true);
       }
     });
-
-
-
-
   }
 
   function getExperienciasData() {
@@ -716,7 +679,6 @@
         atividade: atividade,
         periodo: periodo
       };
-      console.log("COmplete data")
       experienciasData.push(experienciaData);
     }
 
@@ -725,7 +687,7 @@
 
 
   $('#vittaexml').change(function(){
-     var VitaeXML = document.querySelector("VitaeXML")
+    var VitaeXML = document.querySelector("VitaeXML")
     var formData = new FormData($('#candidato-formulario2')[0]);
 
     if (VitaeXML === "") {
@@ -734,7 +696,6 @@
       getCompleteData(formData, GetDataPubli)
     }
   })
-
 
   function GetDataPubli(data) {
     const DataForm = data;
@@ -775,30 +736,36 @@
 
   }
 
+  $.validator.addMethod("conjuntoPreenchido", function (value, element) {
+    const cursoPos = $("#candidato-curso-pos").val();
+    const instituicaoPos = $("#candidato-instituicao-pos").val();
+    const anoEgressoPos = $("#candidato-ano-pos").val();
+    const cursoTipoChecked = $("#Tipo1").is(":checked") || $("#Tipo2").is(":checked") || $("#Tipo3").is(":checked");
+
+    return (!cursoPos && !instituicaoPos && !anoEgressoPos && !cursoTipoChecked) || (cursoPos && instituicaoPos && anoEgressoPos && cursoTipoChecked);
+  }, "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios.");
+
   $.validator.addMethod("anoValido", function (value, element) {
     if (!/^\d{4}$/.test(value)) {
       return false;
     }
 
-    let anoAtual = new Date().getFullYear();
-    let anoMinimo = 1850;
-    let anoInserido = parseInt(value);
+    const anoAtual = new Date().getFullYear();
+    const anoMinimo = 1850;
+    const anoInserido = parseInt(value);
     return anoInserido <= anoAtual && anoInserido >= anoMinimo;
   }, "Ano inválido");
 
   $.validator.addMethod("anoPosValido", function (value, element) {
-
     if (value.trim() === "") {
       return true;
     }
-
     if (!/^\d{4}$/.test(value)) {
       return false;
     }
-
-    let anoAtual = new Date().getFullYear();
-    let anoMinimo = 1850;
-    let anoInserido = parseInt(value);
+    const anoAtual = new Date().getFullYear();
+    const anoMinimo = 1850;
+    const anoInserido = parseInt(value);
     return anoInserido <= anoAtual && anoInserido >= anoMinimo;
   }, "Ano inválido");
 
@@ -815,55 +782,62 @@
       $(element).removeClass('is-invalid');
     },
     rules: {
-      "Curso": {
+      "cursoGraduacao": {
         required: true
       },
-      "Instituicao": {
+      "instituicaoGraduacao": {
         required: true
       },
-      "AnoEgresso": {
+      "anoEgressoGraduacao": {
         required: true,
         anoValido: true
 
       },
-      "Curso-Pos": {
+      "cursoPos": {
         conjuntoPreenchido: true
       },
-      "InstituicaoPos": {
+      "instituicaoPos": {
         conjuntoPreenchido: true
       },
-      "AnoEgressoPos": {
+      "anoEgressoPos": {
         conjuntoPreenchido: true,
         anoPosValido: true
       },
-      "VitaePDF": {
-        required: true
-      }
+ 
     },
     messages: {
-      "Curso": {
+      "cursoGraduacao": {
         required: "Este campo é obrigatório."
       },
-      "Instituicao": {
+      "instituicaoGraduacao": {
         required: "Este campo é obrigatório."
       },
-      "AnoEgresso": {
+      "anoEgressoGraduacao": {
         required: "Este campo é obrigatório."
       },
-      "Curso-Pos": {
+      "cursoPos": {
         conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
       },
-      "InstituicaoPos": {
+      "instituicaoPos": {
         conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
       },
-      "AnoEgressoPos": {
+      "anoEgressoPos": {
         conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
       },
       "VitaePDF": {
         required: "Este campo é obrigatório."
       }
     },
-
+    submitHandler: (form, e) => {
+      e.preventDefault()
+      const VitaeXML = $("#vittaexml").val()
+      const formData = new FormData($('#candidato-formulario2')[0]);
+      if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
+        reqAjax(formData)
+      } else {
+        getCompleteData(formData, reqAjax)
+      }
+    }
   });
 
 
