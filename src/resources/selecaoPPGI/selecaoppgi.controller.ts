@@ -9,9 +9,9 @@ import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
 
-// function resolveView(viewName: string): string {
-//   return path.resolve(__dirname, 'views', viewName);
-// }
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
 
 type CustomRequest = Request & {
   session: {
@@ -33,7 +33,7 @@ const localsBegin = {
 const begin = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render('selecaoppgi/begin', {
+      return res.render(resolveView('begin'), {
         ...localsBegin,
       });
     default:
@@ -46,7 +46,7 @@ const signUp = async (req: CustomRequest, res: Response) => {
     case 'GET': {
       const listEditais = await EditalService.listEditalsAvailable();
 
-      return res.render('selecaoppgi/signUp', {
+      return res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
         errorSignin: null,
@@ -103,7 +103,7 @@ const login = async (req: CustomRequest, res: Response) => {
     case 'GET': {
       try {
         const listEditais = await EditalService.listEdital();
-        return res.render('selecaoppgi/signIn', {
+        return res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
@@ -260,7 +260,7 @@ const forms = async (req: CustomRequest, res: Response) => {
       console.log(candidate);
       console.log({ ...candidate });
       if (editalPosition === 1) {
-        return res.status(200).render('selecaoppgi/formDados', {
+        return res.status(200).render(resolveView('selecaoppgi'), {
           ...locals,
           ...candidate,
           csrfToken: req.csrfToken(),
@@ -277,7 +277,7 @@ const forms = async (req: CustomRequest, res: Response) => {
           await candidatoExperienciaAcademicaService.listByCandidateId(
             Number(uid),
           );
-        return res.render('selecaoppgi/forms2', {
+        return res.render(resolveView('forms2'), {
           ...locals,
           ...candidate,
           editalPosicao: editalPosition,
@@ -300,7 +300,7 @@ const forms = async (req: CustomRequest, res: Response) => {
 
       if (req.session.editalPosition === 3) {
         const linhas = await linhasDePesquisaService.list();
-        return res.render('selecaoppgi/forms3', {
+        return res.render(resolveView('forms3'), {
           ...locals,
           ...candidate,
           editalPosicao: req.session.editalPosition,
@@ -316,7 +316,7 @@ const forms = async (req: CustomRequest, res: Response) => {
           'candidatos',
           uid.toString(),
         );
-        return res.render('selecaoppgi/formConfirmacao', {
+        return res.render(resolveView('formConfirmacao'), {
           ...locals,
           editalPosicao: (req.session as any).editalPosition,
           email: (req.session as any).email,
@@ -465,7 +465,7 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
 
       const { periodicos, conferencias } = data;
 
-      return res.render('selecaoppgi/forms2', {
+      return res.render(resolveView('forms2'), {
         message: 'Dados salvos com sucesso',
         editalPosicao: req.session.editalPosition,
         email: req.session.email,
@@ -591,7 +591,7 @@ const recuperarSenha = async (req, res) => {
   switch (req.method) {
     case 'GET': {
       const listEditais = await EditalService.listEdital();
-      return res.render('selecaoppgi/recuperarSenha', {
+      return res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
         csrfToken: req.csrfToken(),
         ...localsBegin,
@@ -640,7 +640,7 @@ const trocarSenha = async (req, res: Response) => {
       );
 
       if (!candidate) {
-        return res.render('selecaoppgi/trocarSenha', {
+        return res.render(resolveView('trocarSenha'), {
           error: 'Token inválido',
           csrfToken: req.csrfToken(),
           ...localsBegin,
@@ -648,13 +648,13 @@ const trocarSenha = async (req, res: Response) => {
       }
 
       if (candidate.validadeTokenReset < new Date()) {
-        return res.render('selecaoppgi/trocarSenha', {
+        return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),
           ...localsBegin,
         });
       }
-      return res.render('selecaoppgi/trocarSenha', {
+      return res.render(resolveView('trocarSenha'), {
         csrfToken: req.csrfToken(),
         token: req.query.token,
         ...localsBegin,

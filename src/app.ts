@@ -1,15 +1,13 @@
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import csrf from 'csurf';
+import dotenv from 'dotenv';
 import express from 'express';
 import { engine } from 'express-handlebars';
 import session from 'express-session';
-import router from './routes';
-import dotenv from 'dotenv';
-import * as uuid from 'uuid';
-import cors from 'cors';
 import * as path from 'path';
-import csrf from 'csurf';
-import cookieParser from 'cookie-parser';
-import isUsuarioAutenticado from './middlewares/usuarioAutenticacaoMiddleware';
-import resgistro from './middlewares/logger';
+import * as uuid from 'uuid';
+import router from './routes';
 
 dotenv.config();
 const app = express();
