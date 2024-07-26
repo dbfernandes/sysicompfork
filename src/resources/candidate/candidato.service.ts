@@ -167,10 +167,7 @@ class CandidatoService {
       .findMany({
         where: {
           editalId,
-        },
-        select: {
-          passwordHash: false,
-        },
+        }
       })
       .catch((err) => {
         console.log(`[ERROR] Listar Candidatos: ${err}`);

@@ -1,4 +1,4 @@
-import { PrismaClient, Edital, Candidate } from '@prisma/client'
+import { PrismaClient, Edital, Candidate, LinhasDePesquisa } from '@prisma/client'
 const moment = require('moment-timezone')
 /* eslint-disable camelcase */
 
@@ -143,7 +143,8 @@ class EditalService {
     const candidates = await prisma.candidate.findMany({
       where: {
         editalId: id
-      }
+      },
+      include: { LinhasDePesquisa: true }
     }
     ).catch(err => {
       console.log(`[ERROR] Listar Candidatos: ${err}`)

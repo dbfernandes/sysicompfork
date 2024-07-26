@@ -45,6 +45,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       }
       try {
         await EditalService.criarEdital(novoEdital)
+        return res.redirect('/edital/listEdital')
       } catch (error: any) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
@@ -243,6 +244,7 @@ const editalCandidates = async (req: Request, res: Response) => {
         error: err.message,
       });
     });
+  console.log(candidates);
   if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos');
   const quantidadeInscricaoAndamento = candidates.filter(
     (candidate: { editalPosition: number | null }) =>

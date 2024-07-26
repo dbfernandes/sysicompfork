@@ -44,8 +44,6 @@ export default async function gerarPlanilha(editalId: string) {
     const workbook = new exceljs.Workbook();
 
     const candidatos = await getCandidatos(editalId)
-    // const candidatos = await candidateService.listCanditatesByEdital(editalId)
-    // console.log(candidatos)
 
     const candidateAba = workbook.addWorksheet('Candidato');
     const provasAba = workbook.addWorksheet('Provas');
@@ -122,14 +120,14 @@ export default async function gerarPlanilha(editalId: string) {
     )
 
     // Save Excel on Hard Disk
-    await workbook.xlsx.writeFile('planilha.xlsx')
+    await workbook.xlsx.writeFile('public/files/planilha.xlsx')
         .then(function () {
             console.log('Arquivo salvo!')
         }).catch(function (error: any) {
             console.log(error.message)
         })
 
-    const arquivo = fs.readFileSync('planilha.xlsx')
+    const arquivo = fs.readFileSync('public/files/planilha.xlsx')
 
     return arquivo
 }

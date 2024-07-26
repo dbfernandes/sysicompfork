@@ -24,12 +24,14 @@ export function candidateWorksheet(header: any, dados: any, worksheet: any) {
   const cabecalhoStyle = {
     font: { bold: true, color: { argb: '00000' } },
     alignment: { vertical: 'middle', horizontal: 'center', wrapText: true },
-    fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC0C0C0' }, bgColor: { argb: 'FFC0C0C0' } }
+    fill: {
+      type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC0C0C0' },
+      bgColor: { argb: 'FFC0C0C0' }
+    }
   }
   // Cabecalho
   worksheet.mergeCells('A1:N1')
   worksheet.getCell('A1').style = cabecalhoStyle
-  // worksheet.getCell('A1').value = 'Mestrados'
 
   worksheet.columns = header.map((item: any) => {
     return { header: item.header, key: item.key, width: item.width }
@@ -42,10 +44,8 @@ export function candidateWorksheet(header: any, dados: any, worksheet: any) {
     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
   })
   worksheet.getRow(2).height = 30
-
   // Insiri os dados Mestrado
   insertData(worksheet, dados, 'Mestrado', worksheet.rowCount + 1)
-
 
   // Doutorado
   const comecoDoutorado = worksheet.rowCount + 1

@@ -48,7 +48,6 @@
     "crypto": "^1.0.1",
     "csurf": "^1.11.0",
     "dotenv": "^10.0.0",
-    "esm": "^3.2.25",
     "express": "^4.17.1",
     "express-handlebars": "^7.1.2",
     "express-session": "^1.17.2",
