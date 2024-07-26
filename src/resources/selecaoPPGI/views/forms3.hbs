@@ -10,10 +10,9 @@
 
   .forms-page header {
     width: 100%;
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
-    z-index: 1;
     height: 50px;
     background-color: #222;
     display: flex;
@@ -21,7 +20,7 @@
     align-items: center;
     font-weight: bold;
     padding: 10px 45px;
-    z-index: 9999;
+    z-index: 10;
   }
 
   .forms-page header h1 {
@@ -43,6 +42,7 @@
   .forms-page header .options {
     display: flex;
     align-items: center;
+    gap: 16px;
   }
 
   .forms-page header .options button {
@@ -55,19 +55,6 @@
 
   .forms-page header .options button:hover {
     color: #fff;
-  }
-
-  .forms-page nav {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 250px;
-
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgb(27, 27, 27);
   }
 
   .forms-page section {
@@ -121,71 +108,6 @@
     background-color: #000;
   }
 
-  .forms-page .progress {
-    width: 100%;
-    height: 10px;
-    border-radius: 5px;
-    background-color: rgba(0, 110, 255, 0.5);
-    margin-top: -105px;
-  }
-
-  .forms-page .progress .progress-bar {
-    background-color: #006eff;
-  }
-
-  .forms-page .pbar-1 {
-    width: 12%;
-  }
-
-  .forms-page .pbar-2 {
-    width: 38%;
-  }
-
-  .forms-page .pbar-3 {
-    width: 62%;
-  }
-
-  .forms-page .pbar-4 {
-    width: 88%;
-  }
-
-  .forms-page .pbar-5 {
-    width: 100%;
-  }
-
-  .forms-page nav ul {
-    list-style-type: none;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    z-index: 1;
-  }
-
-  .forms-page nav ul li {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-  }
-
-  .nav-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90px;
-    height: 90px;
-    font-size: 1.8rem !important;
-    border-radius: 50%;
-    background-color: #7FB6FF;
-    color: #fff;
-  }
-
-  .nav-icon.active {
-    background-color: #006eff;
-    color: #fff;
-  }
-
   .custom-button {
     margin-right: 10px;
     margin-bottom: 10px;
@@ -204,9 +126,7 @@
     margin-top: 10px;
   }
 
-.custom-file-container {
-    width: 50%;
-}
+
 
 .custom-file-container .custom-file-input {
   padding: 10px;
@@ -222,14 +142,31 @@
 }
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-
+<div class="modal fade" id="confirm-register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+               <p>Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.</p>
+              </div>
+              <div class="modal-footer">
+                  <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Cancelar</a>
+                  <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarAT()">Confirmar</a>
+              </div>
+              <form name="postDelete" id="finish-register" method="POST">
+                  <input type="hidden" name="_csrf" value="{{csrfToken}}"> 
+              </form>
+          </div>
+      </div>
+</div>
 <div class="forms-page">
-  <header>
-    <h1>PPGI</h1>
-    <div class="options">
-      <button>Sair</button>
-    </div>
-  </header>
+	<header>
+		<h1>PPGI</h1>
+		<div class="options">
+			<button id="btn_inicio">Início</button>
+			<button id="btn_logout">Sair</button>
+		</div>
+	</header>
 
 
 
@@ -256,12 +193,12 @@
         </li>
       </ul>
       <div class="progress">
-        <div class="progress-bar pbar-3" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar progress-bar-striped progress-bar-animated pbar-3" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
         </div>
       </div>
     </nav>
     <div class="container-fluid">
-      <form id="candidato-formulario2">
+      <form id="candidato-formulario">
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
         <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
@@ -274,29 +211,25 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-5">
+              <div class="form-group col-md-5">
                 <label for="candidato-curso">
                   <font color="#FF0000">*</font>
                   <b>Linha de Pesquisa:</b>
                 </label>
-                <select id="candidato-Pesquisa" class="custom-select" name="CandidatoSoube">
-
-                  <option value="">Selecione uma Linha de Pesquisa:</option>
-                  <option value="Inteligência Computacional e Ciência de Dados">Inteligência Computacional e Ciência de
-                    Dados</option>
-                  <option value="Sistema Computacionais">Sistema Computacionais</option>
-                  <option value="Software, Interação e Aplicações">Software, Interação e Aplicações</option>
+                <select  id="candidato-pesquisa" class="custom-select" name="linhaPesquisa">
+                  <option value="" >Selecione uma Linha de Pesquisa:</option>
+                  {{#each linhasPesquisa}}
+                    <option value="{{id}}" {{#if (eq id ../idLinhaPesquisa)}}selected{{/if}}>{{nome}}</option>
+                  {{/each}}
                 </select>
-
-
               </div>
 
               <div class="col-md-7 ">
                 <label class="control-label" for="candidato-instituicao">
                   <font color="#FF0000">*</font>
-                  <b>Titulo da Proposta:</b>
+                  <b>Titulo da Proposta: </b>
                 </label>
-                <input class="form-control" id="candidato-Proposta" type="text" name="Proposta" value="" maxlength="60">
+                <input class="form-control" id="candidato-titulo-proposta" type="text" name="tituloProposta"  maxlength="60" value="{{tituloProposta}}">
               </div>
             </div>
 
@@ -317,8 +250,7 @@
                 <label for="candidato-curso-pos">
                   <b>Nome do orientador:</b>
                 </label>
-                <input class="form-control" id="candidato-orientador" type="text" name="CandidatoOrientador" value=""
-                  maxlength="60">
+                <input class="form-control" id="candidato-orientador" type="text" name="nomeOrientador"  maxlength="60" value={{nomeOrientador}} >
               </div>
             </div>
 
@@ -342,8 +274,7 @@
                   <font color="#FF0000">*</font>
                   <b>Nome:</b>
                 </label>
-                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
-                  value="" maxlength="60">
+                <input class="form-control" id="candidatoNomeRecomendacao1" type="text" name="recomendacaoNome[]" value="" maxlength="60">
               </div>
 
               <div class="col-md-5 ">
@@ -351,8 +282,7 @@
                   <font color="#FF0000">*</font>
                   <b>Email:</b>
                 </label>
-                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
-                  value="" maxlength="60">
+                <input  class="form-control" id="candidatoEmailRecomendacao1" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
               </div>
             </div>
             <div class="row">
@@ -361,8 +291,7 @@
                   <font color="#FF0000">*</font>
                   <b>Nome:</b>
                 </label>
-                <input class="form-control" id="candidato-Nome-Recomendacao" type="text" name="RecomendacaoNome"
-                  value="" maxlength="60">
+                <input class="form-control" id="candidatoNomeRecomendacao2" type="text" name="recomendacaoNome[]" value="" maxlength="60">
               </div>
 
               <div class="col-md-5 ">
@@ -370,8 +299,7 @@
                   <font color="#FF0000">*</font>
                   <b>Email:</b>
                 </label>
-                <input class="form-control" id="candidato-Email-Recomendacao" type="text" name="RecomendacaoEmail"
-                  value="" maxlength="60">
+                <input class="form-control" id="candidatoEmailRecomendacao2" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
               </div>
             </div>
 
@@ -388,46 +316,30 @@
                     Descreva os motivos que o levaram a se candidatar ao curso
                     (<span id="charCount">1000</span> Caracteres Restantes):
                   </label>
-                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="CandidatoMotivo"
-                    maxlength="1000"></textarea>
+                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="motivos" maxlength="1000">{{motivos}}</textarea>
                 </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
-                  <input type="file" class="custom-file-input" id="candidato-CartaAceite" name="CartaAceiteOrientador">
-                  <label class="custom-file-label" for="candidato-CartaAceite">
-                    Carta de Aceite do Orientador (obrigatório para doutorado):
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
-
-                <input type="file" class="custom-file-input" id="candidato-PropostaTrabalho" name="PropostaTrabalho">
-                <label class="custom-file-label" for="candidato-PropostaTrabalho">
-                  Proposta de Trabalho:
-                </label>
-              </div>
+            <div class="row ">
+                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
+                  <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador">
+                  <label class=" form-control custom-file-label" for="CartaAceiteOrientador"> Carta de Aceite do Orientador (obrigatório para doutorado)</label>
                 </div>
             </div>
 
             <div class="row">
-              <div class="col-md-5">
-                <div class="form-group custom-file-container">
+                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
+                  <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho">
+                  <label class="form-control custom-file-label" for="PropostaTrabalho">Proposta de Trabalho (obrigatório)</label>
+                </div>
+            </div>
 
-                <input type="file" class="custom-file-input" id="candidato-ComprovantePagamento"
-                  name="ComprovantePagamento">
-                <label class="custom-file-label" for="candidato-ComprovantePagamento">
-                  Comprovante de Pagamento:
-                </label>
-              </div>
-              </div>
+            <div class="row">
+                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
+                  <input type="file" class="custom-file-input" id="ComprovantePagamento" name="ComprovantePagamento">
+                  <label class=" form-control custom-file-label" for="ComprovantePagamento">Comprovante de Pagamento (obrigatório)</label>
+               </div>
             </div>
 
           </div>
@@ -438,15 +350,15 @@
             <div class="col">
               <button class="btn btn-success float-right custom-button">
                 Salvar e Continuar
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
                 Passo Anterior
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
-
             </div>
           </div>
         </div>
-
       </form>
     </div>
   </section>
@@ -456,8 +368,92 @@
 </footer>
 
 <script>
+  function deletarAT(event){
+        // document.postDelete.submit();
+        const linhaDePesquisaId = $("#candidato-pesquisa").val();
+        const formData = new FormData($("#candidato-formulario")[0]);
+        formData.append('idLinhaPesquisa', linhaDePesquisaId);
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $("#csrfToken").val()
+          },
+          url: '/selecaoppgi/formulario/3',
+          type: 'PUT',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            window.location.href = '/selecaoppgi/formulario';
+            window.location.reload(true);
+          },
+          error: function (data) {
+            console.error(data);
+          }
+        });
+    }
+  
   $(document).ready(function () {
-    // Adicionar novo input
+    let recomendacaoCounter = 1;
+
+		$("#btn_logout").click(function () {
+
+			$.ajax({
+				url: "/selecaoppgi/logout",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+		$("#btn_inicio").click(function () {
+			$.ajax({
+				url: "/selecaoppgi/voltarInicio",
+				type: "POST",
+				data: {
+					_csrf: $("#csrfToken").val()
+				},
+				success: function (data) {
+					window.location.href = "/selecaoppgi/formulario";
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		});
+	
+    $("#voltarForm").on("click", function (e) {
+        const btnVoltar = $("#voltarForm");
+        btnVoltar.prop("disabled", true);
+        btnVoltar.find("span").prop("hidden", false);
+        const csrfToken = $("#csrfToken").val();
+        const id = $("#idCandidato").val();
+        const editalPosicao = $("#editalPosicao").val();
+
+        $.ajax({    
+          url: '/selecaoppgi/voltar',
+          type: 'POST',
+          data: {
+            _csrf: csrfToken,
+            editalPosicao: editalPosicao, 
+            id: id
+          }, success: function (data) {
+            window.location.href = '/selecaoppgi/formulario';
+            window.location.reload(true);
+          },
+          error: function (data) {
+            console.error(data)
+            btnVoltar.prop("disabled", false);
+            btnVoltar.find("span").prop("hidden", true);
+          }
+        });
+      });
+ 
     $("#add-btn").click(function (e) {
       e.preventDefault();
       var newInput = '<div class="row">' +
@@ -466,14 +462,14 @@
         '<font color="#FF0000">*</font>' +
         '<b>Nome:</b>' +
         '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoNome[]" value="" maxlength="60">' +
+        '<input class="form-control" type="text" name="recomendacaoNome[]" value="" maxlength="60">' +
         '</div>' +
         '<div class="col-md-5">' +
         '<label class="control-label" for="candidato-Email-Recomendacao">' +
         '<font color="#FF0000">*</font>' +
         '<b>Email:</b>' +
         '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoEmail[]" value="" maxlength="60">' +
+        '<input class="form-control" type="text" name="recomendacaoEmail[]" value="" maxlength="60">' +
         '</div>' +
         '<div class="col-md-2 align-self-end">' +
         '<button class="remove-btn" onclick="$(this).closest(\'.row\').remove();">X</button>' + '</div>' +
@@ -489,4 +485,84 @@
       $("#charCount").text(charactersRemaining);
     });
   });
+
+  $.validator.prototype.checkForm = function() {
+    this.prepareForm();
+    for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+        if (this.findByName(elements[i].name).length != undefined && this.findByName(elements[i].name).length > 1) {
+            for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
+                this.check(this.findByName(elements[i].name)[cnt]);
+            }
+        } else {
+            this.check(elements[i]);
+        }
+    }
+    return this.valid();
+  }
+ 
+  $("#candidato-formulario").validate({
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      },
+      rules: {
+        "linhaPesquisa": {
+          required: true
+        },
+        "tituloProposta": {
+          required: true
+        },
+        "recomendacaoNome[]": {
+          required: false
+        },
+        "recomendacaoEmail[]": {
+          required: false,
+          email: true
+        },
+        "PropostaTrabalho": {
+          required: true
+        },
+        "ComprovantePagamento": {
+          required: true
+        },
+        "CartaAceiteOrientador": {
+          required: {{#if (eq cursoDesejado 'Doutorado')}}true{{else}}false{{/if}}
+        },
+      },
+      messages: {
+        "linhaPesquisa": {
+          required: "Linha de Pesquisa é obrigatória",
+        },
+        "tituloProposta": {
+          required: "Título da Proposta é obrigatório",
+        },
+        "recomendacaoNome[]": {
+          required: "Nome é obrigatório",
+        },
+        "recomendacaoEmail[]": {
+          required: "Email é obrigatório",
+          email: "Por favor, insira um endereço de email válido"
+        },
+        "PropostaTrabalho": {
+          required: "Proposta de Trabalho é obrigatória",
+        },
+        "ComprovantePagamento": {
+          required: "Comprovante de Pagamento é obrigatório",
+        },
+        "CartaAceiteOrientador": {
+          required: "Carta de Aceite do Orientador é obrigatória para doutorado",
+        },
+      },
+      submitHandler: (form, e) => {
+        e.preventDefault();
+        $('#confirm-register').modal()
+      }
+    });
 </script>
