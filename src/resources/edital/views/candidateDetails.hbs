@@ -7,11 +7,11 @@
     <section class="content-header">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-9">
+            <div class="d-flex justify-content-between flex-wrap gap-1 ">
+                <div>
                     <h1>Candidato {{candidate.id}} - Edital {{candidate.idEdital}} </h1>
                 </div>
-                <div class="col-sm-3">
+                <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         {{!-- <li class="breadcrumb-item"><a href="/">Edital: {{candidate.editalId}}</a></li> --}}
