@@ -273,90 +273,6 @@
 </footer>
 
 <script>
-    function deletarAT(event){
-        // document.postDelete.submit();
-       const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        formData.append('linhaDePesquisaId', linhaDePesquisaId);
-        
-        $.ajax({
-          url: '/selecaoppgi/formulario/3',
-          type: 'POST',
-          data: {
-            linhaDePesquisaId: linhaDePesquisaId,
-            	_csrf: $("#csrfToken").val()
-          },
-          success: function (data) {
-            console.log(`Sucesso`)
-          },
-          error: function (data) {
-            console.error(data);
-          }
-        });
-    }
-  	$(document).ready(function () {
-      $('#candidato-formulario').submit(function (e) {
-        e.preventDefault();
-        const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
-        $('#confirm-register').modal()
-      });
-      $("#finish-register").on("click", function (e) {
-        e.preventDefault();
-        const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
-        $.ajax({
-          url: '/selecaoppgi/form/4',
-          type: 'POST',
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function (data) {
-            console.log(`Sucesso`)
-          },
-          error: function (data) {
-            console.error(data);
-          }
-        });
-      });
-
-		$("#btn_logout").click(function () {
-			$.ajax({
-				url: "/selecaoppgi/logout",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-
-	});
-
   $(document).ready(function () {
      $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
@@ -379,37 +295,6 @@
         }
       });
 
-    });
-    // Adicionar novo input
-    $("#add-btn").click(function (e) {
-      e.preventDefault();
-      var newInput = '<div class="row">' +
-        '<div class="col-md-5">' +
-        '<label class="control-label" for="candidato-Nome-Recomendacao">' +
-        '<font color="#FF0000">*</font>' +
-        '<b>Nome:</b>' +
-        '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoNome[]" value="" maxlength="60">' +
-        '</div>' +
-        '<div class="col-md-5">' +
-        '<label class="control-label" for="candidato-Email-Recomendacao">' +
-        '<font color="#FF0000">*</font>' +
-        '<b>Email:</b>' +
-        '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoEmail[]" value="" maxlength="60">' +
-        '</div>' +
-        '<div class="col-md-2 align-self-end">' +
-        '<button class="remove-btn" onclick="$(this).closest(\'.row\').remove();">X</button>' + '</div>' +
-        '</div>';
-
-      $("#dynamic-inputs").append(newInput);
-    });
-
-    $("#candidato-Motivo").on("input", function () {
-      var maxLength = 1000;
-      var currentLength = $(this).val().length;
-      var charactersRemaining = maxLength - currentLength;
-      $("#charCount").text(charactersRemaining);
     });
   });
 </script>

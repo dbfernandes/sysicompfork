@@ -256,59 +256,67 @@
 
           </div>
         </div>
+        {{#if (eq edital.cartaRecomendacao 1)}}
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Carta de Recomendação</h3>
+            </div>
 
+            <div class="card-body">
+              <p>Você precisa apenas preencher corretamente o nome e email das pessoas que devem fornecer as cartas de
+                recomendação. Feito isso, assim que você finalizar e submeter sua inscrição os indicados receberão um
+                email com as instruções de como preencher de forma online sua carta de recomendação. Ao menos 2 nomes são
+                obrigatórios.</p>
+
+              <div class="row">
+                <div class="col-md-5 ">
+                  <label class="control-label" for="candidato-instituicao">
+                    <font color="#FF0000">*</font>
+                    <b>Nome:</b>
+                  </label>
+                  <input class="form-control" id="candidatoNomeRecomendacao1" type="text" name="recomendacaoNome[]" value="" maxlength="60">
+                </div>
+
+                <div class="col-md-5 ">
+                  <label class="control-label" for="candidato-instituicao">
+                    <font color="#FF0000">*</font>
+                    <b>Email:</b>
+                  </label>
+                  <input  class="form-control" id="candidatoEmailRecomendacao1" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-5 ">
+                  <label class="control-label" for="candidato-instituicao">
+                    <font color="#FF0000">*</font>
+                    <b>Nome:</b>
+                  </label>
+                  <input class="form-control" id="candidatoNomeRecomendacao2" type="text" name="recomendacaoNome[]" value="" maxlength="60">
+                </div>
+
+                <div class="col-md-5 ">
+                  <label class="control-label" for="candidato-instituicao">
+                    <font color="#FF0000">*</font>
+                    <b>Email:</b>
+                  </label>
+                  <input class="form-control" id="candidatoEmailRecomendacao2" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
+                </div>
+              </div>
+
+              <div id="dynamic-inputs">
+                <!-- Novos campos serão adicionados aqui -->
+              </div>
+
+              <button id="add-btn" class="btn btn-success">+</button>
+            </div>
+          </div>
+        {{/if}}
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Carta de Recomendação</h3>
+            <h3 class="card-title">Motivos e documentação</h3>
           </div>
 
           <div class="card-body">
-            <p>Você precisa apenas preencher corretamente o nome e email das pessoas que devem fornecer as cartas de
-              recomendação. Feito isso, assim que você finalizar e submeter sua inscrição os indicados receberão um
-              email com as instruções de como preencher de forma online sua carta de recomendação. Ao menos 2 nomes são
-              obrigatórios.</p>
-
-            <div class="row">
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Nome:</b>
-                </label>
-                <input class="form-control" id="candidatoNomeRecomendacao1" type="text" name="recomendacaoNome[]" value="" maxlength="60">
-              </div>
-
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Email:</b>
-                </label>
-                <input  class="form-control" id="candidatoEmailRecomendacao1" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Nome:</b>
-                </label>
-                <input class="form-control" id="candidatoNomeRecomendacao2" type="text" name="recomendacaoNome[]" value="" maxlength="60">
-              </div>
-
-              <div class="col-md-5 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>Email:</b>
-                </label>
-                <input class="form-control" id="candidatoEmailRecomendacao2" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
-              </div>
-            </div>
-
-            <div id="dynamic-inputs">
-              <!-- Novos campos serão adicionados aqui -->
-            </div>
-
-            <button id="add-btn" class="btn btn-success">+</button>
-
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -321,13 +329,14 @@
               </div>
             </div>
 
-            <div class="row ">
-                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                  <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador">
-                  <label class=" form-control custom-file-label" for="CartaAceiteOrientador"> Carta de Aceite do Orientador (obrigatório para doutorado)</label>
-                </div>
-            </div>
-
+            {{#if (eq edital.cartaOrientador 1)}}
+              <div class="row ">
+                  <div class="col-md-5 custom-file form-group custom-file-container mb-4">
+                    <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador">
+                    <label class=" form-control custom-file-label" for="CartaAceiteOrientador"> Carta de Aceite do Orientador (obrigatório para doutorado)</label>
+                  </div>
+              </div>
+            {{/if}}
             <div class="row">
                 <div class="col-md-5 custom-file form-group custom-file-container mb-4">
                   <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho">
@@ -524,7 +533,7 @@
         },
         "recomendacaoEmail[]": {
           required: false,
-          email: true
+          email: true 
         },
         "PropostaTrabalho": {
           required: true

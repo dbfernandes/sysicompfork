@@ -9,6 +9,7 @@ import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
 import { CURRICULUM_FILE } from './selecaoppgi.types';
+import editalService from '../edital/edital.service';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -253,10 +254,10 @@ const forms = async (req: CustomRequest, res: Response) => {
         break;
       }
       const { uid, editalPosition } = req.session;
-      const candidate = await candidatoService.findById(uid).catch((err) => {
-        console.error(err);
-        return res.status(500).send();
-      });
+
+      const candidate = await candidatoService.findById(uid);
+      const edital = await editalService.getEdital(candidate.idEdital);
+
       if (!candidate) {
         res.redirect('/selecaoppgi/entrar');
         break;
@@ -264,78 +265,80 @@ const forms = async (req: CustomRequest, res: Response) => {
 
       console.log(candidate);
       console.log({ ...candidate });
-      if (editalPosition === 1) {
-        return res.status(200).render(resolveView('formDados'), {
-          ...locals,
-          ...candidate,
-          csrfToken: req.csrfToken(),
-        });
-      }
+      switch (editalPosition) {
+        case 1: {
+          return res.status(200).render(resolveView('formDados'), {
+            ...locals,
+            ...candidate,
+            csrfToken: req.csrfToken(),
+          });
+        }
 
-      if (editalPosition === 2) {
-        const caminhoDiretorioUsuario = path.join(
-          'public',
-          'uploads',
-          'candidato',
-          uid.toString(),
-        );
-        const experienciasAcademicas =
-          await candidatoExperienciaAcademicaService.listByCandidateId(
-            Number(uid),
+        case 2: {
+          const caminhoDiretorioUsuario = path.join(
+            'public',
+            'uploads',
+            'candidato',
+            uid.toString(),
           );
-        return res.render(resolveView('forms2'), {
-          ...locals,
-          ...candidate,
-          editalPosicao: editalPosition,
-          email: req.session.email,
-          id: req.session.uid,
-          csrfToken: req.csrfToken(),
-          hasCurriculum: verificarArquivoDiretorio(
-            caminhoDiretorioUsuario,
-            CURRICULUM_FILE,
-          ),
-          hasProvaAnterior: verificarArquivoDiretorio(
-            caminhoDiretorioUsuario,
-            'ProvaAnterior.pdf',
-          ),
-          experienciasAcademicas: experienciasAcademicas.map(
-            (experiencia: any) => experiencia.toJSON(),
-          ),
-        });
-      }
+          const experienciasAcademicas =
+            await candidatoExperienciaAcademicaService.listByCandidateId(
+              Number(uid),
+            );
+          return res.render(resolveView('forms2'), {
+            ...locals,
+            ...candidate,
+            editalPosicao: editalPosition,
+            email: req.session.email,
+            id: req.session.uid,
+            csrfToken: req.csrfToken(),
+            hasCurriculum: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              CURRICULUM_FILE,
+            ),
+            hasProvaAnterior: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              'ProvaAnterior.pdf',
+            ),
+            experienciasAcademicas: experienciasAcademicas.map(
+              (experiencia: any) => experiencia.toJSON(),
+            ),
+          });
+        }
 
-      if (req.session.editalPosition === 3) {
-        const linhas = await linhasDePesquisaService.list();
-        return res.render(resolveView('forms3'), {
-          ...locals,
-          ...candidate,
-          editalPosicao: req.session.editalPosition,
-          email: req.session.email,
-          id: req.session.uid,
-          linhasPesquisa: linhas,
-          csrfToken: req.csrfToken(),
-        });
+        case 3: {
+          const linhas = await linhasDePesquisaService.list();
+          return res.render(resolveView('forms3'), {
+            ...locals,
+            ...candidate,
+            edital,
+            editalPosicao: req.session.editalPosition,
+            email: req.session.email,
+            id: req.session.uid,
+            linhasPesquisa: linhas,
+            csrfToken: req.csrfToken(),
+          });
+        }
+        case 4: {
+          const caminhoDiretorioUsuario = path.join(
+            'uploads',
+            'candidatos',
+            uid.toString(),
+          );
+          return res.render(resolveView('formConfirmacao'), {
+            ...locals,
+            editalPosicao: req.session.editalPosition,
+            id: req.session.uid,
+            csrfToken: req.csrfToken(),
+            hasCartaAceiteOrientador: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              'CartaAceiteOrientador.pdf',
+            ),
+          });
+        }
+        default:
+          return res.status(400).send();
       }
-      if (req.session.editalPosition === 4) {
-        const caminhoDiretorioUsuario = path.join(
-          'uploads',
-          'candidatos',
-          uid.toString(),
-        );
-        return res.render(resolveView('formConfirmacao'), {
-          ...locals,
-          editalPosicao: (req.session as any).editalPosition,
-          email: (req.session as any).email,
-          id: req.session.uid,
-          csrfToken: req.csrfToken(),
-          hasCartaAceiteOrientador: verificarArquivoDiretorio(
-            caminhoDiretorioUsuario,
-            'CartaAceiteOrientador.pdf',
-          ),
-        });
-      }
-      break;
-
     default:
       return res.status(405).send();
   }
