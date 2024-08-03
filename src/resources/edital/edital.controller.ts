@@ -7,7 +7,11 @@ import archiver from 'archiver';
 import path from 'path';
 import editalService from './edital.service';
 import { verificarArquivoDiretorio } from '../selecaoPPGI/selecaoppgi.controller';
-import { CURRICULUM_FILE } from '../selecaoPPGI/selecaoppgi.types';
+import {
+  COMPROVANTE_FILE,
+  CURRICULUM_FILE,
+  PROPOSTA_FILE,
+} from '../selecaoPPGI/selecaoppgi.types';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -67,7 +71,8 @@ const addEditalSelecao = async (req: Request, res: Response) => {
 const listEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      const editais = await editalService.listEdital();
+      const editais = await editalService.listEditalComQtdeCandidatos();
+
       return res.render(resolveView('listSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -425,50 +430,38 @@ const candidateDetails = async (req: Request, res: Response) => {
       'candidato',
       candidate.id.toString(),
     );
-    const pathFiles = `../../../public/uploads/candidato/${candidate.id}`;
 
     const cartaOrientadorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/CartaDoOrientador`,
     );
-    const propostaTrabalhopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/PropostaDeTrabalho`,
-    );
+
     const provaAnteriorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/ProvaAnteriorSelecao`,
     );
-    const comprovantePagamentopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/ComprovantePagamento`,
-    );
+
     const recomendacaopath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/Recomendacao`,
     );
-    console.log(pathFiles);
-    console.log(
-      verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE),
-    );
+
     if (verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE)) {
       candidatoDocs.Curriculum = true;
     }
     if (fs.existsSync(cartaOrientadorpath)) {
       candidatoDocs.CartaDoOrientador = true;
     }
-    if (fs.existsSync(propostaTrabalhopath)) {
+    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, PROPOSTA_FILE)) {
       candidatoDocs.PropostaDeTrabalho = true;
     }
     if (fs.existsSync(provaAnteriorpath)) {
       candidatoDocs.ProvaAnteriorSelecao = true;
     }
-    if (fs.existsSync(comprovantePagamentopath)) {
+    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, COMPROVANTE_FILE)) {
       candidatoDocs.ComprovantePagamento = true;
     }
     if (fs.existsSync(recomendacaopath)) {
