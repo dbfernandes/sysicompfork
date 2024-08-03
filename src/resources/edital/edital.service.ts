@@ -13,7 +13,7 @@ class EditalService {
       });
 
       if (edital) {
-        console.log('edital ja existe');
+        console.error('edital ja existe');
         throw new Error(`Edital de número ${editalDados.editalId} já existe`);
       }
 

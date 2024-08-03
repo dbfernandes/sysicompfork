@@ -8,6 +8,7 @@ import candidatoService from '../candidato/candidato.service';
 import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
+import { CURRICULUM_FILE } from './selecaoppgi.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -212,13 +213,17 @@ const formProposta = async (req: CustomRequest, res: Response) => {
   }
 };
 
-function verificarArquivoDiretorio(diretorio: string, nomeArquivo: string) {
+export function verificarArquivoDiretorio(
+  diretorio: string,
+  nomeArquivo: string,
+) {
   const caminhoArquivo = path.join(diretorio, nomeArquivo);
   try {
     // Verifica se o arquivo existe
     fs.accessSync(caminhoArquivo, fs.constants.F_OK);
     return true;
   } catch (err) {
+    console.log(`[ERROR] Verificar arquivo: ${err}`);
     // Se houver algum erro ao acessar o arquivo, retorna false
     return false;
   }
@@ -260,7 +265,7 @@ const forms = async (req: CustomRequest, res: Response) => {
       console.log(candidate);
       console.log({ ...candidate });
       if (editalPosition === 1) {
-        return res.status(200).render(resolveView('selecaoppgi'), {
+        return res.status(200).render(resolveView('formDados'), {
           ...locals,
           ...candidate,
           csrfToken: req.csrfToken(),
@@ -269,8 +274,9 @@ const forms = async (req: CustomRequest, res: Response) => {
 
       if (editalPosition === 2) {
         const caminhoDiretorioUsuario = path.join(
+          'public',
           'uploads',
-          'candidatos',
+          'candidato',
           uid.toString(),
         );
         const experienciasAcademicas =
@@ -286,7 +292,7 @@ const forms = async (req: CustomRequest, res: Response) => {
           csrfToken: req.csrfToken(),
           hasCurriculum: verificarArquivoDiretorio(
             caminhoDiretorioUsuario,
-            'VitaePDF.pdf',
+            CURRICULUM_FILE,
           ),
           hasProvaAnterior: verificarArquivoDiretorio(
             caminhoDiretorioUsuario,
@@ -379,7 +385,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'PUT': {
       try {
-        let VitaePDF = null;
+        let Curriculum = null;
         let Prova = null;
         if (
           !Array.isArray(req.files) &&
@@ -391,9 +397,9 @@ const form2 = async (req: CustomRequest, res: Response) => {
         if (
           !Array.isArray(req.files) &&
           req.files &&
-          req.files.VitaePDF !== undefined
+          req.files.Curriculum !== undefined
         ) {
-          VitaePDF = req.files.VitaePDF[0];
+          Curriculum = req.files.Curriculum[0];
         }
         const { uid } = req.session;
         console.log(req.body);
@@ -688,33 +694,50 @@ const downloadFile = (req, res) => {
   // Define o caminho do arquivo
   const userId = req.session.uid.toString();
   const nomeArquivo = req.params.name;
-  const caminhoArquivo = path.join(
-    __dirname,
-    '..',
-    '..',
+  const caminhoDoc = path.join(
+    'public',
     'uploads',
-    'candidatos',
+    'candidato',
     userId,
     nomeArquivo,
   );
-  // Verifica se o arquivo existe
-  if (fs.existsSync(caminhoArquivo)) {
-    // Define o cabeçalho para o download
-    // Define os cabeçalhos para evitar o armazenamento em cache
-    res.setHeader(
-      'Cache-Control',
-      'no-store, no-cache, must-revalidate, max-age=0',
-    );
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
-    res.setHeader('Content-Type', 'application/octet-stream');
 
-    // Envia o arquivo como resposta
-    res.sendFile(caminhoArquivo);
-  } else {
-    res.status(404).send('Arquivo não encontrado.');
-  }
+  res.download(caminhoDoc, (error) => {
+    if (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  });
+  // const nomeArquivo = req.params.name;
+  // const caminhoArquivo = path.join(
+  //   __dirname,
+  //   '..',
+  //   '..',
+  //   'public',
+  //   'uploads',
+  //   'candidato',
+  //   userId,
+  //   nomeArquivo,
+  // );
+  // // Verifica se o arquivo existe
+  // if (fs.existsSync(caminhoArquivo)) {
+  //   // Define o cabeçalho para o download
+  //   // Define os cabeçalhos para evitar o armazenamento em cache
+  //   res.setHeader(
+  //     'Cache-Control',
+  //     'no-store, no-cache, must-revalidate, max-age=0',
+  //   );
+  //   res.setHeader('Pragma', 'no-cache');
+  //   res.setHeader('Expires', '0');
+  //   res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
+  //   res.setHeader('Content-Type', 'application/octet-stream');
+
+  //   // Envia o arquivo como resposta
+  //   res.sendFile(caminhoArquivo);
+  // } else {
+  //   res.status(404).send('Arquivo não encontrado.');
+  // }
 };
 export default {
   begin,

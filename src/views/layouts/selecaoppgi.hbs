@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM</title>
+  <title>{{#if title}}{{title}}{{else}}Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM{{/if}}</title>
+  <link href="/public/img/favicon 2.ico" rel="icon" type="image/png">
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
@@ -20,7 +21,7 @@
 
   <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 
-  <!-- Plugin do Date Range -->
+  <!-- Plugin do Date Range --> 
   <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css">
 
   <!-- Toasts -->
@@ -100,7 +101,7 @@
       $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
       $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
       $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
-      $('.edital').inputmask('999-9999', { 'placeholder': '001-2023' })
+      $('.edital').inputmask('999-9999')
     }
 
   </script>
