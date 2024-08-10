@@ -11,7 +11,7 @@ import perfilRoutes from '../resources/perfil/perfil.routes';
 import autenticacaoController from '../resources/autenticacao/autenticacao.controller';
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
 import horasComplementaresRoutes from '../resources/horasComplementares/horasComplementares.routes';
-import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamento.temporario.routes';
+import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamentoTemporario.routes';
 import pdfController from '../utils/exportToPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';

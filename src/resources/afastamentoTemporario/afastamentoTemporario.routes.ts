@@ -1,5 +1,5 @@
 import express from 'express';
-import afastamentoTemporarioController from './afastamento.temporario.controller';
+import afastamentoTemporarioController from './afastamentoTemporario.controller';
 
 const router = express.Router();
 
