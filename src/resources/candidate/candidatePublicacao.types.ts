@@ -1,7 +1,7 @@
-import { CandidatePublications } from '@prisma/client';
+import { CandidatoPublicacoes } from '@prisma/client';
 
 export type CreateCandidatePublicationsDto = Pick<
-  CandidatePublications,
+  CandidatoPublicacoes,
   | 'ISSN'
   | 'titulo'
   | 'ano'

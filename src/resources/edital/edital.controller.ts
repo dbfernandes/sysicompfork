@@ -249,7 +249,6 @@ const editalCandidates = async (req: Request, res: Response) => {
         error: err.message,
       });
     });
-  console.log(candidates);
   if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos');
   const quantidadeInscricaoAndamento = candidates.filter(
     (candidate) =>
@@ -259,7 +258,7 @@ const editalCandidates = async (req: Request, res: Response) => {
     (candidate) =>
       candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
   ).length;
-  return res.render('edital/listCandidates', {
+  return res.render(resolveView('listCandidates'), {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
     ...locals,
@@ -335,7 +334,7 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
       'ComprovantePagamento',
       'Recomendacao',
     ];
-    // archive.directory(candDir, `${candidato.id}-${candidato.Nome}`)
+    // archive.directory(candDir, `${candidato.id}-${candidato.nome}`)
     pastas.forEach((pasta) => {
       const pastaDir = path.join(candDir, pasta);
       if (fs.existsSync(pastaDir)) {

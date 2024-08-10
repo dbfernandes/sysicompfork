@@ -64,6 +64,8 @@
     "mysql2": "^2.3.3",
     "nodemailer": "^6.6.3",
     "nodemailer-express-handlebars": "^4.0.0",
+    "phantomjs-prebuilt": "^2.1.16",
+    "puppeteer": "^23.0.2",
     "uuid": "^8.3.2",
     "winston": "^3.13.0"
   },

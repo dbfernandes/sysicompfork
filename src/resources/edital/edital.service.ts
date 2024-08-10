@@ -1,4 +1,4 @@
-import { PrismaClient, Edital, Candidate, LinhasDePesquisa } from '@prisma/client'
+import { PrismaClient, Edital, Candidato, LinhasDePesquisa } from '@prisma/client'
 const moment = require('moment-timezone')
 /* eslint-disable camelcase */
 
@@ -157,10 +157,10 @@ class EditalService {
     return edital;
   }
 
-  async listCandidates(id: string): Promise<Candidate[]> {
-    const candidates = await prisma.candidate.findMany({
+  async listCandidates(id: string): Promise<Candidato[]> {
+    const candidatos = await prisma.candidato.findMany({
       where: {
-        editalId: id
+        idEdital: id
       },
       include: { LinhasDePesquisa: true }
     }
@@ -169,12 +169,12 @@ class EditalService {
       throw new Error('Não foi possivel listar os candidatos')
     })
 
-    return candidates;
+    return candidatos;
   }
 
-  async getCandidate(id: number): Promise<Candidate | null> {
+  async getCandidate(id: number): Promise<Candidato | null> {
     try {
-      return await prisma.candidate.findFirst({
+      return await prisma.candidato.findFirst({
         where: {
           id,
         },

@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import path from 'path';
 import { NextFunction, Request, Response } from 'express';
 import UsuarioService from '../usuarios/usuario.service';
 import { sendEmailRecoveryPasswordUser } from '../../utils/mailerGrid';
@@ -47,10 +48,14 @@ const autorizarProf = async (
   else return res.redirect('/');
 };
 
+function resolveView(viewName: string): string {
+  return path.resolve(__dirname, 'views', viewName);
+}
+
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     if (req.session.uid) return res.redirect('/');
-    return res.render('autenticacao/login', {
+    return res.render(resolveView('login'), {
       ...optionsLogin,
       csrfToken: req.csrfToken(),
     });
@@ -60,7 +65,7 @@ const login = async (req: Request, res: Response) => {
       const usuario = await UsuarioService.buscarUsuarioPor({ cpf });
 
       if (!usuario) {
-        return res.render('autenticacao/login', {
+        return res.render(resolveView('login'), {
           ...optionsLogin,
 
           csrfToken: req.csrfToken(),
@@ -68,7 +73,7 @@ const login = async (req: Request, res: Response) => {
           type: 'danger',
         });
       } else if (usuario.status === 0) {
-        return res.render('autenticacao/login', {
+        return res.render(resolveView('login'), {
           ...optionsLogin,
 
           csrfToken: req.csrfToken(),
@@ -79,7 +84,7 @@ const login = async (req: Request, res: Response) => {
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
       if (!isSenhaCorreta) {
-        return res.render('autenticacao/login', {
+        return res.render(resolveView('login'), {
           ...optionsLogin,
 
           csrfToken: req.csrfToken(),
@@ -114,7 +119,7 @@ const login = async (req: Request, res: Response) => {
 const recuperarSenha = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      return res.render('autenticacao/recuperarSenha', {
+      return res.render(resolveView('recuperarSenha'), {
         ...optionsLogin,
         csrfToken: req.csrfToken(),
       });
@@ -145,7 +150,7 @@ const recuperarSenha = async (req: Request, res: Response) => {
           .send({ message: 'Token enviado para o e-mail cadastrado' });
       } catch (err) {
         console.error(err);
-        return res.render('autenticacao/recuperarSenha', {
+        return res.render(resolveView('recuperarSenha'), {
           ...optionsLogin,
           csrfToken: req.csrfToken(),
           message: 'Erro durante a recuperação de senha, tente novamente.',
@@ -167,23 +172,23 @@ const trocaSenha = async (req: Request, res: Response) => {
       });
       const hasUser = Boolean(user);
       if (!hasUser) {
-        return res.render('autenticacao/trocarSenha', {
+        return res.render(resolveView('trocarSenha'), {
           csrfToken: req.csrfToken(),
           error: 'Token invalido',
           ...optionsLogin,
         });
       }
 
-      const isTokenValid = user.validadeTokenResetSenha > new Date();
+      const isTokenValid = user.validadeTokenResetadaSenha > new Date();
       if (!isTokenValid) {
-        return res.render('autenticacao/trocarSenha', {
+        return res.render(resolveView('trocarSenha'), {
           csrfToken: req.csrfToken(),
           error: 'Token expirado',
           ...optionsLogin,
         });
       }
 
-      return res.render('autenticacao/trocarSenha', {
+      return res.render(resolveView('trocarSenha'), {
         csrfToken: req.csrfToken(),
         nome: user.nomeCompleto,
         token: req.query.token,

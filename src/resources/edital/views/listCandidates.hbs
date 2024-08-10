@@ -58,14 +58,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each posicaoEdital}}
-                                    {{#if (eq editalPosition 4) }}
+                                    {{#each candidates}}
+                                    {{#if (eq posicaoEdital 4) }}
                                     <tr>
                                         <td>{{id}}</td>
                                         <td>{{idEdital}}</td>
                                         <td>{{nome}}</td>
                                         <td>{{cursoDesejado}}</td>
-                                        <td>{{idLinhaPesquisa}}</td>
+                                        <td>{{LinhasDePesquisa.sigla}}</td>
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
                                             <div class="d-flex justify-content-between">
@@ -120,8 +120,8 @@
                                             <td>{{nome}}</td>
                                             <td>{{email}}</td>
                                             <td>{{cursoDesejado}}</td>
-                                            <td>{{idLinhaPesquisa}}</td>
-                                            <td>{{idEdital}}/4</td>
+                                            <td>{{LinhasDePesquisa.sigla}}</td>
+                                            <td>{{posicaoEdital}}/4</td>
                                             <td>
                                                 <div class="d-flex justify-content-between">
                                                     <a  style="margin-right: 0px"

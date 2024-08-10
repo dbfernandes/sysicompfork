@@ -647,7 +647,7 @@ const trocarSenha = async (req, res: Response) => {
         });
       }
 
-      if (candidate.validadeTokenReset < new Date()) {
+      if (candidate.validarTokenResetada < new Date()) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),

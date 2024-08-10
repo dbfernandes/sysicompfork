@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import afastamentoService from './afastamento.temporario.service';
+import afastamentoService from './afastamentoTemporario.service';
 import path from 'path';
 const pageTitle = 'Afastamento Temporário';
 
