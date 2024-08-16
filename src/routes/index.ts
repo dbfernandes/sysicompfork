@@ -12,7 +12,8 @@ import autenticacaoController from '../resources/autenticacao/autenticacao.contr
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
 import horasComplementaresRoutes from '../resources/horasComplementares/horasComplementares.routes';
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamentoTemporario.routes';
-import pdfController from '../utils/exportToPDF';
+// import pdfController from '../utils/exportToPDF';
+import { criarAfastamentoPDF } from '../utils/criarAfastamentoPDF'
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/alunos.routes';
@@ -70,7 +71,7 @@ router.use(
   autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use('/gerarPDF/:id', pdfController.gerarPDF);
+router.use('/gerarPDF/:id', criarAfastamentoPDF);
 router.use(
   '/downloadCandidateDocument/:id',
   editalController.getCandidateDocument,

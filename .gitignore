@@ -23,3 +23,5 @@ uploads/*
 !/logs/.gitkeep
 /logs/*
 
+# Removing the .env file
+.env
