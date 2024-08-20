@@ -67,7 +67,7 @@ class CandidatoService {
       : null;
   }
 
-  async findById(id) {
+  async findById(id: number) {
     return await prisma.candidato.findUnique({
       where: {
         id,
@@ -75,7 +75,17 @@ class CandidatoService {
     });
   }
 
-  async update({ id, data }) {
+  async findByIdWithEdital(id: number) {
+    return await prisma.candidato.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        Edital: true,
+      },
+    });
+  }
+  async update({ id, data }: { id: number; data: any }) {
     return await prisma.candidato.update({
       where: {
         id,

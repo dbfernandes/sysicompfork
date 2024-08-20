@@ -2,14 +2,22 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 
-import candidatePublicacaoService from '../candidate/candidate.publicacao.service';
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import candidatoService from '../candidato/candidato.service';
 import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
-import { CURRICULUM_FILE } from './selecaoppgi.types';
+import {
+  CARTA_ACEITE_ORIENTADOR_FILE,
+  COMPROVANTE_FILE,
+  CURRICULUM_FILE,
+  PROPOSTA_FILE,
+  PROVA_ANTERIOR_FILE,
+} from './selecaoppgi.types';
 import editalService from '../edital/edital.service';
+import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
+import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
+import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -164,50 +172,83 @@ function logout(req: CustomRequest, res: Response) {
 const formProposta = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'PUT': {
-      const id = req.session.uid;
-      const hasProposta =
-        req.files &&
-        !Array.isArray(req.files) &&
-        req.files['CartaAceiteOrientador'] !== undefined;
-      if (!hasProposta) {
+      try {
+        const { uid } = req.session;
+        const { body } = req;
+        console.log(body);
+        const hasProposta =
+          req.files &&
+          !Array.isArray(req.files) &&
+          req.files['CartaAceiteOrientador'] !== undefined;
+        if (!hasProposta) {
+          if (
+            fs.existsSync(
+              path.join(
+                'uploads',
+                'candidatos',
+                uid,
+                'CartaAceiteOrientador.pdf',
+              ),
+            )
+          ) {
+            fs.unlinkSync(
+              path.join(
+                'uploads',
+                'candidatos',
+                uid.toString(),
+                'CartaAceiteOrientador.pdf',
+              ),
+            );
+          }
+        }
         if (
-          fs.existsSync(
-            path.join(
-              'uploads',
-              'candidatos',
-              id?.toString(),
-              'CartaAceiteOrientador.pdf',
-            ),
-          )
+          body.recomendacaoNome &&
+          body.recomendacaoEmail &&
+          body.recomendacaoNome.length === body.recomendacaoEmail.length
         ) {
-          fs.unlinkSync(
-            path.join(
-              'uploads',
-              'candidatos',
-              id?.toString(),
-              'CartaAceiteOrientador.pdf',
-            ),
+          const candidato = await candidatoService.findByIdWithEdital(
+            Number(uid),
+          );
+          await candidatoRecomendacaoService.createManyByCandidate(
+            body.recomendacaoNome.map((nome, index) => ({
+              nome,
+              email: body.recomendacaoEmail[index],
+            })),
+            Number(uid),
+            candidato.idEdital,
+            new Date(candidato.Edital.dataFim),
           );
         }
-      }
-      const candidate = {
-        idLinhaPesquisa: Number(req.body.idLinhaPesquisa),
-        tituloProposta: req.body.tituloProposta,
-        nomeOrientador: req.body.nomeOrientador,
-        motivos: req.body.motivos,
-        posicaoEdital: 4,
-      };
-      await candidatoService
-        .update({
+        const posicaoEdital = body.isNext ? 4 : 3;
+
+        const candidate = {
+          idLinhaPesquisa: Number(body.idLinhaPesquisa),
+          tituloProposta: body.tituloProposta,
+          nomeOrientador: body.nomeOrientador,
+          motivos: body.motivos,
+          posicaoEdital,
+        };
+        const id = Number(uid);
+        await candidatoService.update({
           id,
           data: candidate,
-        })
-        .catch((err) => {
-          console.error(err);
-          return res.status(500).send();
         });
-      req.session.editalPosition = 4;
-      return res.status(200).send();
+
+        if (body.isNext) {
+          const url = `http://${req.headers.host}/selecaoppgi/recomendacoes/adicionar`;
+
+          candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate({
+            idCandidato: id,
+            url,
+          });
+        }
+
+        req.session.editalPosition = posicaoEdital;
+        return res.status(200).send();
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
     }
     default:
       return res.status(405).send();
@@ -219,21 +260,14 @@ export function verificarArquivoDiretorio(
   nomeArquivo: string,
 ) {
   const caminhoArquivo = path.join(diretorio, nomeArquivo);
-  try {
-    // Verifica se o arquivo existe
-    fs.accessSync(caminhoArquivo, fs.constants.F_OK);
-    return true;
-  } catch (err) {
-    console.log(`[ERROR] Verificar arquivo: ${err}`);
-    // Se houver algum erro ao acessar o arquivo, retorna false
-    return false;
-  }
+
+  return fs.existsSync(caminhoArquivo);
 }
 
 async function backToStart(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'POST':
-      const id = req.session.uid;
+      const id = Number(req.session.uid);
       await candidatoService.update({
         id,
         data: {
@@ -246,6 +280,7 @@ async function backToStart(req: CustomRequest, res: Response) {
       return res.status(405).send();
   }
 }
+
 const forms = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
@@ -255,7 +290,7 @@ const forms = async (req: CustomRequest, res: Response) => {
       }
       const { uid, editalPosition } = req.session;
 
-      const candidate = await candidatoService.findById(uid);
+      const candidate = await candidatoService.findById(Number(uid));
       const edital = await editalService.getEdital(candidate.idEdital);
 
       if (!candidate) {
@@ -263,8 +298,12 @@ const forms = async (req: CustomRequest, res: Response) => {
         break;
       }
 
-      console.log(candidate);
-      console.log({ ...candidate });
+      const caminhoDiretorioUsuario = path.join(
+        'public',
+        'uploads',
+        'candidato',
+        uid.toString(),
+      );
       switch (editalPosition) {
         case 1: {
           return res.status(200).render(resolveView('formDados'), {
@@ -275,16 +314,15 @@ const forms = async (req: CustomRequest, res: Response) => {
         }
 
         case 2: {
-          const caminhoDiretorioUsuario = path.join(
-            'public',
-            'uploads',
-            'candidato',
-            uid.toString(),
-          );
           const experienciasAcademicas =
             await candidatoExperienciaAcademicaService.listByCandidateId(
               Number(uid),
             );
+          const { conferencias, periodicos } =
+            await candidatoPublicacaoService.ListarPublicacoesCandidate(
+              Number(uid),
+            );
+
           return res.render(resolveView('forms2'), {
             ...locals,
             ...candidate,
@@ -298,33 +336,46 @@ const forms = async (req: CustomRequest, res: Response) => {
             ),
             hasProvaAnterior: verificarArquivoDiretorio(
               caminhoDiretorioUsuario,
-              'ProvaAnterior.pdf',
+              PROVA_ANTERIOR_FILE,
             ),
-            experienciasAcademicas: experienciasAcademicas.map(
-              (experiencia: any) => experiencia.toJSON(),
-            ),
+            experienciasAcademicas,
+            conferencias,
+            periodicos,
           });
         }
 
         case 3: {
           const linhas = await linhasDePesquisaService.list();
+          const recomendacoes =
+            await candidatoRecomendacaoService.getRecomendacoesByCandidato(
+              Number(uid),
+            );
+          console.log(recomendacoes);
           return res.render(resolveView('forms3'), {
             ...locals,
             ...candidate,
+            recomendacoes,
             edital,
             editalPosicao: req.session.editalPosition,
             email: req.session.email,
             id: req.session.uid,
             linhasPesquisa: linhas,
             csrfToken: req.csrfToken(),
+            hasCartaAceiteOrientador: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              CARTA_ACEITE_ORIENTADOR_FILE,
+            ),
+            hasPropostaTrabalho: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              PROPOSTA_FILE,
+            ),
+            hasComprovante: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              COMPROVANTE_FILE,
+            ),
           });
         }
         case 4: {
-          const caminhoDiretorioUsuario = path.join(
-            'uploads',
-            'candidatos',
-            uid.toString(),
-          );
           return res.render(resolveView('formConfirmacao'), {
             ...locals,
             editalPosicao: req.session.editalPosition,
@@ -332,7 +383,15 @@ const forms = async (req: CustomRequest, res: Response) => {
             csrfToken: req.csrfToken(),
             hasCartaAceiteOrientador: verificarArquivoDiretorio(
               caminhoDiretorioUsuario,
-              'CartaAceiteOrientador.pdf',
+              CARTA_ACEITE_ORIENTADOR_FILE,
+            ),
+            hasPropostaTrabalho: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              PROPOSTA_FILE,
+            ),
+            hasComprovante: verificarArquivoDiretorio(
+              caminhoDiretorioUsuario,
+              COMPROVANTE_FILE,
             ),
           });
         }
@@ -352,6 +411,7 @@ function parseDate(dateString: string) {
 
   return new Date(year, month, day);
 }
+
 const form1 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'PUT': {
@@ -369,8 +429,9 @@ const form1 = async (req: CustomRequest, res: Response) => {
           cotista: data.cotista === 'true',
         };
         const { uid } = req.session;
+        const id = Number(uid);
         await candidatoService.update({
-          id: uid,
+          id,
           data: candidato,
         });
         req.session.editalPosition = 2;
@@ -388,55 +449,41 @@ const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'PUT': {
       try {
-        let Curriculum = null;
-        let Prova = null;
-        if (
-          !Array.isArray(req.files) &&
-          req.files &&
-          req.files.Prova !== undefined
-        ) {
-          Prova = req.files.Prova[0];
-        }
-        if (
-          !Array.isArray(req.files) &&
-          req.files &&
-          req.files.Curriculum !== undefined
-        ) {
-          Curriculum = req.files.Curriculum[0];
-        }
         const { uid } = req.session;
-        console.log(req.body);
-        const experienciaInstituicao = req.body.experienciaInstituicao;
-        const experienciasAtividade = req.body.experienciaAtividade;
-        const experienciasPeriodo = req.body.experienciaPeriodo;
-        console.log(
-          experienciaInstituicao,
-          experienciasAtividade,
-          experienciasPeriodo,
-        );
+        const experienciaInstituicao = req.body
+          .experienciaInstituicao as string[];
+        const experienciasAtividade = req.body.experienciaAtividade as string[];
+        const experienciasPeriodo = req.body.experienciaPeriodo as string[];
 
-        // if (
-        //   experienciaInstituicao &&
-        //   experienciasAtividade &&
-        //   experienciasPeriodo && experienciaInstituicao.length > 0
-        // ) {
-        //   await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid);
-        //   await Promise.all(
-        //     experienciaInstituicao.map((_: any, index: any) => {
-        //       return candidatoExperienciaAcademicaService.create({
-        //         data: {
-        //           instituicao: experienciaInstituicao[index],
-        //           atividade: experienciasAtividade[index],
-        //           periodo: experienciasPeriodo[index],
-        //         },
-        //         idCandidato: uid,
-        //       });
-        //     })
-        //   ).catch((err) => {
-        //     console.error(err);
-        //     return res.status(500).send();
-        //   })
-        // }
+        await candidatoExperienciaAcademicaService.dropAllByCandidateId(
+          Number(uid),
+        );
+        if (
+          experienciaInstituicao &&
+          experienciasAtividade &&
+          experienciasPeriodo &&
+          experienciaInstituicao.length > 0
+        ) {
+          await Promise.all(
+            experienciaInstituicao.map((_, index) => {
+              if (
+                experienciaInstituicao[index] === '' ||
+                experienciasAtividade[index] === '' ||
+                experienciasPeriodo[index] === ''
+              ) {
+                return;
+              }
+              return candidatoExperienciaAcademicaService.create({
+                data: {
+                  instituicao: experienciaInstituicao[index],
+                  atividade: experienciasAtividade[index],
+                  periodo: experienciasPeriodo[index],
+                },
+                idCandidato: uid,
+              });
+            }),
+          );
+        }
         const { body } = req;
         const candidato = {
           cursoGraduacao: body.cursoGraduacao,
@@ -447,8 +494,9 @@ const form2 = async (req: CustomRequest, res: Response) => {
           anoEgressoPos: body.anoEgressoPos,
           posicaoEdital: 3,
         };
+        const id = Number(uid);
         await candidatoService.update({
-          id: uid,
+          id,
           data: candidato,
         });
 
@@ -468,7 +516,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
 const formPublicacoes = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatePublicacaoService.ListarPublicacoesCandidate(
+      const data = await candidatoPublicacaoService.ListarPublicacoesCandidate(
         Number(req.session.uid),
       );
 
@@ -498,45 +546,45 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
         const promises = [];
 
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             periodicos,
-            1,
+            TYPES_PUBLICACAO.PERIODICOS,
           ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             eventos,
-            2,
+            TYPES_PUBLICACAO.EVENTOS,
           ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             livros,
-            3,
+            TYPES_PUBLICACAO.LIVROS,
           ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             capitulos,
-            4,
+            TYPES_PUBLICACAO.CAPITULOS,
           ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             outras,
-            5,
+            TYPES_PUBLICACAO.OUTRAS,
           ),
         );
         promises.push(
-          candidatePublicacaoService.adicionarVarios(
+          candidatoPublicacaoService.adicionarVarios(
             Number(req.session.uid),
             prefacios,
-            6,
+            TYPES_PUBLICACAO.PREFACIOS,
           ),
         );
 
@@ -574,7 +622,7 @@ const backStep = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'POST': {
       try {
-        const id = req.session.uid;
+        const id = Number(req.session.uid);
         const editalPosicao =
           parseInt(req.session.editalPosition?.toString() ?? '1', 10) - 1;
         await candidatoService.backEdital({

@@ -86,7 +86,7 @@ model Candidate {
 
 
 model Candidato {
-  id                    BigInt    @id @default(autoincrement())
+  id                    Int    @id @default(autoincrement())
   posicaoEdital         Int?      @db.SmallInt
   senhaHash             String    @db.VarChar(255)
   tokenResetSenha       String?   @db.VarChar(255)
@@ -132,29 +132,25 @@ model Candidato {
   Edital                Edital     @relation(fields: [idEdital], references: [editalId])
   LinhasDePesquisa      LinhasDePesquisa?   @relation(fields: [idLinhaPesquisa], references: [id])
 
+  CandidatoRecomendacao         CandidatoRecomendacao[]         @relation(fields: [], references: [])
   CandidatoExperienciaAcademica CandidatoExperienciaAcademica[] @relation(fields: [], references: [])
+  CandidatoPublicacoes         CandidatoPublicacoes[]         @relation(fields: [], references: [])
   @@map("Candidato")
 }
 
-model CandidateAcademicExperience {
-  id          Int    @id @default(autoincrement())
-  idCandidate Int
-  instituicao String @db.VarChar(255)
-  atividade   String @db.VarChar(255)
-  periodo     String @db.VarChar(255)
-}
-
 model CandidatoExperienciaAcademica {
-  id          Int    @id @default(autoincrement())
-  idCandidato BigInt
+  id          Int     @default(autoincrement())
+  idCandidato Int
   instituicao String? @db.VarChar(60)
   atividade   String? @db.VarChar(60)
   periodo     String? @db.VarChar(30)
   Candidato   Candidato @relation(fields: [idCandidato], references: [id])
+
+  @@id([id, idCandidato])
 }
-model CandidatePublications {
+model CandidatoPublicacoes {
   id          Int      @default(autoincrement())
-  idCandidate Int
+  idCandidato Int
   titulo      String   @db.VarChar(255)
   ano         Int
   local       String?  @db.VarChar(255)
@@ -165,7 +161,54 @@ model CandidatePublications {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@id([id, idCandidate])
+  Candidato   Candidato @relation(fields: [idCandidato], references: [id])
+
+  @@id([id, idCandidato])
+} 
+
+model CandidatoRecomendacao {
+  id                  Int      @default(autoincrement())
+  dataEnvio           DateTime @default(now()) @updatedAt
+  dataResposta        DateTime? 
+  prazo               DateTime @db.Date
+  nome                String?   @db.VarChar(100)
+  email               String   @db.VarChar(100)
+  token               String   @db.VarChar(50)
+  titulacao           String?   @db.VarChar(50)
+  cargo               String?   @db.VarChar(50)
+  instituicaoTitulacao String?   @db.VarChar(100)
+  anoTitulacao        Int?     @db.Int
+  instituicaoAtual    String?   @db.VarChar(100)
+  dominio             Int?      @db.SmallInt
+  aprendizado         Int?      @db.SmallInt
+  assiduidade         Int?      @db.SmallInt
+  relacionamento      Int?      @db.SmallInt
+  iniciativa          Int?      @db.SmallInt
+  expressao           Int?      @db.SmallInt
+  classificacao       Float?
+  informacoes         String?   @db.Text
+  anoContato          Int?     @db.SmallInt
+  conheceGraduacao    Int     @default(0) @db.SmallInt
+  conhecePos          Int     @default(0) @db.SmallInt
+  conheceEmpresa      Int      @default(0) @db.SmallInt
+  conheceOutros       Int      @default(0) @db.SmallInt
+  outrosLugares       String?  @db.VarChar(60)
+  orientador          Int      @default(0) @db.SmallInt
+  professor           Int      @default(0) @db.SmallInt
+  empregador          Int      @default(0) @db.SmallInt
+  coordenador         Int      @default(0) @db.SmallInt
+  colegaCurso         Int      @default(0) @db.SmallInt
+  colegaTrabalho      Int      @default(0) @db.SmallInt
+  outrosContatos      Int      @default(0) @db.SmallInt
+  outrasFuncoes       String?  @db.VarChar(60)
+  passo               String   @default("1") @db.Char(1)
+  idCandidato         Int
+  idEdital     String?  @db.VarChar(20)
+
+  Candidato           Candidato @relation(fields: [idCandidato], references: [id])
+  Edital              Edital?   @relation(fields: [idEdital], references: [editalId])
+
+  @@id([id, idCandidato])
 }
 
 model Edital {
@@ -184,7 +227,9 @@ model Edital {
   inscricoesEncerradas Int      @default(0)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
   Candidato            Candidato[] @relation(fields: [], references: [])
+  CandidatoRecomendacao CandidatoRecomendacao[] @relation(fields: [], references: [])
 }
 
 model LinhasDePesquisa {

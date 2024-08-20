@@ -1,3 +1,5 @@
+{{ setTitle title="Proposta de Projeto" }}
+
 <style>
   .forms-page {
     height: 100vh;
@@ -89,10 +91,6 @@
     height: 100%;
   }
 
-  .forms-page section form {
-    width: 100%;
-    padding: 0 5%;
-  }
 
   .forms-page section button {
     position: relative;
@@ -151,7 +149,8 @@
               </div>
               <div class="modal-footer">
                   <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Cancelar</a>
-                  <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deletarAT()">Confirmar</a>
+                  <a id="confirmButton" type="button" class="btn btn-warning color-white" onclick="finishRegister()">Confirmar
+                    <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span></a>
               </div>
               <form name="postDelete" id="finish-register" method="POST">
                   <input type="hidden" name="_csrf" value="{{csrfToken}}"> 
@@ -161,18 +160,16 @@
 </div>
 <div class="forms-page">
 	<header>
-		<h1>PPGI</h1>
-		<div class="options">
-			<button id="btn_inicio">Início</button>
-			<button id="btn_logout">Sair</button>
-		</div>
+    <div class="container">
+      <h1 class="header-title">PPGI</h1>
+		  <div class="options">
+			  <button id="btn_inicio">Início</button>
+			  <button id="btn_logout">Sair</button>
+		  </div>
+    </div>
 	</header>
 
-
-
-  {{!-- ALTERAÇÃO PARA NOVO FORMULARIO --}}
-
-  <section class="content">
+  <section class="content container">
     <nav>
       <ul>
         <li>
@@ -197,6 +194,7 @@
         </div>
       </div>
     </nav>
+    
     <div class="container-fluid">
       <form id="candidato-formulario">
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -269,6 +267,23 @@
                 obrigatórios.</p>
 
               <div class="row">
+                {{#each recomendacoes}}
+                  <div class="col-md-5 ">
+                    <label class="control-label" for="candidato-instituicao">
+                      <font color="#FF0000">*</font>
+                      <b>Nome:</b>
+                    </label>
+                    <input class="form-control" id="candidatoNomeRecomendacao{{@index}}" type="text" name="recomendacaoNome[]" value="{{nome}}" maxlength="60">
+                  </div>
+
+                  <div class="col-md-5 ">
+                    <label class="control-label" for="candidato-instituicao">
+                      <font color="#FF0000">*</font>
+                      <b>Email:</b>
+                    </label>
+                    <input class="form-control" id="candidatoEmailRecomendacao{{@index}}" type="email" name="recomendacaoEmail[]" value="{{email}}" maxlength="60">
+                  </div>
+                {{else}}
                 <div class="col-md-5 ">
                   <label class="control-label" for="candidato-instituicao">
                     <font color="#FF0000">*</font>
@@ -284,25 +299,9 @@
                   </label>
                   <input  class="form-control" id="candidatoEmailRecomendacao1" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
                 </div>
+                {{/each}}
+              
               </div>
-              <div class="row">
-                <div class="col-md-5 ">
-                  <label class="control-label" for="candidato-instituicao">
-                    <font color="#FF0000">*</font>
-                    <b>Nome:</b>
-                  </label>
-                  <input class="form-control" id="candidatoNomeRecomendacao2" type="text" name="recomendacaoNome[]" value="" maxlength="60">
-                </div>
-
-                <div class="col-md-5 ">
-                  <label class="control-label" for="candidato-instituicao">
-                    <font color="#FF0000">*</font>
-                    <b>Email:</b>
-                  </label>
-                  <input class="form-control" id="candidatoEmailRecomendacao2" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
-                </div>
-              </div>
-
               <div id="dynamic-inputs">
                 <!-- Novos campos serão adicionados aqui -->
               </div>
@@ -330,35 +329,39 @@
             </div>
 
             {{#if (eq edital.cartaOrientador 1)}}
+              <div>{{#if hasCartaAceiteOrientador}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
               <div class="row ">
                   <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                    <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador">
+                    <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
                     <label class=" form-control custom-file-label" for="CartaAceiteOrientador"> Carta de Aceite do Orientador (obrigatório para doutorado)</label>
                   </div>
               </div>
             {{/if}}
+            <div>{{#if hasPropostaTrabalho}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
             <div class="row">
                 <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                  <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho">
+                  <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
                   <label class="form-control custom-file-label" for="PropostaTrabalho">Proposta de Trabalho (obrigatório)</label>
                 </div>
             </div>
 
+            <div>{{#if hasComprovante}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
             <div class="row">
                 <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                  <input type="file" class="custom-file-input" id="ComprovantePagamento" name="ComprovantePagamento">
+                  <input type="file" class="custom-file-input" id="ComprovantePagamento" name="ComprovantePagamento" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
                   <label class=" form-control custom-file-label" for="ComprovantePagamento">Comprovante de Pagamento (obrigatório)</label>
                </div>
             </div>
-
           </div>
-
-
 
           <div class="card-footer">
             <div class="col">
               <button class="btn btn-success float-right custom-button">
                 Salvar e Continuar
+                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
+              </button>
+              <button  id="save-data" class="btn btn-secondary float-right custom-button" >
+                Salvar
                 <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
               <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
@@ -373,39 +376,71 @@
   </section>
 </div>
 
-<footer>
-</footer>
-
 <script>
-  function deletarAT(event){
-        // document.postDelete.submit();
-        const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const formData = new FormData($("#candidato-formulario")[0]);
-        formData.append('idLinhaPesquisa', linhaDePesquisaId);
-        $.ajax({
-          headers: {
-            'X-CSRF-TOKEN': $("#csrfToken").val()
-          },
-          url: '/selecaoppgi/formulario/3',
-          type: 'PUT',
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function (data) {
-            window.location.href = '/selecaoppgi/formulario';
-            window.location.reload(true);
-          },
-          error: function (data) {
-            console.error(data);
-          }
-        });
-    }
+  function finishRegister(event){
+    const linhaDePesquisaId = $("#candidato-pesquisa").val();
+    const formData = new FormData($("#candidato-formulario")[0]);
+    const btnSubmit = $("#confirmButton");
+    btnSubmit.attr("disabled", true);
+    btnSubmit.find("span").prop("hidden", false);
+    formData.append('idLinhaPesquisa', linhaDePesquisaId);
+    formData.append('isNext', true);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $("#csrfToken").val()
+      },
+      url: '/selecaoppgi/formulario/3',
+      type: 'PUT',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        window.location.href = '/selecaoppgi/formulario';
+      },
+      error: function (data) {
+        console.error(data);
+        btnSubmit.attr("disabled", false);
+        btnSubmit.find("span").prop("hidden", true);
+      }
+    });
+  }
   
+  $("#save-data").click(function (e) {
+    e.preventDefault();
+    const form = $("#candidato-formulario");
+    if (!form.valid()) {
+      return;
+    }
+    const linhaDePesquisaId = $("#candidato-pesquisa").val();
+    const formData = new FormData($("#candidato-formulario")[0]);
+    const btnSubmit = $("#save-data");
+    btnSubmit.attr("disabled", true);
+    btnSubmit.find("span").prop("hidden", false);
+    formData.append('idLinhaPesquisa', linhaDePesquisaId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $("#csrfToken").val()
+      },
+      url: '/selecaoppgi/formulario/3',
+      type: 'PUT',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        window.location.href = '/selecaoppgi/formulario';
+      },
+      error: function (data) {
+        console.error(data);
+        btnSubmit.attr("disabled", false);
+        btnSubmit.find("span").prop("hidden", true);
+      }
+    });
+  });
+
   $(document).ready(function () {
     let recomendacaoCounter = 1;
-
 		$("#btn_logout").click(function () {
-
 			$.ajax({
 				url: "/selecaoppgi/logout",
 				type: "POST",
@@ -420,6 +455,7 @@
 				}
 			});
 		});
+
 		$("#btn_inicio").click(function () {
 			$.ajax({
 				url: "/selecaoppgi/voltarInicio",
@@ -536,13 +572,13 @@
           email: true 
         },
         "PropostaTrabalho": {
-          required: true
+          required: {{#if hasPropostaTrabalho}}false{{else}}true{{/if}}
         },
         "ComprovantePagamento": {
-          required: true
+          required: {{#if hasComprovante}}false{{else}}true{{/if}}
         },
         "CartaAceiteOrientador": {
-          required: {{#if (eq cursoDesejado 'Doutorado')}}true{{else}}false{{/if}}
+          required: {{#if (and (eq cursoDesejado 'Doutorado') (eq hasComprovante false))}}true{{else}}false{{/if}}
         },
       },
       messages: {

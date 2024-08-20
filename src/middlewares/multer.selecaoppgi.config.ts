@@ -41,4 +41,22 @@ const uploadsProposta = multer({ storage }).fields([
   { name: 'CartaAceiteOrientador', maxCount: 1 },
 ]);
 
-export { uploads, uploadsProposta };
+const storagePublicacoes = multer.diskStorage({
+  destination: function (req, file, callback) {
+    console.log(file);
+    const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
+    ensureDirectoryExistence(uploadDir);
+    callback(null, uploadDir);
+  },
+  filename: function (req, file, callback) {
+    console.log(file);
+    const name = `${file.fieldname}.xml`;
+    callback(null, name);
+  },
+});
+
+const uploadsPublicacoes = multer({ storage: storagePublicacoes }).fields([
+  { name: 'VitaeXML', maxCount: 1 },
+]);
+
+export { uploads, uploadsProposta, uploadsPublicacoes };

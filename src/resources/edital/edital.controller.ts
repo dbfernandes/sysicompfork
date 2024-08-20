@@ -189,7 +189,6 @@ const updateEdital = async (req: Request, res: Response) => {
         cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
         vagaDoutorado: parseInt(req.body.vaga_regular_doutorado),
         cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
-        status: '',
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
         // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))

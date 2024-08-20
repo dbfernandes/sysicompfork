@@ -1,3 +1,5 @@
+{{ setTitle title="Histórico" }}
+
 <style>
   .forms-page {
     height: 100vh;
@@ -90,11 +92,6 @@
     height: 100%;
   }
 
-  .forms-page section form {
-    width: 100%;
-    padding: 0 5%;
-  }
-
   .forms-page section button {
     position: relative;
     bottom: 0;
@@ -120,15 +117,17 @@
 
 <div class="forms-page">
 	<header>
-		<h1>PPGI</h1>
-		<div class="options">
-			<button id="btn_inicio">Início</button>
-			<button id="btn_logout">Sair</button>
-		</div>
+    <div class="container">
+      <h1 class="header-title">PPGI</h1>
+		  <div class="options">
+			  <button id="btn_inicio">Início</button>
+			  <button id="btn_logout">Sair</button>
+		  </div>
+    </div>
 	</header>
 
 
-  <section class="content">
+  <section class="content container">
     <nav>
       <ul>
         <li>
@@ -274,11 +273,11 @@
                 <label class="control-label" for="vittaepdf">
                   <font color="#FF0000">*</font> 
                   <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
-                         {{#if hasCurriculum}} Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualiza-lo{{/if}}
+                  {{#if hasCurriculum}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="vittaepdf" name="Curriculum">
+                    <input type="file" class="custom-file-input" id="vittaepdf" name="Curriculum" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
                     <label class="custom-file-label" for="Curriculum">Escolher arquivo</label>
                   </div>
                 </div>
@@ -290,8 +289,9 @@
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="vittaexml" name="VitaeXML">
+                    <input type="file" class="custom-file-input" id="vittaexml" name="VitaeXML" accept="text/xml"  data-msg-accept="Esse campo só permite arquivos XML.">
                     <label class="custom-file-label" for="VitaeXML">Escolher arquivo</label>
+  
                   </div>
                 </div>
 
@@ -380,6 +380,7 @@
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">Aproveitamento de Prova de Seleção Anterior</h3>
+
           </div>
 
           <div class="card-body">
@@ -389,16 +390,12 @@
                   <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), 
                     pro favor faça o upload do PDF da prova através da opção abaixo:
                   </b>
-                         
+                  {{#if hasProvaAnterior}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
+
                 </label>
               </div>
-              {{#if hasProvaAnterior}}
-                <div class="col-md-6">
-                  <a href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary">Baixar Prova Anterior</a>
-                  <input type="hidden" name="ProvaAnterior" value="{{hasProvaAnterior}}">
-
-                </div>
-              {{else}}
+              
+              
                 <div class="col-md-6" >
                 <div class="form-group">
                   <div class="custom-file">
@@ -408,7 +405,6 @@
                   </div>
                 </div>
               </div>
-              {{/if}}
 
              
             </div>
@@ -417,12 +413,14 @@
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Experiência Acadêmica{{experienciasAcademicas}}</h3>
+            <h3 class="card-title">Experiência Acadêmica</h3>
           </div>
 
           <div class="card-body">
             <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
-            {{#each experienciasAcademicas}}
+          
+            <div id="experiencia-container">
+              {{#each experienciasAcademicas}}
               <div class="row experiencia-row">
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
@@ -447,11 +445,11 @@
                     maxlength="30" value="{{periodo}}">
                 </div>
                 <div class="col-1" style="margin-top:10px">
-                  <button class="btn btn-danger delete-experiencia-button">Excluir</button>
+                  <button type="button" class="btn btn-danger delete-experiencia-button">Excluir</button>
                 </div>
               </div>
-            {{/each}}
-            <div id="experiencia-container">
+              {{/each}}
+              {{#if (eq experienciasAcademicas.length 0)}}
               <div class="row experiencia-row">
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
@@ -476,9 +474,10 @@
                   <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
                 </div>
                 <div class="col-1" style="margin-top:10px">
-                  <button class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
+                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
                 </div>
               </div>
+              {{/if}}
             </div>
           </div>
           <div class="card-footer">
@@ -609,6 +608,16 @@
     const experienciaContainer = document.getElementById("experiencia-container");
     const exemploRow = document.querySelector(".experiencia-row");
 
+    const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
+    if (experiencias.length >= 1) {
+      for (const experiencia of experiencias) {
+          const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+
+        deleteButton.addEventListener("click", function () {
+          experienciaContainer.removeChild(experiencia);
+        });
+      }
+    }
     addButton.addEventListener("click", function (e) {
       e.preventDefault();
       const newExperienciaRow = exemploRow.cloneNode(true);
@@ -625,8 +634,17 @@
           deleteButton.style.display = "inline-block";
           deleteButton.addEventListener("click", function () {
             experienciaContainer.removeChild(experiencia);
+            if (experiencias.length === 1) {
+              const experiencia = experiencias[0];
+              const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+              deleteButton.style.display = "none";
+            }
           });
         }
+      } else {
+        const experiencia = experiencias[0];
+        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+        deleteButton.style.display = "none";
       }
     });
   });
@@ -686,14 +704,17 @@
   }
 
 
-  $('#vittaexml').change(function(){
-    var VitaeXML = document.querySelector("VitaeXML")
-    var formData = new FormData($('#candidato-formulario2')[0]);
+  $('#vittaexml').change(function(data){
+    const file = data.target.files[0];
+    if (file && file.type === "text/xml") {
+      const VitaeXML = document.querySelector("VitaeXML")
+      const formData = new FormData($('#candidato-formulario2')[0]);
 
-    if (VitaeXML === "") {
-      
-    } else {
-      getCompleteData(formData, GetDataPubli)
+      if (data.target.files.length) {
+        const vitaeInput = document.getElementById("vittaexml");
+        vitaeInput.setAttribute("disabled", true);
+        getCompleteData(formData, GetDataPubli)
+      } 
     }
   })
 
@@ -709,16 +730,12 @@
     formData2.append('editalPosicao', editalPosicao);
     formData2.append('id', id);
 
-    const tete = {
-      teste: "teste"
-    }
-
     $.ajax({
       url: '/selecaoppgi/formulario/publicacoes?_csrf={{csrfToken}}',
       type: "POST",
       data: JSON.stringify(DataForm),
       success: function (data) {
-        window.location.href = '/selecaoppgi/formulario/publicacoes'
+        window.location.href = '/selecaoppgi/formulario';
       },
       error: function (err) {
         $(document).Toasts('create', {
@@ -729,6 +746,8 @@
           title: 'Ocorreu um problema!',
           body: 'As informações não poderam ser salvas.'
         })
+        const vitaeInput = document.getElementById("vittaexml");
+        vitaeInput.setAttribute("disabled", false);
       },
       contentType: 'application/json',
     })
@@ -793,6 +812,9 @@
         anoValido: true
 
       },
+      'Curriculum': {
+        required: {{#if hasCurriculum}}false{{else}}true{{/if}}
+      },
       "cursoPos": {
         conjuntoPreenchido: true
       },
@@ -826,7 +848,8 @@
       },
       "Curriculum": {
         required: "Este campo é obrigatório."
-      }
+      },
+  
     },
     submitHandler: (form, e) => {
       e.preventDefault()

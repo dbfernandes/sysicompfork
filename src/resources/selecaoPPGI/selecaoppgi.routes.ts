@@ -2,11 +2,16 @@ import express from 'express';
 import {
   uploads,
   uploadsProposta,
+  uploadsPublicacoes,
 } from '../../middlewares/multer.selecaoppgi.config';
 import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
+
 import selecaoppgiController from './selecaoppgi.controller';
 
+import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
+
 const router = express.Router();
+router.use('/recomendacoes', routerCandidatoRecomendacao);
 
 router.get('/', selecaoppgiController.begin);
 
@@ -34,7 +39,11 @@ router.put(
   selecaoppgiController.formProposta,
 );
 
-router.get('/formulario/publicacoes', selecaoppgiController.formPublicacoes);
+router.get(
+  '/formulario/publicacoes',
+  uploadsPublicacoes,
+  selecaoppgiController.formPublicacoes,
+);
 router.post(
   '/formulario/publicacoes',
   uploads,
