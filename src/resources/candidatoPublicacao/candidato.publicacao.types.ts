@@ -1,0 +1,8 @@
+export const enum TYPES_PUBLICACAO {
+  PERIODICOS = 1,
+  EVENTOS = 2,
+  LIVROS = 3,
+  CAPITULOS = 4,
+  OUTRAS = 5,
+  PREFACIOS = 6,
+}

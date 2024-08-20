@@ -1,3 +1,5 @@
+{{ setTitle title="Confirmação" }}
+
 <style>
   .forms-page {
     height: 100vh;
@@ -7,6 +9,7 @@
     background-color: #fff;
     overflow-y: auto;
   }
+
 
   .forms-page header {
     width: 100%;
@@ -180,17 +183,37 @@
     text-align: center;
 
 }
+
+.link-file {
+    font-weight: bold;
+}
+.container {
+  max-width: 1200px;
+}
+
+header > .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  margin: 0;
+}
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 <div class="forms-page">
 	<header>
-		<h1>PPGI</h1>
-		<div class="options">
-			<button id="btn_logout">Sair</button>
-		</div>
+    <div class="container">
+      <h1 class="header-title">PPGI</h1>
+		  <div class="options">
+		    <button id="btn_logout">Sair</button>
+		  </div>
+    </div>
+		
 	</header>
-  <section class="content">
-    				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+  <section class="content container">
+    <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
  
     <nav>
       <ul>
@@ -220,7 +243,7 @@
         <h2>Inscrição realizada com sucesso !</h2>
         <p>
             Seus dados foram cadastrados com sucesso. Sua proposta será analisada e em breve teremos a divulgação dos aprovados no processo de seleção do PPGI.<br>
-            clique no link "Imprimir Formulário de Inscrição" e imprima a página contendo os dados de sua inscrição para seu controle. Quando solicitado, assine e entregue este formulário na secretaria do PPGI/UFAM que fica no Departamento de Ciência da Computação, localizado na Rua Gen. Rodrigo Octávio Jordão Ramos, 3000 SETOR NORTE do Campus Universitário Manaus - AM - CEP 69.077-00.
+            Clique no link "Imprimir Formulário de Inscrição" e imprima a página contendo os dados de sua inscrição para seu controle. Quando solicitado, assine e entregue este formulário na secretaria do PPGI/UFAM que fica no Departamento de Ciência da Computação, localizado na Rua Gen. Rodrigo Octávio Jordão Ramos, 3000 SETOR NORTE do Campus Universitário Manaus - AM - CEP 69.077-00.
         </p>
         <span class="message-footer">
             Ass: Coordenação do PPGI/UFAM
@@ -230,27 +253,27 @@
         </p>
         <div class="container-buttons">
           <div class="container-button">
-            <img src="/public/img/user-profile-generic.png" alt="" width="50">
+            <img src="/public/img/edit_f2.png" alt="" width="50">
             <href="">Imprimir Formulário  de Inscrição</href=>
           </div>
           <div class="container-button">
-            <img src="/public/img/user-profile-generic.png" alt="" width="50">
-            <a href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf">Imprimir Proposta  de Trabalho</a>
+            <img src="/public/img/trabalho.png" alt="" width="50">
+            <a class="link-file" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf">Imprimir Proposta  de Trabalho</a>
           </div>
          {{#if hasCartaAceiteOrientador}}
           <div class="container-button">
-            <img src="/public/img/user-profile-generic.png" alt="" width="50">
-            <a href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf">Carta Orientador</a>
+            <img src="/public/img/historico.gif" alt="" width="50">
+            <a class="link-file" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf">Carta Orientador</a>
           </div>
           {{/if}}
 
           <div class="container-button">
-            <img src="/public/img/user-profile-generic.png" alt="" width="50">
-            <a href="">Imprimir Curriculum Lattes</a>
+            <img src="/public/img/curriculum.gif" alt="" width="50">
+            <a class="link-file" href="/selecaoppgi/download/arquivo/Curriculum.pdf">Imprimir Curriculum Lattes</a>
           </div>
           <div class="container-button">
-            <img src="/public/img/user-profile-generic.png" alt="" width="50">
-            <a href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf">Imprimir Comprovante de Pagamento</a>
+            <img src="/public/img/pagamento.png" alt="" width="50">
+            <a class="link-file" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf">Imprimir Comprovante de Pagamento</a>
           </div>
         </div>
     </main>
@@ -273,90 +296,6 @@
 </footer>
 
 <script>
-    function deletarAT(event){
-        // document.postDelete.submit();
-       const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        formData.append('linhaDePesquisaId', linhaDePesquisaId);
-        
-        $.ajax({
-          url: '/selecaoppgi/formulario/3',
-          type: 'POST',
-          data: {
-            linhaDePesquisaId: linhaDePesquisaId,
-            	_csrf: $("#csrfToken").val()
-          },
-          success: function (data) {
-            console.log(`Sucesso`)
-          },
-          error: function (data) {
-            console.error(data);
-          }
-        });
-    }
-  	$(document).ready(function () {
-      $('#candidato-formulario').submit(function (e) {
-        e.preventDefault();
-        const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
-        $('#confirm-register').modal()
-      });
-      $("#finish-register").on("click", function (e) {
-        e.preventDefault();
-        const linhaDePesquisaId = $("#candidato-pesquisa").val();
-        const tituloProposta = $("#candidato-titulo-proposta").val();
-        const formData = new FormData();
-        formData.append('csrfToken', $("#csrfToken").val());
-        formData.append('email', $("#email").val());
-        formData.append('editalPosicao', $("#editalPosicao").val());
-        formData.append('id', $("#idCandidato").val());
-        console.log(linhaDePesquisaId)
-        console.log(tituloProposta)
-        $.ajax({
-          url: '/selecaoppgi/form/4',
-          type: 'POST',
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function (data) {
-            console.log(`Sucesso`)
-          },
-          error: function (data) {
-            console.error(data);
-          }
-        });
-      });
-
-		$("#btn_logout").click(function () {
-			$.ajax({
-				url: "/selecaoppgi/logout",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-
-	});
-
   $(document).ready(function () {
      $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
@@ -379,37 +318,6 @@
         }
       });
 
-    });
-    // Adicionar novo input
-    $("#add-btn").click(function (e) {
-      e.preventDefault();
-      var newInput = '<div class="row">' +
-        '<div class="col-md-5">' +
-        '<label class="control-label" for="candidato-Nome-Recomendacao">' +
-        '<font color="#FF0000">*</font>' +
-        '<b>Nome:</b>' +
-        '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoNome[]" value="" maxlength="60">' +
-        '</div>' +
-        '<div class="col-md-5">' +
-        '<label class="control-label" for="candidato-Email-Recomendacao">' +
-        '<font color="#FF0000">*</font>' +
-        '<b>Email:</b>' +
-        '</label>' +
-        '<input class="form-control" type="text" name="RecomendacaoEmail[]" value="" maxlength="60">' +
-        '</div>' +
-        '<div class="col-md-2 align-self-end">' +
-        '<button class="remove-btn" onclick="$(this).closest(\'.row\').remove();">X</button>' + '</div>' +
-        '</div>';
-
-      $("#dynamic-inputs").append(newInput);
-    });
-
-    $("#candidato-Motivo").on("input", function () {
-      var maxLength = 1000;
-      var currentLength = $(this).val().length;
-      var charactersRemaining = maxLength - currentLength;
-      $("#charCount").text(charactersRemaining);
     });
   });
 </script>

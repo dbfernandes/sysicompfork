@@ -13,7 +13,7 @@ class EditalService {
       });
 
       if (edital) {
-        console.log('edital ja existe');
+        console.error('edital ja existe');
         throw new Error(`Edital de número ${editalDados.editalId} já existe`);
       }
 
@@ -32,6 +32,24 @@ class EditalService {
     return editais;
   }
 
+  async listEditalComQtdeCandidatos() {
+    const editais = await prisma.edital.findMany({
+      include: {
+        Candidato: true,
+      },
+    });
+    return editais.map((edital) => {
+      return {
+        ...edital,
+        qtdeInscricoesFinalizadas: edital.Candidato.filter(
+          (candidato) => candidato.posicaoEdital >= 4,
+        ).length,
+        qtdeInscricoesPendentes: edital.Candidato.filter(
+          (candidato) => candidato.posicaoEdital < 4,
+        ).length,
+      };
+    });
+  }
   async listEditalsAvailable(): Promise<Edital[]> {
     const dataToday = new Date();
     const editais = await prisma.edital.findMany().catch((err) => {

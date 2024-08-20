@@ -18,7 +18,7 @@ const ensureDirectoryExistence = (filePath) => {
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
     console.log(file);
-    const uploadDir = `./uploads/candidatos/${req.session.uid}`;
+    const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
     ensureDirectoryExistence(uploadDir);
     callback(null, uploadDir);
   },
@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 });
 
 const uploads = multer({ storage }).fields([
-  { name: 'VitaePDF', maxCount: 1 },
+  { name: 'Curriculum', maxCount: 1 },
   { name: 'ProvaAnterior', maxCount: 1 },
   { name: 'VitaeXML', maxCount: 1 },
 ]);
@@ -41,4 +41,22 @@ const uploadsProposta = multer({ storage }).fields([
   { name: 'CartaAceiteOrientador', maxCount: 1 },
 ]);
 
-export { uploads, uploadsProposta };
+const storagePublicacoes = multer.diskStorage({
+  destination: function (req, file, callback) {
+    console.log(file);
+    const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
+    ensureDirectoryExistence(uploadDir);
+    callback(null, uploadDir);
+  },
+  filename: function (req, file, callback) {
+    console.log(file);
+    const name = `${file.fieldname}.xml`;
+    callback(null, name);
+  },
+});
+
+const uploadsPublicacoes = multer({ storage: storagePublicacoes }).fields([
+  { name: 'VitaeXML', maxCount: 1 },
+]);
+
+export { uploads, uploadsProposta, uploadsPublicacoes };

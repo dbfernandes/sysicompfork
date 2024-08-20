@@ -1,16 +1,17 @@
 {{> header}}
 
 {{> sidebar module="edital"}}
+{{ setTitle title=(concat "Candidato " candidate.id "- Edital " candidate.idEdital) }}
 
 <div class="content-wrapper">
     <section class="content-header">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-9">
-                    <h1>Candidato {{candidate.id}} - Edital {{candidate.editalId}} </h1>
+            <div class="d-flex justify-content-between flex-wrap gap-1 ">
+                <div>
+                    <h1>Candidato {{candidate.id}} - Edital {{candidate.idEdital}} </h1>
                 </div>
-                <div class="col-sm-3">
+                <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         {{!-- <li class="breadcrumb-item"><a href="/">Edital: {{candidate.editalId}}</a></li> --}}
@@ -20,7 +21,7 @@
             </div>
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/edital/listEditalCandidates/{{candidate.idEdital}}">
+                    <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a> 
@@ -145,12 +146,19 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Título da Proposta</th>
-                                    <td>{{candidate.tituloProposta}}</td>
+                                    <td><span class="{{#if (notEmpty candidate.tituloProposta)}}">{{candidate.tituloProposta}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+
+                                    </span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Motivos</th>
-                                    <td>{{candidate.motivos}}</td>
+                                    <td><span class="{{#if (notEmpty candidate.motivos)}}">{{candidate.motivos}}
+                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+
+                                    </span></td>
                                 </tr>
+                                {{#if (eq edital.cartaOrientador 1)}}
                                 <tr>
                                     <th class="col-3">Carta do Orientador (PDF)</th>
                                     <td><span class="{{#if candidatoDocs.CartaDoOrientador}}">
@@ -161,11 +169,13 @@
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
+                                {{/if}}
+                               
                                 <tr>
                                     <th class="col-3">Proposta de Trabalho (PDF)</th>
                                     <td><span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
                                             <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=PropostaDeTrabalho"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=PropostaTrabalho.pdf"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -175,7 +185,7 @@
                                     <th class="col-3">Curriculum (PDF)</th>
                                     <td><span class="{{#if candidatoDocs.Curriculum}}">
                                             <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=Curriculum"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=Curriculum.pdf"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -195,12 +205,13 @@
                                     <th class="col-3">Comprovante de Pagamento (PDF)</th>
                                     <td><span class="{{#if candidatoDocs.ComprovantePagamento}}">
                                             <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=comprovante"
+                                                href="/downloadCandidateDocument/{{candidate.id}}?documento=ComprovantePagamento.pdf"
                                                 class='fa fa-solid fa-download'
                                             />
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
+                                {{#if (eq edital.cartaRecomendacao 1)}}
                                 <tr>
                                     <th class="col-3">Cartas de Recomendação (PDF)</th>
                                     <td>
@@ -221,6 +232,9 @@
                                     <th class="col-3">N° de Cartas de Recomendação (Respondidas)</th>
                                     <td>0</td>
                                 </tr>
+                                {{/if}}
+
+                             
                                 <tr>
                                     <th class="col-3">Curso de graduação</th>
                                     <td><span class="{{#if (notEmpty candidate.cursoGraduacao)}}">{{candidate.cursoGraduacao}}
@@ -272,5 +286,10 @@
         </div>
     </section>
 </div>
+<script>
+         document.getElementById("voltarBtn").addEventListener("click", function() {
+            window.history.back();
+        });
+</script>
 
 {{> footer}}

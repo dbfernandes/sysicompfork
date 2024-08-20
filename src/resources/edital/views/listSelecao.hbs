@@ -1,4 +1,5 @@
 {{> header}}
+{{ setTitle title="Editais de Seleção do PPGI" }}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
@@ -10,11 +11,11 @@
     <section class="content-header">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-9">
+            <div class="d-flex justify-content-between flex-wrap gap-1 ">
+                <div>
                     <h1>Editais de Seleção do PPGI</h1>
                 </div>
-                <div class="col-sm-3">
+                <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item active">Editais de Seleção do PPGI</li>
@@ -88,16 +89,16 @@
                                         <td> {{add @index 1}} </td>
                                         <td> {{editalId}} </td>
                                         <td> {{dataInicio}} </td>
-                                        <td> {{dataFim}} </td>
-                                        <td> {{inscricoesIniciadas}} </td>
-                                        <td> {{inscricoesEncerradas}} </td>
+                                        <td> {{dataFim}} </td> 
+                                        <td> {{qtdeInscricoesPendentes}} </td>
+                                        <td> {{qtdeInscricoesFinalizadas}} </td>
                                         <td> REG: {{vagaMestrado}} / SUP: {{cotasMestrado}} </td>
                                         <td> REG: {{vagaDoutorado}} / SUP: {{cotasDoutorado}} </td>
                                         <td>
                                             <span id="badge-{{editalId}}"
                                                 
                                                 {{#validaLabel status dataInicio dataFim }}
-
+ 
                                                 {{else}}
                                                     <span class="badge bg-danger">
                                                         Suspenso

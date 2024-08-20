@@ -202,6 +202,13 @@ const validaLabel = (status, dataInicio, dataFim, options) => {
   }
 };
 
+function setTitle(options) {
+  this.title = options.hash.title;
+  return '';
+}
+function concat() {
+  return Array.prototype.slice.call(arguments, 0, -1).join('');
+}
 module.exports = {
   ...ops,
   ifEqual,
@@ -223,4 +230,6 @@ module.exports = {
   guidencesOnGoing,
   guidencesEnded,
   isEnLng,
+  setTitle,
+  concat,
 };
