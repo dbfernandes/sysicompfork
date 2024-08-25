@@ -66,6 +66,7 @@ app.use(
 );
 
 app.use('/public', express.static(path.join(__dirname, '/../public/')));
+app.use('/img', express.static(path.join(__dirname, '/../public/img/')));
 
 app.use(
   '/uploads',

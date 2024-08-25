@@ -11,14 +11,16 @@
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">linhasDePesquisa</li>
-                        <li class="breadcrumb-item active">listar</li>
+                        <li class="breadcrumb-item active">
+                            <a href="/Página inicial">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item active">Afastamentos</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/inicio">
+                    <a class="btn btn-warning color-white" onclick="voltarPagina()">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
@@ -180,6 +182,8 @@
         const formDelete = document.getElementById("postDelete")
         formDelete.setAttribute('action', `/afastamentoTemporario/remover/${id}`);
     }
-
+    function voltarPagina(){
+        window.history.back();
+    }
 </script>
 {{> footer}}

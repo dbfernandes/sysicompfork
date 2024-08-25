@@ -41,9 +41,11 @@ async function getAfastamento(id: number) {
 }
 
 // 2. Pegar o modelo do afastamento e compilar o HTML
-function HBStoPDF(afastamentoPath: any, dados: any, footerPath: any) {
+function HBStoPDF(afastamentoPath: any, dados: any, footerPath: any, headerPath: any) {
     const footer = fs.readFileSync(footerPath, 'utf8')
+    const header = fs.readFileSync(headerPath, 'utf8')
     const afastamentoDoc = fs.readFileSync(afastamentoPath, 'utf8')
+    Handlebars.registerPartial('header', header)
     Handlebars.registerPartial('footer', footer)
     const template = Handlebars.compile(afastamentoDoc)
     return template({ afastamentoDoc: dados })
@@ -60,14 +62,16 @@ export async function criarAfastamentoPDF(req: Request, res: Response, next: Nex
         const footerPath = path.join(process.cwd(),
             '/src/views/layouts/modeloAfastamento/footer.hbs'
         )
-
+        const headerPath = path.join(process.cwd(),
+            '/src/views/layouts/modeloAfastamento/header.hbs'
+        )
         const dados = await getAfastamento(Number(id))
-        const arquivoHTML = HBStoPDF(afastamentoPath, dados, footerPath)
+        const arquivoHTML = HBStoPDF(afastamentoPath, dados, footerPath, headerPath)
 
         const browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            executablePath: '/usr/bin/chromium-browser',
+            executablePath: '/usr/bin/chromium-browser'
         })
         const page = await browser.newPage()
         await page.setContent(arquivoHTML)
@@ -75,7 +79,7 @@ export async function criarAfastamentoPDF(req: Request, res: Response, next: Nex
             path: path.join(__dirname, `/../../public/afastamentos/${dados!.usuarioNome}.pdf`),
             format: 'A4',
             printBackground: true,
-            displayHeaderFooter: true,
+            displayHeaderFooter: true
         })
         console.log('Tamanho do PDF Buffer:', pdf.length);
 
