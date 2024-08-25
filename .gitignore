@@ -13,7 +13,7 @@ src/uploads/*
 !src/uploads/.gitkeep 
 
 public/candidato/uploads/*
-public/afastamentos/*
+/public/afastamentos/*
 
 uploads/*
 
