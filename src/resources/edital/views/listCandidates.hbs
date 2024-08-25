@@ -7,19 +7,22 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-10">
+                <div class="col-sm-7">
                     <h1>Candidatos do PPGI - Edital {{editalID}} </h1>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-5">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
-                        <li class="breadcrumb-item active">Canditados</li>
+                        <li class="breadcrumb-item"><a href="/inicio">Página Inical</a></li>
+                        <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI</a></li>
+                        <li class="breadcrumb-item active"><a href="/edital/listEdital/{{editalID}}">
+                                Detalhes de edital</a></li>
+                        <li class="breadcrumb-item active"> Lista de Candidados</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-10">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/inicio">
+                    <a class="btn btn-warning color-white" onclick="voltarPagina()">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
@@ -163,6 +166,9 @@
 
 <script>
     
+    function voltarPagina() {
+        window.history.back();
+    }
     
     document.addEventListener("DOMContentLoaded", function(event) {
         var datatable = $("#tableCandidatesFinalizados").DataTable({
@@ -209,6 +215,7 @@
             window.history.back();
         });
     }); 
+
 </script>
 
 {{> footer}}
