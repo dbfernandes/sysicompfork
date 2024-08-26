@@ -7,18 +7,21 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Criar Pedido de Afastamento</h1>
+                    <h1>Solicitação de afastamento temporário</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/inicio">Inicio</a></li>
-                        <li class="breadcrumb-item active">Criar Pedido de Afastamento</li>
+                        <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+                        <li class="breadcrumb-item">
+                            <a href="/afastamentoTemporario/listar">Afastamentos</a>
+                        </li>
+                        <li class="breadcrumb-item active">Novo Afastamento</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-2">
                     <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                        <a class="btn btn-warning color-white" href="/inicio">
+                        <a class="btn btn-warning color-white" onclick="voltarPagina()">
                             <i class="fa fa-arrow-left"></i>
                             Voltar
                         </a>   
@@ -145,5 +148,9 @@
         </div>
 	</section>
 </div>
-
+<script>
+    function voltarPagina() {
+        window.history.back();
+    }
+</script>
 {{> footer}}
