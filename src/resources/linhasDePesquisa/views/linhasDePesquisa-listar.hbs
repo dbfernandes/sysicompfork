@@ -1,7 +1,7 @@
 {{> header}}
 {{> sidebar module='linhasDePesquisa' page='linhasDePesquisa-listar'}}
 
-<main class="content-wrapper">
+<div class="content-wrapper">
 
 	<section class="content-header">
         <div class="container-fluid">
@@ -18,7 +18,7 @@
             </div>
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/inicio">
+                    <a class="btn btn-warning color-white" onclick="voltarPagina()">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
@@ -129,7 +129,9 @@
   <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
 </head>
 <script>
-
+    function voltarPagina() {
+        window.history.back();
+    }
     document.addEventListener("DOMContentLoaded", function(event) {
         var datatable = $("#example2").DataTable({
         language: {
