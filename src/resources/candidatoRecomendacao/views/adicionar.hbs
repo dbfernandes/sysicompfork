@@ -5,7 +5,7 @@
 		display: block;
 		justify-content: center;
 		align-items: center;
-		background-color: #fff;
+		    background-color: #f4f6f9;
 		overflow-y: auto;
 	}
 	.forms-page header {
@@ -59,13 +59,10 @@
 	}
 
 
-	.forms-page section {
+	.forms-page .content {
 		display: flex;
 		flex-direction: column;
-		width: 90%;
 		margin: auto;
-		margin-top: 2%;
-		min-height: 100vh;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -103,15 +100,6 @@
 		bottom: 0;
 	}
 
-	.forms-page footer {
-		width: 100%;
-		height: 50px;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		background-color: #000;
-	}
-
 	.toast-container {
 		top: 0;
     	right: 0;
@@ -126,28 +114,610 @@
    		gap: 1rem;
    		align-items: center;
 	}
+
+
+	.callout, .card, form {
+		width: 100%;
+	}
+
+	.callout-icon {
+		margin-right: 8px;
+	}
+
+	.card-footer {
+		gap: 8px;
+	}
+	.custom-footer {		
+		padding: 1rem 0;
+    	background-color: #f5f5f5;
+    	border-top: 1px solid #ddd;
+		
+	}
+	.custom-footer p {
+		margin: 0;
+		color: #333;
+	}
+	.container-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 1rem;
+	}
 </style>
 
 
 <div class="forms-page">
 	<header>
-    <div class="container">
-      <h1 class="header-title">PPGI</h1>
-		  <div class="options">
-			  <button id="btn_inicio">Início</button>
-			  <button id="btn_logout">Sair</button>
-		  </div>
-    </div>
+		<div class="container">
+			<h1 class="header-title">PPGI</h1>
+		</div>
 	</header>
+	<section class="content-header container">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<h2>Carta de Recomendação para a Inscrição no Mestrado/Doutorado no PPGI/UFAM</h2>
+			</div>
+		</div>
+	</section>
+	<section class="content container">
+		<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+		<div class="callout callout-success">
+			<h5><i  class="fa fa-user callout-icon" aria-hidden="true"></i>Candidato</h5>
+			<ul>
+				<li><b>Nome:</b> {{candidato.nome}}</li>
+				<li><b>Graduado:</b>  {{candidato.graduado}}</li>
+			</ul>
+		</div>
+		<div class="callout callout-success">
+			<h5><i class="fa fa-calendar callout-icon" aria-hidden="true"></i>Prazo para envio </h5>
+			<span id="prazo-label"></span>
+		</div>
+		<div class="callout callout-success">
+			<h5><i class="fa fa-info" aria-hidden="true"></i></h5>
+			Desejamos ter sua opinião sobre o candidato que se inscreverá no Programa de Pós-Graduação Stricto 
+			Sensu em Informática desta Universidade. Estas informações, de caráter CONFIDENCIAL, 
+			são necessárias para que possamos julgar a aceitação ou não do candidato como aluno.<font color="#FF0000">(*) Campos obrigatórios.</font>
+		</div>
+
+		
+		<form id="form-recomendacao" action="">
+			<div class="card card-success">
+				<div class="card-header">
+					<h3 class="card-title">Seus dados</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="form-group col-md-8 col-lg-9 ">
+							<label for="nome">
+								<font color="#FF0000">*</font>
+								<b>Nome:</b>
+							</label>
+							<input class="form-control" placeholder="Insira seu nome" type="text" name="nome"
+								maxlength="100" value="{{recomendacao.nome}}">
+						</div>
+						<div class="col-md-4 col-lg-3 campo-titulacao">
+							<label class="control-label" for="titulacao">
+								<font color="#FF0000">*</font>
+								<b>Titulação:</b>
+							</label>
+							<select class="custom-select" name="titulacao">
+								<option value="">Selecione uma titulação</option>
+								<option value="Doutorado">Doutorado</option>
+								<option value="Mestrado">Mestrado</option>
+								<option value="Especialização">Especialização</option>
+								<option value="Graduação">Graduação</option>
+								<option value="Ensino Médio">Ensino Médio</option>
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-8 col-lg-9 ">
+							<label for="instituicaoTitulacao">
+								<font color="#FF0000">*</font>
+								<b>Instituição onde obteve o título:</b>
+							</label>
+							<input class="form-control" id="nome-recomendacao" placeholder="Insira a instituicao em que obteve o título" type="text" name="instituicaoTitulacao"
+								maxlength="100" value="{{recomendacao.instituicaoTitulacao}}">
+						</div>
+						<div class="col-md-4 col-lg-3 ">
+							<label class="control-label" for="anoTitulacao">
+								<font color="#FF0000">*</font>
+								<b>Ano de Titulação:</b>
+							</label>
+							<input class="form-control" placeholder="Insira o ano" type="number" name="anoTitulacao" value="{{recomendacao.anoTitulacao}}">
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-8 ">
+							<label for="instituicaoAtual">
+								<font color="#FF0000">*</font>
+								<b>Instituição Atual:</b>
+							</label>
+							<input class="form-control" placeholder="Insira sua atual instituicao" type="text" name="instituicaoAtual"
+								maxlength="100" value="{{recomendacao.instituicaoAtual}}">
+						</div>
+						<div class="col-md-4 ">
+							<label class="control-label" for="cargo">
+								<font color="#FF0000">*</font>
+								<b>Cargo Atual:</b>
+							</label>
+							<input class="form-control" placeholder="Insira seu cargo" type="text" name="cargo"
+								maxlength="50" value="{{recomendacao.cargo}}">
+							<div class="help-block"></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="card card-success">
+				<div class="card-header">
+					<h3 class="card-title">Relação com o candidato</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-xl-12 select2-green" >
+							<label class="control-label" for="titulacao">
+								<font color="#FF0000">*</font>	
+								<b>Conheço-o por meio de:</b>
+							</label>
+							<select class="select2" multiple="multiple" data-placeholder="Selecione os lugares" style="width: 100%;">
+								<option>Curso Graduação</option>
+								<option>Curso de Pós-Graduação</option>
+								<option>Empresa</option>
+								<option>Outro</option>
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8 campo-titulacao select2-green" >
+							<label class="control-label" for="titulacao">
+								<font color="#FF0000">*</font>	
+								<b>Com relação ao candidato, fui seu :</b>
+							</label>
+							<select class="select2" multiple="multiple" data-placeholder="Selecione os lugares" style="width: 100%;">
+
+								<option>Orientador</option>
+								<option>Professor</option>
+								<option>Empregador</option>
+								<option>Coordenador</option>
+								<option>Colega de Curso</option>
+								<option>Colega de Trabalho</option>
+								<option>Outros</option>
+							</select>
+							<div class="help-block"></div>
+						</div>
+						<div class="form-group  col-md-4 ">
+							<label class="control-label" for="anoContato">
+								<font color="#FF0000">*</font>
+								<b>Conheço-o desde o ano:</b>
+							</label>
+							<input class="form-control" placeholder="Insira o ano" type="number" name="anoContato"
+								maxlength="100" value="{{recomendacao.anoContato}}">
+							<div class="help-block"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card card-success">
+				<div class="card-header">
+					<h3 class="card-title">Sua classificação sobre o candidato</h3>
+				</div>
+				<div class="card-body">
+					<b>Como classifica o candidato quanto aos atributos listados abaixo:</b>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="dominio">
+								<font color="#FF0000">*</font>
+								<b>Domínio em sua área de conhecimento cientifico:</b>
+							</label>
+							<select class="custom-select" name="dominio">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="aprendizado">
+								<font color="#FF0000">*</font>
+								<b>Facilidade de aprendizado capacidade intelectual:</b>
+							</label>
+							<select class="custom-select" name="aprendizado">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="assiduidade">
+								<font color="#FF0000">*</font>
+								<b>Assiduidade, perseverança: </b>
+							</label>
+							<select class="custom-select" name="assiduidade">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="relacionamento">
+								<font color="#FF0000">*</font>
+								<b>Relacionamento com colegas e superiores: </b>
+							</label>
+							<select class="custom-select" name="relacionamento">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="iniciativa">
+								<font color="#FF0000">*</font>
+								<b>Iniciativa, desembaraço, originalidade e liderança</b>
+							</label>
+							<select class="custom-select" name="iniciativa">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label" for="expressao">
+								<font color="#FF0000">*</font>
+								<b>Capacidade de expressão escrita: </b>
+							</label>
+							<select class="custom-select" name="expressao">
+								<option value="">Selecione um nível</option>
+								<option value="1">1 - Fraco</option>
+								<option value="2">2 - Regular</option>
+								<option value="3">3 - Bom</option>
+								<option value="4">4 - Muito bom</option>
+								<option value="5">5 - Excelente</option>
+								<option value="-1">X - Sem condições de informar</option>
+
+							</select>
+							<div class="help-block"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card card-success">
+				<div class="card-header">
+					<h3 class="card-title">Informações</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+							<label class="control-label" for="informacoes">
+								Estamos particularmente interessados na avaliação do potencial do candidato para estudos,
+								pesquisa e desenvolvimento na área de Informática. Uma descrição detalhada dos pontos positivos e negativos do desempenho do 
+								candidato em atividades acadêmicas e/ou profissionais serão mais úteis do que comentários genéricos. Comentários sobre caráter, 
+								integridade e motivação serão úteis, se julgados pertinentes. A experiência na qual a opinião do avaliador se baseou também deve ser 
+								descrita. Se possível, compare o candidato com outras pessoas que tenham o mesmo nível de formação/experiência. As informações são confidenciais.
+								(<span id="charCount">1000</span> Caracteres Restantes):
+							</label>
+							<textarea class="form-control" rows="5" id="input-informacoes" name="informacoes" maxlength="1000">{{recomendacao.informacoes}}</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer d-flex justify-content-end flex-wrap">
+					<button type="button" class="btn btn-primary" id="btn-save">
+						Salvar
+						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
+					</button>
+					<button class="btn btn-success" type="submit">Enviar Carta</button>
+				</div>
+			</div>
+			
+		</form>
+		
+	
+	</section>
     <div class="toast-container position-fixed ">
-        <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="alert alert-primary mb-0" role="alert">
-                <span id="toastMessage">This is a primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.</span>
-                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <div id="toastDanger" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="alert alert-danger d-flex align-items-center justify-content-start mb-0" role="alert">
+  				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+  				<span id="toastMessageDanger" class="flex-fill">
+    				An example danger alert with an icon
+  				</span>
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     				<span aria-hidden="true">&times;</span>
   				</button>
-            </div>
+			</div>
         </div>
     </div>
+    <div class="toast-container position-fixed ">
+        <div id="toastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="alert alert-success d-flex align-items-center justify-content-start mb-0" role="alert">
+  				<i class="fa fa-check-circle" aria-hidden="true"></i>
+  				<span id="toastMessageSuccess" class="flex-fill">
+    				An example danger alert with an icon
+  				</span>
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    				<span aria-hidden="true">&times;</span>
+  				</button>
+			</div>
+        </div>
+    </div>
+	<footer class="custom-footer" >
+		<div class="container container-footer">
+			<strong><p id="text-icomp">ICOMP 2024</p></strong>
+			<P><strong>PPGI</strong></P>
+		</div>
+	</footer>
 </div>
 
+<script>
+	{{#if recomendacao.titulacao}}
+		$('select[name="titulacao"]').val('{{recomendacao.titulacao}}');
+	{{/if}}
+	{{#if recomendacao.dominio}}
+		$('select[name="dominio"]').val('{{recomendacao.dominio}}');
+	{{/if}}
+	{{#if recomendacao.aprendizado}}
+		$('select[name="aprendizado"]').val('{{recomendacao.aprendizado}}');
+	{{/if}}
+	{{#if recomendacao.assiduidade}}
+		$('select[name="assiduidade"]').val('{{recomendacao.assiduidade}}');
+	{{/if}}
+	{{#if recomendacao.relacionamento}}
+		$('select[name="relacionamento"]').val('{{recomendacao.relacionamento}}');
+	{{/if}}
+	{{#if recomendacao.iniciativa}}
+		$('select[name="iniciativa"]').val('{{recomendacao.iniciativa}}');
+	{{/if}}
+	{{#if recomendacao.expressao}}
+		$('select[name="expressao"]').val('{{recomendacao.expressao}}');
+	{{/if}}
+	{{#if recomendacao.informacoes}}
+		$('#charCount').text(1000 - '{{recomendacao.informacoes.length}}');
+	{{/if}}
+	const prazo = new Date('{{recomendacao.prazo}}');
+	const prazoLabel = document.getElementById('prazo-label');
+	prazoLabel.innerHTML = prazo.toLocaleString();
+	const today = new Date();
+	if (today > prazo) {
+		prazoLabel.style.color = 'red';
+	}
+	/*const toastMessage = document.getElementById('toastMessage');
+	const myToast = new bootstrap.Toast(document.getElementById('myToast'));
+	toastMessage.innerHTML = 'O prazo para envio da carta de recomendação é ' + prazo.toLocaleDateString();
+	myToast.show();*/
+	$("#input-informacoes").on('input', function() {
+		const charCount = $(this).val().length;
+		$("#charCount").text(1000 - charCount);
+	});
+	$("#btn-save").click(function({currentTarget}) {
+		currentTarget.disabled = true;
+		currentTarget.querySelector('span').hidden = false;
+		const data = $("#form-recomendacao").serialize();
+		$.ajax({
+			url: `/selecaoppgi/recomendacoes/salvar/{{token}}?_csrf=${$("#csrfToken").val()}`,
+			type: "PUT",
+			data,
+			success: function (data) {
+				const toastMessage = document.getElementById('toastMessageSuccess');
+				const myToast = new bootstrap.Toast(document.getElementById('toastSuccess'), {
+					delay: 5000
+				});
+				toastMessage.innerHTML = 'Carta de recomendação salva com sucesso';
+				myToast.show();
+			},
+			error: function (data) {
+				const toastMessage = document.getElementById('toastMessageDanger');
+				const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
+					delay: 5000
+				});
+				toastMessage.innerHTML = 'Erro ao salvar a carta de recomendação';
+				myToast.show();
+			},
+			complete: function() {
+				currentTarget.disabled = false;
+				currentTarget.querySelector('span').hidden = true;
+			}
+		});
+	});
+	$("#form-recomendacao").validate({
+		rules: {
+			nome: {
+				required: true,
+				minlength: 3,
+				maxlength: 100
+			},
+			titulacao: {
+				required: true,
+			}, 
+			instituicaoTitulacao: {
+				required: true,
+				minlength: 2,
+				maxlength: 100
+			},
+			instituicaoAtual: {
+				required: true,
+				minlength: 2,
+				maxlength: 100
+			},
+			cargo: {
+				required: true,
+				minlength: 2,
+				maxlength: 50
+			},
+			anoTitulacao: {
+                required: true,
+                number: true,
+                range: [1950, new Date().getFullYear() + 10]
+            },
+			anoContato: {
+                required: true,
+                number: true,
+                range: [1950, new Date().getFullYear()]
+            },
+			dominio: {
+                required: true,
+            },
+			aprendizado: {
+                required: true,
+            },
+			assiduidade: {
+				required: true,
+			},
+			relacionamento: {
+				required: true,
+			},
+			iniciativa: {
+				required: true,
+			},
+			expressao: {
+				required: true,
+			},
+			informacoes: {
+				required: true,
+				minlength: 10,
+				maxlength: 1000
+			},
+		},
+		messages: {
+			nome: {
+				required: "Por favor, informe seu nome",
+					minlength: "O nome deve ter pelo menos 3 caracteres",
+					maxlength: "O nome deve ter no máximo 100 caracteres"
+				},
+				titulacao: "Por favor, selecione uma opção",
+				instituicaoTitulacao: {
+					required: "Por favor, informe uma instituição",
+					minlength: "A instituição deve ter pelo menos 2 caracteres",
+					maxlength: "A instituição deve ter no máximo 100 caracteres"
+				},
+				instituicaoAtual: {
+					required: "Por favor, informe uma instituição",
+					minlength: "A instituição deve ter pelo menos 2 caracteres",
+					maxlength: "A instituição deve ter no máximo 100 caracteres"
+				},
+				cargo: {
+					required: "Por favor, informe um cargo",
+					minlength: "O cargo deve ter pelo menos 2 caracteres",
+					maxlength: "O cargo deve ter no máximo 50 caracteres"
+				},
+				anoTitulacao: {
+                	required: "Por favor, insira um ano",
+                	number: "Por favor, insira um ano válido",
+                	range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear() + 10})`
+            	},
+				anoContato: {
+                	required: "Por favor, insira um ano",
+                	number: "Por favor, insira um ano válido",
+                	range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear()})`
+            	},
+				dominio: "Por favor, selecione uma opção",
+				aprendizado: "Por favor, selecione uma opção",
+				assiduidade: "Por favor, selecione uma opção",
+				relacionamento: "Por favor, selecione uma opção",
+				iniciativa: "Por favor, selecione uma opção",
+				expressao: "Por favor, selecione uma opção",
+				informacoes: {
+					required: "Por favor, informe uma descrição",
+					minlength: "A descrição deve ter pelo menos 10 caracteres",
+					maxlength: "A descrição deve ter no máximo 1000 caracteres"
+				},
+				
+			},
+			errorElement: 'span',
+			errorPlacement: function (error, element) {
+				error.addClass('invalid-feedback');
+				element.closest('div').append(error);
+			},
+			highlight: function (element, errorClass, validClass) {
+				$(element).addClass('is-invalid');
+			},
+			unhighlight: function (element, errorClass, validClass) {
+				$(element).removeClass('is-invalid');
+			},
+			submitHandler: function (form, e) {
+				e.preventDefault();
+				console.log(form)
+				const formData = new FormData(form);
+				for (const [key, value] of formData.entries()) {
+					console.log(key, value);
+				}
+				for (const input of form) {
+					console.log(input)
+				}
+				/*const btnSave = $("#btn-save-continue");
+				btnSave.find("span").prop("hidden", false);
+				btnSave.prop("disabled", true);
+				const data = getValueFromForm();
+				const csrfToken = $("#csrfToken").val();
+				const email = $("#email").val();
+				const editalPosicao = $("#editalPosicao").val();
+				const id = $("#id").val();
+
+				$.ajax({
+					url: '/selecaoppgi/formulario/1',
+					type: "PUT",
+					data: {
+						data: data,
+						_csrf: csrfToken,
+						email: email,
+						editalPosicao: editalPosicao,
+						id: id
+					},
+					success: function (data) {
+						window.location.href = '/selecaoppgi/formulario';
+						window.location.reload(true);
+					},
+					error: function (data) {
+						btnSave.find("span").prop("hidden", true);
+						btnSave.prop("disabled", false);
+						console.log(data)
+					}
+				});*/
+			}
+		});
+	$(document).ready(function() {
+		$('.select2').select2();
+	});
+</script>

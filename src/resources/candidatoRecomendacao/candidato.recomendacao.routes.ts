@@ -6,4 +6,5 @@ const router = express.Router();
 router.post('/adicionar', candidatoRecomendacaoController.adicionar);
 router.get('/adicionar', candidatoRecomendacaoController.adicionar);
 
+router.put('/salvar/:token', candidatoRecomendacaoController.salvar);
 export default router;

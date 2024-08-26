@@ -1,8 +1,10 @@
-{{ setTitle title="Carta de Recomendação para de Inscrição no Mestrado/Doutorado no PPGI/UFAM" }}
+{{ setTitle title="Token inválido" }}
 <style>
 	.forms-page {
 		height: 100vh;
-		display: block;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		grid-template-columns: 1fr;
 		justify-content: center;
 		align-items: center;
 		background-color: #fff;
@@ -65,7 +67,6 @@
 		width: 90%;
 		margin: auto;
 		margin-top: 2%;
-		min-height: 100vh;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -103,14 +104,6 @@
 		bottom: 0;
 	}
 
-	.forms-page footer {
-		width: 100%;
-		height: 50px;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		background-color: #000;
-	}
 
 	.toast-container {
 		top: 0;
@@ -121,10 +114,21 @@
 		z-index: 1050;
 	}
 
-	.alert {
+	.custom-footer {		
+		padding: 1rem 0;
+    	background-color: #f5f5f5;
+    	border-top: 1px solid #ddd;
+		
+	}
+	.custom-footer p {
+		margin: 0;
+		color: #333;
+	}
+	.container-footer {
 		display: flex;
-   		gap: 1rem;
-   		align-items: center;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 1rem;
 	}
 </style>
 
@@ -133,10 +137,6 @@
 	<header>
     <div class="container">
       <h1 class="header-title">PPGI</h1>
-		  <div class="options">
-			  <button id="btn_inicio">Início</button>
-			  <button id="btn_logout">Sair</button>
-		  </div>
     </div>
 	</header>
     <div class="toast-container position-fixed ">
@@ -150,7 +150,21 @@
         </div>
     </div>
 	<section class="content container">
-		Token inválido. Por favor, solicite um novo token.
-	<section>
+		<div class="alert alert-warning alert-dismissible">
+			<h5><i class="icon fas fa-exclamation-triangle"></i> Token inválido!</h5>
+			Confirme-o no email que você recebeu do PPGI.
+		</div>
+	</section>
+	<footer class="custom-footer" >
+		<div class="container container-footer">
+			<strong><p id="text-icomp">ICOMP 2024</p></strong>
+			<P><strong>PPGI</strong></P>
+		</div>
+	</footer>
 </div>
-
+<script>
+	$(document).ready(function() {
+		const actualYear = new Date().getFullYear();
+		$('#text-icomp').text(`ICOMP ${actualYear}`);
+	});
+</script>

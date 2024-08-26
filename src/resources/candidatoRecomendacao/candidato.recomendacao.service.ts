@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 
 import { PrismaClient } from '@prisma/client';
-import { CreateRecomendacaoDto } from './candidato.recomendacao.types';
+import {
+  CreateRecomendacaoDto,
+  SaveRecomendacaoDto,
+} from './candidato.recomendacao.types';
 import sgMail from '../../utils/mailerGrid';
 
 const prisma = new PrismaClient();
@@ -27,9 +30,20 @@ class CandidatoRecomendacaoService {
       where: {
         token,
       },
+      include: {
+        Candidato: true,
+      },
     });
   }
 
+  async save(data: SaveRecomendacaoDto, token: string) {
+    return await prisma.candidatoRecomendacao.updateMany({
+      where: {
+        token,
+      },
+      data,
+    });
+  }
   async createManyByCandidate(
     data: {
       nome: string;
