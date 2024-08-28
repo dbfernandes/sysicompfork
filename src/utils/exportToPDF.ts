@@ -3,7 +3,7 @@ import moment from 'moment'
 import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 // import afastamentoService from '../services/afastamentoService'
-import afastamentoService from '../resources/afastamentoTemporario/afastamento.temporario.service'
+import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service'
 // import usuarioService from '../services/usuarioService'
 import usuarioService from '../resources/usuarios/usuario.service'
 const compileHTML = require('handlebars').compile

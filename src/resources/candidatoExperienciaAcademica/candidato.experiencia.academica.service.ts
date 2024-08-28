@@ -12,17 +12,17 @@ class CandidatoExperienciaAcademicaService {
   }
 
   async dropAllByCandidateId(idCandidate) {
-    return await prisma.candidateAcademicExperience.deleteMany({
+    return await prisma.candidatoExperienciaAcademica.deleteMany({
       where: {
-        idCandidate,
+        idCandidato: idCandidate,
       },
     });
   }
 
   async listByCandidateId(idCandidate: number) {
-    return await prisma.candidateAcademicExperience.findMany({
+    return await prisma.candidatoExperienciaAcademica.findMany({
       where: {
-        idCandidate,
+        idCandidato: idCandidate,
       },
     });
   }

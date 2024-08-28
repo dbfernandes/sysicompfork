@@ -13,6 +13,7 @@ src/uploads/*
 !src/uploads/.gitkeep 
 
 public/candidato/uploads/*
+public/afastamentos/*
 
 uploads/*
 
@@ -23,3 +24,5 @@ uploads/*
 !/logs/.gitkeep
 /logs/*
 
+# Removing the .env file
+.env

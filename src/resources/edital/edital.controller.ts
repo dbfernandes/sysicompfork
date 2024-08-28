@@ -42,7 +42,8 @@ const addEditalSelecao = async (req: Request, res: Response) => {
         inscricoesIniciadas: 0,
       };
       try {
-        await EditalService.criarEdital(novoEdital);
+        await EditalService.criarEdital(novoEdital)
+        return res.redirect('/edital/listEdital')
       } catch (error: any) {
         return res
           .status(400)
@@ -257,7 +258,7 @@ const editalCandidates = async (req: Request, res: Response) => {
     (candidate) =>
       candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
   ).length;
-  return res.render('edital/listCandidates', {
+  return res.render(resolveView('listCandidates'), {
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
     ...locals,
@@ -333,7 +334,7 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
       'ComprovantePagamento',
       'Recomendacao',
     ];
-    // archive.directory(candDir, `${candidato.id}-${candidato.Nome}`)
+    // archive.directory(candDir, `${candidato.id}-${candidato.nome}`)
     pastas.forEach((pasta) => {
       const pastaDir = path.join(candDir, pasta);
       if (fs.existsSync(pastaDir)) {

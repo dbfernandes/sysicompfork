@@ -14,11 +14,11 @@ class CandidatoService {
       const salt = await genSalt(10);
       const passwordHash = await hash(password, salt);
 
-      let candidate = await prisma.candidate
+      let candidate = await prisma.candidato
         .findFirst({
           where: {
             email,
-            editalId: editalNumber,
+            idEdital: editalNumber,
           },
         })
         .catch((err) => {
@@ -32,14 +32,14 @@ class CandidatoService {
         throw new Error('Candidato já existe');
       }
 
-      candidate = await prisma.candidate
+      candidate = await prisma.candidato
         .create({
           data: {
             email,
-            passwordHash,
-            editalId: editalNumber,
-            editalPosition: 1,
-            etapaAtual: step,
+            senhaHash: passwordHash,
+            idEdital: editalNumber,
+            posicaoEdital: 1,
+            // etapaAtual: step,
           },
         })
         .catch((err) => {
@@ -57,10 +57,10 @@ class CandidatoService {
   }
 
   async list() {
-    const candidates = await prisma.candidate
+    const candidates = await prisma.candidato
       .findMany({
         select: {
-          passwordHash: false,
+          senhaHash: false,
         },
       })
       .catch((err) => {
@@ -71,11 +71,11 @@ class CandidatoService {
   }
 
   async auth(email: string, password: string, editalNumber: string) {
-    const candidate = await prisma.candidate
+    const candidate = await prisma.candidato
       .findFirst({
         where: {
           email,
-          editalId: editalNumber,
+          idEdital: editalNumber,
         },
       })
       .catch((err) => {
@@ -87,7 +87,7 @@ class CandidatoService {
       throw new Error('Usuário não encontrado');
     }
 
-    if (!(await validPassword(password, candidate.passwordHash))) {
+    if (!(await validPassword(password, candidate.senhaHash))) {
       throw new Error('Usuário ou senha incorretos');
     }
 
@@ -104,7 +104,7 @@ class CandidatoService {
       'DD/MM/YYYY',
     ).format('YYYY-MM-DD');
     Candidato.Nascimento = new Date(dataNascimentoFormatada).toISOString();
-    await prisma.candidate
+    await prisma.candidato
       .update({
         where: {
           id,
@@ -118,7 +118,7 @@ class CandidatoService {
         console.log(err);
         throw new Error('Não foi possivel atualizar o candidato');
       });
-    const candidate = await prisma.candidate
+    const candidate = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -132,7 +132,7 @@ class CandidatoService {
   }
 
   async findOneCandidate(id: number) {
-    const candidate = await prisma.candidate
+    const candidate = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -149,7 +149,7 @@ class CandidatoService {
   }
 
   async back(id: number) {
-    const candidate = await prisma.candidate
+    const candidate = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -163,14 +163,11 @@ class CandidatoService {
   }
 
   async listCanditatesByEdital(editalId: string) {
-    const candidates = await prisma.candidate
+    const candidates = await prisma.candidato
       .findMany({
         where: {
-          editalId,
-        },
-        select: {
-          passwordHash: false,
-        },
+          idEdital: editalId,
+        }
       })
       .catch((err) => {
         console.log(`[ERROR] Listar Candidatos: ${err}`);

@@ -1,24 +1,26 @@
 {{> header}}
 {{> sidebar module='afastamentoTemporario' page='pedidos-afastamento'}}
 
-<main class="content-wrapper">
+<div class="content-wrapper">
 
 	<section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <h1>Listar Afastamentos Temporario </h1>
+                    <h1>Pedidos de afastamentos temporários</h1>
                 </div>
                 <div class="col-sm-3">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">linhasDePesquisa</li>
-                        <li class="breadcrumb-item active">listar</li>
+                        <li class="breadcrumb-item active">
+                            <a href="/Página inicial">Página inicial</a>
+                        </li>
+                        <li class="breadcrumb-item active">Afastamentos</li>
                     </ol>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/inicio">
+                    <a class="btn btn-warning color-white" onclick="voltarPagina()">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
@@ -180,6 +182,8 @@
         const formDelete = document.getElementById("postDelete")
         formDelete.setAttribute('action', `/afastamentoTemporario/remover/${id}`);
     }
-
+    function voltarPagina(){
+        window.history.back();
+    }
 </script>
 {{> footer}}

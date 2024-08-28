@@ -42,7 +42,7 @@ class CandidatePublicacaoService {
       for (const publicacao of publicacoesParaInserir) {
         try {
           const existingPublication =
-            await prisma.candidatePublications.findFirst({
+            await prisma.candidatoPublicacoes.findFirst({
               where: {
                 idCandidate,
                 titulo: publicacao.titulo,
@@ -52,7 +52,7 @@ class CandidatePublicacaoService {
             });
 
           if (existingPublication) {
-            await prisma.candidatePublications.update({
+            await prisma.candidatoPublicacoes.update({
               where: {
                 id_idCandidate: {
                   id: existingPublication.id,
@@ -65,7 +65,7 @@ class CandidatePublicacaoService {
               `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidate}!`,
             );
           } else {
-            await prisma.candidatePublications.create({
+            await prisma.candidatoPublicacoes.create({
               data: publicacao,
             });
             console.log(
@@ -86,14 +86,14 @@ class CandidatePublicacaoService {
     idCandidate: number,
   ): Promise<{ periodicos: any[]; conferencias: any[] }> {
     try {
-      const periodicos = await prisma.candidatePublications.findMany({
+      const periodicos = await prisma.candidatoPublicacoes.findMany({
         where: {
           idCandidate,
           tipo: 1,
         },
       });
 
-      const conferencias = await prisma.candidatePublications.findMany({
+      const conferencias = await prisma.candidatoPublicacoes.findMany({
         where: {
           idCandidate,
           tipo: 2,

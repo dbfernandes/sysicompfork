@@ -112,8 +112,8 @@ class CandidatoService {
         id,
       },
       data: {
-        tokenResetSenha: token,
-        validadeTokenReset: timeExpires,
+        tokenResetarSenha: token,
+        validarTokenResetada: timeExpires,
       },
     });
     return token;
@@ -122,7 +122,7 @@ class CandidatoService {
   async findByTokenPassword(token) {
     return await prisma.candidato.findFirst({
       where: {
-        tokenResetSenha: token,
+        tokenResetarSenha: token,
       },
     });
   }
@@ -130,7 +130,7 @@ class CandidatoService {
   async changePasswordWithToken({ token, password }) {
     const candidate = await prisma.candidato.findFirst({
       where: {
-        tokenResetSenha: token,
+        tokenResetarSenha: token,
       },
     });
 
@@ -138,7 +138,7 @@ class CandidatoService {
       throw new Error('Token inválido');
     }
 
-    if (candidate.validadeTokenReset < new Date()) {
+    if (candidate.validarTokenResetada < new Date()) {
       throw new Error('Token expirado');
     }
 
@@ -149,8 +149,8 @@ class CandidatoService {
       },
       data: {
         senhaHash: passwordHash,
-        tokenResetSenha: null,
-        validadeTokenReset: null,
+        tokenResetarSenha: null,
+        validarTokenResetada: null,
       },
     });
   }

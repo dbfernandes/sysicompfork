@@ -6,59 +6,107 @@
   .success {
     color: green;
   }
-
-  body {
-    background-color: lightgray;
+  .container-cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    img {
+      max-width: 200px;
+      height: 100px;  
+    }
   }
+
+
+	 form i {
+            margin-left: -30px;
+            cursor: pointer;
+        }
+
+		.input-password {
+			position: relative;
+		}
+
+		.input-password i {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			cursor: pointer;
+		}
 </style>
-<div class="login-box container card border-0 shadow rounded-3 my-5">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 
-  <div class="login-box-body card-body p-4 p-sm-5">
-    <div class="login-logo">
-      <a href="#"><b>ICOMP</b></a>
-    </div>
-    <!-- /.login-logo -->
-    <p class="login-box-msg">Insira suas credenciais para realizar login</p>
-    {{#if message}}
-    <div class="alert alert-{{type}}">
-      {{{message}}}
-    </div>
-    {{/if}}
-
-    <form action="/login" method="post" id="loginForm">
-      <input type="hidden" name="_csrf" value="{{csrfToken}}">
-      <div class="form-group">
-        <label for="cpfInput">CPF</label>
-        <input id="cpfInput" name="cpf" type="text" class="form-control cpf" placeholder="___.___.___-__">
-      </div>
-      <div class="form-group">
-        <label for="password">Senha</label>
-        <input id="senhaInput" name="senha" type="password" class="form-control" placeholder="*********">
-      </div>
-      <div class="row">
-        <div class="col-md-8">
-          <div class="checkbox icheck">
-            <label>
-              <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
-            </label>
-          </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-md-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
-
-    <a href="/recuperarSenha">Esqueci minha senha</a><br>
+<div class="login-box"> 
+  <div class="login-logo container-cards">
+    <img src="/public/img//logo-icomp.png" alt="">
+    <img src="/public/img//logo-ufam.png" alt="">
   </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <div class="login-logo">
+       <b>Login</b>
+      </div>
+      <!-- /.login-logo -->
+      <p class="login-box-msg">Insira suas credenciais para realizar login</p>
+      {{#if message}}
+      <div class="alert alert-{{type}}">
+        {{{message}}}
+      </div>
+      {{/if}} 
+
+      <form action="/login" method="post" id="loginForm">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <div class="form-group">
+          <label for="cpfInput">CPF</label>
+          <input id="cpfInput" name="cpf" type="text" autocomplete="off" class="form-control cpf" placeholder="___.___.___-__">
+        </div>
+        <div class="form-group"> 
+      
+        <label for="password">Senha</label>
+        <div class="form-group input-group ">
+          <input id="senhaInput" name="senha" type="password" class="form-control" placeholder="*********">
+          <div class="input-group-append" >
+   				  <span  id="togglePassword" class="input-group-text"style="color: transparent;" id="basic-addon2">===
+					    <i  class="bi bi-eye-slash" style="color: gray;" id="togglePasswordIcon"></i>
+					  </span>
+  				</div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="checkbox icheck">
+              <label>
+                <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+      <a href="/recuperarSenha">Esqueci minha senha</a><br>
+    </div>
+  </div>
+
   <!-- /.login-box-body -->
-</div>
+</di>
 <!-- /.login-box -->
 
 <script>
   function loginPage() {
+    $("#togglePassword").click(function() {
+		  const typeActual = $("#senhaInput").attr("type");
+        if (typeActual === "password") {
+			    $("#senhaInput").attr("type", "text");
+          $(this).children().toggleClass("bi-eye-slash bi-eye");
+        } else {
+			    $("#senhaInput").attr("type", "password");
+			    $(this).children().toggleClass("bi-eye bi-eye-slash");
+		    }
+	    });
+
     $.validator.addMethod("cpfLength", function (el) {
       const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
       return cpfValue.length === 11

@@ -107,7 +107,7 @@ const gerenciar = async (req: Request, res: Response) => {
     return reservaObj;
   });
 
-  res.render('reservas/reservas-gerenciar', {
+  res.render(resolveView('reservas-gerenciar'), {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
