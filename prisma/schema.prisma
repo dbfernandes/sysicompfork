@@ -45,69 +45,68 @@ model Avatar {
 }
 
 model Candidato {
-  id                   BigInt    @id @default(autoincrement())
-  posicaoEdital        Int?      @db.SmallInt
-  senhaHash            String    @db.VarChar(255)
-  tokenResetarSenha    String?   @db.VarChar(255)
-  validarTokenResetada DateTime? @db.DateTime(0)
-  idEdital             String    @db.VarChar(255)
-  idLinhaPesquisa      Int?      @db.Int
-  nome                 String?   @db.VarChar(60)
-  email                String?   @db.VarChar(50)
-  dataNascimento       DateTime? @db.Date
-  sexo                 String?   @db.VarChar(1)
-  nomeSocial           String?   @db.VarChar(60)
-  cep                  String?   @db.VarChar(9)
-  uf                   String?   @db.VarChar(2)
-  endereco             String?   @db.VarChar(160)
-  cidade               String?   @db.VarChar(40)
-  bairro               String?   @db.VarChar(50)
-  nacionalidade        String?   @db.VarChar(11)
-  telefone             String?   @db.VarChar(18)
-  telefoneSecundario   String?   @db.VarChar(18)
-  comoSoube            String?   @db.VarChar(100)
-  cursoDesejado        String?
-  regime               String?
-  cotista              Boolean?
-  cotistaTipo          String?   @db.VarChar(100)
-  condicao             Boolean?
-  condicaoTipo         String?   @db.VarChar(100)
-  bolsista             Boolean?
-  cursoGraduacao       String?   @db.VarChar(50)
-  instituicaoGraduacao String?   @db.VarChar(50)
-  anoEgressoGraduacao  String?
-  cursoPos             String?   @db.VarChar(50)
-  tipoPos              String?   @db.VarChar(30)
-  instituicaoPos       String?   @db.VarChar(50)
-  anoEgressoPos        String?
-  tituloProposta       String?   @db.VarChar(100)
-  motivos              String?   @db.VarChar(1001)
-  nomeOrientador       String?   @db.VarChar(200)
-  curriculum           Bytes?
-  cartaDoOrientador    Bytes?
-  propostaDeTrabalho   Bytes?
+  id                    Int    @id @default(autoincrement())
+  posicaoEdital         Int?      @db.SmallInt
+  senhaHash             String    @db.VarChar(255)
+  tokenResetSenha       String?   @db.VarChar(255)
+  validadeTokenReset    DateTime? @db.DateTime(0)
+  idEdital              String    @db.VarChar(255)
+  idLinhaPesquisa       Int?      @db.Int
+  nome                  String?   @db.VarChar(60)
+  email                 String?   @db.VarChar(50)
+  dataNascimento        DateTime? @db.Date
+  sexo                  String?   @db.VarChar(1)
+  nomeSocial            String?   @db.VarChar(60)
+  cep                   String?   @db.VarChar(9)
+  uf                    String?   @db.VarChar(2)
+  endereco              String?   @db.VarChar(160)
+  cidade                String?   @db.VarChar(40)
+  bairro                String?   @db.VarChar(50)
+  nacionalidade         String?   @db.VarChar(11)
+  telefone              String?   @db.VarChar(18)
+  telefoneSecundario    String?   @db.VarChar(18)
+  comoSoube             String?   @db.VarChar(100)
+  cursoDesejado         String?
+  regime                String?
+  cotista               Boolean?
+  cotistaTipo           String?   @db.VarChar(100)
+  condicao              Boolean?
+  condicaoTipo          String?   @db.VarChar(100)
+  bolsista              Boolean?
+  cursoGraduacao        String?   @db.VarChar(50)
+  instituicaoGraduacao  String?   @db.VarChar(50)
+  anoEgressoGraduacao   String?
+  cursoPos              String?   @db.VarChar(50)
+  tipoPos               String?   @db.VarChar(30)
+  instituicaoPos        String?   @db.VarChar(50)
+  anoEgressoPos         String?
+  tituloProposta        String?   @db.VarChar(100)
+  motivos               String?   @db.VarChar(1001)
+  nomeOrientador        String?   @db.VarChar(200)
 
   // Relations
   Edital           Edital            @relation(fields: [idEdital], references: [editalId])
   LinhasDePesquisa LinhasDePesquisa? @relation(fields: [idLinhaPesquisa], references: [id])
 
+  CandidatoRecomendacao         CandidatoRecomendacao[]         @relation(fields: [], references: [])
   CandidatoExperienciaAcademica CandidatoExperienciaAcademica[] @relation(fields: [], references: [])
-
+  CandidatoPublicacoes         CandidatoPublicacoes[]         @relation(fields: [], references: [])
   @@map("Candidato")
 }
 
 model CandidatoExperienciaAcademica {
-  id          Int       @id @default(autoincrement())
-  idCandidato BigInt
-  instituicao String?   @db.VarChar(60)
-  atividade   String?   @db.VarChar(60)
-  periodo     String?   @db.VarChar(30)
+  id          Int     @default(autoincrement())
+  idCandidato Int
+  instituicao String? @db.VarChar(60)
+  atividade   String? @db.VarChar(60)
+  periodo     String? @db.VarChar(30)
   Candidato   Candidato @relation(fields: [idCandidato], references: [id])
-}
 
+  @@id([id, idCandidato])
+}
 model CandidatoPublicacoes {
   id          Int      @default(autoincrement())
-  idCandidate Int
+  idCandidato Int
   titulo      String   @db.VarChar(255)
   ano         Int
   local       String?  @db.VarChar(255)
@@ -118,7 +117,54 @@ model CandidatoPublicacoes {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@id([id, idCandidate])
+  Candidato   Candidato @relation(fields: [idCandidato], references: [id])
+
+  @@id([id, idCandidato])
+} 
+
+model CandidatoRecomendacao {
+  id                  Int      @default(autoincrement())
+  dataEnvio           DateTime @default(now()) @updatedAt
+  dataResposta        DateTime? 
+  prazo               DateTime @db.Date
+  nome                String?   @db.VarChar(100)
+  email               String   @db.VarChar(100)
+  token               String   @db.VarChar(50)
+  titulacao           String?   @db.VarChar(50)
+  cargo               String?   @db.VarChar(50)
+  instituicaoTitulacao String?   @db.VarChar(100)
+  anoTitulacao        Int?     @db.Int
+  instituicaoAtual    String?   @db.VarChar(100)
+  dominio             Int?      @db.SmallInt
+  aprendizado         Int?      @db.SmallInt
+  assiduidade         Int?      @db.SmallInt
+  relacionamento      Int?      @db.SmallInt
+  iniciativa          Int?      @db.SmallInt
+  expressao           Int?      @db.SmallInt
+  classificacao       Float?
+  informacoes         String?   @db.Text
+  anoContato          Int?     @db.SmallInt
+  conheceGraduacao    Int     @default(0) @db.SmallInt
+  conhecePos          Int     @default(0) @db.SmallInt
+  conheceEmpresa      Int      @default(0) @db.SmallInt
+  conheceOutros       Int      @default(0) @db.SmallInt
+  outrosLugares       String?  @db.VarChar(60)
+  orientador          Int      @default(0) @db.SmallInt
+  professor           Int      @default(0) @db.SmallInt
+  empregador          Int      @default(0) @db.SmallInt
+  coordenador         Int      @default(0) @db.SmallInt
+  colegaCurso         Int      @default(0) @db.SmallInt
+  colegaTrabalho      Int      @default(0) @db.SmallInt
+  outrosContatos      Int      @default(0) @db.SmallInt
+  outrasFuncoes       String?  @db.VarChar(60)
+  passo               String   @default("1") @db.Char(1)
+  idCandidato         Int
+  idEdital     String?  @db.VarChar(20)
+
+  Candidato           Candidato @relation(fields: [idCandidato], references: [id])
+  Edital              Edital?   @relation(fields: [idEdital], references: [editalId])
+
+  @@id([id, idCandidato])
 }
 
 model Edital {
@@ -127,17 +173,19 @@ model Edital {
   cotasDoutorado       Int?
   vagaMestrado         Int?
   cotasMestrado        Int?
-  cartaOrientador      String      @db.VarChar(255)
-  cartaRecomendacao    String      @db.VarChar(255)
-  documento            String      @db.VarChar(255)
-  dataInicio           String      @db.VarChar(255)
-  dataFim              String      @db.VarChar(255)
-  status               String      @default("0") @db.VarChar(255)
-  inscricoesIniciadas  Int         @default(0)
-  inscricoesEncerradas Int         @default(0)
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
+  cartaOrientador      String   @db.VarChar(255)
+  cartaRecomendacao    String   @db.VarChar(255)
+  documento            String   @db.VarChar(255)
+  dataInicio           String   @db.VarChar(255)
+  dataFim              String   @db.VarChar(255)
+  status               String   @default("0") @db.VarChar(255)
+  inscricoesIniciadas  Int      @default(0)
+  inscricoesEncerradas Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
   Candidato            Candidato[] @relation(fields: [], references: [])
+  CandidatoRecomendacao CandidatoRecomendacao[] @relation(fields: [], references: [])
 }
 
 model LinhasDePesquisa {

@@ -1,3 +1,14 @@
+.gap-0 {
+  gap: 0;
+}
+
+.gap-1 {
+  gap: 0.125rem;
+}
+
+.gap-2 {
+  gap: 0.25rem;
+}
 .brand-link {
   text-align: center;
 }

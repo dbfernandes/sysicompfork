@@ -1,4 +1,4 @@
-FROM node:18-alpine3.15
+FROM node:20-alpine3.20
 
 WORKDIR /app
 COPY package*.json ./
@@ -21,6 +21,8 @@ ENV OPENSSL_CONF=/etc/ssl/
 
 COPY . .
 
+# RUN useradd -m appuser
+# USER appuser
 RUN npm install
 
 # alterar para 'npm start:prod' quando o sistema entrar em produção

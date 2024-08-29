@@ -1,16 +1,17 @@
 {{> header}}
 
 {{> sidebar module="edital" page="listCandidates"}}
+{{ setTitle title=(concat "Candidatos do PPGI - Edital " editalID) }}
 
-<div class="content-wrapper">
+<div class="content-wrapper"> 
     <section class="content-header">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-7">
+            <div class="d-flex justify-content-between flex-wrap gap-1 ">
+                <div>
                     <h1>Candidatos do PPGI - Edital {{editalID}} </h1>
                 </div>
-                <div class="col-sm-5">
+                <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/inicio">Página Inical</a></li>
                         <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI</a></li>
@@ -22,7 +23,7 @@
             </div>
             <div class="row mb-10">
                 <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" onclick="voltarPagina()">
+                    <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
@@ -42,9 +43,9 @@
                 <div class="col-12">
                     
                     <div class="card-body mr-auto ml-n3">
-                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidaIncricaoFinalizada}}</b></h4>
+                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidadeInscricaoFinalizada}}</b></h4>
                     </div>
-
+ 
                     <div class="card card-primary">
 
                         <div class="card-body" style="overflow-x:auto;">
@@ -94,7 +95,7 @@
                     </div>
                     
                     <div class="card-body mr-auto ml-n3" >
-                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidaDeInscricaoAndamento}}</b></h4>
+                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidadeInscricaoAndamento}}</b></h4>
                     </div>
 
                     <div class="card card-primary">
@@ -123,7 +124,7 @@
                                             <td>{{nome}}</td>
                                             <td>{{email}}</td>
                                             <td>{{cursoDesejado}}</td>
-                                            <td>{{LinhasDePesquisa.sigla}}</td>
+                                            <td>{{idLinhaPesquisa}}</td>
                                             <td>{{posicaoEdital}}/4</td>
                                             <td>
                                                 <div class="d-flex justify-content-between">

@@ -132,11 +132,12 @@ function getCompleteData(data, publicCallback){
     const [file] = document.querySelector("#vittaexml").files; 
     const reader = new FileReader(); 
     var xmlText = "" 
-    var x2js = new X2JS(); 
+    var x2js = new X2JS();  
     reader.addEventListener(
         "load", 
         () => { 
         xmlText = x2js.xml_str2json(reader.result); 
+        console.log(xmlText)
         const publicacoes = xmlText["CURRICULO-VITAE"]["PRODUCAO-BIBLIOGRAFICA"] 
         let publicDict = {}
         if(publicacoes){

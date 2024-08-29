@@ -1,110 +1,112 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+  <html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{#if title}}{{title}}{{else}}Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM{{/if}}</title>
+    <link href="/public/img/favicon 2.ico" rel="icon" type="image/png">
+    <link rel="stylesheet" href="/public/css/stylesPPGI.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="/script-adminlte/plugins/fontawesome-free/css/all.min.css">
+    <!-- IonIcons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="/script-adminlte/plugins/fontawesome-free/css/all.min.css">
-  <!-- IonIcons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 
-  <link rel="stylesheet" href="/public/css/styles.css">
+    <!-- Plugin do Date Range --> 
+    <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css">
 
-  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- Toasts -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-  <!-- Plugin do Date Range -->
-  <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css">
+    <!-- XML2JSON -->
+    <script type='text/javascript' src="/public/js/xml2json.js"></script>
 
-  <!-- Toasts -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- Lattes Loader -->
 
-  <!-- XML2JSON -->
-  <script type='text/javascript' src="/public/js/xml2json.js"></script>
+    <script type='text/javascript' src="/public/js/lattesExtractor.js"></script>
 
-  <!-- Lattes Loader -->
-  <script type='text/javascript' src="/public/js/lattesExtractor.js"></script>
+  </head>
 
-</head>
+  <body>
+    <!-- jQuery -->
+    <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
-<body>
+    <!-- jquery-validation -->
+    <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
 
+    <!-- Bootstrap 4 -->
+    <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Switch -->
+    <script src="/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
+    
+    <link rel="stylesheet" href="/script-adminlte/plugins/select2/css/select2.min.css">
+    <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
+<link rel="stylesheet" href="/script-adminlte//plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    {{!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
 
-  <!-- jQuery -->
-  <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
+    <!-- InputMask -->
+    <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
+    <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
 
-  <!-- jquery-validation -->
-  <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
-  <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
+    <!-- Fuso horario Data -->
 
-  <!-- Bootstrap 4 -->
-  <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- Bootstrap Switch -->
-  <script src="/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
 
+    <!-- Plugin do Date Range -->
+    <script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    <script>
+      $(function () {
+        bsCustomFileInput.init();
+      });
+    </script>
 
-  <!-- InputMask -->
-  <script src="/script-adminlte/plugins/moment/moment.min.js"></script>
-  <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+    {{{ body }}}
 
-  <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
-  <!-- Fuso horario Data -->
+    <script>
+      $(function () {
+        try {
+          masks();
+        } catch { }
+        try {
+          usuariosAdicionarPage();
+        } catch { }
+        try {
+          FormAdicionarPage();
+        } catch { }
+        try {
+          voltarFormulario();
+        } catch { }
+        try {
+          loginPage();
+        } catch { }
+        try{
+          enviarDocumentos();
+        }catch { }
+      });
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
-
-  <!-- Plugin do Date Range -->
-  <script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
-  <script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-  <script>
-    $(function () {
-      bsCustomFileInput.init();
-    });
-  </script>
-  {{{ body }}}
-
-  <script>
-    $(function () {
-      try {
-        masks();
-      } catch { }
-      try {
-        usuariosAdicionarPage();
-      } catch { }
-      try {
-        FormAdicionarPage();
-      } catch { }
-      try {
-        voltarFormulario();
-      } catch { }
-      try {
-        loginPage();
-      } catch { }
-      try{
-        enviarDocumentos();
-      }catch { }
-    });
-
-    function masks() {
-      $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-      $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
-      $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
-      $('.edital').inputmask('999-9999', { 'placeholder': '001-2023' })
-    }
-
-  </script>
-
-</body>
-
+      function masks() {
+        $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' })
+        $('.telefone').inputmask('(99)99999-9999', { 'placeholder': '(__)_____-____' })
+        $('.edital').inputmask('999-9999')
+      }
+    </script>
+  </body>
 </html>

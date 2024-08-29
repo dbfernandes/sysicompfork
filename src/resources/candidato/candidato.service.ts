@@ -1,4 +1,4 @@
-import { PrismaClient, Candidato } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
@@ -67,7 +67,7 @@ class CandidatoService {
       : null;
   }
 
-  async findById(id) {
+  async findById(id: number) {
     return await prisma.candidato.findUnique({
       where: {
         id,
@@ -75,7 +75,17 @@ class CandidatoService {
     });
   }
 
-  async update({ id, data }) {
+  async findByIdWithEdital(id: number) {
+    return await prisma.candidato.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        Edital: true,
+      },
+    });
+  }
+  async update({ id, data }: { id: number; data: any }) {
     return await prisma.candidato.update({
       where: {
         id,
@@ -112,8 +122,8 @@ class CandidatoService {
         id,
       },
       data: {
-        tokenResetarSenha: token,
-        validarTokenResetada: timeExpires,
+        tokenResetSenha: token,
+        validadeTokenReset: timeExpires,
       },
     });
     return token;
@@ -122,7 +132,7 @@ class CandidatoService {
   async findByTokenPassword(token) {
     return await prisma.candidato.findFirst({
       where: {
-        tokenResetarSenha: token,
+        tokenResetSenha: token,
       },
     });
   }
@@ -130,7 +140,7 @@ class CandidatoService {
   async changePasswordWithToken({ token, password }) {
     const candidate = await prisma.candidato.findFirst({
       where: {
-        tokenResetarSenha: token,
+        tokenResetSenha: token,
       },
     });
 
@@ -138,7 +148,7 @@ class CandidatoService {
       throw new Error('Token inválido');
     }
 
-    if (candidate.validarTokenResetada < new Date()) {
+    if (candidate.validadeTokenReset < new Date()) {
       throw new Error('Token expirado');
     }
 
@@ -149,8 +159,8 @@ class CandidatoService {
       },
       data: {
         senhaHash: passwordHash,
-        tokenResetarSenha: null,
-        validarTokenResetada: null,
+        tokenResetSenha: null,
+        validadeTokenReset: null,
       },
     });
   }
@@ -163,7 +173,7 @@ class CandidatoService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Listar Candidatos: ${err}`);
+        console.error(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
     return candidates;

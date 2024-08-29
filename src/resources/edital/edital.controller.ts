@@ -6,6 +6,12 @@ import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
 import archiver from 'archiver';
 import path from 'path';
 import editalService from './edital.service';
+import { verificarArquivoDiretorio } from '../selecaoPPGI/selecaoppgi.controller';
+import {
+  COMPROVANTE_FILE,
+  CURRICULUM_FILE,
+  PROPOSTA_FILE,
+} from '../selecaoPPGI/selecaoppgi.types';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -37,24 +43,20 @@ const addEditalSelecao = async (req: Request, res: Response) => {
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
         vagaDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
-        status: '',
+        status: '1',
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
       };
       try {
-        await EditalService.criarEdital(novoEdital)
-        return res.redirect('/edital/listEdital')
+        await EditalService.criarEdital(novoEdital);
+        return res.redirect('/edital/listEdital');
       } catch (error: any) {
-        return res
-          .status(400)
-          .json({
-            csrfToken: req.csrfToken(),
-            error: error.message,
-            req: req.body,
-          })
-          .send({ message: error.message });
+        return res.status(500).json({
+          csrfToken: req.csrfToken(),
+          error: error.message,
+          req: req.body,
+        });
       }
-      break;
     }
     case 'PUT':
       return res.status(200).send({
@@ -69,8 +71,8 @@ const addEditalSelecao = async (req: Request, res: Response) => {
 const listEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      const editais = await editalService.listEdital();
-      console.log(editais);
+      const editais = await editalService.listEditalComQtdeCandidatos();
+
       return res.render(resolveView('listSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -113,7 +115,6 @@ const deleteEdital = async (req: Request, res: Response) => {
 const arquivarEdital = async (req: Request, res: Response) => {
   const { id_edital } = req.params;
 
-  console.log('no controler :' + id_edital);
   switch (req.method) {
     case 'PUT': {
       const { status } = await req.body;
@@ -187,12 +188,10 @@ const updateEdital = async (req: Request, res: Response) => {
         cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
         vagaDoutorado: parseInt(req.body.vaga_regular_doutorado),
         cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
-        status: '',
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
         // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
       };
-      console.log(editalAtualizado);
       const updatedEdital = await EditalService.update(
         id_update,
         editalAtualizado,
@@ -220,12 +219,21 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
+      const candidates = await editalService.listCandidates(id);
 
+      const amountCandidateFinish = candidates.filter(
+        (candidate) => candidate.posicaoEdital >= 4,
+      ).length;
+      const amountCandidateInProgress = candidates.filter(
+        (candidate) => candidate.posicaoEdital < 4,
+      ).length;
       return res.render(resolveView('listCandidates'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         edital,
+        amountCandidateFinish,
+        amountCandidateInProgress,
         ...locals,
       });
     }
@@ -240,34 +248,46 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
   }
 };
 
+// listEditalCandidates/:id
 const editalCandidates = async (req: Request, res: Response) => {
-  const editalID = req.params.id;
-  const candidates = await editalService
-    .listCandidates(editalID)
-    .catch((err: any) => {
-      return res.status(400).json({
-        error: err.message,
-      });
-    });
-  if (!Array.isArray(candidates)) throw new Error('Erro ao buscar candidatos');
-  const quantidadeInscricaoAndamento = candidates.filter(
-    (candidate) =>
-      candidate.posicaoEdital !== null && candidate.posicaoEdital < 4,
-  ).length;
-  const quantidadeInscricaoFinalizada = candidates.filter(
-    (candidate) =>
-      candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
-  ).length;
-  return res.render(resolveView('listCandidates'), {
-    csrfToken: req.csrfToken(),
-    nome: req.session.nome,
-    ...locals,
-    candidates,
-    editalID,
-    tipoUsuario: req.session.tipoUsuario,
-    quantidadeInscricaoAndamento,
-    quantidadeInscricaoFinalizada,
-  });
+  switch (req.method) {
+    case 'GET': {
+      try {
+        const editalID = req.params.id;
+        const candidates = await editalService.listCandidates(editalID);
+
+        if (!Array.isArray(candidates))
+          throw new Error('Erro ao buscar candidatos');
+
+        const quantidadeInscricaoAndamento = candidates.filter(
+          (candidate) =>
+            candidate.posicaoEdital !== null && candidate.posicaoEdital < 4,
+        ).length;
+
+        const quantidadeInscricaoFinalizada = candidates.filter(
+          (candidate) =>
+            candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
+        ).length;
+
+        return res.render(resolveView('listCandidates'), {
+          csrfToken: req.csrfToken(),
+          nome: req.session.nome,
+          ...locals,
+          candidates,
+          editalID,
+          tipoUsuario: req.session.tipoUsuario,
+          quantidadeInscricaoAndamento,
+          quantidadeInscricaoFinalizada,
+        });
+      } catch (error: any) {
+        return res.status(400).json({
+          error: error.message,
+        });
+      }
+    }
+    default:
+      return res.status(404).send();
+  }
 };
 
 const geraPlanilha = async (req: Request, res: Response) => {
@@ -285,13 +305,12 @@ const geraPlanilha = async (req: Request, res: Response) => {
 
 const getCandidateDocument = async (req: Request, res: Response) => {
   const candidato = await EditalService.getCandidate(Number(req.params.id));
-
   const caminhoDoc = path.join(
-    __dirname,
-    '../../../uploads/candidatos',
-    `${String(candidato!.id)}-${candidato!.nome}`,
+    'public',
+    'uploads',
+    'candidato',
+    candidato.id.toString(),
     `${req.query.documento}`,
-    'teste.pdf', // Tem que mudar essa forma de baixar o arquivo ou mudar o nome do arquivo no arquivo de upload
   );
 
   res.download(caminhoDoc, (error) => {
@@ -393,7 +412,7 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await editalService.getCandidate(Number(req.params.id));
-
+    const edital = await editalService.getEdital(candidate!.idEdital);
     const candidatoDocs = {
       Curriculum: false,
       CartaDoOrientador: false,
@@ -402,51 +421,44 @@ const candidateDetails = async (req: Request, res: Response) => {
       ComprovantePagamento: false,
       Recomendacao: false,
     };
-
-    const curriculopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/Curriculum`,
+    const caminhoDiretorioUsuario = path.join(
+      'public',
+      'uploads',
+      'candidato',
+      candidate.id.toString(),
     );
+
     const cartaOrientadorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/CartaDoOrientador`,
     );
-    const propostaTrabalhopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/PropostaDeTrabalho`,
-    );
+
     const provaAnteriorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/ProvaAnteriorSelecao`,
     );
-    const comprovantePagamentopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/ComprovantePagamento`,
-    );
+
     const recomendacaopath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
       `${String(candidate!.id)}-${candidate!.nome}/Recomendacao`,
     );
 
-    if (fs.existsSync(curriculopath)) {
+    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE)) {
       candidatoDocs.Curriculum = true;
     }
     if (fs.existsSync(cartaOrientadorpath)) {
       candidatoDocs.CartaDoOrientador = true;
     }
-    if (fs.existsSync(propostaTrabalhopath)) {
+    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, PROPOSTA_FILE)) {
       candidatoDocs.PropostaDeTrabalho = true;
     }
     if (fs.existsSync(provaAnteriorpath)) {
       candidatoDocs.ProvaAnteriorSelecao = true;
     }
-    if (fs.existsSync(comprovantePagamentopath)) {
+    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, COMPROVANTE_FILE)) {
       candidatoDocs.ComprovantePagamento = true;
     }
     if (fs.existsSync(recomendacaopath)) {
@@ -460,6 +472,7 @@ const candidateDetails = async (req: Request, res: Response) => {
       nome: req.session.nome,
       ...locals,
       tipoUsuario: req.session.tipoUsuario,
+      edital,
     });
   } catch (error: any) {
     return res.status(400).json({
