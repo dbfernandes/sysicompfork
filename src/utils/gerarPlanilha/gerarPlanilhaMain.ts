@@ -47,9 +47,7 @@ async function getCandidatos(EditalId: string) {
 export default async function gerarPlanilha(editalId: string) {
   const workbook = new exceljs.Workbook();
 
-  const candidatos = await getCandidatos(editalId);
-  // const candidatos = await candidateService.listCanditatesByEdital(editalId)
-  // console.log(candidatos)
+  const candidatos = await getCandidatos(editalId)
 
   const candidateAba = workbook.addWorksheet('Candidato');
   const provasAba = workbook.addWorksheet('Provas');
@@ -138,7 +136,15 @@ export default async function gerarPlanilha(editalId: string) {
       console.log(error.message);
     });
 
-  const arquivo = fs.readFileSync('planilha.xlsx');
+    // Save Excel on Hard Disk
+    await workbook.xlsx.writeFile('public/files/planilha.xlsx')
+        .then(function () {
+            console.log('Arquivo salvo!')
+        }).catch(function (error: any) {
+            console.log(error.message)
+        })
 
-  return arquivo;
+    const arquivo = fs.readFileSync('public/files/planilha.xlsx')
+
+    return arquivo
 }

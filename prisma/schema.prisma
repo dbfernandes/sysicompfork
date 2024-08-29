@@ -44,47 +44,6 @@ model Avatar {
   @@index([idUsuario], map: "idUsuario")
 }
 
-model Candidate {
-  id                   Int               @id @default(autoincrement())
-  editalPosition       Int?
-  editalId             String            @db.VarChar(255)
-  linhaDePesquisaId    Int?
-  passwordHash         String            @db.VarChar(255)
-  Nome                 String?           @db.VarChar(255)
-  email                String?           @db.VarChar(255)
-  Nascimento           DateTime?         @db.Date
-  Sexo                 String?           @db.VarChar(255)
-  NomeSocial           String?           @db.VarChar(255)
-  CEP                  String?           @db.VarChar(255)
-  UF                   String?           @db.VarChar(255)
-  Endereco             String?           @db.VarChar(255)
-  Cidade               String?           @db.VarChar(255)
-  Bairro               String?           @db.VarChar(255)
-  Nacionalidade        String?           @db.VarChar(255)
-  Telefone             String?           @db.VarChar(255)
-  TelefoneSecundario   String?           @db.VarChar(255)
-  ComoSoube            String?           @db.VarChar(255)
-  Curso                String?           @db.VarChar(255)
-  Regime               String?           @db.VarChar(255)
-  Cotista              String?           @db.VarChar(255)
-  CotistaTipo          String?           @db.VarChar(255)
-  Condicao             String?           @db.VarChar(255)
-  CondicaoTipo         String?           @db.VarChar(255)
-  etapaAtual           Int?              @db.TinyInt
-  Bolsista             String?           @db.VarChar(255)
-  CursoGraduacao       String?           @db.VarChar(255)
-  InstituicaoGraduacao String?           @db.VarChar(255)
-  AnoEgressoGraduacao  String?           @db.VarChar(255)
-  CursoPos             String?           @db.VarChar(255)
-  CursoPosTipo         String?           @db.VarChar(255)
-  CursoInstituicaoPos  String?           @db.VarChar(255)
-  CursoAnoEgressoPos   String?           @db.VarChar(255)
-  LinhasDePesquisa     LinhasDePesquisa? @relation(fields: [linhaDePesquisaId], references: [id], onDelete: Cascade, map: "fk_Candidate_LinhaDePesquisa")
-
-  @@index([linhaDePesquisaId], map: "fk_Candidate_LinhaDePesquisa")
-}
-
-
 model Candidato {
   id                    Int    @id @default(autoincrement())
   posicaoEdital         Int?      @db.SmallInt
@@ -124,13 +83,10 @@ model Candidato {
   tituloProposta        String?   @db.VarChar(100)
   motivos               String?   @db.VarChar(1001)
   nomeOrientador        String?   @db.VarChar(200)
-  Curriculum            Bytes?
-  CartaDoOrientador     Bytes?
-  PropostaDeTrabalho    Bytes?
 
   // Relations
-  Edital                Edital     @relation(fields: [idEdital], references: [editalId])
-  LinhasDePesquisa      LinhasDePesquisa?   @relation(fields: [idLinhaPesquisa], references: [id])
+  Edital           Edital            @relation(fields: [idEdital], references: [editalId])
+  LinhasDePesquisa LinhasDePesquisa? @relation(fields: [idLinhaPesquisa], references: [id])
 
   CandidatoRecomendacao         CandidatoRecomendacao[]         @relation(fields: [], references: [])
   CandidatoExperienciaAcademica CandidatoExperienciaAcademica[] @relation(fields: [], references: [])
@@ -212,7 +168,7 @@ model CandidatoRecomendacao {
 }
 
 model Edital {
-  editalId             String   @id @unique(map: "editalId") @db.VarChar(255)
+  editalId             String      @id @unique(map: "editalId") @db.VarChar(255)
   vagaDoutorado        Int?
   cotasDoutorado       Int?
   vagaMestrado         Int?
@@ -238,7 +194,6 @@ model LinhasDePesquisa {
   sigla     String      @db.VarChar(255)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  Candidate Candidate[] 
   Candidato Candidato[] @relation(fields: [], references: [])
 }
 
@@ -305,7 +260,7 @@ model Publicacao {
   @@index([tipo], map: "tipo")
 }
 
-model Recommendations {
+model Recomendacoes {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
 }
@@ -355,10 +310,6 @@ model Salas {
   ReservaSalas ReservaSalas[]
 }
 
-model SequelizeMeta {
-  name String @id @unique(map: "name") @db.VarChar(255)
-}
-
 model TipoPublicacao {
   id         Int          @id @default(autoincrement())
   nome       String       @db.VarChar(255)
@@ -368,71 +319,39 @@ model TipoPublicacao {
   Publicacao Publicacao[]
 }
 
-model Trancamentos {
-  id              Int       @id @default(autoincrement())
-  idAluno         Int?
-  tipo            Int?      @db.TinyInt
-  dataSolicitacao DateTime? @db.DateTime(0)
-  dataInicio      DateTime? @db.DateTime(0)
-  prevTermino     DateTime? @db.DateTime(0)
-  dataTermino     DateTime? @db.DateTime(0)
-  justificativa   String?   @db.VarChar(255)
-  documento       String?   @db.Text
-  doc_anexo       String?   @db.VarChar(255)
-  status          Int?      @db.TinyInt
-  id_responsavel  Int?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
 model Usuario {
-  id                      Int                    @id @default(autoincrement())
-  nomeCompleto            String                 @db.VarChar(255)
-  cpf                     String                 @unique(map: "cpf") @db.VarChar(255)
-  senhaHash               String                 @db.VarChar(255)
-  tokenResetSenha         String?                @unique(map: "tokenResetSenha") @db.VarChar(255)
-  validadeTokenResetSenha DateTime?              @db.DateTime(0)
-  email                   String                 @unique(map: "email") @db.VarChar(255)
-  status                  Int                    @default(1) @db.SmallInt
-  administrador           Int                    @default(0) @db.SmallInt
-  coordenador             Int                    @default(0) @db.SmallInt
-  secretaria              Int                    @default(0) @db.SmallInt
-  professor               Int                    @default(0) @db.SmallInt
-  perfil                  String?                @db.VarChar(255)
-  siape                   String?                @db.VarChar(10)
-  dataIngresso            String?                @db.VarChar(10)
-  endereco                String?                @db.VarChar(255)
-  telCelular              String?                @db.VarChar(20)
-  telResidencial          String?                @db.VarChar(20)
-  unidade                 String?                @db.VarChar(60)
-  turno                   String?                @db.VarChar(32)
-  idLattes                BigInt?
-  formacao                String?                @db.VarChar(255)
-  formacaoIngles          String?                @db.VarChar(255)
-  resumo                  String?                @db.VarChar(5000)
-  resumoIngles            String?                @db.VarChar(5000)
-  ultimaAtualizacao       DateTime?              @db.DateTime(0)
-  createdAt               DateTime               @default(now())
-  updatedAt               DateTime               @updatedAt
-  Avatar                  Avatar[]
-  Orientacao              Orientacao[]
-  Premios                 Premios[]
-  Projeto                 Projeto[]
-  RelUsuarioPublicacao    RelUsuarioPublicacao[]
-  ReservaSalas            ReservaSalas[]
-}
-
-model prorrogacoes {
-  id              Int       @id @default(autoincrement())
-  idAluno         Int?
-  dataSolicitacao DateTime? @db.DateTime(0)
-  dataInicio      DateTime? @db.DateTime(0)
-  qtdDias         Int?
-  documento       String?   @db.Text
-  justificativa   String?   @db.Text
-  status          Int?      @db.SmallInt
-  data_termino    DateTime? @db.DateTime(0)
-  id_responsavel  Int?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                         Int                    @id @default(autoincrement())
+  nomeCompleto               String                 @db.VarChar(255)
+  cpf                        String                 @unique(map: "cpf") @db.VarChar(255)
+  senhaHash                  String                 @db.VarChar(255)
+  tokenResetarSenha          String?                @unique(map: "tokenResetSenha") @db.VarChar(255)
+  validadeTokenResetadaSenha DateTime?              @db.DateTime(0)
+  email                      String                 @unique(map: "email") @db.VarChar(255)
+  status                     Int                    @default(1) @db.SmallInt
+  administrador              Int                    @default(0) @db.SmallInt
+  coordenador                Int                    @default(0) @db.SmallInt
+  secretaria                 Int                    @default(0) @db.SmallInt
+  professor                  Int                    @default(0) @db.SmallInt
+  perfil                     String?                @db.VarChar(255)
+  siape                      String?                @db.VarChar(10)
+  dataIngresso               String?                @db.VarChar(10)
+  endereco                   String?                @db.VarChar(255)
+  telCelular                 String?                @db.VarChar(20)
+  telResidencial             String?                @db.VarChar(20)
+  unidade                    String?                @db.VarChar(60)
+  turno                      String?                @db.VarChar(32)
+  idLattes                   BigInt?
+  formacao                   String?                @db.VarChar(255)
+  formacaoIngles             String?                @db.VarChar(255)
+  resumo                     String?                @db.VarChar(5000)
+  resumoIngles               String?                @db.VarChar(5000)
+  ultimaAtualizacao          DateTime?              @db.DateTime(0)
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  Avatar                     Avatar[]
+  Orientacao                 Orientacao[]
+  Premios                    Premios[]
+  Projeto                    Projeto[]
+  RelUsuarioPublicacao       RelUsuarioPublicacao[]
+  ReservaSalas               ReservaSalas[]
 }

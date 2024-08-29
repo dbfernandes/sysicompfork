@@ -13,8 +13,11 @@
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
-                        <li class="breadcrumb-item active">Canditados</li>
+                        <li class="breadcrumb-item"><a href="/inicio">Página Inical</a></li>
+                        <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI</a></li>
+                        <li class="breadcrumb-item active"><a href="/edital/listEdital/{{editalID}}">
+                                Detalhes de edital</a></li>
+                        <li class="breadcrumb-item active"> Lista de Candidados</li>
                     </ol>
                 </div>
             </div>
@@ -59,14 +62,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each posicaoEdital}}
-                                    {{#if (eq editalPosition 4) }}
+                                    {{#each candidates}}
+                                    {{#if (eq posicaoEdital 4) }}
                                     <tr>
                                         <td>{{id}}</td>
                                         <td>{{idEdital}}</td>
                                         <td>{{nome}}</td>
                                         <td>{{cursoDesejado}}</td>
-                                        <td>{{idLinhaPesquisa}}</td>
+                                        <td>{{LinhasDePesquisa.sigla}}</td>
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
                                             <div class="d-flex justify-content-between">
@@ -164,6 +167,9 @@
 
 <script>
     
+    function voltarPagina() {
+        window.history.back();
+    }
     
     document.addEventListener("DOMContentLoaded", function(event) {
         var datatable = $("#tableCandidatesFinalizados").DataTable({
@@ -210,6 +216,7 @@
             window.history.back();
         });
     }); 
+
 </script>
 
 {{> footer}}

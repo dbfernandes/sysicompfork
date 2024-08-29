@@ -49,7 +49,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
       };
       try {
         await EditalService.criarEdital(novoEdital);
-        return res.status(200).send({ message: 'Edital criado com sucesso' });
+        return res.redirect('/edital/listEdital');
       } catch (error: any) {
         return res.status(500).json({
           csrfToken: req.csrfToken(),
@@ -115,7 +115,6 @@ const deleteEdital = async (req: Request, res: Response) => {
 const arquivarEdital = async (req: Request, res: Response) => {
   const { id_edital } = req.params;
 
-  console.log('no controler :' + id_edital);
   switch (req.method) {
     case 'PUT': {
       const { status } = await req.body;
@@ -193,7 +192,6 @@ const updateEdital = async (req: Request, res: Response) => {
         inscricoesIniciadas: 0,
         // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
       };
-      console.log(editalAtualizado);
       const updatedEdital = await EditalService.update(
         id_update,
         editalAtualizado,
@@ -355,7 +353,7 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
       'ComprovantePagamento',
       'Recomendacao',
     ];
-    // archive.directory(candDir, `${candidato.id}-${candidato.Nome}`)
+    // archive.directory(candDir, `${candidato.id}-${candidato.nome}`)
     pastas.forEach((pasta) => {
       const pastaDir = path.join(candDir, pasta);
       if (fs.existsSync(pastaDir)) {

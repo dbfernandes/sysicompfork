@@ -175,7 +175,6 @@ const formProposta = async (req: CustomRequest, res: Response) => {
       try {
         const { uid } = req.session;
         const { body } = req;
-        console.log(body);
         const hasProposta =
           req.files &&
           !Array.isArray(req.files) &&
@@ -350,7 +349,6 @@ const forms = async (req: CustomRequest, res: Response) => {
             await candidatoRecomendacaoService.getRecomendacoesByCandidato(
               Number(uid),
             );
-          console.log(recomendacoes);
           return res.render(resolveView('forms3'), {
             ...locals,
             ...candidate,
@@ -479,7 +477,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
                   atividade: experienciasAtividade[index],
                   periodo: experienciasPeriodo[index],
                 },
-                idCandidato: uid,
+                idCandidato: Number(uid),
               });
             }),
           );

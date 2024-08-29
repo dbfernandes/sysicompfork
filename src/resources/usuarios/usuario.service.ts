@@ -146,8 +146,8 @@ class UsuarioService {
         id,
       },
       data: {
-        tokenResetSenha: token,
-        validadeTokenResetSenha: data,
+        tokenResetarSenha: token,
+        validadeTokenResetadaSenha: data,
       },
     });
   }
@@ -163,8 +163,8 @@ class UsuarioService {
         id,
       },
       data: {
-        tokenResetSenha: token,
-        validadeTokenResetSenha: timeExpires,
+        tokenResetarSenha: token,
+        validadeTokenResetadaSenha: timeExpires,
       },
     });
     return token;
@@ -173,13 +173,13 @@ class UsuarioService {
   async mudarSenhaComToken({ token, password }) {
     const usuario = await prisma.usuario.findFirst({
       where: {
-        tokenResetSenha: token,
+        tokenResetarSenha: token,
       },
     });
     if (!usuario) {
       throw new Error('Token inválido');
     }
-    if (usuario.validadeTokenResetSenha < new Date()) {
+    if (usuario.validadeTokenResetadaSenha < new Date()) {
       throw new Error('Token expirado');
     }
 
@@ -190,8 +190,8 @@ class UsuarioService {
       },
       data: {
         senhaHash: passwordHash,
-        tokenResetSenha: null,
-        validadeTokenResetSenha: null,
+        tokenResetarSenha: null,
+        validadeTokenResetadaSenha: null,
       },
     });
   }

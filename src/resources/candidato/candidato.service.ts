@@ -173,7 +173,7 @@ class CandidatoService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Listar Candidatos: ${err}`);
+        console.error(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
     return candidates;
