@@ -7,4 +7,5 @@ router.post('/adicionar', candidatoRecomendacaoController.adicionar);
 router.get('/adicionar', candidatoRecomendacaoController.adicionar);
 
 router.put('/salvar/:token', candidatoRecomendacaoController.salvar);
+router.put('/finalizar/:token', candidatoRecomendacaoController.finalizar);
 export default router;

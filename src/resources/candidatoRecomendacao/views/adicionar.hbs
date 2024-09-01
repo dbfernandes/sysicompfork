@@ -263,7 +263,7 @@
 								<b>Conheço-o por meio de:</b>
 							</label>
 							<select class="select2" multiple="multiple" data-placeholder="Selecione os lugares" style="width: 100%;">
-								<option>Curso Graduação</option>
+								<option >Curso Graduação</option>
 								<option>Curso de Pós-Graduação</option>
 								<option>Empresa</option>
 								<option>Outro</option>
@@ -313,7 +313,7 @@
 								<font color="#FF0000">*</font>
 								<b>Domínio em sua área de conhecimento cientifico:</b>
 							</label>
-							<select class="custom-select" name="dominio">
+							<select  class="custom-select" name="dominio">
 								<option value="">Selecione um nível</option>
 								<option value="1">1 - Fraco</option>
 								<option value="2">2 - Regular</option>
@@ -449,7 +449,10 @@
 						Salvar
 						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 					</button>
-					<button class="btn btn-success" type="submit">Enviar Carta</button>
+					<button class="btn btn-success" type="submit">
+						Enviar Carta
+						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
+					</button>
 				</div>
 			</div>
 			
@@ -492,30 +495,15 @@
 </div>
 
 <script>
-	{{#if recomendacao.titulacao}}
-		$('select[name="titulacao"]').val('{{recomendacao.titulacao}}');
-	{{/if}}
-	{{#if recomendacao.dominio}}
-		$('select[name="dominio"]').val('{{recomendacao.dominio}}');
-	{{/if}}
-	{{#if recomendacao.aprendizado}}
-		$('select[name="aprendizado"]').val('{{recomendacao.aprendizado}}');
-	{{/if}}
-	{{#if recomendacao.assiduidade}}
-		$('select[name="assiduidade"]').val('{{recomendacao.assiduidade}}');
-	{{/if}}
-	{{#if recomendacao.relacionamento}}
-		$('select[name="relacionamento"]').val('{{recomendacao.relacionamento}}');
-	{{/if}}
-	{{#if recomendacao.iniciativa}}
-		$('select[name="iniciativa"]').val('{{recomendacao.iniciativa}}');
-	{{/if}}
-	{{#if recomendacao.expressao}}
-		$('select[name="expressao"]').val('{{recomendacao.expressao}}');
-	{{/if}}
-	{{#if recomendacao.informacoes}}
-		$('#charCount').text(1000 - '{{recomendacao.informacoes.length}}');
-	{{/if}}
+	{{#if recomendacao.titulacao}} $('select[name="titulacao"]').val('{{recomendacao.titulacao}}'); {{/if}}
+	{{#if recomendacao.dominio}} $('select[name="dominio"]').val('{{recomendacao.dominio}}');{{/if}}
+	{{#if recomendacao.aprendizado}} $('select[name="aprendizado"]').val('{{recomendacao.aprendizado}}'); {{/if}}
+	{{#if recomendacao.assiduidade}} $('select[name="assiduidade"]').val('{{recomendacao.assiduidade}}'); {{/if}}
+	{{#if recomendacao.relacionamento}} $('select[name="relacionamento"]').val('{{recomendacao.relacionamento}}'); {{/if}}
+	{{#if recomendacao.iniciativa}} $('select[name="iniciativa"]').val('{{recomendacao.iniciativa}}'); {{/if}}
+	{{#if recomendacao.expressao}} $('select[name="expressao"]').val('{{recomendacao.expressao}}'); {{/if}}
+	{{#if recomendacao.informacoes}} $('#charCount').text(1000 - '{{recomendacao.informacoes.length}}'); {{/if}}
+	
 	const prazo = new Date('{{recomendacao.prazo}}');
 	const prazoLabel = document.getElementById('prazo-label');
 	prazoLabel.innerHTML = prazo.toLocaleString();
@@ -596,7 +584,7 @@
                 number: true,
                 range: [1950, new Date().getFullYear()]
             },
-			dominio: {
+			dominio: { 
                 required: true,
             },
 			aprendizado: {
@@ -678,43 +666,31 @@
 			},
 			submitHandler: function (form, e) {
 				e.preventDefault();
-				console.log(form)
-				const formData = new FormData(form);
-				for (const [key, value] of formData.entries()) {
-					console.log(key, value);
-				}
-				for (const input of form) {
-					console.log(input)
-				}
-				/*const btnSave = $("#btn-save-continue");
-				btnSave.find("span").prop("hidden", false);
-				btnSave.prop("disabled", true);
-				const data = getValueFromForm();
-				const csrfToken = $("#csrfToken").val();
-				const email = $("#email").val();
-				const editalPosicao = $("#editalPosicao").val();
-				const id = $("#id").val();
-
+				const buttonSubmit = form.querySelector('button[type="submit"]');
+				buttonSubmit.disabled = true;
+				buttonSubmit.querySelector('span').hidden = false;
+				const data = $("#form-recomendacao").serialize();
 				$.ajax({
-					url: '/selecaoppgi/formulario/1',
+					url: `/selecaoppgi/recomendacoes/finalizar/{{token}}?_csrf=${$("#csrfToken").val()}`,
 					type: "PUT",
-					data: {
-						data: data,
-						_csrf: csrfToken,
-						email: email,
-						editalPosicao: editalPosicao,
-						id: id
-					},
+					data,
 					success: function (data) {
-						window.location.href = '/selecaoppgi/formulario';
+						console.log("Sucesso")
 						window.location.reload(true);
 					},
 					error: function (data) {
-						btnSave.find("span").prop("hidden", true);
-						btnSave.prop("disabled", false);
-						console.log(data)
+						const toastMessage = document.getElementById('toastMessageDanger');
+						const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
+							delay: 5000
+						});
+						toastMessage.innerHTML = 'Erro ao salvar a carta de recomendação';
+						myToast.show();
+					},
+					complete: function() {
+						currentTarget.disabled = false;
+						currentTarget.querySelector('span').hidden = true;
 					}
-				});*/
+				});
 			}
 		});
 	$(document).ready(function() {
