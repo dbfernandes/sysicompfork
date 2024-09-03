@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import {
   CreateRecomendacaoDto,
+  RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
 import sgMail from '../../utils/mailerGrid';
@@ -44,6 +45,36 @@ class CandidatoRecomendacaoService {
       data,
     });
   }
+
+  async finishForm(token: string) {
+    const recomendacao = await prisma.candidatoRecomendacao.findFirst({
+      where: {
+        token,
+      },
+    });
+    await prisma.candidatoRecomendacao.updateMany({
+      where: {
+        token,
+      },
+      data: {
+        passo: RecomendacaoStatus.PREENCHIDA,
+        dataResposta: new Date(),
+      },
+    });
+    await this.sendEmailFinish({ idRecomendacao: recomendacao.id });
+  }
+
+  async finish(token: string) {
+    return await prisma.candidatoRecomendacao.updateMany({
+      where: {
+        token,
+      },
+      data: {
+        passo: RecomendacaoStatus.FINALIZADA,
+      },
+    });
+  }
+
   async createManyByCandidate(
     data: {
       nome: string;
@@ -155,6 +186,49 @@ class CandidatoRecomendacaoService {
           console.log('Error:', err);
         });
     });
+  }
+
+  async sendEmailFinish({ idRecomendacao }: { idRecomendacao: number }) {
+    const recomendacao = await prisma.candidatoRecomendacao.findFirst({
+      where: {
+        id: idRecomendacao,
+      },
+      include: {
+        Candidato: true,
+      },
+    });
+
+    console.log('Send email to:', recomendacao.email);
+    sgMail
+      .send({
+        to: recomendacao.email, // Change to your recipient
+        from: {
+          email: process.env.SENDGRID_EMAIL_SEND,
+          name: 'Coordenação do PPGI',
+        }, // Change to your verified sender
+        subject: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.Candidato.nome}`,
+        text: 'teste',
+        html: `
+          <div>
+          Caro(a) ${recomendacao.nome},
+          <br>
+          <br>
+          A carta de recomendação enviada para ${recomendacao.Candidato.nome} (email: ${recomendacao.Candidato.email}">${recomendacao.Candidato.email}</a>) foi devidamente respondida.
+          <br>
+          Em caso de dúvidas, por favor nos contate. Agradecemos sua colaboração.
+          <br>
+          <p>
+          Coordenação do PPGI - ${new Date().toLocaleString('pt-BR', {
+            timeZone: 'America/Manaus',
+            timeZoneName: 'long',
+          })} <br>
+          <<<--==-->>>
+          </p>
+        </div>`,
+      })
+      .catch((err) => {
+        console.log('Error:', err);
+      });
   }
 }
 
