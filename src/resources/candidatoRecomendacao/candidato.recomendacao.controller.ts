@@ -73,6 +73,107 @@ export async function adicionar(req: Request, res: Response) {
   }
 }
 
+function parseDataToSave(data: {
+  places: string[] | string;
+  relationships: string[] | string;
+  anoContato: string;
+  anoTitulacao: string;
+  aprendizado: string;
+  assiduidade: string;
+  cargo: string;
+  dominio: string;
+  expressao: string;
+  informacoes: string;
+  iniciativa: string;
+  instituicaoAtual: string;
+  instituicaoTitulacao: string;
+  nome: string;
+  relacionamento: string;
+  titulacao: string;
+  outrasFuncoes: string;
+  outrosLugares: string;
+  classificacao: string;
+}): SaveRecomendacaoDto {
+  const anoContato = data.anoContato.length ? Number(data.anoContato) : null;
+  const anoTitulacao = data.anoTitulacao.length
+    ? Number(data.anoTitulacao)
+    : null;
+  const aprendizado = data.aprendizado.length ? Number(data.aprendizado) : 0;
+  const assiduidade = data.assiduidade.length ? Number(data.assiduidade) : 0;
+  const dominio = data.dominio.length ? Number(data.dominio) : 0;
+  const expressao = data.expressao.length ? Number(data.expressao) : 0;
+  const iniciativa = data.iniciativa.length ? Number(data.iniciativa) : 0;
+  const relacionamento = data.relacionamento.length
+    ? Number(data.relacionamento)
+    : 0;
+  const cargo = data.cargo;
+  const informacoes = data.informacoes;
+  const instituicaoAtual = data.instituicaoAtual;
+  const instituicaoTitulacao = data.instituicaoTitulacao;
+  const nome = data.nome;
+  const titulacao = data.titulacao;
+
+  const places = {
+    conheceEmpresa: 0,
+    conheceGraduacao: 0,
+    conhecePos: 0,
+    conheceOutros: 0,
+  };
+  const relationships = {
+    orientador: 0,
+    professor: 0,
+    empregador: 0,
+    coordenador: 0,
+    colegaTrabalho: 0,
+    colegaCurso: 0,
+    outrosContatos: 0,
+  };
+  const classificacao = data.classificacao.length
+    ? Number(data.classificacao)
+    : null;
+  if (typeof data.places === 'string') {
+    places[data.places] = 1;
+  } else if (Array.isArray(data.places)) {
+    data.places.forEach((place) => {
+      places[place] = 1;
+    });
+  }
+  if (typeof data.relationships === 'string') {
+    relationships[data.relationships] = 1;
+  } else if (Array.isArray(data.relationships)) {
+    data.relationships.forEach((relationship) => {
+      relationships[relationship] = 1;
+    });
+  }
+
+  const outrasFuncoes =
+    relationships.outrosContatos === 1 ? data.outrasFuncoes : null;
+
+  const outrosLugares = places.conheceOutros === 1 ? data.outrosLugares : null;
+
+  return {
+    anoContato,
+    anoTitulacao,
+    aprendizado,
+    assiduidade,
+    cargo,
+    dominio,
+    expressao,
+    informacoes,
+    iniciativa,
+    instituicaoAtual,
+    instituicaoTitulacao,
+    nome,
+    relacionamento,
+    titulacao,
+    ...places,
+    ...relationships,
+    outrasFuncoes,
+    outrosLugares,
+    classificacao,
+  };
+}
+
 async function salvar(req: Request, res: Response) {
   switch (req.method) {
     case 'PUT':
@@ -80,45 +181,13 @@ async function salvar(req: Request, res: Response) {
         const { token } = req.params;
         console.log(req.body);
         console.log(token);
-        const {
-          anoContato,
-          anoTitulacao,
-          aprendizado,
-          assiduidade,
-          cargo,
-          dominio,
-          expressao,
-          informacoes,
-          iniciativa,
-          instituicaoAtual,
-          instituicaoTitulacao,
-          nome,
-          relacionamento,
-          titulacao,
-        } = req.body;
-        const data = {} as SaveRecomendacaoDto;
-        data['anoContato'] = anoContato.length ? Number(anoContato) : null;
-        data['anoTitulacao'] = anoTitulacao.length
-          ? Number(anoTitulacao)
-          : null;
-        data['aprendizado'] = aprendizado.length ? Number(aprendizado) : 0;
-        data['assiduidade'] = assiduidade.length ? Number(assiduidade) : 0;
-        data['cargo'] = cargo;
-        data['dominio'] = dominio.length ? Number(dominio) : 0;
-        data['expressao'] = expressao.length ? Number(expressao) : 0;
-        data['informacoes'] = informacoes;
-        data['iniciativa'] = iniciativa.length ? Number(iniciativa) : 0;
-        data['instituicaoAtual'] = instituicaoAtual;
-        data['instituicaoTitulacao'] = instituicaoTitulacao;
-        data['nome'] = nome;
-        data['relacionamento'] = relacionamento.length
-          ? Number(relacionamento)
-          : 0;
-        data['titulacao'] = titulacao;
+
+        const data = parseDataToSave(req.body);
 
         candidatoRecomendacaoService.save(data, token);
         return res.status(200).send('OK');
       } catch (error) {
+        console.error(error);
         return res.status(500).send('Internal Server Error');
       }
     default:
@@ -133,41 +202,8 @@ async function finalizar(req: Request, res: Response) {
         const { token } = req.params;
         console.log(req.body);
         console.log(token);
-        const {
-          anoContato,
-          anoTitulacao,
-          aprendizado,
-          assiduidade,
-          cargo,
-          dominio,
-          expressao,
-          informacoes,
-          iniciativa,
-          instituicaoAtual,
-          instituicaoTitulacao,
-          nome,
-          relacionamento,
-          titulacao,
-        } = req.body;
-        const data = {} as SaveRecomendacaoDto;
-        data['anoContato'] = anoContato.length ? Number(anoContato) : null;
-        data['anoTitulacao'] = anoTitulacao.length
-          ? Number(anoTitulacao)
-          : null;
-        data['aprendizado'] = aprendizado.length ? Number(aprendizado) : 0;
-        data['assiduidade'] = assiduidade.length ? Number(assiduidade) : 0;
-        data['cargo'] = cargo;
-        data['dominio'] = dominio.length ? Number(dominio) : 0;
-        data['expressao'] = expressao.length ? Number(expressao) : 0;
-        data['informacoes'] = informacoes;
-        data['iniciativa'] = iniciativa.length ? Number(iniciativa) : 0;
-        data['instituicaoAtual'] = instituicaoAtual;
-        data['instituicaoTitulacao'] = instituicaoTitulacao;
-        data['nome'] = nome;
-        data['relacionamento'] = relacionamento.length
-          ? Number(relacionamento)
-          : 0;
-        data['titulacao'] = titulacao;
+
+        const data = parseDataToSave(req.body);
 
         await candidatoRecomendacaoService.save(data, token);
         await candidatoRecomendacaoService.finishForm(token);

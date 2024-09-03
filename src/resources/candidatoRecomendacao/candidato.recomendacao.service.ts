@@ -58,6 +58,7 @@ class CandidatoRecomendacaoService {
       },
       data: {
         passo: RecomendacaoStatus.PREENCHIDA,
+        dataResposta: new Date(),
       },
     });
     await this.sendEmailFinish({ idRecomendacao: recomendacao.id });
