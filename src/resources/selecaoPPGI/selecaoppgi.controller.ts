@@ -18,6 +18,7 @@ import editalService from '../edital/edital.service';
 import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
 import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import { gerarPDF } from './gerarInscricao';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -235,11 +236,13 @@ const formProposta = async (req: CustomRequest, res: Response) => {
 
         if (body.isNext) {
           const url = `http://${req.headers.host}/selecaoppgi/recomendacoes/adicionar`;
-
-          candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate({
-            idCandidato: id,
-            url,
-          });
+          gerarPDF(id);
+          await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate(
+            {
+              idCandidato: id,
+              url,
+            },
+          );
         }
 
         req.session.editalPosition = posicaoEdital;

@@ -178,6 +178,23 @@ class CandidatoService {
       });
     return candidates;
   }
+
+  async listAllInfoCandidate(id: number) {
+    const candidate = await prisma.candidato.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        CandidatoExperienciaAcademica: true,
+        CandidatoPublicacoes: true,
+        LinhasDePesquisa: true,
+        CandidatoRecomendacao: true,
+        Edital: true,
+      },
+    });
+
+    return candidate;
+  }
 }
 
 export default new CandidatoService();

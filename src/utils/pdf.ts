@@ -1,4 +1,63 @@
-import { Content } from 'pdfmake/interfaces';
+import path from 'path';
+import {
+  Content,
+  ContentColumns,
+  ContentTable,
+  ContentText,
+  TableCell,
+  TableCellProperties,
+} from 'pdfmake/interfaces';
+import pdfmake from 'pdfmake';
+
+export interface Option {
+  label: string;
+  value: string;
+}
+
+const fonts = {
+  Roboto: {
+    normal: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Roboto/Roboto-Regular.ttf',
+    ),
+    bold: path.join(__dirname, '../..', 'public/fonts/Roboto/Roboto-Bold.ttf'),
+    italics: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Roboto/Roboto-Italic.ttf',
+    ),
+    bolditalics: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Roboto/Roboto-BoldItalic.ttf',
+    ),
+  },
+  Courier: {
+    normal: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Courier/courier-regular.ttf',
+    ),
+    bold: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Courier/courier-bold.ttf',
+    ),
+    italics: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Courier/courier-italic.ttf',
+    ),
+    bolditalics: path.join(
+      __dirname,
+      '../..',
+      'public/fonts/Courier/courier-bold-italic.ttf',
+    ),
+  },
+};
+
+export const printer = new pdfmake(fonts);
 
 export const headerDoc: Content = {
   margin: [40, 20, 40, 20],
@@ -87,3 +146,148 @@ export const footerDoc: Content = {
     ],
   },
 };
+
+export function renderOptions(
+  options: Option[][],
+  titleBold?: boolean,
+): Content {
+  return options.map((line) => {
+    if (line.length === 1) {
+      return lineOptions({
+        title: line[0].label,
+        info: line[0].value,
+        titleBold,
+      });
+    }
+    const options = line.map((option) => {
+      return lineOptions({
+        title: option.label,
+        info: option.value,
+        titleBold,
+      });
+    });
+    return stackLine(options);
+  });
+}
+
+export function titleSection(text: string): ContentText {
+  return {
+    text,
+    style: 'sectionTitle',
+    marginBottom: 8,
+    marginTop: 16,
+  };
+}
+
+export function stackLine(content: Content[]): ContentColumns {
+  return {
+    columns: [...content],
+    columnGap: 10,
+  };
+}
+interface LineOption {
+  title: string;
+  info?: string;
+  titleBold?: boolean;
+}
+export function lineOptions({
+  title,
+  info,
+  titleBold,
+}: LineOption): ContentText {
+  return {
+    text: [
+      {
+        text: title,
+        bold: titleBold,
+      },
+      {
+        text: info || '-',
+      },
+    ],
+    marginBottom: 4,
+  };
+}
+
+export function columnOptions({
+  title,
+  info,
+  titleBold,
+  ...rest
+}: LineOption & TableCellProperties): TableCell {
+  return {
+    ...lineOptions({ title, info, titleBold }),
+    ...rest,
+  };
+}
+export function tableInfo(body: TableCell[][]): ContentTable {
+  return {
+    layout: {
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+    },
+    table: {
+      widths: ['*', '*'],
+      body,
+    },
+  };
+}
+
+export function headerSection(text: string, borderTop: boolean): ContentTable {
+  return {
+    table: {
+      widths: ['*'],
+      body: [
+        [
+          {
+            text,
+            style: 'sectionHeader',
+            border: [false, borderTop, false, true],
+            marginBottom: 8,
+            marginTop: 8,
+          },
+        ],
+      ],
+    },
+  };
+}
+
+export function titlePage(text: string): ContentTable {
+  return {
+    pageBreak: 'before',
+    table: {
+      widths: ['*'],
+      body: [
+        [
+          {
+            text,
+            style: 'titlePage',
+            border: [false, false, false, false],
+            marginBottom: 24,
+            marginTop: 4,
+          },
+        ],
+      ],
+    },
+  };
+}
+
+export function listItems(text: string[]): ContentTable {
+  return {
+    table: {
+      dontBreakRows: true,
+      widths: ['*'],
+      body: [
+        ...text.map((item, index) => [
+          {
+            marginTop: 8,
+            marginBottom: 8,
+            text: item,
+            style: 'tableItem',
+            border: [false, true, false, index === text.length - 1],
+          },
+        ]),
+      ],
+    },
+  };
+}

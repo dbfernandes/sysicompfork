@@ -8,7 +8,6 @@ import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
 
 import selecaoppgiController from './selecaoppgi.controller';
 
-import { criarPDF } from '../../utils/teste';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
 
 const router = express.Router();
@@ -19,8 +18,8 @@ router.get('/', selecaoppgiController.begin);
 router.get('/cadastro', selecaoppgiController.signUp);
 router.post('/cadastro', selecaoppgiController.signUp);
 
-router.get('/entrar', criarPDF, selecaoppgiController.login);
-router.post('/entrar', criarPDF, selecaoppgiController.login);
+router.get('/entrar', selecaoppgiController.login);
+router.post('/entrar', selecaoppgiController.login);
 
 router.get('/recuperarSenha', selecaoppgiController.recuperarSenha);
 router.post('/recuperarSenha', selecaoppgiController.recuperarSenha);
@@ -32,7 +31,7 @@ router.use(isAuthSelecao);
 
 router.get('/formulario', selecaoppgiController.forms);
 
-router.put('/formulario/1', criarPDF, selecaoppgiController.form1);
+router.put('/formulario/1', selecaoppgiController.form1);
 router.put('/formulario/2', uploads, selecaoppgiController.form2);
 router.put(
   '/formulario/3',
