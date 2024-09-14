@@ -11,6 +11,7 @@ import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
+  Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecaoppgi.types';
@@ -413,11 +414,16 @@ function parseDate(dateString: string) {
   return new Date(year, month, day);
 }
 
-const form1 = async (req: CustomRequest, res: Response) => {
+async function form1(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'PUT': {
       const { data } = req.body;
+      const { uid } = req.session;
+      const id = Number(uid);
+
       if (req.session.editalPosition === 1) {
+        const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
+
         const dataNascimento = data.dataNascimento
           ? new Date(parseDate(data.dataNascimento))
           : null;
@@ -428,14 +434,18 @@ const form1 = async (req: CustomRequest, res: Response) => {
           condicao: data.condicao === 'true',
           bolsista: data.bolsista === 'true',
           cotista: data.cotista === 'true',
+          cpf: isBrasileira ? data.cpf : null,
+          passaporte: isBrasileira ? null : data.passaporte,
+          pais: isBrasileira ? null : data.pais,
         };
-        const { uid } = req.session;
-        const id = Number(uid);
+
         await candidatoService.update({
           id,
           data: candidato,
         });
+
         req.session.editalPosition = 2;
+
         return res.status(200).send();
       }
 
@@ -444,7 +454,7 @@ const form1 = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(405).send();
   }
-};
+}
 
 const form2 = async (req: CustomRequest, res: Response) => {
   switch (req.method) {

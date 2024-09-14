@@ -15,6 +15,7 @@ import {
 import candidatoService from '../candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import { Publicacao } from '@prisma/client';
+import { Nacionalidade } from './selecaoppgi.types';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
@@ -69,7 +70,22 @@ export async function gerarPDF(id: number) {
           label: 'Data de Nascimento:',
           value: new Date(candidato.dataNascimento).toLocaleDateString('pt-BR'),
         },
-        { label: 'CPF:', value: 'Verificar' },
+        ...(candidato.nacionalidade === Nacionalidade.BRASILEIRA
+          ? [
+              {
+                label: 'CPF:',
+                value: candidato.cpf,
+              },
+            ]
+          : []),
+      ],
+      [
+        ...(candidato.nacionalidade === Nacionalidade.ESTRANGEIRA
+          ? [
+              { label: 'País:', value: candidato.pais },
+              { label: 'Passaporte:', value: candidato.passaporte },
+            ]
+          : []),
       ],
       [
         { label: 'Telefone Principal:', value: candidato.telefone },
@@ -96,7 +112,6 @@ export async function gerarPDF(id: number) {
         { label: 'Em Conferências:', value: numberConferencias.toString() },
       ],
     ];
-
     const pesquisa = [
       [{ label: 'Título da proposta:', value: candidato.tituloProposta }],
       [{ label: 'Linha de pesquisa:', value: candidato.LinhasDePesquisa.nome }],
@@ -142,28 +157,38 @@ export async function gerarPDF(id: number) {
       },
     );
 
-    const atividades = candidato.CandidatoExperienciaAcademica.map(
-      (experiencia) => {
-        return [
-          [
+    const atividades = candidato.CandidatoExperienciaAcademica.length
+      ? candidato.CandidatoExperienciaAcademica.reduce((acc, curr) => {
+          acc.push([
             {
               label: 'Atividade:',
-              value: experiencia.atividade,
+              value: curr.atividade,
             },
-          ],
-          [
+          ]);
+          acc.push([
             {
               label: 'Instituição:',
-              value: experiencia.instituicao,
+              value: curr.instituicao,
             },
+
             {
               label: 'Período:',
-              value: experiencia.periodo,
+              value: `${curr.periodo}`,
             },
-          ],
-        ];
-      },
-    );
+          ]);
+          return acc;
+        }, [])
+      : [[{ label: '', value: 'Não consta Informações.' }]];
+
+    const [date, time] = new Date()
+      .toLocaleString('pt-BR', {
+        timeZone: 'America/Manaus',
+      })
+      .trim()
+      .split(',');
+    const timeWithoutMilliseconds = time
+      .split(':')
+      .reduce((acc, curr, index) => (index === 2 ? acc : `${acc}:${curr}`));
 
     // Definição do conteúdo do documento PDF
     const docDefinition: TDocumentDefinitions = {
@@ -194,11 +219,11 @@ export async function gerarPDF(id: number) {
               relativePosition: { x: 0, y: -30 },
               stack: [
                 {
-                  text: 'Hora: 20:30',
+                  text: `Hora: ${timeWithoutMilliseconds}`,
                   style: 'infoHeader',
                 },
                 {
-                  text: 'Data: 18/08/2024',
+                  text: `Data: ${date}`,
                   style: 'infoHeader',
                 },
               ],
@@ -207,7 +232,6 @@ export async function gerarPDF(id: number) {
         },
         titleSection('Dados Pessoais'),
         renderOptions(dadosPessoais),
-        titleSection('Dados do PosComp'),
 
         headerSection('FORMAÇÃO ACADÊMICA', true),
         titleSection('Curso de Graduação'),
@@ -217,7 +241,7 @@ export async function gerarPDF(id: number) {
         titleSection('Publicações'),
         renderOptions(publicacoes),
         titleSection('Experiência Acadêmica'),
-
+        renderOptions(atividades),
         {
           ...headerSection('PROPOSTA DE TRABALHO', false),
           pageBreak: 'before',
