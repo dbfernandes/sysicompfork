@@ -55,6 +55,9 @@ model Candidato {
   nome                  String?   @db.VarChar(60)
   email                 String?   @db.VarChar(50)
   dataNascimento        DateTime? @db.Date
+  pais                  String?   @db.VarChar(20)
+  passaporte            String?   @db.VarChar(20)
+  cpf                   String?   @db.Char(14)
   sexo                  String?   @db.VarChar(1)
   nomeSocial            String?   @db.VarChar(60)
   cep                   String?   @db.VarChar(9)

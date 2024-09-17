@@ -260,7 +260,7 @@
 								<font color="#FF0000">*</font>	
 								<b>Conheço-o por meio de:</b>
 							</label>
-							<select name="places" id="places" class="select2" multiple="multiple" data-placeholder="Selecione os lugares" style="width: 100%;">
+							<select data-dropdown-css-class="select2-green" name="places" id="places" class="select2" multiple="multiple" data-placeholder="Selecione os lugares" style="width: 100%;">
 								<option {{#if (eq recomendacao.conheceGraduacao 1)}}selected {{/if}} value="conheceGraduacao">Curso Graduação</option>
 								<option {{#if (eq recomendacao.conhecePos 1)}}selected {{/if}} value="conhecePos">Curso de Pós-Graduação</option>
 								<option {{#if (eq recomendacao.conheceEmpresa 1)}}selected {{/if}} value="conheceEmpresa">Empresa</option>
@@ -282,7 +282,7 @@
 								<font color="#FF0000">*</font>	
 								<b>Com relação ao candidato, fui seu:</b>
 							</label>
-							<select name="relationships" id="relationships" class="select2" multiple="multiple" data-placeholder="Selecione os tipos de contatos" style="width: 100%;">
+							<select data-dropdown-css-class="select2-green" name="relationships" id="relationships" class="select2" multiple="multiple" data-placeholder="Selecione os tipos de contatos" style="width: 100%;">
 								<option {{#if (eq recomendacao.orientador 1)}}selected {{/if}} value="orientador">Orientador</option>
 								<option {{#if (eq recomendacao.professor 1)}}selected {{/if}} value="professor">Professor</option> 
 								<option {{#if (eq recomendacao.empregador 1)}}selected {{/if}} value="empregador">Empregador</option>
@@ -721,7 +721,6 @@
 					type: "PUT",
 					data,
 					success: function (data) {
-						console.log("Sucesso")
 						window.location.reload(true);
 					},
 					error: function (data) {
@@ -745,30 +744,44 @@
 
 		$('#places').on('select2:select', function ({params}) {
 			const { data } = params;
+			const errorRelationships = document.getElementById('places-error');
 			if (data.id === 'conheceOutros') {
 				$('#group-other-places').slideDown();
 			}
+			if( errorRelationships) {
+				errorRelationships.setAttribute('hidden', true);
+			}
 		});
-		$('#places').on('select2:unselect', function ({params}) {
-			const { data } = params;
+		$('#places').on('select2:unselect', function (ev) {
+			const { data } = ev.params;
+			const errorRelationships = document.getElementById('places-error');
 			if (data.id === 'conheceOutros') {
 				$('#group-other-places').slideUp();
 			}
+			if(!ev.target.value && errorRelationships) {
+				errorRelationships.removeAttribute('hidden');
+			}
 		});
-		$('#relationships').on('select2:select', function ({params}) {
-			const { data } = params;
-			console.log(data);
+		$('#relationships').on('select2:select', function (ev) {
+			const { data } = ev.params;
+			const errorRelationships = document.getElementById('relationships-error');
+
 			if (data.id === 'outrosContatos'){
-				console.log("Teste")
-				console.log($('#group-other-functions'))
 				$('#group-other-functions').slideDown();
-			} 
+			}
+			if( errorRelationships) {
+				errorRelationships.setAttribute('hidden', true);
+			}
 		});
-		$('#relationships').on('select2:unselect', function ({params}) {
-			const { data } = params;
-			console.log(data)
+		$('#relationships').on('select2:unselect', function (ev) {
+
+			const errorRelationships = document.getElementById('relationships-error');
+			const { data } = ev.params;
 			if (data.id === 'outrosContatos') {
 				$('#group-other-functions').slideUp();
+			}
+			if(!ev.target.value && errorRelationships) {
+				errorRelationships.removeAttribute('hidden');
 			}
 		});
 	});

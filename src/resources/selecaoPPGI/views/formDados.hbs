@@ -140,16 +140,16 @@
 </style>
 
 <link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
-
+ 
 <div class="forms-page">
 	<header>
-    <div class="container">
-      <h1 class="header-title">PPGI</h1>
-		  <div class="options">
-			  <button id="btn_inicio">Início</button>
-			  <button id="btn_logout">Sair</button>
-		  </div>
-    </div>
+		<div class="container">
+			<h1 class="header-title">PPGI</h1>
+			<div class="options">
+				<button id="btn_inicio">Início</button>
+				<button id="btn_logout">Sair</button>
+			</div>
+		</div>
 	</header>
     <div class="toast-container position-fixed ">
         <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -346,7 +346,7 @@
 							</div>
 						</div>
 
-						<div class="row">
+						<div class="row form-group">
 							<div class="col-md-3 field-candidato-nacionalidade">
 								<label for="candidato-sexo" class="control-label">
 									<font color="#FF0000">*</font> <b>Nacionalidade:</b>
@@ -354,17 +354,42 @@
 
 								<div id="candidato-sexo" role="radiogroup" style="display: flex; align-content:center; gap: 20px;">
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Nacionalidade1" name="candidatoNacionalidade" checked="">
-										<label for="Nacionalidade1"> Brasileira
-										</label>
+										<input type="radio" id="Nacionalidade1" name="candidatoNacionalidade" 
+										{{#if (eq nacionalidade 'Brasileira')}} checked {{/if}}>
+										<label for="Nacionalidade1"> Brasileira</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Nacionalidade2" name="candidatoNacionalidade">
-										<label for="Nacionalidade2"> Estrangeira
-										</label>
+										<input type="radio" id="Nacionalidade2" name="candidatoNacionalidade" 
+										{{#if (eq nacionalidade 'Estrangeira')}} checked {{/if}}>
+										<label for="Nacionalidade2"> Estrangeira</label>
 									</div>
 								</div>
+							</div>
+						</div>
+						<div class="row form-group" id="row-nacionalidade-brasileiro" {{#if (eq nacionalidade 'Estrangeira')}}hidden{{/if}}>
+							<div class="col-md-3">
+								<label class="control-label" for="cpf"></label>
+									<font color="#FF0000">*</font> <b>CPF:</b>
+								</label>
+								<input type="text" id="cpf" class="form-control cpf" name="cpf" value="{{cpf}}">
+								<div class="help-block"></div>
+							</div>
+						</div>
+						<div class="row form-group" id="row-nacionalidade-estrangeiro" {{#if (eq nacionalidade 'Brasileira')}}hidden{{/if}}>
+							<div class="col-md-6">
+								<label class="control-label" for="pais"></label>
+									<font color="#FF0000">*</font> <b>País:</b>
+								</label>
+								<input type="text" id="pais" class="form-control" name="pais" value="{{pais}}">
+								<div class="help-block"></div>
+							</div>
+							<div class="col-md-6">
+								<label class="control-label" for="passaporte"></label>
+									<font color="#FF0000">*</font> <b>Passaporte:</b>
+								</label>
+								<input type="text" id="passaporte" class="form-control" name="passaporte" value="{{passaporte}}" maxlength="9">
+								<div class="help-block"></div>
 							</div>
 						</div>
 					</div>
@@ -377,7 +402,6 @@
 
 					<div class="card-body">
 						<div class="row">
-
 							<div class="form-group col-md-3  col-sm-6">
 								<label class="control-label" for="candidato-telresidencial">
 									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
@@ -411,7 +435,6 @@
 									<font color="#FF0000">*</font> <b>Como você soube do edital de seleção?</b>
 								</label>
 								<select id="como-soube" class="custom-select" name="comoSoube">
-
 									<option value="">Selecione como soube:</option>
 									<option value="Facebook">Facebook</option>
 									<option value="Instagram">Instagram</option>
@@ -538,9 +561,7 @@
 								<input type="checkbox" id="candidato-bolsa" name="bolsa" data-bootstrap-switch-bolsa
 									data-off-color="danger" data-on-color="success" data-on-text="Sim" data-off-text="Não">
 							</div>
-
 						</div>
-
 					</div>
 
 					<div class="card-footer">
@@ -561,14 +582,10 @@
 </div>
 </div>
 
-<footer>
-</footer>
-
 <script>
 	function FormAdicionarPage() {
 		$(document).ready(function () {
-			var comoSoubeValue = document.getElementById("ComoSoubeObj").value;
-
+			const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
 			$("#como-soube").val(comoSoubeValue);
 		});
 
@@ -591,16 +608,10 @@
 				break;
 			}
 		}
-		{{#if condicao}}
-			document.getElementById("candidato-deficiencia1").checked = true;		
-		{{/if}}
-		{{#if cotista}}
-			document.getElementById("cotista").checked = true;
-		{{/if}}
 
-		{{#if bolsista}}
-			document.getElementById("candidato-bolsa").checked = true;
-		{{/if}}
+		{{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
+		{{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
+		{{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
 		
 		$(document).ready(function () {
 			var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
@@ -634,11 +645,6 @@
 			format: 'DD/MM/YYYY',
 			locale: 'pt-br',
 		});
-
-		$.validator.addMethod("dateBR", function (value, element) {
-			return /^(\d{2}\/\d{2}\/\d{4})$/.test(value);
-		}, "Informe uma data válida no formato DD/MM/YYYY");
-
 
 		$("input[data-bootstrap-switch-cotista]").each(function () {
 			$(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -808,11 +814,16 @@
 		data.condicao = checkCondicao()
 		data.condicaoTipo = getCondicao();
 		data.bolsista = getBolsa()
+		data.cpf = document.getElementById('cpf').value;
+		data.pais = document.getElementById('pais').value;
+		data.passaporte = document.getElementById('passaporte').value;
 		return data;
 	}
 
 
-	$(document).ready(function () {
+	$(document).ready(() => {
+  		Inputmask("99999-999").mask("#candidato-cep");
+
 		$("#btn_logout").click(function () {
 			$.ajax({
 				url: "/selecaoppgi/logout",
@@ -830,6 +841,7 @@
 		});
 		
 		$("#btn_inicio").click(function () {
+
 				$.ajax({
 				url: "/selecaoppgi/voltarInicio",
 				type: "POST",
@@ -844,6 +856,49 @@
 				}
 			});
 		});
+		
+		$.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
+		
+		$.validator.addMethod("cpf", (value, element) => {
+		    value = value.replace(/[.\-]/g, ""); // Remove os caracteres especiais
+
+		    // Validação de CPF
+		    if (value.length !== 11 || /^(\d)\1+$/.test(value)) {
+		        return false;
+		    }
+
+		    var sum;
+		    var remainder;
+		    sum = 0;
+
+		    // Valida o primeiro dígito verificador
+		    for (var i = 1; i <= 9; i++) {
+		        sum = sum + parseInt(value.substring(i - 1, i)) * (11 - i);
+		    }
+		    remainder = (sum * 10) % 11;
+		    if ((remainder == 10) || (remainder == 11)) {
+		        remainder = 0;
+		    }
+		    if (remainder != parseInt(value.substring(9, 10))) {
+		        return false;
+		    }
+
+		    sum = 0;
+
+		    // Valida o segundo dígito verificador
+		    for (var i = 1; i <= 10; i++) {
+		        sum = sum + parseInt(value.substring(i - 1, i)) * (12 - i);
+		    }
+		    remainder = (sum * 10) % 11;
+		    if ((remainder == 10) || (remainder == 11)) {
+		        remainder = 0;
+		    }
+		    if (remainder != parseInt(value.substring(10, 11))) {
+		        return false;
+		    }
+
+		    return true;
+		}, "Por favor, insira um CPF válido.");
 
 		$("#candidato-formulario").validate({
 			ignore: ':hidden',
@@ -900,7 +955,16 @@
 						return $("#candidato-deficiencia1:checked").length > 0;
 					}
 				},
-
+				cpf: {
+					required: (element) => $("#Nacionalidade1:checked").length > 0,
+					cpf: true
+				},
+				pais: {
+					required: (element) => $("#Nacionalidade2:checked").length > 0
+				},
+				passaporte: {
+					required: (element) => $("#Nacionalidade2:checked").length > 0
+				}
 			},
 			messages: {
 				nome: {
@@ -924,6 +988,12 @@
 				candidatoRegime: "Por favor, selecione o regime de dedicação",
 				"tipo-cota": "Por favor, selecione o tipo de cota",
 				candidatoCondicao: "Por favor, informe a condição da deficiência",
+				cpf: {
+					required: "Por favor, informe seu CPF",
+					cpf: "Por favor, informe um CPF válido"
+				},
+				pais: "Por favor, informe o país",
+				passaporte: "Por favor, informe o número do passaporte"
 			},
 			errorElement: 'span',
 			errorPlacement: function (error, element) {
@@ -969,6 +1039,7 @@
 				});
 			}
 		});
+	
 		function showToast(message, alertClass) {
             const toastElement = $('#myToast');
             const toastBody = toastElement.find('.alert');
@@ -1019,6 +1090,19 @@
 			});*/
 			
 		});
+	
+		$("#Nacionalidade1").change(() => {
+
+			document.getElementById("row-nacionalidade-estrangeiro").setAttribute("hidden", '');
+			document.getElementById("row-nacionalidade-brasileiro").removeAttribute("hidden");
+		});
+
+		$("#Nacionalidade2").change(() => {
+			document.getElementById("row-nacionalidade-brasileiro").setAttribute("hidden", '');
+			document.getElementById("row-nacionalidade-estrangeiro").removeAttribute("hidden");
+		});
+
+
 	});
 
 	function pesquisarCep() {
@@ -1026,7 +1110,7 @@
 		const cepInput = document.getElementById('candidato-cep');
 		const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
 
-		const cepValido = /^[0-9]{8}$/.test(cep);
+		const cepValido = /^[0-9]{5}-[0-9]{3}$/.test(cep);
 
 		if (!cepValido) {
 			cepInput.classList.add('is-invalid');
@@ -1040,13 +1124,15 @@
 
 		fetch(url)
 			.then(response => {
-				if (!response.ok) {
-					console.log(response)
+				if (!response.ok ) {
 					throw new Error('CEP não encontrado.');
 				}
 				return response.json();
 			})
 			.then(data => {
+				if (data.erro) {
+					throw new Error('CEP não encontrado.');
+				}
 				document.getElementById('candidato-endereco').value = data.logradouro;
 				document.getElementById('candidato-cidade').value = data.localidade;
 				document.getElementById('candidato-bairro').value = data.bairro;
