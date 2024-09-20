@@ -77,14 +77,15 @@
                                                 <span class="{{#if status}}badge bg-success">Ativo{{else}}badge bg-danger">Bloqueado{{/if}}</span>
                                             </td>
                                             <td class='links-container'>
-                                                <div class="d-flex justify-content-between">
-                                                    <a  style="margin-right: 2px"
+                                                <div class="d-flex justify-content-center">
+                                                    <a style="margin-right: 10px"
                                                         href='/usuarios/dados/{{id}}'
                                                         class='fa fa-solid fa-eye'
                                                         title="Visualizar" 
                                                     /></a>
                                                     {{#if status}}
                                                     <a class="fa fa-solid fa-user-lock" id="removerUser_{{nomeCompleto}}_{{id}}"
+                                                        style="margin-right: 10px"
                                                         data-toggle="modal" data-target="#removerUsuario"
                                                         title="Bloquear" 
                                                         onclick="addLink(event)" href="#"
@@ -93,13 +94,14 @@
                                                     </a>
                                                     {{else}}
                                                     <a class="fa fa-solid fa-unlock" id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+                                                    style="margin-right: 10px"
                                                     data-toggle="modal" data-target="#removerUsuario"
                                                     title="Desbloquear" 
                                                     onclick="addLink(event)" href="#"
                                                         >
                                                     </a>
                                                     {{/if}}
-                                                    <a  style="margin-right: 2px"
+                                                    <a style="margin-right: 10px"
                                                         href='/usuarios/editar/{{id}}'
                                                         class='fa fa-solid fa-pen'
                                                         title="Editar"

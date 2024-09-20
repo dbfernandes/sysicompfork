@@ -23,6 +23,7 @@ const listar = async (req: Request, res: Response) => {
         linhaDePesquisa,
         pageTitle,
         csrfToken: req.csrfToken(),
+        nome: req.session.nome,
         tipoUsuario: req.session?.tipoUsuario
       });
   } catch (error: any) { // Definindo o tipo da variável error como Error
@@ -30,6 +31,7 @@ const listar = async (req: Request, res: Response) => {
       pageTitle,
       error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
+      nome: req.session.nome,
       tipoUsuario: req.session?.tipoUsuario,
     });
   }
@@ -63,6 +65,7 @@ const criar = async (req: Request, res: Response) => {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session?.tipoUsuario,
+      nome: req.session.nome,
     });
   } else {
     try {
@@ -80,6 +83,7 @@ const criar = async (req: Request, res: Response) => {
       console.log(error);
       return res.render(resolveView('linhasDePesquisa-criar'), {
         pageTitle,
+        nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
         error: error.message || 'Não foi possível criar a linha de pesquisa!',
@@ -99,6 +103,7 @@ const remover = async (req: Request, res: Response) => {
       return res.render(resolveView('linhasDePesquisa-listar.hbs'), {
         pageTitle,
         error: error.message || 'Não foi possível remover a linha de pesquisa!',
+        nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario
       });
@@ -133,6 +138,7 @@ const editar = async (req: Request, res: Response) => {
       return res.render(resolveView('linhasDePesquisa-editar'), {
         pageTitle,
         linhaPesquisa,
+        nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
         error: error.message || 'Não foi possível editar a linha de pesquisa!',
