@@ -125,6 +125,7 @@ const editar = async (req:Request, res: Response) => {
       
       res.render(resolveView('reservas-editar'), {
         salas: salas,
+        nome: req.session.nome,
         reserva: reserva,
         csrf: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario

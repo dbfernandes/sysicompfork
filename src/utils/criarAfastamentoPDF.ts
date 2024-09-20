@@ -78,20 +78,21 @@ export async function criarAfastamentoPDF(
       '/src/views/layouts/modeloAfastamento/header.hbs',
     );
     const dados = await getAfastamento(Number(id));
+    console.log('Dados do Afastamento:', dados);
     const arquivoHTML = HBStoPDF(
       afastamentoPath,
       dados,
       footerPath,
       headerPath,
     );
-
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       executablePath: '/usr/bin/chromium-browser',
+      protocolTimeout: 60000,
     });
     const page = await browser.newPage();
-    await page.setContent(arquivoHTML);
+    await page.setContent(arquivoHTML, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({
       path: path.join(
         __dirname,
@@ -108,7 +109,7 @@ export async function criarAfastamentoPDF(
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `inline; filename=${dados!.usuarioNome}.pdf`,
+      `attachment; filename=${dados!.usuarioNome}.pdf`,
     );
     fs.createReadStream(
       path.join(
