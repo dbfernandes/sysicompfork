@@ -18,6 +18,14 @@ i18next.init({
     },
   },
   compatibilityJSON: 'v2',
+  detection: {
+    order: ['cookie', 'header'], // Ordem de detecção do idioma
+    caches: ['cookie'], // Onde armazenar a informação do idioma
+    cookieName: 'lang', // Nome do cookie de linguagem
+  },
+  cache: {
+    enabled: false,
+  },
 });
 
 HandlebarsI18n.init();

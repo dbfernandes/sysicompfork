@@ -1,0 +1,64 @@
+{
+  "csrfToken": "CSRF Token",
+  "email": "Email",
+  "editalPosicao": "Position in the Call",
+  "comoSoube": "How You Found Out",
+  "dataNascimento": "Date of Birth",
+  "uf": "State",
+  "cotista": "Quota Holder",
+  "cotistaTipo": "Quota Holder Type",
+  "condicao": "Condition",
+  "condicaoTipo": "Condition Type",
+  "bolsista": "Scholarship Holder",
+  "identificacaoCandidato": {
+    "title": "Candidate Identification",
+    "nome": "Name",
+    "nomePlaceholder": "Enter your name",
+    "dataNascimento": "Date of Birth",
+    "sexo": "Gender",
+    "masculino": "Male",
+    "feminino": "Female",
+    "nomeSocial": "Social Name",
+    "cep": "Postal Code",
+    "estado": "State",
+    "selectEstado": "Select State",
+    "endereco": "Address",
+    "cidade": "City",
+    "bairro": "Neighborhood",
+    "nacionalidade": {
+      "title": "Nationality",
+      "brasileira": "Brazilian",
+      "estrangeira": "Foreigner",
+      "cpf": "CPF",
+      "pais": "Country",
+      "passaporte": "Passport"
+    }
+  },
+  "contato": {
+    "title": "Contact Phones",
+    "telefonePrincipal": "Main Phone",
+    "telefoneAlternativo": "Alternative Phone"
+  },
+  "edital": {
+    "title": "How did you hear about the Call?",
+    "label": "How did you find out about the selection notice?",
+
+    "placeholder": "Select how you heard",
+    "options": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "By email message",
+      "ppgi": "Through the PPGI Website",
+      "icomp": "Through the IComp Website",
+      "proprioIcomp": "At IComp itself (secretariat, colleagues, teachers)",
+      "outro": "Other"
+    }
+  },
+  "inscricao": {
+    "title": "Application Data",
+    "cursoDesejado": "Desired Course",
+    "mestrado": "Master's",
+    "doutorado": "Doctorate"
+  }
+}

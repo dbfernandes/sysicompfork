@@ -42,11 +42,58 @@ const localsBegin = {
   layout: 'begin',
 };
 
+function getLanguage(req: CustomRequest) {
+  return req.cookies['lang'] || 'ptBR';
+}
+
+function parseDate(dateString: string) {
+  const parts = dateString.split('/');
+  // Supondo que a data está no formato DD/MM/YYYY
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é 0-indexed
+  const year = parseInt(parts[2], 10);
+
+  return new Date(year, month, day);
+}
+
+function downloadFile(req, res) {
+  // Define o caminho do arquivo
+  const userId = req.session.uid.toString();
+  const nomeArquivo = req.params.name;
+  const caminhoDoc = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    userId,
+    nomeArquivo,
+  );
+
+  res.download(caminhoDoc, (error) => {
+    if (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  });
+}
+
+export function verificarArquivoDiretorio(
+  diretorio: string,
+  nomeArquivo: string,
+) {
+  const caminhoArquivo = path.join(diretorio, nomeArquivo);
+
+  return fs.existsSync(caminhoArquivo);
+}
+
 const begin = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
+      const currentLanguage = getLanguage(req);
+
       return res.render(resolveView('begin'), {
         ...localsBegin,
+        currentLanguage,
       });
     default:
       return res.status(405).send();
@@ -57,11 +104,13 @@ const signUp = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const listEditais = await EditalService.listEditalsAvailable();
+      const currentLanguage = getLanguage(req);
 
       return res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
         errorSignin: null,
+        currentLanguage,
         ...locals,
       });
     }
@@ -115,10 +164,13 @@ const login = async (req: CustomRequest, res: Response) => {
     case 'GET': {
       try {
         const listEditais = await EditalService.listEdital();
+        const currentLanguage = getLanguage(req);
+
         return res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
+          currentLanguage,
         });
       } catch (err) {
         return res.status(500).send();
@@ -258,15 +310,6 @@ const formProposta = async (req: CustomRequest, res: Response) => {
   }
 };
 
-export function verificarArquivoDiretorio(
-  diretorio: string,
-  nomeArquivo: string,
-) {
-  const caminhoArquivo = path.join(diretorio, nomeArquivo);
-
-  return fs.existsSync(caminhoArquivo);
-}
-
 async function backToStart(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'POST':
@@ -292,6 +335,7 @@ const forms = async (req: CustomRequest, res: Response) => {
         break;
       }
       const { uid, editalPosition } = req.session;
+      const currentLanguage = getLanguage(req);
 
       const candidate = await candidatoService.findById(Number(uid));
       const edital = await editalService.getEdital(candidate.idEdital);
@@ -313,6 +357,7 @@ const forms = async (req: CustomRequest, res: Response) => {
             ...locals,
             ...candidate,
             csrfToken: req.csrfToken(),
+            currentLanguage,
           });
         }
 
@@ -344,6 +389,7 @@ const forms = async (req: CustomRequest, res: Response) => {
             experienciasAcademicas,
             conferencias,
             periodicos,
+            currentLanguage,
           });
         }
 
@@ -375,6 +421,7 @@ const forms = async (req: CustomRequest, res: Response) => {
               caminhoDiretorioUsuario,
               COMPROVANTE_FILE,
             ),
+            currentLanguage,
           });
         }
         case 4: {
@@ -395,6 +442,7 @@ const forms = async (req: CustomRequest, res: Response) => {
               caminhoDiretorioUsuario,
               COMPROVANTE_FILE,
             ),
+            currentLanguage,
           });
         }
         default:
@@ -404,15 +452,6 @@ const forms = async (req: CustomRequest, res: Response) => {
       return res.status(405).send();
   }
 };
-function parseDate(dateString: string) {
-  const parts = dateString.split('/');
-  // Supondo que a data está no formato DD/MM/YYYY
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é 0-indexed
-  const year = parseInt(parts[2], 10);
-
-  return new Date(year, month, day);
-}
 
 async function form1(req: CustomRequest, res: Response) {
   switch (req.method) {
@@ -658,10 +697,12 @@ const refresh = async (req: CustomRequest, res: Response) => {
 const recuperarSenha = async (req, res) => {
   switch (req.method) {
     case 'GET': {
+      const currentLanguage = getLanguage(req);
       const listEditais = await EditalService.listEdital();
       return res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
         csrfToken: req.csrfToken(),
+        currentLanguage,
         ...localsBegin,
       });
     }
@@ -706,11 +747,13 @@ const trocarSenha = async (req, res: Response) => {
       const candidate = await candidatoService.findByTokenPassword(
         req.query.token as string,
       );
+      const currentLanguage = getLanguage(req);
 
       if (!candidate) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token inválido',
           csrfToken: req.csrfToken(),
+          currentLanguage,
           ...localsBegin,
         });
       }
@@ -719,12 +762,14 @@ const trocarSenha = async (req, res: Response) => {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),
+          currentLanguage,
           ...localsBegin,
         });
       }
       return res.render(resolveView('trocarSenha'), {
         csrfToken: req.csrfToken(),
         token: req.query.token,
+        currentLanguage,
         ...localsBegin,
       });
     }
@@ -752,55 +797,6 @@ const trocarSenha = async (req, res: Response) => {
   }
 };
 
-const downloadFile = (req, res) => {
-  // Define o caminho do arquivo
-  const userId = req.session.uid.toString();
-  const nomeArquivo = req.params.name;
-  const caminhoDoc = path.join(
-    'public',
-    'uploads',
-    'candidato',
-    userId,
-    nomeArquivo,
-  );
-
-  res.download(caminhoDoc, (error) => {
-    if (error) {
-      return res.status(400).json({
-        error: error.message,
-      });
-    }
-  });
-  // const nomeArquivo = req.params.name;
-  // const caminhoArquivo = path.join(
-  //   __dirname,
-  //   '..',
-  //   '..',
-  //   'public',
-  //   'uploads',
-  //   'candidato',
-  //   userId,
-  //   nomeArquivo,
-  // );
-  // // Verifica se o arquivo existe
-  // if (fs.existsSync(caminhoArquivo)) {
-  //   // Define o cabeçalho para o download
-  //   // Define os cabeçalhos para evitar o armazenamento em cache
-  //   res.setHeader(
-  //     'Cache-Control',
-  //     'no-store, no-cache, must-revalidate, max-age=0',
-  //   );
-  //   res.setHeader('Pragma', 'no-cache');
-  //   res.setHeader('Expires', '0');
-  //   res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
-  //   res.setHeader('Content-Type', 'application/octet-stream');
-
-  //   // Envia o arquivo como resposta
-  //   res.sendFile(caminhoArquivo);
-  // } else {
-  //   res.status(404).send('Arquivo não encontrado.');
-  // }
-};
 export default {
   begin,
   signUp,

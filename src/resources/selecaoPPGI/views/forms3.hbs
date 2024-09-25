@@ -163,6 +163,7 @@
     <div class="container">
       <h1 class="header-title">PPGI</h1>
 		  <div class="options">
+        {{> ppgi/selectLanguageHeader}}
 			  <button id="btn_inicio">Início</button>
 			  <button id="btn_logout">Sair</button>
 		  </div>
@@ -170,30 +171,8 @@
 	</header>
 
   <section class="content container">
-    <nav>
-      <ul>
-        <li>
-          <i class="nav-icon fas fa-user active"></i>
-          Dados
-        </li>
-        <li>
-          <i class="nav-icon fas fa-history active"></i>
-          Histórico
-        </li>
-        <li>
-          <i class="nav-icon fas fa-project-diagram active"></i>
-          Proposta de Projeto
-        </li>
-        <li>
-          <i class="nav-icon fas fa-check"></i>
-          Confirmação
-        </li>
-      </ul>
-      <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated pbar-3" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-        </div>
-      </div>
-    </nav>
+    {{> ppgi/nav indexSelect="3" progress="75"}}
+
     
     <div class="container-fluid">
       <form id="candidato-formulario">

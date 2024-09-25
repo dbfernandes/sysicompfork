@@ -1,0 +1,47 @@
+{
+  "title": "Application Form for the Selection Process for Master's/Doctorate - PPGI/UFAM",
+  "instructions": "Instructions:",
+  "instructionList": {
+      "fillFields": "Fill in the fields <b>email, password, repeat password, and select a notice</b> to register a new candidate.",
+      "repeatPassword": "The <b>Repeat Password</b> field must be filled with the same value as the <b>Password</b> field.",
+      "registrationEmail": "The registration email cannot be repeated for the same notice. If you have already started your registration in a notice, access the option Continue Registration by clicking the <b>Back</b> button.",
+      "confirmRegistration": "After confirming the registration, you will be directed to the application form."
+  },
+  "noEditals": "No notices available at this time.",
+  "availableEditals": "Available Notices",
+  "editalNumber": "Notice Number:",
+  "registrationPeriod": "Registration Period:",
+  "start": "Start:",
+  "end": "End:",
+  "courses": "Courses:",
+  "masterVacancies": "Vacancies for Master's:",
+  "regularVacancies": "Regular Vacancies:",
+  "supplementaryVacancies": "Supplementary Vacancies:",
+  "phdVacancies": "Vacancies for Doctorate:",
+  "downloadNotice": "Download the notice:",
+
+  "formTitle": "Application Form",
+  "emailLabel": "Email",
+  "emailPlaceholder": "Email",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Password",
+  "confirmPasswordLabel": "Repeat Password",
+  "confirmPasswordPlaceholder": "Repeat Password",
+  "editalLabel": "Notice",
+  "selectEdital": "Select a notice",
+  "submitButton": "Save Candidate",
+  "backButton": "Back",
+
+  "validation": {
+    "emailRequired": "The field <b>Email</b> is required.",
+    "emailInvalid": "The field <b>Email</b> must be a valid email.",
+    "passwordRequired": "The field <b>Password</b> is required.",
+    "passwordMinlength": "The field <b>Password</b> must be at least 6 characters long.",
+    "passwordStrong": "The password must contain uppercase letters, lowercase letters, and numbers.",
+    "repeatPasswordRequired": "The field <b>Repeat Password</b> is required.",
+    "repeatPasswordMinlength": "The field <b>Repeat Password</b> must be at least 6 characters long.",
+    "repeatPasswordEqual": "The field <b>Repeat Password</b> must match the value in the <b>Password</b> field.",
+    "editalRequired": "The field <b>Notice</b> is required."
+  },
+  "errorAlert": "Error while registering candidate."
+}

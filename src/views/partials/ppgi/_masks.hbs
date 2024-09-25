@@ -1,0 +1,12 @@
+<script>
+  (function() {
+      $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+      $('.cpf').inputmask('999.999.999-99', { 'placeholder': '___.___.___-__' });
+      $('.telefone').inputmask({
+          mask: ['(99)9999-9999', '(99)99999-9999'],
+          placeholder: '(__)_____-____',
+          keepStatic: true 
+      });      
+      $('.edital').inputmask('999-9999');
+  })();
+</script>

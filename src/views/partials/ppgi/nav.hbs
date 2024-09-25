@@ -1,0 +1,23 @@
+<nav>
+  <ul>
+    <li>
+      <i class="{{#if (gte indexSelect '1')}}active{{/if}} nav-icon fas fa-user"></i>
+      {{__ "ppgi.nav.dados"}}
+    </li>
+    <li>
+      <i class="{{#if (gte indexSelect '2')}}active{{/if}} nav-icon fas fa-history"></i>
+      {{__ "ppgi.nav.historico"}}
+    </li>
+    <li>
+      <i class="{{#if (gte indexSelect '3')}}active{{/if}} nav-icon fas fa-project-diagram"></i>
+      {{__ "ppgi.nav.propostaProjeto"}}
+    </li>
+    <li>
+      <i class="{{#if (gte indexSelect '4')}}active{{/if}} nav-icon fas fa-check"></i>
+      {{__ "ppgi.nav.confirmacao"}}
+    </li>
+  </ul>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated pbar-{{indexSelect}}" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+</nav>

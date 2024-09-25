@@ -1,0 +1,15 @@
+{
+  "english": "Inglês",
+  "portuguese": "Português",
+  "header": {
+    "title": "PPGI",
+    "initButton": "Início",
+    "logoutButton": "Sair"
+  },
+  "nav": {
+    "dados": "Dados",
+    "historico": "Histórico",
+    "propostaProjeto": "Proposta de Projeto",
+    "confirmacao": "Confirmação"
+  }
+}

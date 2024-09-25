@@ -1,0 +1,63 @@
+{
+  "csrfToken": "Token CSRF",
+  "email": "Email",
+  "editalPosicao": "Posição no Edital",
+  "comoSoube": "Como Soube",
+  "dataNascimento": "Data de Nascimento",
+  "uf": "UF",
+  "cotista": "Cotista",
+  "cotistaTipo": "Tipo de Cotista",
+  "condicao": "Condição",
+  "condicaoTipo": "Tipo de Condição",
+  "bolsista": "Bolsista",
+  "identificacaoCandidato": {
+    "title": "Identificação do Candidato",
+    "nome": "Nome",
+    "nomePlaceholder": "Insira seu nome",
+    "dataNascimento": "Data de Nascimento",
+    "sexo": "Sexo",
+    "masculino": "Masculino",
+    "feminino": "Feminino",
+    "nomeSocial": "Nome Social",
+    "cep": "CEP",
+    "endereco": "Endereço",
+    "cidade": "Cidade",
+    "bairro": "Bairro",
+    "estado": "Estado",
+    "selectEstado": "Selecione UF",
+    "nacionalidade": {
+      "title": "Nacionalidade",
+      "brasileira": "Brasileira",
+      "estrangeira": "Estrangeira",
+      "cpf": "CPF",
+      "pais": "País",
+      "passaporte": "Passaporte"
+    }
+  },
+  "contato": {
+    "title": "Telefones para Contato",
+    "telefonePrincipal": "Telefone Principal",
+    "telefoneAlternativo": "Telefone Alternativo"
+  },
+  "edital": {
+    "title": "Como soube do Edital?",
+    "label": " Como você soube do edital de seleção?",
+    "placeholder": "Selecione como soube",
+    "options": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "Por mensagem de email",
+      "ppgi": "Através da página Web do PPGI",
+      "icomp": "Através da página Web do IComp",
+      "proprioIcomp": "No próprio IComp (secretaria, colegas, professores)",
+      "outro": "Outro"
+    }
+  },
+  "inscricao": {
+    "title": "Dados da Inscrição",
+    "cursoDesejado": "Curso Desejado",
+    "mestrado": "Mestrado",
+    "doutorado": "Doutorado"
+  }
+}

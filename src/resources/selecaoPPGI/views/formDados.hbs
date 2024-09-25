@@ -1,128 +1,6 @@
 {{ setTitle title="Dados Pessoais" }}
 
 <style>
-	.forms-page {
-		height: 100vh;
-		display: block;
-		justify-content: center;
-		align-items: center;
-		background-color: #fff;
-		overflow-y: auto;
-	}
-	.forms-page header {
-		width: 100%;
-		position: sticky;
-		top: 0;
-		left: 0;
-		z-index: 1;
-		height: 50px;
-		background-color: #222;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		font-weight: bold;
-		padding: 10px 45px;
-		z-index: 9999;
-	}
-
-	.forms-page header h1 {
-		font-size: 1.4rem;
-		color: #dbdbdb;
-		cursor: pointer;
-	}
-
-	.forms-page header h1:hover {
-		color: #fff;
-	}
-
-	@media screen and (max-width: 720pt) {
-		.forms-page header {
-			padding: 10px 15px;
-		}
-	}
-
-	.forms-page header .options {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.forms-page header .options button {
-		background-color: transparent;
-		border: none;
-		cursor: pointer;
-		color: #c7c7c7;
-		transition: all .3s;
-	}
-
-	.forms-page header .options button:hover {
-		color: #fff;
-	}
-
-
-	.forms-page section {
-		display: flex;
-		flex-direction: column;
-		width: 90%;
-		margin: auto;
-		margin-top: 2%;
-		min-height: 100vh;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		overflow-y: auto;
-		color: #222;
-	}
-
-	.forms-page section h1 {
-		font-size: 1.4rem;
-		color: #222;
-		margin-bottom: 10px;
-	}
-
-	.forms-page section .line {
-		width: 100%;
-		height: 1px;
-		background-color: #c2c2c2;
-		margin-bottom: 10px;
-	}
-
-	.forms-page section .info {
-		width: 100%;
-		height: 100%;
-	}
-
-
-	@media (max-width: 576px) {
-	.forms-page section form {
-		padding: 0;
-	}
-	}
-
-	.forms-page section button {
-		position: relative;
-		bottom: 0;
-	}
-
-	.forms-page footer {
-		width: 100%;
-		height: 50px;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		background-color: #000;
-	}
-
-
-
-	.forms-page .progress .progress-bar {
-		background-color: #006eff;
-	}
-
-	.forms-page nav .active {
-		background-color: #006eff;
-	}
-
 	.toast-container {
 		top: 0;
     	right: 0;
@@ -144,10 +22,11 @@
 <div class="forms-page">
 	<header>
 		<div class="container">
-			<h1 class="header-title">PPGI</h1>
+			<h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
 			<div class="options">
-				<button id="btn_inicio">Início</button>
-				<button id="btn_logout">Sair</button>
+				{{> ppgi/selectLanguageHeader}}
+				<button id="btn_inicio"> {{__ "ppgi.header.initButton"}}</button>
+				<button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
 			</div>
 		</div>
 	</header>
@@ -162,30 +41,7 @@
         </div>
     </div>
 	<section class="content container">
-		<nav>
-			<ul>
-				<li>
-					<i class="nav-icon fas fa-user active"></i>
-					Dados
-				</li>
-				<li>
-					<i class="nav-icon fas fa-history"></i>
-					Histórico
-				</li>
-				<li>
-					<i class="nav-icon fas fa-project-diagram"></i>
-					Proposta de Projeto
-				</li>
-				<li>
-					<i class="nav-icon fas fa-check"></i>
-					Confirmação
-				</li>
-			</ul>
-			<div class="progress">
-				<div class="progress-bar progress-bar-striped progress-bar-animated pbar-1" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-				</div>
-			</div>
-		</nav>
+		{{> ppgi/nav indexSelect="1" progress="25"}}
 	
 		<div class="container-fluid">
 			<form id="candidato-formulario">
@@ -203,7 +59,7 @@
 
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Identificação do Candidato</h3>
+						<h3 class="card-title">{{__ "ppgiForm1.identificacaoCandidato.title"}}</h3>
 					</div>
 					<div class="card-body">
 						<div class="row">
@@ -211,15 +67,15 @@
 							<div class="form-group col-md-6">
 								<label for="candidato-nome">
 									<font color="#FF0000">*</font>
-									<b>Nome:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.nome"}}:</b>
 								</label>
-								<input class="form-control" id="candidato-nome" placeholder="Insira seu nome" type="text" name="nome"
+								<input class="form-control" id="candidato-nome" placeholder="{{__ "ppgiForm1.identificacaoCandidato.nomePlaceholder"}}" type="text" name="nome"
 									maxlength="60" value="{{nome}}">
 							</div>
 							<div class="col-md-3 campo-candidato-datanascimento">
 								<label class="control-label" for="data-nascimento">
 									<font color="#FF0000">*</font>
-									<b>Data de Nascimento:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.dataNascimento"}}:</b>
 								</label>
 								<div class="input-group">
 									<div class="input-group date" id="candidato-datanascimento" data-target-input="nearest">
@@ -238,18 +94,18 @@
 							<div class="col-md-3 " role="radiogroup">
 								<label class="control-label" for="candidato-sexo">
 									<font color="#FF0000">*</font>
-									<b>Sexo:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
 								</label>
 								<div id="candidato-sexo" role="radiogroup"
 									style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Sexo" name="candidatoSexo" {{#if (eq sexo 'M')}} checked="true" {{/if}}>
-										<label for="Sexo"> Masculino</label>
+										<label for="Sexo"> {{__ "ppgiForm1.identificacaoCandidato.masculino"}}</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Sexo2" name="candidatoSexo"  {{#if (eq sexo 'F')}} checked="true" {{/if}}>
-										<label for="Sexo2">Feminino</label>
+										<label for="Sexo2">{{__ "ppgiForm1.identificacaoCandidato.feminino"}}</label>
 									</div>
 
 								</div>
@@ -260,7 +116,7 @@
 						<div class="form-group row">
 							<div class="col-md-6 campo-candidato-nomesocial">
 								<label class="control-label" for="candidato-nomesocial">
-									<b>Nome Social:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.nomeSocial"}}:</b>
 								</label>
 								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]"
 									maxlength="60" value="{{nomeSocial}}" />
@@ -270,7 +126,7 @@
 							<div class="col-md-3 campo-candidato-cep">
 								<label class="control-label" for="candidato-cep">
 									<font color="#FF0000">*</font>
-									<b>CEP:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.cep"}}:</b>
 								</label>
 								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" data-plugin-inputmask=""
 									value="{{cep}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
@@ -281,10 +137,10 @@
 							<div class="col-md-3 campo-candidato-uf">
 								<label class="control-label" for="candidato-uf">
 									<font color="#FF0000">*</font>
-									<b>Estado:</b>
+									<b>{{__ "ppgiForm1.identificacaoCandidato.estado"}}:</b>
 								</label>
 								<select id="candidato-uf" class="custom-select" name="candidatoUf">
-									<option value="">Selecione UF:</option>
+									<option value="">{{__ "ppgiForm1.identificacaoCandidato.selectEstado"}}:</option>
 									<option value="AC">AC</option>
 									<option value="AL">AL</option>
 									<option value="AM">AM</option>
@@ -321,7 +177,7 @@
 						<div class="form-group row">
 							<div class="col-md-6 field-candidato-endereco">
 								<label class="control-label" for="candidato-endereco">
-									<font color="#FF0000">*</font> <b>Endereço:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.endereco"}}:</b>
 								</label>
 								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco" maxlength="160"
 									value="{{endereco}}">
@@ -330,7 +186,7 @@
 
 							<div class="col-md-3 field-candidato-cidade has-error">
 								<label class="control-label" for="candidato-cidade">
-									<font color="#FF0000">*</font> <b>Cidade:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.cidade"}}:</b>
 								</label>
 								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" maxlength="40"
 									aria-invalid="true" value="{{cidade}}">
@@ -338,7 +194,7 @@
 
 							<div class="col-md-3 field-candidato-bairro">
 								<label class="control-label" for="candidato-bairro">
-									<font color="#FF0000">*</font> <b>Bairro:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.bairro"}}:</b>
 								</label>
 								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" maxlength="50"
 									value="{{bairro}}">
@@ -349,28 +205,28 @@
 						<div class="row form-group">
 							<div class="col-md-3 field-candidato-nacionalidade">
 								<label for="candidato-sexo" class="control-label">
-									<font color="#FF0000">*</font> <b>Nacionalidade:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.title"}}:</b>
 								</label>
 
 								<div id="candidato-sexo" role="radiogroup" style="display: flex; align-content:center; gap: 20px;">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Nacionalidade1" name="candidatoNacionalidade" 
 										{{#if (eq nacionalidade 'Brasileira')}} checked {{/if}}>
-										<label for="Nacionalidade1"> Brasileira</label>
+										<label for="Nacionalidade1"> {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.brasileira"}}</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Nacionalidade2" name="candidatoNacionalidade" 
 										{{#if (eq nacionalidade 'Estrangeira')}} checked {{/if}}>
-										<label for="Nacionalidade2"> Estrangeira</label>
+										<label for="Nacionalidade2"> {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.estrangeira"}}</label>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row form-group" id="row-nacionalidade-brasileiro" {{#if (eq nacionalidade 'Estrangeira')}}hidden{{/if}}>
-							<div class="col-md-3">
+							<div class="col-md-6">
 								<label class="control-label" for="cpf"></label>
-									<font color="#FF0000">*</font> <b>CPF:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.cpf"}}:</b>
 								</label>
 								<input type="text" id="cpf" class="form-control cpf" name="cpf" value="{{cpf}}">
 								<div class="help-block"></div>
@@ -379,14 +235,14 @@
 						<div class="row form-group" id="row-nacionalidade-estrangeiro" {{#if (eq nacionalidade 'Brasileira')}}hidden{{/if}}>
 							<div class="col-md-6">
 								<label class="control-label" for="pais"></label>
-									<font color="#FF0000">*</font> <b>País:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.pais"}}:</b>
 								</label>
 								<input type="text" id="pais" class="form-control" name="pais" value="{{pais}}">
 								<div class="help-block"></div>
 							</div>
 							<div class="col-md-6">
 								<label class="control-label" for="passaporte"></label>
-									<font color="#FF0000">*</font> <b>Passaporte:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.passaporte"}}:</b>
 								</label>
 								<input type="text" id="passaporte" class="form-control" name="passaporte" value="{{passaporte}}" maxlength="9">
 								<div class="help-block"></div>
@@ -397,24 +253,24 @@
 
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Telefones para Contato</h3>
+						<h3 class="card-title">{{__ "ppgiForm1.contato.title"}}</h3>
 					</div>
 
 					<div class="card-body">
 						<div class="row">
-							<div class="form-group col-md-3  col-sm-6">
-								<label class="control-label" for="candidato-telresidencial">
-									<font color="#FF0000">*</font> <b>Telefone Principal:</b>
+							<div class="form-group col-md-6  col-sm-6">
+								<label class="control-label " for="candidato-telresidencial">
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.contato.telefonePrincipal"}}:</b>
 								</label>
-								<input type="text" id="candidato-telresidencial" class="form-control" name="candidatoTelresidencial"
-									value="{{telefone}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+								<input type="text" id="candidato-telresidencial" class="form-control telefone" name="candidatoTelresidencial"
+									value="{{telefone}}">
 								<div class="help-block"></div>
 							</div>
 
-							<div class="form-group col-md-3 col-sm-6">
-								<label class="control-label" for="candidato-telcelular">Telefone Alternativo:</label>
-								<input type="text" id="candidato-telcelular" class="form-control" name="Candidato[telcelular]"
-									value="{{telefoneSecundario}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+							<div class="form-group col-md-6 col-sm-6">
+								<label class="control-label" for="candidato-telcelular"> {{__ "ppgiForm1.contato.telefoneAlternativo"}}:</label>
+								<input type="text" id="candidato-telcelular " class="form-control telefone" name="Candidato[telcelular]"
+									value="{{telefoneSecundario}}" >
 
 								<div class="help-block"></div>
 							</div>
@@ -425,25 +281,25 @@
 
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Como soube do Edital?</h3>
+						<h3 class="card-title">{{__ "ppgiForm1.edital.title"}}</h3>
 					</div>
 
 					<div class="card-body">
 						<div class="row form-group col-sm-6">
 							<div>
 								<label>
-									<font color="#FF0000">*</font> <b>Como você soube do edital de seleção?</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.edital.label"}}</b>
 								</label>
 								<select id="como-soube" class="custom-select" name="comoSoube">
-									<option value="">Selecione como soube:</option>
-									<option value="Facebook">Facebook</option>
-									<option value="Instagram">Instagram</option>
-									<option value="LinkedIn">LinkedIn</option>
-									<option value="Email">Por mensagem de email</option>
-									<option value="PPGI">Através da página Web do PPGI</option>
-									<option value="IComp">Através da página Web do IComp</option>
-									<option value="ProprioIcomp">No próprio IComp (secretaria, colegas, professores)</option>
-									<option value="Outro">Outro</option>
+									<option value="">{{__ "ppgiForm1.edital.placeholder"}}:</option>
+									<option value="Facebook">{{__ "ppgiForm1.edital.options.facebook"}}</option>
+									<option value="Instagram">{{__ "ppgiForm1.edital.options.instagram"}}</option>
+									<option value="LinkedIn">{{__ "ppgiForm1.edital.options.linkedin"}}</option>
+									<option value="Email">{{__ "ppgiForm1.edital.options.email"}}</option>
+									<option value="PPGI">{{__ "ppgiForm1.edital.options.ppgi"}}</option>
+									<option value="IComp">{{__ "ppgiForm1.edital.options.icomp"}}</option>
+									<option value="ProprioIcomp">{{__ "ppgiForm1.edital.options.proprioIcomp"}}</option>
+									<option value="Outro">{{__ "ppgiForm1.edital.options.outro"}}</option>
 								</select>
 							</div>
 						</div>
@@ -452,25 +308,25 @@
 
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Dados da Inscrição</h3>
+						<h3 class="card-title">{{__ "ppgiForm1.inscricao.title"}}</h3>
 					</div>
 					<div class="card-body">
 						<div class="row form-group">
 							<div class="form-group col-md-5">
 								<label class="control-label">
-									<font color="#FF0000">*</font> <b>Curso Desejado:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.cursoDesejado"}}:</b>
 								</label>
 
 								<div id="cadidato-curso" role="radiogroup">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Curso1" name="candidatoCurso"  {{#if (eq cursoDesejado 'Mestrado')}} checked="true" {{/if}}>
-										<label for="Curso1" style="margin-right: 20px;"> Mestrado
+										<label for="Curso1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.mestrado"}}
 										</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Curso2" name="candidatoCurso" {{#if (eq cursoDesejado 'Doutorado')}} checked="true" {{/if}}>
-										<label for="Curso2"> Doutorado
+										<label for="Curso2"> {{__ "ppgiForm1.inscricao.doutorado"}}
 										</label>
 									</div>
 								</div>
@@ -580,118 +436,103 @@
 		</div>
 	</section>
 </div>
-</div>
-
+{{> ppgi/_masks }}
 <script>
-	function FormAdicionarPage() {
-		$(document).ready(function () {
-			const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
-			$("#como-soube").val(comoSoubeValue);
-		});
-
-		var cotistaValue = document.getElementById("CotistaObj").value;
-		var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
-		
-		var select = document.getElementById("tipo-cota");
-		for (var i = 0; i < select.options.length; i++) {
-			if (select.options[i].value === cotistaTipoValue) {
-				select.selectedIndex = i;
-				break;
-			}
+	$(document).ready(() => {
+		const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+		$("#como-soube").val(comoSoubeValue);
+	});
+	var cotistaValue = document.getElementById("CotistaObj").value;
+	var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
+	
+	var select = document.getElementById("tipo-cota");
+	for (var i = 0; i < select.options.length; i++) {
+		if (select.options[i].value === cotistaTipoValue) {
+			select.selectedIndex = i;
+			break;
 		}
-
-		var ufValue = document.getElementById('UFObj').value;
-		var selectElement = document.getElementById('candidato-uf');
-		for (var i = 0; i < selectElement.options.length; i++) {
-			if (selectElement.options[i].value === ufValue) {
-				selectElement.options[i].selected = true;
-				break;
-			}
+	}
+	var ufValue = document.getElementById('UFObj').value;
+	var selectElement = document.getElementById('candidato-uf');
+	for (var i = 0; i < selectElement.options.length; i++) {
+		if (selectElement.options[i].value === ufValue) {
+			selectElement.options[i].selected = true;
+			break;
 		}
-
-		{{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
-		{{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
-		{{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
-		
-		$(document).ready(function () {
-			var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
-
-			$("#CondicaoObj").val(condicaoInicial);
-
-			$("#candidato-deficiencia1").change(function () {
-				$("#CondicaoObj").val($(this).prop("checked"));
-			});
-
-			$("#candidato-condicao").change(function () {
-				$("#CondicaoTipoObj").val($(this).val());
-			});
-
+	}
+	{{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
+	{{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
+	{{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
+	
+	$(document).ready(function () {
+		var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
+		$("#CondicaoObj").val(condicaoInicial);
+		$("#candidato-deficiencia1").change(function () {
+			$("#CondicaoObj").val($(this).prop("checked"));
 		});
+		$("#candidato-condicao").change(function () {
+			$("#CondicaoTipoObj").val($(this).val());
+		});
+	});
 
+	{{#if dataNascimento}}
 		$(document).ready(function () { 
-			if("{{dataNascimento}}"){
-				const nascimentoValue = "{{dataNascimento}}";
-				const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
-
-				$("#data-nascimento").val(formattedDate);
-
-				$('#candidato-datanascimento').datetimepicker({
-					format: 'DD/MM/YYYY',
-				});
-			}
+			const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
+			const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
+			$("#data-nascimento").val(formattedDate);
+			$('#candidato-datanascimento').datetimepicker({
+				format: 'DD/MM/YYYY',
+			});
 		});
-
-		$('#candidato-datanascimento').datetimepicker({
-			format: 'DD/MM/YYYY',
-			locale: 'pt-br',
-		});
-
-		$("input[data-bootstrap-switch-cotista]").each(function () {
-			$(this).bootstrapSwitch('state', $(this).prop('checked'));
-			if (!$(this).prop('checked')) {
+	{{/if}}
+	
+	$('#candidato-datanascimento').datetimepicker({
+		format: 'DD/MM/YYYY',
+		locale: 'pt-br',
+	});
+	$("input[data-bootstrap-switch-cotista]").each(function () {
+		$(this).bootstrapSwitch('state', $(this).prop('checked'));
+		if (!$(this).prop('checked')) {
+			$("#cota").slideUp();
+		}
+		$(this).bootstrapSwitch('onSwitchChange', () => {
+			if ($(this).is(":checked")) {
+				$("#cota").slideDown();
+			} else {
 				$("#cota").slideUp();
 			}
-			$(this).bootstrapSwitch('onSwitchChange', () => {
-				if ($(this).is(":checked")) {
-					$("#cota").slideDown();
-				} else {
-					$("#cota").slideUp();
-				}
-			});
 		});
-
-		$("input[data-bootstrap-switch-deficiencia]").each(function () {
-			$(this).bootstrapSwitch('state', $(this).prop('checked'));
-			if (!$(this).prop('checked')) {
+	});
+	$("input[data-bootstrap-switch-deficiencia]").each(function () {
+		$(this).bootstrapSwitch('state', $(this).prop('checked'));
+		if (!$(this).prop('checked')) {
+			$("#condicao").slideUp();
+		}
+		$(this).bootstrapSwitch('onSwitchChange', () => {
+			var input = document.getElementById('condicao');
+			if ($(this).is(":checked")) {
+				$("#condicao").slideDown();
+				$("#deficiencia-div").css("height", "auto");
+			} else {
 				$("#condicao").slideUp();
+				$("#deficiencia-div").css("height", "auto");
 			}
-			$(this).bootstrapSwitch('onSwitchChange', () => {
-				var input = document.getElementById('condicao');
-				if ($(this).is(":checked")) {
-					$("#condicao").slideDown();
-					$("#deficiencia-div").css("height", "auto");
-				} else {
-					$("#condicao").slideUp();
-					$("#deficiencia-div").css("height", "auto");
-				}
-			})
 		})
-
-		
-
-		$("input[data-bootstrap-switch-bolsa]").each(function () {
-			$(this).bootstrapSwitch('state', $(this).prop('checked'));
-			$(this).bootstrapSwitch('onSwitchChange', () => {
-				if ($(this).is(":checked")) {
-					$("#Regime1").prop("checked", true);
-					$("#Regime2").prop("checked", false).prop("disabled", true);
-				} else {
-					$("#Regime2").prop("disabled", false);
-				}
-			});
+	})
+	
+	$("input[data-bootstrap-switch-bolsa]").each(function () {
+		$(this).bootstrapSwitch('state', $(this).prop('checked'));
+		$(this).bootstrapSwitch('onSwitchChange', () => {
+			if ($(this).is(":checked")) {
+				$("#Regime1").prop("checked", true);
+				$("#Regime2").prop("checked", false).prop("disabled", true);
+			} else {
+				$("#Regime2").prop("disabled", false);
+			}
 		});
+	});
 
-	}
+	
 
 	function getSelectedSexo() {
 		const masculinoRadio = document.getElementById("Sexo");
@@ -805,7 +646,7 @@
 		data.bairro = document.getElementById('candidato-bairro').value;
 		data.nacionalidade = getSelectedNacionalidade();
 		data.telefone = document.getElementById('candidato-telresidencial').value;
-		data.telefoneSecundario = document.getElementById('candidato-telcelular').value;
+		data.telefoneSecundario = $(form).find('#candidato-telcelular').val();
 		data.comoSoube = getSelectedComoSoube();
 		data.cursoDesejado = getSelectedCurso();
 		data.regime = getSelectedRegime();
@@ -820,9 +661,9 @@
 		return data;
 	}
 
-
 	$(document).ready(() => {
   		Inputmask("99999-999").mask("#candidato-cep");
+		$('#candidato-cep').on('blur', pesquisarCep);
 
 		$("#btn_logout").click(function () {
 			$.ajax({
@@ -1027,11 +868,11 @@
 						editalPosicao: editalPosicao,
 						id: id
 					},
-					success: function (data) {
+					success: (data) => {
 						window.location.href = '/selecaoppgi/formulario';
 						window.location.reload(true);
 					},
-					error: function (data) {
+					error: (data) => {
 						btnSave.find("span").prop("hidden", true);
 						btnSave.prop("disabled", false);
 						console.log(data)
@@ -1040,22 +881,6 @@
 			}
 		});
 	
-		function showToast(message, alertClass) {
-            const toastElement = $('#myToast');
-            const toastBody = toastElement.find('.alert');
-            
-            // Remove qualquer classe de alerta existente
-            toastBody.removeClass('alert-primary alert-success alert-warning alert-danger alert-info');
-            // Adiciona a classe de alerta apropriada
-            toastBody.addClass(alertClass);
-            // Define a mensagem do toast
-            $('#toastMessage').text(message);
-            // Inicializa e configura o delay do toast
-            const toast = new bootstrap.Toast(toastElement[0], {
-                delay: 5000 // Tempo em milissegundos (por exemplo, 5000 ms = 5 segundos)
-            });
-            toast.show();
-        }
 
 		$("#btn-save").click(function () {
 			const btnSave = $("#btn-save");
@@ -1092,22 +917,36 @@
 		});
 	
 		$("#Nacionalidade1").change(() => {
-
-			document.getElementById("row-nacionalidade-estrangeiro").setAttribute("hidden", '');
-			document.getElementById("row-nacionalidade-brasileiro").removeAttribute("hidden");
+			$("#row-nacionalidade-estrangeiro").attr("hidden", '');
+			$("#row-nacionalidade-brasileiro").removeAttr("hidden");
 		});
 
 		$("#Nacionalidade2").change(() => {
-			document.getElementById("row-nacionalidade-brasileiro").setAttribute("hidden", '');
-			document.getElementById("row-nacionalidade-estrangeiro").removeAttribute("hidden");
+			$("#row-nacionalidade-brasileiro").attr("hidden", '');
+			$("#row-nacionalidade-estrangeiro").removeAttr("hidden");
 		});
-
-
 	});
 
+	function showToast(message, alertClass) {
+        const toastElement = $('#myToast');
+        const toastBody = toastElement.find('.alert');
+        
+        // Remove qualquer classe de alerta existente
+        toastBody.removeClass('alert-primary alert-success alert-warning alert-danger alert-info');
+        // Adiciona a classe de alerta apropriada
+        toastBody.addClass(alertClass);
+        // Define a mensagem do toast
+        $('#toastMessage').text(message);
+        // Inicializa e configura o delay do toast
+        const toast = new bootstrap.Toast(toastElement[0], {
+            delay: 5000 // Tempo em milissegundos (por exemplo, 5000 ms = 5 segundos)
+        });
+        toast.show();
+    }
+
 	function pesquisarCep() {
-		const cep = document.getElementById('candidato-cep').value;
-		const cepInput = document.getElementById('candidato-cep');
+		const cep = $('#candidato-cep').val();
+		const cepInput = $('#candidato-cep')[0];
 		const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
 
 		const cepValido = /^[0-9]{5}-[0-9]{3}$/.test(cep);
@@ -1144,5 +983,4 @@
 			});
 	}
 
-	document.getElementById('candidato-cep').addEventListener('blur', pesquisarCep);
 </script>

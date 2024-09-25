@@ -45,9 +45,7 @@ app.use(cookieParser());
 
 app.use(
   session({
-    genid: () => {
-      return uuid.v4(); // usamos UUIDs para gerar os SESSID
-    },
+    genid: () => uuid.v4(), // usamos UUIDs para gerar os SESSID
     secret: 'eb9ac99d8a53fbfae6cae8e7a48c5b45',
     resave: true,
     saveUninitialized: true,

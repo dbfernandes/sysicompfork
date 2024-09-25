@@ -1,0 +1,21 @@
+{
+  "title_header": "Login - PPGI/UFAM",
+  "title": "Login",
+  "subTitle": "All fields are required",
+  "emailPlaceholder": "Email",
+  "passwordPlaceholder": "Password",
+  "forgotPassword": "Forgot my password",
+  "selectNotice": "Select a notice",
+  "continueButton": "Continue Registration",
+  "backButton": "Back",
+  "errorIncomplete": "Email, password and/or notice incomplete",
+  "errorIncorrect": "Email, password and/or notice incorrect",
+  "errorAlreadySubmitted": "Candidate has already completed registration for this notice",
+  "validation": {
+    "emailRequired": "Field is required",
+    "emailInvalid": "Please enter a valid email",
+    "passwordRequired": "Field is required",
+    "passwordMinLength": "Password must be at least 6 characters long",
+    "noticeRequired": "Field is required"
+  }
+}

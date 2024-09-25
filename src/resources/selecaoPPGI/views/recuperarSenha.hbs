@@ -73,69 +73,50 @@
 		color: #666;
 		width: 100%;
 	}
-	.container-cards {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		img {
-		max-width: 200px;
-		height: 100px;  
-		}
-	}
+
 </style>
 <div class="login-box"> 
 	<div class="login-logo container-cards">
    		<img src="/public/img//logo-icomp.png" alt="">
     	<img src="/public/img//logo-ufam.png" alt="">
 	</div>
-	<div class="card">
+	<div class="card"> 
     	<div class="card-body login-card-body">
       		<div class="login-logo">
-            	<b>Recuperar senha</b>
+            	<b>{{__ "ppgiRecPass.title"}}</b>
         	</div>
         	<div id="error-msg" class="alert alert-danger" hidden="true"></div>
         	<div id="success-msg" class="alert alert-success" hidden></div>
         	<!-- /.login-logo -->
-        	<p class="login-box-msg">Esqueceu sua senha? Insira seu e-mail e <br> edital cadastrado e obtenha uma nova</p>
+        	<p class="login-box-msg">{{__ "ppgiRecPass.subTitle"}} </p>
         	{{#if message}}
-       	   <div class="alert alert-{{type}}">
-       	     {{{message}}}
-       	   </div>
+				<div class="alert alert-{{type}}">
+					{{{message}}}
+				</div>
         	{{/if}}
-        	{{!-- <form action="/selecaoppgi/recuperarSenha" method="post"> --}}
          <form id="form-recuperar-senha">
-          <input type="hidden" name="_csrf" value="{{csrfToken}}">
-          <div class="form-group">
-						<input type="email" class="form-control" name="email" id="email" aria-describedby="email" placeholder="Email">
-						<div class="help-block"></div>
-					</div>
-            {{!-- <div class="input-group mb-3">
-              
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-envelope"></span>
-                </div>
-                <input name='email' id='email' type="email" class="form-control" placeholder="E-mail">
-              </div>
-            </div> --}}
-          <div class="form-group">
-						<select class="form-control" name="editalId" id="edital">
-							<option value="">Selecione um edital</option>
-							{{#each editais}}
-								<option value="{{editalId}}">{{editalId}}</option>
-							{{/each}}
-						</select>
-						<div class="help-block"></div>
-
-					</div>
-          <button id="btn-form-submit" type="submit" class="btn btn-primary btn-block ">Solicitar nova senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
-          <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block  btn-default" role="button">Voltar</button>
+			<input type="hidden" name="_csrf" value="{{csrfToken}}">
+			<div class="form-group">
+				<input type="email" class="form-control" name="email" id="email" aria-describedby="email" placeholder="{{__ "ppgiRecPass.emailPlaceholder"}}">
+				<div class="help-block"></div>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="editalId" id="edital">
+					<option value="">{{__ "ppgiRecPass.noticePlaceholder"}}</option>
+					{{#each editais}}
+						<option value="{{editalId}}">{{editalId}}</option>
+					{{/each}}
+				</select>
+				<div class="help-block"></div>
+			</div>
+          <button id="btn-form-submit" type="submit" class="btn btn-primary btn-block ">{{__ "ppgiRecPass.submitButton"}}<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
+          <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block  btn-default" role="button">{{__ "ppgiRecPass.backButton"}}</button>
         </form>
       </div>
     </div>
+	{{> ppgi/selectLanguage}}
   </div>
 </div>
-<!-- /.login-box -->
 
 <script>
   function back(){
@@ -162,11 +143,11 @@
 		},
 		messages: {
 			email: {
-				required: "Campo obrigatório",
-				email: "Digite um email válido"
+				required: "{{__ "ppgiRecPass.validation.emailRequired"}}",
+				email: "{{__ "ppgiRecPass.validation.emailInvalid"}}"
 			},
 			edital: {
-				required: "Campo obrigatório"
+				required: "{{__ "ppgiRecPass.validation.noticeRequired"}}"
 			},
 		},
 		errorElement: 'span',
@@ -200,7 +181,7 @@
 			const divError = $("#error-msg");
 			divError.prop("hidden", true);
             divSuccess.prop("hidden", false);
-            divSuccess.text("Email para recuperação de senha enviado com sucesso!");
+            divSuccess.text("{{__ "ppgiRecPass.successMessage"}}");
             buttonLogin.attr("disabled", false);
             buttonLogin.find("span").prop("hidden", true);
             //window.location.href = "{{url}}/selecaoppgi";
@@ -213,11 +194,11 @@
             if(res.status === 400){
 				divSuccess.prop("hidden", true);
              	 divError.prop("hidden", false);
-              	divError.text("Email e/ou edital imcompletos");
+              	divError.text("{{__ "ppgiRecPass.errorIncomplete"}}");
             } else if(res.status === 404){
               	divSuccess.prop("hidden", true);
               	divError.prop("hidden", false);
-              	divError.text("Email e/ou edital não encontrados");
+              	divError.text("{{__ "ppgiRecPass.errorNotFound"}}");
             } 
           }
       })

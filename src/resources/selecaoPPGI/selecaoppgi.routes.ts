@@ -5,12 +5,23 @@ import {
   uploadsPublicacoes,
 } from '../../middlewares/multer.selecaoppgi.config';
 import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
-
 import selecaoppgiController from './selecaoppgi.controller';
-
+import language from '../../utils/i18n';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
 
 const router = express.Router();
+
+const languageMiddleware = (req, res, next) => {
+  const lang = req.cookies.lang || 'ptBR'; // Verifica se o cookie "lang" existe, senão usa 'en'
+  req.language = lang; // Armazena o idioma na requisição
+  res.locals.language = lang; // armazena o idioma na variável local
+
+  language.i18next.changeLanguage(lang); // Altera o idioma no i18next
+  next(); // Continua para a próxima middleware/rota
+};
+
+router.use(languageMiddleware);
+
 router.use('/recomendacoes', routerCandidatoRecomendacao);
 
 router.get('/', selecaoppgiController.begin);
