@@ -58,6 +58,21 @@
     "title": "Dados da Inscrição",
     "cursoDesejado": "Curso Desejado",
     "mestrado": "Mestrado",
-    "doutorado": "Doutorado"
+    "doutorado": "Doutorado",
+    "regime": "Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar pelo regime integral):",
+    "integral": "Integral",
+    "parcial": "Parcial",
+    "cotista": "Cotista",
+    "tipoCota": "Tipo de Cota",
+    "placeholderTipoCota": "Selecine a cota",
+    "optionCota": {
+      "indigena": "Indígena",
+      "negro": "Negro",
+      "pardo": "Pardo",
+      "pcd": "Pessoa com deficiência(PCD)"
+    },
+    "saude": "Possui algum tipo de problema de saúde física ou psiquiátrica",
+    "condicao": "Qual",
+    "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)"
   }
 }

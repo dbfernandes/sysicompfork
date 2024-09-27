@@ -15,6 +15,9 @@ import ppgiRecPass from './ppgiRecPass.json';
 import ppgiChangePass from './ppgiChangePass.json';
 import ppgiSignUp from './ppgiSignUp.json';
 import ppgiForm1 from './ppgiForm1.json';
+import ppgiForm2 from './ppgiForm2.json';
+import ppgiForm3 from './ppgiForm3.json';
+import ppgiForm4 from './ppgiForm4.json';
 import ppgiRecomendacao from './ppgiRecomendacao.json';
 
 export default {
@@ -34,6 +37,9 @@ export default {
     ppgiChangePass,
     ppgiSignUp,
     ppgiForm1,
+    ppgiForm2,
+    ppgiForm3,
+    ppgiForm4,
     ppgiRecomendacao,
     ...db,
   },

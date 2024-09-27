@@ -1,14 +1,4 @@
 {{ setTitle title="Histórico" }}
-
-<style>
-
-  .custom-button {
-    margin-right: 10px;
-    /* Adicione a margem desejada entre os botões */
-    margin-bottom: 10px;
-    /* Adicione a margem desejada na parte inferior dos botões (espaço vertical) */
-  }
-</style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 
 <div class="forms-page">
@@ -17,13 +7,11 @@
       <h1 class="header-title">PPGI</h1>
 		  <div class="options">
 				{{> ppgi/selectLanguageHeader}}
-			  <button id="btn_inicio">Início</button>
-			  <button id="btn_logout">Sair</button>
+        <button id="btn_inicio"> {{__ "ppgi.header.initButton"}}</button>
+				<button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
 		  </div>
     </div>
 	</header>
-
-
   <section class="content container">
    	{{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
@@ -37,7 +25,7 @@
         <p>{{message}}</p>
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Curso de Graduação</h3>
+            <h3 class="card-title">{{__ "ppgiForm2.cursoGraduacao.title"}}</h3>
           </div>
 
           <div class="card-body">
@@ -45,18 +33,18 @@
               <div class="form-group col-md-6">
                 <label for="candidato-curso">
                   <font color="#FF0000">*</font>
-                  <b>Curso:</b>
+                  <b>{{__ "ppgiForm2.cursoGraduacao.curso"}}:</b>
                 </label>
-                <input class="form-control" id="candidato-curso" placeholder="Insira seu curso" type="text" name="cursoGraduacao"
+                <input class="form-control" id="candidato-curso" placeholder="{{__ "ppgiForm2.cursoGraduacao.curso"}}" type="text" name="cursoGraduacao"
                   maxlength="60" value="{{cursoGraduacao}}">
               </div>
 
               <div class="col-md-6 form-group">
                 <label class="control-label" for="candidato-instituicao">
                   <font color="#FF0000">*</font>
-                  <b>Instituição:</b>
+                  <b>{{__ "ppgiForm2.cursoGraduacao.instituicao"}}:</b>
                 </label>
-                <input class="form-control" id="candidato-instituicao" placeholder="Insira sua instituição" type="text"
+                <input class="form-control" id="candidato-instituicao" placeholder="{{__ "ppgiForm2.cursoGraduacao.instituicaoPlaceholder"}}" type="text"
                   name="instituicaoGraduacao" maxlength="60" value="{{instituicaoGraduacao}}">
               </div>
             </div>
@@ -64,9 +52,9 @@
               <div class="col-md-3 ">
                 <label class="control-label" for="candidato-ano">
                   <font color="#FF0000">*</font>
-                  <b>Ano de Egresso:</b>
+                  <b>{{__ "ppgiForm2.cursoGraduacao.anoEgresso"}}:</b>
                 </label>
-                <input class="form-control" id="candidato-ano" placeholder="Insira o ano" type="number" name="anoEgressoGraduacao"
+                <input class="form-control" id="candidato-ano" placeholder="{{__ "ppgiForm2.cursoGraduacao.anoEgressoPlaceholder"}}" type="number" name="anoEgressoGraduacao"
                   value="{{anoEgressoGraduacao}}" maxlength="60" >
               </div>
             </div>
@@ -75,7 +63,7 @@
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Curso de Pós-Graduação Stricto-Senso:</h3>
+            <h3 class="card-title">{{__ "ppgiForm2.cursoPos.title"}}:</h3>
           </div>
 
 
@@ -83,7 +71,7 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <label for="candidato-curso-pos">
-                  <b>Curso:</b>
+                  <b>{{__ "ppgiForm2.cursoPos.curso"}}:</b>
                 </label>
                 <input class="form-control" id="candidato-curso-pos" type="text" name="cursoPos" maxlength="60"
                   value="{{cursoPos}}">
@@ -91,27 +79,26 @@
 
               <div class="col-md-6 " role="radiogroup">
                 <label class="control-label" for="candidato-curso-tipo">
-                  <b>Tipo:</b>
+                  <b>{{__ "ppgiForm2.cursoPos.tipo"}}:</b>
                 </label>
                 <div id="candidato-curso-tipo" role="radiogroup"
                   style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
                     <input type="radio" id="Tipo1" name="tipoPos" value="Mestrado Acadêmico" {{#if (eq "Mestrado Acadêmico" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo1"> Mestrado Acadêmico </label>
+                    <label for="Tipo1"> {{__ "ppgiForm2.cursoPos.optionTipo.mestradoAcademico"}} </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
                     <input type="radio" id="Tipo2" name="tipoPos" value="Mestrado Profissional" {{#if (eq "Mestrado Profissional" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo2"> Mestrado Profissional </label>
+                    <label for="Tipo2"> {{__ "ppgiForm2.cursoPos.optionTipo.mestradoProfissional"}} </label>
                   </div>
 
                   <div class="icheck-primary d-inline" style="margin-right: 20px;">
                     <input type="radio" id="Tipo3" name="tipoPos" value="Doutorado" {{#if (eq "Doutorado" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo3"> Doutorado </label>
+                    <label for="Tipo3"> {{__ "ppgiForm2.cursoPos.optionTipo.doutorado"}} </label>
                   </div>
 
-                  <button id="limparSelecao" class="btn btn-block btn-primary" style="width:50%;">Limpar
-                    Seleção</button>
+                  <button id="limparSelecao" class="btn btn-block btn-primary" style="width:50%;">{{__ "ppgiForm2.cursoPos.limparSelecao"}}</button>
                 </div>
 
               </div>
@@ -121,14 +108,14 @@
             <div class="row">
               <div class="col-md-6 ">
                 <label class="control-label" for="candidato-instituicao-pos">
-                  <b>Instituição:</b>
+                  <b>{{__ "ppgiForm2.cursoPos.instituicao"}}:</b>
                 </label>
                 <input class="form-control" id="candidato-instituicao-pos" type="text" name="instituicaoPos"
                   maxlength="60" value="{{instituicaoPos}}">
               </div>
               <div class="col-md-3">
                 <label class="control-label" for="candidato-ano-pos">
-                  <b>Ano de Egresso:</b>
+                  <b>{{__ "ppgiForm2.cursoPos.anoEgresso"}}:</b>
                 </label>
                 <input class="form-control" id="candidato-ano-pos" type="number" name="anoEgressoPos" value="{{anoEgressoPos}}">
               </div>
@@ -139,7 +126,7 @@
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Curriculum Vittae</h3>
+            <h3 class="card-title">{{__ "ppgiForm2.curriculumVittae.title"}}</h3>
           </div>
 
           <div class="card-body">
@@ -147,25 +134,24 @@
               <div class="col-md-6">
                 <label class="control-label" for="vittaepdf">
                   <font color="#FF0000">*</font> 
-                  <b>Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br):</b>
+                  <b>{{__ "ppgiForm2.curriculumVittae.pdf"}}:</b>
                   {{#if hasCurriculum}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
                     <input type="file" class="custom-file-input" id="vittaepdf" name="Curriculum" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
-                    <label class="custom-file-label" for="Curriculum">Escolher arquivo</label>
+                    <label class="custom-file-label" for="Curriculum">{{__ "ppgi.form.chooseFile"}}</label>
                   </div>
                 </div>
             
 
                 <label class="control-label" for="vittaexml">
-                  <b>Curriculum Vittae XML no formato Lattes - http://lattes.cnpq.br (não incluir significa não ter
-                    publicações a serem contadas na seleção):</b>
+                  <b>{{__ "ppgiForm2.curriculumVittae.xml"}}:</b>
                 </label>
                 <div class="form-group">
                   <div class="custom-file">
                     <input type="file" class="custom-file-input" id="vittaexml" name="VitaeXML" accept="text/xml"  data-msg-accept="Esse campo só permite arquivos XML.">
-                    <label class="custom-file-label" for="VitaeXML">Escolher arquivo</label>
+                    <label class="custom-file-label" for="VitaeXML">{{__ "ppgi.form.chooseFile"}}</label>
   
                   </div>
                 </div>
@@ -179,7 +165,7 @@
                 <p>
                   {{#if periodicos}}
                   <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button"
-                    aria-expanded="false" aria-controls="multiCollapseExample1">Periodicos <span
+                    aria-expanded="false" aria-controls="multiCollapseExample1">{{__ "ppgiForm2.curriculumVittae.periodicos"}} <span
                       class="badge badge-light">{{periodicos.length}}</span></a>
                   {{/if}}
                 </p>
@@ -215,7 +201,7 @@
                   {{#if conferencias.length}}
                   <button class="btn btn-primary" type="button" data-toggle="collapse"
                     data-target="#multiCollapseExample2" aria-expanded="false"
-                    aria-controls="multiCollapseExample2">Conferências <span
+                    aria-controls="multiCollapseExample2">{{__ "ppgiForm2.curriculumVittae.conferencias"}} <span
                       class="badge badge-light">{{conferencias.length}}</span></button>
                   {{/if}}
                 </p>
@@ -254,7 +240,7 @@
         </div>
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Aproveitamento de Prova de Seleção Anterior</h3>
+            <h3 class="card-title">{{__ "ppgiForm2.provaAnterior.title"}}</h3>
 
           </div>
 
@@ -262,9 +248,7 @@
             <div class="row">
               <div class="col-12">
                 <label class="control-label" for="candidato-prova">
-                  <b>Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), 
-                    pro favor faça o upload do PDF da prova através da opção abaixo:
-                  </b>
+                  <b>{{__ "ppgiForm2.provaAnterior.description"}}:</b>
                   {{#if hasProvaAnterior}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
 
                 </label>
@@ -276,7 +260,7 @@
                   <div class="custom-file">
       
                     <input type="file" class="custom-file-input" id="candidato-prova" name="ProvaAnterior">
-                    <label class="custom-file-label" for="ProvaAnterior">Escolher arquivo</label>
+                    <label class="custom-file-label" for="ProvaAnterior">{{__ "ppgi.form.chooseFile"}}</label>
                   </div>
                 </div>
               </div>
@@ -288,25 +272,25 @@
 
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Experiência Acadêmica</h3>
+            <h3 class="card-title">{{__ "ppgiForm2.experienciaAcademica.title"}}</h3>
           </div>
 
           <div class="card-body">
-            <button id="add-experiencia-button" class="btn btn-primary">Adicionar Experiência</button>
+            <button id="add-experiencia-button" class="btn btn-primary">{{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}</button>
           
             <div id="experiencia-container">
               {{#each experienciasAcademicas}}
               <div class="row experiencia-row">
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
-                    Instituição Acadêmica:
+                    {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]" maxlength="60" value="{{instituicao}}">
                 </div>
 
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-atividade">
-                    Atividade:
+                    {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-atividade" type="text"
                     name="experienciaAtividade[]" maxlength="60" value="{{atividade}}">
@@ -314,13 +298,13 @@
 
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
-                    Período:
+                    {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]"
                     maxlength="30" value="{{periodo}}">
                 </div>
                 <div class="col-1" style="margin-top:10px">
-                  <button type="button" class="btn btn-danger delete-experiencia-button">Excluir</button>
+                  <button type="button" class="btn btn-danger delete-experiencia-button">{{__ "ppgi.delete"}}</button>
                 </div>
               </div>
               {{/each}}
@@ -328,7 +312,7 @@
               <div class="row experiencia-row">
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
-                    Instituição Academica:
+                    {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]"
                     maxlength="60">
@@ -336,7 +320,7 @@
 
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-atividade">
-                    Atividade:
+                    {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-atividade" type="text"
                     name="experienciaAtividade[]" maxlength="60">
@@ -344,25 +328,25 @@
 
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-periodo">
-                    Período:
+                    {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
                   </label>
                   <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
                 </div>
                 <div class="col-1" style="margin-top:10px">
-                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">Excluir</button>
+                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">{{__ "ppgi.form.delete"}}</button>
                 </div>
               </div>
               {{/if}}
             </div>
           </div>
           <div class="card-footer">
-            <div class="col">
-              <button id="btn-submit" class="btn btn-success float-right custom-button">
-                Salvar e Continuar
+            <div class="col d-flex align-items-center flex-row-reverse " style="gap: 4px;">
+              <button id="btn-submit" class="btn btn-success">
+                {{__ "ppgi.form.saveAndContinue"}}
                 <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
-              <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
-                Passo Anterior
+              <button class="btn btn-warning" type="button" id="voltarForm">
+                {{__ "ppgi.form.previousStep"}}
 								<span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
               </button>
             </div>
@@ -372,10 +356,6 @@
     </div>
   </section>
 </div>
-
-<footer>
-</footer>
-
 <script>
   function changeYear(event) {
     const year = event.target.value;
@@ -737,6 +717,4 @@
       }
     }
   });
-
-
 </script>

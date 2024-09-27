@@ -56,9 +56,24 @@
     }
   },
   "inscricao": {
-    "title": "Application Data",
+    "title": "Registration Data",
     "cursoDesejado": "Desired Course",
     "mestrado": "Master's",
-    "doutorado": "Doctorate"
+    "doutorado": "Doctorate",
+    "regime": "Dedication Regime: (Note: students applying for a scholarship must choose the full-time regime):",
+    "integral": "Full-time",
+    "parcial": "Part-time",
+    "cotista": "Quota Student",
+    "tipoCota": "Quota Type",
+    "placeholderTipoCota": "Select the quota",
+    "optionCota": {
+      "indigena": "Indigenous",
+      "negro": "Black",
+      "pardo": "Brown",
+      "pcd": "Person with disability (PWD)"
+    },
+    "saude": "Do you have any physical or psychiatric health conditions?",
+    "condicao": "Which",
+    "bolsa": "Are you applying for a scholarship? (Note: only students without employment ties and who do not already have another scholarship may apply)"
   }
 }

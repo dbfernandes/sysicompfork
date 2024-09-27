@@ -1,0 +1,43 @@
+{
+  "cursoGraduacao": {
+    "title": "Undergraduate Course",
+    "curso": "Course",
+    "cursoPlaceholder": "Enter your course",
+    "instituicao": "Institution",
+    "instituicaoPlaceholder": "Enter your institution",
+    "anoEgresso": "Year of Graduation",
+    "anoEgressoPlaceholder": "Enter the year"
+  },
+  "cursoPos": {
+    "title": "Postgraduate Stricto-Sensu Course",
+    "curso": "Course",
+    "instituicao": "Institution",
+    "anoEgresso": "Year of Graduation",
+    "tipo": "Type",
+    "optionTipo": {
+      "mestradoAcademico": "Academic Master's",
+      "mestradoProfissional": "Professional Master's",
+      "doutorado": "Doctorate"
+    },
+    "limparSelecao": "Clear Selection"
+  },
+  "curriculumVittae": {
+    "title": "Curriculum Vitae",
+    "pdf": "Curriculum Vitae PDF (in Lattes format - http://lattes.cnpq.br)",
+    "xml": "Curriculum Vitae XML in Lattes format (not including means having no publications to be counted in the selection)",
+    "periodicos": "Journals",
+    "conferencias": "Conferences"
+  },
+  "provaAnterior": {
+    "title": "Previous Selection Exam Score",
+    "description": "If you wish to use the score from a PPGI selection exam from a previous year (maximum of 2 years), please upload the PDF of the exam through the option below"
+  },
+  "experienciaAcademica": {
+    "title": "Academic Experience",
+    "instituicao": "Academic Institution",
+    "atividade": "Activity",
+    "periodo": "Period",
+    "adicionarExperiencia": "Add Experience",
+    "excluirExperiencia": "Delete Experience"
+  }
+}

@@ -42,7 +42,7 @@
     </div>
 	<section class="content container">
 		{{> ppgi/nav indexSelect="1" progress="25"}}
-	
+	 
 		<div class="container-fluid">
 			<form id="candidato-formulario">
 				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -335,18 +335,18 @@
 							<div class="col-md-12">
 								<label class="control-label">
 									<font color="#FF0000">*</font>
-									 <b>Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar pelo regime integral):</b>
+									 <b>{{__ "ppgiForm1.inscricao.regime"}}</b>
 								</label>
 
 								<input type="hidden" name="candidatoRegime" value="">
 								<div id="candidato-regime" role="radiogroup">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Regime1" name="candidatoRegime" {{#if (eq regime 'Integral')}} checked="true" {{/if}}>
-										<label for="Regime1" style="margin-right: 20px;"> Integral </label>
+										<label for="Regime1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.integral"}} </label>
 									</div>
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Regime2" name="candidatoRegime" {{#if (eq regime 'Parcial')}} checked="true" {{/if}}>
-										<label for="Regime2"> Parcial </label>
+										<label for="Regime2"> {{__ "ppgiForm1.inscricao.parcial"}} </label>
 									</div>
 								</div>
 								<div class="help-block"></div>
@@ -357,28 +357,26 @@
 							<div class="col-md-5 form-group">
 								<div>
 									<label for="cotista">
-										<font color="#FF0000">*</font> Cotista?
+										<font color="#FF0000">*</font> {{__ "ppgiForm1.inscricao.cotista"}}?
 									</label>
 								</div>
 
 								<div>
 									<input type="checkbox" id="cotista" name="cotista" data-bootstrap-switch-cotista
-										data-off-color="danger" data-on-color="success" data-on-text="Sim" data-off-text="Não">
+										data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}" data-off-text="{{__ "ppgi.noOption"}}">
 								</div>
-
 							</div>
-
 							<div id="cota" class="col-md-6">
 								<label class="control-label" for="tipo-cota">
-									<font color="#FF0000">*</font> <b>Tipo de Cota:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.tipoCota"}}:</b>
 								</label>
 
 								<select id="tipo-cota" class="custom-select" name="tipo-cota">
-									<option value="">Selecione a cota:</option>
-									<option value="indigena">Índigena</option>
-									<option value="negro">Negro</option>
-									<option value="pardo">Pardo</option>
-									<option>Pessoa com deficiência(PCD)</option>
+									<option value="">{{__ "ppgiForm1.inscricao.placeholderTipoCota"}}:</option>
+									<option value="indigena">{{__ "ppgiForm1.inscricao.optionCota.indigena"}}</option>
+									<option value="negro">{{__ "ppgiForm1.inscricao.optionCota.negro"}}</option>
+									<option value="pardo">{{__ "ppgiForm1.inscricao.optionCota.pardo"}}</option>
+									<option>{{__ "ppgiForm1.inscricao.optionCota.pcd"}}</option>
 								</select>  
 							</div>
 						</div>
@@ -387,20 +385,20 @@
 							<div class="col-md-5 form-group">
 
 								<label for="candidato-deficiencia1">
-									<font color="#FF0000">*</font> <b>Possui algum tipo de problema de saúde física ou psiquiátrica?
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.saude"}}?
 									</b>
 								</label>
 
 								<div>
 									<input type="checkbox" id="candidato-deficiencia1" name="deficiencia"
-										data-bootstrap-switch-deficiencia data-off-color="danger" data-on-color="success" data-on-text="Sim"
-										data-off-text="Não">
+										data-bootstrap-switch-deficiencia data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}"
+										data-off-text="{{__ "ppgi.noOption"}}">
 
 								</div>
 							</div>
 							<div id="condicao" class=" col-md-6">
 								<label class="control-label" for="candidato-condicao">
-									<font color="#FF0000">*</font> <b>Qual:</b>
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.condicao"}}:</b>
 								</label>
 								<input type="text" id="candidato-condicao" class="form-control" name="candidatoCondicao"
 									data-plugin-inputmask="inputmask_32e8983f" value="{{condicaoTipo}}">
@@ -410,12 +408,12 @@
 						<div class="row">
 							<div class="col-md-5">
 								<label for="candidato-bolsa">
-									<font color="#FF0000">*</font> <b>Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)
+									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.bolsa"}}
 									</b>
 								</label>
 
 								<input type="checkbox" id="candidato-bolsa" name="bolsa" data-bootstrap-switch-bolsa
-									data-off-color="danger" data-on-color="success" data-on-text="Sim" data-off-text="Não">
+									data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}" data-off-text="{{__ "ppgi.noOption"}}">
 							</div>
 						</div>
 					</div>
@@ -423,11 +421,11 @@
 					<div class="card-footer">
 						<div class="col">
 							<button id="btn-save-continue" type="submit" class="btn btn-success float-right" >
-								Salvar e Continuar
+								{{__ "ppgi.form.saveAndContinue"}}
 								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 							</button>
 							<button id="btn-save" type="button" class=" btn btn-secondary float-right" style="margin-right: 1rem;"> 
-								Salvar
+								{{__ "ppgi.form.save"}}
 								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
 							</button>
 						</div>
@@ -465,7 +463,7 @@
 	{{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
 	
 	$(document).ready(function () {
-		var condicaoInicial = $("#candidato-deficiencia1").prop("checked");
+		const condicaoInicial = $("#candidato-deficiencia1").prop("checked");
 		$("#CondicaoObj").val(condicaoInicial);
 		$("#candidato-deficiencia1").change(function () {
 			$("#CondicaoObj").val($(this).prop("checked"));
@@ -701,16 +699,13 @@
 		$.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
 		
 		$.validator.addMethod("cpf", (value, element) => {
-		    value = value.replace(/[.\-]/g, ""); // Remove os caracteres especiais
-
-		    // Validação de CPF
+		    value = value.replace(/[.\-]/g, ""); 
 		    if (value.length !== 11 || /^(\d)\1+$/.test(value)) {
 		        return false;
 		    }
 
-		    var sum;
-		    var remainder;
-		    sum = 0;
+		    let sum = 0;
+		    let remainder;
 
 		    // Valida o primeiro dígito verificador
 		    for (var i = 1; i <= 9; i++) {

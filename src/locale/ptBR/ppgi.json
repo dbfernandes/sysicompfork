@@ -11,5 +11,16 @@
     "historico": "Histórico",
     "propostaProjeto": "Proposta de Projeto",
     "confirmacao": "Confirmação"
+  },
+  "yesOption": "Sim",
+  "noOption": "Não",
+  "delete": "Excluir",
+  "form": {
+    "save": "Salvar",
+    "saveAndContinue": "Salvar e Continuar",
+    "previousStep": "Passo Anterior",
+    "chooseFile": "Escolher Arquivo",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
   }
 }
