@@ -1,3 +1,5 @@
+//### A ser Removido ###//
+
 import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
@@ -87,7 +89,7 @@ export async function criarAfastamentoPDF(
     );
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
       executablePath: '/usr/bin/chromium-browser',
       protocolTimeout: 60000,
     });
