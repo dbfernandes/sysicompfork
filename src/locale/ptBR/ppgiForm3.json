@@ -26,5 +26,6 @@
     "propostaTrabalho": "Proposta de Trabalho (obrigatório)",
     "comprovantePagamento": "Comprovante de Pagamento (obrigatório)"
   },
-  "finalizar": "Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados."
+  "finalizar": "Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.",
+  "adicionarRecomendacao": "Adicionar Recomendação"
 }

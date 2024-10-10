@@ -223,7 +223,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="row form-group" id="row-nacionalidade-brasileiro" {{#if (eq nacionalidade 'Estrangeira')}}hidden{{/if}}>
+						<div class="row form-group" id="row-nacionalidade-brasileiro" {{#if (ne nacionalidade 'Brasileira')}}hidden{{/if}}>
 							<div class="col-md-6">
 								<label class="control-label" for="cpf"></label>
 									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.cpf"}}:</b>
@@ -232,7 +232,7 @@
 								<div class="help-block"></div>
 							</div>
 						</div>
-						<div class="row form-group" id="row-nacionalidade-estrangeiro" {{#if (eq nacionalidade 'Brasileira')}}hidden{{/if}}>
+						<div class="row form-group" id="row-nacionalidade-estrangeiro" {{#if (ne nacionalidade 'Estrangeira')}}hidden{{/if}}>
 							<div class="col-md-6">
 								<label class="control-label" for="pais"></label>
 									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.pais"}}:</b>
@@ -804,32 +804,32 @@
 			},
 			messages: {
 				nome: {
-					required: "Por favor, informe seu nome",
-					minlength: "O nome deve ter pelo menos 3 caracteres",
-					maxlength: "O nome deve ter no máximo 50 caracteres"
+					required: "{{__ "ppgiForm1.validacao.nome.required"}}",
+					minlength: "{{__ "ppgiForm1.validacao.nome.minlengtg"}}",
+					maxlength: "{{__ "ppgiForm1.validacao.nome.maxlength"}}"
 				},
 				dataNascimento: {
-					required: "Por favor, informe sua data de nascimento",
+					required: "{{__ "ppgiForm1.validacao.dataNascimento.required"}}",
 				},
-				candidatoSexo: "Por favor, selecione seu sexo",
-				candidatoUf: "Por favor, selecione seu estado",
-				candidatoCep: "Por favor, informe seu CEP",
-				candidatoEndereco: "Por favor, informe seu endereço",
-				candidatoCidade: "Por favor, informe sua cidade",
-				candidatoBairro: "Por favor, informe seu bairro",
-				candidatoNacionalidade: "Por favor, selecione sua nacionalidade",
-				candidatoTelresidencial: "Por favor, informe seu telefone principal",
-				comoSoube: "Por favor, selecione como você soube sobre nós",
-				candidatoCurso: "Por favor, selecione o curso desejado",
-				candidatoRegime: "Por favor, selecione o regime de dedicação",
-				"tipo-cota": "Por favor, selecione o tipo de cota",
-				candidatoCondicao: "Por favor, informe a condição da deficiência",
+				candidatoSexo:"{{__ "ppgiForm1.validacao.candidatoSexo.required"}}",
+				candidatoUf:"{{__ "ppgiForm1.validacao.candidatoUf.required"}}",
+				candidatoCep: "{{__ "ppgiForm1.validacao.candidatoCep.required"}}",
+				candidatoEndereco: "{{__ "ppgiForm1.validacao.candidatoEndereco.required"}}",
+				candidatoCidade: "{{__ "ppgiForm1.validacao.candidatoCidade.required"}}",
+				candidatoBairro: "{{__ "ppgiForm1.validacao.candidatoBairro.required"}}",
+				candidatoNacionalidade: "{{__ "ppgiForm1.validacao.candidatoNacionalidade.required"}}",
+				candidatoTelresidencial: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
+				comoSoube: "{{__ "ppgiForm1.validacao.comoSoube.required"}}",
+				candidatoCurso: "{{__ "ppgiForm1.validacao.candidatoCurso.required"}}",
+				candidatoRegime: "{{__ "ppgiForm1.validacao.candidatoRegime.required"}}",
+				"tipo-cota": "{{__ "ppgiForm1.validacao.tipoCota.required"}}",
+				candidatoCondicao: "{{__ "ppgiForm1.validacao.candidatoCondicao.required"}}",
 				cpf: {
-					required: "Por favor, informe seu CPF",
-					cpf: "Por favor, informe um CPF válido"
+					required: "{{__ "ppgiForm1.validacao.cpf.required"}}",
+					cpf: "{{__ "ppgiForm1.validacao.cof.cpfInvalido"}}"
 				},
-				pais: "Por favor, informe o país",
-				passaporte: "Por favor, informe o número do passaporte"
+				pais: "{{__ "ppgiForm1.validacao.pais.required"}}",
+				passaporte: "{{__ "ppgiForm1.validacao.passaporte.required"}}"
 			},
 			errorElement: 'span',
 			errorPlacement: function (error, element) {
@@ -948,7 +948,7 @@
 
 		if (!cepValido) {
 			cepInput.classList.add('is-invalid');
-			invalidFeedback.textContent = "CEP inválido. Por favor, insira um CEP válido com 8 dígitos.";
+			invalidFeedback.textContent = "{{__ "ppgiForm1.validacao.candidatoCep.cepInvalido"}}";
 			return;
 		}
 
@@ -959,13 +959,13 @@
 		fetch(url)
 			.then(response => {
 				if (!response.ok ) {
-					throw new Error('CEP não encontrado.');
+					throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
 				}
 				return response.json();
 			})
 			.then(data => {
 				if (data.erro) {
-					throw new Error('CEP não encontrado.');
+					throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
 				}
 				document.getElementById('candidato-endereco').value = data.logradouro;
 				document.getElementById('candidato-cidade').value = data.localidade;

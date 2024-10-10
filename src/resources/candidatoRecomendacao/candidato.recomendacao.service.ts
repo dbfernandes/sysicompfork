@@ -163,7 +163,7 @@ class CandidatoRecomendacaoService {
           subject: `[PPGI/UFAM] Solicitacao de Carta de Recomendacao para ${candidato?.nome}`,
           text: 'teste',
           html: `
-              <div>
+            <div>
               Caro(a) ${recomendacao.nome},
               <br>
               <br>
@@ -172,14 +172,41 @@ class CandidatoRecomendacaoService {
               <p>
               Para isso, a carta deve ser preenchida eletronicamente utilizando o link:<br>
               <a href="${urlSend}">${urlSend}</a><br>
-              O prazo para preenchimento da carta é ${recomendacao.prazo.toLocaleDateString()}.<br>
+              O prazo para preenchimento da carta é ${recomendacao.prazo.toLocaleDateString(
+                'pt-BR',
+                {
+                  timeZone: 'America/Manaus',
+                  timeZoneName: 'long',
+                },
+              )}.<br>
               Em caso de dúvidas, por favor, entre em contato com <a href="mailto:secretariappgi@icomp.ufam.edu.br">secretariappgi@icomp.ufam.edu.br</a>. Não responda este email.<br>
               Agradecemos sua colaboração.
               </p>
               <p>
-              Coordenação do PPGI - ${new Date().toLocaleString()} <br>
+              Coordenação do PPGI - ${new Date().toLocaleString('pt-BR', {
+                timeZone: 'America/Manaus',
+                timeZoneName: 'long',
+              })} <br>
               <<<--==-->>>
               </p>
+              <p>English:</p>
+              Dear ${recomendacao.nome},
+              <br>
+              <br>
+              You have been requested by ${candidato?.nome} (email: <a href="mailto:${candidato?.email}">${candidato?.email}</a>) to write a recommendation letter for the selection process of the Graduate Program in Informatics (PPGI) at the Federal University of Amazonas (UFAM).
+              <br>
+              <p>
+              The letter must be completed electronically using the following link:<br>
+              <a href="${urlSend}">${urlSend}</a><br>
+              The deadline to submit the letter is ${recomendacao.prazo.toLocaleDateString()}.<br>
+              If you have any questions, please contact <a href="mailto:secretariappgi@icomp.ufam.edu.br">secretariappgi@icomp.ufam.edu.br</a>. Do not reply to this email.<br>
+              We appreciate your collaboration.
+              </p>
+              <p>
+              PPGI Coordination - ${new Date().toLocaleString()} <br>
+              <<<--==-->>>
+              </p>
+
             </div>`,
         })
         .catch((err) => {

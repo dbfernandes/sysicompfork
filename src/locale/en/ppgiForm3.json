@@ -26,5 +26,6 @@
     "propostaTrabalho": "Work Proposal (required)",
     "comprovantePagamento": "Payment Receipt (required)"
   },
-  "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed."
+  "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed.",
+  "adicionarRecomendacao": "Add Recommendation"
 }

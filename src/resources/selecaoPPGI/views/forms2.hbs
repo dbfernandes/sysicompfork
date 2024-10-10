@@ -275,10 +275,9 @@
             <h3 class="card-title">{{__ "ppgiForm2.experienciaAcademica.title"}}</h3>
           </div>
 
-          <div class="card-body">
-            <button id="add-experiencia-button" class="btn btn-primary">{{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}</button>
+          <div class="card-body d-flex flex-column w-100" >
           
-            <div id="experiencia-container">
+            <div id="experiencia-container" >
               {{#each experienciasAcademicas}}
               <div class="row experiencia-row">
                 <div class="col-md-4">
@@ -309,7 +308,7 @@
               </div>
               {{/each}}
               {{#if (eq experienciasAcademicas.length 0)}}
-              <div class="row experiencia-row">
+              <div class="row experiencia-row ">
                 <div class="col-md-4">
                   <label class="control-label" for="candidato-experiencia-instituicao">
                     {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
@@ -333,11 +332,13 @@
                   <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
                 </div>
                 <div class="col-1" style="margin-top:10px">
-                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">{{__ "ppgi.form.delete"}}</button>
+                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">{{__ "ppgi.delete"}}</button>
                 </div>
               </div>
               {{/if}}
             </div>
+            <button id="add-experiencia-button" class="btn btn-primary align-self-end" style="margin-left: auto;">{{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}</button>
+
           </div>
           <div class="card-footer">
             <div class="col d-flex align-items-center flex-row-reverse " style="gap: 4px;">

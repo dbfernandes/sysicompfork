@@ -74,5 +74,67 @@
     "saude": "Possui algum tipo de problema de saúde física ou psiquiátrica",
     "condicao": "Qual",
     "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)"
-  }
+  },
+  "validacao": {
+    "nome": {
+      "required": "Por favor, informe seu nome",
+      "minlength": "O nome deve ter pelo menos 3 caracteres",
+      "maxlength": "O nome deve ter no máximo 50 caracteres"
+    },
+    "dataNascimento": {
+      "required": "Por favor, informe sua data de nascimento",
+      "dateBR": "Informe uma data válida no formato DD/MM/YYYY"
+    },
+    "candidatoSexo": {
+      "required": "Por favor, selecione seu sexo"
+    },
+    "candidatoCep": {
+      "required": "Por favor, informe seu CEP",
+      "cepInvalido": "CEP inválido. Por favor, insira um CEP válido com 8 dígitos."
+    },
+    "candidatoUf": {
+      "required": "Por favor, selecione seu estado"
+    },
+    "candidatoEndereco": {
+      "required": "Por favor, informe seu endereço"
+    },
+    "candidatoCidade": {
+      "required": "Por favor, informe sua cidade"
+    },
+    "candidatoBairro": {
+      "required": "Por favor, informe seu bairro"
+    },
+    "candidatoNacionalidade": {
+      "required": "Por favor, selecione sua nacionalidade"
+    },
+    "candidatoTelresidencial": {
+      "required": "Por favor, informe seu telefone principal"
+    },
+    "comoSoube": {
+      "required": "Por favor, selecione como você soube sobre nós"
+    },
+    "candidatoCurso": {
+      "required": "Por favor, selecione o curso desejado"
+    },
+    "candidatoRegime": {
+      "required": "Por favor, selecione o regime de dedicação"
+    },
+    "tipoCota": {
+      "required": "Por favor, selecione o tipo de cota"
+    },
+    "candidatoCondicao": {
+      "required": "Por favor, informe a condição da deficiência"
+    },
+    "cpf": {
+      "required": "Por favor, informe seu CPF",
+      "cpfInvalido": "Por favor, insira um CPF válido"
+    },
+    "pais": {
+      "required": "Por favor, informe o país"
+    },
+    "passaporte": {
+      "required": "Por favor, informe o número do passaporte"
+    }
+  },
+  "cepNotFound": "CEP não encontrado"
 }

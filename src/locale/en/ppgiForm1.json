@@ -75,5 +75,67 @@
     "saude": "Do you have any physical or psychiatric health conditions?",
     "condicao": "Which",
     "bolsa": "Are you applying for a scholarship? (Note: only students without employment ties and who do not already have another scholarship may apply)"
-  }
+  },
+  "validacao": {
+    "nome": {
+      "required": "Please, enter your name",
+      "minlength": "The name must have at least 3 characters",
+      "maxlength": "The name can have up to 50 characters"
+    },
+    "dataNascimento": {
+      "required": "Please, enter your birth date",
+      "dateBR": "Enter a valid date in the format DD/MM/YYYY"
+    },
+    "candidatoSexo": {
+      "required": "Please, select your gender"
+    },
+    "candidatoCep": {
+      "required": "Please, enter your ZIP code",
+      "cepInvalido": "Invalid ZIP code. Please enter a valid ZIP code with 8 digits."
+    },
+    "candidatoUf": {
+      "required": "Please, select your state"
+    },
+    "candidatoEndereco": {
+      "required": "Please, enter your address"
+    },
+    "candidatoCidade": {
+      "required": "Please, enter your city"
+    },
+    "candidatoBairro": {
+      "required": "Please, enter your neighborhood"
+    },
+    "candidatoNacionalidade": {
+      "required": "Please, select your nationality"
+    },
+    "candidatoTelresidencial": {
+      "required": "Please, enter your primary phone number"
+    },
+    "comoSoube": {
+      "required": "Please, select how you heard about us"
+    },
+    "candidatoCurso": {
+      "required": "Please, select the desired course"
+    },
+    "candidatoRegime": {
+      "required": "Please, select the dedication regime"
+    },
+    "tipoCota": {
+      "required": "Please, select the type of quota"
+    },
+    "candidatoCondicao": {
+      "required": "Please, provide the disability condition"
+    },
+    "cpf": {
+      "required": "Please, enter your CPF",
+      "cpfInvalido": "Please enter a valid CPF"
+    },
+    "pais": {
+      "required": "Please, enter the country"
+    },
+    "passaporte": {
+      "required": "Please, enter the passport number"
+    }
+  },
+  "cepNotFound": "ZIP code not found"
 }

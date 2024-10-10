@@ -122,17 +122,17 @@
           </div>
         </div>
         {{#if (eq edital.cartaRecomendacao 1)}}
-          <div class="card card-primary">
+          <div class="card card-primary  ">
             <div class="card-header">
               <h3 class="card-title">{{__ "ppgiForm3.cartaRecomendacao.titulo"}}</h3>
             </div>
 
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
               <p>{{__ "ppgiForm3.cartaRecomendacao.descricao"}}</p>
 
               <div class="row">
                 {{#each recomendacoes}}
-                  <div class="col-md-5 ">
+                  <div class="col-md-6 ">
                     <label class="control-label" for="candidato-instituicao">
                       <font color="#FF0000">*</font>
                       <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
@@ -140,7 +140,7 @@
                     <input class="form-control" id="candidatoNomeRecomendacao{{@index}}" type="text" name="recomendacaoNome[]" value="{{nome}}" maxlength="60">
                   </div>
 
-                  <div class="col-md-5 ">
+                  <div class="col-md-6 ">
                     <label class="control-label" for="candidato-instituicao">
                       <font color="#FF0000">*</font>
                       <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
@@ -148,7 +148,7 @@
                     <input class="form-control" id="candidatoEmailRecomendacao{{@index}}" type="email" name="recomendacaoEmail[]" value="{{email}}" maxlength="60">
                   </div>
                 {{else}}
-                <div class="col-md-5 ">
+                <div class="col-md-6 form-group">
                   <label class="control-label" for="candidato-instituicao">
                     <font color="#FF0000">*</font>
                     <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
@@ -156,7 +156,7 @@
                   <input class="form-control" id="candidatoNomeRecomendacao1" type="text" name="recomendacaoNome[]" value="" maxlength="60">
                 </div>
 
-                <div class="col-md-5 ">
+                <div class="col-md-6 ">
                   <label class="control-label" for="candidato-instituicao">
                     <font color="#FF0000">*</font>
                     <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
@@ -170,7 +170,7 @@
                 <!-- Novos campos serão adicionados aqui -->
               </div>
 
-              <button id="add-btn" class="btn btn-success">+</button>
+              <button id="add-btn" class="btn btn-primary align-self-end">{{__ "ppgiForm3.adicionarRecomendacao"}}</button>
             </div>
           </div>
         {{/if}}
@@ -366,23 +366,23 @@
  
     $("#add-btn").click(function (e) {
       e.preventDefault();
-      var newInput = '<div class="row">' +
-        '<div class="col-md-5">' +
+      var newInput = '<div class="row form-group">' +
+        '<div class="col-md-6">' +
         '<label class="control-label" for="candidato-Nome-Recomendacao">' +
         '<font color="#FF0000">*</font>' +
-        '<b>Nome:</b>' +
+        '<b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>' +
         '</label>' +
         '<input class="form-control" type="text" name="recomendacaoNome[]" value="" maxlength="60">' +
         '</div>' +
-        '<div class="col-md-5">' +
+        '<div class="col-md-6">' +
         '<label class="control-label" for="candidato-Email-Recomendacao">' +
         '<font color="#FF0000">*</font>' +
-        '<b>Email:</b>' +
+        '<b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>' +
         '</label>' +
         '<input class="form-control" type="text" name="recomendacaoEmail[]" value="" maxlength="60">' +
         '</div>' +
         '<div class="col-md-2 align-self-end">' +
-        '<button class="remove-btn" onclick="$(this).closest(\'.row\').remove();">X</button>' + '</div>' +
+        '<button class="btn btn-danger delete-experiencia-button mt-1" onclick="$(this).closest(\'.row\').remove();">{{__ "ppgi.delete"}}</button>' + '</div>' +
         '</div>';
 
       $("#dynamic-inputs").append(newInput);
