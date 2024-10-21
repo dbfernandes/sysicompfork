@@ -39,16 +39,16 @@ class UsuarioService {
     }
 
     if (user.diretor === 1) {
-      const usuario = await prisma.usuario.findFirst({
+      const usuarioAtual = await prisma.usuario.findFirst({
         where: {
           diretor: 1,
         },
       });
 
-      if (usuario && usuario.id !== id) {
+      if (usuarioAtual && usuarioAtual.id !== id) {
         await prisma.usuario.update({
           where: {
-            id: usuario.id,
+            id: usuarioAtual.id,
           },
           data: {
             diretor: 0,

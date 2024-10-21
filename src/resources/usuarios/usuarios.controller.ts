@@ -283,6 +283,7 @@ const editar = async (req: Request, res: Response): Promise<any> => {
         const secretaria = req.body.secretaria === 'on' ? 1 : 0;
         const professor = req.body.professor === 'on' ? 1 : 0;
         const diretor = req.body.diretor === 'on' ? 1 : 0;
+        console.log(diretor);
         const dados = {
           nomeCompleto: req.body.nomeCompleto,
           cpf: req.body.cpf,
