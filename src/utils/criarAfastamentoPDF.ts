@@ -13,6 +13,8 @@ import { Request, Response, NextFunction } from 'express';
 async function getAfastamento(id: number) {
   const afastamento = await afastamentoService.retornarAfastamento(String(id));
   const usuario = await usuarioService.listarUmUsuario(id);
+  const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
+  console.log('Diretor:', diretor);
   const email = usuario.email;
 
   if (!afastamento) return null;
@@ -35,6 +37,7 @@ async function getAfastamento(id: number) {
     tipoViagem,
     justificativa,
     planoReposicao,
+    diretorNome: diretor!.nomeCompleto,
     data: moment(createdAt).format('DD/MM/YYYY'),
     hora: moment(createdAt).format('HH:mm'),
     email,
@@ -80,7 +83,7 @@ export async function criarAfastamentoPDF(
       '/src/views/layouts/modeloAfastamento/header.hbs',
     );
     const dados = await getAfastamento(Number(id));
-    console.log('Dados do Afastamento:', dados);
+    console.log('Dados:', dados);
     const arquivoHTML = HBStoPDF(
       afastamentoPath,
       dados,
@@ -104,7 +107,7 @@ export async function criarAfastamentoPDF(
       printBackground: true,
       displayHeaderFooter: true,
     });
-    console.log('Tamanho do PDF Buffer:', pdf.length);
+    // console.log('Tamanho do PDF Buffer:', pdf.length);
 
     await browser.close();
 

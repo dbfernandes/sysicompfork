@@ -1,4 +1,4 @@
- {{> header}}
+{{> header}}
 {{> sidebar module='usuarios' page='usuarios-editar' }}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -24,14 +24,16 @@
                         Voltar
                     </a>
                     {{#if usuario.status}}
-                    <a class="btn btn-danger color-white" href="#"  id="removerUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
-                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
+                    <a class="btn btn-danger color-white" href="#"
+                        id="removerUser_{{usuario.nomeCompleto}}_{{usuario.id}}" data-toggle="modal"
+                        data-target="#removerUsuario" onclick="addLink(event)">
                         <i class="fas fa-user-lock"></i>
                         Bloquear
                     </a>
                     {{else}}
-                    <a class="btn btn-success color-white" href="#"  id="desbloquearUser_{{usuario.nomeCompleto}}_{{usuario.id}}"
-                        data-toggle="modal" data-target="#removerUsuario" onclick="addLink(event)">
+                    <a class="btn btn-success color-white" href="#"
+                        id="desbloquearUser_{{usuario.nomeCompleto}}_{{usuario.id}}" data-toggle="modal"
+                        data-target="#removerUsuario" onclick="addLink(event)">
                         <i class="fas fa-unlock"></i>
                         Desbloquear
                     </a>
@@ -73,7 +75,8 @@
                                     </label>
                                     <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
                                         placeholder="000.000.000-00" value="{{usuario.cpf}}">
-                                    <div id="cpfErrors" class="text-danger"><small>{{showError errors 'cpf'}}</small></div>
+                                    <div id="cpfErrors" class="text-danger"><small>{{showError errors 'cpf'}}</small>
+                                    </div>
                                 </div>
 
                                 <div class="col-sm-12 col-md-6 col-lg-6">
@@ -82,7 +85,8 @@
                                     </label>
                                     <input type="email" name="email" class="form-control" id="emailInput"
                                         placeholder="E-mail" value="{{usuario.email}}">
-                                    <div id="emailErrors" class="text-danger"><small>{{showError errors 'email'}}</small></div>
+                                    <div id="emailErrors" class="text-danger"><small>{{showError errors
+                                            'email'}}</small></div>
                                 </div>
                             </div>
                         </div>
@@ -101,8 +105,8 @@
                                     <label for="repetirSenhaInput">
                                         Repetir senha:
                                     </label>
-                                    <input type="password" name="repetirSenha" class="form-control" id="repetirSenhaInput"
-                                        placeholder="Repetir senha">
+                                    <input type="password" name="repetirSenha" class="form-control"
+                                        id="repetirSenhaInput" placeholder="Repetir senha">
                                 </div>
                             </div>
                         </div>
@@ -110,55 +114,54 @@
                         <div class="form-group">
                             <div style="margin-bottom: 20px;">
                                 <label for="">
-                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
+                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este
+                                    usuário:
                                 </label>
                             </div>
                             <div class="row space-between" style="padding-left: 10px; padding-right: 9px">
-                                
+
+                                {{#if usuario.diretor}}
+                                <div>
+                                    <label for="diretor">Diretor</label>
+                                    <input type="checkbox" name="diretor" id="diretorCurso" data-bootstrap-switch
+                                        disabled {{#if usuario.diretor}} checked {{else}} unchecked {{/if}}
+                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                        data-off-text="Não">
+                                </div>
+                                {{else}}
+                                <div>
+                                    <label for="diretor">Diretor</label>
+                                    <input type="checkbox" name="diretor" id="diretorCurso" data-bootstrap-switch {{#if
+                                        usuario.diretor}} checked {{else}} unchecked {{/if}} data-off-color="danger"
+                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
+                                </div>
+                                {{/if}}
+
                                 <div>
                                     <label for="administrador"> Administrador </label>
-                                    <input type="checkbox" name="administrador" data-bootstrap-switch
-                                        {{#if usuario.administrador}}
-                                            checked
-                                        {{else}}
-                                            unchecked
-                                        {{/if}}
+                                    <input type="checkbox" name="administrador" data-bootstrap-switch {{#if
+                                        usuario.administrador}} checked {{else}} unchecked {{/if}}
                                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                         data-off-text="Não">
                                 </div>
 
                                 <div>
                                     <label for="coordenador"> Coordenador </label>
-                                    <input type="checkbox" name="coordenador" data-bootstrap-switch
-                                        {{#if usuario.coordenador}}
-                                            checked
-                                        {{else}}
-                                            unchecked
-                                        {{/if}}
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
+                                    <input type="checkbox" name="coordenador" data-bootstrap-switch {{#if
+                                        usuario.coordenador}} checked {{else}} unchecked {{/if}} data-off-color="danger"
+                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
                                 </div>
                                 <div>
                                     <label for="secretaria"> Secretaria </label>
-                                    <input type="checkbox" name="secretaria" data-bootstrap-switch
-                                        {{#if usuario.secretaria}}
-                                            checked
-                                        {{else}}
-                                            unchecked
-                                        {{/if}}
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
+                                    <input type="checkbox" name="secretaria" data-bootstrap-switch {{#if
+                                        usuario.secretaria}} checked {{else}} unchecked {{/if}} data-off-color="danger"
+                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
                                 </div>
                                 <div>
                                     <label for="professor"> Professor </label>
-                                    <input type="checkbox" name="professor" data-bootstrap-switch
-                                         {{#if usuario.professor}}
-                                            checked
-                                        {{else}}
-                                            unchecked
-                                        {{/if}}
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
+                                    <input type="checkbox" name="professor" data-bootstrap-switch {{#if
+                                        usuario.professor}} checked {{else}} unchecked {{/if}} data-off-color="danger"
+                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
                                 </div>
                             </div>
                         </div>
@@ -182,12 +185,14 @@
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="telefoneResidencialInput">Telefone Residencial:</label>
                                     <input type="text" name="telefoneResidencial" class="form-control telefone"
-                                        id="telefoneResidencialInput" placeholder="(99)9999-9999" value="{{usuario.telResidencial}}">
+                                        id="telefoneResidencialInput" placeholder="(99)9999-9999"
+                                        value="{{usuario.telResidencial}}">
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="telefoneCelularInput">Telefone Celular:</label>
                                     <input type="text" name="telefoneCelular" class="form-control telefone"
-                                        id="telefoneCelularInput" placeholder="(99)99999-99909" value="{{usuario.telCelular}}">
+                                        id="telefoneCelularInput" placeholder="(99)99999-99909"
+                                        value="{{usuario.telCelular}}">
                                 </div>
                             </div>
                         </div>
@@ -203,13 +208,15 @@
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="siapeInput">SIAPE:</label>
-                                    <input type="text" name="siape" class="form-control" id="siapeInput" value="{{usuario.siape}}">
+                                    <input type="text" name="siape" class="form-control" id="siapeInput"
+                                        value="{{usuario.siape}}">
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="dateDeIngressoInput">Data de Ingresso:</label>
                                     <input type="text" name="dateDeIngresso" class="form-control datemask"
                                         id="dateDeIngressoInput" data-inputmask-alias="datetime"
-                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy" value="{{usuario.dataIngresso}}">
+                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy"
+                                        value="{{usuario.dataIngresso}}">
                                 </div>
                             </div>
                         </div>
@@ -218,7 +225,8 @@
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="unidadeInput">Unidade:</label>
-                                    <input type="text" name="unidade" class="form-control" id="unidadeInput" value="{{usuario.unidade}}">
+                                    <input type="text" name="unidade" class="form-control" id="unidadeInput"
+                                        value="{{usuario.unidade}}">
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <label for="turnoInput">Turno:</label>
@@ -229,45 +237,67 @@
                                         <option value="Vespertino e Noturno">Vespertino e Noturno</option>
                                     </select>
                                 </div>
-                                
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="card-footer">
-                            <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success float-right">
-                                    Editar Usuário
-                                </button>
 
                             </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <div style="margin-right: auto;" class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success float-right">
+                                Editar Usuário
+                            </button>
+
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
-        
+
         <!-- /.card -->
     </section>
 </div>
 <div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="tituloModal2"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-footer">
-                        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
-                    </div>
-                </div>
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloModal2"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
             </div>
         </div>
-<script>
+    </div>
+</div>
 
+<div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Alteração</h5>
+            </div>
+            <div class="modal-body">
+                Já existe um diretor cadastrado. Deseja substituir o diretor atual por este usuário?
+            </div>
+            <div class="modal-footer">
+                {{!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button> --}}
+                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                {{!-- <button type="button" class="btn btn-primary" id="confirmarSim">Sim</button> --}}
+                <a id="confirmarSim" type="button" class="btn btn-primary color-white" onclick="mudarDiretor()">Sim</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("input[data-bootstrap-switch]").bootstrapSwitch();
+    });
     function usuariosAdicionarPage() {
         $.validator.addMethod("repetirSenha", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
@@ -278,20 +308,20 @@
             return cpfValue.length === 11
         })
 
-         $.validator.addMethod("cpfVerificador", function (el){
-            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')    
+        $.validator.addMethod("cpfVerificador", function (el) {
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
             var result = true
             const arr = [9, 10]
-            arr.forEach(function(j){
+            arr.forEach(function (j) {
                 var soma = 0, r, rep
                 rep = true
-                cpfValue.split("").splice(0,j).forEach(function(e, i){
-                    if(cpfValue.charAt(0) != e) rep = false 
-                    soma += parseInt(e) * ((j+2)-(i+1))
+                cpfValue.split("").splice(0, j).forEach(function (e, i) {
+                    if (cpfValue.charAt(0) != e) rep = false
+                    soma += parseInt(e) * ((j + 2) - (i + 1))
                 });
                 r = soma % 11
-                r = (r <2)?0:11-r
-                if(r != cpfValue.substring(j, j+1) || rep) result = false
+                r = (r < 2) ? 0 : 11 - r
+                if (r != cpfValue.substring(j, j + 1) || rep) result = false
             });
             return result
         })
@@ -364,28 +394,28 @@
         });
     }
 
-    document.addEventListener("DOMContentLoaded", function(event) {
+    document.addEventListener("DOMContentLoaded", function (event) {
         const turno = "{{usuario.turno}}"
-        if(turno != "Sem turno selecionado"){
-            $('select option[value="Sem turno selecionado"]').attr("selected",false);
-            $(`select option[value="${turno}"]`).attr("selected",true);
+        if (turno != "Sem turno selecionado") {
+            $('select option[value="Sem turno selecionado"]').attr("selected", false);
+            $(`select option[value="${turno}"]`).attr("selected", true);
 
         }
     });
-    function deleteUser(){
+    function deleteUser() {
         document.postDeleteOnEdit.submit();
     }
 
     function addLink(event) {
         const [tipo, nomeCompleto, id] = event.target.id.split("_");
-        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " "+nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
+        const nome = `${nomeCompleto.split(' ')[0]}${nomeCompleto.split(' ').length > 1 ? " " + nomeCompleto.split(' ')[nomeCompleto.split(' ').length - 1] : ""}`
         const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
-        document.getElementById("tituloModal2").innerHTML =  prefixo + nome + "?";
+        document.getElementById("tituloModal2").innerHTML = prefixo + nome + "?";
         const formDelete = document.getElementById("postDeleteOnEdit")
         const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
         formDelete.setAttribute('action', url);
     }
-    if("{{message}}"){
+    if ("{{message}}") {
         $(document).Toasts('create', {
             icon: 'success',
             class: "bg-{{type}}",
@@ -393,8 +423,43 @@
             delay: 10000,
             title: '{{messageTitle}}',
             body: '{{message}}'
-            })
+        })
 
     }
+
+    $(Document).ready(function () {
+        $('#diretorCurso').on('switchChange.bootstrapSwitch', function (event, state) {
+            if (state) {
+                verificarDiretorExistente()
+            }
+        })
+    })
+
+    function verificarDiretorExistente() {
+        $.ajax({
+            url: '/usuarios/verificarDiretorExistente',
+            type: 'GET',
+            success: function (data) {
+                if (data) {
+
+                    $('#confirmacaoModal').modal('show');
+                    $('#confirmarSim').off('click').on('click', function () {
+                        $('#diretorCurso').bootstrapSwitch('state', true);
+                        $('#confirmacaoModal').data('confirmed', true);
+                        $('#confirmacaoModal').modal('hide');
+                    });
+                    $('#confirmacaoModal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+                        if (!$('#confirmacaoModal').data('confirmed')) {
+                            $('#diretorCurso').bootstrapSwitch('state', false);
+                        }
+                    });
+                    $('#confirmacaoModal').on('show.bs.modal', function () {
+                        $(this).data('confirmed', false);
+                    });
+                }
+            }
+        });
+    }
+
 </script>
 {{> footer}}

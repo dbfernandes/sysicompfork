@@ -69,7 +69,13 @@
               </tr>
               <tr>
                 <th class="col-3">Perfil(s)</th>
-                <td>{{usuario.perfil}}</td>
+                <td>
+                  {{#if usuario.administrador}}<span class="badge bg-primary">Administrador</span>{{/if}}
+                  {{#if usuario.coordenador}}<span class="badge bg-primary">Coordenador(a)</span>{{/if}}
+                  {{#if usuario.professor}}<span class="badge bg-primary">Professor(a)</span>{{/if}}
+                  {{#if usuario.secretaria}}<span class="badge bg-primary">Secretaria</span>{{/if}}
+                  {{#if usuario.diretor}}<span class="badge bg-primary">Diretor(a)</span>{{/if}}
+                </td>
               </tr>
               <tr>
                 <th class="col-3">Data de Criação</th>
