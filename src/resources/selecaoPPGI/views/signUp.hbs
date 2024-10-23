@@ -112,6 +112,8 @@
 					<li>{{__ "ppgiSignUp.instructionList.confirmRegistration"}}</li>
 				</ul>
 				<div class="line"></div>
+				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+
 				{{#unless editais}}
 					<span class="erro">{{__ "ppgiSignUp.noEditals"}}</span>
 				{{else}}
@@ -150,7 +152,6 @@
 						<div class="col-md-7 col-xs-12">
 							<h1>{{__ "ppgiSignUp.formTitle"}}</h1>
 							<form id="subscription">
-								<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
 								<div class="form-group">
 									<label for="email">{{__ "ppgiSignUp.emailLabel"}}</label>
 									<input type="email" class="form-control" id="email" name="email" placeholder="{{__ "ppgiSignUp.emailPlaceholder"}}">

@@ -86,7 +86,7 @@ export function verificarArquivoDiretorio(
   return fs.existsSync(caminhoArquivo);
 }
 
-const begin = async (req: CustomRequest, res: Response) => {
+function begin(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET':
       const currentLanguage = getLanguage(req);
@@ -98,9 +98,9 @@ const begin = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(405).send();
   }
-};
+}
 
-const signUp = async (req: CustomRequest, res: Response) => {
+async function signUp(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET': {
       const listEditais = await EditalService.listEditalsAvailable();
@@ -118,9 +118,12 @@ const signUp = async (req: CustomRequest, res: Response) => {
       const { email, senha, edital } = req.body;
 
       if (!email || !senha || !edital) {
-        return res.status(403).json({
-          error: 'Dados incompletos ou mal formatados',
-        });
+        return res
+          .status(403)
+          .json({
+            error: 'Dados incompletos ou mal formatados',
+          })
+          .send();
       }
 
       try {
@@ -157,9 +160,9 @@ const signUp = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(404).send();
   }
-};
+}
 
-const login = async (req: CustomRequest, res: Response) => {
+async function signIn(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET': {
       try {
@@ -208,7 +211,7 @@ const login = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(405).send();
   }
-};
+}
 
 function logout(req: CustomRequest, res: Response) {
   switch (req.method) {
@@ -800,7 +803,7 @@ const trocarSenha = async (req, res: Response) => {
 export default {
   begin,
   signUp,
-  login,
+  signIn,
   forms,
   form1,
   form2,
