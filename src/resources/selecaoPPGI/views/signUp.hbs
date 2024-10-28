@@ -269,9 +269,9 @@
 					url: "{{url}}/selecaoppgi/cadastro",
 					type: "POST",
 					data: {
-						email: email,
-						senha: senha,
-						edital: edital,
+						email,
+						senha,
+						idEdital: edital,
 						_csrf: csrfToken,
 					},
 					success: function (data) {

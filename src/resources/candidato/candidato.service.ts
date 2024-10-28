@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
+import { SignInDto, SignUpDto } from '../selecaoPPGI/selecaoppgi.types';
 const prisma = new PrismaClient();
 
 class CandidatoService {
@@ -13,15 +14,15 @@ class CandidatoService {
     return await prisma.candidato.findMany();
   }
 
-  async create({ email, password, editalNumber }) {
+  async create({ email, senha, idEdital }: SignUpDto) {
     const step = 1;
 
-    const passwordHash = await generateHashPassword(password);
+    const passwordHash = await generateHashPassword(senha);
     const candidate = await prisma.candidato.create({
       data: {
         email,
         senhaHash: passwordHash,
-        idEdital: editalNumber,
+        idEdital,
         posicaoEdital: step,
       },
     });
@@ -29,7 +30,7 @@ class CandidatoService {
     delete candidate.senhaHash;
     await prisma.edital.update({
       where: {
-        editalId: editalNumber,
+        editalId: idEdital,
       },
       data: {
         inscricoesIniciadas: {
@@ -40,29 +41,35 @@ class CandidatoService {
     return candidate;
   }
 
-  async findCandidatoByEmailAndEdital({ email, edital }) {
+  async findCandidatoByEmailAndEdital({
+    email,
+    idEdital,
+  }: {
+    email: string;
+    idEdital: string;
+  }) {
     const candidato = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital: edital,
+        idEdital,
       },
     });
 
     return candidato;
   }
 
-  async auth({ email, password, editalNumber }) {
+  async auth({ email, senha, idEdital }: SignInDto) {
     const candidate = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital: editalNumber,
+        idEdital,
       },
     });
 
     if (!candidate) {
       return null;
     }
-    return (await bcrypt.compare(password, candidate.senhaHash))
+    return (await bcrypt.compare(senha, candidate.senhaHash))
       ? candidate
       : null;
   }

@@ -1,12 +1,20 @@
+import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { Request, Response } from 'express';
 
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import candidatoService from '../candidato/candidato.service';
-import EditalService from '../edital/edital.service';
-import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
+import candidatoService from '../candidato/candidato.service';
+import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
+import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
+import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import {
+  default as EditalService,
+  default as editalService,
+} from '../edital/edital.service';
+import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
+import { gerarPDF } from './gerarInscricao';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -14,12 +22,10 @@ import {
   Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
+  RecoverPasswordDto,
+  SignInDto,
+  SignUpDto,
 } from './selecaoppgi.types';
-import editalService from '../edital/edital.service';
-import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
-import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
-import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import { gerarPDF } from './gerarInscricao';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -115,21 +121,12 @@ async function signUp(req: CustomRequest, res: Response) {
       });
     }
     case 'POST': {
-      const { email, senha, edital } = req.body;
-
-      if (!email || !senha || !edital) {
-        return res
-          .status(403)
-          .json({
-            error: 'Dados incompletos ou mal formatados',
-          })
-          .send();
-      }
+      const { email, senha, idEdital } = req.body as SignUpDto;
 
       try {
         const candidate = await candidatoService.findCandidatoByEmailAndEdital({
           email,
-          edital,
+          idEdital,
         });
 
         if (candidate) {
@@ -140,8 +137,8 @@ async function signUp(req: CustomRequest, res: Response) {
 
         const candidateCreated = await candidatoService.create({
           email,
-          password: senha,
-          editalNumber: edital,
+          senha,
+          idEdital,
         });
 
         req.session.email = candidateCreated.email;
@@ -181,19 +178,18 @@ async function signIn(req: CustomRequest, res: Response) {
     }
     case 'POST':
       try {
-        const { email, senha, edital } = req.body;
-
-        if (!email || !senha || !edital) {
-          return res.status(400).send();
-        }
+        const { email, senha, idEdital } = req.body as SignInDto;
 
         const candidate = await candidatoService.auth({
           email,
-          password: senha,
-          editalNumber: edital,
+          senha,
+          idEdital,
         });
+
         if (!candidate) {
-          return res.status(406).send();
+          return res
+            .status(StatusCodes.NOT_FOUND)
+            .send(ReasonPhrases.NOT_FOUND);
         }
 
         if (candidate.posicaoEdital > 4) {
@@ -710,34 +706,34 @@ const recuperarSenha = async (req, res) => {
       });
     }
     case 'POST': {
-      if (!req.body.email || !req.body.editalId) {
-        return res.status(400).send();
-      }
-      const { email, editalId: edital } = req.body;
-      const candidate = await candidatoService.findCandidatoByEmailAndEdital({
-        email,
-        edital,
-      });
-      if (!candidate) {
-        return res.status(404).send();
-      }
-
-      const token = await candidatoService.updateTokenPassword({
-        id: candidate.id,
-      });
-
-      const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
+      const { email, idEdital } = req.body as RecoverPasswordDto;
       try {
+        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+          email,
+          idEdital,
+        });
+        if (!candidate) {
+          return res
+            .status(StatusCodes.NOT_FOUND)
+            .send(ReasonPhrases.NOT_FOUND);
+        }
+
+        const token = await candidatoService.updateTokenPassword({
+          id: candidate.id,
+        });
+
+        const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
         sendEmailRecoveryPasswordCandidate({
           email: candidate.email,
           url,
         });
+        return res.status(200).send();
       } catch (err) {
         console.error(err);
-        return res.status(500).send({ message: 'Erro ao enviar e-mail' });
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .send({ message: 'Erro ao enviar e-mail' });
       }
-
-      return res.status(200).send();
     }
     default:
       return res.status(405).send();
