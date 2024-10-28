@@ -8,7 +8,7 @@ async function main() {
     update: {},
     create: {
       nomeCompleto: 'Usuario de teste inicial',
-      cpf: '111.111.111-11',
+      cpf: '778.864.820-50',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
       tokenResetarSenha: null,
       validadeTokenResetadaSenha: null,
@@ -37,7 +37,7 @@ async function main() {
     update: {},
     create: {
       nomeCompleto: 'JhonDoe',
-      cpf: '222.222.222-22',
+      cpf: '202.259.530-05',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
       tokenResetarSenha: null,
       validadeTokenResetadaSenha: null,

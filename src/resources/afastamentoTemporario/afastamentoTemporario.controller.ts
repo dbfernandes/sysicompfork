@@ -20,6 +20,7 @@ const listar = async (req: Request, res: Response) => {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
+        nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });
     } else {
@@ -35,6 +36,7 @@ const listar = async (req: Request, res: Response) => {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
+        nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });
     }
@@ -43,6 +45,7 @@ const listar = async (req: Request, res: Response) => {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
+      nome: req.session.nome,
       error:
         error.message || 'Não foi possível listar os pedidos de afastamento!',
     });
@@ -54,6 +57,7 @@ const criar = async (req: Request, res: Response) => {
     return res.status(200).render(resolveView('solicitar-afastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
+      nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
   } else {
@@ -82,6 +86,7 @@ const criar = async (req: Request, res: Response) => {
       return res.render(resolveView('solicitar-afastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
+        nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         error:
           error.message || 'Não foi possível criar o pedido de afastamento!',
@@ -102,12 +107,14 @@ const vizualizar = async (req: Request, res: Response) => {
       afastamento,
       pageTitle,
       csrfToken: req.csrfToken(),
+      nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
   } catch (error: any) {
     return res.render(resolveView('pedidos-afastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
+      nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
       error:
         error.message || 'Não foi possível vizualizar o pedido de afastamento!',
@@ -125,6 +132,7 @@ const remover = async (req: Request, res: Response) => {
       return res.render(resolveView('pedidos-afastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
+        nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         error:
           error.message || 'Não foi possível remover o pedido de afastamento!',

@@ -4,7 +4,19 @@ WORKDIR /app
 COPY package*.json ./
 
 # Add support for https on wget
-RUN apk update && apk add --no-cache wget openssl chromium ca-certificates && update-ca-certificates
+# RUN apk update && apk add --no-cache wget openssl chromium ca-certificates && update-ca-certificates
+RUN apk update && \
+    apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ttf-freefont \
+    wget \
+    ca-certificates \
+    udev \
+    dumb-init && \
+    update-ca-certificates
 
 # # Add PhantomJS manually
 # RUN wget -qO- "https://github.com/DaniSanT17/phantomized/releases/download/2.1.1a/phantomized-2.1.1a.tar.gz" | tar xz -C / \

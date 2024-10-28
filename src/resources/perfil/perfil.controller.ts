@@ -34,6 +34,7 @@ const visualizar = async (req: Request, res: Response) => {
   }
 };
 
+// Não usar essa função, pois é redundante.
 const editar = async (req: Request, res: Response) => {
   const id = req.session.uid;
   if (req.method === 'GET') {
@@ -115,6 +116,7 @@ const editar = async (req: Request, res: Response) => {
       .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
+//
 
 const deletar = async (req: Request, res: Response) => {
   if (req.method === 'POST') {

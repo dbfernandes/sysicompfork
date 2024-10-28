@@ -78,6 +78,7 @@ const listEditalSelecao = async (req: Request, res: Response) => {
         nome: req.session.nome,
         editais,
         tipoUsuario: req.session.tipoUsuario,
+        usuarioPermitido: req.session.tipoUsuario.coordenador || req.session.tipoUsuario.secretaria || req.session.tipoUsuario.administrador,
       });
 
     case 'POST': {

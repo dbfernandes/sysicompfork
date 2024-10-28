@@ -11,6 +11,25 @@ class UsuarioService {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
 
+    if (usuario.diretor === 1) {
+      const usuarioDiretor = await prisma.usuario.findFirst({
+        where: {
+          diretor: 1,
+        },
+      });
+
+      if (usuarioDiretor && usuarioDiretor.id !== usuario.id) {
+        await prisma.usuario.update({
+          where: {
+            id: usuarioDiretor.id,
+          },
+          data: {
+            diretor: 0,
+          },
+        });
+      }
+    }
+
     return await prisma.usuario.create({ data: { ...usuario, senhaHash } });
   }
 
@@ -18,6 +37,26 @@ class UsuarioService {
     if ('senha' in user && user.senha !== '') {
       user.senhaHash = await generateHashPassword(user.senha);
     }
+
+    if (user.diretor === 1) {
+      const usuarioAtual = await prisma.usuario.findFirst({
+        where: {
+          diretor: 1,
+        },
+      });
+
+      if (usuarioAtual && usuarioAtual.id !== id) {
+        await prisma.usuario.update({
+          where: {
+            id: usuarioAtual.id,
+          },
+          data: {
+            diretor: 0,
+          },
+        });
+      }
+    }
+
     await prisma.usuario.update({
       where: {
         id,
@@ -51,6 +90,7 @@ class UsuarioService {
         email: true,
         status: true,
         siape: true,
+        diretor: true,
         administrador: true,
         secretaria: true,
         professor: true,
@@ -111,6 +151,7 @@ class UsuarioService {
         status: true,
         siape: true,
         administrador: true,
+        diretor: true,
         secretaria: true,
         professor: true,
         coordenador: true,

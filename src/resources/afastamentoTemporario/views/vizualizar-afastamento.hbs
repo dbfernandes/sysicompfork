@@ -10,9 +10,7 @@
       <div class="row mb-2">
         <div class="col">
           <ol class="breadcrumb float-md-right">
-            <li class="breadcrumb-item">
-              <a href="/">Página inicial</a>
-              </li>
+            <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
               <li class="breadcrumb-item">
                 <a href="/afastamentoTemporario/listar">Afastamentos</a>
             </li>
@@ -25,9 +23,9 @@
       </div>
       <div class="row mb-4">
           <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
-              <a class="btn btn-warning color-white" href="/afastamentoTemporario/listar">
-                  <i class="fa fa-arrow-left"></i>
-                  Voltar
+              <a class="btn btn-warning color-white" onclick="voltarPagina()">
+                <i class="fa fa-arrow-left"></i>
+                Voltar
               </a>
           </div>
       </div>
@@ -95,7 +93,11 @@
   
   </section>
 </div>
-
+<script>
+  function voltarPagina() {
+    window.history.back();
+  }
+</script>
 {{#if message}}
   <script>
       $(document).Toasts('create', {

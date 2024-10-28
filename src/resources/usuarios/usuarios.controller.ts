@@ -26,6 +26,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           coordenador,
           secretaria,
           professor,
+          diretor,
           senha,
           endereco,
           telefoneCelular,
@@ -39,6 +40,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         coordenador = req.body.coordenador === 'on' ? 1 : 0;
         secretaria = req.body.secretaria === 'on' ? 1 : 0;
         professor = req.body.professor === 'on' ? 1 : 0;
+        diretor = req.body.diretor === 'on' ? 1 : 0;
         const novoUsuario = {
           nomeCompleto,
           cpf,
@@ -47,6 +49,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           coordenador,
           secretaria,
           professor,
+          diretor,
           senhaHash: senha,
           endereco,
           telCelular: telefoneCelular,
@@ -54,8 +57,8 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           dataIngresso: dateDeIngresso,
           unidade,
           turno,
-          tokenResetSenha: null,
-          validadeTokenResetSenha: null,
+          tokenResetarSenha: null,
+          validadeTokenResetadaSenha: null,
           status: 0,
           perfil: null,
           idLattes: null,
@@ -171,6 +174,21 @@ const listar = async (req: Request, res: Response): Promise<any> => {
       try {
         const { message, type, messageTitle } = req.query;
         const usuarios = await usuarioService.listarTodos();
+        usuarios.forEach((usuario) => {
+          if (usuario.administrador === 1) {
+            usuario.perfil += " administrador";
+          }
+          if (usuario.coordenador === 1) {
+            usuario.perfil += " coordenador";
+          }
+          if (usuario.secretaria === 1) {
+            usuario.perfil += " secretaria";
+          }
+          if (usuario.professor === 1) {
+            usuario.perfil += " professor";
+          }
+
+        });
         return res.status(200).render(resolveView('usuarios-listar'), {
           usuarios,
           csrfToken: req.csrfToken(),
@@ -268,6 +286,8 @@ const editar = async (req: Request, res: Response): Promise<any> => {
         const coordenador = req.body.coordenador === 'on' ? 1 : 0;
         const secretaria = req.body.secretaria === 'on' ? 1 : 0;
         const professor = req.body.professor === 'on' ? 1 : 0;
+        const diretor = req.body.diretor === 'on' ? 1 : 0;
+        console.log(diretor);
         const dados = {
           nomeCompleto: req.body.nomeCompleto,
           cpf: req.body.cpf,
@@ -277,6 +297,7 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           coordenador,
           secretaria,
           professor,
+          diretor,
           endereco: req.body.endereco,
           telResidencial: req.body.telefoneResidencial,
           telCelular: req.body.telefoneCelular,
@@ -284,8 +305,8 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           dataIngresso: req.body.dateDeIngresso,
           unidade: req.body.unidade,
           turno: req.body.turno,
-          tokenResetSenha: null,
-          validadeTokenResetSenha: null,
+          tokenResetarSenha: null,
+          validadeTokenResetadaSenha: null,
           status: 0,
           perfil: null,
           idLattes: null,
@@ -312,12 +333,14 @@ const editar = async (req: Request, res: Response): Promise<any> => {
         const coordenador = req.body.coordenador === 'on' ? 1 : 0;
         const secretaria = req.body.secretaria === 'on' ? 1 : 0;
         const professor = req.body.professor === 'on' ? 1 : 0;
+        const diretor = req.body.diretor === 'on' ? 1 : 0;
         const dados = {
           ...req.body,
           administrador,
           coordenador,
           secretaria,
           professor,
+          diretor,
           id: req.params.id,
         };
         return res.status(500).render(resolveView('usuarios-editar'), {
@@ -339,4 +362,21 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export default { adicionar, listar, deletar, visualizar, editar, restaurar };
+const verificarDiretorExistente = async (req: Request, res: Response): Promise<any> => {
+  switch (req.method) {
+    case 'GET':
+      try {
+        const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
+        return res.status(200).json({ diretor: !!diretor });
+      } catch (error: unknown) {
+        console.log(error);
+        return res.status(500).json({ diretor: false });
+      }
+    default:
+      return res
+        .status(400)
+        .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
+  }
+};
+
+export default { adicionar, listar, deletar, visualizar, editar, restaurar, verificarDiretorExistente };

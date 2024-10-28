@@ -33,6 +33,7 @@ declare module 'express-session' {
           administrador: number;
           secretaria: number;
           coordenador: number;
+      diretor: number;
           professor: number;
         }
       | undefined;
