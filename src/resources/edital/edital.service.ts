@@ -1,5 +1,4 @@
-import { PrismaClient, Edital, Candidato, LinhasDePesquisa } from '@prisma/client'
-const moment = require('moment-timezone')
+import { PrismaClient, Edital, Candidato } from '@prisma/client';
 /* eslint-disable camelcase */
 
 const prisma = new PrismaClient();
@@ -25,9 +24,9 @@ class EditalService {
     }
   }
 
-  async listEdital(): Promise<Edital[]> {
+  async listEdital() {
     const editais = await prisma.edital.findMany().catch((err) => {
-      console.log(`[ERROR] Listar Editais: ${err}`);
+      console.error(`[ERROR] Listar Editais: ${err}`);
       throw new Error('Não foi possivel listar o edital');
     });
     return editais;
@@ -72,7 +71,6 @@ class EditalService {
       });
 
       if (!edital) {
-        console.log('Edital não existe');
         throw new Error(`Não existe edital de número ${id}`);
       }
 
@@ -96,8 +94,7 @@ class EditalService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Buscar Edital: ${err}`);
-        console.log('{this.id_update}', id_edital);
+        console.error(`[ERROR] Buscar Edital: ${err}`);
         throw new Error('Não foi possivel buscar o edital');
       });
 
@@ -116,7 +113,7 @@ class EditalService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Atualizar Edital: ${err}`);
+        console.error(`[ERROR] Atualizar Edital: ${err}`);
         throw new Error('Não foi possivel alterar o status do edital');
       });
 
@@ -124,7 +121,6 @@ class EditalService {
   }
 
   async getEdital(id: string): Promise<Edital | null> {
-    console.log('id', id);
     const edital = await prisma.edital
       .findFirst({
         where: {
@@ -132,7 +128,7 @@ class EditalService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Buscar Edital: ${err}`);
+        console.error(`[ERROR] Buscar Edital: ${err}`);
         throw new Error('Não foi possivel buscar o edital');
       });
 
@@ -168,7 +164,7 @@ class EditalService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Buscar Edital: ${err}`);
+        console.error(`[ERROR] Buscar Edital: ${err}`);
         throw new Error('Não foi possivel buscar o edital');
       });
 
@@ -176,16 +172,17 @@ class EditalService {
   }
 
   async listCandidates(id: string): Promise<Candidato[]> {
-    const candidatos = await prisma.candidato.findMany({
-      where: {
-        idEdital: id
-      },
-      include: { LinhasDePesquisa: true }
-    }
-    ).catch(err => {
-      console.log(`[ERROR] Listar Candidatos: ${err}`)
-      throw new Error('Não foi possivel listar os candidatos')
-    })
+    const candidatos = await prisma.candidato
+      .findMany({
+        where: {
+          idEdital: id,
+        },
+        include: { LinhasDePesquisa: true },
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Listar Candidatos: ${err}`);
+        throw new Error('Não foi possivel listar os candidatos');
+      });
 
     return candidatos;
   }
@@ -198,7 +195,7 @@ class EditalService {
         },
       });
     } catch (error) {
-      console.log(`[ERROR] Buscar Candidato: ${error}`);
+      console.error(`[ERROR] Buscar Candidato: ${error}`);
       throw new Error('Não foi possivel buscar o candidato');
     }
   }

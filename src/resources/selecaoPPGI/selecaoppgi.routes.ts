@@ -1,32 +1,48 @@
 import express from 'express';
+import { languageMiddleware } from '../../middlewares/languageMiddlewarePPGI';
 import {
   uploads,
   uploadsProposta,
   uploadsPublicacoes,
 } from '../../middlewares/multer.selecaoppgi.config';
 import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
-
-import selecaoppgiController from './selecaoppgi.controller';
-
+import validate from '../../middlewares/validate';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
-
+import selecaoppgiController from './selecaoppgi.controller';
+import {
+  recoverPasswordSchema,
+  signInSchema,
+  signUpSchema,
+} from './selecaoppgi.schema';
 const router = express.Router();
+
+router.use(languageMiddleware);
+
 router.use('/recomendacoes', routerCandidatoRecomendacao);
 
 router.get('/', selecaoppgiController.begin);
 
+//Rotas de cadastro
 router.get('/cadastro', selecaoppgiController.signUp);
-router.post('/cadastro', selecaoppgiController.signUp);
+router.post('/cadastro', validate(signUpSchema), selecaoppgiController.signUp);
 
-router.get('/entrar', selecaoppgiController.login);
-router.post('/entrar', selecaoppgiController.login);
+//Rotas de login
+router.get('/entrar', selecaoppgiController.signIn);
+router.post('/entrar', validate(signInSchema), selecaoppgiController.signIn);
 
+//Rotas de recuperação de senha
 router.get('/recuperarSenha', selecaoppgiController.recuperarSenha);
-router.post('/recuperarSenha', selecaoppgiController.recuperarSenha);
+router.post(
+  '/recuperarSenha',
+  validate(recoverPasswordSchema),
+  selecaoppgiController.recuperarSenha,
+);
 
+//Rotas de troca de senha
 router.get('/trocarSenha', selecaoppgiController.trocarSenha);
 router.put('/trocarSenha', selecaoppgiController.trocarSenha);
 
+//Rotas que necessitam de autenticação
 router.use(isAuthSelecao);
 
 router.get('/formulario', selecaoppgiController.forms);

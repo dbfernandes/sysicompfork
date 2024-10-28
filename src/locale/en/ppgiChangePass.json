@@ -1,0 +1,16 @@
+{
+  "title_header": "Reset Password - PPGI/UFAM",
+  "title": "New Password",
+  "subTitle": "Enter a new password for the email and notice",
+  "passwordPlaceholder": "Password",
+  "confirmPasswordPlaceholder": "Confirm Password",
+  "submitButton": "Reset Password",
+  "backButton": "Back",
+  "errorIncomplete": "Error while resetting password",
+  "validation": {
+    "passwordRequired": "Required field",
+    "passwordMinLength": "The password must be at least 6 characters long",
+    "confirmPasswordRequired": "Required field",
+    "confirmPasswordMismatch": "Passwords do not match"
+  }
+}

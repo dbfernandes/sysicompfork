@@ -1,0 +1,31 @@
+{
+  "titulo": "Proposta do Candidato",
+  "linhaPesquisaLabel": "Linha de Pesquisa",
+  "linhaPesquisaPlaceholder": "Selecione uma Linha de Pesquisa:",
+  "tituloPropostaLabel": "Título da Proposta",
+  "orientador": {
+    "titulo": "Orientador",
+    "descricao": "Caso o tema da proposta tenha sido definido junto com algum orientador do PPGI, informe o nome dele abaixo.",
+    "nomeOrientadorLabel": "Nome do Orientador"
+  },
+  "cartaRecomendacao": {
+    "titulo": "Carta de Recomendação",
+    "descricao": "Você precisa apenas preencher corretamente o nome e email das pessoas que devem fornecer as cartas de recomendação. Feito isso, assim que você finalizar e submeter sua inscrição os indicados receberão um email com as instruções de como preencher de forma online sua carta de recomendação. Ao menos 2 nomes são obrigatórios.",
+    "nomeLabel": "Nome",
+    "emailLabel": "Email",
+    "addButtonLabel": "Adicionar"
+  },
+  "motivos": {
+    "titulo": "Motivos e Documentação",
+    "descricao": "Descreva os motivos que o levaram a se candidatar ao curso",
+    "motivosPlaceholder": "Digite os motivos",
+    "caracteresRestantesLabel": "Caracteres Restantes"
+  },
+  "documentos": {
+    "cartaOrientador": "Carta de Aceite do Orientador (obrigatório para doutorado)",
+    "propostaTrabalho": "Proposta de Trabalho (obrigatório)",
+    "comprovantePagamento": "Comprovante de Pagamento (obrigatório)"
+  },
+  "finalizar": "Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.",
+  "adicionarRecomendacao": "Adicionar Recomendação"
+}

@@ -1,0 +1,17 @@
+{
+  "title_header": "Password Recovery - PPGI/UFAM",
+  "title": "Recover password",
+  "subTitle": "Forgot your password? Enter your registered email and notice to get a new one",
+  "emailPlaceholder": "Email",
+  "noticePlaceholder": "Select a notice",
+  "submitButton": "Request new password",
+  "backButton": "Back",
+  "successMessage": "Password recovery email sent successfully!",
+  "errorIncomplete": "Email and/or notice incomplete",
+  "errorNotFound": "Email and/or notice not found",
+  "validation": {
+    "emailRequired": "Required field",
+    "emailInvalid": "Enter a valid email",
+    "noticeRequired": "Required field"
+  }
+}

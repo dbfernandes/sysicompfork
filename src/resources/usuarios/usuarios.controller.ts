@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import usuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
-import path from "path";
+import path from 'path';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -66,8 +66,8 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           formacaoIngles: null,
           resumo: null,
           resumoIngles: null,
-          ultimaAtualizacao: null
-        }
+          ultimaAtualizacao: null,
+        };
         await usuarioService.adicionar(novoUsuario);
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
@@ -221,7 +221,9 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
       try {
         const { message, type, messageTitle } = req.query;
 
-        const usuario = await usuarioService.listarUmUsuario(Number(req.params.id))
+        const usuario = await usuarioService.listarUmUsuario(
+          Number(req.params.id),
+        );
         return res.status(200).render(resolveView('usuario-visualizar'), {
           usuario,
           csrfToken: req.csrfToken(),
@@ -253,8 +255,10 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
-        const { message, type, messageTitle } = req.query
-        const usuario = await usuarioService.listarUmUsuario(Number(req.params.id))
+        const { message, type, messageTitle } = req.query;
+        const usuario = await usuarioService.listarUmUsuario(
+          Number(req.params.id),
+        );
         return res.status(200).render(resolveView('usuarios-editar'), {
           usuario,
           csrfToken: req.csrfToken(),
@@ -310,7 +314,7 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           formacaoIngles: null,
           resumo: null,
           resumoIngles: null,
-          ultimaAtualizacao: null
+          ultimaAtualizacao: null,
         };
         const userId = Number(req.params.id);
         await usuarioService.alterar(userId, dados);

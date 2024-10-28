@@ -1,0 +1,18 @@
+{
+    "title_header": "Trocar Senha - PPGI/UFAM",
+    "title": "Nova Senha",
+    "subTitle": "Digite nova senha para o email e edital",
+    "passwordPlaceholder": "Senha",
+    "confirmPasswordPlaceholder": "Confirmar Senha",
+    "submitButton": "Trocar senha",
+    "backButton": "Voltar",
+    "successMessage": "Senha alterada com sucesso!",
+    "errorIncomplete": "Erro ao alterar senha",
+    "validation": {
+      "passwordRequired": "Campo obrigatório",
+      "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
+      "confirmPasswordRequired": "Campo obrigatório",
+      "confirmPasswordMismatch": "As senhas não coincidem"
+    }
+  }
+  

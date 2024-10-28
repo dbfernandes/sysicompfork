@@ -71,15 +71,7 @@
 		color: #666;
 		width: 100%;
 	}
-	.container-cards {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		img {
-		max-width: 200px;
-		height: 100px;  
-		}
-  	}
+
 </style>
 <div class="login-box"> 
 	<div class="login-logo container-cards">
@@ -89,7 +81,7 @@
 	<div class="card">
 		<div class="card-body login-card-body">
       		<div class="login-logo">
-            	<b>Nova Senha</b>
+            	<b>{{__ "ppgiChangePass.title"}}</b>
         	</div>
 			<div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
 				{{#if error}}
@@ -98,32 +90,31 @@
 			</div>
 			<div id="success-msg" class="alert alert-success" hidden></div>
 
-        	<p class="login-box-msg">Digite nova senha para o email e edital
+        	<p class="login-box-msg">{{__ "ppgiChangePass.subTitle"}}
         	{{#if message}}
         	  <div class="alert alert-{{type}}">
         	    {{{message}}}
-        	  </div>
+        	  </div> 
         	{{/if}}
-        	{{!-- <form action="/selecaoppgi/recuperarSenha" method="post"> --}}
         	 <form id="form-recuperar-senha" >
         	  <input type="hidden" name="_csrf" value="{{csrfToken}}">
         	  	<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="Senha">
+					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="{{__ "ppgiChangePass.passwordPlaceholder"}}">
 					<div class="help-block"></div>
 				</div>
 				<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="Confirmar Senha">
+					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="{{__ "ppgiChangePass.confirmPasswordPlaceholder"}}">
 					<div class="help-block"></div>
 				</div>
 	
-        	  <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">Trocar senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
-        	  <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-default" role="button">Voltar</button>
+        	  <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">{{__ "ppgiChangePass.submitButton"}}<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
+        	  <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-default" role="button">{{__ "ppgiChangePass.backButton"}}</button>
         	</form>
 		</div>
 	</div>
-</div>
-<!-- /.login-box -->
+	{{> ppgi/selectLanguage}}
 
+</div>
 <script>
   function back(){
       window.location.href = "{{url}}/selecaoppgi";
@@ -150,12 +141,12 @@
 		},
 		messages: {
 			password: {
-				required: "Campo obrigatório",
-				minlength: "A senha deve ter pelo menos 6 caracteres"
+				required: "{{__ "ppgiChangePass.validation.passwordRequired"}}",
+				minlength: "{{__ "ppgiChangePass.validation.passwordMinLength"}}"
 			},
 			confirmPassword: {
-				required: "Campo obrigatório",
-				equalTo: "As senhas não coincidem"
+				required: "{{__ "ppgiChangePass.validation.confirmPasswordRequired"}}",
+				equalTo: "{{__ "ppgiChangePass.validation.confirmPasswordMismatch"}}"
 			}
 		}, 
 		errorElement: 'span',
@@ -194,7 +185,7 @@
 					if(res.responseJSON.message) {
 						divError.text(res.responseJSON.message);
 					} else {
-						divError.text("Erro ao alterar senha");
+						divError.text("{{__ "ppgiChangePass.errorIncomplete"}}");
 					}
 				}
 			})	

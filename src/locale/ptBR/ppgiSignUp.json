@@ -1,0 +1,49 @@
+{
+    "title": "Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM",
+    "instructions": "Instruções:",
+    "instructionList": {
+      "fillFields": "Preencha os campos <b>email, senha, repetir senha e escolha um edital</b> para cadastrar um novo candidato.",
+      "repeatPassword": "O campo <b>Repetir Senha</b> deve ser preenchido com o mesmo valor do campo <b>Senha</b>.",
+      "registrationEmail": "O e-mail de cadastro não pode ser repetido para o mesmo edital. Se você já iniciou sua inscrição em um edital, acesse a opção Continuar Inscrição clicando no botão <b>Voltar</b>.",
+      "confirmRegistration": "Após confirmar o cadastro, você será direcionado ao formulário de inscrição."
+    },
+    "noEditals": "Não há editais disponíveis no momento.",
+    "availableEditals": "Editais Disponíveis",
+    "editalNumber": "Número do Edital:",
+    "registrationPeriod": "Período de Inscrições:",
+    "start": "Início:",
+    "end": "Fim:",
+    "courses": "Cursos:",
+    "masterVacancies": "Vagas para Mestrado:",
+    "regularVacancies": "Vagas Regulares:",
+    "supplementaryVacancies": "Vagas Suplementares:",
+    
+    "phdVacancies": "Vagas para Doutorado:",
+    "downloadNotice": "Baixar o edital:",
+  
+    "formTitle": "Formulário de Inscrição",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "E-mail",
+    "passwordLabel": "Senha",
+    "passwordPlaceholder": "Senha",
+    "confirmPasswordLabel": "Repetir Senha",
+    "confirmPasswordPlaceholder": "Repetir Senha",
+    "editalLabel": "Edital",
+    "selectEdital": "Selecione um edital",
+    "submitButton": "Salvar Candidato",
+    "backButton": "Voltar",
+  
+    "validation": {
+      "emailRequired": "O campo <b>E-mail</b> é obrigatório.",
+      "emailInvalid": "O campo <b>E-mail</b> deve ser um e-mail válido.",
+      "passwordRequired": "O campo <b>Senha</b> é obrigatório.",
+      "passwordMinlength": "O campo <b>Senha</b> deve ter pelo menos 6 caracteres.",
+      "passwordStrong": "A senha deve conter letras maiúsculas, minúsculas e números.",
+      "repeatPasswordRequired": "O campo <b>Repetir Senha</b> é obrigatório.",
+      "repeatPasswordMinlength": "O campo <b>Repetir Senha</b> deve ter pelo menos 6 caracteres.",
+      "repeatPasswordEqual": "O campo <b>Repetir Senha</b> deve coincidir com o valor preenchido no campo <b>Senha</b>.",
+      "editalRequired": "O campo <b>Edital</b> é obrigatório."
+    },
+    "errorAlert": "Erro ao cadastrar candidato."
+  }
+  

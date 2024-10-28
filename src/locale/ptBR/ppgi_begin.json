@@ -1,0 +1,19 @@
+{
+  "title_header": "Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM",
+  "title": "Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM",
+  "candidate": {
+    "title": "Candidato, clique em:",
+    "instructions": {
+      "new_inscription": {
+        "title": "Nova Inscrição:",
+        "description": "caso você ainda não tenha iniciado a inscrição. Lembrando que para cada edital do PPGI deve ser realizada uma inscrição independente."
+      },
+      "continue_inscription": {
+        "title": "Continuar Inscrição:",
+        "description": "caso você já tenha iniciado a inscrição, porém ainda não a finalizou."
+      }
+    }
+  },
+  "new_inscription": "Nova Inscrição",
+  "continue_inscription": "Continuar Inscrição"
+}

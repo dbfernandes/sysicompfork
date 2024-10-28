@@ -1,0 +1,18 @@
+<div class="dropdown container-language">
+    <div class="nav-link" data-toggle="dropdown" >
+        
+        {{#if (eq currentLanguage "ptBR")}}
+            <img class="icon-language" src="/public/img/icons/brazil.png" alt=""> {{__ "ppgi.portuguese"}}
+        {{else}}
+            <img class="icon-language" src="/public/img/icons/united-states.png" alt=""> {{__ "ppgi.english"}}
+        {{/if}}
+    </div>
+    <div class="dropdown-menu dropdown-menu-right p-0">
+        <a class="dropdown-item {{#if (eq currentLanguage "ptBR")}} active{{/if}}"  href="/changeLanguage/ptBR">
+            <img class="icon-language" src="/public/img/icons/brazil.png" alt=""> {{__ "ppgi.portuguese"}}
+        </a>
+        <a  class="dropdown-item {{#if (eq currentLanguage "en")}} active{{/if}}" href="/changeLanguage/en">
+            <img class="icon-language" src="/public/img/icons/united-states.png" alt=""> {{__ "ppgi.english"}}
+        </a>
+    </div>
+</div>

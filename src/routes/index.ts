@@ -13,7 +13,7 @@ import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
 import horasComplementaresRoutes from '../resources/horasComplementares/horasComplementares.routes';
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamentoTemporario.routes';
 // import pdfController from '../utils/exportToPDF';
-import { criarAfastamentoPDF } from '../utils/criarAfastamentoPDF'
+import { criarAfastamentoPDF } from '../utils/criarAfastamentoPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/alunos.routes';
@@ -26,6 +26,18 @@ const router = express.Router();
 // router.use('/', isUsuarioAutenticado)
 // router.use('/', autenticacaoRoutes)
 // router.use('/inscricao', inscricaoRouter);
+
+router.get('/changeLanguage/:lang', (req, res) => {
+  const supportedLanguages = ['en', 'ptBR']; // Exemplo de idiomas suportados
+  const lang = req.params.lang;
+
+  if (supportedLanguages.includes(lang)) {
+    res.cookie('lang', lang, { maxAge: 900000, httpOnly: true });
+  }
+
+  const referer = req.get('referer') || '/'; // Fallback para a home
+  res.redirect(referer);
+});
 
 // ROTAS DE AUTENTICAÇÃO
 

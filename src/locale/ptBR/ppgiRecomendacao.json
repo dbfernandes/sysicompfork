@@ -1,0 +1,166 @@
+{
+  "header": {
+    "title": "Carta de Recomendação para a Inscrição no Mestrado/Doutorado no PPGI/UFAM"
+  },
+  "form": {
+    "candidate": {
+      "title": "Candidato",
+      "nameLabel": "Nome",
+      "graduationLabel": "Graduado"
+    },
+    "deadline": {
+      "title": "Prazo para envio"
+    },
+    "confidential": "Desejamos ter sua opinião sobre o candidato que se inscreverá no Programa de Pós-Graduação Stricto Sensu em Informática desta Universidade. Estas informações, de caráter CONFIDENCIAL, são necessárias para que possamos julgar a aceitação ou não do candidato como aluno.",
+    "labelRequired": "(*) Campos obrigatórios.",
+    "yourData": {
+      "title": "Seus dados",
+      "yearPlaceholder": "Insira o ano",
+      "namePlaceholder": "Insira seu nome",
+      "nameLabel": "Nome",
+      "degreeLabel": "Titulação",
+      "selectDegreePlaceholder": "Selecione uma titulação",
+      "institutionDegreeLabel": "Instituição onde obteve o título",
+      "institutionDegreePlaceholder": "Insira a instituição onde obteve o título",
+      "degreeYearLabel": "Ano de Titulação",
+      "currentInstitutionLabel": "Instituição Atual",
+      "currentInstitutionPlaceholder": "Insira sua atual instituição",
+      "positionLabel": "Cargo Atual",
+      "positionPlaceholder": "Insira seu cargo",
+      "degrees": {
+        "phd": "Doutorado",
+        "masters": "Mestrado",
+        "specialization": "Especialização",
+        "undergraduate": "Graduação",
+        "highSchool": "Ensino Médio"
+      }
+    },
+    "relationshipWithCandidate": {
+      "title": "Relação com o candidato",
+      "placesLabel": "Conheço-o por meio de",
+      "selectPlacesPlaceholder": "Selecione os lugares",
+      "specifyOtherPlacesLabel": "Especifique quais outros",
+      "roleWithCandidateLabel": "Com relação ao candidato, fui seu",
+      "selectRolesPlaceholder": "Selecione os tipos de contatos",
+      "specifyOtherRolesLabel": "Especifique quais outras",
+      "knownSinceLabel": "Conheço-o desde o ano",
+      "places": {
+        "knowsUndergraduate": "Curso Graduação",
+        "knowsPostgraduate": "Curso de Pós-Graduação",
+        "knowsCompany": "Empresa",
+        "knowsOthers": "Outros"
+      },
+      "relationships": {
+        "supervisor": "Orientador",
+        "professor": "Professor",
+        "employer": "Empregador",
+        "coordinator": "Coordenador",
+        "classmate": "Colega de Curso",
+        "coworker": "Colega de Trabalho",
+        "otherContacts": "Outros"
+      }
+    },
+    "evaluationOfCandidate": {
+      "title": "Sua classificação sobre o candidato",
+      "label": "Como classifica o candidato quanto aos atributos listados abaixo",
+
+      "knowledgeDomainLabel": "Domínio em sua área de conhecimento científico",
+      "learningAbilityLabel": "Facilidade de aprendizado capacidade intelectual",
+      "assiduityLabel": "Assiduidade, perseverança",
+      "relationshipLabel": "Relacionamento com colegas e superiores",
+      "initiativeLabel": "Iniciativa, desembaraço, originalidade e liderança",
+      "expressionLabel": "Capacidade de expressão escrita",
+      "comparisonLabel": "Comparando este candidato com outros alunos ou profissionais, com similar nível de educação e experiência, que conheceu nos últimos 2 anos, classifique a sua aptidão para realizar estudos avançados e pesquisas. O candidato está entre (indique uma das alternativas)",
+      "selectEvaluationLevel": "Selecione um nível",
+      "selectComparison": "Selecione uma classificação",
+
+      "comparisonOptions": {
+        "5Percent": "Os 5% mais aptos",
+        "10Percent": "Os 10% mais aptos",
+        "30Percent": "Os 30% mais aptos",
+        "50Percent": "Os 50% mais aptos"
+      },
+      "levelOptions": {
+        "one": "1 - Fraco",
+        "two": "2 - Regular",
+        "three": "3 - Bom",
+        "four": "4 - Muito bom",
+        "five": "5 - Excelente",
+        "none": "X - Sem condições de informar"
+      }
+    },
+    "additionalInfo": {
+      "title": "Informações",
+      "description": "Estamos particularmente interessados na avaliação do potencial do candidato para estudos, pesquisa e desenvolvimento na área de Informática. Uma descrição detalhada dos pontos positivos e negativos do desempenho do candidato em atividades acadêmicas e/ou profissionais serão mais úteis do que comentários genéricos. Comentários sobre caráter, integridade e motivação serão úteis, se julgados pertinentes. A experiência na qual a opinião do avaliador se baseou também deve ser descrita. Se possível, compare o candidato com outras pessoas que tenham o mesmo nível de formação/experiência. As informações são confidenciais.",
+      "remainingCharacters": "Caracteres Restantes:"
+    },
+    "buttons": {
+      "save": "Salvar",
+      "submit": "Enviar Carta"
+    }
+  },
+  "validation": {
+    "nome": {
+      "required": "Por favor, informe seu nome",
+      "minlength": "O nome deve ter pelo menos 3 caracteres",
+      "maxlength": "O nome deve ter no máximo 100 caracteres"
+    },
+    "titulacao": "Por favor, selecione uma opção",
+    "instituicaoTitulacao": {
+      "required": "Por favor, informe uma instituição",
+      "minlength": "A instituição deve ter pelo menos 2 caracteres",
+      "maxlength": "A instituição deve ter no máximo 100 caracteres"
+    },
+    "instituicaoAtual": {
+      "required": "Por favor, informe uma instituição",
+      "minlength": "A instituição deve ter pelo menos 2 caracteres",
+      "maxlength": "A instituição deve ter no máximo 100 caracteres"
+    },
+    "cargo": {
+      "required": "Por favor, informe um cargo",
+      "minlength": "O cargo deve ter pelo menos 2 caracteres",
+      "maxlength": "O cargo deve ter no máximo 50 caracteres"
+    },
+    "anoTitulacao": {
+      "required": "Por favor, insira um ano",
+      "number": "Por favor, insira um ano válido",
+      "range": "Por favor, insira um ano válido (entre 1950 e {{year}})"
+    },
+    "anoContato": {
+      "required": "Por favor, insira um ano",
+      "number": "Por favor, insira um ano válido",
+      "range": "Por favor, insira um ano válido (entre 1950 e {{year}})"
+    },
+    "dominio": "Por favor, selecione uma opção",
+    "aprendizado": "Por favor, selecione uma opção",
+    "assiduidade": "Por favor, selecione uma opção",
+    "relacionamento": "Por favor, selecione uma opção",
+    "iniciativa": "Por favor, selecione uma opção",
+    "expressao": "Por favor, selecione uma opção",
+    "informacoes": {
+      "required": "Por favor, informe uma descrição",
+      "minlength": "A descrição deve ter pelo menos 10 caracteres",
+      "maxlength": "A descrição deve ter no máximo 1000 caracteres"
+    },
+    "places": "Por favor, selecione pelo menos uma opção",
+    "relationships": "Por favor, selecione pelo menos uma opção",
+    "classificacao": "Por favor, selecione uma opção"
+  },
+  "toast": {
+    "success": "Carta de recomendação salva com sucesso",
+    "danger": "Erro ao salvar a carta de recomendação"
+  },
+  "invalidToken": {
+    "title": "Token inválido!",
+    "message": "O token informado é inválido. Por favor, verifique o link recebido e tente novamente."
+  },
+  "filledLetter": {
+    "title": "Carta de Recomendação Enviada Enviada com Sucesso!!!",
+    "message": "Obrigado por responder a carta de recomendação solicitada a você.<br> Os dados respondidos serão analisados e irão compor o processo de seleção do candidato. <br>",
+    "footer": "Atenciosamente, <br> Comissão de Seleção do PPGI/UFAM"
+  },
+  "finished": {
+    "title": " Carta de Recomendação Já Enviada",
+    "message": "Esta carta já foi submetida ao PPGI."
+  }
+}

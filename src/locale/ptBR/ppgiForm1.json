@@ -1,0 +1,140 @@
+{
+  "csrfToken": "Token CSRF",
+  "email": "Email",
+  "editalPosicao": "Posição no Edital",
+  "comoSoube": "Como Soube",
+  "dataNascimento": "Data de Nascimento",
+  "uf": "UF",
+  "cotista": "Cotista",
+  "cotistaTipo": "Tipo de Cotista",
+  "condicao": "Condição",
+  "condicaoTipo": "Tipo de Condição",
+  "bolsista": "Bolsista",
+  "identificacaoCandidato": {
+    "title": "Identificação do Candidato",
+    "nome": "Nome",
+    "nomePlaceholder": "Insira seu nome",
+    "dataNascimento": "Data de Nascimento",
+    "sexo": "Sexo",
+    "masculino": "Masculino",
+    "feminino": "Feminino",
+    "nomeSocial": "Nome Social",
+    "cep": "CEP",
+    "endereco": "Endereço",
+    "cidade": "Cidade",
+    "bairro": "Bairro",
+    "estado": "Estado",
+    "selectEstado": "Selecione UF",
+    "nacionalidade": {
+      "title": "Nacionalidade",
+      "brasileira": "Brasileira",
+      "estrangeira": "Estrangeira",
+      "cpf": "CPF",
+      "pais": "País",
+      "passaporte": "Passaporte"
+    }
+  },
+  "contato": {
+    "title": "Telefones para Contato",
+    "telefonePrincipal": "Telefone Principal",
+    "telefoneAlternativo": "Telefone Alternativo"
+  },
+  "edital": {
+    "title": "Como soube do Edital?",
+    "label": " Como você soube do edital de seleção?",
+    "placeholder": "Selecione como soube",
+    "options": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "Por mensagem de email",
+      "ppgi": "Através da página Web do PPGI",
+      "icomp": "Através da página Web do IComp",
+      "proprioIcomp": "No próprio IComp (secretaria, colegas, professores)",
+      "outro": "Outro"
+    }
+  },
+  "inscricao": {
+    "title": "Dados da Inscrição",
+    "cursoDesejado": "Curso Desejado",
+    "mestrado": "Mestrado",
+    "doutorado": "Doutorado",
+    "regime": "Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar pelo regime integral):",
+    "integral": "Integral",
+    "parcial": "Parcial",
+    "cotista": "Cotista",
+    "tipoCota": "Tipo de Cota",
+    "placeholderTipoCota": "Selecine a cota",
+    "optionCota": {
+      "indigena": "Indígena",
+      "negro": "Negro",
+      "pardo": "Pardo",
+      "pcd": "Pessoa com deficiência(PCD)"
+    },
+    "saude": "Possui algum tipo de problema de saúde física ou psiquiátrica",
+    "condicao": "Qual",
+    "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)"
+  },
+  "validacao": {
+    "nome": {
+      "required": "Por favor, informe seu nome",
+      "minlength": "O nome deve ter pelo menos 3 caracteres",
+      "maxlength": "O nome deve ter no máximo 50 caracteres"
+    },
+    "dataNascimento": {
+      "required": "Por favor, informe sua data de nascimento",
+      "dateBR": "Informe uma data válida no formato DD/MM/YYYY"
+    },
+    "candidatoSexo": {
+      "required": "Por favor, selecione seu sexo"
+    },
+    "candidatoCep": {
+      "required": "Por favor, informe seu CEP",
+      "cepInvalido": "CEP inválido. Por favor, insira um CEP válido com 8 dígitos."
+    },
+    "candidatoUf": {
+      "required": "Por favor, selecione seu estado"
+    },
+    "candidatoEndereco": {
+      "required": "Por favor, informe seu endereço"
+    },
+    "candidatoCidade": {
+      "required": "Por favor, informe sua cidade"
+    },
+    "candidatoBairro": {
+      "required": "Por favor, informe seu bairro"
+    },
+    "candidatoNacionalidade": {
+      "required": "Por favor, selecione sua nacionalidade"
+    },
+    "candidatoTelresidencial": {
+      "required": "Por favor, informe seu telefone principal"
+    },
+    "comoSoube": {
+      "required": "Por favor, selecione como você soube sobre nós"
+    },
+    "candidatoCurso": {
+      "required": "Por favor, selecione o curso desejado"
+    },
+    "candidatoRegime": {
+      "required": "Por favor, selecione o regime de dedicação"
+    },
+    "tipoCota": {
+      "required": "Por favor, selecione o tipo de cota"
+    },
+    "candidatoCondicao": {
+      "required": "Por favor, informe a condição da deficiência"
+    },
+    "cpf": {
+      "required": "Por favor, informe seu CPF",
+      "cpfInvalido": "Por favor, insira um CPF válido"
+    },
+    "pais": {
+      "required": "Por favor, informe o país"
+    },
+    "passaporte": {
+      "required": "Por favor, informe o número do passaporte"
+    }
+  },
+  "cepNotFound": "CEP não encontrado"
+}

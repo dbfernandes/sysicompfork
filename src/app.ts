@@ -46,9 +46,7 @@ app.use(cookieParser());
 
 app.use(
   session({
-    genid: () => {
-      return uuid.v4(); // usamos UUIDs para gerar os SESSID
-    },
+    genid: () => uuid.v4(), // usamos UUIDs para gerar os SESSID
     secret: 'eb9ac99d8a53fbfae6cae8e7a48c5b45',
     resave: true,
     saveUninitialized: true,
@@ -57,7 +55,9 @@ app.use(
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', parameterLimit: 50000 }));
+app.use(
+  express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: false }),
+);
 // app.use(morgan('combined'))
 app.use(csrf({ cookie: true }));
 

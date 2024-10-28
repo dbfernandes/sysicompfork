@@ -1,0 +1,31 @@
+{
+  "titulo": "Candidate's Proposal",
+  "linhaPesquisaLabel": "Research Line",
+  "linhaPesquisaPlaceholder": "Select a Research Line:",
+  "tituloPropostaLabel": "Proposal Title",
+  "orientador": {
+    "titulo": "Advisor",
+    "descricao": "If the proposal theme was defined together with a PPGI advisor, please provide their name below.",
+    "nomeOrientadorLabel": "Advisor's Name"
+  },
+  "cartaRecomendacao": {
+    "titulo": "Recommendation Letter",
+    "descricao": "You only need to correctly fill in the name and email of the people who will provide the recommendation letters. Once you complete and submit your application, the indicated individuals will receive an email with instructions on how to submit their recommendation letter online. At least 2 names are required.",
+    "nomeLabel": "Name",
+    "emailLabel": "Email",
+    "addButtonLabel": "Add"
+  },
+  "motivos": {
+    "titulo": "Reasons and Documentation",
+    "descricao": "Describe the reasons that led you to apply for the course",
+    "motivosPlaceholder": "Enter the reasons",
+    "caracteresRestantesLabel": "Remaining Characters"
+  },
+  "documentos": {
+    "cartaOrientador": "Advisor's Acceptance Letter (required for PhD)",
+    "propostaTrabalho": "Work Proposal (required)",
+    "comprovantePagamento": "Payment Receipt (required)"
+  },
+  "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed.",
+  "adicionarRecomendacao": "Add Recommendation"
+}
