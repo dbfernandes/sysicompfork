@@ -1,3 +1,5 @@
+//### A ser Removido ###//
+
 import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
@@ -11,6 +13,8 @@ import { Request, Response, NextFunction } from 'express';
 async function getAfastamento(id: number) {
   const afastamento = await afastamentoService.retornarAfastamento(String(id));
   const usuario = await usuarioService.listarUmUsuario(id);
+  const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
+  console.log('Diretor:', diretor);
   const email = usuario.email;
 
   if (!afastamento) return null;
@@ -33,6 +37,7 @@ async function getAfastamento(id: number) {
     tipoViagem,
     justificativa,
     planoReposicao,
+    diretorNome: diretor!.nomeCompleto,
     data: moment(createdAt).format('DD/MM/YYYY'),
     hora: moment(createdAt).format('HH:mm'),
     email,
@@ -78,20 +83,21 @@ export async function criarAfastamentoPDF(
       '/src/views/layouts/modeloAfastamento/header.hbs',
     );
     const dados = await getAfastamento(Number(id));
+    console.log('Dados:', dados);
     const arquivoHTML = HBStoPDF(
       afastamentoPath,
       dados,
       footerPath,
       headerPath,
     );
-
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
       executablePath: '/usr/bin/chromium-browser',
+      protocolTimeout: 60000,
     });
     const page = await browser.newPage();
-    await page.setContent(arquivoHTML);
+    await page.setContent(arquivoHTML, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({
       path: path.join(
         __dirname,
@@ -101,14 +107,14 @@ export async function criarAfastamentoPDF(
       printBackground: true,
       displayHeaderFooter: true,
     });
-    console.log('Tamanho do PDF Buffer:', pdf.length);
+    // console.log('Tamanho do PDF Buffer:', pdf.length);
 
     await browser.close();
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `inline; filename=${dados!.usuarioNome}.pdf`,
+      `attachment; filename=${dados!.usuarioNome}.pdf`,
     );
     fs.createReadStream(
       path.join(

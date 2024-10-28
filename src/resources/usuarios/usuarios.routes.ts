@@ -11,5 +11,6 @@ router.post('/restaurar/:id', usuariosController.restaurar);
 router.get('/dados/:id', usuariosController.visualizar);
 router.get('/editar/:id', usuariosController.editar);
 router.post('/editar/:id', usuariosController.editar);
+router.get('/verificarDiretorExistente', usuariosController.verificarDiretorExistente);
 
 export default router;

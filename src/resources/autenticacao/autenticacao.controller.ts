@@ -107,6 +107,7 @@ const login = async (req: Request, res: Response) => {
         coordenador: usuario.coordenador,
         secretaria: usuario.secretaria,
         professor: usuario.professor,
+        diretor: usuario.diretor,
       };
       req.session.uid = String(usuario.id);
       return res.redirect('/inicio');

@@ -61,6 +61,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   res.render(resolveView('salas-gerenciar'), {
     salas,
     csrfToken: req.csrfToken(),
+    nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
   });
 };

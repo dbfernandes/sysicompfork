@@ -1,4 +1,4 @@
- {{> header}}
+{{> header}}
 {{> sidebar module='usuarios' page='usuarios-adicionar' }}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -41,7 +41,7 @@
                 <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
                 <div class="card card-primary">
                     <div class="card-header">
-                       <h3 class="card-title">Dados da Conta</h3> 
+                        <h3 class="card-title">Dados da Conta</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -89,8 +89,8 @@
                                     <label for="repetirSenhaInput">
                                         <font color="#FF0000">*</font> Repetir senha:
                                     </label>
-                                    <input type="password" name="repetirSenha" class="form-control" id="repetirSenhaInput"
-                                        placeholder="Repetir senha">
+                                    <input type="password" name="repetirSenha" class="form-control"
+                                        id="repetirSenhaInput" placeholder="Repetir senha">
                                 </div>
                             </div>
                         </div>
@@ -98,20 +98,28 @@
                         <div class="form-group">
                             <div style="margin-bottom: 20px;">
                                 <label for="">
-                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este usuário:
+                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este
+                                    usuário:
                                 </label>
                             </div>
                             <div class="row space-between" style="padding-left: 10px; padding-right: 9px">
-                                
+
                                 <div>
-                                    <label for="administrador"> Administrador </label>
+                                    <label for="diretor">Diretor(a) academico</label>
+                                    <input type="checkbox" name="diretor" id="diretorCurso" data-bootstrap-switch {{#if
+                                        usuario.diretor}} checked {{else}} unchecked {{/if}} data-off-color="danger"
+                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
+                                </div>
+
+                                <div>
+                                    <label for="administrador">Administrador do site </label>
                                     <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
                                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                         data-off-text="Não">
                                 </div>
 
                                 <div>
-                                    <label for="coordenador"> Coordenador </label>
+                                    <label for="coordenador">Coordenador(a) do PPGI </label>
                                     <input type="checkbox" name="coordenador" unchecked data-bootstrap-switch
                                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                         data-off-text="Não">
@@ -123,7 +131,7 @@
                                         data-off-text="Não">
                                 </div>
                                 <div>
-                                    <label for="professor"> Professor </label>
+                                    <label for="professor"> Professor(a) </label>
                                     <input type="checkbox" name="professor" unchecked data-bootstrap-switch
                                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                         data-off-text="Não">
@@ -197,12 +205,12 @@
                                         <option>Vespertino e Noturno</option>
                                     </select>
                                 </div>
-                                
+
                             </div>
                         </div>
-                    
+
                     </div>
-                     <div class="card-footer">
+                    <div class="card-footer">
                         <div style="margin-right: auto;" class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-success float-right">
                                 Adicionar Usuário
@@ -210,12 +218,31 @@
 
                         </div>
                     </div>
-                    
+
                 </div>
             </form>
         </div>
         <!-- /.card -->
     </section>
+</div>
+
+<div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Alteração</h5>
+            </div>
+            <div class="modal-body">
+                Já existe um diretor cadastrado. Deseja substituir o diretor atual por este usuário?
+            </div>
+            <div class="modal-footer">
+                {{!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button> --}}
+                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                {{!-- <button type="button" class="btn btn-primary" id="confirmarSim">Sim</button> --}}
+                <a id="confirmarSim" type="button" class="btn btn-primary color-white" onclick="mudarDiretor()">Sim</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -230,20 +257,20 @@
             return cpfValue.length === 11
         })
 
-        $.validator.addMethod("cpfVerificador", function (el){
-            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')    
+        $.validator.addMethod("cpfVerificador", function (el) {
+            const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
             var result = true
             const arr = [9, 10]
-            arr.forEach(function(j){
+            arr.forEach(function (j) {
                 var soma = 0, r, rep
                 rep = true
-                cpfValue.split("").splice(0,j).forEach(function(e, i){
-                    if(cpfValue.charAt(0) != e) rep = false 
-                    soma += parseInt(e) * ((j+2)-(i+1))
+                cpfValue.split("").splice(0, j).forEach(function (e, i) {
+                    if (cpfValue.charAt(0) != e) rep = false
+                    soma += parseInt(e) * ((j + 2) - (i + 1))
                 });
                 r = soma % 11
-                r = (r <2)?0:11-r
-                if(r != cpfValue.substring(j, j+1) || rep) result = false
+                r = (r < 2) ? 0 : 11 - r
+                if (r != cpfValue.substring(j, j + 1) || rep) result = false
             });
             return result
         })
@@ -298,10 +325,10 @@
                     required: '"Senha" não pode ficar em branco',
                     repetirSenha: '"Repetir senha" deve ser igual ao campo "Senha"',
                     minlength: '"Senha" deve conter pelo menos 6 caracteres',
-                }, 
+                },
                 siape: {
                     maxlength: '"Siape" deve conter no máximo 10 caracteres',
-                }, 
+                },
             },
             errorElement: 'span',
             errorPlacement: function (error, element) {
@@ -321,7 +348,7 @@
 
         });
     }
-    if("{{message}}"){
+    if ("{{message}}") {
         $(document).Toasts('create', {
             icon: 'success',
             class: "bg-{{type}}",
@@ -329,8 +356,42 @@
             delay: 10000,
             title: '{{messageTitle}}',
             body: '{{message}}'
-            })
+        })
 
+    }
+
+    $(Document).ready(function () {
+        $('#diretorCurso').on('switchChange.bootstrapSwitch', function (event, state) {
+            if (state) {
+                verificarDiretorExistente()
+            }
+        })
+    })
+
+    function verificarDiretorExistente() {
+        $.ajax({
+            url: '/usuarios/verificarDiretorExistente',
+            type: 'GET',
+            success: function (data) {
+                if (data) {
+
+                    $('#confirmacaoModal').modal('show');
+                    $('#confirmarSim').off('click').on('click', function () {
+                        $('#diretorCurso').bootstrapSwitch('state', true);
+                        $('#confirmacaoModal').data('confirmed', true);
+                        $('#confirmacaoModal').modal('hide');
+                    });
+                    $('#confirmacaoModal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+                        if (!$('#confirmacaoModal').data('confirmed')) {
+                            $('#diretorCurso').bootstrapSwitch('state', false);
+                        }
+                    });
+                    $('#confirmacaoModal').on('show.bs.modal', function () {
+                        $(this).data('confirmed', false);
+                    });
+                }
+            }
+        });
     }
 </script>
 {{> footer}}
