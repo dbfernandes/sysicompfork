@@ -1,0 +1,164 @@
+{
+  "header": {
+    "title": "Letter of Recommendation for Masters/Doctorate Enrollment at PPGI/UFAM"
+  },
+  "form": {
+    "candidate": {
+      "title": "Candidate",
+      "nameLabel": "Name",
+      "graduationLabel": "Graduate"
+    },
+    "deadline": {
+      "title": "Submission Deadline"
+    },
+    "confidential": "We would like to have your opinion about the candidate who will apply to the Stricto Sensu Postgraduate Program in Informatics at this University. This information, which is CONFIDENTIAL, is necessary so that we can assess whether or not to accept the candidate as a student.",
+    "labelRequired": "(*) Required fields.",
+    "yourData": {
+      "title": "Your data",
+      "namePlaceholder": "Enter your name",
+      "yearPlaceholder": "Enter the year",
+      "nameLabel": "Name",
+      "degreeLabel": "Degree",
+      "selectDegreePlaceholder": "Select a degree",
+      "institutionDegreeLabel": "Institution where the degree was obtained",
+      "institutionDegreePlaceholder": "Enter the institution where you obtained the degree",
+      "degreeYearLabel": "Year of Degree",
+      "currentInstitutionLabel": "Current Institution",
+      "currentInstitutionPlaceholder": "Enter your current institution",
+      "positionLabel": "Current Position",
+      "positionPlaceholder": "Enter your position",
+      "degrees": {
+        "phd": "PhD",
+        "masters": "Master's",
+        "specialization": "Specialization",
+        "undergraduate": "Undergraduate",
+        "highSchool": "High School"
+      }
+    },
+    "relationshipWithCandidate": {
+      "title": "Relationship with the candidate",
+      "placesLabel": "I know him/her through",
+      "selectPlacesPlaceholder": "Select places",
+      "specifyOtherPlacesLabel": "Specify which others",
+      "roleWithCandidateLabel": "Regarding the candidate, I was his/her",
+      "selectRolesPlaceholder": "Select contact types",
+      "specifyOtherRolesLabel": "Specify which others",
+      "knownSinceLabel": "I have known him/her since the year",
+      "places": {
+        "knowsUndergraduate": "Undergraduate Course",
+        "knowsPostgraduate": "Postgraduate Course",
+        "knowsCompany": "Company",
+        "knowsOthers": "Others"
+      },
+      "relationships": {
+        "supervisor": "Supervisor",
+        "professor": "Professor",
+        "employer": "Employer",
+        "coordinator": "Coordinator",
+        "classmate": "Course Colleague",
+        "coworker": "Work Colleague",
+        "otherContacts": "Others"
+      }
+    },
+    "evaluationOfCandidate": {
+      "title": "Your rating of the candidate",
+      "label": "How do you rate the candidate on the attributes listed below",
+      "knowledgeDomainLabel": "Proficiency in his/her field of scientific knowledge",
+      "learningAbilityLabel": "Learning ability, intellectual capacity",
+      "assiduityLabel": "Diligence, perseverance",
+      "relationshipLabel": "Relationship with colleagues and superiors",
+      "initiativeLabel": "Initiative, resourcefulness, originality, and leadership",
+      "expressionLabel": "Writing expression ability",
+      "comparisonLabel": "Comparing this candidate with other students or professionals with similar education and experience levels that you have met in the last 2 years, please rate his/her ability to pursue advanced studies and research. The candidate is among (choose one of the options)",
+      "selectEvaluationLevel": "Select a level",
+      "selectComparison": "Select a rating",
+      "levelOptions": {
+        "one": "1 - Weak",
+        "two": "2 - Fair",
+        "three": "3 - Good",
+        "four": "4 - Very good",
+        "five": "5 - Excellent",
+        "none": "X - Unable to assess"
+      },
+      "comparisonOptions": {
+        "5Percent": "The top 5%",
+        "10Percent": "The top 10%",
+        "30Percent": "The top 30%",
+        "50Percent": "The top 50%"
+      }
+    },
+    "additionalInfo": {
+      "title": "Information",
+      "description": "We are particularly interested in your assessment of the candidate's potential for studies, research, and development in the field of Informatics. A detailed description of the positive and negative aspects of the candidate's performance in academic and/or professional activities will be more useful than generic comments. Comments on character, integrity, and motivation will be helpful if deemed relevant. The experience on which the evaluator's opinion is based should also be described. If possible, compare the candidate to other individuals with the same level of education/experience. The information is confidential.",
+      "remainingCharacters": "Remaining Characters:"
+    },
+    "buttons": {
+      "save": "Save",
+      "submit": "Submit Letter"
+    }
+  },
+  "validation": {
+    "nome": {
+      "required": "Please enter your name",
+      "minlength": "The name must be at least 3 characters long",
+      "maxlength": "The name must be a maximum of 100 characters long"
+    },
+    "titulacao": "Please select an option",
+    "instituicaoTitulacao": {
+      "required": "Please provide an institution",
+      "minlength": "The institution must be at least 2 characters long",
+      "maxlength": "The institution must be a maximum of 100 characters long"
+    },
+    "instituicaoAtual": {
+      "required": "Please provide an institution",
+      "minlength": "The institution must be at least 2 characters long",
+      "maxlength": "The institution must be a maximum of 100 characters long"
+    },
+    "cargo": {
+      "required": "Please enter a job title",
+      "minlength": "The job title must be at least 2 characters long",
+      "maxlength": "The job title must be a maximum of 50 characters long"
+    },
+    "anoTitulacao": {
+      "required": "Please enter a year",
+      "number": "Please enter a valid year",
+      "range": "Please enter a valid year (between 1950 and {{year}})"
+    },
+    "anoContato": {
+      "required": "Please enter a year",
+      "number": "Please enter a valid year",
+      "range": "Please enter a valid year (between 1950 and {{year}})"
+    },
+    "dominio": "Please select an option",
+    "aprendizado": "Please select an option",
+    "assiduidade": "Please select an option",
+    "relacionamento": "Please select an option",
+    "iniciativa": "Please select an option",
+    "expressao": "Please select an option",
+    "informacoes": {
+      "required": "Please provide a description",
+      "minlength": "The description must be at least 10 characters long",
+      "maxlength": "The description must be a maximum of 1000 characters long"
+    },
+    "places": "Please select at least one option",
+    "relationships": "Please select at least one option",
+    "classificacao": "Please select an option"
+  },
+  "toast": {
+    "success": "Recommendation letter saved successfully",
+    "danger": "Error saving the recommendation letter"
+  },
+  "invalidToken": {
+    "title": "Invalid token!",
+    "message": "The token provided is invalid. Please check the link you received and try again."
+  },
+  "filledLetter": {
+    "title": "Recommendation Letter Sent Sent Successfully!!!",
+    "message": "Thank you for responding to the letter of recommendation requested from you.<br> The data provided will be analyzed and will be used in the candidate selection process.<br>",
+    "footer": "Best regards, <br> PPGI/UFAM Selection Committee"
+  },
+  "finished": {
+    "title": "Recommendation Letter Already Sent",
+    "message": "This letter has already been submitted to PPGI."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title_header": "Recuperar Senha - PPGI/UFAM",
+  "title": "Recuperar senha",
+  "subTitle": "Esqueceu sua senha? Insira seu e-mail e edital cadastrado e obtenha uma nova",
+  "emailPlaceholder": "Email",
+  "noticePlaceholder": "Selecione um edital",
+  "submitButton": "Solicitar nova senha",
+  "backButton": "Voltar",
+  "successMessage": "Email para recuperação de senha enviado com sucesso!",
+  "errorIncomplete": "Email e/ou edital incompletos",
+  "errorNotFound": "Email e/ou edital não encontrados",
+  "validation": {
+    "emailRequired": "Campo obrigatório",
+    "emailInvalid": "Digite um email válido",
+    "noticeRequired": "Campo obrigatório"
+  }
+}

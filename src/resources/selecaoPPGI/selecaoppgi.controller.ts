@@ -1,12 +1,20 @@
+import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { Request, Response } from 'express';
 
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import candidatoService from '../candidato/candidato.service';
-import EditalService from '../edital/edital.service';
-import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
+import candidatoService from '../candidato/candidato.service';
+import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
+import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
+import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import {
+  default as EditalService,
+  default as editalService,
+} from '../edital/edital.service';
+import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
+import { gerarPDF } from './gerarInscricao';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -14,12 +22,10 @@ import {
   Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
+  RecoverPasswordDto,
+  SignInDto,
+  SignUpDto,
 } from './selecaoppgi.types';
-import editalService from '../edital/edital.service';
-import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
-import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
-import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import { gerarPDF } from './gerarInscricao';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -42,42 +48,85 @@ const localsBegin = {
   layout: 'begin',
 };
 
-const begin = async (req: CustomRequest, res: Response) => {
+function getLanguage(req: CustomRequest) {
+  return req.cookies['lang'] || 'ptBR';
+}
+
+function parseDate(dateString: string) {
+  const parts = dateString.split('/');
+  // Supondo que a data está no formato DD/MM/YYYY
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é 0-indexed
+  const year = parseInt(parts[2], 10);
+
+  return new Date(year, month, day);
+}
+
+function downloadFile(req, res) {
+  // Define o caminho do arquivo
+  const userId = req.session.uid.toString();
+  const nomeArquivo = req.params.name;
+  const caminhoDoc = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    userId,
+    nomeArquivo,
+  );
+
+  res.download(caminhoDoc, (error) => {
+    if (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  });
+}
+
+export function verificarArquivoDiretorio(
+  diretorio: string,
+  nomeArquivo: string,
+) {
+  const caminhoArquivo = path.join(diretorio, nomeArquivo);
+
+  return fs.existsSync(caminhoArquivo);
+}
+
+function begin(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET':
+      const currentLanguage = getLanguage(req);
+
       return res.render(resolveView('begin'), {
         ...localsBegin,
+        currentLanguage,
       });
     default:
       return res.status(405).send();
   }
-};
+}
 
-const signUp = async (req: CustomRequest, res: Response) => {
+async function signUp(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET': {
       const listEditais = await EditalService.listEditalsAvailable();
+      const currentLanguage = getLanguage(req);
 
       return res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
         errorSignin: null,
+        currentLanguage,
         ...locals,
       });
     }
     case 'POST': {
-      const { email, senha, edital } = req.body;
-
-      if (!email || !senha || !edital) {
-        return res.status(403).json({
-          error: 'Dados incompletos ou mal formatados',
-        });
-      }
+      const { email, senha, idEdital } = req.body as SignUpDto;
 
       try {
         const candidate = await candidatoService.findCandidatoByEmailAndEdital({
           email,
-          edital,
+          idEdital,
         });
 
         if (candidate) {
@@ -88,8 +137,8 @@ const signUp = async (req: CustomRequest, res: Response) => {
 
         const candidateCreated = await candidatoService.create({
           email,
-          password: senha,
-          editalNumber: edital,
+          senha,
+          idEdital,
         });
 
         req.session.email = candidateCreated.email;
@@ -108,17 +157,20 @@ const signUp = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(404).send();
   }
-};
+}
 
-const login = async (req: CustomRequest, res: Response) => {
+async function signIn(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'GET': {
       try {
         const listEditais = await EditalService.listEdital();
+        const currentLanguage = getLanguage(req);
+
         return res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
+          currentLanguage,
         });
       } catch (err) {
         return res.status(500).send();
@@ -126,19 +178,18 @@ const login = async (req: CustomRequest, res: Response) => {
     }
     case 'POST':
       try {
-        const { email, senha, edital } = req.body;
-
-        if (!email || !senha || !edital) {
-          return res.status(400).send();
-        }
+        const { email, senha, idEdital } = req.body as SignInDto;
 
         const candidate = await candidatoService.auth({
           email,
-          password: senha,
-          editalNumber: edital,
+          senha,
+          idEdital,
         });
+
         if (!candidate) {
-          return res.status(406).send();
+          return res
+            .status(StatusCodes.NOT_FOUND)
+            .send(ReasonPhrases.NOT_FOUND);
         }
 
         if (candidate.posicaoEdital > 4) {
@@ -156,7 +207,7 @@ const login = async (req: CustomRequest, res: Response) => {
     default:
       return res.status(405).send();
   }
-};
+}
 
 function logout(req: CustomRequest, res: Response) {
   switch (req.method) {
@@ -258,15 +309,6 @@ const formProposta = async (req: CustomRequest, res: Response) => {
   }
 };
 
-export function verificarArquivoDiretorio(
-  diretorio: string,
-  nomeArquivo: string,
-) {
-  const caminhoArquivo = path.join(diretorio, nomeArquivo);
-
-  return fs.existsSync(caminhoArquivo);
-}
-
 async function backToStart(req: CustomRequest, res: Response) {
   switch (req.method) {
     case 'POST':
@@ -292,6 +334,7 @@ const forms = async (req: CustomRequest, res: Response) => {
         break;
       }
       const { uid, editalPosition } = req.session;
+      const currentLanguage = getLanguage(req);
 
       const candidate = await candidatoService.findById(Number(uid));
       const edital = await editalService.getEdital(candidate.idEdital);
@@ -313,6 +356,7 @@ const forms = async (req: CustomRequest, res: Response) => {
             ...locals,
             ...candidate,
             csrfToken: req.csrfToken(),
+            currentLanguage,
           });
         }
 
@@ -344,6 +388,7 @@ const forms = async (req: CustomRequest, res: Response) => {
             experienciasAcademicas,
             conferencias,
             periodicos,
+            currentLanguage,
           });
         }
 
@@ -375,6 +420,7 @@ const forms = async (req: CustomRequest, res: Response) => {
               caminhoDiretorioUsuario,
               COMPROVANTE_FILE,
             ),
+            currentLanguage,
           });
         }
         case 4: {
@@ -395,6 +441,7 @@ const forms = async (req: CustomRequest, res: Response) => {
               caminhoDiretorioUsuario,
               COMPROVANTE_FILE,
             ),
+            currentLanguage,
           });
         }
         default:
@@ -404,15 +451,6 @@ const forms = async (req: CustomRequest, res: Response) => {
       return res.status(405).send();
   }
 };
-function parseDate(dateString: string) {
-  const parts = dateString.split('/');
-  // Supondo que a data está no formato DD/MM/YYYY
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é 0-indexed
-  const year = parseInt(parts[2], 10);
-
-  return new Date(year, month, day);
-}
 
 async function form1(req: CustomRequest, res: Response) {
   switch (req.method) {
@@ -658,42 +696,44 @@ const refresh = async (req: CustomRequest, res: Response) => {
 const recuperarSenha = async (req, res) => {
   switch (req.method) {
     case 'GET': {
+      const currentLanguage = getLanguage(req);
       const listEditais = await EditalService.listEdital();
       return res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
         csrfToken: req.csrfToken(),
+        currentLanguage,
         ...localsBegin,
       });
     }
     case 'POST': {
-      if (!req.body.email || !req.body.editalId) {
-        return res.status(400).send();
-      }
-      const { email, editalId: edital } = req.body;
-      const candidate = await candidatoService.findCandidatoByEmailAndEdital({
-        email,
-        edital,
-      });
-      if (!candidate) {
-        return res.status(404).send();
-      }
-
-      const token = await candidatoService.updateTokenPassword({
-        id: candidate.id,
-      });
-
-      const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
+      const { email, idEdital } = req.body as RecoverPasswordDto;
       try {
+        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+          email,
+          idEdital,
+        });
+        if (!candidate) {
+          return res
+            .status(StatusCodes.NOT_FOUND)
+            .send(ReasonPhrases.NOT_FOUND);
+        }
+
+        const token = await candidatoService.updateTokenPassword({
+          id: candidate.id,
+        });
+
+        const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
         sendEmailRecoveryPasswordCandidate({
           email: candidate.email,
           url,
         });
+        return res.status(200).send();
       } catch (err) {
         console.error(err);
-        return res.status(500).send({ message: 'Erro ao enviar e-mail' });
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .send({ message: 'Erro ao enviar e-mail' });
       }
-
-      return res.status(200).send();
     }
     default:
       return res.status(405).send();
@@ -706,11 +746,13 @@ const trocarSenha = async (req, res: Response) => {
       const candidate = await candidatoService.findByTokenPassword(
         req.query.token as string,
       );
+      const currentLanguage = getLanguage(req);
 
       if (!candidate) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token inválido',
           csrfToken: req.csrfToken(),
+          currentLanguage,
           ...localsBegin,
         });
       }
@@ -719,12 +761,14 @@ const trocarSenha = async (req, res: Response) => {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),
+          currentLanguage,
           ...localsBegin,
         });
       }
       return res.render(resolveView('trocarSenha'), {
         csrfToken: req.csrfToken(),
         token: req.query.token,
+        currentLanguage,
         ...localsBegin,
       });
     }
@@ -752,59 +796,10 @@ const trocarSenha = async (req, res: Response) => {
   }
 };
 
-const downloadFile = (req, res) => {
-  // Define o caminho do arquivo
-  const userId = req.session.uid.toString();
-  const nomeArquivo = req.params.name;
-  const caminhoDoc = path.join(
-    'public',
-    'uploads',
-    'candidato',
-    userId,
-    nomeArquivo,
-  );
-
-  res.download(caminhoDoc, (error) => {
-    if (error) {
-      return res.status(400).json({
-        error: error.message,
-      });
-    }
-  });
-  // const nomeArquivo = req.params.name;
-  // const caminhoArquivo = path.join(
-  //   __dirname,
-  //   '..',
-  //   '..',
-  //   'public',
-  //   'uploads',
-  //   'candidato',
-  //   userId,
-  //   nomeArquivo,
-  // );
-  // // Verifica se o arquivo existe
-  // if (fs.existsSync(caminhoArquivo)) {
-  //   // Define o cabeçalho para o download
-  //   // Define os cabeçalhos para evitar o armazenamento em cache
-  //   res.setHeader(
-  //     'Cache-Control',
-  //     'no-store, no-cache, must-revalidate, max-age=0',
-  //   );
-  //   res.setHeader('Pragma', 'no-cache');
-  //   res.setHeader('Expires', '0');
-  //   res.setHeader('Content-Disposition', `attachment; filename=${nomeArquivo}`);
-  //   res.setHeader('Content-Type', 'application/octet-stream');
-
-  //   // Envia o arquivo como resposta
-  //   res.sendFile(caminhoArquivo);
-  // } else {
-  //   res.status(404).send('Arquivo não encontrado.');
-  // }
-};
 export default {
   begin,
   signUp,
-  login,
+  signIn,
   forms,
   form1,
   form2,

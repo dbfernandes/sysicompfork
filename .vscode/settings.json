@@ -22,6 +22,7 @@
         "posicao",
         "Secundario"
     ],
-    "prettier.requireConfig": true
+    "prettier.requireConfig": true,
+    "editor.formatOnSave": true
 
 }

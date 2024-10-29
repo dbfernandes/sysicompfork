@@ -1,0 +1,21 @@
+{
+  "title_header": "Login - PPGI/UFAM",
+  "title": "Login",
+  "subTitle": "Todos os campos são obrigatórios",
+  "emailPlaceholder": "Email",
+  "passwordPlaceholder": "Senha",
+  "forgotPassword": "Esqueci minha senha",
+  "selectNotice": "Selecione um edital",
+  "continueButton": "Continuar Inscrição",
+  "backButton": "Voltar",
+  "errorIncomplete": "Email, senha e/ou edital incompletos",
+  "errorIncorrect": "Email, senha e/ou edital incorretos",
+  "errorAlreadySubmitted": "Candidato já finalizou a inscrição neste edital",
+  "validation": {
+    "emailRequired": "Campo obrigatório",
+    "emailInvalid": "Digite um email válido",
+    "passwordRequired": "Campo obrigatório",
+    "passwordMinLength": "A senha deve ter no mínimo 6 caracteres",
+    "noticeRequired": "Campo obrigatório"
+  }
+}

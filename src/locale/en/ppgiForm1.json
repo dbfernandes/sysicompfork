@@ -1,0 +1,141 @@
+{
+  "csrfToken": "CSRF Token",
+  "email": "Email",
+  "editalPosicao": "Position in the Call",
+  "comoSoube": "How You Found Out",
+  "dataNascimento": "Date of Birth",
+  "uf": "State",
+  "cotista": "Quota Holder",
+  "cotistaTipo": "Quota Holder Type",
+  "condicao": "Condition",
+  "condicaoTipo": "Condition Type",
+  "bolsista": "Scholarship Holder",
+  "identificacaoCandidato": {
+    "title": "Candidate Identification",
+    "nome": "Name",
+    "nomePlaceholder": "Enter your name",
+    "dataNascimento": "Date of Birth",
+    "sexo": "Gender",
+    "masculino": "Male",
+    "feminino": "Female",
+    "nomeSocial": "Social Name",
+    "cep": "Postal Code",
+    "estado": "State",
+    "selectEstado": "Select State",
+    "endereco": "Address",
+    "cidade": "City",
+    "bairro": "Neighborhood",
+    "nacionalidade": {
+      "title": "Nationality",
+      "brasileira": "Brazilian",
+      "estrangeira": "Foreigner",
+      "cpf": "CPF",
+      "pais": "Country",
+      "passaporte": "Passport"
+    }
+  },
+  "contato": {
+    "title": "Contact Phones",
+    "telefonePrincipal": "Main Phone",
+    "telefoneAlternativo": "Alternative Phone"
+  },
+  "edital": {
+    "title": "How did you hear about the Call?",
+    "label": "How did you find out about the selection notice?",
+
+    "placeholder": "Select how you heard",
+    "options": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "By email message",
+      "ppgi": "Through the PPGI Website",
+      "icomp": "Through the IComp Website",
+      "proprioIcomp": "At IComp itself (secretariat, colleagues, teachers)",
+      "outro": "Other"
+    }
+  },
+  "inscricao": {
+    "title": "Registration Data",
+    "cursoDesejado": "Desired Course",
+    "mestrado": "Master's",
+    "doutorado": "Doctorate",
+    "regime": "Dedication Regime: (Note: students applying for a scholarship must choose the full-time regime):",
+    "integral": "Full-time",
+    "parcial": "Part-time",
+    "cotista": "Quota Student",
+    "tipoCota": "Quota Type",
+    "placeholderTipoCota": "Select the quota",
+    "optionCota": {
+      "indigena": "Indigenous",
+      "negro": "Black",
+      "pardo": "Brown",
+      "pcd": "Person with disability (PWD)"
+    },
+    "saude": "Do you have any physical or psychiatric health conditions?",
+    "condicao": "Which",
+    "bolsa": "Are you applying for a scholarship? (Note: only students without employment ties and who do not already have another scholarship may apply)"
+  },
+  "validacao": {
+    "nome": {
+      "required": "Please, enter your name",
+      "minlength": "The name must have at least 3 characters",
+      "maxlength": "The name can have up to 50 characters"
+    },
+    "dataNascimento": {
+      "required": "Please, enter your birth date",
+      "dateBR": "Enter a valid date in the format DD/MM/YYYY"
+    },
+    "candidatoSexo": {
+      "required": "Please, select your gender"
+    },
+    "candidatoCep": {
+      "required": "Please, enter your ZIP code",
+      "cepInvalido": "Invalid ZIP code. Please enter a valid ZIP code with 8 digits."
+    },
+    "candidatoUf": {
+      "required": "Please, select your state"
+    },
+    "candidatoEndereco": {
+      "required": "Please, enter your address"
+    },
+    "candidatoCidade": {
+      "required": "Please, enter your city"
+    },
+    "candidatoBairro": {
+      "required": "Please, enter your neighborhood"
+    },
+    "candidatoNacionalidade": {
+      "required": "Please, select your nationality"
+    },
+    "candidatoTelresidencial": {
+      "required": "Please, enter your primary phone number"
+    },
+    "comoSoube": {
+      "required": "Please, select how you heard about us"
+    },
+    "candidatoCurso": {
+      "required": "Please, select the desired course"
+    },
+    "candidatoRegime": {
+      "required": "Please, select the dedication regime"
+    },
+    "tipoCota": {
+      "required": "Please, select the type of quota"
+    },
+    "candidatoCondicao": {
+      "required": "Please, provide the disability condition"
+    },
+    "cpf": {
+      "required": "Please, enter your CPF",
+      "cpfInvalido": "Please enter a valid CPF"
+    },
+    "pais": {
+      "required": "Please, enter the country"
+    },
+    "passaporte": {
+      "required": "Please, enter the passport number"
+    }
+  },
+  "cepNotFound": "ZIP code not found"
+}

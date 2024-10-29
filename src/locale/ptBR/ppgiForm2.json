@@ -1,0 +1,43 @@
+{
+  "cursoGraduacao": {
+    "title": "Curso de Graduação",
+    "curso": "Curso",
+    "cursoPlaceholder": "Insira seu curso",
+    "instituicao": "Instituição",
+    "instituicaoPlaceholder": "Insira sua instituição",
+    "anoEgresso": "Ano de Egresso",
+    "anoEgressoPlaceholder": "Insira o ano"
+  },
+  "cursoPos": {
+    "title": "Curso de Pós-Graduação Stricto-Senso",
+    "curso": "Curso",
+    "instituicao": "Instituição",
+    "anoEgresso": "Ano de Egresso",
+    "tipo": "Tipo",
+    "optionTipo": {
+      "mestradoAcademico": "Mestrado Acadêmico",
+      "mestradoProfissional": "Mestrado Profissional",
+      "doutorado": "Doutorado"
+    },
+    "limparSelecao": "Limpar Seleção"
+  },
+  "curriculumVittae": {
+    "title": "Curriculum Vittae",
+    "pdf": "Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br)",
+    "xml": "Curriculum Vittae XML no formato Lattes (não incluir significa não ter publicações a serem contadas na seleção)",
+    "periodicos": "Periódicos",
+    "conferencias": "Conferências"
+  },
+  "provaAnterior": {
+    "title": "Aproveitamento de Prova de Seleção Anterior",
+    "description": "Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), pro favor faça o upload do PDF da prova através da opção abaixo"
+  },
+  "experienciaAcademica": {
+    "title": "Experiência Acadêmica",
+    "instituicao": "Instituição Acadêmica",
+    "atividade": "Atividade",
+    "periodo": "Período",
+    "adicionarExperiencia": "Adicionar Experiência",
+    "excluirExperiencia": "Excluir Experiência"
+  }
+}

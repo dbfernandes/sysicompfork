@@ -1,14 +1,19 @@
 import path from 'path';
 import { Request, Response } from 'express';
-
 import candidatoRecomendacaoService from './candidato.recomendacao.service';
 import {
   RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
+
 const locals = {
   layout: 'selecaoppgi',
 };
+
+function getLanguage(req: Request): string {
+  return req.cookies['lang'] || 'ptBR';
+}
+
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
@@ -22,6 +27,8 @@ export async function adicionar(req: Request, res: Response) {
       break;
     case 'GET':
       const { token } = req.query;
+      const currentLanguage = getLanguage(req);
+
       try {
         const recomendacao =
           await candidatoRecomendacaoService.getRecomendacaoByToken(
@@ -31,6 +38,7 @@ export async function adicionar(req: Request, res: Response) {
         if (notFoundRecomendacao) {
           return res.render(resolveView('tokenInvalido'), {
             ...locals,
+            currentLanguage,
           });
         }
         const csrfToken = req.csrfToken();
@@ -46,28 +54,30 @@ export async function adicionar(req: Request, res: Response) {
               recomendacao,
               csrfToken,
               token,
+              currentLanguage,
             });
           }
           case RecomendacaoStatus.PREENCHIDA: {
-            console.log('Aqui');
-
             if (typeof token === 'string') {
               await candidatoRecomendacaoService.finish(token);
             }
             return res.render(resolveView('mensagemPreenchida'), {
               ...locals,
               token,
+              currentLanguage,
             });
           }
           case RecomendacaoStatus.FINALIZADA: {
             return res.render(resolveView('mensagemFinalizada'), {
               ...locals,
+              currentLanguage,
             });
           }
         }
       } catch (error) {
         return res.render(resolveView('adicionar'), {
           ...locals,
+          currentLanguage,
         });
       }
   }
