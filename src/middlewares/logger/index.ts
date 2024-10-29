@@ -15,14 +15,18 @@ const logger = winston.createLogger({
     winston.format.json(),
   ),
   // level: 'info',
-  transports: [new winston.transports.File({ filename: path.join(logDir, 'info.log') })]
-})
+  transports: [
+    new winston.transports.File({ filename: path.join(logDir, 'info.log') }),
+  ],
+});
 
-export function resgistro(req:Request, res: Response, next: NextFunction) {
+export function resgistro(req: Request, res: Response, next: NextFunction) {
   if (req.session.uid) {
-    logger.info(`USER ID:${req.session.uid}, URL: ${req.originalUrl}, SESSION ID: ${req.session.id}`)
+    logger.info(
+      `USER ID:${req.session.uid}, URL: ${req.originalUrl}, SESSION ID: ${req.session.id}`,
+    );
   }
-  next()
+  next();
 }
 
-export default resgistro
+export default resgistro;
