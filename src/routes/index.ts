@@ -49,13 +49,19 @@ router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);
 
 // Rotas Exclusivas Administrador e Secretaria
-router.use('/usuarios', autenticacaoController.autorizarAdmin, usuariosRoutes);
+// router.use('/usuarios', autenticacaoController.autorizarAdmin, usuariosRoutes);
+router.use('/usuarios', usuariosRoutes);
 // router.use("/projetos", projetosRoutes);
 // Rotas Exclusivas Coordenador
-router.use('/edital', autenticacaoController.autorizarCoord, editalRouter);
+// router.use('/edital', autenticacaoController.autorizarCoord, editalRouter);
+router.use('/edital', editalRouter);
+// router.use(
+//   '/linhasdepesquisa',
+//   autenticacaoController.autorizarCoord,
+//   linhasDePesquisaRouter,
+// );
 router.use(
   '/linhasdepesquisa',
-  autenticacaoController.autorizarCoord,
   linhasDePesquisaRouter,
 );
 // Rotas Exclusivas Professor

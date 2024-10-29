@@ -1,16 +1,17 @@
 import express from 'express';
 import usuariosController from './usuarios.controller';
+import autenticacaoController from '../autenticacao/autenticacao.controller';
 
 const router = express.Router();
 
-router.get('/adicionar', usuariosController.adicionar);
-router.post('/adicionar', usuariosController.adicionar);
 router.get('/listar', usuariosController.listar);
-router.post('/deletar/:id', usuariosController.deletar);
-router.post('/restaurar/:id', usuariosController.restaurar);
-router.get('/dados/:id', usuariosController.visualizar);
-router.get('/editar/:id', usuariosController.editar);
-router.post('/editar/:id', usuariosController.editar);
-router.get('/verificarDiretorExistente', usuariosController.verificarDiretorExistente);
+router.get('/adicionar', autenticacaoController.autorizarAdmin, usuariosController.adicionar);
+router.post('/adicionar', autenticacaoController.autorizarAdmin, usuariosController.adicionar);
+router.post('/deletar/:id', autenticacaoController.autorizarAdmin, usuariosController.deletar);
+router.post('/restaurar/:id', autenticacaoController.autorizarAdmin, usuariosController.restaurar);
+router.get('/dados/:id', autenticacaoController.autorizarAdmin, usuariosController.visualizar);
+router.get('/editar/:id', autenticacaoController.autorizarAdmin, usuariosController.editar);
+router.post('/editar/:id', autenticacaoController.autorizarAdmin, usuariosController.editar);
+router.get('/verificarDiretorExistente', autenticacaoController.autorizarAdmin, usuariosController.verificarDiretorExistente);
 
 export default router;

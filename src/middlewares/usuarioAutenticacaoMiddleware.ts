@@ -57,7 +57,7 @@ export const isUsuarioAutenticadoSelecao = async (
     '/entrar',
     '/cadastro',
     '/recuperarSenha',
-    '/trocarSenha',
+    '/trocarSenha'
   ];
   if (rotasSemAutenticacao.includes(req.path)) {
     return next();
