@@ -1,4 +1,5 @@
 import { PrismaClient, Edital, Candidato } from '@prisma/client';
+import { StatusEdital } from './edital.types';
 /* eslint-disable camelcase */
 
 const prisma = new PrismaClient();
@@ -32,6 +33,15 @@ class EditalService {
     return editais;
   }
 
+  async listEditaisDisponiveis(): Promise<Edital[]> {
+    const dataToday = new Date();
+    const editais = await prisma.edital.findMany();
+    return editais.filter((edital) => {
+      const dateEnd = new Date(edital.dataFim);
+      return dateEnd >= dataToday && edital.status === StatusEdital.ATIVO;
+    });
+  }
+
   async listEditalComQtdeCandidatos() {
     const editais = await prisma.edital.findMany({
       include: {
@@ -48,17 +58,6 @@ class EditalService {
           (candidato) => candidato.posicaoEdital < 4,
         ).length,
       };
-    });
-  }
-  async listEditalsAvailable(): Promise<Edital[]> {
-    const dataToday = new Date();
-    const editais = await prisma.edital.findMany().catch((err) => {
-      console.error(`[ERROR] Listar Editais: ${err}`);
-      throw new Error('Não foi possivel listar o edital');
-    });
-    return editais.filter((edital) => {
-      const dateEnd = new Date(edital.dataFim);
-      return dateEnd >= dataToday && edital.status === '1';
     });
   }
 

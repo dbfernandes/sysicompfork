@@ -11,11 +11,11 @@ import {
   renderOptions,
   titlePage,
   titleSection,
-} from '../../utils/pdf';
-import candidatoService from '../candidato/candidato.service';
-import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
+} from './pdf';
+import candidatoService from '../resources/candidato/candidato.service';
+import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
 import { Publicacao } from '@prisma/client';
-import { Nacionalidade } from './selecaoppgi.types';
+import { Nacionalidade } from '../resources/selecaoPPGI/selecaoppgi.types';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
@@ -26,6 +26,8 @@ function formatarNumeroInscricao(numberId: number): string {
 function formatarPublicacao(publicacao: Publicacao) {
   return `${publicacao.autores.split(',').join(';')}; ${publicacao.titulo} ${publicacao.local}. ${publicacao.ano}.`;
 }
+
+// Função para gerar o PDF de inscrição de um candidato no PPGI
 export async function gerarPDF(id: number) {
   try {
     const candidato = await candidatoService.listAllInfoCandidate(id);

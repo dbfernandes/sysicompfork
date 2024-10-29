@@ -28,3 +28,6 @@ public/uploads/candidato/*
 
 # Removing the .env file
 .env
+.env.development
+.env.production
+.env.test

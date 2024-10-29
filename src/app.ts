@@ -9,10 +9,12 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 import router from './routes';
 
-dotenv.config();
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV || 'development'}`,
+});
+
 const app = express();
-// `${__dirname}/views/partials/`
-// `${__dirname}/views/helpers/helpers.js`
+
 app.engine(
   'hbs',
   engine({
@@ -33,12 +35,13 @@ declare module 'express-session' {
           administrador: number;
           secretaria: number;
           coordenador: number;
-      diretor: number;
+          diretor: number;
           professor: number;
         }
       | undefined;
     uid: string;
     nome: string;
+    editalPosition?: number; // Posição no formulário de inscrição de um candidato
   }
 }
 
@@ -55,10 +58,7 @@ app.use(
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(
-  express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: false }),
-);
-// app.use(morgan('combined'))
+app.use(express.urlencoded({ limit: '50mb', parameterLimit: 50000 }));
 app.use(csrf({ cookie: true }));
 
 app.use(

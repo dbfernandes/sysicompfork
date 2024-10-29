@@ -1,5 +1,9 @@
 import { Edital } from '@prisma/client';
 
+export const enum StatusEdital {
+  BLOQUEADO = '0',
+  ATIVO = '1',
+}
 export type CreateEditalDto = Pick<
   Edital,
   | 'vagaDoutorado'

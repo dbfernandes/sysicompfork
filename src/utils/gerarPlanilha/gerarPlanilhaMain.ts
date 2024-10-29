@@ -1,12 +1,12 @@
 import exceljs from 'exceljs';
 import fs from 'fs';
 
-import candidateService from '../../resources/candidate/candidato.service';
 import { candidateWorksheet } from './candidatoSheet';
 import { provasWorksheet } from './provasSheet';
 import { propostasWorksheet } from './propostasSheet';
 import { titulosWorksheet } from './titulosSheet';
 import { mediaFinalWorksheet } from './mediaFinalSheet';
+import candidatoService from '../../resources/candidato/candidato.service';
 
 // Função pegar dados e formatar
 function formatarDados(dados: any) {
@@ -38,7 +38,7 @@ function formatarDados(dados: any) {
 }
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(EditalId: string) {
-  const candidatos = await candidateService.listCanditatesByEdital(EditalId);
+  const candidatos = await candidatoService.listCanditatesByEdital(EditalId);
   const candidatosFormatado = formatarDados(candidatos);
   return candidatosFormatado;
 }
@@ -47,7 +47,7 @@ async function getCandidatos(EditalId: string) {
 export default async function gerarPlanilha(editalId: string) {
   const workbook = new exceljs.Workbook();
 
-  const candidatos = await getCandidatos(editalId)
+  const candidatos = await getCandidatos(editalId);
 
   const candidateAba = workbook.addWorksheet('Candidato');
   const provasAba = workbook.addWorksheet('Provas');
@@ -136,15 +136,17 @@ export default async function gerarPlanilha(editalId: string) {
       console.log(error.message);
     });
 
-    // Save Excel on Hard Disk
-    await workbook.xlsx.writeFile('public/files/planilha.xlsx')
-        .then(function () {
-            console.log('Arquivo salvo!')
-        }).catch(function (error: any) {
-            console.log(error.message)
-        })
+  // Save Excel on Hard Disk
+  await workbook.xlsx
+    .writeFile('public/files/planilha.xlsx')
+    .then(function () {
+      console.log('Arquivo salvo!');
+    })
+    .catch(function (error: any) {
+      console.log(error.message);
+    });
 
-    const arquivo = fs.readFileSync('public/files/planilha.xlsx')
+  const arquivo = fs.readFileSync('public/files/planilha.xlsx');
 
-    return arquivo
+  return arquivo;
 }

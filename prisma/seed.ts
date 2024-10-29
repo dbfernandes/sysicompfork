@@ -74,10 +74,10 @@ async function main() {
   });
 
   const data = moment.tz('America/Manaus').format('YYYY-MM-DDTHH:mm:ssZ');
-
+  const year = new Date().getFullYear();
   const editais = [
     {
-      editalId: '001-2023',
+      editalId: '001-2024',
       vagaDoutorado: 2,
       cotasDoutorado: 2,
       vagaMestrado: 5,
@@ -85,8 +85,8 @@ async function main() {
       cartaOrientador: '1',
       cartaRecomendacao: '1',
       documento: 'http://www.propesp.ufam.edu.br',
-      dataInicio: new Date('2023-08-23').toISOString(),
-      dataFim: new Date('2023-09-09').toISOString(),
+      dataInicio: new Date(year, 0, 0).toISOString(),
+      dataFim: new Date(year, 2, 31).toISOString(),
       status: '1',
       inscricoesIniciadas: 0,
       inscricoesEncerradas: 0,
@@ -94,7 +94,7 @@ async function main() {
       updatedAt: data,
     },
     {
-      editalId: '002-2023',
+      editalId: '002-2024',
       vagaDoutorado: 6,
       cotasDoutorado: 8,
       vagaMestrado: 1,
@@ -102,8 +102,8 @@ async function main() {
       cartaOrientador: '0',
       cartaRecomendacao: '1',
       documento: 'http://www.propesp.ufam.edu.br',
-      dataInicio: new Date(2023, 5, 1).toISOString(),
-      dataFim: new Date(2023, 5, 27).toISOString(),
+      dataInicio: new Date(year, 3, 1).toISOString(),
+      dataFim: new Date(year, 5, 30).toISOString(),
       status: '0',
       inscricoesIniciadas: 0,
       inscricoesEncerradas: 0,
@@ -119,8 +119,8 @@ async function main() {
       cartaOrientador: '1',
       cartaRecomendacao: '0',
       documento: 'http://www.propesp.ufam.edu.br',
-      dataInicio: new Date('2024-07-14').toISOString(),
-      dataFim: new Date('2024-09-01').toISOString(),
+      dataInicio: new Date(year, 6, 1).toISOString(),
+      dataFim: new Date(year, 8, 30).toISOString(),
       status: '1',
       inscricoesIniciadas: 0,
       inscricoesEncerradas: 0,
@@ -128,7 +128,7 @@ async function main() {
       updatedAt: data,
     },
     {
-      editalId: '004-2023',
+      editalId: '004-2024',
       vagaDoutorado: 5,
       cotasDoutorado: 2,
       vagaMestrado: 10,
@@ -136,8 +136,8 @@ async function main() {
       cartaOrientador: '0',
       cartaRecomendacao: '0',
       documento: 'http://www.propesp.ufam.edu.br',
-      dataInicio: new Date('2024-07-02').toISOString(),
-      dataFim: new Date('2024-09-30').toISOString(),
+      dataInicio: new Date(year, 9, 1).toISOString(),
+      dataFim: new Date(year, 11, 31).toISOString(),
       status: '1',
       inscricoesIniciadas: 0,
       inscricoesEncerradas: 0,
@@ -146,13 +146,11 @@ async function main() {
     },
   ];
 
-  for (const edital of editais) {
-    await prisma.edital.upsert({
-      where: { editalId: edital.editalId },
-      update: {},
-      create: edital,
-    });
-  }
+  prisma.edital.createMany({
+    data: editais,
+    skipDuplicates: true,
+  });
+  
 }
 
 // Gera todas as seeds

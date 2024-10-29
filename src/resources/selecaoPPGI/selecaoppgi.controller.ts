@@ -14,7 +14,7 @@ import {
   default as editalService,
 } from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
-import { gerarPDF } from './gerarInscricao';
+import { gerarPDF } from '../../utils/gerarInscricao';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -22,23 +22,16 @@ import {
   Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
+} from './selecaoppgi.types';
+import {
   RecoverPasswordDto,
   SignInDto,
   SignUpDto,
-} from './selecaoppgi.types';
+} from '../candidato/candidato.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
-type CustomRequest = Request & {
-  session: {
-    email: string;
-    uid: string;
-    editalId: string;
-    editalPosition: number;
-  };
-};
 
 const locals = {
   layout: 'selecaoppgi',
@@ -48,7 +41,7 @@ const localsBegin = {
   layout: 'begin',
 };
 
-function getLanguage(req: CustomRequest) {
+function getLanguage(req: Request) {
   return req.cookies['lang'] || 'ptBR';
 }
 
@@ -92,7 +85,7 @@ export function verificarArquivoDiretorio(
   return fs.existsSync(caminhoArquivo);
 }
 
-function begin(req: CustomRequest, res: Response) {
+function begin(req: Request, res: Response) {
   switch (req.method) {
     case 'GET':
       const currentLanguage = getLanguage(req);
@@ -106,10 +99,10 @@ function begin(req: CustomRequest, res: Response) {
   }
 }
 
-async function signUp(req: CustomRequest, res: Response) {
+async function signUp(req: Request, res: Response) {
   switch (req.method) {
     case 'GET': {
-      const listEditais = await EditalService.listEditalsAvailable();
+      const listEditais = await EditalService.listEditaisDisponiveis();
       const currentLanguage = getLanguage(req);
 
       return res.render(resolveView('signUp'), {
@@ -141,8 +134,6 @@ async function signUp(req: CustomRequest, res: Response) {
           idEdital,
         });
 
-        req.session.email = candidateCreated.email;
-        req.session.editalId = candidateCreated.idEdital;
         req.session.uid = candidateCreated.id.toString();
         req.session.editalPosition = candidateCreated.posicaoEdital;
 
@@ -159,11 +150,11 @@ async function signUp(req: CustomRequest, res: Response) {
   }
 }
 
-async function signIn(req: CustomRequest, res: Response) {
+async function signIn(req: Request, res: Response) {
   switch (req.method) {
     case 'GET': {
       try {
-        const listEditais = await EditalService.listEdital();
+        const listEditais = await EditalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
 
         return res.render(resolveView('signIn'), {
@@ -187,17 +178,15 @@ async function signIn(req: CustomRequest, res: Response) {
         });
 
         if (!candidate) {
-          return res
-            .status(StatusCodes.NOT_FOUND)
-            .send(ReasonPhrases.NOT_FOUND);
+          return res.status(StatusCodes.UNAUTHORIZED).send({
+            msg: 'E-mail ou senha inválidos',
+          });
         }
 
         if (candidate.posicaoEdital > 4) {
-          return res.status(401).send();
+          return res.status(StatusCodes.FORBIDDEN).send();
         }
 
-        req.session.email = candidate.email;
-        req.session.editalId = candidate.idEdital;
         req.session.uid = candidate.id.toString();
         req.session.editalPosition = candidate.posicaoEdital;
         return res.status(200).send();
@@ -209,7 +198,7 @@ async function signIn(req: CustomRequest, res: Response) {
   }
 }
 
-function logout(req: CustomRequest, res: Response) {
+function logout(req: Request, res: Response) {
   switch (req.method) {
     case 'POST':
       req.session.destroy((err) => {
@@ -222,7 +211,7 @@ function logout(req: CustomRequest, res: Response) {
   }
 }
 
-const formProposta = async (req: CustomRequest, res: Response) => {
+const formProposta = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'PUT': {
       try {
@@ -309,7 +298,7 @@ const formProposta = async (req: CustomRequest, res: Response) => {
   }
 };
 
-async function backToStart(req: CustomRequest, res: Response) {
+async function backToStart(req: Request, res: Response) {
   switch (req.method) {
     case 'POST':
       const id = Number(req.session.uid);
@@ -326,7 +315,7 @@ async function backToStart(req: CustomRequest, res: Response) {
   }
 }
 
-const forms = async (req: CustomRequest, res: Response) => {
+const forms = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       if (!req.session.uid) {
@@ -374,7 +363,6 @@ const forms = async (req: CustomRequest, res: Response) => {
             ...locals,
             ...candidate,
             editalPosicao: editalPosition,
-            email: req.session.email,
             id: req.session.uid,
             csrfToken: req.csrfToken(),
             hasCurriculum: verificarArquivoDiretorio(
@@ -404,7 +392,6 @@ const forms = async (req: CustomRequest, res: Response) => {
             recomendacoes,
             edital,
             editalPosicao: req.session.editalPosition,
-            email: req.session.email,
             id: req.session.uid,
             linhasPesquisa: linhas,
             csrfToken: req.csrfToken(),
@@ -452,13 +439,13 @@ const forms = async (req: CustomRequest, res: Response) => {
   }
 };
 
-async function form1(req: CustomRequest, res: Response) {
+async function form1(req: Request, res: Response) {
   switch (req.method) {
     case 'PUT': {
       const { data } = req.body;
       const { uid } = req.session;
       const id = Number(uid);
-
+      console.log(req.body);
       if (req.session.editalPosition === 1) {
         const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
 
@@ -494,7 +481,7 @@ async function form1(req: CustomRequest, res: Response) {
   }
 }
 
-const form2 = async (req: CustomRequest, res: Response) => {
+const form2 = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'PUT': {
       try {
@@ -562,7 +549,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const formPublicacoes = async (req: CustomRequest, res: Response) => {
+const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const data = await candidatoPublicacaoService.ListarPublicacoesCandidate(
@@ -574,7 +561,6 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
       return res.render(resolveView('forms2'), {
         message: 'Dados salvos com sucesso',
         editalPosicao: req.session.editalPosition,
-        email: req.session.email,
         id: req.session.uid,
         csrfToken: req.csrfToken(),
         periodicos,
@@ -656,7 +642,7 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const candidates = async (req: CustomRequest, res: Response) => {
+const candidates = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
@@ -667,7 +653,7 @@ const candidates = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const backStep = async (req: CustomRequest, res: Response) => {
+const backStep = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'POST': {
       try {
@@ -689,7 +675,7 @@ const backStep = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const refresh = async (req: CustomRequest, res: Response) => {
+const refresh = async (req: Request, res: Response) => {
   res.redirect('/selecaoppgi/formulario');
 };
 
@@ -706,12 +692,10 @@ const recuperarSenha = async (req, res) => {
       });
     }
     case 'POST': {
-      const { email, idEdital } = req.body as RecoverPasswordDto;
+      const data = req.body as RecoverPasswordDto;
       try {
-        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
-          email,
-          idEdital,
-        });
+        const candidate =
+          await candidatoService.findCandidatoByEmailAndEdital(data);
         if (!candidate) {
           return res
             .status(StatusCodes.NOT_FOUND)
