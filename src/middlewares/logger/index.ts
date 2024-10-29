@@ -1,6 +1,6 @@
-const winston = require('winston')
-const path = require('path')
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import winston from 'winston';
 // Custom tamplate for logs
 // const logFormat = winston.format.printf(({ level, message, timestamp }) => {
 //     return `${timestamp} ${level}: ${message}`;
