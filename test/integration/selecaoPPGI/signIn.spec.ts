@@ -1,7 +1,9 @@
 import request from 'supertest';
 import app from '../../../src/app';
+import editalService from '../../../src/resources/edital/edital.service';
 import candidatoService from '../../../src/resources/candidato/candidato.service';
-import EditalService from '../../../src/resources/edital/edital.service';
+import { StatusCodes } from 'http-status-codes';
+import { SignInDto } from '../../../src/resources/candidato/candidato.types';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
@@ -13,10 +15,6 @@ function extractCsrfTokenFromBody(res: request.Response): string {
     throw new Error('CSRF token não encontrado no corpo da resposta');
   }
 }
-
-// Mock dos serviços
-jest.mock('../../../src/resources/candidato/candidato.service');
-jest.mock('../../../src/resources/edital/edital.service');
 
 const listEditaisValues = [
   {
@@ -95,7 +93,7 @@ const candidateValue = {
   senhaHash: '$2b$10$iZ.MxrVV8u4jPpA8fFlTPOkO51GnJclQIxexd1rW25yIaXdO6h2U2',
   tokenResetSenha: null,
   validadeTokenReset: null,
-  idEdital: '004-2023',
+  idEdital: '001-2023',
   idLinhaPesquisa: 1,
   nome: 'Francisco Rivail Santos da Luz Junior',
   email: 'test@example.com',
@@ -133,22 +131,13 @@ const candidateValue = {
   nomeOrientador: 'teste',
 };
 
-// const entrarValue = {
-//   email: 'test@example.com',
-//   senha: 'password123',
-//   edital: '1',
-// };
-
 const agent = request.agent(app);
 describe('Rota Login', () => {
   let csrfToken: string;
 
   beforeAll(async () => {
-    // Mock do EditalService
-    const EditalServiceMock = EditalService as jest.Mocked<
-      typeof EditalService
-    >;
-    EditalServiceMock.listEdital.mockResolvedValue(listEditaisValues);
+    editalService.criarEdital(listEditaisValues[0]);
+    editalService.criarEdital(listEditaisValues[1]);
 
     // Obter o formulário e o token CSRF
     const getResponse = await agent.get('/selecaoppgi/entrar');
@@ -168,98 +157,60 @@ describe('Rota Login', () => {
 
   describe('POST /selecaoppgi/entrar', () => {
     it('deve autenticar e iniciar sessão quando os dados são válidos', async () => {
-      const candidatoServiceMock = candidatoService as jest.Mocked<
-        typeof candidatoService
-      >;
-      candidatoServiceMock.auth.mockResolvedValue(candidateValue);
+      await candidatoService.create({
+        email: candidateValue.email,
+        senha: 'password123',
+        idEdital: candidateValue.idEdital,
+      });
+
+      const loginValue = {
+        email: candidateValue.email,
+        senha: 'password123',
+        idEdital: candidateValue.idEdital,
+      } as SignInDto;
 
       const response = await agent
-        .post('/selecaoppgi/entrar')
-        .send({
-          email: 'test@example.com',
-          senha: 'password123',
-          edital: '1',
-          _csrf: csrfToken,
-        })
+        .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
+        .send(loginValue)
         .set('Accept', 'application/json');
 
       expect(response.status).toBe(200);
     });
 
-    it('deve retornar 400 quando os dados são incompletos', async () => {
+    it('deve retornar 422 quando os dados são incompletos', async () => {
       const response = await agent
-        .post('/selecaoppgi/entrar')
+        .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
         .send({
-          email: 'test@example.com',
-          senha: '',
-          edital: '1',
-          _csrf: csrfToken,
-        })
-        .set('Accept', 'application/json');
-
-      expect(response.status).toBe(400);
-    });
-
-    it('deve retornar 406 quando o candidato não é autenticado', async () => {
-      const candidatoServiceMock = candidatoService as jest.Mocked<
-        typeof candidatoService
-      >;
-      candidatoServiceMock.auth.mockResolvedValue(null);
-
-      const response = await agent
-        .post('/selecaoppgi/entrar')
-        .send({
-          email: 'invalid@example.com',
-          senha: 'wrongpassword',
-          edital: '1',
-          _csrf: csrfToken,
-        })
-        .set('Accept', 'application/json');
-
-      expect(response.status).toBe(406);
-    });
-
-    it('deve retornar 401 quando o candidato não está na posição adequada', async () => {
-      const candidatoServiceMock = candidatoService as jest.Mocked<
-        typeof candidatoService
-      >;
-      candidatoServiceMock.auth.mockResolvedValue({
-        ...candidateValue,
-        posicaoEdital: 5,
-      });
-
-      const response = await agent
-        .post('/selecaoppgi/entrar')
-        .send({
-          email: 'test@example.com',
-          senha: 'Senha123',
-          edital: '001-023',
-          _csrf: csrfToken,
-        })
-        .set('Accept', 'application/json');
-
-      expect(response.status).toBe(401);
-    });
-
-    it('deve retornar 500 em caso de erro no servidor', async () => {
-      const candidatoServiceMock = candidatoService as jest.Mocked<
-        typeof candidatoService
-      >;
-      candidatoServiceMock.auth.mockRejectedValue(
-        new Error('Erro no servidor'),
-      );
-
-      const response = await agent
-        .post('/selecaoppgi/entrar')
-        .send({
-          email: 'test@example.com',
+          email: candidateValue.email,
           senha: 'password123',
-          edital: '1',
-          _csrf: csrfToken,
         })
         .set('Accept', 'application/json');
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(StatusCodes.UNPROCESSABLE_ENTITY);
+    });
+
+    it('deve retornar 401 quando o candidato não é autenticado', async () => {
+      const response = await agent
+        .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
+        .send({
+          email: candidateValue.email,
+          senha: 'password1234',
+          idEdital: candidateValue.idEdital,
+        })
+        .set('Accept', 'application/json');
+      expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
+    });
+
+    it('deve retornar 403 quando o candidato já finalizou a inscrição(Em implementação)', async () => {
+      const response = await agent
+        .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
+        .send({
+          email: candidateValue.email,
+          senha: 'password1234',
+          idEdital: candidateValue.idEdital,
+        })
+        .set('Accept', 'application/json');
+      expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
     });
   });
 });

@@ -138,13 +138,12 @@
 			const csrfToken = $("#csrfToken").val();
 
 			$.ajax({
-				url: "{{url}}/selecaoppgi/entrar",
+				url: `{{url}}/selecaoppgi/entrar?_csrf=${csrfToken}`,
 				type: "POST",
 				data: {
 					email,
 					senha,
 					idEdital: edital,
-					_csrf: csrfToken,
 				},
 				success: function (data) {
 					window.location.href = "{{url}}/selecaoppgi/formulario";
@@ -152,15 +151,15 @@
 				error: function (res, status, error) {
 					buttonLogin.attr("disabled", false);
 					buttonLogin.find("span").prop("hidden", true);
-					if(res.status === 400){
+					if(res.status === 422){
 						const divError = $("#error-msg");
 						divError.prop("hidden", false);
 						divError.text("{{__ "ppgiSignIn.errorIncomplete"}}");
-					} else if(res.status === 406){
+					} else if(res.status === 401){
 						const divError = $("#error-msg");
 						divError.prop("hidden", false);
 						divError.text("{{__ "ppgiSignIn.errorIncorrect"}}");
-					} else if (res.status === 401){
+					} else if (res.status === 403){
 						const divError = $("#error-msg");
 						divError.prop("hidden", false);
 						divError.text("{{__ "ppgiSignIn.errorAlreadySubmitted"}}");
