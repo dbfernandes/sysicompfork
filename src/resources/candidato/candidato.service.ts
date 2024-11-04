@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
-import { SignInDto, SignUpDto } from '../selecaoPPGI/selecaoppgi.types';
+import { SignInDto, SignUpDto } from '../candidato/candidato.types';
 const prisma = new PrismaClient();
 
 class CandidatoService {

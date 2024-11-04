@@ -13,7 +13,8 @@ import {
   recoverPasswordSchema,
   signInSchema,
   signUpSchema,
-} from './selecaoppgi.schema';
+} from '../candidato/candidato.schema';
+
 const router = express.Router();
 
 router.use(languageMiddleware);

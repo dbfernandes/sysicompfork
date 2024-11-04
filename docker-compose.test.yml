@@ -1,0 +1,12 @@
+services:
+  # Serviço do MySQL para Testes
+  db_test:
+    image: mysql:8.0
+    container_name: db_test
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mytestdatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3336:3306"

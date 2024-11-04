@@ -266,13 +266,12 @@
 				const csrfToken = $("#csrfToken").val();
 				
 				$.ajax({
-					url: "{{url}}/selecaoppgi/cadastro",
+					url: `{{url}}/selecaoppgi/cadastro?_csrf=${csrfToken}`,
 					type: "POST",
 					data: {
 						email,
 						senha,
 						idEdital: edital,
-						_csrf: csrfToken,
 					},
 					success: function (data) {
 						window.location.href = "{{url}}/selecaoppgi/formulario";		
