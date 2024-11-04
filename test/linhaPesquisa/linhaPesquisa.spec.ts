@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import linhaDePesquisaController from './src/resources/linhasDePesquisa/linhasDePesquisa.controller';
+import linhaDePesquisaController from '../../src/resources/linhasDePesquisa/linhasDePesquisa.controller';
 import { describe, it } from 'node:test';
 import { jest, expect } from '@jest/globals';
 
@@ -12,7 +12,7 @@ const mockResponse = () => {
 };
 
 describe('Linha de Pesquisa Controller', () => {
-  
+
   it('deve listar todas as linhas de pesquisa', async () => {
     const req = {} as Request;
     const res = mockResponse();

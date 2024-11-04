@@ -27,7 +27,7 @@ function extractCsrfTokenFromBody(res: request.Response): string {
 describe('Rota SignUp', () => {
   beforeAll(async () => {
     // Configurar mocks antes dos testes
-    (EditalService.listEditalsAvailable as jest.Mock).mockResolvedValue([
+    (EditalService.listEditaisDisponiveis as jest.Mock).mockResolvedValue([
       // Mock dos editais disponíveis
       { id: 1, name: 'Edital 1' },
     ]);

@@ -3,8 +3,11 @@
     "moduleResolution": "node",
     "target": "es2016",
     "module": "commonjs",
-    "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "rootDir": "./",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "allowJs": true,
     "checkJs": false,
     "outDir": "./build",
@@ -15,6 +18,13 @@
     "noImplicitAny": false,
     "resolveJsonModule": true
   },
-  "include": ["./src/**/*", "./src/**/*.d.ts", "./test/**/*"],
-  "exclude": ["./build", "node_modules"]
+  "include": [
+    "./src/**/*",
+    "./src/**/*.d.ts",
+    "./test/**/*"
+  ],
+  "exclude": [
+    "./build",
+    "node_modules"
+  ]
 }
