@@ -5,7 +5,7 @@ import {
   uploadsPublicacoes,
 } from '../../middlewares/multer.selecaoppgi.config';
 import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
-import selecaoppgiController from './selecaoppgi.controller';
+import selecaoppgiController from './selecao.ppgi.controller';
 import language from '../../utils/i18n';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
 

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import reservasService from './reservas.service';
-import salasService from '../salas/salas.service';
+import salasService from '../salas/sala.service';
 import path from 'path';
 
 function resolveView(viewName: string): string {

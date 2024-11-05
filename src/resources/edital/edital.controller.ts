@@ -6,12 +6,12 @@ import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
 import archiver from 'archiver';
 import path from 'path';
 import editalService from './edital.service';
-import { verificarArquivoDiretorio } from '../selecaoPPGI/selecaoppgi.controller';
+import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   PROPOSTA_FILE,
-} from '../selecaoPPGI/selecaoppgi.types';
+} from '../selecaoPPGI/selecao.ppgi.types';
 
 const locals = {
   layout: 'selecaoppgi',

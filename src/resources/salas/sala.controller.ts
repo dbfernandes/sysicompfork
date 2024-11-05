@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import SalaService from "./salas.service";
-import path from "path";
+import { Request, Response } from 'express';
+import SalaService from './sala.service';
+import path from 'path';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -24,14 +24,18 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
         return;
       }
       // numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
-      numero = parseInt(req.body.numero, 10) || 0
+      numero = parseInt(req.body.numero, 10) || 0;
       // capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
-      capacidade = parseInt(req.body.capacidade, 10) || 0
+      capacidade = parseInt(req.body.capacidade, 10) || 0;
       const sala = {
-        andar, bloco, nome, numero, capacidade
-      }
-      await SalaService.criar(sala)
-      res.redirect('/salas/gerenciar')
+        andar,
+        bloco,
+        nome,
+        numero,
+        capacidade,
+      };
+      await SalaService.criar(sala);
+      res.redirect('/salas/gerenciar');
     } catch (e) {
       console.log(e);
       res.status(500).send({ error: e });
@@ -42,7 +46,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
 const excluir = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
-    const salaId = parseInt(id)
+    const salaId = parseInt(id);
     const sala = await SalaService.listarUmaSala(salaId);
     if (!sala) {
       throw new Error('Sala não encontrada!');
@@ -68,7 +72,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
 const editar = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     try {
-      const sala = await SalaService.listarUmaSala(parseInt(req.params.id))
+      const sala = await SalaService.listarUmaSala(parseInt(req.params.id));
       res.render(resolveView('salas-editar'), {
         sala: sala,
         csrf: req.csrfToken(),
@@ -89,12 +93,12 @@ const editar = async (req: Request, res: Response): Promise<void> => {
         bloco: req.body.bloco,
         nome: req.body.nome,
         numero: parseInt(req.body.numero, 10),
-        capacidade: parseInt(req.body.capacidade, 10)
-      }
-      await SalaService.editar(parseInt(req.params.id), sala)
-      res.redirect('/salas/gerenciar')
+        capacidade: parseInt(req.body.capacidade, 10),
+      };
+      await SalaService.editar(parseInt(req.params.id), sala);
+      res.redirect('/salas/gerenciar');
     } catch (error: any) {
-      res.status(500).send({ message: error.message })
+      res.status(500).send({ message: error.message });
     }
   }
 };

@@ -1,7 +1,7 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
 import CandidatoService from '../resources/candidate/candidato.service'
-import { CreateCandidateDto } from '../resources/candidate/candidate.types';
+import { CreateCandidateDto } from '../resources/candidate/candidato.types';
 
 const exceljs = require('exceljs');
 

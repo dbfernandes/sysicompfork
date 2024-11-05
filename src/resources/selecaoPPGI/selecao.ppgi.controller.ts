@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 
-import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
+import candidatoExperienciaAcademicaService from '../candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import candidatoService from '../candidato/candidato.service';
 import EditalService from '../edital/edital.service';
-import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
+import linhasDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
 import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
@@ -14,7 +14,7 @@ import {
   Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
-} from './selecaoppgi.types';
+} from './selecao.ppgi.types';
 import editalService from '../edital/edital.service';
 import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
 import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';

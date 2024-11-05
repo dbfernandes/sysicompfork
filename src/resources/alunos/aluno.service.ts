@@ -1,5 +1,5 @@
 import { PrismaClient, Aluno } from '@prisma/client';
-import { CreateAlunoDto } from './alunos.types';
+import { CreateAlunoDto } from './aluno.types';
 
 const prisma = new PrismaClient();
 

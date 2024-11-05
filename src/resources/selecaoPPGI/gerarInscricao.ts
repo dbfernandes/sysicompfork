@@ -15,7 +15,7 @@ import {
 import candidatoService from '../candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import { Publicacao } from '@prisma/client';
-import { Nacionalidade } from './selecaoppgi.types';
+import { Nacionalidade } from './selecao.ppgi.types';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
