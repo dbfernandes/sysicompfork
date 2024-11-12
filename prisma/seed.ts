@@ -10,8 +10,8 @@ async function main() {
       nomeCompleto: 'Usuario de teste inicial',
       cpf: '111.111.111-11',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetarSenha: null,
-      validadeTokenResetadaSenha: null,
+      tokenResetSenha: null,
+      validadeTokenResetSenha: null,
       email: 'user@icomp.ufam.edu.br',
       status: 1,
       administrador: 1,
@@ -39,8 +39,8 @@ async function main() {
       nomeCompleto: 'JhonDoe',
       cpf: '222.222.222-22',
       senhaHash: '$2a$12$8T7iExFehnA52apHy4ux3.ILtp41fcNq/aFuJ6OtxGZaAee5sGvNa',
-      tokenResetarSenha: null,
-      validadeTokenResetadaSenha: null,
+      tokenResetSenha: null,
+      validadeTokenResetSenha: null,
       email: 'Jhoe@icomp.ufam.edu.br',
       status: 1,
       administrador: 0,
@@ -61,7 +61,7 @@ async function main() {
     },
   });
 
-  await prisma.linhasDePesquisa.upsert({
+  await prisma.linhaPesquisa.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -148,7 +148,7 @@ async function main() {
 
   for (const edital of editais) {
     await prisma.edital.upsert({
-      where: { editalId: edital.editalId },
+      where: { id: edital.editalId },
       update: {},
       create: edital,
     });

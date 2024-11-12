@@ -3,11 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class ProjetoService {
-  async adicionarVarios(idProfessor: number, projetos: any) {
+  async adicionarVarios(professorId: number, projetos: any) {
     if (projetos !== undefined) {
       const projetosArr = projetos.projetos.map((p: any) => {
         return {
-          idProfessor,
+          professorId,
           descricao: p.descricao,
           fim: p.fim,
           inicio: p.inicio,
@@ -20,7 +20,7 @@ class ProjetoService {
       await prisma.projeto
         .deleteMany({
           where: {
-            idProfessor,
+            professorId,
           },
         })
         .then(async () => {
@@ -34,7 +34,7 @@ class ProjetoService {
   async listarAtuais() {
     const projetos = await prisma.projeto.findMany({
       where: {
-        fim: 0,
+        dataFim: 0,
       },
     });
     // projetos = projetos.length > 0 ? projetos.map((p) => p.get()) : []

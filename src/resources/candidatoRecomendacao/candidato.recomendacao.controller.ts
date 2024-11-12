@@ -44,11 +44,11 @@ export async function adicionar(req: Request, res: Response) {
         const csrfToken = req.csrfToken();
         switch (recomendacao.passo) {
           case RecomendacaoStatus.PENDENTE: {
-            const graduacaoCandidato = `${recomendacao.Candidato.cursoGraduacao} - ${recomendacao.Candidato.instituicaoGraduacao}`;
+            const graduacaoCandidato = `${recomendacao.candidato.cursoGraduacao} - ${recomendacao.candidato.instituicaoGraduacao}`;
             return res.render(resolveView('adicionar'), {
               ...locals,
               candidato: {
-                nome: recomendacao.Candidato.nome,
+                nome: recomendacao.candidato.nome,
                 graduado: graduacaoCandidato,
               },
               recomendacao,

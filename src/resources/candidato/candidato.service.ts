@@ -21,7 +21,7 @@ class CandidatoService {
       data: {
         email,
         senhaHash: passwordHash,
-        idEdital: editalNumber,
+        editalId: editalNumber,
         posicaoEdital: step,
       },
     });
@@ -29,7 +29,7 @@ class CandidatoService {
     delete candidate.senhaHash;
     await prisma.edital.update({
       where: {
-        editalId: editalNumber,
+        id: editalNumber,
       },
       data: {
         inscricoesIniciadas: {
@@ -44,7 +44,7 @@ class CandidatoService {
     const candidato = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital: edital,
+        editalId: edital,
       },
     });
 
@@ -55,7 +55,7 @@ class CandidatoService {
     const candidate = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital: editalNumber,
+        editalId: editalNumber,
       },
     });
 
@@ -81,7 +81,7 @@ class CandidatoService {
         id,
       },
       include: {
-        Edital: true,
+        edital: true,
       },
     });
   }
@@ -169,7 +169,7 @@ class CandidatoService {
     const candidates = await prisma.candidato
       .findMany({
         where: {
-          idEdital: editalId,
+          editalId: editalId,
         },
       })
       .catch((err) => {
@@ -185,11 +185,11 @@ class CandidatoService {
         id,
       },
       include: {
-        CandidatoExperienciaAcademica: true,
-        CandidatoPublicacoes: true,
-        LinhasDePesquisa: true,
-        CandidatoRecomendacao: true,
-        Edital: true,
+        experienciasAcademicas: true,
+        publicacoes: true,
+        linhaPesquisa: true,
+        recomendacoes: true,
+        edital: true,
       },
     });
 

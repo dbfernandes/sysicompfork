@@ -74,7 +74,7 @@ const carregar = (req: Request, res: Response) => {
     }
 
     try {
-      const { publicacoes, idProfessor, premios, info, projetos, orientacoes } =
+      const { publicacoes, professorId, premios, info, projetos, orientacoes } =
         req.body;
       const publicacoesParsed = JSON.parse(publicacoes);
       const premiosParsed = JSON.parse(premios);
@@ -82,14 +82,14 @@ const carregar = (req: Request, res: Response) => {
       const projetosParsed = JSON.parse(projetos);
       const orientacoesParsed = JSON.parse(orientacoes);
 
-      await OrientacaoService.adicionarVarios(idProfessor, orientacoesParsed);
-      await ProjetoService.adicionarVarios(idProfessor, projetosParsed);
-      await UsuarioService.alterarInfo(idProfessor, infoParsed);
-      await PremioService.adicionarVarios(idProfessor, premiosParsed);
-      await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed);
+      await OrientacaoService.adicionarVarios(professorId, orientacoesParsed);
+      await ProjetoService.adicionarVarios(professorId, projetosParsed);
+      await UsuarioService.alterarInfo(professorId, infoParsed);
+      await PremioService.adicionarVarios(professorId, premiosParsed);
+      await PublicacaoService.adicionarVarios(professorId, publicacoesParsed);
       if (req.file) {
         await AvatarService.adicionar(
-          idProfessor,
+          professorId,
           req.file.filename,
           req.file.path,
         );

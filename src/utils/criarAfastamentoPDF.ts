@@ -9,16 +9,16 @@ import { Request, Response, NextFunction } from 'express';
 
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
 async function getAfastamento(id: number) {
-  const afastamento = await afastamentoService.retornarAfastamento(String(id));
+  const afastamento = await afastamentoService.retornarAfastamento(id);
   const usuario = await usuarioService.listarUmUsuario(id);
   const email = usuario.email;
 
   if (!afastamento) return null;
 
   const {
-    usuarioNome,
-    dataSaida,
-    dataRetorno,
+    nomeCompleto,
+    dataInicio,
+    dataFim,
     tipoViagem,
     localViagem,
     justificativa,
@@ -26,9 +26,9 @@ async function getAfastamento(id: number) {
     createdAt,
   } = afastamento;
   const afastamentoDoc = {
-    usuarioNome,
-    dataSaida: moment(dataSaida).format('DD/MM/YYYY'),
-    dataRetorno: moment(dataRetorno).format('DD/MM/YYYY'),
+    nomeCompleto,
+    dataSaida: moment(dataInicio).format('DD/MM/YYYY'),
+    dataRetorno: moment(dataFim).format('DD/MM/YYYY'),
     localViagem,
     tipoViagem,
     justificativa,
@@ -95,7 +95,7 @@ export async function criarAfastamentoPDF(
     const pdf = await page.pdf({
       path: path.join(
         __dirname,
-        `/../../public/afastamentos/${dados!.usuarioNome}.pdf`,
+        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
       ),
       format: 'A4',
       printBackground: true,
@@ -108,12 +108,12 @@ export async function criarAfastamentoPDF(
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `inline; filename=${dados!.usuarioNome}.pdf`,
+      `inline; filename=${dados!.nomeCompleto}.pdf`,
     );
     fs.createReadStream(
       path.join(
         __dirname,
-        `/../../public/afastamentos/${dados!.usuarioNome}.pdf`,
+        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
       ),
     ).pipe(res);
   } catch (error) {

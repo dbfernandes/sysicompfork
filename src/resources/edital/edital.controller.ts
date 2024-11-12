@@ -43,7 +43,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
         vagaDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
-        status: '1',
+        status: 1,
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
       };
@@ -412,7 +412,7 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await editalService.getCandidate(Number(req.params.id));
-    const edital = await editalService.getEdital(candidate!.idEdital);
+    const edital = await editalService.getEdital(candidate!.editalId);
     const candidatoDocs = {
       Curriculum: false,
       CartaDoOrientador: false,

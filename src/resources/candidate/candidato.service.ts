@@ -18,7 +18,7 @@ class CandidatoService {
         .findFirst({
           where: {
             email,
-            idEdital: editalNumber,
+            editalId: editalNumber,
           },
         })
         .catch((err) => {
@@ -37,7 +37,7 @@ class CandidatoService {
           data: {
             email,
             senhaHash: passwordHash,
-            idEdital: editalNumber,
+            editalId: editalNumber,
             posicaoEdital: 1,
             // etapaAtual: step,
           },
@@ -75,7 +75,7 @@ class CandidatoService {
       .findFirst({
         where: {
           email,
-          idEdital: editalNumber,
+          editalId: editalNumber,
         },
       })
       .catch((err) => {
@@ -166,7 +166,7 @@ class CandidatoService {
     const candidates = await prisma.candidato
       .findMany({
         where: {
-          idEdital: editalId,
+          editalId: editalId,
         }
       })
       .catch((err) => {

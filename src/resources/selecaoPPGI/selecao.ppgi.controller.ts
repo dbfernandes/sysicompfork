@@ -142,7 +142,7 @@ const signUp = async (req: CustomRequest, res: Response) => {
         });
 
         req.session.email = candidateCreated.email;
-        req.session.editalId = candidateCreated.idEdital;
+        req.session.editalId = candidateCreated.editalId;
         req.session.uid = candidateCreated.id.toString();
         req.session.editalPosition = candidateCreated.posicaoEdital;
 
@@ -198,7 +198,7 @@ const login = async (req: CustomRequest, res: Response) => {
         }
 
         req.session.email = candidate.email;
-        req.session.editalId = candidate.idEdital;
+        req.session.editalId = candidate.editalId;
         req.session.uid = candidate.id.toString();
         req.session.editalPosition = candidate.posicaoEdital;
         return res.status(200).send();
@@ -268,8 +268,8 @@ const formProposta = async (req: CustomRequest, res: Response) => {
               email: body.recomendacaoEmail[index],
             })),
             Number(uid),
-            candidato.idEdital,
-            new Date(candidato.Edital.dataFim),
+            candidato.editalId,
+            new Date(candidato.edital.dataFim),
           );
         }
         const posicaoEdital = body.isNext ? 4 : 3;
@@ -292,7 +292,7 @@ const formProposta = async (req: CustomRequest, res: Response) => {
           gerarPDF(id);
           await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate(
             {
-              idCandidato: id,
+              candidatoId: id,
               url,
             },
           );
@@ -338,7 +338,7 @@ const forms = async (req: CustomRequest, res: Response) => {
       const currentLanguage = getLanguage(req);
 
       const candidate = await candidatoService.findById(Number(uid));
-      const edital = await editalService.getEdital(candidate.idEdital);
+      const edital = await editalService.getEdital(candidate.editalId);
 
       if (!candidate) {
         res.redirect('/selecaoppgi/entrar');
@@ -529,7 +529,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
                   atividade: experienciasAtividade[index],
                   periodo: experienciasPeriodo[index],
                 },
-                idCandidato: Number(uid),
+                candidatoId: Number(uid),
               });
             }),
           );

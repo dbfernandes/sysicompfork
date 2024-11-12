@@ -8,7 +8,7 @@ export const enum RecomendacaoStatus {
 
 export type CreateRecomendacaoDto = Pick<
   CandidatoRecomendacao,
-  'email' | 'prazo' | 'idCandidato' | 'nome' | 'token' | 'idEdital'
+  'email' | 'prazo' | 'candidatoId' | 'nome' | 'token' | 'editalId'
 >;
 
 export type SaveRecomendacaoDto = Pick<
