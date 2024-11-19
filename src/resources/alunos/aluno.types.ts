@@ -20,3 +20,10 @@ export type AlunoDto = Aluno & {
   dataCriacaoFormata?: string;
   dataAtualizacaoFormata?: string;
 };
+
+export interface TipoUsuario {
+  administrador: number;
+  secretaria: number;
+  coordenador: number;
+  professor: number;
+}

@@ -43,7 +43,7 @@ export function sendEmailRecoveryPasswordUser({
   });
 }
 
-export function sendEmailRecoveryPasswordCandidate({
+export function sendEmailRecoveryPasswordCandidato({
   email,
   url,
 }: EmailRecoveryProps) {

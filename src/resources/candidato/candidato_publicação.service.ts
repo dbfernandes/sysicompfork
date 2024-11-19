@@ -1,6 +1,6 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-const moment = require('moment');
+import moment from 'moment';
 const prisma = new PrismaClient();
 
 async function validPassword(password: string, passwordHash: string) {
@@ -10,11 +10,10 @@ async function validPassword(password: string, passwordHash: string) {
 class CandidatoService {
   async create(email: string, password: string, editalNumber: string) {
     try {
-      const step = 0;
       const salt = await genSalt(10);
       const passwordHash = await hash(password, salt);
 
-      let candidate = await prisma.candidato
+      let candidato = await prisma.candidato
         .findFirst({
           where: {
             email,
@@ -28,11 +27,11 @@ class CandidatoService {
           );
         });
 
-      if (candidate) {
+      if (candidato) {
         throw new Error('Candidato já existe');
       }
 
-      candidate = await prisma.candidato
+      candidato = await prisma.candidato
         .create({
           data: {
             email,
@@ -47,17 +46,17 @@ class CandidatoService {
           throw new Error('Não foi possivel criar o candidato erro no create');
         });
 
-      // delete candidate.password
-      // delete candidate.passwordHash
+      // delete candidato.password
+      // delete candidato.passwordHash
 
-      return candidate;
+      return candidato;
     } catch (error) {
       console.log(error);
     }
   }
 
   async list() {
-    const candidates = await prisma.candidato
+    const candidatos = await prisma.candidato
       .findMany({
         select: {
           senhaHash: false,
@@ -67,11 +66,11 @@ class CandidatoService {
         console.log(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
-    return candidates;
+    return candidatos;
   }
 
   async auth(email: string, password: string, editalNumber: string) {
-    const candidate = await prisma.candidato
+    const candidato = await prisma.candidato
       .findFirst({
         where: {
           email,
@@ -83,19 +82,19 @@ class CandidatoService {
         throw new Error('Não foi possivel encontrar o candidato');
       });
 
-    if (!candidate) {
+    if (!candidato) {
       throw new Error('Usuário não encontrado');
     }
 
-    if (!(await validPassword(password, candidate.senhaHash))) {
+    if (!(await validPassword(password, candidato.senhaHash))) {
       throw new Error('Usuário ou senha incorretos');
     }
 
-    // if (await xprisma.result.candidate.validatePassword({password, passwordHash: candidate.passwordHash})) {
+    // if (await xprisma.result.candidato.validatePassword({password, passwordHash: candidato.passwordHash})) {
     //   throw new Error('Usuário ou senha incorretos')
     // }
 
-    return candidate;
+    return candidato;
   }
 
   async form1(Candidato: any, id: number) {
@@ -118,7 +117,7 @@ class CandidatoService {
         console.log(err);
         throw new Error('Não foi possivel atualizar o candidato');
       });
-    const candidate = await prisma.candidato
+    const candidato = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -128,11 +127,11 @@ class CandidatoService {
         console.log(err);
         throw new Error('Não foi possivel encontrar o candidato');
       });
-    return candidate;
+    return candidato;
   }
 
-  async findOneCandidate(id: number) {
-    const candidate = await prisma.candidato
+  async findOnecandidato(id: number) {
+    const candidato = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -142,14 +141,14 @@ class CandidatoService {
         console.log(err);
         throw new Error('Não foi possivel encontrar o candidato');
       });
-    if (!candidate) {
+    if (!candidato) {
       throw new Error('Candidato não encontrado');
     }
-    return candidate;
+    return candidato;
   }
 
   async back(id: number) {
-    const candidate = await prisma.candidato
+    const candidato = await prisma.candidato
       .findUnique({
         where: {
           id,
@@ -159,21 +158,21 @@ class CandidatoService {
         console.log(err);
         throw new Error('Não foi possivel encontrar o candidato');
       });
-    return candidate;
+    return candidato;
   }
 
   async listCanditatesByEdital(editalId: string) {
-    const candidates = await prisma.candidato
+    const candidatos = await prisma.candidato
       .findMany({
         where: {
           editalId: editalId,
-        }
+        },
       })
       .catch((err) => {
         console.log(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
-    return candidates;
+    return candidatos;
   }
 }
 

@@ -11,7 +11,7 @@ class CandidatoExperienciaAcademicaService {
     });
   }
 
-  async dropAllByCandidateId(candidatoId: number) {
+  async dropAllByCandidatoId(candidatoId: number) {
     return await prisma.candidatoExperienciaAcademica.deleteMany({
       where: {
         candidatoId,
@@ -19,7 +19,7 @@ class CandidatoExperienciaAcademicaService {
     });
   }
 
-  async listByCandidateId(candidatoId: number) {
+  async listByCandidatoId(candidatoId: number) {
     return await prisma.candidatoExperienciaAcademica.findMany({
       where: {
         candidatoId,

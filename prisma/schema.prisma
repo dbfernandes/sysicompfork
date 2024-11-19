@@ -38,14 +38,14 @@ model Aluno {
 
 model Avatar {
   id        Int      @id @default(autoincrement())
-  idUsuario Int
+  usuarioId Int
   nome      String   @db.VarChar(255)
   caminho   String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Usuario   Usuario  @relation(fields: [idUsuario], references: [id], onUpdate: Restrict, map: "Avatar_ibfk_1")
+  Usuario   Usuario  @relation(fields: [usuarioId], references: [id], onUpdate: Restrict, map: "Avatar_ibfk_1")
 
-  @@index([idUsuario], map: "idUsuario")
+  @@index([usuarioId], map: "usuarioId")
 }
 
 model Candidato {
@@ -358,7 +358,7 @@ model Usuario {
   telResidencial          String?   @db.VarChar(20)
   unidade                 String?   @db.VarChar(60)
   turno                   String?   @db.VarChar(32)
-  idLattes                BigInt?
+  lattesId                BigInt?
   formacao                String?   @db.VarChar(255)
   formacaoIngles          String?   @db.VarChar(255)
   resumo                  String?   @db.VarChar(5000)

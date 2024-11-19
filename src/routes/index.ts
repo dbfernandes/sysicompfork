@@ -86,7 +86,7 @@ router.use(
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
 router.use(
   '/downloadCandidateDocument/:id',
-  editalController.getCandidateDocument,
+  editalController.getcandidatoDocument,
 );
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria

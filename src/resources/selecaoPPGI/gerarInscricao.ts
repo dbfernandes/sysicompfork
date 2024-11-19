@@ -12,7 +12,7 @@ import {
   titlePage,
   titleSection,
 } from '../../utils/pdf';
-import candidatoService from '../candidato/candidato.service';
+import candidatoService from '../candidato/candidato_inscrição.service';
 import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import { Publicacao } from '@prisma/client';
 import { Nacionalidade } from './selecao.ppgi.types';
@@ -28,7 +28,7 @@ function formatarPublicacao(publicacao: Publicacao) {
 }
 export async function gerarPDF(id: number) {
   try {
-    const candidato = await candidatoService.listAllInfoCandidate(id);
+    const candidato = await candidatoService.listAllInfocandidato(id);
     const periodicos = candidato.publicacoes.filter(
       (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS,
     );

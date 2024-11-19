@@ -1,4 +1,4 @@
-import { Orientacao, PrismaClient, Publicacao } from '@prisma/client';
+import { Orientacao, PrismaClient } from '@prisma/client';
 import { PublicacoesDict } from './docente.types';
 
 const prisma = new PrismaClient();
@@ -12,7 +12,7 @@ class DocenteService {
         nomeCompleto: true,
         email: true,
         status: true,
-        idLattes: true,
+        lattesId: true,
         formacao: true,
         formacaoIngles: true,
         resumo: true,

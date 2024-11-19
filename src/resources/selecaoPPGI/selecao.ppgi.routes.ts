@@ -61,7 +61,7 @@ router.post(
   selecaoppgiController.formPublicacoes,
 );
 
-router.get('/candidates', selecaoppgiController.candidates);
+router.get('/candidates', selecaoppgiController.candidatos);
 
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
 

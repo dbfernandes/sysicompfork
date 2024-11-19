@@ -75,7 +75,7 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async createManyByCandidate(
+  async createManyByCandidato(
     data: {
       nome: string;
       email: string;
@@ -137,7 +137,7 @@ class CandidatoRecomendacaoService {
       }));
   }
 
-  async sendEmailRecoveryPasswordCandidate({
+  async sendEmailRecoveryPasswordCandidato({
     candidatoId,
     url,
   }: {

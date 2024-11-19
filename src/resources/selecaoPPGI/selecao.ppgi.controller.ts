@@ -3,10 +3,10 @@ import path from 'path';
 import { Request, Response } from 'express';
 
 import candidatoExperienciaAcademicaService from '../candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import candidatoService from '../candidato/candidato.service';
+import candidatoService from '../candidato/candidato_inscrição.service';
 import EditalService from '../edital/edital.service';
 import linhasDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
-import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
+import { sendEmailRecoveryPasswordCandidato } from '../../utils/mailerGrid';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -124,27 +124,27 @@ const signUp = async (req: CustomRequest, res: Response) => {
       }
 
       try {
-        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+        const candidato = await candidatoService.findCandidatoByEmailAndEdital({
           email,
           edital,
         });
 
-        if (candidate) {
+        if (candidato) {
           return res.status(409).json({
             error: 'Candidato já existe para este edital',
           });
         }
 
-        const candidateCreated = await candidatoService.create({
+        const candidatoCreated = await candidatoService.create({
           email,
           password: senha,
           editalNumber: edital,
         });
 
-        req.session.email = candidateCreated.email;
-        req.session.editalId = candidateCreated.editalId;
-        req.session.uid = candidateCreated.id.toString();
-        req.session.editalPosition = candidateCreated.posicaoEdital;
+        req.session.email = candidatoCreated.email;
+        req.session.editalId = candidatoCreated.editalId;
+        req.session.uid = candidatoCreated.id.toString();
+        req.session.editalPosition = candidatoCreated.posicaoEdital;
 
         return res.status(201).send();
       } catch (err) {
@@ -184,23 +184,23 @@ const login = async (req: CustomRequest, res: Response) => {
           return res.status(400).send();
         }
 
-        const candidate = await candidatoService.auth({
+        const candidato = await candidatoService.auth({
           email,
           password: senha,
           editalNumber: edital,
         });
-        if (!candidate) {
+        if (!candidato) {
           return res.status(406).send();
         }
 
-        if (candidate.posicaoEdital > 4) {
+        if (candidato.posicaoEdital > 4) {
           return res.status(401).send();
         }
 
-        req.session.email = candidate.email;
-        req.session.editalId = candidate.editalId;
-        req.session.uid = candidate.id.toString();
-        req.session.editalPosition = candidate.posicaoEdital;
+        req.session.email = candidato.email;
+        req.session.editalId = candidato.editalId;
+        req.session.uid = candidato.id.toString();
+        req.session.editalPosition = candidato.posicaoEdital;
         return res.status(200).send();
       } catch (err) {
         return res.status(500).send();
@@ -262,7 +262,7 @@ const formProposta = async (req: CustomRequest, res: Response) => {
           const candidato = await candidatoService.findByIdWithEdital(
             Number(uid),
           );
-          await candidatoRecomendacaoService.createManyByCandidate(
+          await candidatoRecomendacaoService.createManyByCandidato(
             body.recomendacaoNome.map((nome, index) => ({
               nome,
               email: body.recomendacaoEmail[index],
@@ -274,7 +274,7 @@ const formProposta = async (req: CustomRequest, res: Response) => {
         }
         const posicaoEdital = body.isNext ? 4 : 3;
 
-        const candidate = {
+        const candidato = {
           idLinhaPesquisa: Number(body.idLinhaPesquisa),
           tituloProposta: body.tituloProposta,
           nomeOrientador: body.nomeOrientador,
@@ -284,13 +284,13 @@ const formProposta = async (req: CustomRequest, res: Response) => {
         const id = Number(uid);
         await candidatoService.update({
           id,
-          data: candidate,
+          data: candidato,
         });
 
         if (body.isNext) {
           const url = `http://${req.headers.host}/selecaoppgi/recomendacoes/adicionar`;
           gerarPDF(id);
-          await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate(
+          await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidato(
             {
               candidatoId: id,
               url,
@@ -337,10 +337,10 @@ const forms = async (req: CustomRequest, res: Response) => {
       const { uid, editalPosition } = req.session;
       const currentLanguage = getLanguage(req);
 
-      const candidate = await candidatoService.findById(Number(uid));
-      const edital = await editalService.getEdital(candidate.editalId);
+      const candidato = await candidatoService.findById(Number(uid));
+      const edital = await editalService.getEdital(candidato.editalId);
 
-      if (!candidate) {
+      if (!candidato) {
         res.redirect('/selecaoppgi/entrar');
         break;
       }
@@ -355,7 +355,7 @@ const forms = async (req: CustomRequest, res: Response) => {
         case 1: {
           return res.status(200).render(resolveView('formDados'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             csrfToken: req.csrfToken(),
             currentLanguage,
           });
@@ -363,17 +363,17 @@ const forms = async (req: CustomRequest, res: Response) => {
 
         case 2: {
           const experienciasAcademicas =
-            await candidatoExperienciaAcademicaService.listByCandidateId(
+            await candidatoExperienciaAcademicaService.listByCandidatoId(
               Number(uid),
             );
           const { conferencias, periodicos } =
-            await candidatoPublicacaoService.ListarPublicacoesCandidate(
+            await candidatoPublicacaoService.ListarPublicacoesCandidato(
               Number(uid),
             );
 
           return res.render(resolveView('forms2'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             editalPosicao: editalPosition,
             email: req.session.email,
             id: req.session.uid,
@@ -401,7 +401,7 @@ const forms = async (req: CustomRequest, res: Response) => {
             );
           return res.render(resolveView('forms3'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             recomendacoes,
             edital,
             editalPosicao: req.session.editalPosition,
@@ -505,7 +505,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
         const experienciasAtividade = req.body.experienciaAtividade as string[];
         const experienciasPeriodo = req.body.experienciaPeriodo as string[];
 
-        await candidatoExperienciaAcademicaService.dropAllByCandidateId(
+        await candidatoExperienciaAcademicaService.dropAllByCandidatoId(
           Number(uid),
         );
         if (
@@ -566,7 +566,7 @@ const form2 = async (req: CustomRequest, res: Response) => {
 const formPublicacoes = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatoPublicacaoService.ListarPublicacoesCandidate(
+      const data = await candidatoPublicacaoService.ListarPublicacoesCandidato(
         Number(req.session.uid),
       );
 
@@ -657,11 +657,11 @@ const formPublicacoes = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const candidates = async (req: CustomRequest, res: Response) => {
+const candidatos = async (req: CustomRequest, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
-        candidates: await candidatoService.list(),
+        candidatos: await candidatoService.list(),
       });
     default:
       return res.status(400).send();
@@ -711,22 +711,22 @@ const recuperarSenha = async (req, res) => {
         return res.status(400).send();
       }
       const { email, editalId: edital } = req.body;
-      const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+      const candidato = await candidatoService.findCandidatoByEmailAndEdital({
         email,
         edital,
       });
-      if (!candidate) {
+      if (!candidato) {
         return res.status(404).send();
       }
 
       const token = await candidatoService.updateTokenPassword({
-        id: candidate.id,
+        id: candidato.id,
       });
 
       const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
       try {
-        sendEmailRecoveryPasswordCandidate({
-          email: candidate.email,
+        sendEmailRecoveryPasswordCandidato({
+          email: candidato.email,
           url,
         });
       } catch (err) {
@@ -744,12 +744,12 @@ const recuperarSenha = async (req, res) => {
 const trocarSenha = async (req, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const candidate = await candidatoService.findByTokenPassword(
+      const candidato = await candidatoService.findByTokenPassword(
         req.query.token as string,
       );
       const currentLanguage = getLanguage(req);
 
-      if (!candidate) {
+      if (!candidato) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token inválido',
           csrfToken: req.csrfToken(),
@@ -758,7 +758,7 @@ const trocarSenha = async (req, res: Response) => {
         });
       }
 
-      if (candidate.validadeTokenReset < new Date()) {
+      if (candidato.validadeTokenReset < new Date()) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),
@@ -804,7 +804,7 @@ export default {
   forms,
   form1,
   form2,
-  candidates,
+  candidatos,
   backStep,
   refresh,
   formPublicacoes,

@@ -83,7 +83,7 @@ class CandidatoPublicacaoService {
     }
   }
 
-  async ListarPublicacoesCandidate(
+  async ListarPublicacoesCandidato(
     candidatoId: number,
   ): Promise<{ periodicos: any[]; conferencias: any[] }> {
     try {

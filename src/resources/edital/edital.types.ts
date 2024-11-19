@@ -1,34 +1,31 @@
-import { Edital } from '@prisma/client';
+export interface CreateEditalDto {
+  vagasDoutorado?: number;
+  cotasDoutorado?: number;
+  vagasMestrado?: number;
+  cotasMestrado?: number;
+  cartaOrientador: string;
+  cartaRecomendacao: string;
+  documento: string;
+  dataFim: Date;
+  dataInicio: Date;
+  status: number;
+  inscricoesEncerradas: number;
+  inscricoesIniciadas: number;
+  editalId: number;
+}
 
-export type CreateEditalDto = Pick<
-  Edital,
-  | 'vagaDoutorado'
-  | 'cotasDoutorado'
-  | 'vagaMestrado'
-  | 'cotasMestrado'
-  | 'cartaOrientador'
-  | 'cartaRecomendacao'
-  | 'documento'
-  | 'dataFim'
-  | 'dataInicio'
-  | 'status'
-  | 'inscricoesEncerradas'
-  | 'inscricoesIniciadas'
-  | 'editalId'
->;
-
-export type UpdateEditalDto = Pick<
-  Edital,
-  | 'vagaDoutorado'
-  | 'cotasDoutorado'
-  | 'vagaMestrado'
-  | 'cotasMestrado'
-  | 'cartaOrientador'
-  | 'cartaRecomendacao'
-  | 'documento'
-  | 'dataFim'
-  | 'dataInicio'
-  | 'inscricoesEncerradas'
-  | 'inscricoesIniciadas'
-  | 'editalId'
->;
+export interface UpdateEditalDto {
+  editalId?: number;
+  vagasDoutorado?: number;
+  cotasDoutorado?: number;
+  vagasMestrado?: number;
+  cotasMestrado?: number;
+  cartaOrientador?: string;
+  cartaRecomendacao?: string;
+  documento?: string;
+  dataFim?: Date;
+  dataInicio?: Date;
+  inscricoesEncerradas?: number;
+  inscricoesIniciadas?: number;
+  id?: number;
+}

@@ -5,8 +5,8 @@ import { generateHashPassword } from '../../utils/utils';
 const prisma = new PrismaClient();
 
 class CandidatoService {
-  validPassword(candidate, password) {
-    return candidate.validPassword(password);
+  validPassword(candidato, password) {
+    return candidato.validPassword(password);
   }
 
   async list() {
@@ -17,7 +17,7 @@ class CandidatoService {
     const step = 1;
 
     const passwordHash = await generateHashPassword(password);
-    const candidate = await prisma.candidato.create({
+    const candidato = await prisma.candidato.create({
       data: {
         email,
         senhaHash: passwordHash,
@@ -26,7 +26,7 @@ class CandidatoService {
       },
     });
 
-    delete candidate.senhaHash;
+    delete candidato.senhaHash;
     await prisma.edital.update({
       where: {
         id: editalNumber,
@@ -37,7 +37,7 @@ class CandidatoService {
         },
       },
     });
-    return candidate;
+    return candidato;
   }
 
   async findCandidatoByEmailAndEdital({ email, edital }) {
@@ -52,18 +52,18 @@ class CandidatoService {
   }
 
   async auth({ email, password, editalNumber }) {
-    const candidate = await prisma.candidato.findFirst({
+    const candidato = await prisma.candidato.findFirst({
       where: {
         email,
         editalId: editalNumber,
       },
     });
 
-    if (!candidate) {
+    if (!candidato) {
       return null;
     }
-    return (await bcrypt.compare(password, candidate.senhaHash))
-      ? candidate
+    return (await bcrypt.compare(password, candidato.senhaHash))
+      ? candidato
       : null;
   }
 
@@ -95,7 +95,7 @@ class CandidatoService {
   }
 
   async backEdital({ id }) {
-    const candidate = await prisma.candidato.findFirst({
+    const candidato = await prisma.candidato.findFirst({
       where: {
         id,
       },
@@ -105,11 +105,11 @@ class CandidatoService {
         id,
       },
       data: {
-        posicaoEdital: candidate.posicaoEdital - 1,
+        posicaoEdital: candidato.posicaoEdital - 1,
       },
     });
 
-    return candidate;
+    return candidato;
   }
 
   async updateTokenPassword({ id }) {
@@ -138,24 +138,24 @@ class CandidatoService {
   }
 
   async changePasswordWithToken({ token, password }) {
-    const candidate = await prisma.candidato.findFirst({
+    const candidato = await prisma.candidato.findFirst({
       where: {
         tokenResetSenha: token,
       },
     });
 
-    if (!candidate) {
+    if (!candidato) {
       throw new Error('Token inválido');
     }
 
-    if (candidate.validadeTokenReset < new Date()) {
+    if (candidato.validadeTokenReset < new Date()) {
       throw new Error('Token expirado');
     }
 
     const passwordHash = await generateHashPassword(password);
     return await prisma.candidato.update({
       where: {
-        id: candidate.id,
+        id: candidato.id,
       },
       data: {
         senhaHash: passwordHash,
@@ -166,7 +166,7 @@ class CandidatoService {
   }
 
   async listCanditatesByEdital(editalId: string) {
-    const candidates = await prisma.candidato
+    const candidatos = await prisma.candidato
       .findMany({
         where: {
           editalId: editalId,
@@ -176,11 +176,11 @@ class CandidatoService {
         console.error(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
-    return candidates;
+    return candidatos;
   }
 
-  async listAllInfoCandidate(id: number) {
-    const candidate = await prisma.candidato.findFirst({
+  async listAllInfocandidato(id: number) {
+    const candidato = await prisma.candidato.findFirst({
       where: {
         id,
       },
@@ -193,7 +193,7 @@ class CandidatoService {
       },
     });
 
-    return candidate;
+    return candidato;
   }
 }
 

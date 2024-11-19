@@ -1,7 +1,7 @@
 import exceljs from 'exceljs';
 import fs from 'fs';
 
-import candidateService from '../../resources/candidate/candidato.service';
+import candidateService from '../../resources/candidato/candidato_publicação.service';
 import { candidateWorksheet } from './candidatoSheet';
 import { provasWorksheet } from './provasSheet';
 import { propostasWorksheet } from './propostasSheet';

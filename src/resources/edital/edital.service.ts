@@ -174,7 +174,7 @@ class EditalService {
     return edital;
   }
 
-  async listCandidates(id: string): Promise<Candidato[]> {
+  async listCandidatos(id: string): Promise<Candidato[]> {
     const candidatos = await prisma.candidato
       .findMany({
         where: {
@@ -190,7 +190,7 @@ class EditalService {
     return candidatos;
   }
 
-  async getCandidate(id: number): Promise<Candidato | null> {
+  async getCandidato(id: number): Promise<Candidato | null> {
     try {
       return await prisma.candidato.findFirst({
         where: {
