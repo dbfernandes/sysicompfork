@@ -85,7 +85,7 @@
                 <select  id="candidato-pesquisa" class="custom-select" name="linhaPesquisa">
                   <option value="" >{{__ "ppgiForm3.linhaPesquisaPlaceholder"}}:</option>
                   {{#each linhasPesquisa}}
-                    <option value="{{id}}" {{#if (eq id ../idLinhaPesquisa)}}selected{{/if}}>{{nome}}</option>
+                    <option value="{{id}}" {{#if (eq id ../linhaPesquisaId)}}selected{{/if}}>{{nome}}</option>
                   {{/each}}
                 </select>
               </div>

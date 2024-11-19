@@ -176,18 +176,17 @@ const listar = async (req: Request, res: Response): Promise<any> => {
         const usuarios = await usuarioService.listarTodos();
         usuarios.forEach((usuario) => {
           if (usuario.administrador === 1) {
-            usuario.perfil += " administrador";
+            usuario.perfil += ' administrador';
           }
           if (usuario.coordenador === 1) {
-            usuario.perfil += " coordenador";
+            usuario.perfil += ' coordenador';
           }
           if (usuario.secretaria === 1) {
-            usuario.perfil += " secretaria";
+            usuario.perfil += ' secretaria';
           }
           if (usuario.professor === 1) {
-            usuario.perfil += " professor";
+            usuario.perfil += ' professor';
           }
-
         });
         return res.status(200).render(resolveView('usuarios-listar'), {
           usuarios,
@@ -362,7 +361,10 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const verificarDiretorExistente = async (req: Request, res: Response): Promise<any> => {
+const verificarDiretorExistente = async (
+  req: Request,
+  res: Response,
+): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
@@ -379,4 +381,12 @@ const verificarDiretorExistente = async (req: Request, res: Response): Promise<a
   }
 };
 
-export default { adicionar, listar, deletar, visualizar, editar, restaurar, verificarDiretorExistente };
+export default {
+  adicionar,
+  listar,
+  deletar,
+  visualizar,
+  editar,
+  restaurar,
+  verificarDiretorExistente,
+};

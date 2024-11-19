@@ -33,7 +33,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
 
     case 'POST': {
       const novoEdital: CreateEditalDto = {
-        editalId: req.body.num_edital,
+        editalCodigo: req.body.num_edital,
         documento: req.body.documento,
         dataInicio: req.body.data_inicio,
         dataFim: req.body.data_fim,
@@ -78,7 +78,10 @@ const listEditalSelecao = async (req: Request, res: Response) => {
         nome: req.session.nome,
         editais,
         tipoUsuario: req.session.tipoUsuario,
-        usuarioPermitido: req.session.tipoUsuario.coordenador || req.session.tipoUsuario.secretaria || req.session.tipoUsuario.administrador,
+        usuarioPermitido:
+          req.session.tipoUsuario.coordenador ||
+          req.session.tipoUsuario.secretaria ||
+          req.session.tipoUsuario.administrador,
       });
 
     case 'POST': {
@@ -143,7 +146,7 @@ const viewEdital = async (req: Request, res: Response) => {
       if (!id) {
         return res.status(400).json({ error: 'ID not found' });
       }
-      const edital = await editalService.getEdital(id);
+      const edital = await editalService.getEditalByCode(id);
 
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
@@ -164,11 +167,13 @@ const updateEdital = async (req: Request, res: Response) => {
   const { id_update } = req.params;
   switch (req.method) {
     case 'GET': {
-      const edital = await EditalService.getEdital(id_update).catch((err) => {
-        return res.status(400).json({
-          error: err.message,
-        });
-      });
+      const edital = await EditalService.getEditalByCode(id_update).catch(
+        (err) => {
+          return res.status(400).json({
+            error: err.message,
+          });
+        },
+      );
       return res.render(resolveView('editSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -179,7 +184,7 @@ const updateEdital = async (req: Request, res: Response) => {
     }
     case 'PUT': {
       const editalAtualizado: UpdateEditalDto = {
-        editalId: req.body.num_edital,
+        editalCodigo: req.body.num_edital,
         documento: req.body.documento,
         dataInicio: req.body.data_inicio,
         dataFim: req.body.data_fim,
@@ -215,7 +220,7 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       if (!id) {
         return res.status(404).json({ error: 'id não encontrado' });
       }
-      const edital = await editalService.getEdital(id);
+      const edital = await editalService.getEditalByCode(id);
 
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
@@ -413,7 +418,7 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
 const candidateDetails = async (req: Request, res: Response) => {
   try {
     const candidate = await editalService.getCandidate(Number(req.params.id));
-    const edital = await editalService.getEdital(candidate!.idEdital);
+    const edital = await editalService.getEditalById(candidate.editalId);
     const candidatoDocs = {
       Curriculum: false,
       CartaDoOrientador: false,

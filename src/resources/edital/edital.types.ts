@@ -18,7 +18,7 @@ export type CreateEditalDto = Pick<
   | 'status'
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
-  | 'editalId'
+  | 'editalCodigo'
 >;
 
 export type UpdateEditalDto = Pick<
@@ -34,5 +34,5 @@ export type UpdateEditalDto = Pick<
   | 'dataInicio'
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
-  | 'editalId'
+  | 'editalCodigo'
 >;

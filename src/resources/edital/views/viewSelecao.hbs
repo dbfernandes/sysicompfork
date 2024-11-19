@@ -1,7 +1,7 @@
 {{> header}}
 
 {{> sidebar module='edital' page='edital-listar'}}
-{{ setTitle title=(concat "Edital " edital.editalId) }}
+{{ setTitle title=(concat "Edital " edital.editalCodigo) }}
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -10,7 +10,7 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 mb-4">
                 <div>
-                    <h1>Edital: {{edital.editalId}} </h1>
+                    <h1>Edital: {{edital.editalCodigo}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
@@ -27,23 +27,23 @@
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
-                    <a class="btn btn-primary" href="/edital/updateEdital/{{edital.editalId}}">
+                    <a class="btn btn-primary" href="/edital/updateEdital/{{edital.editalCodigo}}">
                         <i class="fas fa-edit color-white"></i>
                         Editar
                     </a>
-                    <a id="btn-{{edital.editalId}}" class="btn
+                    <a id="btn-{{edital.editalCodigo}}" class="btn
                         {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}" onclick="abrirModal()">
-                        <i id="icone-{{edital.editalId}}" class="fa color-white
+                        <i id="icone-{{edital.editalCodigo}}" class="fa color-white
                             {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}">
                         </i>
                         {{#ifEqual edital.status '1'}}Não Suspenso{{else}}Suspenso{{/ifEqual}} 
                     </a>
                     {{!-- Editar aqui --}}
-                    <a id="test" class="btn btn-info" href="/edital/listEditalCandidates/{{edital.editalId}}">
+                    <a id="test" class="btn btn-info" href="/edital/listEditalCandidates/{{edital.editalCodigo}}">
                         <i class="fas fa-list color-white"></i>
                         Lista de Inscritos
                     </a>
-                    <a class="btn bg-success" href="/edital/geraPlanilha/{{edital.editalId}}">
+                    <a class="btn bg-success" href="/edital/geraPlanilha/{{edital.editalCodigo}}">
                         <i class="fas fa-file-csv color-white"></i>
                         Planilha Excel para Avaliação (Excel)
                     </a>     
@@ -68,7 +68,7 @@
 
                                     <tr>
                                         <td>Nº edital</td>
-                                        <td>{{edital.editalId}}</td>
+                                        <td>{{edital.editalCodigo}}</td>
                                     </tr>
 
                                      <tr>
@@ -231,7 +231,7 @@
 
 
         let csrfToken = "{{csrfToken}}";
-        let editalId = "{{edital.editalId}}";
+        let editalCodigo = "{{edital.editalCodigo}}";
  
 
        
@@ -239,10 +239,10 @@
         function abrirModal() {
         
             if (status == '1') {
-                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + editalId + "?");
+                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + editalCodigo + "?");
                 $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
             } else {
-                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + editalId + "?");
+                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + editalCodigo + "?");
                 $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
             }
             
@@ -263,7 +263,7 @@
             $('#modalArquivar').modal('hide');
 
             $.ajax({
-                url: `/edital/arquivarEdital/${editalId}`,
+                url: `/edital/arquivarEdital/${editalCodigo}`,
                 type: 'PUT',
                 data: dataFromForm,
                 success: function (data) {

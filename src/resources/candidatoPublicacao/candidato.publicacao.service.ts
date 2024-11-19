@@ -10,12 +10,12 @@ interface Publicacao {
   autores: {
     nomeCompleto: string[];
   };
-  ISSN?: string;
+  issn?: string;
 }
 
 class CandidatoPublicacaoService {
   async adicionarVarios(
-    idCandidato: number,
+    candidatoId: number,
     publicacoes: Publicacao[],
     tipoPublicacao: number,
   ): Promise<void> {
@@ -24,13 +24,13 @@ class CandidatoPublicacaoService {
         const ano = publicacao.ano ? parseInt(publicacao.ano.toString()) : null;
 
         const publicacaoData: any = {
-          idCandidato,
+          candidatoId,
           titulo: publicacao.titulo || '',
           local: publicacao.local || '',
           tipo: tipoPublicacao,
           natureza: publicacao.natureza || '',
           autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-          ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : '',
+          issn: publicacao.issn !== undefined ? publicacao.issn : '',
         };
 
         if (ano !== null) {
@@ -43,9 +43,9 @@ class CandidatoPublicacaoService {
       for (const publicacao of publicacoesParaInserir) {
         try {
           const existingPublication =
-            await prisma.candidatoPublicacoes.findFirst({
+            await prisma.candidatoPublicacao.findFirst({
               where: {
-                idCandidato,
+                candidatoId,
                 titulo: publicacao.titulo,
                 ano: publicacao.ano,
                 tipo: tipoPublicacao,
@@ -53,29 +53,29 @@ class CandidatoPublicacaoService {
             });
 
           if (existingPublication) {
-            await prisma.candidatoPublicacoes.update({
+            await prisma.candidatoPublicacao.update({
               where: {
-                id_idCandidato: {
+                id_candidatoId: {
                   id: existingPublication.id,
-                  idCandidato: existingPublication.idCandidato,
+                  candidatoId: existingPublication.candidatoId,
                 },
               },
               data: publicacao,
             });
             console.log(
-              `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidato}!`,
+              `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${candidatoId}!`,
             );
           } else {
-            await prisma.candidatoPublicacoes.create({
+            await prisma.candidatoPublicacao.create({
               data: publicacao,
             });
             console.log(
-              `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidato}!`,
+              `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${candidatoId}!`,
             );
           }
         } catch (error) {
           console.error(
-            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidato}: ${error}`,
+            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${candidatoId}: ${error}`,
           );
           throw new Error('Não foi possível criar/atualizar a publicação');
         }
@@ -84,19 +84,19 @@ class CandidatoPublicacaoService {
   }
 
   async ListarPublicacoesCandidate(
-    idCandidato: number,
+    candidatoId: number,
   ): Promise<{ periodicos: any[]; conferencias: any[] }> {
     try {
-      const periodicos = await prisma.candidatoPublicacoes.findMany({
+      const periodicos = await prisma.candidatoPublicacao.findMany({
         where: {
-          idCandidato,
+          candidatoId,
           tipo: TYPES_PUBLICACAO.PERIODICOS,
         },
       });
 
-      const conferencias = await prisma.candidatoPublicacoes.findMany({
+      const conferencias = await prisma.candidatoPublicacao.findMany({
         where: {
-          idCandidato,
+          candidatoId,
           tipo: TYPES_PUBLICACAO.EVENTOS,
         },
       });
@@ -108,7 +108,7 @@ class CandidatoPublicacaoService {
       return data;
     } catch (error) {
       console.error(
-        `Erro ao listar publicações do candidato ${idCandidato}: ${error}`,
+        `Erro ao listar publicações do candidato ${candidatoId}: ${error}`,
       );
       throw new Error('Não foi possível listar as publicações');
     }

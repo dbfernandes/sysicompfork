@@ -41,7 +41,7 @@
 					<select class="form-control" name="edital" id="edital">
 						<option value="">{{__ "ppgiSignIn.selectNotice"}}</option>
 						{{#each editais}}
-							<option value="{{editalId}}">{{editalId}}</option>
+							<option value="{{id}}">{{editalCodigo}}</option>
 						{{/each}}
 					</select>
 					<div class="help-block"></div>
@@ -134,7 +134,7 @@
 
 			const email = $("#email").val();
 			const senha = $("#password").val();
-			const edital = $("#edital").val();
+			const editalId = $("#edital").val();
 			const csrfToken = $("#csrfToken").val();
 
 			$.ajax({
@@ -143,7 +143,7 @@
 				data: {
 					email,
 					senha,
-					idEdital: edital,
+					editalId,
 				},
 				success: function (data) {
 					window.location.href = "{{url}}/selecaoppgi/formulario";

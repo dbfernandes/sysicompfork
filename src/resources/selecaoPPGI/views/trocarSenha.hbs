@@ -164,7 +164,7 @@
 		submitHandler: function (form, e) {
 			e.preventDefault();
 			const formData = new FormData(form);
-			const password = formData.get("password");
+			const senha = formData.get("password");
 			const btnSubmit = $("#btn-form-submit");
 			btnSubmit.attr("disabled", true);
 			btnSubmit.find("span").prop("hidden", false);
@@ -172,7 +172,7 @@
 				url: "{{url}}/selecaoppgi/trocarSenha?_csrf={{csrfToken}}",
 				type: "PUT",
 				data: {
-					password,
+					senha,
 					token: "{{token}}"
 				},
 				success: function (data) {

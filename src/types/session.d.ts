@@ -1,14 +1,20 @@
-// import 'express-session'
-
-// declare module 'express-session' {
+// declare global {
+//   declare module 'express-session' {
 //     export interface SessionData {
-//       tipoUsuario?: {
-//         administrador: boolean
-//         secretaria: boolean,
-//         coordenador: boolean
-//         professor: boolean
-//       }| undefined,
-//       uid: string,
-//       nome: string
+//       tipoUsuario?:
+//         | {
+//             administrador: number;
+//             secretaria: number;
+//             coordenador: number;
+//             diretor: number;
+//             professor: number;
+//           }
+//         | undefined;
+//       uid: string;
+//       nome: string;
+//       editalPosition?: number; // Posição no formulário de inscrição de um candidato
 //     }
+//   }
 // }
+
+// export {};

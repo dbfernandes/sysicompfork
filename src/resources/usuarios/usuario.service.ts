@@ -4,6 +4,8 @@ import { PrismaClient, Usuario } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 import { generateHashPassword } from '../../utils/utils';
+import { UsuarioNotFoundError } from './usuario.errors';
+import { sendEmail } from '../email/emailService';
 const prisma = new PrismaClient();
 
 class UsuarioService {
@@ -181,14 +183,39 @@ class UsuarioService {
     }
   }
 
-  async recuperarSenha(token: string, data: any, id: number) {
+  async recuperarSenha(data: { email: string; host: string }) {
+    const usuario = await prisma.usuario.findFirst({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (!usuario) {
+      throw new UsuarioNotFoundError(data.email);
+    }
+    const token = crypto.randomBytes(20).toString('hex');
+    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
+    const timeExpires = new Date();
+    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
+
     await prisma.usuario.update({
       where: {
-        id,
+        id: usuario.id,
       },
       data: {
         tokenResetarSenha: token,
-        validadeTokenResetadaSenha: data,
+        validadeTokenResetadaSenha: timeExpires,
+      },
+    });
+
+    const url = `http://${data.host}/alterarSenha?token=${token}`;
+    sendEmail({
+      title: '[Syscomp] Troca de senha',
+      to: usuario.email,
+      template: 'recuperarSenha',
+      data: {
+        url,
+        nome: usuario.nomeCompleto,
       },
     });
   }

@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { Orientacao, Publicacao } from './docentes.types';
+import { Orientacao, PrismaClient, Publicacao } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -19,14 +18,14 @@ class DocenteService {
         resumoIngles: true,
         ultimaAtualizacao: true,
         createdAt: true,
-        Avatar: true,
+        Avatares: true,
       },
     });
 
     if (usuario) {
       const usuarioDict = {
         ...usuario,
-        Avatar: usuario.Avatar,
+        Avatar: usuario.Avatares[0],
         perfil: this.perfis(usuario),
         createdAt: new Date(usuario.createdAt)
           .toLocaleString('pt-BR', {
@@ -41,7 +40,7 @@ class DocenteService {
 
   async listarPublicacoes(id: number) {
     const relacoesPublicacoes = await prisma.relUsuarioPublicacao.findMany({
-      where: { idUsuario: id },
+      where: { usuarioId: id },
       include: {
         Publicacao: {
           include: {
@@ -64,16 +63,16 @@ class DocenteService {
     };
 
     relacoesPublicacoes.forEach((rel) => {
-      const publi: Publicacao = rel.Publicacao;
-      const publiDict: Publicacao = {
+      const publi = rel.Publicacao;
+      const publiDict = {
         ...publi,
         TipoPublicacao: publi.TipoPublicacao,
       };
-      if (publi.tipo === 1) {
+      if (publi.tipoPublicacaoId === 1) {
         publicacoesDict.artigosConferencias.push(publiDict);
-      } else if (publi.tipo === 2) {
+      } else if (publi.tipoPublicacaoId === 2) {
         publicacoesDict.artigosPeriodicos.push(publiDict);
-      } else if (publi.tipo === 3) {
+      } else if (publi.tipoPublicacaoId === 3) {
         publicacoesDict.livros.push(publiDict);
       } else {
         publicacoesDict.capitulos.push(publiDict);
@@ -85,7 +84,7 @@ class DocenteService {
 
   async listarPesquisas(id: number) {
     const pesquisas = await prisma.projeto.findMany({
-      where: { idProfessor: id },
+      where: { professorId: id },
       orderBy: { inicio: 'desc' },
     });
 
@@ -96,9 +95,9 @@ class DocenteService {
   }
 
   async listarOrientacoes(id: number, tipo: number) {
-    const orientacoes: Orientacao[] = await prisma.orientacao.findMany({
+    const orientacoes = await prisma.orientacao.findMany({
       where: {
-        idProfessor: id,
+        professorId: id,
         tipo,
       },
       orderBy: { ano: 'desc' },
@@ -110,7 +109,7 @@ class DocenteService {
     };
 
     if (orientacoes) {
-      orientacoes.forEach((orientacao: Orientacao) => {
+      orientacoes.forEach((orientacao) => {
         if (orientacao.status === 1) {
           orientacoesDict.andamento.push(orientacao);
         } else {
@@ -122,8 +121,8 @@ class DocenteService {
   }
 
   async listarPremios(id: number) {
-    const premios = await prisma.premios.findMany({
-      where: { idProfessor: id },
+    const premios = await prisma.premio.findMany({
+      where: { professorId: id },
       orderBy: { ano: 'desc' },
     });
 

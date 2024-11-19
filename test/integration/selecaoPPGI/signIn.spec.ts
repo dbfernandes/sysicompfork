@@ -1,9 +1,8 @@
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import app from '../../../src/app';
-import editalService from '../../../src/resources/edital/edital.service';
-import candidatoService from '../../../src/resources/candidato/candidato.service';
-import { StatusCodes } from 'http-status-codes';
 import { SignInDto } from '../../../src/resources/candidato/candidato.types';
+import { candidatos } from '../../../prisma/seed-data/candidatos';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
@@ -16,129 +15,11 @@ function extractCsrfTokenFromBody(res: request.Response): string {
   }
 }
 
-const listEditaisValues = [
-  {
-    editalId: '001-2023',
-    vagaDoutorado: 2,
-    cotasDoutorado: 2,
-    vagaMestrado: 5,
-    cotasMestrado: 5,
-    cartaOrientador: '1',
-    cartaRecomendacao: '1',
-    documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2023-08-23T00:00:00.000Z',
-    dataFim: '2023-09-09T00:00:00.000Z',
-    status: '1',
-    inscricoesIniciadas: 0,
-    inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
-  },
-  {
-    editalId: '002-2023',
-    vagaDoutorado: 6,
-    cotasDoutorado: 8,
-    vagaMestrado: 1,
-    cotasMestrado: 3,
-    cartaOrientador: '0',
-    cartaRecomendacao: '1',
-    documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2023-06-01T00:00:00.000Z',
-    dataFim: '2023-06-27T00:00:00.000Z',
-    status: '0',
-    inscricoesIniciadas: 0,
-    inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
-  },
-  {
-    editalId: '003-2024',
-    vagaDoutorado: 9,
-    cotasDoutorado: 2,
-    vagaMestrado: 2,
-    cotasMestrado: 3,
-    cartaOrientador: '1',
-    cartaRecomendacao: '0',
-    documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2024-07-14T00:00:00.000Z',
-    dataFim: '2024-09-01T00:00:00.000Z',
-    status: '1',
-    inscricoesIniciadas: 0,
-    inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
-  },
-  {
-    editalId: '004-2023',
-    vagaDoutorado: 5,
-    cotasDoutorado: 2,
-    vagaMestrado: 10,
-    cotasMestrado: 3,
-    cartaOrientador: '1',
-    cartaRecomendacao: '1',
-    documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2024-09-01',
-    dataFim: '2024-10-31',
-    status: '1',
-    inscricoesIniciadas: 1,
-    inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:33:24.042Z'),
-  },
-];
-
-const candidateValue = {
-  id: 1,
-  posicaoEdital: 4,
-  senhaHash: '$2b$10$iZ.MxrVV8u4jPpA8fFlTPOkO51GnJclQIxexd1rW25yIaXdO6h2U2',
-  tokenResetSenha: null,
-  validadeTokenReset: null,
-  idEdital: '001-2023',
-  idLinhaPesquisa: 1,
-  nome: 'Francisco Rivail Santos da Luz Junior',
-  email: 'test@example.com',
-  dataNascimento: new Date('2003-04-27T00:00:00.000Z'),
-  pais: null,
-  passaporte: null,
-  cpf: '700.833.382-09',
-  sexo: 'M',
-  nomeSocial: '',
-  cep: '69089-140',
-  uf: 'AM',
-  endereco: 'Rua Rio Xanxerê',
-  cidade: 'Manaus',
-  bairro: 'Armando Mendes',
-  nacionalidade: 'Brasileira',
-  telefone: '(92)99299-9106',
-  telefoneSecundario: null,
-  comoSoube: 'Facebook',
-  cursoDesejado: 'Mestrado',
-  regime: 'Integral',
-  cotista: false,
-  cotistaTipo: '',
-  condicao: false,
-  condicaoTipo: '',
-  bolsista: false,
-  cursoGraduacao: 'Ciência da Computação',
-  instituicaoGraduacao: 'UFAM',
-  anoEgressoGraduacao: '2000',
-  cursoPos: '',
-  tipoPos: null,
-  instituicaoPos: '',
-  anoEgressoPos: '',
-  tituloProposta: 'teste',
-  motivos: '',
-  nomeOrientador: 'teste',
-};
-
 const agent = request.agent(app);
 describe('Rota Login', () => {
   let csrfToken: string;
-
+  const candidato = candidatos[0];
   beforeAll(async () => {
-    editalService.criarEdital(listEditaisValues[0]);
-    editalService.criarEdital(listEditaisValues[1]);
-
     // Obter o formulário e o token CSRF
     const getResponse = await agent.get('/selecaoppgi/entrar');
     csrfToken = extractCsrfTokenFromBody(getResponse);
@@ -151,23 +32,17 @@ describe('Rota Login', () => {
         .set('Accept', 'text/html');
 
       expect(response.status).toBe(200);
-      expect(response.text).toContain('<b>Login</b>'); // Ajuste conforme o conteúdo da sua view
+      expect(response.text).toContain('<b>Login</b>');
     });
   });
 
   describe('POST /selecaoppgi/entrar', () => {
     it('deve autenticar e iniciar sessão quando os dados são válidos', async () => {
-      await candidatoService.create({
-        email: candidateValue.email,
-        senha: 'password123',
-        idEdital: candidateValue.idEdital,
-      });
-
-      const loginValue = {
-        email: candidateValue.email,
-        senha: 'password123',
-        idEdital: candidateValue.idEdital,
-      } as SignInDto;
+      const loginValue: SignInDto = {
+        email: candidato.email,
+        senha: 'senha123',
+        editalId: candidato.editalId,
+      };
 
       const response = await agent
         .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
@@ -181,7 +56,7 @@ describe('Rota Login', () => {
       const response = await agent
         .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
         .send({
-          email: candidateValue.email,
+          email: candidato.email,
           senha: 'password123',
         })
         .set('Accept', 'application/json');
@@ -193,9 +68,9 @@ describe('Rota Login', () => {
       const response = await agent
         .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
         .send({
-          email: candidateValue.email,
+          email: candidato.email,
           senha: 'password1234',
-          idEdital: candidateValue.idEdital,
+          editalId: candidato.editalId,
         })
         .set('Accept', 'application/json');
       expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
@@ -205,9 +80,9 @@ describe('Rota Login', () => {
       const response = await agent
         .post(`/selecaoppgi/entrar?_csrf=${csrfToken}`)
         .send({
-          email: candidateValue.email,
+          email: candidato.email,
           senha: 'password1234',
-          idEdital: candidateValue.idEdital,
+          editalId: candidato.editalId,
         })
         .set('Accept', 'application/json');
       expect(response.status).toBe(StatusCodes.UNAUTHORIZED);

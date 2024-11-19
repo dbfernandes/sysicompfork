@@ -15,6 +15,11 @@
     "noImplicitAny": false,
     "resolveJsonModule": true
   },
-  "include": ["./src/**/*", "./src/**/*.d.ts", "./test/**/*"],
+  "include": [
+    "./src/**/*",
+    "./src/**/*.d.ts",
+    "./test/**/*",
+    "./prisma/seed-data"
+  ],
   "exclude": ["./build", "node_modules"]
 }

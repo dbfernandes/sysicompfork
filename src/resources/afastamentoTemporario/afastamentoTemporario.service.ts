@@ -1,10 +1,11 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { AfastamentoTemporario, PrismaClient } from '@prisma/client';
+import { CreateAfastamentoTemporarioDto } from './afastamentoTemporario.types';
 const prisma = new PrismaClient();
 
 class AfastamentoService {
   async listarAfastamentosDoUsuario(id: string) {
     try {
-      const allResearchLines = await prisma.afastamentoTemporarios.findMany({
+      const allResearchLines = await prisma.afastamentoTemporario.findMany({
         where: {
           usuarioId: parseInt(id),
         },
@@ -47,7 +48,7 @@ class AfastamentoService {
 
   async listarTodos() {
     try {
-      const allResearchLines = await prisma.afastamentoTemporarios.findMany();
+      const allResearchLines = await prisma.afastamentoTemporario.findMany();
       const dataFormatada = allResearchLines.map((afastamento: any) => {
         afastamento.dataCriacaoFormata = new Date(
           afastamento.createdAt,
@@ -82,9 +83,9 @@ class AfastamentoService {
     }
   }
 
-  async criar(newAfastamento: Prisma.AfastamentoTemporariosCreateInput) {
+  async criar(newAfastamento: CreateAfastamentoTemporarioDto) {
     try {
-      await prisma.afastamentoTemporarios.create({
+      await prisma.afastamentoTemporario.create({
         data: {
           ...newAfastamento,
         },
@@ -97,7 +98,7 @@ class AfastamentoService {
   }
 
   async retornarAfastamento(id: string) {
-    const afastamento = await prisma.afastamentoTemporarios.findUnique({
+    const afastamento = await prisma.afastamentoTemporario.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -106,7 +107,7 @@ class AfastamentoService {
   }
 
   async vizualizar(id: string) {
-    const afastamento = await prisma.afastamentoTemporarios.findUnique({
+    const afastamento = await prisma.afastamentoTemporario.findUnique({
       where: { id: parseInt(id) },
     });
     if (!afastamento) return null;
@@ -143,7 +144,7 @@ class AfastamentoService {
   }
 
   async delete(id: string) {
-    await prisma.afastamentoTemporarios.delete({
+    await prisma.afastamentoTemporario.delete({
       where: {
         id: parseInt(id),
       },

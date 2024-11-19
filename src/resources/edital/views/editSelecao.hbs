@@ -1,6 +1,6 @@
 {{> header}}
 {{> sidebar module='selecaoppgi' page='adital-listar'}}
-{{ setTitle title=(concat "Alterar Edital do PPGI " edital.editalId) }}
+{{ setTitle title=(concat "Alterar Edital do PPGI " edital.editalCodigo) }}
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -9,13 +9,13 @@
         <div class="container-fluid ml-2">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Alterar Edital do PPGI {{edital.editalId}}</h1>
+                    <h1>Alterar Edital do PPGI {{edital.editalCodigo}}</h1>
                 </div>
                 <div >
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item active"><a href="/edital/listEdital">Editais</a></li>
-                        <li class="breadcrumb-item active">{{edital.editalId}}</li>
+                        <li class="breadcrumb-item active">{{edital.editalCodigo}}</li>
                         <li class="breadcrumb-item active">Update</li>
                     </ol>
                 </div>
@@ -55,7 +55,7 @@
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
                                             <label> Número do Edital:</label>
-                                            <input type="text" class="form-control edital" id="num_edital" name="num_edital" value={{edital.editalId}} disabled>
+                                            <input type="text" class="form-control edital" id="num_edital" name="num_edital" value={{edital.editalCodigo}} disabled>
                                             <div class="hint-block">
                                                 <span>Ex.: 001-2023, sendo o <b>'001'</b> o número do edital e <b>'2023'</b> o ano</span>
                                             </div>
@@ -421,7 +421,7 @@
 
                     dados._csrf = $("#_csrf").val();
                     $.ajax({
-                        url: '{{url}}/edital/updateEdital/{{edital.editalId}} ',
+                        url: '{{url}}/edital/updateEdital/{{edital.editalCodigo}} ',
                         type: 'PUT',
                         data: dados,
                         success: function (data) {

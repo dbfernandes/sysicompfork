@@ -209,6 +209,43 @@ function setTitle(options) {
 function concat() {
   return Array.prototype.slice.call(arguments, 0, -1).join('');
 }
+
+function dataAtualExtensa() {
+  const date = new Date();
+  return date.toLocaleString('pt-BR', {
+    timeZone: 'America/Manaus',
+    timeZoneName: 'long',
+  });
+}
+
+function formatarDataExtensa(date) {
+  if (!date) return '';
+
+  // Verifique se 'date' é uma instância de Date ou uma string válida
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+
+  return dateObj.toLocaleDateString('pt-BR', {
+    timeZone: 'America/Manaus',
+    timeZoneName: 'long',
+  });
+}
+
+function dataAtualToLocaleString() {
+  return new Date().toLocaleString();
+}
+
+function dataToLocaleString(date) {
+  if (!date) return '';
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+  return dateObj.toLocaleString();
+}
 module.exports = {
   ...ops,
   ifEqual,
@@ -232,4 +269,8 @@ module.exports = {
   isEnLng,
   setTitle,
   concat,
+  formatarDataExtensa,
+  dataAtualExtensa,
+  dataAtualToLocaleString,
+  dataToLocaleString,
 };

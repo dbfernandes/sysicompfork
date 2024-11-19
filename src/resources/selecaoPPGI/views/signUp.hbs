@@ -125,7 +125,7 @@
 								{{#each editais}}
 								<div class="edital-item">
 									<div class="edital-item-body">
-										<b>{{__ "ppgiSignUp.editalNumber"}}</b> {{editalId}}<br>
+										<b>{{__ "ppgiSignUp.editalNumber"}}</b> {{editalCodigo}}<br>
 										<b>{{__ "ppgiSignUp.registrationPeriod"}}</b><br>
 										<ul>
 											<li><b>{{__ "ppgiSignUp.start"}}</b> {{formataData dataInicio}}</li>
@@ -170,7 +170,7 @@
 									<select class="form-control" id="edital" name="edital">
 										<option value="">{{__ "ppgiSignUp.selectEdital"}}</option>
 										{{#each editais}}
-											<option value="{{editalId}}">{{editalId}}</option>
+											<option value="{{id}}">{{editalCodigo}}</option>
 										{{/each}}
 									</select>
 								</div>
@@ -271,8 +271,8 @@
 					data: {
 						email,
 						senha,
-						idEdital: edital,
-					},
+						editalId: edital,
+					},	
 					success: function (data) {
 						window.location.href = "{{url}}/selecaoppgi/formulario";		
 					},

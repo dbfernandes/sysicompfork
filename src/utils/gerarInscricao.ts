@@ -14,8 +14,8 @@ import {
 } from './pdf';
 import candidatoService from '../resources/candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
-import { Publicacao } from '@prisma/client';
 import { Nacionalidade } from '../resources/selecaoPPGI/selecaoppgi.types';
+import { CandidatoPublicacao } from '@prisma/client';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
@@ -23,7 +23,7 @@ function formatarNumeroInscricao(numberId: number): string {
   return num.substring(0, num.length - id.length) + id;
 }
 
-function formatarPublicacao(publicacao: Publicacao) {
+function formatarPublicacao(publicacao: CandidatoPublicacao) {
   return `${publicacao.autores.split(',').join(';')}; ${publicacao.titulo} ${publicacao.local}. ${publicacao.ano}.`;
 }
 
@@ -51,7 +51,7 @@ export async function gerarPDF(id: number) {
         },
         {
           label: 'Edital: ',
-          value: candidato.idEdital,
+          value: candidato.Edital.editalCodigo,
         },
       ],
       [
@@ -116,7 +116,7 @@ export async function gerarPDF(id: number) {
     ];
     const pesquisa = [
       [{ label: 'Título da proposta:', value: candidato.tituloProposta }],
-      [{ label: 'Linha de pesquisa:', value: candidato.LinhasDePesquisa.nome }],
+      [{ label: 'Linha de pesquisa:', value: candidato.linhaPesquisa.nome }],
     ];
 
     const outrasInformacoes = [
@@ -144,7 +144,7 @@ export async function gerarPDF(id: number) {
       ],
     ];
 
-    const recomendacoes = candidato.CandidatoRecomendacao.map(
+    const recomendacoes = candidato.CandidatoRecomendacoes.map(
       (recomendacao) => {
         return [
           {
@@ -159,8 +159,8 @@ export async function gerarPDF(id: number) {
       },
     );
 
-    const atividades = candidato.CandidatoExperienciaAcademica.length
-      ? candidato.CandidatoExperienciaAcademica.reduce((acc, curr) => {
+    const atividades = candidato.CandidatoExperienciaAcademicas.length
+      ? candidato.CandidatoExperienciaAcademicas.reduce((acc, curr) => {
           acc.push([
             {
               label: 'Atividade:',
@@ -341,11 +341,10 @@ export async function gerarPDF(id: number) {
 
     // Criar o documento PDF
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-
     // Caminho para salvar o arquivo na pasta public
     const outputPath = path.join(
       __dirname,
-      '../../..',
+      '../..',
       'public',
       'uploads',
       'candidato',

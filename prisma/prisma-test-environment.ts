@@ -29,7 +29,6 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
 
     // Gera um nome único para o banco de dados de teste
     this.databaseName = `test_${crypto.randomUUID()}`;
-    // console.log('this.databaseName', `mysql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${this.databaseName}`);
     this.connectionString = `mysql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${this.databaseName}`;
   }
 
@@ -40,8 +39,8 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
       port: Number(process.env.DATABASE_PORT),
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASS,
-      multipleStatements: true, 
-    })
+      multipleStatements: true,
+    });
 
     // Cria o banco de dados de teste
     await rootConnection.query(`CREATE DATABASE \`${this.databaseName}\`;`);
@@ -53,22 +52,26 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
 
     // Executa as migrações do Prisma no banco de dados de teste
     await execSync(`${prismaBinary} migrate deploy`);
-    
+    await execSync(`${prismaBinary} db seed`);
+    console.log('this.databaseName', this.databaseName);
+
     return super.setup();
   }
 
   async teardown() {
     // Conecta-se ao MySQL sem especificar um banco de dados para dropar o banco de dados de teste
     const rootConnection = await mysql.createConnection({
-        host: process.env.DATABASE_HOST,
-        port: Number(process.env.DATABASE_PORT),
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASS,
-        multipleStatements: true, 
+      host: process.env.DATABASE_HOST,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASS,
+      multipleStatements: true,
     });
 
     // Droppa o banco de dados de teste
-    await rootConnection.query(`DROP DATABASE IF EXISTS \`${this.databaseName}\`;`);
+    await rootConnection.query(
+      `DROP DATABASE IF EXISTS \`${this.databaseName}\`;`,
+    );
     await rootConnection.end();
 
     return super.teardown();

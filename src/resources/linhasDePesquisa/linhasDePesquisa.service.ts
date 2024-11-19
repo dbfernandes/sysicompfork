@@ -1,35 +1,37 @@
-import { PrismaClient, LinhasDePesquisa } from "@prisma/client"
-const prisma = new PrismaClient()
+import { PrismaClient, LinhaDePesquisa } from '@prisma/client';
+const prisma = new PrismaClient();
 
 // CRUD da pagina de linhas de pesquisa
 
-export default new class LinhasDePesquisaService {
-  async list (): Promise<LinhasDePesquisa[]> {
-    return await prisma.linhasDePesquisa.findMany()
+export default new (class LinhasDePesquisaService {
+  async list(): Promise<LinhaDePesquisa[]> {
+    return await prisma.linhaDePesquisa.findMany();
   }
 
-  async findById (id: number): Promise<LinhasDePesquisa | null>{
-    return await prisma.linhasDePesquisa.findFirst({ where: { id } })
+  async findById(id: number): Promise<LinhaDePesquisa | null> {
+    return await prisma.linhaDePesquisa.findFirst({ where: { id } });
   }
 
-  async findByName (name: string): Promise<LinhasDePesquisa | null>{
-    return await prisma.linhasDePesquisa.findFirst({ where: { nome: name } })
+  async findByName(name: string): Promise<LinhaDePesquisa | null> {
+    return await prisma.linhaDePesquisa.findFirst({ where: { nome: name } });
   }
 
-  async findBySigla (sigla: string): Promise<LinhasDePesquisa | null>{
-    return await prisma.linhasDePesquisa.findFirst({ where: { sigla } })
+  async findBySigla(sigla: string): Promise<LinhaDePesquisa | null> {
+    return await prisma.linhaDePesquisa.findFirst({ where: { sigla } });
   }
 
-  async criar (newResearchLine: any): Promise<LinhasDePesquisa> {
-    return await prisma.linhasDePesquisa.create({ data: newResearchLine })
+  async criar(newResearchLine: any): Promise<LinhaDePesquisa> {
+    return await prisma.linhaDePesquisa.create({ data: newResearchLine });
   }
 
-  async update (id: number, linhaDePesquisa: any): Promise<LinhasDePesquisa> {
-    return await prisma.linhasDePesquisa.update({ where: { id }, data: linhaDePesquisa })
+  async update(id: number, linhaDePesquisa: any): Promise<LinhaDePesquisa> {
+    return await prisma.linhaDePesquisa.update({
+      where: { id },
+      data: linhaDePesquisa,
+    });
   }
 
-  async delete (id: number): Promise<LinhasDePesquisa> {
-    return await prisma.linhasDePesquisa.delete({ where: { id } })
+  async delete(id: number): Promise<LinhaDePesquisa> {
+    return await prisma.linhaDePesquisa.delete({ where: { id } });
   }
-
-}()
+})();

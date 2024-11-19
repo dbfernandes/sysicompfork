@@ -1,20 +1,11 @@
-// test/integration/signUp.spec.ts
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
-import app from '../../../src/app'; // Ajuste o caminho conforme necessário
-import candidatoService from '../../../src/resources/candidato/candidato.service';
-import EditalService from '../../../src/resources/edital/edital.service';
-
-// Mock dos serviços
-jest.mock('../../../src/resources/candidato/candidato.service');
-jest.mock('../../../src/resources/edital/edital.service');
-
-const agent = request.agent(app);
-let csrfToken: string;
+import app from '../../../src/app';
+import { SignUpDto } from '../../../src/resources/candidato/candidato.types';
+import { candidatos } from '../../../prisma/seed-data/candidatos';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
-
-  // Expressão regular para encontrar o campo _csrf no HTML
   const csrfTokenMatch = body.match(/name="_csrf" value="([^"]+)"/);
 
   if (csrfTokenMatch && csrfTokenMatch[1]) {
@@ -24,107 +15,65 @@ function extractCsrfTokenFromBody(res: request.Response): string {
   }
 }
 
+const agent = request.agent(app);
 describe('Rota SignUp', () => {
+  let csrfToken: string;
+  const candidato = candidatos[0];
+  const pathTest = '/selecaoppgi/cadastro';
   beforeAll(async () => {
-    // Configurar mocks antes dos testes
-    (EditalService.listEditalsAvailable as jest.Mock).mockResolvedValue([
-      // Mock dos editais disponíveis
-      { id: 1, name: 'Edital 1' },
-    ]);
-    const response = await agent.get('/selecaoppgi/cadastro');
-    csrfToken = extractCsrfTokenFromBody(response);
+    // Obter o formulário e o token CSRF
+    const getResponse = await agent.get(pathTest);
+    csrfToken = extractCsrfTokenFromBody(getResponse);
   });
 
   describe('GET /selecaoppgi/cadastro', () => {
-    it('deve renderizar a view signUp com status 200', async () => {
-      const response = await request(app)
-        .get('/selecaoppgi/cadastro')
-        .set('Accept', 'text/html');
-      expect(response.status).toBe(200);
-      expect(response.text).toContain('<h1>Editais Disponíveis</h1>');
+    it('deve renderizar a view signIn com status 200', async () => {
+      const response = await agent.get(pathTest).set('Accept', 'text/html');
+
+      expect(response.status).toBe(StatusCodes.OK);
+      expect(response.text).toContain('<b>Instruções:</b>');
     });
   });
 
   describe('POST /selecaoppgi/cadastro', () => {
-    it('deve criar um novo candidato quando os dados são válidos', async () => {
-      (
-        candidatoService.findCandidatoByEmailAndEdital as jest.Mock
-      ).mockResolvedValue(null);
-      (candidatoService.create as jest.Mock).mockResolvedValue({
-        email: 'test@example.com',
-        idEdital: 1,
-        id: 123,
-        posicaoEdital: 1,
-      });
+    it('deve retornar 422 quando os dados são incompletos', async () => {
+      const dataPost = {
+        senha: 'password123',
+        editalId: 1,
+      };
       const response = await agent
-        .post('/selecaoppgi/cadastro')
-        .send({
-          email: 'test@example.com',
-          senha: 'password123',
-          edital: '1',
-          _csrf: csrfToken,
-        })
+        .post(`${pathTest}?_csrf=${csrfToken}`)
+        .send(dataPost)
         .set('Accept', 'application/json');
-      expect(response.status).toBe(201);
+
+      expect(response.status).toBe(StatusCodes.UNPROCESSABLE_ENTITY);
     });
 
-    it('deve retornar 403 quando os dados são incompletos', async () => {
+    it('deve retornar 409 quando o candidato já existe para o edital', async () => {
       const response = await agent
-        .post('/selecaoppgi/cadastro')
+        .post(`${pathTest}?_csrf=${csrfToken}`)
         .send({
-          email: 'test@example.com',
-          senha: '',
-          edital: '1',
-          _csrf: csrfToken,
+          email: candidato.email,
+          senha: 'password1234',
+          editalId: candidato.editalId,
         })
         .set('Accept', 'application/json');
-
-      expect(response.status).toBe(403);
-      expect(response.body.error).toBe('Dados incompletos ou mal formatados');
+      expect(response.status).toBe(StatusCodes.CONFLICT);
     });
 
-    it('deve retornar 409 quando o candidato já existe', async () => {
-      (
-        candidatoService.findCandidatoByEmailAndEdital as jest.Mock
-      ).mockResolvedValue({
-        id: 123,
-        email: 'existing@example.com',
-      });
+    it('deve retornar 201 quando criar corretamente um candidato', async () => {
+      const loginValue: SignUpDto = {
+        email: 'teste2@gmail.com',
+        senha: 'senha123',
+        editalId: 1,
+      };
 
       const response = await agent
-        .post('/selecaoppgi/cadastro')
-        .send({
-          email: 'existing@example.com',
-          senha: 'password123',
-          edital: '1',
-          _csrf: csrfToken,
-        })
+        .post(`${pathTest}?_csrf=${csrfToken}`)
+        .send(loginValue)
         .set('Accept', 'application/json');
 
-      expect(response.status).toBe(409);
-      expect(response.body.error).toBe('Candidato já existe para este edital');
-    });
-
-    it('deve retornar 500 em caso de erro no servidor', async () => {
-      (
-        candidatoService.findCandidatoByEmailAndEdital as jest.Mock
-      ).mockResolvedValue(null);
-      (candidatoService.create as jest.Mock).mockRejectedValue(
-        new Error('Erro no banco de dados'),
-      );
-
-      const response = await agent
-        .post('/selecaoppgi/cadastro')
-        .send({
-          email: 'test@example.com',
-          senha: 'password123',
-          edital: '1',
-          _csrf: csrfToken,
-        })
-        .set('Accept', 'application/json');
-
-      expect(response.status).toBe(500);
-      expect(response.body.error).toBe('Não foi possível criar o candidato');
+      expect(response.status).toBe(StatusCodes.CREATED);
     });
   });
 });

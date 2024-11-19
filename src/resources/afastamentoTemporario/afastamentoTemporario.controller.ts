@@ -62,15 +62,15 @@ const criar = async (req: Request, res: Response) => {
     });
   } else {
     try {
-      const { uid, nome } = req.session
+      const { uid, nome } = req.session;
       const {
         dataSaida,
         dataRetorno,
         tipoViagem,
         localViagem,
         justificativa,
-        planoReposicao
-      } = req.body
+        planoReposicao,
+      } = req.body;
       const afastamento = {
         usuarioId: Number(uid),
         usuarioNome: nome!,
@@ -79,9 +79,9 @@ const criar = async (req: Request, res: Response) => {
         tipoViagem,
         localViagem,
         justificativa,
-        planoReposicao
-      }
-      await afastamentoService.criar(afastamento)
+        planoReposicao,
+      };
+      await afastamentoService.criar(afastamento);
     } catch (error: any) {
       return res.render(resolveView('solicitar-afastamento'), {
         pageTitle,

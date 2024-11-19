@@ -1,17 +1,15 @@
 // src/modules/curriculo/curriculo.controller.ts
 import { Request, Response } from 'express';
-import { CreateAvatarDto } from '../avatar/avatar.types';
 
-import AvatarService from '../avatar/avatar.service';
-import PublicacaoService from '../publicacao/publicacao.service';
-import PremioService from '../premio/premio.service';
-import UsuarioService from '../usuarios/usuario.service';
-import ProjetoService from '../projetos/projetos.service';
-import OrientacaoService from '../orientacao/orientacao.service';
-import criarURL from '../../utils/criarUrl';
 import path from 'path';
 import upload from '../../middlewares/multer.config';
-
+import criarURL from '../../utils/criarUrl';
+import AvatarService from '../avatar/avatar.service';
+import OrientacaoService from '../orientacao/orientacao.service';
+import PremioService from '../premio/premio.service';
+import ProjetoService from '../projetos/projetos.service';
+import PublicacaoService from '../publicacao/publicacao.service';
+import UsuarioService from '../usuarios/usuario.service';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);

@@ -3,9 +3,9 @@ import candidatoRecomendacaoController from './candidato.recomendacao.controller
 
 const router = express.Router();
 
-router.post('/adicionar', candidatoRecomendacaoController.adicionar);
-router.get('/adicionar', candidatoRecomendacaoController.adicionar);
+router.get('/', candidatoRecomendacaoController.begin);
 
 router.put('/salvar/:token', candidatoRecomendacaoController.salvar);
 router.put('/finalizar/:token', candidatoRecomendacaoController.finalizar);
+
 export default router;

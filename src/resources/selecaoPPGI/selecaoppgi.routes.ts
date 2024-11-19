@@ -10,6 +10,7 @@ import validate from '../../middlewares/validate';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
 import selecaoppgiController from './selecaoppgi.controller';
 import {
+  changePasswordSchema,
   recoverPasswordSchema,
   signInSchema,
   signUpSchema,
@@ -19,9 +20,10 @@ const router = express.Router();
 
 router.use(languageMiddleware);
 
+//Rotas de recomendação
 router.use('/recomendacoes', routerCandidatoRecomendacao);
 
-router.get('/', selecaoppgiController.begin);
+router.get('/', selecaoppgiController.inicio);
 
 //Rotas de cadastro
 router.get('/cadastro', selecaoppgiController.signUp);
@@ -41,8 +43,13 @@ router.post(
 
 //Rotas de troca de senha
 router.get('/trocarSenha', selecaoppgiController.trocarSenha);
-router.put('/trocarSenha', selecaoppgiController.trocarSenha);
+router.put(
+  '/trocarSenha',
+  validate(changePasswordSchema),
+  selecaoppgiController.trocarSenha,
+);
 
+///////////////////////////////////////////////
 //Rotas que necessitam de autenticação
 router.use(isAuthSelecao);
 
@@ -66,8 +73,6 @@ router.post(
   uploads,
   selecaoppgiController.formPublicacoes,
 );
-
-router.get('/candidates', selecaoppgiController.candidates);
 
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
 
