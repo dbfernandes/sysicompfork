@@ -1,36 +1,37 @@
 import crypto from 'crypto';
-import { PrismaClient, Usuario } from '@prisma/client';
+import { Prisma, PrismaClient, Usuario } from '@prisma/client';
 
 import bcrypt from 'bcrypt';
 
 import { generateHashPassword } from '../../utils/utils';
+import {
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  UpdateUsuarioWithPassword,
+  UsuarioWithDate,
+} from './usuario.types';
 const prisma = new PrismaClient();
 
 class UsuarioService {
-  async adicionar(usuario: any): Promise<Usuario> {
+  async adicionar(usuario: CreateUsuarioDto): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
-
     return await prisma.usuario.create({ data: { ...usuario, senhaHash } });
   }
 
-  async alterar(id: number, user: any) {
+  async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {
     if ('senha' in user && user.senha !== '') {
       user.senhaHash = await generateHashPassword(user.senha);
     }
     await prisma.usuario.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: user,
     });
   }
 
-  async alterarInfo(id: number, user: any) {
+  async alterarInfo(id: number, user: UpdateUsuarioDto): Promise<void> {
     await prisma.usuario.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: user,
     });
   }
@@ -39,7 +40,7 @@ class UsuarioService {
     return await prisma.usuario.findMany();
   }
 
-  async listarUmUsuario(id: number): Promise<any> {
+  async listarUmUsuario(id: number): Promise<UsuarioWithDate> {
     const usuario = await prisma.usuario.findUnique({
       where: {
         id: Number(id),
@@ -66,39 +67,33 @@ class UsuarioService {
         createdAt: true,
       },
     });
-    const usuarioDict = usuario;
-    if (!usuarioDict) throw new Error('Usuário não encontrado');
-    if (usuarioDict.status === 1) {
-      if (usuarioDict.administrador === 1)
-        usuarioDict.perfil += ' Administrador |';
-      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |';
-      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |';
-      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |';
 
-      if (usuarioDict.perfil!.endsWith(' |')) {
-        usuarioDict.perfil = usuarioDict.perfil!.substring(
-          0,
-          usuarioDict.perfil!.length - 2,
-        );
+    if (!usuario) throw new Error('Usuário não encontrado');
+
+    if (usuario.status === 1) {
+      if (usuario.administrador === 1) usuario.perfil += ' Administrador |';
+      if (usuario.coordenador === 1) usuario.perfil += ' Coordenador |';
+      if (usuario.professor === 1) usuario.perfil += ' Professor |';
+      if (usuario.secretaria === 1) usuario.perfil += ' Secretaria |';
+      if (usuario.perfil?.endsWith(' |')) {
+        usuario.perfil = usuario.perfil.substring(0, usuario.perfil.length - 2);
       }
     }
-    // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
-    //   timeZone: 'America/Manaus'
-    // }).slice(0, 10)
-    const usuarioComDataFormatada = {
-      ...usuarioDict,
-      DateFormatada: new Date(usuarioDict.createdAt)
+
+    return {
+      ...usuario,
+      DateFormatada: new Date(usuario.createdAt)
         .toLocaleString('pt-BR', {
           timeZone: 'America/Manaus',
         })
         .slice(0, 10),
     };
-
-    return usuarioComDataFormatada;
   }
 
-  async listarTodosPorCondicao(data: any): Promise<any[]> {
-    const usuarios = await prisma.usuario.findMany({
+  async listarTodosPorCondicao(
+    data: Prisma.UsuarioWhereInput,
+  ): Promise<Partial<Usuario>[]> {
+    return await prisma.usuario.findMany({
       where: data,
       orderBy: {
         nomeCompleto: 'asc',
@@ -127,24 +122,21 @@ class UsuarioService {
         createdAt: true,
       },
     });
-
-    return usuarios;
   }
 
-  async buscarUsuarioPor(busca: any): Promise<Usuario | null> {
+  async buscarUsuarioPor(
+    busca: Prisma.UsuarioWhereInput,
+  ): Promise<Usuario | null> {
     try {
-      const usuario = await prisma.usuario.findFirst({ where: busca });
-      return usuario;
+      return await prisma.usuario.findFirst({ where: busca });
     } catch (error) {
       throw error;
     }
   }
 
-  async recuperarSenha(token: string, data: any, id: number) {
+  async recuperarSenha(token: string, data: Date, id: number): Promise<void> {
     await prisma.usuario.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: {
         tokenResetSenha: token,
         validadeTokenResetSenha: data,
