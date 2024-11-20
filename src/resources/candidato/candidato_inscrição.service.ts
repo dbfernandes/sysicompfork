@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Candidato, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
@@ -85,7 +85,7 @@ class CandidatoService {
       },
     });
   }
-  async update({ id, data }: { id: number; data: any }) {
+  async update({ id, data }: { id: number; data: Partial<Candidato> }) {
     return await prisma.candidato.update({
       where: {
         id,

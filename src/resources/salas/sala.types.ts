@@ -1,11 +1,11 @@
-import { Salas } from '@prisma/client';
+import { Sala } from '@prisma/client';
 
 export type CreateSalaDto = Pick<
-  Salas,
+  Sala,
   'nome' | 'andar' | 'bloco' | 'numero' | 'capacidade'
 >;
 
 export type UpdateSalaDto = Pick<
-  Salas,
+  Sala,
   'nome' | 'andar' | 'bloco' | 'numero' | 'capacidade'
 >;

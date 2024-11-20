@@ -3,11 +3,11 @@ import { Projeto } from '@prisma/client';
 export type CreateProjetoDto = Pick<
   Projeto,
   | 'professorId'
-  | 'inicio'
+  | 'dataInicio'
   | 'titulo'
   | 'integrantes'
   | 'descricao'
-  | 'fim'
+  | 'dataFim'
   | 'financiadores'
   | 'papel'
 >;
@@ -15,11 +15,11 @@ export type CreateProjetoDto = Pick<
 export type UpdateProjetoDto = Pick<
   Projeto,
   | 'professorId'
-  | 'inicio'
+  | 'dataInicio'
   | 'titulo'
   | 'integrantes'
   | 'descricao'
-  | 'fim'
+  | 'dataFim'
   | 'financiadores'
   | 'papel'
 >;

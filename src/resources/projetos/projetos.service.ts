@@ -1,5 +1,5 @@
 // const { Projeto } = require('../models')
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Projeto } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class ProjetoService {
@@ -38,11 +38,11 @@ class ProjetoService {
       },
     });
     // projetos = projetos.length > 0 ? projetos.map((p) => p.get()) : []
-    const projetosFiltrados: any = [];
+    const projetosFiltrados: Projeto[] = [];
     if (projetos) {
       projetos.forEach((projeto) => {
         let flag = true;
-        projetosFiltrados.every((p: any) => {
+        projetosFiltrados.every((p) => {
           flag =
             p.titulo == projeto.titulo ||
             (p.descricao == projeto.descricao &&

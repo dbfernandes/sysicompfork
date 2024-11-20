@@ -1,4 +1,4 @@
 export type tipoConditions = {
-    tipo: number[];
-    ano?: string;
+  tipo: number[];
+  ano?: string | string[] | undefined;
 };

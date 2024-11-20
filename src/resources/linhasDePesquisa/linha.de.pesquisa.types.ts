@@ -1,5 +1,5 @@
-import { LinhasDePesquisa } from '@prisma/client';
+import { LinhaPesquisa } from '@prisma/client';
 
-export type CreateLinhaDePesquisaDto = Pick<LinhasDePesquisa, 'nome' | 'sigla'>;
+export type CreateLinhaDePesquisaDto = Pick<LinhaPesquisa, 'nome' | 'sigla'>;
 
-export type UpdateLinhaDePesquisaDto = Pick<LinhasDePesquisa, 'nome' | 'sigla'>;
+export type UpdateLinhaDePesquisaDto = Pick<LinhaPesquisa, 'nome' | 'sigla'>;

@@ -1,5 +1,6 @@
-import { Premios } from "@prisma/client";
+import { Premio } from '@prisma/client';
 
-export type CreatePremioDto = Pick<Premios,
-    'idProfessor' | 'titulo' | 'ano' | 'entidade'
->
+export type CreatePremioDto = Pick<
+  Premio,
+  'professorId' | 'titulo' | 'ano' | 'entidade'
+>;

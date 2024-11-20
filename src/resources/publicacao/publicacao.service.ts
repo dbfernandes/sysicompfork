@@ -1,24 +1,28 @@
-import { PrismaClient, Publicacao } from '@prisma/client';
+import { Prisma, PrismaClient, Publicacao } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
 import getPublicationsArr from '../../utils/listaPublicacoes';
 import { ContagemResult, PublicacaoCount } from './publicacao.types';
 
-const prisma = new PrismaClient();
-
 class PublicacaoService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
   async adicionarVarios(
     professorId: number,
-    publicacoes: Publicacao[],
+    publicacoes: Partial<Publicacao>[],
   ): Promise<void> {
     if (publicacoes !== undefined) {
-      const tipos = await prisma.tipoPublicacao.findMany();
+      const tipos = await this.prisma.tipoPublicacao.findMany();
       const publicArr = await getPublicationsArr(
         publicacoes,
         professorId,
         tipos,
       );
 
-      const professor = await prisma.usuario.findUnique({
+      const professor = await this.prisma.usuario.findUnique({
         where: { id: professorId },
         include: {
           publicacoes: {
@@ -34,7 +38,7 @@ class PublicacaoService {
       if (publicacoesExistentes.length > 0) {
         const idPublicacoesExistentes = publicacoesExistentes.map((p) => p.id);
 
-        const todasRelacoes = await prisma.usuarioPublicacao.findMany({
+        const todasRelacoes = await this.prisma.usuarioPublicacao.findMany({
           where: {
             publicacaoId: { in: idPublicacoesExistentes },
           },
@@ -50,7 +54,7 @@ class PublicacaoService {
           },
         );
 
-        await prisma.usuario.update({
+        await this.prisma.usuario.update({
           where: { id: professorId },
           data: {
             publicacoes: {
@@ -61,13 +65,13 @@ class PublicacaoService {
           },
         });
 
-        await prisma.publicacao.deleteMany({
+        await this.prisma.publicacao.deleteMany({
           where: { id: { in: idPublicacoesAExcluir } },
         });
       }
 
       for (const publicacao of publicArr) {
-        const publicacoesMesmoAno = await prisma.publicacao.findMany({
+        const publicacoesMesmoAno = await this.prisma.publicacao.findMany({
           where: {
             ano: publicacao.ano,
           },
@@ -82,12 +86,12 @@ class PublicacaoService {
         );
 
         if (!unicaPublicacao) {
-          unicaPublicacao = await prisma.publicacao.create({
+          unicaPublicacao = await this.prisma.publicacao.create({
             data: publicacao,
           });
         }
 
-        await prisma.usuarioPublicacao.create({
+        await this.prisma.usuarioPublicacao.create({
           data: {
             usuarioId: professorId,
             publicacaoId: unicaPublicacao.id,
@@ -96,23 +100,34 @@ class PublicacaoService {
       }
     }
   }
+  async listarTodos(tipo: number[] = [], ano?: unknown) {
+    try {
+      const whereConditions: Prisma.PublicacaoWhereInput = {
+        tipoId: tipo.length ? { in: tipo } : undefined,
+        ano: ano
+          ? {
+              in: []
+                .concat(ano)
+                .map(Number)
+                .filter((n) => !isNaN(n)),
+            }
+          : undefined,
+      };
 
-  async listarTodos(conditions: any) {
-    const publicacoes = await prisma.publicacao.findMany({
-      where: conditions || {},
-      include: {
-        usuarioPublicacoes: true,
-      },
-    });
-    return publicacoes;
+      return await this.prisma.publicacao.findMany({
+        where: whereConditions,
+        include: { usuarioPublicacoes: true },
+      });
+    } catch (error) {
+      throw new Error(`Erro ao listar publicações: ${error}`);
+    }
   }
-
   async contarTodos(): Promise<ContagemResult> {
     try {
       const currentYear = new Date().getFullYear();
       const anos = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i);
 
-      const counts = await prisma.$queryRaw<PublicacaoCount[]>`
+      const counts = await this.prisma.$queryRaw<PublicacaoCount[]>`
         SELECT 
           ano,
           tipo,
