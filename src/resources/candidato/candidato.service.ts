@@ -3,13 +3,16 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
 import {
-  ChangePasswordDto,
-  RecoverPasswordDto,
+  MudarSenhaDto,
+  RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
 } from '../candidato/candidato.types';
-import { CandidatoNotFoundError } from './candidato.errors';
 import { sendEmail } from '../email/emailService';
+import { CandidatoNotFoundError } from './candidato.errors';
+import { CandidatoExisteError } from './errors/candidatoExisteError';
+import { CandidatoNaoAutorizadoError } from './errors/candidatoNaoAutorizadoError';
+import { CandidatoFinalizadoError } from './errors/candidatoFinalizadoError';
 const prisma = new PrismaClient();
 
 class CandidatoService {
@@ -86,7 +89,7 @@ class CandidatoService {
     });
   }
 
-  async findByIdWithEdital(id: number) {
+  async findByIdComEdital(id: number) {
     return await prisma.candidato.findFirst({
       where: {
         id,
@@ -124,47 +127,6 @@ class CandidatoService {
     return candidate;
   }
 
-  async recuperarSenha({
-    host,
-    ...data
-  }: RecoverPasswordDto & { host: string }) {
-    const candidato = await prisma.candidato.findFirst({
-      where: {
-        email: data.email,
-        editalId: data.editalId,
-      },
-    });
-
-    if (!candidato) {
-      throw new CandidatoNotFoundError(data.email);
-    }
-
-    const token = crypto.randomBytes(20).toString('hex');
-    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
-    const timeExpires = new Date();
-    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
-    await prisma.candidato.update({
-      where: {
-        id: candidato.id,
-      },
-      data: {
-        tokenResetSenha: token,
-        validadeTokenReset: timeExpires,
-      },
-    });
-
-    const url = `http://${host}/selecaoppgi/trocarSenha?token=${token}`;
-    sendEmail({
-      to: candidato.email,
-      name: 'Coordenação do PPGI',
-      title: '[PPGI] Troca de senha',
-      template: 'recuperarSenhaCandidato',
-      data: {
-        url,
-      },
-    });
-  }
-
   async findByTokenPassword(token: string) {
     return await prisma.candidato.findFirst({
       where: {
@@ -173,7 +135,7 @@ class CandidatoService {
     });
   }
 
-  async changePasswordWithToken({ token, senha }: ChangePasswordDto) {
+  async changePasswordWithToken({ token, senha }: MudarSenhaDto) {
     const candidate = await prisma.candidato.findFirst({
       where: {
         tokenResetSenha: token,
@@ -224,6 +186,144 @@ class CandidatoService {
         linhaPesquisa: true,
         CandidatoRecomendacoes: true,
         Edital: true,
+      },
+    });
+  }
+
+  async signUp({ email, senha, editalId }: SignUpDto): Promise<Candidato> {
+    const candidato = await prisma.$transaction(async (prisma) => {
+      const candidatoVerify = await prisma.candidato.findFirst({
+        where: { email, editalId },
+      });
+
+      if (candidatoVerify) {
+        throw new CandidatoExisteError();
+      }
+
+      const senhaHash = await generateHashPassword(senha);
+      const novoCandidato = await prisma.candidato.create({
+        data: {
+          email,
+          senhaHash,
+          editalId,
+          posicaoEdital: 1,
+        },
+      });
+
+      // Atualizar o edital
+      await prisma.edital.update({
+        where: { id: editalId },
+        data: {
+          inscricoesIniciadas: {
+            increment: 1,
+          },
+        },
+      });
+
+      // Remover o hash da senha antes de retornar
+      delete novoCandidato.senhaHash;
+
+      return novoCandidato;
+    });
+
+    return candidato;
+  }
+
+  async signIn({ email, senha, editalId }: SignInDto): Promise<Candidato> {
+    const candidato = await prisma.candidato.findFirst({
+      where: {
+        email,
+        editalId,
+      },
+    });
+    if (!candidato) {
+      throw new CandidatoNaoAutorizadoError();
+    }
+    if (!(await bcrypt.compare(senha, candidato.senhaHash))) {
+      throw new CandidatoNaoAutorizadoError();
+    }
+
+    if (candidato.posicaoEdital > 4) {
+      throw new CandidatoFinalizadoError();
+    }
+
+    delete candidato.senhaHash;
+    return candidato;
+  }
+
+  async updatePassoDados() {
+    // const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
+
+    // const dataNascimento = data.dataNascimento
+    //   ? new Date(parseDate(data.dataNascimento))
+    //   : null;
+    // const candidato = {
+    //   ...data,
+    //   dataNascimento,
+    //   posicaoEdital: 2,
+    //   condicao: data.condicao === 'true',
+    //   bolsista: data.bolsista === 'true',
+    //   cotista: data.cotista === 'true',
+    //   cpf: isBrasileira ? data.cpf : null,
+    //   passaporte: isBrasileira ? null : data.passaporte,
+    //   pais: isBrasileira ? null : data.pais,
+    // };
+
+    // await candidatoService.update({
+    //   id,
+    //   data: candidato,
+    // });
+    return true;
+  }
+
+  async recuperarSenha({
+    host,
+    ...data
+  }: RecuperarSenhaDto & { host: string }) {
+    const candidato = await prisma.candidato.findFirst({
+      where: {
+        email: data.email,
+        editalId: data.editalId,
+      },
+    });
+
+    if (!candidato) {
+      throw new CandidatoNotFoundError(data.email);
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
+    const timeExpires = new Date();
+    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
+    await prisma.candidato.update({
+      where: {
+        id: candidato.id,
+      },
+      data: {
+        tokenResetSenha: token,
+        validadeTokenReset: timeExpires,
+      },
+    });
+
+    const url = `http://${host}/selecaoppgi/trocarSenha?token=${token}`;
+    sendEmail({
+      to: candidato.email,
+      name: 'Coordenação do PPGI',
+      title: '[PPGI] Troca de senha',
+      template: 'recuperarSenhaCandidato',
+      data: {
+        url,
+      },
+    });
+  }
+
+  async voltarInicioEdital({ id }: { id: number }) {
+    await prisma.candidato.update({
+      where: {
+        id,
+      },
+      data: {
+        posicaoEdital: 1,
       },
     });
   }

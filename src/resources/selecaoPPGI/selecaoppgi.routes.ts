@@ -53,9 +53,9 @@ router.put(
 //Rotas que necessitam de autenticação
 router.use(isAuthSelecao);
 
-router.get('/formulario', selecaoppgiController.forms);
+router.get('/formulario', selecaoppgiController.renderForms);
 
-router.put('/formulario/1', selecaoppgiController.form1);
+router.put('/formulario/1', selecaoppgiController.formDados);
 router.put('/formulario/2', uploads, selecaoppgiController.form2);
 router.put(
   '/formulario/3',
@@ -79,6 +79,6 @@ router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
 /////////
 router.post('/logout', selecaoppgiController.logout);
 router.post('/voltar', selecaoppgiController.backStep);
-router.post('/voltarInicio', selecaoppgiController.backToStart);
+router.post('/voltarInicio', selecaoppgiController.voltarInicio);
 
 export default router;

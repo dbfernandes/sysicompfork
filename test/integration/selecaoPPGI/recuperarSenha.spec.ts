@@ -3,8 +3,8 @@ import request from 'supertest';
 import { candidatos } from '../../../prisma/seed-data/candidatos';
 import app from '../../../src/app';
 import {
-  ChangePasswordDto,
-  RecoverPasswordDto,
+  MudarSenhaDto,
+  RecuperarSenhaDto,
 } from '../../../src/resources/candidato/candidato.types';
 import candidatoService from '../../../src/resources/candidato/candidato.service';
 
@@ -68,7 +68,7 @@ describe('Rota recuperarSenha', () => {
     });
 
     it('deve retornar 200 e enviar email de recuperação para o candidato', async () => {
-      const loginValue: RecoverPasswordDto = {
+      const loginValue: RecuperarSenhaDto = {
         email: candidato.email,
         editalId: candidato.editalId,
       };
@@ -146,7 +146,7 @@ describe('Rota trocar senha', () => {
     });
 
     it('deve retornar 200 quando o candidato mudar a senha', async () => {
-      const dataPost: ChangePasswordDto = {
+      const dataPost: MudarSenhaDto = {
         senha: 'password123',
         token: tokenCorreto,
       };

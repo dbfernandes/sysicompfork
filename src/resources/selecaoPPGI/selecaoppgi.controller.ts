@@ -8,8 +8,8 @@ import candidatoExperienciaAcademicaService from '../../resources/candidatoExper
 import { gerarPDF } from '../../utils/gerarInscricao';
 import candidatoService from '../candidato/candidato.service';
 import {
-  ChangePasswordDto,
-  RecoverPasswordDto,
+  MudarSenhaDto,
+  RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
 } from '../candidato/candidato.types';
@@ -26,9 +26,19 @@ import {
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   Nacionalidade,
+  PassoFormCandidato,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecaoppgi.types';
+
+interface AuthenticatedRequest extends Request {
+  candidato?: any; // Substitua `any` pelo tipo correto do candidato
+}
+
+type RenderFunction = (
+  req: AuthenticatedRequest,
+  res: Response,
+) => Promise<void>;
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -100,7 +110,7 @@ function inicio(req: Request, res: Response) {
   }
 }
 
-async function signUp(req: Request, res: Response) {
+async function signUp(req: Request, res: Response, next: NextFunction) {
   switch (req.method) {
     case 'GET': {
       const listEditais = await EditalService.listEditaisDisponiveis();
@@ -114,34 +124,16 @@ async function signUp(req: Request, res: Response) {
         ...locals,
       });
     }
+
     case 'POST': {
-      const { email, senha, editalId } = req.body as SignUpDto;
+      const data = req.body as SignUpDto;
       try {
-        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
-          email,
-          editalId,
-        });
-        if (candidate) {
-          return res.status(409).json({
-            error: 'Candidato já existe para este edital',
-          });
-        }
-
-        const candidateCreated = await candidatoService.create({
-          email,
-          senha,
-          editalId,
-        });
-
-        req.session.uid = candidateCreated.id.toString();
-        req.session.editalPosition = candidateCreated.posicaoEdital;
+        const novoCandidato = await candidatoService.signUp(data);
+        req.session.uid = novoCandidato.id.toString();
 
         return res.status(201).send();
       } catch (err) {
-        console.error(`[ERROR] Criar de candidato: ${err}`);
-        return res.status(500).json({
-          error: 'Não foi possível criar o candidato',
-        });
+        next(err);
       }
     }
     default:
@@ -149,7 +141,7 @@ async function signUp(req: Request, res: Response) {
   }
 }
 
-async function signIn(req: Request, res: Response) {
+async function signIn(req: Request, res: Response, next: NextFunction) {
   switch (req.method) {
     case 'GET': {
       try {
@@ -163,34 +155,18 @@ async function signIn(req: Request, res: Response) {
           currentLanguage,
         });
       } catch (err) {
-        return res.status(500).send();
+        next(err);
       }
     }
     case 'POST':
       try {
-        const { email, senha, editalId } = req.body as SignInDto;
-        const candidate = await candidatoService.auth({
-          email,
-          senha,
-          editalId,
-        });
+        const data = req.body as SignInDto;
+        const candidato = await candidatoService.signIn(data);
 
-        if (!candidate) {
-          return res.status(StatusCodes.UNAUTHORIZED).send({
-            msg: 'E-mail ou senha inválidos',
-          });
-        }
-
-        if (candidate.posicaoEdital > 4) {
-          return res.status(StatusCodes.FORBIDDEN).send();
-        }
-
-        req.session.uid = candidate.id.toString();
-        req.session.editalPosition = candidate.posicaoEdital;
+        req.session.uid = candidato.id.toString();
         return res.status(200).send();
       } catch (err) {
-        console.error(err);
-        return res.status(500).send();
+        next(err);
       }
     default:
       return res.status(405).send();
@@ -295,148 +271,205 @@ const formProposta = async (req: Request, res: Response) => {
   }
 };
 
-async function backToStart(req: Request, res: Response) {
+async function voltarInicio(req: Request, res: Response, next: NextFunction) {
   switch (req.method) {
     case 'POST':
       const id = Number(req.session.uid);
-      await candidatoService.update({
-        id,
-        data: {
-          posicaoEdital: 1,
-        },
-      });
-      req.session.editalPosition = 1;
-      return res.status(200).send();
+      try {
+        await candidatoService.voltarInicioEdital({
+          id,
+        });
+        return res.status(200).send();
+      } catch (err) {
+        next(err);
+      }
     default:
       return res.status(405).send();
   }
 }
 
-const forms = async (req: Request, res: Response) => {
-  switch (req.method) {
-    case 'GET':
-      if (!req.session.uid) {
-        res.status(500).redirect('/selecaoppgi/entrar');
-        break;
-      }
-      const { uid, editalPosition } = req.session;
-      const currentLanguage = getLanguage(req);
-
-      const candidate = await candidatoService.findById(Number(uid));
-      const edital = await editalService.getEditalById(candidate.editalId);
-
-      if (!candidate) {
-        res.redirect('/selecaoppgi/entrar');
-        break;
-      }
-
-      const caminhoDiretorioUsuario = path.join(
-        'public',
-        'uploads',
-        'candidato',
-        uid.toString(),
-      );
-      switch (editalPosition) {
-        case 1: {
-          return res.status(200).render(resolveView('formDados'), {
-            ...locals,
-            ...candidate,
-            csrfToken: req.csrfToken(),
-            currentLanguage,
-          });
-        }
-
-        case 2: {
-          const experienciasAcademicas =
-            await candidatoExperienciaAcademicaService.listByCandidateId(
-              Number(uid),
-            );
-          const { conferencias, periodicos } =
-            await candidatoPublicacaoService.ListarPublicacoesCandidate(
-              Number(uid),
-            );
-
-          return res.render(resolveView('formHistorico'), {
-            ...locals,
-            ...candidate,
-            editalPosicao: editalPosition,
-            id: req.session.uid,
-            csrfToken: req.csrfToken(),
-            hasCurriculum: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              CURRICULUM_FILE,
-            ),
-            hasProvaAnterior: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              PROVA_ANTERIOR_FILE,
-            ),
-            experienciasAcademicas,
-            conferencias,
-            periodicos,
-            currentLanguage,
-          });
-        }
-
-        case 3: {
-          const linhas = await linhasDePesquisaService.list();
-          const recomendacoes =
-            await candidatoRecomendacaoService.getRecomendacoesByCandidato(
-              Number(uid),
-            );
-          return res.render(resolveView('formProposta'), {
-            ...locals,
-            ...candidate,
-            recomendacoes,
-            edital,
-            editalPosicao: req.session.editalPosition,
-            id: req.session.uid,
-            linhasPesquisa: linhas,
-            csrfToken: req.csrfToken(),
-            hasCartaAceiteOrientador: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              CARTA_ACEITE_ORIENTADOR_FILE,
-            ),
-            hasPropostaTrabalho: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              PROPOSTA_FILE,
-            ),
-            hasComprovante: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              COMPROVANTE_FILE,
-            ),
-            currentLanguage,
-          });
-        }
-        case 4: {
-          return res.render(resolveView('formConfirmacao'), {
-            ...locals,
-            editalPosicao: req.session.editalPosition,
-            id: req.session.uid,
-            csrfToken: req.csrfToken(),
-            hasCartaAceiteOrientador: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              CARTA_ACEITE_ORIENTADOR_FILE,
-            ),
-            hasPropostaTrabalho: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              PROPOSTA_FILE,
-            ),
-            hasComprovante: verificarArquivoDiretorio(
-              caminhoDiretorioUsuario,
-              COMPROVANTE_FILE,
-            ),
-            currentLanguage,
-          });
-        }
-        default:
-          return res.status(400).send();
-      }
-    default:
-      return res.status(405).send();
-  }
+// Mapeamento de posicaoEdital para funções de renderização
+const posicaoEditalMap: Record<number, RenderFunction> = {
+  [PassoFormCandidato.DADOS_PESSOAIS]: renderFormDados,
+  [PassoFormCandidato.HISTORICO]: renderFormHistorico,
+  [PassoFormCandidato.PROPOSTA]: renderFormProposta,
+  [PassoFormCandidato.FINALIZACAO]: renderFormConfirmacao,
 };
 
-async function form1(req: Request, res: Response) {
+async function renderFormDados(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const currentLanguage = getLanguage(req);
+  res.status(200).render(resolveView('formDados'), {
+    ...locals,
+    ...req.candidato,
+    csrfToken: req.csrfToken(),
+    currentLanguage,
+  });
+}
+
+async function renderFormHistorico(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const uid = req.session.uid;
+  const currentLanguage = getLanguage(req);
+  const caminhoDiretorioUsuario = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    uid.toString(),
+  );
+
+  const experienciasAcademicas =
+    await candidatoExperienciaAcademicaService.listByCandidateId(Number(uid));
+  const { conferencias, periodicos } =
+    await candidatoPublicacaoService.ListarPublicacoesCandidate(Number(uid));
+
+  res.render(resolveView('formHistorico'), {
+    ...locals,
+    ...req.candidato,
+    editalPosicao: req.candidato.posicaoEdital,
+    id: uid,
+    csrfToken: req.csrfToken(),
+    hasCurriculum: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CURRICULUM_FILE,
+    ),
+    hasProvaAnterior: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROVA_ANTERIOR_FILE,
+    ),
+    experienciasAcademicas,
+    conferencias,
+    periodicos,
+    currentLanguage,
+  });
+}
+
+async function renderFormProposta(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const uid = req.session.uid;
+  const currentLanguage = getLanguage(req);
+  const caminhoDiretorioUsuario = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    uid.toString(),
+  );
+
+  const [linhas, recomendacoes] = await Promise.all([
+    linhasDePesquisaService.list(),
+    candidatoRecomendacaoService.getRecomendacoesByCandidato(Number(uid)),
+  ]);
+
+  res.render(resolveView('formProposta'), {
+    ...locals,
+    ...req.candidato,
+    recomendacoes,
+    edital: req.candidato.Edital,
+    editalPosicao: req.session.editalPosition,
+    id: uid,
+    linhasPesquisa: linhas,
+    csrfToken: req.csrfToken(),
+    hasCartaAceiteOrientador: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CARTA_ACEITE_ORIENTADOR_FILE,
+    ),
+    hasPropostaTrabalho: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROPOSTA_FILE,
+    ),
+    hasComprovante: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_FILE,
+    ),
+    currentLanguage,
+  });
+}
+
+async function renderFormConfirmacao(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const uid = req.session.uid;
+  const currentLanguage = getLanguage(req);
+  const caminhoDiretorioUsuario = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    uid.toString(),
+  );
+
+  res.render(resolveView('formConfirmacao'), {
+    ...locals,
+    editalPosicao: req.session.editalPosition,
+    id: uid,
+    csrfToken: req.csrfToken(),
+    hasCartaAceiteOrientador: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CARTA_ACEITE_ORIENTADOR_FILE,
+    ),
+    hasPropostaTrabalho: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROPOSTA_FILE,
+    ),
+    hasComprovante: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_FILE,
+    ),
+    currentLanguage,
+  });
+}
+
+async function renderForms(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  switch (req.method) {
+    case 'GET':
+      try {
+        const { uid } = req.session;
+        if (!uid) {
+          res.redirect('/selecaoppgi/entrar');
+          return;
+        }
+
+        const candidato = await candidatoService.findByIdComEdital(Number(uid));
+
+        if (!candidato) {
+          res.redirect('/selecaoppgi/entrar');
+          break;
+        }
+        const renderFunction = posicaoEditalMap[candidato.posicaoEdital];
+
+        if (renderFunction) {
+          delete candidato.senhaHash;
+          const newReq = {
+            ...req,
+            candidato,
+          } as AuthenticatedRequest;
+          await renderFunction(newReq, res);
+        } else {
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .send('Posição do edital inválida.');
+        }
+      } catch (err) {
+        next(err);
+      }
+      break;
+    default:
+      res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
+      break;
+  }
+}
+
+async function formDados(req: Request, res: Response) {
   switch (req.method) {
     case 'PUT': {
       const { data } = req.body;
@@ -474,7 +507,7 @@ async function form1(req: Request, res: Response) {
       return res.status(400).send();
     }
     default:
-      return res.status(405).send();
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
   }
 }
 
@@ -693,7 +726,7 @@ const recuperarSenha = async (
       });
     }
     case 'POST': {
-      const data = req.body as RecoverPasswordDto;
+      const data = req.body as RecuperarSenhaDto;
       try {
         await candidatoService.recuperarSenha({
           host: req.headers.host,
@@ -743,7 +776,7 @@ const trocarSenha = async (req, res: Response) => {
       });
     }
     case 'PUT': {
-      const { senha, token } = req.body as ChangePasswordDto;
+      const { senha, token } = req.body as MudarSenhaDto;
 
       try {
         await candidatoService.changePasswordWithToken({
@@ -768,8 +801,8 @@ export default {
   inicio,
   signUp,
   signIn,
-  forms,
-  form1,
+  renderForms,
+  formDados,
   form2,
   candidates,
   backStep,
@@ -777,7 +810,7 @@ export default {
   formPublicacoes,
   logout,
   formProposta,
-  backToStart,
+  voltarInicio,
   recuperarSenha,
   trocarSenha,
   downloadFile,

@@ -8,3 +8,10 @@ export enum Nacionalidade {
   BRASILEIRA = 'Brasileira',
   ESTRANGEIRA = 'Estrangeira',
 }
+
+export enum PassoFormCandidato {
+  DADOS_PESSOAIS = 1,
+  HISTORICO = 2,
+  PROPOSTA = 3,
+  FINALIZACAO = 4,
+}
