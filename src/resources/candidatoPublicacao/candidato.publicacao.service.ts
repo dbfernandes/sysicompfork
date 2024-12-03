@@ -1,44 +1,41 @@
-import { PrismaClient } from '@prisma/client';
-import { TYPES_PUBLICACAO } from './candidato.publicacao.types';
-const prisma = new PrismaClient();
+import { PrismaClient, Prisma } from '@prisma/client';
+import {
+  Publicacao,
+  TYPES_PUBLICACAO,
+  PublicacoesResponse,
+} from './candidato.publicacao.types';
 
-interface Publicacao {
-  titulo?: string;
-  ano?: string | number;
-  local?: string;
-  natureza?: string;
-  autores: {
-    nomeCompleto: string[];
-  };
-  ISSN?: string;
-}
+const prisma = new PrismaClient();
 
 class CandidatoPublicacaoService {
   async adicionarVarios(
     candidatoId: number,
     publicacoes: Publicacao[],
-    tipoPublicacao: number,
+    tipoPublicacao: TYPES_PUBLICACAO,
   ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
-      const publicacoesParaInserir = publicacoes.map((publicacao) => {
-        const ano = publicacao.ano ? parseInt(publicacao.ano.toString()) : null;
+      const publicacoesParaInserir = publicacoes.map(
+        (publicacao): Prisma.CandidatoPublicacaoCreateInput => {
+          const ano = publicacao.ano ? Number(publicacao.ano) : null;
 
-        const publicacaoData: any = {
-          candidatoId,
-          titulo: publicacao.titulo || '',
-          local: publicacao.local || '',
-          tipo: tipoPublicacao,
-          natureza: publicacao.natureza || '',
-          autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-          ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : '',
-        };
-
-        if (ano !== null) {
-          publicacaoData.ano = ano;
-        }
-
-        return publicacaoData;
-      });
+          return {
+            candidato: {
+              connect: {
+                id: candidatoId,
+              },
+            },
+            titulo: publicacao.titulo || '',
+            local: publicacao.local || '',
+            tipoId: tipoPublicacao,
+            natureza: publicacao.natureza || '',
+            autores: publicacao.autores.nomeCompleto
+              .join(', ')
+              .substring(0, 255),
+            issn: publicacao.ISSN ?? '',
+            ano: ano ?? 0,
+          };
+        },
+      );
 
       for (const publicacao of publicacoesParaInserir) {
         try {
@@ -47,7 +44,7 @@ class CandidatoPublicacaoService {
               where: {
                 candidatoId,
                 titulo: publicacao.titulo,
-                ano: publicacao.ano,
+                ano: publicacao.ano ?? 0,
                 tipoId: tipoPublicacao,
               },
             });
@@ -60,7 +57,15 @@ class CandidatoPublicacaoService {
                   candidatoId: existingPublication.candidatoId,
                 },
               },
-              data: publicacao,
+              data: {
+                titulo: publicacao.titulo,
+                local: publicacao.local,
+                tipoId: tipoPublicacao,
+                natureza: publicacao.natureza,
+                autores: publicacao.autores,
+                issn: publicacao.issn,
+                ano: publicacao.ano,
+              },
             });
             console.log(
               `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${candidatoId}!`,
@@ -75,7 +80,8 @@ class CandidatoPublicacaoService {
           }
         } catch (error) {
           console.error(
-            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${candidatoId}: ${error}`,
+            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${candidatoId}:`,
+            error,
           );
           throw new Error('Não foi possível criar/atualizar a publicação');
         }
@@ -85,7 +91,7 @@ class CandidatoPublicacaoService {
 
   async ListarPublicacoesCandidato(
     candidatoId: number,
-  ): Promise<{ periodicos: any[]; conferencias: any[] }> {
+  ): Promise<PublicacoesResponse> {
     try {
       const periodicos = await prisma.candidatoPublicacao.findMany({
         where: {
@@ -101,14 +107,14 @@ class CandidatoPublicacaoService {
         },
       });
 
-      const data = {
+      return {
         periodicos,
         conferencias,
       };
-      return data;
     } catch (error) {
       console.error(
-        `Erro ao listar publicações do candidato ${candidatoId}: ${error}`,
+        `Erro ao listar publicações do candidato ${candidatoId}:`,
+        error,
       );
       throw new Error('Não foi possível listar as publicações');
     }

@@ -1,6 +1,6 @@
 import { CandidatoPublicacao } from '@prisma/client';
 
-export type CreateCandidatePublicationsDto = Pick<
+export type CreateCandidatoPublicationsDto = Pick<
   CandidatoPublicacao,
   | 'issn'
   | 'titulo'
