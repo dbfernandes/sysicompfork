@@ -2,19 +2,15 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import { sendEmailRecoveryPasswordCandidate } from '../../utils/mailerGrid';
-import candidatoService from '../candidato/candidato.service';
 import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
-import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import {
-  default as EditalService,
-  default as editalService,
-} from '../edital/edital.service';
-import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import { gerarPDF } from '../../utils/gerarInscricao';
+import candidatoService from '../candidato/candidato.service';
+import linhasDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
+import { sendEmailRecoveryPasswordCandidato } from '../../utils/mailerGrid';
+import editalService from '../edital/edital.service';
+import { TYPES_PUBLICACAO } from '../candidatoPublicacao/candidato.publicacao.types';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -22,17 +18,21 @@ import {
   Nacionalidade,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
-} from './selecaoppgi.types';
-import {
-  RecoverPasswordDto,
   SignInDto,
-  SignUpDto,
-} from '../candidato/candidato.types';
+} from './selecao.ppgi.types';
+import { STATUS_CODES } from 'http';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
+declare module 'express-session' {
+  interface Session {
+    email?: string;
+    editalId?: string;
+    uid?: string;
+    editalPosition?: number;
+  }
+}
 const locals = {
   layout: 'selecaoppgi',
 };
@@ -102,7 +102,7 @@ function begin(req: Request, res: Response) {
 async function signUp(req: Request, res: Response) {
   switch (req.method) {
     case 'GET': {
-      const listEditais = await EditalService.listEditaisDisponiveis();
+      const listEditais = await editalService.listEditaisDisponiveis();
       const currentLanguage = getLanguage(req);
 
       return res.render(resolveView('signUp'), {
@@ -114,28 +114,30 @@ async function signUp(req: Request, res: Response) {
       });
     }
     case 'POST': {
-      const { email, senha, idEdital } = req.body as SignUpDto;
+      const { email, senha, edital } = req.body;
 
       try {
-        const candidate = await candidatoService.findCandidatoByEmailAndEdital({
+        const candidato = await candidatoService.findCandidatoByEmailAndEdital({
           email,
-          idEdital,
+          edital,
         });
 
-        if (candidate) {
+        if (candidato) {
           return res.status(409).json({
             error: 'Candidato já existe para este edital',
           });
         }
 
-        const candidateCreated = await candidatoService.create({
+        const candidatoCreated = await candidatoService.create({
           email,
           senha,
-          idEdital,
+          edital,
         });
 
-        req.session.uid = candidateCreated.id.toString();
-        req.session.editalPosition = candidateCreated.posicaoEdital;
+        req.session.email = candidatoCreated.email;
+        req.session.editalId = candidatoCreated.editalId;
+        req.session.uid = candidatoCreated.id.toString();
+        req.session.editalPosition = candidatoCreated.posicaoEdital;
 
         return res.status(201).send();
       } catch (err) {
@@ -150,11 +152,12 @@ async function signUp(req: Request, res: Response) {
   }
 }
 
+// O controller com as tipagens corretas
 async function signIn(req: Request, res: Response) {
   switch (req.method) {
     case 'GET': {
       try {
-        const listEditais = await EditalService.listEditaisDisponiveis();
+        const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
 
         return res.render(resolveView('signIn'), {
@@ -164,35 +167,46 @@ async function signIn(req: Request, res: Response) {
           currentLanguage,
         });
       } catch (err) {
+        console.error('Erro ao carregar página de login:', err);
         return res.status(500).send();
       }
     }
-    case 'POST':
-      try {
-        const { email, senha, idEdital } = req.body as SignInDto;
 
-        const candidate = await candidatoService.auth({
+    case 'POST': {
+      try {
+        // Tipando o body da requisição
+        const { email, senha, editalId } = req.body as SignInDto;
+
+        // Autenticação do candidato
+        const candidato = await candidatoService.auth({
           email,
           senha,
-          idEdital,
+          editalId,
         });
 
-        if (!candidate) {
-          return res.status(StatusCodes.UNAUTHORIZED).send({
-            msg: 'E-mail ou senha inválidos',
-          });
+        if (!candidato) {
+          return res.status(406).send();
         }
 
-        if (candidate.posicaoEdital > 4) {
-          return res.status(StatusCodes.FORBIDDEN).send();
+        if (candidato.posicaoEdital > 4) {
+          return res.status(401).send();
         }
 
-        req.session.uid = candidate.id.toString();
-        req.session.editalPosition = candidate.posicaoEdital;
+        // Definindo a sessão com type safety
+        if (req.session) {
+          req.session.email = candidato.email ?? '';
+          req.session.editalId = candidato.editalId;
+          req.session.uid = candidato.id.toString();
+          req.session.editalPosition = candidato.posicaoEdital;
+        }
+
         return res.status(200).send();
       } catch (err) {
+        console.error('Erro ao realizar login:', err);
         return res.status(500).send();
       }
+    }
+
     default:
       return res.status(405).send();
   }
@@ -250,19 +264,19 @@ const formProposta = async (req: Request, res: Response) => {
           const candidato = await candidatoService.findByIdWithEdital(
             Number(uid),
           );
-          await candidatoRecomendacaoService.createManyByCandidate(
+          await candidatoRecomendacaoService.createManyByCandidato(
             body.recomendacaoNome.map((nome, index) => ({
               nome,
               email: body.recomendacaoEmail[index],
             })),
             Number(uid),
-            candidato.idEdital,
-            new Date(candidato.Edital.dataFim),
+            candidato.editalId,
+            new Date(candidato.edital.dataFim),
           );
         }
         const posicaoEdital = body.isNext ? 4 : 3;
 
-        const candidate = {
+        const candidato = {
           idLinhaPesquisa: Number(body.idLinhaPesquisa),
           tituloProposta: body.tituloProposta,
           nomeOrientador: body.nomeOrientador,
@@ -272,15 +286,15 @@ const formProposta = async (req: Request, res: Response) => {
         const id = Number(uid);
         await candidatoService.update({
           id,
-          data: candidate,
+          data: candidato,
         });
 
         if (body.isNext) {
           const url = `http://${req.headers.host}/selecaoppgi/recomendacoes/adicionar`;
           gerarPDF(id);
-          await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidate(
+          await candidatoRecomendacaoService.sendEmailRecoveryPasswordCandidato(
             {
-              idCandidato: id,
+              candidatoId: id,
               url,
             },
           );
@@ -325,10 +339,10 @@ const forms = async (req: Request, res: Response) => {
       const { uid, editalPosition } = req.session;
       const currentLanguage = getLanguage(req);
 
-      const candidate = await candidatoService.findById(Number(uid));
-      const edital = await editalService.getEdital(candidate.idEdital);
+      const candidato = await candidatoService.findById(Number(uid));
+      const edital = await editalService.getEdital(candidato.editalId);
 
-      if (!candidate) {
+      if (!candidato) {
         res.redirect('/selecaoppgi/entrar');
         break;
       }
@@ -343,7 +357,7 @@ const forms = async (req: Request, res: Response) => {
         case 1: {
           return res.status(200).render(resolveView('formDados'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             csrfToken: req.csrfToken(),
             currentLanguage,
           });
@@ -351,17 +365,17 @@ const forms = async (req: Request, res: Response) => {
 
         case 2: {
           const experienciasAcademicas =
-            await candidatoExperienciaAcademicaService.listByCandidateId(
+            await candidatoExperienciaAcademicaService.listByCandidatoId(
               Number(uid),
             );
           const { conferencias, periodicos } =
-            await candidatoPublicacaoService.ListarPublicacoesCandidate(
+            await candidatoPublicacaoService.ListarPublicacoesCandidato(
               Number(uid),
             );
 
           return res.render(resolveView('forms2'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             editalPosicao: editalPosition,
             id: req.session.uid,
             csrfToken: req.csrfToken(),
@@ -388,7 +402,7 @@ const forms = async (req: Request, res: Response) => {
             );
           return res.render(resolveView('forms3'), {
             ...locals,
-            ...candidate,
+            ...candidato,
             recomendacoes,
             edital,
             editalPosicao: req.session.editalPosition,
@@ -491,7 +505,7 @@ const form2 = async (req: Request, res: Response) => {
         const experienciasAtividade = req.body.experienciaAtividade as string[];
         const experienciasPeriodo = req.body.experienciaPeriodo as string[];
 
-        await candidatoExperienciaAcademicaService.dropAllByCandidateId(
+        await candidatoExperienciaAcademicaService.dropAllByCandidatoId(
           Number(uid),
         );
         if (
@@ -515,7 +529,7 @@ const form2 = async (req: Request, res: Response) => {
                   atividade: experienciasAtividade[index],
                   periodo: experienciasPeriodo[index],
                 },
-                idCandidato: Number(uid),
+                candidatoId: Number(uid),
               });
             }),
           );
@@ -552,7 +566,7 @@ const form2 = async (req: Request, res: Response) => {
 const formPublicacoes = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatoPublicacaoService.ListarPublicacoesCandidate(
+      const data = await candidatoPublicacaoService.ListarPublicacoesCandidato(
         Number(req.session.uid),
       );
 
@@ -642,11 +656,11 @@ const formPublicacoes = async (req: Request, res: Response) => {
   }
 };
 
-const candidates = async (req: Request, res: Response) => {
+const candidatos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.json({
-        candidates: await candidatoService.list(),
+        candidatos: await candidatoService.list(),
       });
     default:
       return res.status(400).send();
@@ -683,7 +697,7 @@ const recuperarSenha = async (req, res) => {
   switch (req.method) {
     case 'GET': {
       const currentLanguage = getLanguage(req);
-      const listEditais = await EditalService.listEdital();
+      const listEditais = await editalService.listEdital();
       return res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
         csrfToken: req.csrfToken(),
@@ -692,30 +706,33 @@ const recuperarSenha = async (req, res) => {
       });
     }
     case 'POST': {
-      const data = req.body as RecoverPasswordDto;
+      if (!req.body.email || !req.body.editalId) {
+        return res.status(400).send();
+      }
+      const { email, editalId: edital } = req.body;
+      const candidato = await candidatoService.findCandidatoByEmailAndEdital({
+        email,
+        edital,
+      });
+      if (!candidato) {
+        return res.status(404).send();
+      }
+
+      const token = await candidatoService.updateTokenPassword({
+        id: candidato.id,
+      });
+
+      const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
       try {
-        const candidate =
-          await candidatoService.findCandidatoByEmailAndEdital(data);
-        if (!candidate) {
-          return res
-            .status(StatusCodes.NOT_FOUND)
-            .send(ReasonPhrases.NOT_FOUND);
-        }
-
-        const token = await candidatoService.updateTokenPassword({
-          id: candidate.id,
-        });
-
-        const url = `http://${req.headers.host}/selecaoppgi/trocarSenha?token=${token}`;
-        sendEmailRecoveryPasswordCandidate({
-          email: candidate.email,
+        sendEmailRecoveryPasswordCandidato({
+          email: candidato.email,
           url,
         });
         return res.status(200).send();
       } catch (err) {
         console.error(err);
         return res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
           .send({ message: 'Erro ao enviar e-mail' });
       }
     }
@@ -727,12 +744,12 @@ const recuperarSenha = async (req, res) => {
 const trocarSenha = async (req, res: Response) => {
   switch (req.method) {
     case 'GET': {
-      const candidate = await candidatoService.findByTokenPassword(
+      const candidato = await candidatoService.findByTokenPassword(
         req.query.token as string,
       );
       const currentLanguage = getLanguage(req);
 
-      if (!candidate) {
+      if (!candidato) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token inválido',
           csrfToken: req.csrfToken(),
@@ -741,7 +758,7 @@ const trocarSenha = async (req, res: Response) => {
         });
       }
 
-      if (candidate.validadeTokenReset < new Date()) {
+      if (candidato.validadeTokenReset < new Date()) {
         return res.render(resolveView('trocarSenha'), {
           error: 'Token expirado',
           csrfToken: req.csrfToken(),
@@ -787,7 +804,7 @@ export default {
   forms,
   form1,
   form2,
-  candidates,
+  candidatos,
   backStep,
   refresh,
   formPublicacoes,

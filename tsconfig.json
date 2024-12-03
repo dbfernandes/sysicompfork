@@ -3,7 +3,7 @@
     "moduleResolution": "node",
     "target": "es2016",
     "module": "commonjs",
-    "rootDir": "./src",
+    "rootDir": ".",  // Mudando de "./src" para "."
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "checkJs": false,
@@ -13,7 +13,13 @@
     "strict": false,
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",  // Ajustando baseUrl também
+    "paths": {
+      "@/*": ["src/*"],
+      "@resources/*": ["src/resources/*"],
+      "@utils/*": ["src/utils/*"]
+    }
   },
   "include": ["./src/**/*", "./src/**/*.d.ts", "./test/**/*"],
   "exclude": ["./build", "node_modules"]

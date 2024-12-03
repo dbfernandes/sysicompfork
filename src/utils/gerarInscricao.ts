@@ -11,11 +11,11 @@ import {
   renderOptions,
   titlePage,
   titleSection,
-} from './pdf';
-import candidatoService from '../resources/candidato/candidato.service';
-import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
+} from '../utils/pdf';
 import { Publicacao } from '@prisma/client';
-import { Nacionalidade } from '../resources/selecaoPPGI/selecaoppgi.types';
+import { Nacionalidade } from '../resources/selecaoPPGI/selecao.ppgi.types';
+import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
+import CandidatoService from '../resources/candidato/candidato.service';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
@@ -30,12 +30,12 @@ function formatarPublicacao(publicacao: Publicacao) {
 // Função para gerar o PDF de inscrição de um candidato no PPGI
 export async function gerarPDF(id: number) {
   try {
-    const candidato = await candidatoService.listAllInfoCandidate(id);
-    const periodicos = candidato.CandidatoPublicacoes.filter(
-      (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.PERIODICOS,
+    const candidato = await CandidatoService.listAllInfocandidato(id);
+    const periodicos = candidato.publicacoes.filter(
+      (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS,
     );
-    const conferencias = candidato.CandidatoPublicacoes.filter(
-      (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.EVENTOS,
+    const conferencias = candidato.publicacoes.filter(
+      (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.EVENTOS,
     );
     const numberPeriodicos = periodicos.length;
 
@@ -51,7 +51,7 @@ export async function gerarPDF(id: number) {
         },
         {
           label: 'Edital: ',
-          value: candidato.idEdital,
+          value: candidato.editalId,
         },
       ],
       [
@@ -98,14 +98,14 @@ export async function gerarPDF(id: number) {
       [{ label: 'Curso:', value: candidato.cursoGraduacao }],
       [
         { label: 'Instituição:', value: candidato.instituicaoGraduacao },
-        { label: 'Ano Egresso:', value: candidato.anoEgressoGraduacao },
+        { label: 'Ano Egresso:', value: String(candidato.anoEgressoGraduacao) },
       ],
     ];
     const cursoPosGraduacao = [
       [{ label: 'Curso:', value: candidato.cursoPos }],
       [
         { label: 'Instituição:', value: candidato.instituicaoPos },
-        { label: 'Ano Egresso:', value: candidato.anoEgressoPos },
+        { label: 'Ano Egresso:', value: String(candidato.anoEgressoPos) },
       ],
     ];
     const publicacoes = [
@@ -116,7 +116,7 @@ export async function gerarPDF(id: number) {
     ];
     const pesquisa = [
       [{ label: 'Título da proposta:', value: candidato.tituloProposta }],
-      [{ label: 'Linha de pesquisa:', value: candidato.LinhasDePesquisa.nome }],
+      [{ label: 'Linha de pesquisa:', value: candidato.linhaPesquisa.nome }],
     ];
 
     const outrasInformacoes = [
@@ -144,23 +144,21 @@ export async function gerarPDF(id: number) {
       ],
     ];
 
-    const recomendacoes = candidato.CandidatoRecomendacao.map(
-      (recomendacao) => {
-        return [
-          {
-            label: 'Nome:',
-            value: recomendacao.nome,
-          },
-          {
-            label: 'Email:',
-            value: recomendacao.email,
-          },
-        ];
-      },
-    );
+    const recomendacoes = candidato.recomendacoes.map((recomendacao) => {
+      return [
+        {
+          label: 'Nome:',
+          value: recomendacao.nome,
+        },
+        {
+          label: 'Email:',
+          value: recomendacao.email,
+        },
+      ];
+    });
 
-    const atividades = candidato.CandidatoExperienciaAcademica.length
-      ? candidato.CandidatoExperienciaAcademica.reduce((acc, curr) => {
+    const atividades = candidato.experienciasAcademicas.length
+      ? candidato.experienciasAcademicas.reduce((acc, curr) => {
           acc.push([
             {
               label: 'Atividade:',
@@ -282,7 +280,7 @@ export async function gerarPDF(id: number) {
           text: '',
           marginTop: 16,
         },
-        ...(candidato.Edital.cartaOrientador === '1'
+        ...(candidato.edital.cartaOrientador === '1'
           ? [
               titleSection('Cartas de Recomendação'),
               renderOptions(recomendacoes, true),

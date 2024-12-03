@@ -7,11 +7,11 @@ import puppeteer from 'puppeteer';
 import Handlebars from 'handlebars';
 import usuarioService from '../resources/usuarios/usuario.service';
 import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
 async function getAfastamento(id: number) {
-  const afastamento = await afastamentoService.retornarAfastamento(String(id));
+  const afastamento = await afastamentoService.retornarAfastamento(id);
   const usuario = await usuarioService.listarUmUsuario(id);
   const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
   console.log('Diretor:', diretor);
@@ -20,9 +20,9 @@ async function getAfastamento(id: number) {
   if (!afastamento) return null;
 
   const {
-    usuarioNome,
-    dataSaida,
-    dataRetorno,
+    nomeCompleto,
+    dataInicio,
+    dataFim,
     tipoViagem,
     localViagem,
     justificativa,
@@ -30,9 +30,9 @@ async function getAfastamento(id: number) {
     createdAt,
   } = afastamento;
   const afastamentoDoc = {
-    usuarioNome,
-    dataSaida: moment(dataSaida).format('DD/MM/YYYY'),
-    dataRetorno: moment(dataRetorno).format('DD/MM/YYYY'),
+    nomeCompleto,
+    dataSaida: moment(dataInicio).format('DD/MM/YYYY'),
+    dataRetorno: moment(dataFim).format('DD/MM/YYYY'),
     localViagem,
     tipoViagem,
     justificativa,
@@ -62,11 +62,7 @@ function HBStoPDF(
 }
 
 // 3. Gerar o PDF
-export async function criarAfastamentoPDF(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function criarAfastamentoPDF(req: Request, res: Response) {
   try {
     const id = req.params.id;
 
@@ -101,7 +97,7 @@ export async function criarAfastamentoPDF(
     const pdf = await page.pdf({
       path: path.join(
         __dirname,
-        `/../../public/afastamentos/${dados!.usuarioNome}.pdf`,
+        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
       ),
       format: 'A4',
       printBackground: true,
@@ -114,12 +110,12 @@ export async function criarAfastamentoPDF(
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=${dados!.usuarioNome}.pdf`,
+      `inline; filename=${dados!.nomeCompleto}.pdf`,
     );
     fs.createReadStream(
       path.join(
         __dirname,
-        `/../../public/afastamentos/${dados!.usuarioNome}.pdf`,
+        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
       ),
     ).pipe(res);
   } catch (error) {

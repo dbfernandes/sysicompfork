@@ -1,5 +1,5 @@
 import express from 'express';
-import salasController from './salas.controller';
+import salasController from './sala.controller';
 
 const router = express.Router();
 

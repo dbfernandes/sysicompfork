@@ -180,7 +180,7 @@ const trocaSenha = async (req: Request, res: Response) => {
         });
       }
 
-      const isTokenValid = user.validadeTokenResetadaSenha > new Date();
+      const isTokenValid = user.validadeTokenResetSenha > new Date();
       if (!isTokenValid) {
         return res.render(resolveView('trocarSenha'), {
           csrfToken: req.csrfToken(),

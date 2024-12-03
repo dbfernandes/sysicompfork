@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import reservasService from './reservas.service';
-import salasService from '../salas/salas.service';
+import salasService from '../salas/sala.service';
 import path from 'path';
 
 function resolveView(viewName: string): string {
@@ -16,7 +16,7 @@ const listar = async (req: Request, res: Response) => {
 
 const adicionar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    const salas = await salasService.listarTodos()
+    const salas = await salasService.listarTodos();
     res.render(resolveView('reservas-adicionar'), {
       salas: salas,
       nome: req.session.nome,
@@ -47,15 +47,19 @@ const adicionar = async (req: Request, res: Response) => {
         SalaId: parseInt(req.body.SalaId),
         UsuarioId: parseInt(req.body.UsuarioId),
         atividade: req.body.atividade,
-        dataInicio: req.body.dataInicio ? new Date(`${req.body.dataInicio}T00:00:00.000Z`) : null,
-        dataTermino: req.body.dataTermino ? new Date(`${req.body.dataTermino}T00:00:00.000Z`) : null,
+        dataInicio: req.body.dataInicio
+          ? new Date(`${req.body.dataInicio}T00:00:00.000Z`)
+          : null,
+        dataTermino: req.body.dataTermino
+          ? new Date(`${req.body.dataTermino}T00:00:00.000Z`)
+          : null,
         tipo: req.body.tipo,
         horaInicio: req.body.horaInicio,
         horaTermino: req.body.horaTermino,
-        dias: req.body.dias
-      }
+        dias: req.body.dias,
+      };
 
-      await reservasService.criar(novaReserva)
+      await reservasService.criar(novaReserva);
 
       // if (!reserva) {
       //   res.redirect('/reservas/gerenciar')
@@ -111,25 +115,27 @@ const gerenciar = async (req: Request, res: Response) => {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
-    tipoUsuario: req.session.tipoUsuario
-  })
-}
+    tipoUsuario: req.session.tipoUsuario,
+  });
+};
 
-const editar = async (req:Request, res: Response) => {
+const editar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     try {
-      const salas = await salasService.listarTodos()
-      const reserva = await reservasService.buscarReserva(parseInt(req.params.id))
-      if (!reserva) throw new Error('Reserva não encontrado!')
-      console.log(reserva)
-      
+      const salas = await salasService.listarTodos();
+      const reserva = await reservasService.buscarReserva(
+        parseInt(req.params.id),
+      );
+      if (!reserva) throw new Error('Reserva não encontrado!');
+      console.log(reserva);
+
       res.render(resolveView('reservas-editar'), {
         salas: salas,
         nome: req.session.nome,
         reserva: reserva,
         csrf: req.csrfToken(),
-        tipoUsuario: req.session.tipoUsuario
-      })
+        tipoUsuario: req.session.tipoUsuario,
+      });
     } catch (error: any) {
       res.status(500).send({ message: error.message });
     }
@@ -158,13 +164,17 @@ const editar = async (req:Request, res: Response) => {
       SalaId: parseInt(req.body.SalaId),
       UsuarioId: parseInt(req.body.UsuarioId),
       atividade: req.body.atividade,
-      dataInicio: req.body.dataInicio ? new Date(`${req.body.dataInicio}T00:00:00.000Z`) : null,
-      dataTermino: req.body.dataTermino ? new Date(`${req.body.dataTermino}T00:00:00.000Z`) : null,
+      dataInicio: req.body.dataInicio
+        ? new Date(`${req.body.dataInicio}T00:00:00.000Z`)
+        : null,
+      dataTermino: req.body.dataTermino
+        ? new Date(`${req.body.dataTermino}T00:00:00.000Z`)
+        : null,
       tipo: req.body.tipo,
       horaInicio: req.body.horaInicio,
       horaTermino: req.body.horaTermino,
-      dias: req.body.dias
-    }
+      dias: req.body.dias,
+    };
 
     try {
       // const reserva = await ReservaSala.update({

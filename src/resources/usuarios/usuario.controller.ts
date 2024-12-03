@@ -3,12 +3,20 @@ import usuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
 import path from 'path';
+import {
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  usuarioBodyDTO,
+} from './usuario.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const adicionar = async (req: Request, res: Response): Promise<any> => {
+const adicionar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
       return res.render(resolveView('usuarios-adicionar'), {
@@ -16,9 +24,10 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
       });
+
     case 'POST':
       try {
-        let {
+        const {
           nomeCompleto,
           cpf,
           email,
@@ -34,41 +43,39 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           dateDeIngresso,
           unidade,
           turno,
-        } = req.body;
+        } = req.body as usuarioBodyDTO;
 
-        administrador = req.body.administrador === 'on' ? 1 : 0;
-        coordenador = req.body.coordenador === 'on' ? 1 : 0;
-        secretaria = req.body.secretaria === 'on' ? 1 : 0;
-        professor = req.body.professor === 'on' ? 1 : 0;
-        diretor = req.body.diretor === 'on' ? 1 : 0;
-        const novoUsuario = {
+        const novoUsuario: CreateUsuarioDto = {
           nomeCompleto,
           cpf,
           email,
-          administrador,
-          coordenador,
-          secretaria,
-          professor,
-          diretor,
+          administrador: administrador === 'on' ? 1 : 0,
+          coordenador: coordenador === 'on' ? 1 : 0,
+          secretaria: secretaria === 'on' ? 1 : 0,
+          professor: professor === 'on' ? 1 : 0,
+          diretor: diretor === 'on' ? 1 : 0, // Adicionando o campo diretor que faltava
           senhaHash: senha,
           endereco,
           telCelular: telefoneCelular,
           siape,
-          dataIngresso: dateDeIngresso,
+          dataIngresso: dateDeIngresso ? new Date(dateDeIngresso) : null,
           unidade,
           turno,
-          tokenResetarSenha: null,
-          validadeTokenResetadaSenha: null,
+          tokenResetSenha: null,
+          validadeTokenResetSenha: null,
           status: 0,
           perfil: null,
-          idLattes: null,
+          lattesId: null,
           formacao: null,
           formacaoIngles: null,
           resumo: null,
           resumoIngles: null,
           ultimaAtualizacao: null,
+          telResidencial: null,
         };
+
         await usuarioService.adicionar(novoUsuario);
+
         return res.status(201).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Criação de usuário bem-sucedida!',
@@ -79,10 +86,11 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.status(500).render(resolveView('usuarios-adicionar'), {
+        return res.render(resolveView('usuarios-adicionar'), {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
-          errors: (error as any).errors, // Type assertion to 'any' to access 'errors' property
+          errors: (error as { errors: Record<string, { message: string }> })
+            .errors,
           message:
             'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
           type: 'danger',
@@ -90,6 +98,7 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
           tipoUsuario: req.session.tipoUsuario,
         });
       }
+
     default:
       return res
         .status(400)
@@ -97,7 +106,10 @@ const adicionar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const deletar = async (req: Request, res: Response): Promise<any> => {
+const deletar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
     case 'POST':
       try {
@@ -135,32 +147,47 @@ const deletar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const restaurar = async (req: Request, res: Response): Promise<any> => {
+const restaurar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
-    case 'POST':
+    case 'POST': {
       try {
         const userId = Number(req.params.id);
-        await usuarioService.alterar(userId, { status: 1 });
-        return res.status(200).redirect(
-          criarURL('/usuarios/listar', {
-            message:
-              'Acesso deste usuário ao sistema foi restaurado com sucesso.',
-            type: 'success',
-            messageTitle: 'Desbloqueio de usuário bem-sucedido!',
-            tipoUsuario: req.session.tipoUsuario,
-          }),
-        );
+        const updateData: UpdateUsuarioDto = {
+          status: 1,
+        };
+
+        await usuarioService.alterar(userId, updateData);
+
+        const successParams = {
+          message:
+            'Acesso deste usuário ao sistema foi restaurado com sucesso.',
+          type: 'success',
+          messageTitle: 'Desbloqueio de usuário bem-sucedido!',
+          tipoUsuario: req.session.tipoUsuario,
+        };
+
+        return res
+          .status(200)
+          .redirect(criarURL('/usuarios/listar', successParams));
       } catch (error: unknown) {
         console.log(error);
-        return res.status(500).redirect(
-          criarURL('/usuarios/listar', {
-            message: 'Não foi possível desbloquear este usuário.',
-            type: 'danger',
-            messageTitle: 'Desbloqueio de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario,
-          }),
-        );
+
+        const errorParams = {
+          message: 'Não foi possível desbloquear este usuário.',
+          type: 'danger',
+          messageTitle: 'Desbloqueio de usuário indisponível!',
+          tipoUsuario: req.session.tipoUsuario,
+        };
+
+        return res
+          .status(500)
+          .redirect(criarURL('/usuarios/listar', errorParams));
       }
+    }
+
     default:
       return res
         .status(400)
@@ -168,7 +195,10 @@ const restaurar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const listar = async (req: Request, res: Response): Promise<any> => {
+const listar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
       try {
@@ -176,18 +206,17 @@ const listar = async (req: Request, res: Response): Promise<any> => {
         const usuarios = await usuarioService.listarTodos();
         usuarios.forEach((usuario) => {
           if (usuario.administrador === 1) {
-            usuario.perfil += " administrador";
+            usuario.perfil += ' administrador';
           }
           if (usuario.coordenador === 1) {
-            usuario.perfil += " coordenador";
+            usuario.perfil += ' coordenador';
           }
           if (usuario.secretaria === 1) {
-            usuario.perfil += " secretaria";
+            usuario.perfil += ' secretaria';
           }
           if (usuario.professor === 1) {
-            usuario.perfil += " professor";
+            usuario.perfil += ' professor';
           }
-
         });
         return res.status(200).render(resolveView('usuarios-listar'), {
           usuarios,
@@ -215,7 +244,10 @@ const listar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const visualizar = async (req: Request, res: Response): Promise<any> => {
+const visualizar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
       try {
@@ -251,9 +283,12 @@ const visualizar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const editar = async (req: Request, res: Response): Promise<any> => {
+const editar = async (
+  req: Request,
+  res: Response,
+): Promise<void | Response> => {
   switch (req.method) {
-    case 'GET':
+    case 'GET': {
       try {
         const { message, type, messageTitle } = req.query;
         const usuario = await usuarioService.listarUmUsuario(
@@ -270,81 +305,82 @@ const editar = async (req: Request, res: Response): Promise<any> => {
         });
       } catch (error: unknown) {
         console.log(error);
-        return res.status(503).redirect(
-          criarURL('/usuarios/listar', {
-            message:
-              'Não foi possível abrir formulário de edição para este usuário.',
-            type: 'danger',
-            messageTitle: 'Edição de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario,
-          }),
-        );
+        const errorParams = {
+          message:
+            'Não foi possível abrir formulário de edição para este usuário.',
+          type: 'danger',
+          messageTitle: 'Edição de usuário indisponível!',
+          tipoUsuario: req.session.tipoUsuario,
+        };
+
+        return res
+          .status(503)
+          .redirect(criarURL('/usuarios/listar', errorParams));
       }
-    case 'POST':
+    }
+
+    case 'POST': {
       try {
-        const administrador = req.body.administrador === 'on' ? 1 : 0;
-        const coordenador = req.body.coordenador === 'on' ? 1 : 0;
-        const secretaria = req.body.secretaria === 'on' ? 1 : 0;
-        const professor = req.body.professor === 'on' ? 1 : 0;
-        const diretor = req.body.diretor === 'on' ? 1 : 0;
-        console.log(diretor);
-        const dados = {
-          nomeCompleto: req.body.nomeCompleto,
-          cpf: req.body.cpf,
-          email: req.body.email,
-          senhaHash: req.body.senha,
-          administrador,
-          coordenador,
-          secretaria,
-          professor,
-          diretor,
-          endereco: req.body.endereco,
-          telResidencial: req.body.telefoneResidencial,
-          telCelular: req.body.telefoneCelular,
-          siape: req.body.siape,
-          dataIngresso: req.body.dateDeIngresso,
-          unidade: req.body.unidade,
-          turno: req.body.turno,
-          tokenResetarSenha: null,
-          validadeTokenResetadaSenha: null,
+        const requestBody = req.body as usuarioBodyDTO;
+
+        const updateData: UpdateUsuarioDto = {
+          nomeCompleto: requestBody.nomeCompleto,
+          cpf: requestBody.cpf,
+          email: requestBody.email,
+          senhaHash: requestBody.senha || undefined,
+          administrador: requestBody.administrador === 'on' ? 1 : 0,
+          coordenador: requestBody.coordenador === 'on' ? 1 : 0,
+          secretaria: requestBody.secretaria === 'on' ? 1 : 0,
+          professor: requestBody.professor === 'on' ? 1 : 0,
+          endereco: requestBody.endereco,
+          telResidencial: requestBody.telefoneResidencial,
+          telCelular: requestBody.telefoneCelular,
+          siape: requestBody.siape,
+          dataIngresso: requestBody.dateDeIngresso
+            ? new Date(requestBody.dateDeIngresso)
+            : null,
+          unidade: requestBody.unidade,
+          turno: requestBody.turno,
+          tokenResetSenha: null,
+          validadeTokenResetSenha: null,
           status: 0,
           perfil: null,
-          idLattes: null,
+          lattesId: null,
           formacao: null,
           formacaoIngles: null,
           resumo: null,
           resumoIngles: null,
           ultimaAtualizacao: null,
         };
-        const userId = Number(req.params.id);
-        await usuarioService.alterar(userId, dados);
 
-        return res.status(200).redirect(
-          criarURL(`/usuarios/dados/${req.params.id}`, {
-            message: 'Dados alterados com sucesso!',
-            type: 'success',
-            messageTitle: 'Edição de usuário bem-sucedida!',
-            tipoUsuario: req.session.tipoUsuario,
-          }),
-        );
+        const userId = Number(req.params.id);
+        await usuarioService.alterar(userId, updateData);
+
+        const successParams = {
+          message: 'Dados alterados com sucesso!',
+          type: 'success',
+          messageTitle: 'Edição de usuário bem-sucedida!',
+          tipoUsuario: req.session.tipoUsuario,
+        };
+
+        return res
+          .status(200)
+          .redirect(criarURL(`/usuarios/dados/${userId}`, successParams));
       } catch (error: unknown) {
         console.log(error);
-        const administrador = req.body.administrador === 'on' ? 1 : 0;
-        const coordenador = req.body.coordenador === 'on' ? 1 : 0;
-        const secretaria = req.body.secretaria === 'on' ? 1 : 0;
-        const professor = req.body.professor === 'on' ? 1 : 0;
-        const diretor = req.body.diretor === 'on' ? 1 : 0;
-        const dados = {
+
+        // Recria os dados do formulário para reexibição
+        const formData = {
           ...req.body,
-          administrador,
-          coordenador,
-          secretaria,
-          professor,
-          diretor,
+          administrador: req.body.administrador === 'on' ? 1 : 0,
+          coordenador: req.body.coordenador === 'on' ? 1 : 0,
+          secretaria: req.body.secretaria === 'on' ? 1 : 0,
+          professor: req.body.professor === 'on' ? 1 : 0,
           id: req.params.id,
         };
+
         return res.status(500).render(resolveView('usuarios-editar'), {
-          usuario: dados,
+          usuario: formData,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           message:
@@ -355,6 +391,8 @@ const editar = async (req: Request, res: Response): Promise<any> => {
           tipoUsuario: req.session.tipoUsuario,
         });
       }
+    }
+
     default:
       return res
         .status(400)
@@ -362,7 +400,10 @@ const editar = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const verificarDiretorExistente = async (req: Request, res: Response): Promise<any> => {
+const verificarDiretorExistente = async (
+  req: Request,
+  res: Response,
+): Promise<any> => {
   switch (req.method) {
     case 'GET':
       try {
@@ -379,4 +420,12 @@ const verificarDiretorExistente = async (req: Request, res: Response): Promise<a
   }
 };
 
-export default { adicionar, listar, deletar, visualizar, editar, restaurar, verificarDiretorExistente };
+export const usuarioController = {
+  adicionar,
+  listar,
+  deletar,
+  visualizar,
+  editar,
+  restaurar,
+  verificarDiretorExistente,
+};

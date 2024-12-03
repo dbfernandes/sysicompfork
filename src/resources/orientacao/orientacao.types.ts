@@ -1,5 +1,6 @@
-import { Orientacao } from "@prisma/client";
+import { Orientacao } from '@prisma/client';
 
-export type CreateOrientacaoDto = Pick<Orientacao,
-    'idProfessor' | 'titulo' | 'aluno' | 'ano' | 'natureza' | 'tipo' | 'status'
->
+export type CreateOrientacaoDto = Pick<
+  Orientacao,
+  'professorId' | 'titulo' | 'aluno' | 'ano' | 'natureza' | 'tipo' | 'status'
+>;

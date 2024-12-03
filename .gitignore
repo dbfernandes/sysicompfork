@@ -1,5 +1,7 @@
 node_modules
+/node_modules
 /build
+/dist
 uploads/*
 #Removing the database credentials
 src/config/database.js

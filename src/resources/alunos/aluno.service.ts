@@ -1,5 +1,6 @@
+// aluno.service.ts
 import { PrismaClient, Aluno } from '@prisma/client';
-import { CreateAlunoDto } from './alunos.types';
+import { CreateAlunoDto } from './aluno.types';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,10 @@ class AlunoService {
     }
   }
 
-  async listarTodos(curso: string | string[], formado: any): Promise<Aluno[]> {
+  async listarTodos(
+    curso: string | string[],
+    formado: number,
+  ): Promise<Aluno[]> {
     return prisma.aluno.findMany({
       where: {
         curso: Array.isArray(curso) ? { in: curso } : curso,
@@ -20,7 +24,11 @@ class AlunoService {
     });
   }
 
-  async contarTodos(): Promise<any> {
+  async contarTodos(): Promise<{
+    matriculados: Record<string, number>;
+    egressos: Record<string, number>;
+    data: Date;
+  }> {
     const contagem = {
       matriculados: {
         CC: 0,

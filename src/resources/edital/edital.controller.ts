@@ -6,12 +6,13 @@ import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
 import archiver from 'archiver';
 import path from 'path';
 import editalService from './edital.service';
-import { verificarArquivoDiretorio } from '../selecaoPPGI/selecaoppgi.controller';
+import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   PROPOSTA_FILE,
-} from '../selecaoPPGI/selecaoppgi.types';
+} from '../selecaoPPGI/selecao.ppgi.types';
+import { Candidato } from '@prisma/client';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -33,24 +34,24 @@ const addEditalSelecao = async (req: Request, res: Response) => {
 
     case 'POST': {
       const novoEdital: CreateEditalDto = {
-        editalId: req.body.num_edital,
+        id: req.body.num_edital,
         documento: req.body.documento,
         dataInicio: req.body.data_inicio,
         dataFim: req.body.data_fim,
         cartaRecomendacao: req.body.carta_recomendacao,
         cartaOrientador: req.body.carta_orientador,
-        vagaMestrado: Number(req.body.vaga_regular_mestrado),
+        vagasMestrado: Number(req.body.vaga_regular_mestrado),
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
-        vagaDoutorado: Number(req.body.vaga_regular_doutorado),
+        vagasDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
-        status: '1',
+        status: 1,
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
       };
       try {
         await EditalService.criarEdital(novoEdital);
         return res.redirect('/edital/listEdital');
-      } catch (error: any) {
+      } catch (error) {
         return res.status(500).json({
           csrfToken: req.csrfToken(),
           error: error.message,
@@ -78,7 +79,10 @@ const listEditalSelecao = async (req: Request, res: Response) => {
         nome: req.session.nome,
         editais,
         tipoUsuario: req.session.tipoUsuario,
-        usuarioPermitido: req.session.tipoUsuario.coordenador || req.session.tipoUsuario.secretaria || req.session.tipoUsuario.administrador,
+        usuarioPermitido:
+          req.session.tipoUsuario.coordenador ||
+          req.session.tipoUsuario.secretaria ||
+          req.session.tipoUsuario.administrador,
       });
 
     case 'POST': {
@@ -101,7 +105,7 @@ const deleteEdital = async (req: Request, res: Response) => {
 
       try {
         await editalService.delete(id);
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           csrfToken: req.csrfToken(),
           error: error.message,
@@ -179,18 +183,19 @@ const updateEdital = async (req: Request, res: Response) => {
     }
     case 'PUT': {
       const editalAtualizado: UpdateEditalDto = {
-        editalId: req.body.num_edital,
+        id: req.body.num_edital,
         documento: req.body.documento,
         dataInicio: req.body.data_inicio,
         dataFim: req.body.data_fim,
         cartaRecomendacao: req.body.carta_recomendacao,
         cartaOrientador: req.body.carta_orientador,
-        vagaMestrado: parseInt(req.body.vaga_regular_mestrado),
+        vagasMestrado: parseInt(req.body.vaga_regular_mestrado),
         cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
-        vagaDoutorado: parseInt(req.body.vaga_regular_doutorado),
+        vagasDoutorado: parseInt(req.body.vaga_regular_doutorado),
         cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
+        status: 1,
         // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
       };
       const updatedEdital = await EditalService.update(
@@ -208,7 +213,7 @@ const updateEdital = async (req: Request, res: Response) => {
   }
 };
 
-const listCandidatesEdital = async (req: Request, res: Response) => {
+const listcandidatosEdital = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const { id } = req.params;
@@ -220,67 +225,67 @@ const listCandidatesEdital = async (req: Request, res: Response) => {
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
-      const candidates = await editalService.listCandidates(id);
+      const candidatos = await editalService.listCandidatos(id);
 
-      const amountCandidateFinish = candidates.filter(
-        (candidate) => candidate.posicaoEdital >= 4,
+      const amountcandidatoFinish = candidatos.filter(
+        (candidato) => candidato.posicaoEdital >= 4,
       ).length;
-      const amountCandidateInProgress = candidates.filter(
-        (candidate) => candidate.posicaoEdital < 4,
+      const amountcandidatoInProgress = candidatos.filter(
+        (candidato) => candidato.posicaoEdital < 4,
       ).length;
-      return res.render(resolveView('listCandidates'), {
+      return res.render(resolveView('listcandidatos'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         edital,
-        amountCandidateFinish,
-        amountCandidateInProgress,
+        amountcandidatoFinish,
+        amountcandidatoInProgress,
         ...locals,
       });
     }
     case 'POST': {
       const { id_edital } = req.params;
-      const candidates = await editalService.listCandidates(id_edital);
-      if (!candidates) {
-        return candidates;
+      const candidatos = await editalService.listCandidatos(id_edital);
+      if (!candidatos) {
+        return candidatos;
       }
-      return res.status(200).json(candidates);
+      return res.status(200).json(candidatos);
     }
   }
 };
 
-// listEditalCandidates/:id
-const editalCandidates = async (req: Request, res: Response) => {
+// listEditalcandidatos/:id
+const editalcandidatos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       try {
         const editalID = req.params.id;
-        const candidates = await editalService.listCandidates(editalID);
+        const candidatos = await editalService.listCandidatos(editalID);
 
-        if (!Array.isArray(candidates))
+        if (!Array.isArray(candidatos))
           throw new Error('Erro ao buscar candidatos');
 
-        const quantidadeInscricaoAndamento = candidates.filter(
-          (candidate) =>
-            candidate.posicaoEdital !== null && candidate.posicaoEdital < 4,
+        const quantidadeInscricaoAndamento = candidatos.filter(
+          (candidato) =>
+            candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
         ).length;
 
-        const quantidadeInscricaoFinalizada = candidates.filter(
-          (candidate) =>
-            candidate.posicaoEdital !== null && candidate.posicaoEdital === 4,
+        const quantidadeInscricaoFinalizada = candidatos.filter(
+          (candidato) =>
+            candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
         ).length;
 
-        return res.render(resolveView('listCandidates'), {
+        return res.render(resolveView('listcandidatos'), {
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           ...locals,
-          candidates,
+          candidatos,
           editalID,
           tipoUsuario: req.session.tipoUsuario,
           quantidadeInscricaoAndamento,
           quantidadeInscricaoFinalizada,
         });
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           error: error.message,
         });
@@ -304,8 +309,8 @@ const geraPlanilha = async (req: Request, res: Response) => {
     .send(planilha);
 };
 
-const getCandidateDocument = async (req: Request, res: Response) => {
-  const candidato = await EditalService.getCandidate(Number(req.params.id));
+const getcandidatoDocument = async (req: Request, res: Response) => {
+  const candidato = await EditalService.getCandidato(Number(req.params.id));
   const caminhoDoc = path.join(
     'public',
     'uploads',
@@ -323,8 +328,8 @@ const getCandidateDocument = async (req: Request, res: Response) => {
   });
 };
 
-const getAllCandidatesDocuments = async (req: Request, res: Response) => {
-  const candidatos = await editalService.listCandidates(req.params.id);
+const getAllcandidatosDocuments = async (req: Request, res: Response) => {
+  const candidatos = await editalService.listCandidatos(req.params.id);
 
   res.setHeader(
     'Content-Disposition',
@@ -340,7 +345,7 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
 
   archive.pipe(res);
 
-  candidatos.forEach((candidato: any) => {
+  candidatos.forEach((candidato: Candidato) => {
     const candDir = path.join(
       __dirname,
       '../../../uploads/candidatos',
@@ -369,8 +374,8 @@ const getAllCandidatesDocuments = async (req: Request, res: Response) => {
   archive.finalize();
 };
 
-const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
-  const candidado = await EditalService.getCandidate(Number(req.params.id));
+const getAllDocumentsFromOnecandidato = async (req: Request, res: Response) => {
+  const candidado = await EditalService.getCandidato(Number(req.params.id));
   const candDir = path.join(
     __dirname,
     '../../../uploads/candidatos',
@@ -410,10 +415,10 @@ const getAllDocumentsFromOneCandidate = async (req: Request, res: Response) => {
   archive.finalize();
 };
 
-const candidateDetails = async (req: Request, res: Response) => {
+const candidatoDetails = async (req: Request, res: Response) => {
   try {
-    const candidate = await editalService.getCandidate(Number(req.params.id));
-    const edital = await editalService.getEdital(candidate!.idEdital);
+    const candidato = await editalService.getCandidato(Number(req.params.id));
+    const edital = await editalService.getEdital(candidato!.editalId);
     const candidatoDocs = {
       Curriculum: false,
       CartaDoOrientador: false,
@@ -426,25 +431,25 @@ const candidateDetails = async (req: Request, res: Response) => {
       'public',
       'uploads',
       'candidato',
-      candidate.id.toString(),
+      candidato.id.toString(),
     );
 
     const cartaOrientadorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/CartaDoOrientador`,
+      `${String(candidato!.id)}-${candidato!.nome}/CartaDoOrientador`,
     );
 
     const provaAnteriorpath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/ProvaAnteriorSelecao`,
+      `${String(candidato!.id)}-${candidato!.nome}/ProvaAnteriorSelecao`,
     );
 
     const recomendacaopath = path.join(
       __dirname,
       '../../../uploads/candidatos/',
-      `${String(candidate!.id)}-${candidate!.nome}/Recomendacao`,
+      `${String(candidato!.id)}-${candidato!.nome}/Recomendacao`,
     );
 
     if (verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE)) {
@@ -466,8 +471,8 @@ const candidateDetails = async (req: Request, res: Response) => {
       candidatoDocs.Recomendacao = true;
     }
 
-    return res.render(resolveView('candidateDetails'), {
-      candidate: candidate,
+    return res.render(resolveView('candidatoDetails'), {
+      candidato: candidato,
       candidatoDocs: candidatoDocs,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
@@ -475,7 +480,7 @@ const candidateDetails = async (req: Request, res: Response) => {
       tipoUsuario: req.session.tipoUsuario,
       edital,
     });
-  } catch (error: any) {
+  } catch (error) {
     return res.status(400).json({
       error: error.message,
     });
@@ -488,12 +493,12 @@ export default {
   deleteEdital,
   arquivarEdital,
   viewEdital,
-  listCandidatesEdital,
+  listcandidatosEdital,
   updateEdital,
   geraPlanilha,
-  editalCandidates,
-  candidateDetails,
-  getCandidateDocument,
-  getAllDocumentsFromOneCandidate,
-  getAllCandidatesDocuments,
+  editalcandidatos,
+  candidatoDetails,
+  getcandidatoDocument,
+  getAllDocumentsFromOnecandidato,
+  getAllcandidatosDocuments,
 };

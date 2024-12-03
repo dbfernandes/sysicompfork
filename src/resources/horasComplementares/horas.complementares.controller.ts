@@ -5,7 +5,6 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-
 const listarHoras = async (_req: Request, res: Response) => {
   const MockHoras = [
     {
@@ -30,12 +29,10 @@ const listarHoras = async (_req: Request, res: Response) => {
     },
   ];
 
-  return res
-    .status(200)
-    .render(resolveView('main'), {
-      atividadesRealizadas: MockHoras,
-      tipoUsuario: _req.session?.tipoUsuario,
-    });
+  return res.status(200).render(resolveView('main'), {
+    atividadesRealizadas: MockHoras,
+    tipoUsuario: _req.session?.tipoUsuario,
+  });
 };
 
 const adicionarAtividade = async (_req: Request, res: Response) => {
@@ -49,12 +46,10 @@ const adicionarAtividade = async (_req: Request, res: Response) => {
     { name: '9.1: Carga Horária Optativa Excedente' },
   ];
 
-  return res
-    .status(200)
-    .render(resolveView('adicionar-atividade'), {
-      atividades: MockAtividades,
-      tipoUsuario: _req.session?.tipoUsuario,
-    });
+  return res.status(200).render(resolveView('adicionar-atividade'), {
+    atividades: MockAtividades,
+    tipoUsuario: _req.session?.tipoUsuario,
+  });
 };
 
 export default { listarHoras, adicionarAtividade };

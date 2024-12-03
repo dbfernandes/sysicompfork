@@ -1,11 +1,52 @@
 import { Candidato } from '@prisma/client';
 
-export type SignInDto = Pick<Candidato, 'email' | 'idEdital'> & {
-  senha: string;
-};
+export type CreateCandidatoDto = Pick<
+  Candidato,
+  | 'email'
+  | 'senhaHash'
+  | 'editalId'
+  | 'posicaoEdital'
+  | 'linhaPesquisaId'
+  | 'telefone'
+  | 'nome'
+  | 'bairro'
+  | 'cep'
+  | 'cidade'
+  | 'bolsista'
+  | 'anoEgressoGraduacao'
+  | 'cursoPos'
+  | 'instituicaoGraduacao'
+  | 'comoSoube'
+  | 'condicao'
+  | 'condicaoTipo'
+  | 'cotista'
+  | 'cotistaTipo'
+  | 'cursoDesejado'
+  | 'anoEgressoPos'
+  | 'cursoGraduacao'
+  | 'instituicaoPos'
+  | 'tipoPos'
+  | 'endereco'
+  | 'nacionalidade'
+  | 'dataNascimento'
+  | 'nomeSocial'
+  | 'regime'
+  | 'sexo'
+  | 'telefoneSecundario'
+  | 'uf'
+>;
 
-export type SignUpDto = Pick<Candidato, 'email' | 'idEdital'> & {
-  senha: string;
-};
+export type UpdateCandidatoDto = Partial<CreateCandidatoDto>;
 
-export type RecoverPasswordDto = Pick<Candidato, 'email' | 'idEdital'>;
+export type CandidatoSemSenha = Omit<Candidato, 'senhaHash'>;
+
+export interface Publicacao {
+  titulo?: string;
+  ano?: number;
+  local?: string;
+  natureza?: string;
+  autores: {
+    nomeCompleto: string[];
+  };
+  issn?: string;
+}

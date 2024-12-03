@@ -1,36 +1,35 @@
-import { PrismaClient } from '@prisma/client';
+import { Candidato, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
-import { SignInDto, SignUpDto } from '../candidato/candidato.types';
 const prisma = new PrismaClient();
 
-class CandidatoService {
-  validPassword(candidate, password) {
-    return candidate.validPassword(password);
+class CandidatoServicePublicacao {
+  validPassword(candidato, password) {
+    return candidato.validPassword(password);
   }
 
   async list() {
     return await prisma.candidato.findMany();
   }
 
-  async create({ email, senha, idEdital }: SignUpDto) {
+  async create({ email, senha, edital }) {
     const step = 1;
 
     const passwordHash = await generateHashPassword(senha);
-    const candidate = await prisma.candidato.create({
+    const candidato = await prisma.candidato.create({
       data: {
         email,
         senhaHash: passwordHash,
-        idEdital,
+        editalId: edital,
         posicaoEdital: step,
       },
     });
 
-    delete candidate.senhaHash;
+    delete candidato.senhaHash;
     await prisma.edital.update({
       where: {
-        editalId: idEdital,
+        id: edital,
       },
       data: {
         inscricoesIniciadas: {
@@ -38,39 +37,33 @@ class CandidatoService {
         },
       },
     });
-    return candidate;
+    return candidato;
   }
 
-  async findCandidatoByEmailAndEdital({
-    email,
-    idEdital,
-  }: {
-    email: string;
-    idEdital: string;
-  }) {
+  async findCandidatoByEmailAndEdital({ email, edital }) {
     const candidato = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital,
+        editalId: edital,
       },
     });
 
     return candidato;
   }
 
-  async auth({ email, senha, idEdital }: SignInDto) {
-    const candidate = await prisma.candidato.findFirst({
+  async auth({ email, senha, editalId }) {
+    const candidato = await prisma.candidato.findFirst({
       where: {
         email,
-        idEdital,
+        editalId: editalId,
       },
     });
 
-    if (!candidate) {
+    if (!candidato) {
       return null;
     }
-    return (await bcrypt.compare(senha, candidate.senhaHash))
-      ? candidate
+    return (await bcrypt.compare(senha, candidato.senhaHash))
+      ? candidato
       : null;
   }
 
@@ -88,11 +81,11 @@ class CandidatoService {
         id,
       },
       include: {
-        Edital: true,
+        edital: true,
       },
     });
   }
-  async update({ id, data }: { id: number; data: any }) {
+  async update({ id, data }: { id: number; data: Partial<Candidato> }) {
     return await prisma.candidato.update({
       where: {
         id,
@@ -102,7 +95,7 @@ class CandidatoService {
   }
 
   async backEdital({ id }) {
-    const candidate = await prisma.candidato.findFirst({
+    const candidato = await prisma.candidato.findFirst({
       where: {
         id,
       },
@@ -112,11 +105,11 @@ class CandidatoService {
         id,
       },
       data: {
-        posicaoEdital: candidate.posicaoEdital - 1,
+        posicaoEdital: candidato.posicaoEdital - 1,
       },
     });
 
-    return candidate;
+    return candidato;
   }
 
   async updateTokenPassword({ id }) {
@@ -145,24 +138,24 @@ class CandidatoService {
   }
 
   async changePasswordWithToken({ token, password }) {
-    const candidate = await prisma.candidato.findFirst({
+    const candidato = await prisma.candidato.findFirst({
       where: {
         tokenResetSenha: token,
       },
     });
 
-    if (!candidate) {
+    if (!candidato) {
       throw new Error('Token inválido');
     }
 
-    if (candidate.validadeTokenReset < new Date()) {
+    if (candidato.validadeTokenReset < new Date()) {
       throw new Error('Token expirado');
     }
 
     const passwordHash = await generateHashPassword(password);
     return await prisma.candidato.update({
       where: {
-        id: candidate.id,
+        id: candidato.id,
       },
       data: {
         senhaHash: passwordHash,
@@ -173,35 +166,35 @@ class CandidatoService {
   }
 
   async listCanditatesByEdital(editalId: string) {
-    const candidates = await prisma.candidato
+    const candidatos = await prisma.candidato
       .findMany({
         where: {
-          idEdital: editalId,
+          editalId: editalId,
         },
       })
       .catch((err) => {
         console.error(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar o candidato');
       });
-    return candidates;
+    return candidatos;
   }
 
-  async listAllInfoCandidate(id: number) {
-    const candidate = await prisma.candidato.findFirst({
+  async listAllInfocandidato(id: number) {
+    const candidato = await prisma.candidato.findFirst({
       where: {
         id,
       },
       include: {
-        CandidatoExperienciaAcademica: true,
-        CandidatoPublicacoes: true,
-        LinhasDePesquisa: true,
-        CandidatoRecomendacao: true,
-        Edital: true,
+        experienciasAcademicas: true,
+        publicacoes: true,
+        linhaPesquisa: true,
+        recomendacoes: true,
+        edital: true,
       },
     });
 
-    return candidate;
+    return candidato;
   }
 }
 
-export default new CandidatoService();
+export default new CandidatoServicePublicacao();

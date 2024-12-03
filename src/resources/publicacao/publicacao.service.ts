@@ -1,41 +1,46 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, Publicacao } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
 import getPublicationsArr from '../../utils/listaPublicacoes';
-
-const prisma = new PrismaClient();
+import { ContagemResult, PublicacaoCount } from './publicacao.types';
 
 class PublicacaoService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
   async adicionarVarios(
-    idProfessor: number,
-    publicacoes: any[],
+    professorId: number,
+    publicacoes: Partial<Publicacao>[],
   ): Promise<void> {
     if (publicacoes !== undefined) {
-      const tipos = await prisma.tipoPublicacao.findMany();
+      const tipos = await this.prisma.tipoPublicacao.findMany();
       const publicArr = await getPublicationsArr(
         publicacoes,
-        idProfessor,
+        professorId,
         tipos,
       );
 
-      const professor = await prisma.usuario.findUnique({
-        where: { id: idProfessor },
+      const professor = await this.prisma.usuario.findUnique({
+        where: { id: professorId },
         include: {
-          RelUsuarioPublicacao: {
+          publicacoes: {
             include: {
-              Publicacao: true,
+              publicacao: true,
             },
           },
         },
       });
 
       const publicacoesExistentes =
-        professor?.RelUsuarioPublicacao.map((rel) => rel.Publicacao) || [];
+        professor?.publicacoes.map((rel) => rel.publicacao) || [];
       if (publicacoesExistentes.length > 0) {
         const idPublicacoesExistentes = publicacoesExistentes.map((p) => p.id);
 
-        const todasRelacoes = await prisma.relUsuarioPublicacao.findMany({
+        const todasRelacoes = await this.prisma.usuarioPublicacao.findMany({
           where: {
-            idPublicacao: { in: idPublicacoesExistentes },
+            publicacaoId: { in: idPublicacoesExistentes },
           },
         });
 
@@ -43,30 +48,30 @@ class PublicacaoService {
           (publicacaoId) => {
             const outraRelacao = todasRelacoes.find(
               (e) =>
-                e.idPublicacao === publicacaoId && e.idUsuario !== idProfessor,
+                e.publicacaoId === publicacaoId && e.usuarioId !== professorId,
             );
             return !outraRelacao;
           },
         );
 
-        await prisma.usuario.update({
-          where: { id: idProfessor },
+        await this.prisma.usuario.update({
+          where: { id: professorId },
           data: {
-            RelUsuarioPublicacao: {
+            publicacoes: {
               deleteMany: {
-                idPublicacao: { in: idPublicacoesAExcluir },
+                publicacaoId: { in: idPublicacoesAExcluir },
               },
             },
           },
         });
 
-        await prisma.publicacao.deleteMany({
+        await this.prisma.publicacao.deleteMany({
           where: { id: { in: idPublicacoesAExcluir } },
         });
       }
 
       for (const publicacao of publicArr) {
-        const publicacoesMesmoAno = await prisma.publicacao.findMany({
+        const publicacoesMesmoAno = await this.prisma.publicacao.findMany({
           where: {
             ano: publicacao.ano,
           },
@@ -81,63 +86,79 @@ class PublicacaoService {
         );
 
         if (!unicaPublicacao) {
-          unicaPublicacao = await prisma.publicacao.create({
+          unicaPublicacao = await this.prisma.publicacao.create({
             data: publicacao,
           });
         }
 
-        await prisma.relUsuarioPublicacao.create({
+        await this.prisma.usuarioPublicacao.create({
           data: {
-            idUsuario: idProfessor,
-            idPublicacao: unicaPublicacao.id,
+            usuarioId: professorId,
+            publicacaoId: unicaPublicacao.id,
           },
         });
       }
     }
   }
+  async listarTodos(tipo: number[] = [], ano?: unknown) {
+    try {
+      const whereConditions: Prisma.PublicacaoWhereInput = {
+        tipoId: tipo.length ? { in: tipo } : undefined,
+        ano: ano
+          ? {
+              in: []
+                .concat(ano)
+                .map(Number)
+                .filter((n) => !isNaN(n)),
+            }
+          : undefined,
+      };
 
-  async listarTodos(conditions: any) {
-    const publicacoes = await prisma.publicacao.findMany({
-      where: conditions || {},
-      include: {
-        TipoPublicacao: true,
-      },
-    });
-    return publicacoes;
+      return await this.prisma.publicacao.findMany({
+        where: whereConditions,
+        include: { usuarioPublicacoes: true },
+      });
+    } catch (error) {
+      throw new Error(`Erro ao listar publicações: ${error}`);
+    }
   }
+  async contarTodos(): Promise<ContagemResult> {
+    try {
+      const currentYear = new Date().getFullYear();
+      const anos = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i);
 
-  async contarTodos() {
-    const currentYear = new Date().getFullYear();
-    const anos = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i);
+      const counts = await this.prisma.$queryRaw<PublicacaoCount[]>`
+        SELECT 
+          ano,
+          tipo,
+          COUNT(*) as total
+        FROM Publicacao
+        WHERE 
+          tipo IN (1, 2)
+          AND ano >= ${currentYear - 14}
+        GROUP BY ano, tipo
+        ORDER BY ano, tipo
+      `;
 
-    const counts = await prisma.publicacao.groupBy({
-      by: ['ano', 'tipo'],
-      where: {
-        tipo: { in: [1, 2] },
-        ano: {
-          gte: currentYear - 14,
-        },
-      },
-      _count: {
-        _all: true,
-      },
-    });
+      const contagemTotal = {
+        Conferencia: anos.map(
+          (ano) =>
+            counts.find((c) => c.ano === ano && c.tipo === 1)?._count._all ?? 0,
+        ),
+        Periodico: anos.map(
+          (ano) =>
+            counts.find((c) => c.ano === ano && c.tipo === 2)?._count._all ?? 0,
+        ),
+      };
 
-    const contagemTotal = {
-      Conferencia: anos.map(
-        (ano) =>
-          counts.find((c) => c.ano === ano && c.tipo === 1)?._count._all || 0,
-      ),
-      Periodico: anos.map(
-        (ano) =>
-          counts.find((c) => c.ano === ano && c.tipo === 2)?._count._all || 0,
-      ),
-    };
-
-    return {
-      contagemTotal,
-      anos,
-    };
+      return {
+        contagemTotal,
+        anos,
+      };
+    } catch (error) {
+      console.error('Erro ao contar publicações:', error);
+      throw new Error('Falha ao contar publicações');
+    }
   }
 }
 

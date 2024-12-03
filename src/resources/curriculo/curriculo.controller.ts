@@ -1,7 +1,4 @@
-// src/modules/curriculo/curriculo.controller.ts
 import { Request, Response } from 'express';
-import { CreateAvatarDto } from '../avatar/avatar.types';
-
 import AvatarService from '../avatar/avatar.service';
 import PublicacaoService from '../publicacao/publicacao.service';
 import PremioService from '../premio/premio.service';
@@ -11,7 +8,14 @@ import OrientacaoService from '../orientacao/orientacao.service';
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
 import upload from '../../middlewares/multer.config';
-
+import { UploadRequest } from './curriculo.types';
+import {
+  Orientacao,
+  Premio,
+  Projeto,
+  Publicacao,
+  Usuario,
+} from '@prisma/client';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -66,7 +70,7 @@ const verificarAvatar = async (req: Request, res: Response) => {
   }
 };
 
-const carregar = (req: Request, res: Response) => {
+const carregar = (req: UploadRequest, res: Response) => {
   upload(req, res, async (err) => {
     if (err) {
       console.log(err);
@@ -74,26 +78,33 @@ const carregar = (req: Request, res: Response) => {
     }
 
     try {
-      const { publicacoes, idProfessor, premios, info, projetos, orientacoes } =
+      const { publicacoes, professorId, premios, info, projetos, orientacoes } =
         req.body;
-      const publicacoesParsed = JSON.parse(publicacoes);
-      const premiosParsed = JSON.parse(premios);
-      const infoParsed = JSON.parse(info);
-      const projetosParsed = JSON.parse(projetos);
-      const orientacoesParsed = JSON.parse(orientacoes);
 
-      await OrientacaoService.adicionarVarios(idProfessor, orientacoesParsed);
-      await ProjetoService.adicionarVarios(idProfessor, projetosParsed);
-      await UsuarioService.alterarInfo(idProfessor, infoParsed);
-      await PremioService.adicionarVarios(idProfessor, premiosParsed);
-      await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed);
+      const publicacoesParsed = JSON.parse(
+        publicacoes,
+      ) as Partial<Publicacao>[];
+      const premiosParsed = JSON.parse(premios) as Partial<Premio>[];
+      const infoParsed = JSON.parse(info) as Partial<Usuario>;
+      const projetosParsed = JSON.parse(projetos) as Partial<Projeto>[];
+      const orientacoesParsed = JSON.parse(
+        orientacoes,
+      ) as Partial<Orientacao>[];
+
+      await OrientacaoService.adicionarVarios(professorId, orientacoesParsed);
+      await ProjetoService.adicionarVarios(professorId, projetosParsed);
+      await UsuarioService.alterarInfo(professorId, infoParsed);
+      await PremioService.adicionarVarios(professorId, premiosParsed);
+      await PublicacaoService.adicionarVarios(professorId, publicacoesParsed);
+
       if (req.file) {
         await AvatarService.adicionar(
-          idProfessor,
+          professorId,
           req.file.filename,
           req.file.path,
         );
       }
+
       return res.status(201).send();
     } catch (error) {
       console.log(error);

@@ -1,9 +1,10 @@
 import request from 'supertest';
 import app from '../../../src/app';
 import editalService from '../../../src/resources/edital/edital.service';
-import candidatoService from '../../../src/resources/candidato/candidato.service';
 import { StatusCodes } from 'http-status-codes';
-import { SignInDto } from '../../../src/resources/candidato/candidato.types';
+import candidatoService from '@/resources/candidato/candidato.service';
+import { SignInDto } from '@/resources/selecaoPPGI/selecao.ppgi.types';
+import { CreateEditalDto } from '@/resources/edital/edital.types';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
@@ -16,74 +17,66 @@ function extractCsrfTokenFromBody(res: request.Response): string {
   }
 }
 
-const listEditaisValues = [
+const listEditaisValues: CreateEditalDto[] = [
   {
-    editalId: '001-2023',
-    vagaDoutorado: 2,
+    id: '001-2023', // mudou de editalId para id
+    vagasDoutorado: 2, // mudou de vagaDoutorado para vagasDoutorado
     cotasDoutorado: 2,
-    vagaMestrado: 5,
+    vagasMestrado: 5, // mudou de vagaMestrado para vagasMestrado
     cotasMestrado: 5,
     cartaOrientador: '1',
     cartaRecomendacao: '1',
     documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2023-08-23T00:00:00.000Z',
-    dataFim: '2023-09-09T00:00:00.000Z',
-    status: '1',
+    dataInicio: new Date('2023-08-23T00:00:00.000Z'), // convertido para Date
+    dataFim: new Date('2023-09-09T00:00:00.000Z'), // convertido para Date
+    status: 1, // convertido para number
     inscricoesIniciadas: 0,
     inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
   },
   {
-    editalId: '002-2023',
-    vagaDoutorado: 6,
+    id: '002-2023',
+    vagasDoutorado: 6,
     cotasDoutorado: 8,
-    vagaMestrado: 1,
+    vagasMestrado: 1,
     cotasMestrado: 3,
     cartaOrientador: '0',
     cartaRecomendacao: '1',
     documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2023-06-01T00:00:00.000Z',
-    dataFim: '2023-06-27T00:00:00.000Z',
-    status: '0',
+    dataInicio: new Date('2023-06-01T00:00:00.000Z'),
+    dataFim: new Date('2023-06-27T00:00:00.000Z'),
+    status: 0,
     inscricoesIniciadas: 0,
     inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
   },
   {
-    editalId: '003-2024',
-    vagaDoutorado: 9,
+    id: '003-2024',
+    vagasDoutorado: 9,
     cotasDoutorado: 2,
-    vagaMestrado: 2,
+    vagasMestrado: 2,
     cotasMestrado: 3,
     cartaOrientador: '1',
     cartaRecomendacao: '0',
     documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2024-07-14T00:00:00.000Z',
-    dataFim: '2024-09-01T00:00:00.000Z',
-    status: '1',
+    dataInicio: new Date('2024-07-14T00:00:00.000Z'),
+    dataFim: new Date('2024-09-01T00:00:00.000Z'),
+    status: 1,
     inscricoesIniciadas: 0,
     inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:32:05.000Z'),
   },
   {
-    editalId: '004-2023',
-    vagaDoutorado: 5,
+    id: '004-2023',
+    vagasDoutorado: 5,
     cotasDoutorado: 2,
-    vagaMestrado: 10,
+    vagasMestrado: 10,
     cotasMestrado: 3,
     cartaOrientador: '1',
     cartaRecomendacao: '1',
     documento: 'http://www.propesp.ufam.edu.br',
-    dataInicio: '2024-09-01',
-    dataFim: '2024-10-31',
-    status: '1',
+    dataInicio: new Date('2024-09-01'),
+    dataFim: new Date('2024-10-31'),
+    status: 1,
     inscricoesIniciadas: 1,
     inscricoesEncerradas: 0,
-    createdAt: new Date('2024-10-04T12:32:05.000Z'),
-    updatedAt: new Date('2024-10-04T12:33:24.042Z'),
   },
 ];
 
@@ -136,8 +129,8 @@ describe('Rota Login', () => {
   let csrfToken: string;
 
   beforeAll(async () => {
-    editalService.criarEdital(listEditaisValues[0]);
-    editalService.criarEdital(listEditaisValues[1]);
+    await editalService.criarEdital(listEditaisValues[0]);
+    await editalService.criarEdital(listEditaisValues[1]);
 
     // Obter o formulário e o token CSRF
     const getResponse = await agent.get('/selecaoppgi/entrar');
@@ -160,13 +153,13 @@ describe('Rota Login', () => {
       await candidatoService.create({
         email: candidateValue.email,
         senha: 'password123',
-        idEdital: candidateValue.idEdital,
+        edital: candidateValue.idEdital,
       });
 
       const loginValue = {
         email: candidateValue.email,
         senha: 'password123',
-        idEdital: candidateValue.idEdital,
+        editalId: candidateValue.idEdital,
       } as SignInDto;
 
       const response = await agent
