@@ -1,8 +1,8 @@
 // test/integration/signUp.spec.ts
 import request from 'supertest';
 import app from '../../../src/app'; // Ajuste o caminho conforme necessário
-import candidatoService from '../../../src/resources/candidato/candidato.service';
 import EditalService from '../../../src/resources/edital/edital.service';
+import candidatoService from '@/resources/candidato/candidato.service';
 
 // Mock dos serviços
 jest.mock('../../../src/resources/candidato/candidato.service');

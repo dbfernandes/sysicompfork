@@ -1,5 +1,3 @@
-import { Avatar } from "@prisma/client";
+import { Avatar } from '@prisma/client';
 
-export type CreateAvatarDto = Pick<Avatar,
-    'idUsuario' | 'nome' | 'caminho'
->
+export type CreateAvatarDto = Pick<Avatar, 'usuarioId' | 'nome' | 'caminho'>;

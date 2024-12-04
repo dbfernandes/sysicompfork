@@ -1,15 +1,15 @@
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 class OrientacaoService {
-  async adicionarVarios (
-    idProfessor: number,
-    orientacoes: any[]
-  ): Promise<void>{
+  async adicionarVarios(
+    professorId: number,
+    orientacoes: any[],
+  ): Promise<void> {
     if (orientacoes !== undefined) {
-      const orientacoesArr = orientacoes.map(o => {
+      const orientacoesArr = orientacoes.map((o) => {
         return {
-          idProfessor,
+          professorId,
           titulo: o.titulo,
           aluno: o.aluno,
           ano: o.ano,
@@ -21,7 +21,7 @@ class OrientacaoService {
       await prisma.orientacao
         .deleteMany({
           where: {
-            idProfessor,
+            professorId,
           },
         })
         .then(async () => {

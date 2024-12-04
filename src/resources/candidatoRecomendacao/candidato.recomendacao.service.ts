@@ -18,10 +18,10 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async getRecomendacoesByCandidato(idCandidato: number) {
+  async getRecomendacoesByCandidato(candidatoId: number) {
     return await prisma.candidatoRecomendacao.findMany({
       where: {
-        idCandidato,
+        candidatoId,
       },
     });
   }
@@ -32,7 +32,7 @@ class CandidatoRecomendacaoService {
         token,
       },
       include: {
-        Candidato: true,
+        candidato: true,
       },
     });
   }
@@ -75,21 +75,21 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async createManyByCandidate(
+  async createManyByCandidato(
     data: {
       nome: string;
       email: string;
       id?: number;
     }[],
-    idCandidato: number,
-    idEdital: string,
+    candidatoId: number,
+    editalId: string,
     prazo: Date,
   ) {
     console.log(data);
     // Drop recomendacoes
     const listRecomendacoes = await prisma.candidatoRecomendacao.findMany({
       where: {
-        idCandidato,
+        candidatoId,
       },
     });
     const dropRecomendacoes = listRecomendacoes.filter(
@@ -131,23 +131,23 @@ class CandidatoRecomendacaoService {
           ...recomendacao,
           token: crypto.randomBytes(20).toString('hex'),
           prazo,
-          idEdital,
-          idCandidato,
+          editalId,
+          candidatoId,
         })),
       }));
   }
 
-  async sendEmailRecoveryPasswordCandidate({
-    idCandidato,
+  async sendEmailRecoveryPasswordCandidato({
+    candidatoId,
     url,
   }: {
-    idCandidato: number;
+    candidatoId: number;
     url: string;
   }) {
-    const recomendacoes = await this.getRecomendacoesByCandidato(idCandidato);
+    const recomendacoes = await this.getRecomendacoesByCandidato(candidatoId);
     const candidato = await prisma.candidato.findUnique({
       where: {
-        id: idCandidato,
+        id: candidatoId,
       },
     });
     console.log('Send email to:', candidato?.email);
@@ -221,7 +221,7 @@ class CandidatoRecomendacaoService {
         id: idRecomendacao,
       },
       include: {
-        Candidato: true,
+        candidato: true,
       },
     });
 
@@ -233,14 +233,14 @@ class CandidatoRecomendacaoService {
           email: process.env.SENDGRID_EMAIL_SEND,
           name: 'Coordenação do PPGI',
         }, // Change to your verified sender
-        subject: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.Candidato.nome}`,
+        subject: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.candidato.nome}`,
         text: 'teste',
         html: `
           <div>
           Caro(a) ${recomendacao.nome},
           <br>
           <br>
-          A carta de recomendação enviada para ${recomendacao.Candidato.nome} (email: ${recomendacao.Candidato.email}">${recomendacao.Candidato.email}</a>) foi devidamente respondida.
+          A carta de recomendação enviada para ${recomendacao.candidato.nome} (email: ${recomendacao.candidato.email}">${recomendacao.candidato.email}</a>) foi devidamente respondida.
           <br>
           Em caso de dúvidas, por favor nos contate. Agradecemos sua colaboração.
           <br>

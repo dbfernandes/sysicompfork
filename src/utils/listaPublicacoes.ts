@@ -1,13 +1,13 @@
-async function getPublicationsArr (publicacoes: any, id: number, tipos: any[]) {
-  const publicArr:any = []
-  tipos.forEach(tipo => {
-    const { chave } = tipo
-    const publicacoesChave = publicacoes[chave]
+async function getPublicationsArr(publicacoes: any, id: number, tipos: any[]) {
+  const publicArr: any = [];
+  tipos.forEach((tipo) => {
+    const { chave } = tipo;
+    const publicacoesChave = publicacoes[chave];
     if (publicacoesChave !== undefined) {
       for (const k in publicacoesChave) {
         publicArr.push({
-          idProfessor: id,
-          idCandidate: id,
+          professorId: id,
+          candidatoId: id,
           titulo: publicacoesChave[k].titulo,
           ano:
             publicacoesChave[k].ano !== '' && parseInt(publicacoesChave[k].ano)

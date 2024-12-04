@@ -1,7 +1,4 @@
-// src/modules/curriculo/curriculo.controller.ts
 import { Request, Response } from 'express';
-import { CreateAvatarDto } from '../avatar/avatar.types';
-
 import AvatarService from '../avatar/avatar.service';
 import PublicacaoService from '../publicacao/publicacao.service';
 import PremioService from '../premio/premio.service';
@@ -11,7 +8,15 @@ import OrientacaoService from '../orientacao/orientacao.service';
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
 import upload from '../../middlewares/multer.config';
-
+import {
+  InfoParsed,
+  OrientacaoParsed,
+  PremioParsed,
+  ProjetoParsed,
+  ProjetoTransformed,
+  PublicacaoParsed,
+} from '../projetos/projetos.types';
+import { UploadRequest } from './curriculo.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -66,38 +71,65 @@ const verificarAvatar = async (req: Request, res: Response) => {
   }
 };
 
-const carregar = (req: Request, res: Response) => {
+const carregar = (req: UploadRequest, res: Response) => {
   upload(req, res, async (err) => {
     if (err) {
-      console.log(err);
-      return res.status(500).send();
+      console.error('Erro no upload:', err);
+      return res.status(500).json({
+        error: 'Erro ao processar upload do arquivo',
+      });
     }
 
     try {
-      const { publicacoes, idProfessor, premios, info, projetos, orientacoes } =
+      const { publicacoes, professorId, premios, info, projetos, orientacoes } =
         req.body;
-      const publicacoesParsed = JSON.parse(publicacoes);
-      const premiosParsed = JSON.parse(premios);
-      const infoParsed = JSON.parse(info);
-      const projetosParsed = JSON.parse(projetos);
-      const orientacoesParsed = JSON.parse(orientacoes);
 
-      await OrientacaoService.adicionarVarios(idProfessor, orientacoesParsed);
-      await ProjetoService.adicionarVarios(idProfessor, projetosParsed);
-      await UsuarioService.alterarInfo(idProfessor, infoParsed);
-      await PremioService.adicionarVarios(idProfessor, premiosParsed);
-      await PublicacaoService.adicionarVarios(idProfessor, publicacoesParsed);
+      // Parse dos dados com tipos específicos
+      const publicacoesParsed = JSON.parse(publicacoes) as PublicacaoParsed[];
+      const premiosParsed = JSON.parse(premios) as PremioParsed[];
+      const infoParsed = JSON.parse(info) as InfoParsed;
+      const projetosParsed = JSON.parse(projetos) as ProjetoParsed[];
+      const orientacoesParsed = JSON.parse(orientacoes) as OrientacaoParsed[];
+
+      // Transformação dos projetos para o formato esperado pelo service
+      const projetosTransformed: ProjetoTransformed = {
+        projetos: projetosParsed.map((p) => ({
+          titulo: p.titulo || '',
+          descricao: p.descricao || '',
+          papel: p.papel || '',
+          financiadores: p.financiadores || '',
+          integrantes: p.integrantes || '',
+          inicio: p.inicio || 0,
+          fim: p.fim || 0,
+        })),
+      };
+
+      // Chamadas aos services com validação de tipos
+      await Promise.all([
+        OrientacaoService.adicionarVarios(professorId, orientacoesParsed),
+        ProjetoService.adicionarVarios(professorId, projetosTransformed),
+        UsuarioService.alterarInfo(professorId, infoParsed),
+        PremioService.adicionarVarios(professorId, premiosParsed),
+        PublicacaoService.adicionarVarios(professorId, publicacoesParsed),
+      ]);
+
+      // Upload do avatar se existir
       if (req.file) {
         await AvatarService.adicionar(
-          idProfessor,
+          professorId,
           req.file.filename,
           req.file.path,
         );
       }
-      return res.status(201).send();
+
+      return res.status(201).json({
+        message: 'Currículo atualizado com sucesso',
+      });
     } catch (error) {
-      console.log(error);
-      return res.status(500).send();
+      console.error('Erro ao processar currículo:', error);
+      return res.status(500).json({
+        error: 'Erro interno ao processar currículo',
+      });
     }
   });
 };

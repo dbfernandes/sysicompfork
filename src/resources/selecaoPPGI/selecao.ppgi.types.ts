@@ -8,3 +8,8 @@ export enum Nacionalidade {
   BRASILEIRA = 'Brasileira',
   ESTRANGEIRA = 'Estrangeira',
 }
+export interface SignInDto {
+  email: string;
+  senha: string;
+  editalId: string;
+}

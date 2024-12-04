@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
-import linhasDePesquisaService from './linhasDePesquisa.service';
-import { StatusCodes } from 'http-status-codes';
-import { CreateLinhaDePesquisaDto, UpdateLinhaDePesquisaDto } from './linhaDePesquisa.types';
+import linhasDePesquisaService from './linha.de.pesquisa.service';
+import {
+  CreateLinhaDePesquisaDto,
+  UpdateLinhaDePesquisaDto,
+} from './linha.de.pesquisa.types';
 import path from 'path';
-
+import { StatusCodes } from 'http-status-codes';
 const pageTitle = 'Linhas De Pesquisa';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
 
 const listar = async (req: Request, res: Response) => {
   try {
@@ -43,26 +44,23 @@ const buscar = async (req: Request, res: Response) => {
   try {
     const result = await linhasDePesquisaService.findById(parseInt(id));
 
-    if (!result) return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Linha de Pesquisa Não Encontrada!' });
+    if (!result)
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Linha de Pesquisa Não Encontrada!' });
 
     const { nome, sigla } = result;
 
-    return res
-      .status(StatusCodes.OK)
-      .render(resolveView('linhasDePesquisa-busca'), {
-        nome,
-        sigla,
-        pageTitle,
-        tipoUsuario: req.session?.tipoUsuario
-      });
-  } catch (error: any) {
-    return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-busca'), {
+    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisa-busca'), {
+      nome,
+      sigla,
       pageTitle,
-      error: error.message || 'Não foi possível buscar a linha de pesquisa!',
-      csrfToken: req.csrfToken(),
-      nome: req.session.nome,
       tipoUsuario: req.session?.tipoUsuario,
     });
+  } catch (error: any) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Erro ao buscar linha de pesquisa!' });
   }
 };
 
@@ -78,15 +76,18 @@ const criar = async (req: Request, res: Response) => {
     try {
       const novaLinhaPesquisa: CreateLinhaDePesquisaDto = {
         nome: req.body.nome,
-        sigla: req.body.sigla
+        sigla: req.body.sigla,
       };
 
-      if (await linhasDePesquisaService.findByName(novaLinhaPesquisa.nome)) throw new Error('Linha de Pesquisa já cadastrada!');
+      if (await linhasDePesquisaService.findByName(novaLinhaPesquisa.nome))
+        throw new Error('Linha de Pesquisa já cadastrada!');
 
-      if (await linhasDePesquisaService.findBySigla(novaLinhaPesquisa.sigla)) throw new Error('Sigla já cadastrada!');
+      if (await linhasDePesquisaService.findBySigla(novaLinhaPesquisa.sigla))
+        throw new Error('Sigla já cadastrada!');
 
       await linhasDePesquisaService.criar(novaLinhaPesquisa);
-    } catch (error: any) { // Definindo o tipo da variável error como Error
+    } catch (error: any) {
+      // Definindo o tipo da variável error como Error
       console.log(error);
       return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-criar'), {
         pageTitle,
@@ -112,7 +113,7 @@ const remover = async (req: Request, res: Response) => {
         error: error.message || 'Não foi possível remover a linha de pesquisa!',
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
-        tipoUsuario: req.session?.tipoUsuario
+        tipoUsuario: req.session?.tipoUsuario,
       });
     }
   }
@@ -124,25 +125,37 @@ const editar = async (req: Request, res: Response) => {
   );
   if (req.method === 'GET') {
     return res.status(200).render(resolveView('linhasDePesquisa-editar'), {
-      linhaPesquisa, pageTitle, csrfToken: req.csrfToken(), tipoUsuario: req.session?.tipoUsuario
+      linhaPesquisa,
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session?.tipoUsuario,
     });
   } else {
     try {
       const editarLinhaPesquisa: UpdateLinhaDePesquisaDto = {
         nome: req.body.nome,
-        sigla: req.body.sigla
+        sigla: req.body.sigla,
       };
 
-      const existingByName = await linhasDePesquisaService.findByName(editarLinhaPesquisa.nome);
-      const existingBySigla = await linhasDePesquisaService.findBySigla(editarLinhaPesquisa.sigla);
-      if (existingByName && existingByName.id !== parseInt(req.params.id)) throw new Error('Linha de Pesquisa já cadastrada!');
-      if (existingBySigla && existingBySigla.id !== parseInt(req.params.id)) throw new Error('Sigla já cadastrada!');
+      const existingByName = await linhasDePesquisaService.findByName(
+        editarLinhaPesquisa.nome,
+      );
+      const existingBySigla = await linhasDePesquisaService.findBySigla(
+        editarLinhaPesquisa.sigla,
+      );
+      if (existingByName && existingByName.id !== parseInt(req.params.id))
+        throw new Error('Linha de Pesquisa já cadastrada!');
+      if (existingBySigla && existingBySigla.id !== parseInt(req.params.id))
+        throw new Error('Sigla já cadastrada!');
 
-      await linhasDePesquisaService.update(parseInt(req.params.id), editarLinhaPesquisa);
+      await linhasDePesquisaService.update(
+        parseInt(req.params.id),
+        editarLinhaPesquisa,
+      );
       return res.redirect('/linhasDePesquisa/listar');
     } catch (error: any) {
-      console.log(error)
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('linhasDePesquisa-editar'), {
+      console.log(error);
+      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-editar'), {
         pageTitle,
         linhaPesquisa,
         nome: req.session.nome,

@@ -5,28 +5,22 @@ const router = express.Router();
 
 router.all('/listEdital', selecaoppgiRoutes.listEditalSelecao);
 router.all('/listEdital/:id', selecaoppgiRoutes.viewEdital);
-router.all('/addEdital', autenticacaoController.autorizarCoord, selecaoppgiRoutes.addEditalSelecao);
-router.all('/deleteEdital/:id', autenticacaoController.autorizarCoord, selecaoppgiRoutes.deleteEdital);
-router.all('/arquivarEdital/:id_edital', autenticacaoController.autorizarCoord, selecaoppgiRoutes.arquivarEdital);
-router.all('/updateEdital/:id_update', autenticacaoController.autorizarCoord, selecaoppgiRoutes.updateEdital);
-router.all('/listCandidatesEdital/:id', autenticacaoController.autorizarCoord, selecaoppgiRoutes.listCandidatesEdital);
-router.all('/listEditalCandidates/:id', autenticacaoController.autorizarCoord, selecaoppgiRoutes.editalCandidates);
-router.all('/geraPlanilha/:id', autenticacaoController.autorizarCoord, selecaoppgiRoutes.geraPlanilha);
-router.all('/candidateDetails/:id', autenticacaoController.autorizarCoord, selecaoppgiRoutes.candidateDetails);
+router.all('/updateEdital/:id_update', selecaoppgiRoutes.updateEdital);
+router.all('/listCandidatesEdital/:id', selecaoppgiRoutes.listcandidatosEdital);
+router.all('/listEditalCandidates/:id', selecaoppgiRoutes.editalcandidatos);
+router.all('/geraPlanilha/:id', selecaoppgiRoutes.geraPlanilha);
+router.all('/candidateDetails/:id', selecaoppgiRoutes.candidatoDetails);
 router.all(
   '/downloadCandidateDocument/:id',
-  autenticacaoController.autorizarCoord, 
-  selecaoppgiRoutes.getCandidateDocument,
+  selecaoppgiRoutes.getcandidatoDocument,
 );
 router.all(
   '/getCandidateDocs/:id',
-  autenticacaoController.autorizarCoord, 
-  selecaoppgiRoutes.getAllDocumentsFromOneCandidate,
+  selecaoppgiRoutes.getAllDocumentsFromOnecandidato,
 );
 router.all(
   '/getEditalCandidatesDocs/:id',
-  autenticacaoController.autorizarCoord, 
-  selecaoppgiRoutes.getAllCandidatesDocuments,
+  selecaoppgiRoutes.getAllcandidatosDocuments,
 );
 
 export default router;

@@ -1,7 +1,7 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
-import CandidatoService from '../resources/candidate/candidato.service'
-import { CreateCandidateDto } from '../resources/candidate/candidate.types';
+import CandidatoService from '../resources/candidato/candidato_publicação.service';
+import { CreateCandidatoDto } from '../resources/candidato/candidato.types';
 
 const exceljs = require('exceljs');
 
@@ -73,10 +73,14 @@ function createSeparador (worksheet:any, header:any, cellValue:any, line:any, li
   worksheet.getRow(line).height = 20;
 }
 
-function createWorksheetTitulo (header:any, dados:CreateCandidateDto[], worksheet:any) {
+function createWorksheetTitulo(
+  header: any,
+  dados: CreateCandidatoDto[],
+  worksheet: any,
+) {
   worksheet.columns = header.map((item: any) => {
-    return { header: item.header, key: item.key, width: item.width }
-  })
+    return { header: item.header, key: item.key, width: item.width };
+  });
 
   worksheet.spliceRows(1, 0, []);
   // createSeparador(worksheet, header, 'Mestrados', 1);
@@ -94,16 +98,24 @@ function createWorksheetTitulo (header:any, dados:CreateCandidateDto[], workshee
   worksheet.getCell('I3').value = 'Nota';
   worksheet.getCell('J3').value = 'NAC';
 
-  const headerRow = worksheet.getRow(2)
-  worksheet.getRow(3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
-  worksheet.getRow(3).height = 30
-  const secondHeaderRow = header.map((item: any) => item.header)
+  const headerRow = worksheet.getRow(2);
+  worksheet.getRow(3).alignment = {
+    vertical: 'middle',
+    horizontal: 'center',
+    wrapText: true,
+  };
+  worksheet.getRow(3).height = 30;
+  const secondHeaderRow = header.map((item: any) => item.header);
   headerRow.eachCell((cell: any, number: any) => {
-    cell.font = { bold: true, color: { argb: '00000' } }
-    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
-  })
-  headerRow.height = 15
-  insertData(worksheet, dados, 'Mestrado')
+    cell.font = { bold: true, color: { argb: '00000' } };
+    cell.alignment = {
+      vertical: 'middle',
+      horizontal: 'center',
+      wrapText: true,
+    };
+  });
+  headerRow.height = 15;
+  insertData(worksheet, dados, 'Mestrado');
 
   createSeparador(worksheet, header, 'Doutorados', worksheet.rowCount + 1, 11);
   const linhaHeaderDoutorados = worksheet.addRow(secondHeaderRow);
@@ -129,12 +141,15 @@ function createWorksheetTitulo (header:any, dados:CreateCandidateDto[], workshee
   worksheet.getRow(worksheet.rowCount).height = 30;
 
   linhaHeaderDoutorados.eachCell((cell: any, number: any) => {
-    cell.font = { bold: true, color: { argb: '00000' } }
-    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
-  }
-  )
-  linhaHeaderDoutorados.height = 15
-  insertData(worksheet, dados, 'Doutorado')
+    cell.font = { bold: true, color: { argb: '00000' } };
+    cell.alignment = {
+      vertical: 'middle',
+      horizontal: 'center',
+      wrapText: true,
+    };
+  });
+  linhaHeaderDoutorados.height = 15;
+  insertData(worksheet, dados, 'Doutorado');
 }
 
 // Axuliar na formatação dos dados na tabela

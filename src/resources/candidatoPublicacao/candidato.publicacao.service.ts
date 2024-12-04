@@ -1,81 +1,87 @@
-import { PrismaClient } from '@prisma/client';
-import { TYPES_PUBLICACAO } from './candidato.publicacao.types';
-const prisma = new PrismaClient();
+import { PrismaClient, Prisma } from '@prisma/client';
+import {
+  Publicacao,
+  TYPES_PUBLICACAO,
+  PublicacoesResponse,
+} from './candidato.publicacao.types';
 
-interface Publicacao {
-  titulo?: string;
-  ano?: string | number;
-  local?: string;
-  natureza?: string;
-  autores: {
-    nomeCompleto: string[];
-  };
-  ISSN?: string;
-}
+const prisma = new PrismaClient();
 
 class CandidatoPublicacaoService {
   async adicionarVarios(
-    idCandidato: number,
+    candidatoId: number,
     publicacoes: Publicacao[],
-    tipoPublicacao: number,
+    tipoPublicacao: TYPES_PUBLICACAO,
   ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
-      const publicacoesParaInserir = publicacoes.map((publicacao) => {
-        const ano = publicacao.ano ? parseInt(publicacao.ano.toString()) : null;
+      const publicacoesParaInserir = publicacoes.map(
+        (publicacao): Prisma.CandidatoPublicacaoCreateInput => {
+          const ano = publicacao.ano ? Number(publicacao.ano) : null;
 
-        const publicacaoData: any = {
-          idCandidato,
-          titulo: publicacao.titulo || '',
-          local: publicacao.local || '',
-          tipo: tipoPublicacao,
-          natureza: publicacao.natureza || '',
-          autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-          ISSN: publicacao.ISSN !== undefined ? publicacao.ISSN : '',
-        };
-
-        if (ano !== null) {
-          publicacaoData.ano = ano;
-        }
-
-        return publicacaoData;
-      });
+          return {
+            candidato: {
+              connect: {
+                id: candidatoId,
+              },
+            },
+            titulo: publicacao.titulo || '',
+            local: publicacao.local || '',
+            tipoId: tipoPublicacao,
+            natureza: publicacao.natureza || '',
+            autores: publicacao.autores.nomeCompleto
+              .join(', ')
+              .substring(0, 255),
+            issn: publicacao.ISSN ?? '',
+            ano: ano ?? 0,
+          };
+        },
+      );
 
       for (const publicacao of publicacoesParaInserir) {
         try {
           const existingPublication =
-            await prisma.candidatoPublicacoes.findFirst({
+            await prisma.candidatoPublicacao.findFirst({
               where: {
-                idCandidato,
+                candidatoId,
                 titulo: publicacao.titulo,
-                ano: publicacao.ano,
-                tipo: tipoPublicacao,
+                ano: publicacao.ano ?? 0,
+                tipoId: tipoPublicacao,
               },
             });
 
           if (existingPublication) {
-            await prisma.candidatoPublicacoes.update({
+            await prisma.candidatoPublicacao.update({
               where: {
-                id_idCandidato: {
+                id_candidatoId: {
                   id: existingPublication.id,
-                  idCandidato: existingPublication.idCandidato,
+                  candidatoId: existingPublication.candidatoId,
                 },
               },
-              data: publicacao,
+              data: {
+                titulo: publicacao.titulo,
+                local: publicacao.local,
+                tipoId: tipoPublicacao,
+                natureza: publicacao.natureza,
+                autores: publicacao.autores,
+                issn: publicacao.issn,
+                ano: publicacao.ano,
+              },
             });
             console.log(
-              `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${idCandidato}!`,
+              `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${candidatoId}!`,
             );
           } else {
-            await prisma.candidatoPublicacoes.create({
+            await prisma.candidatoPublicacao.create({
               data: publicacao,
             });
             console.log(
-              `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${idCandidato}!`,
+              `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${candidatoId}!`,
             );
           }
         } catch (error) {
           console.error(
-            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${idCandidato}: ${error}`,
+            `Erro ao adicionar/atualizar publicação ${publicacao.titulo} para o candidato ${candidatoId}:`,
+            error,
           );
           throw new Error('Não foi possível criar/atualizar a publicação');
         }
@@ -83,32 +89,32 @@ class CandidatoPublicacaoService {
     }
   }
 
-  async ListarPublicacoesCandidate(
-    idCandidato: number,
-  ): Promise<{ periodicos: any[]; conferencias: any[] }> {
+  async ListarPublicacoesCandidato(
+    candidatoId: number,
+  ): Promise<PublicacoesResponse> {
     try {
-      const periodicos = await prisma.candidatoPublicacoes.findMany({
+      const periodicos = await prisma.candidatoPublicacao.findMany({
         where: {
-          idCandidato,
-          tipo: TYPES_PUBLICACAO.PERIODICOS,
+          candidatoId,
+          tipoId: TYPES_PUBLICACAO.PERIODICOS,
         },
       });
 
-      const conferencias = await prisma.candidatoPublicacoes.findMany({
+      const conferencias = await prisma.candidatoPublicacao.findMany({
         where: {
-          idCandidato,
-          tipo: TYPES_PUBLICACAO.EVENTOS,
+          candidatoId,
+          tipoId: TYPES_PUBLICACAO.EVENTOS,
         },
       });
 
-      const data = {
+      return {
         periodicos,
         conferencias,
       };
-      return data;
     } catch (error) {
       console.error(
-        `Erro ao listar publicações do candidato ${idCandidato}: ${error}`,
+        `Erro ao listar publicações do candidato ${candidatoId}:`,
+        error,
       );
       throw new Error('Não foi possível listar as publicações');
     }

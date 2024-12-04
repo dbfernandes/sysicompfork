@@ -1,5 +1,5 @@
 import express from 'express';
-import linhasDePesquisaController from './linhasDePesquisa.controller';
+import linhasDePesquisaController from './linha.de.pesquisa.controller';
 import autenticacaoController from '../autenticacao/autenticacao.controller';
 const router = express.Router();
 

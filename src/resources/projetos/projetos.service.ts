@@ -1,64 +1,70 @@
 // const { Projeto } = require('../models')
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Projeto } from '@prisma/client';
+import { ProjetoData } from './projetos.types';
 const prisma = new PrismaClient();
 
 class ProjetoService {
-  async adicionarVarios(idProfessor: number, projetos: any) {
-    if (projetos !== undefined) {
-      const projetosArr = projetos.projetos.map((p: any) => {
-        return {
-          idProfessor,
-          descricao: p.descricao,
-          fim: p.fim,
-          inicio: p.inicio,
-          papel: p.papel,
-          titulo: p.titulo,
-          financiadores: p.financiadores,
-          integrantes: p.integrantes,
-        };
-      });
-      await prisma.projeto
-        .deleteMany({
-          where: {
-            idProfessor,
-          },
-        })
-        .then(async () => {
-          await prisma.projeto.createMany({
-            data: projetosArr,
-          });
-        });
+  async adicionarVarios(
+    professorId: number,
+    input: { projetos: ProjetoData[] } | undefined,
+  ): Promise<void> {
+    if (input?.projetos) {
+      const projetosArr = input.projetos.map((p) => ({
+        professorId,
+        titulo: p.titulo,
+        descricao: p.descricao,
+        dataInicio: p.inicio,
+        dataFim: p.fim,
+        papel: p.papel,
+        financiadores: p.financiadores,
+        integrantes: p.integrantes,
+      }));
+
+      await prisma.$transaction([
+        prisma.projeto.deleteMany({
+          where: { professorId },
+        }),
+        prisma.projeto.createMany({
+          data: projetosArr,
+        }),
+      ]);
     }
   }
 
-  async listarAtuais() {
+  async listarAtuais(): Promise<
+    Pick<Projeto, 'id' | 'titulo' | 'descricao'>[]
+  > {
     const projetos = await prisma.projeto.findMany({
       where: {
-        fim: 0,
+        dataFim: 0,
+      },
+      select: {
+        id: true,
+        titulo: true,
+        descricao: true,
       },
     });
-    // projetos = projetos.length > 0 ? projetos.map((p) => p.get()) : []
-    const projetosFiltrados: any = [];
-    if (projetos) {
-      projetos.forEach((projeto) => {
-        let flag = true;
-        projetosFiltrados.every((p: any) => {
-          flag =
-            p.titulo == projeto.titulo ||
-            (p.descricao == projeto.descricao &&
-              projeto.descricao != '' &&
-              p.id != projeto.id)
-              ? false
-              : flag;
-          return flag;
-        });
-        if (flag) {
-          projetosFiltrados.push(projeto);
+
+    const projetosFiltrados = projetos.reduce<typeof projetos>(
+      (acc, projeto) => {
+        const duplicado = acc.some(
+          (p) =>
+            p.titulo === projeto.titulo ||
+            (p.descricao === projeto.descricao &&
+              projeto.descricao !== '' &&
+              p.id !== projeto.id),
+        );
+
+        if (!duplicado) {
+          acc.push(projeto);
         }
-      });
-    }
+
+        return acc;
+      },
+      [],
+    );
+
     return projetosFiltrados;
   }
 }
-
 export default new ProjetoService();
