@@ -3,6 +3,7 @@ import usuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
 import path from 'path';
+import { StatusCodes } from 'http-status-codes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -11,7 +12,7 @@ function resolveView(viewName: string): string {
 const adicionar = async (req: Request, res: Response): Promise<any> => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('usuarios-adicionar'), {
+      return res.status(StatusCodes.OK).render(resolveView('usuarios-adicionar'), {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,

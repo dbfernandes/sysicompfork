@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import reservasService from './reservas.service';
 import salasService from '../salas/salas.service';
 import path from 'path';
+import { StatusCodes } from 'http-status-codes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -17,7 +18,7 @@ const listar = async (req: Request, res: Response) => {
 const adicionar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos()
-    res.render(resolveView('reservas-adicionar'), {
+    res.status(StatusCodes.OK).render(resolveView('reservas-adicionar'), {
       salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
@@ -79,7 +80,7 @@ const excluir = async (req: Request, res: Response) => {
     res.redirect('/reservas/gerenciar');
   } catch (e) {
     console.log(e);
-    res.status(500).json({ error: e });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error: e.message });
   }
 };
 
@@ -115,15 +116,15 @@ const gerenciar = async (req: Request, res: Response) => {
   })
 }
 
-const editar = async (req:Request, res: Response) => {
+const editar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos()
       const reserva = await reservasService.buscarReserva(parseInt(req.params.id))
       if (!reserva) throw new Error('Reserva não encontrado!')
       console.log(reserva)
-      
-      res.render(resolveView('reservas-editar'), {
+
+      res.status(StatusCodes.OK).render(resolveView('reservas-editar'), {
         salas: salas,
         nome: req.session.nome,
         reserva: reserva,

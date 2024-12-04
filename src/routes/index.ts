@@ -86,7 +86,7 @@ router.use(
 );
 router.use(
   '/afastamentotemporario',
-  autenticacaoController.autorizarProf,
+  // autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
@@ -97,4 +97,5 @@ router.use(
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
+
 export default router;

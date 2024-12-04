@@ -21,7 +21,8 @@
   "include": [
     "./src/**/*",
     "./src/**/*.d.ts",
-    "./test/**/*"
+    "./test/**/*",
+    "singleton.ts"
   ],
   "exclude": [
     "./build",

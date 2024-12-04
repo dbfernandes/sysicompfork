@@ -17,6 +17,7 @@ class AfastamentoService {
           day: 'numeric',
           month: 'numeric',
           year: 'numeric',
+          timeZone: 'UTC',
         });
         afastamento.dataRetornoFormata = new Date(
           afastamento.dataRetorno,
@@ -37,11 +38,11 @@ class AfastamentoService {
 
         return afastamento;
       });
+      console.log(dataFormatada);
       return dataFormatada;
     } catch (error: any) {
-      console.log(
-        error.message || 'Não foi possível listar os pedidos de afastamento!',
-      );
+      console.error('Erro ao listar afastamentos:', error.message);
+      throw error; // Repropague o erro para não retornar undefined
     }
   }
 
@@ -52,9 +53,10 @@ class AfastamentoService {
         afastamento.dataCriacaoFormata = new Date(
           afastamento.createdAt,
         ).toLocaleDateString('pt-BR', {
-          day: 'numeric',
-          month: 'numeric',
+          day: '2-digit',
+          month: '2-digit',
           year: 'numeric',
+          timeZone: 'UTC',
         });
         afastamento.dataRetornoFormata = new Date(
           afastamento.dataRetorno,
@@ -93,6 +95,7 @@ class AfastamentoService {
       console.log(
         error.message || 'Não foi possível criar o pedido de afastamento!',
       );
+      throw error;
     }
   }
 
@@ -118,6 +121,7 @@ class AfastamentoService {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
+          timeZone: 'UTC',
         },
       ),
       dataRetornoFormata: new Date(afastamento.dataRetorno).toLocaleDateString(

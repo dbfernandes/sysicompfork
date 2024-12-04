@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import path from 'path';
 import { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import UsuarioService from '../usuarios/usuario.service';
 import { sendEmailRecoveryPasswordUser } from '../../utils/mailerGrid';
 
@@ -55,7 +56,7 @@ function resolveView(viewName: string): string {
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     if (req.session.uid) return res.redirect('/');
-    return res.render(resolveView('login'), {
+    return res.status(StatusCodes.OK).render(resolveView('login'), {
       ...optionsLogin,
       csrfToken: req.csrfToken(),
     });
@@ -65,7 +66,7 @@ const login = async (req: Request, res: Response) => {
       const usuario = await UsuarioService.buscarUsuarioPor({ cpf });
 
       if (!usuario) {
-        return res.render(resolveView('login'), {
+        return res.status(StatusCodes.NOT_FOUND).render(resolveView('login'), {
           ...optionsLogin,
 
           csrfToken: req.csrfToken(),
@@ -73,7 +74,7 @@ const login = async (req: Request, res: Response) => {
           type: 'danger',
         });
       } else if (usuario.status === 0) {
-        return res.render(resolveView('login'), {
+        return res.status(StatusCodes.FORBIDDEN).render(resolveView('login'), {
           ...optionsLogin,
 
           csrfToken: req.csrfToken(),
@@ -84,9 +85,8 @@ const login = async (req: Request, res: Response) => {
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
       if (!isSenhaCorreta) {
-        return res.render(resolveView('login'), {
+        return res.status(StatusCodes.UNAUTHORIZED).render(resolveView('login'), {
           ...optionsLogin,
-
           csrfToken: req.csrfToken(),
           message: 'Senha inválida',
           type: 'danger',
@@ -94,14 +94,13 @@ const login = async (req: Request, res: Response) => {
       }
 
       req.session.uid = String(usuario.id);
-      req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
-        usuario.nomeCompleto.split(' ').length > 1
-          ? ' ' +
-            usuario.nomeCompleto.split(' ')[
-              usuario.nomeCompleto.split(' ').length - 1
-            ]
-          : ' '
-      }`;
+      req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1
+        ? ' ' +
+        usuario.nomeCompleto.split(' ')[
+        usuario.nomeCompleto.split(' ').length - 1
+        ]
+        : ' '
+        }`;
       req.session.tipoUsuario = {
         administrador: usuario.administrador,
         coordenador: usuario.coordenador,
@@ -110,9 +109,16 @@ const login = async (req: Request, res: Response) => {
         diretor: usuario.diretor,
       };
       req.session.uid = String(usuario.id);
-      return res.redirect('/inicio');
+      return res.status(StatusCodes.ACCEPTED).redirect('/inicio');
     } catch (err) {
       console.log(err);
+      // return res.status(500).send({ message: 'Erro interno' });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('login'), {
+        ...optionsLogin,
+        csrfToken: req.csrfToken(),
+        message: 'Erro interno',
+        type: 'danger',
+      });
     }
   }
 };
@@ -173,7 +179,7 @@ const trocaSenha = async (req: Request, res: Response) => {
       });
       const hasUser = Boolean(user);
       if (!hasUser) {
-        return res.render(resolveView('trocarSenha'), {
+        return res.status(StatusCodes.FORBIDDEN).render(resolveView('trocarSenha'), {
           csrfToken: req.csrfToken(),
           error: 'Token invalido',
           ...optionsLogin,
@@ -182,14 +188,14 @@ const trocaSenha = async (req: Request, res: Response) => {
 
       const isTokenValid = user.validadeTokenResetadaSenha > new Date();
       if (!isTokenValid) {
-        return res.render(resolveView('trocarSenha'), {
+        return res.status(StatusCodes.FAILED_DEPENDENCY).render(resolveView('trocarSenha'), {
           csrfToken: req.csrfToken(),
           error: 'Token expirado',
           ...optionsLogin,
         });
       }
 
-      return res.render(resolveView('trocarSenha'), {
+      return res.status(StatusCodes.OK).render(resolveView('trocarSenha'), {
         csrfToken: req.csrfToken(),
         nome: user.nomeCompleto,
         token: req.query.token,
@@ -200,24 +206,24 @@ const trocaSenha = async (req: Request, res: Response) => {
       const { password, token } = req.body;
       try {
         if (!password || !token) {
-          return res.status(400).send();
+          return res.status(StatusCodes.BAD_REQUEST).send();
         }
         await UsuarioService.mudarSenhaComToken({
           password,
           token,
         });
 
-        return res.status(200).send();
+        return res.status(StatusCodes.OK).send();
       } catch (err) {
         console.error(err);
         if (err instanceof Error) {
-          return res.status(400).send({ message: err.message });
+          return res.status(StatusCodes.BAD_REQUEST).send({ message: err.message });
         }
-        return res.status(500).send();
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
       }
     }
     default:
-      return res.status(405).send({ message: 'Método não permitido' });
+      return res.status(StatusCodes.FORBIDDEN).send({ message: 'Método não permitido' });
   }
 };
 
