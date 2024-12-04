@@ -19,7 +19,7 @@ async function main() {
       secretaria: 0,
       professor: 1,
       siape: '0401114',
-      dataIngresso: '27/11/1989',
+      dataIngresso: new Date(),
       endereco:
         'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
       telCelular: '(92) 00000-0000',
@@ -48,7 +48,7 @@ async function main() {
       secretaria: 0,
       professor: 1,
       siape: '0401114',
-      dataIngresso: '27/11/1989',
+      dataIngresso: new Date(),
       endereco:
         'Rua Real, Nº 171, Conjunto Real, Bairro Real, Manaus-AM, CEP 00000-000',
       telCelular: '(92) 00000-0000',
@@ -78,9 +78,9 @@ async function main() {
   const editais = [
     {
       id: '001-2024',
-      vagaDoutorado: 2,
+      vagasDoutorado: 2,
       cotasDoutorado: 2,
-      vagaMestrado: 5,
+      vagasMestrado: 5,
       cotasMestrado: 5,
       cartaOrientador: '1',
       cartaRecomendacao: '1',
@@ -95,9 +95,9 @@ async function main() {
     },
     {
       id: '002-2024',
-      vagaDoutorado: 6,
+      vagasDoutorado: 6,
       cotasDoutorado: 8,
-      vagaMestrado: 1,
+      vagasMestrado: 1,
       cotasMestrado: 3,
       cartaOrientador: '0',
       cartaRecomendacao: '1',
@@ -112,9 +112,9 @@ async function main() {
     },
     {
       id: '003-2024',
-      vagaDoutorado: 9,
+      vagasDoutorado: 9,
       cotasDoutorado: 2,
-      vagaMestrado: 2,
+      vagasMestrado: 2,
       cotasMestrado: 3,
       cartaOrientador: '1',
       cartaRecomendacao: '0',
@@ -129,9 +129,9 @@ async function main() {
     },
     {
       id: '004-2024',
-      vagaDoutorado: 5,
+      vagasDoutorado: 5,
       cotasDoutorado: 2,
-      vagaMestrado: 10,
+      vagasMestrado: 10,
       cotasMestrado: 3,
       cartaOrientador: '0',
       cartaRecomendacao: '0',
