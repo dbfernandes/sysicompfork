@@ -97,7 +97,7 @@
                                     {{#each editais}}
                                     <tr>
                                         <td> {{add @index 1}} </td>
-                                        <td> {{editalId}} </td>
+                                        <td> {{id}} </td>
                                         <td> {{dataInicio}} </td>
                                         <td> {{dataFim}} </td>
                                         <td> {{qtdeInscricoesPendentes}} </td>
@@ -105,8 +105,8 @@
                                         <td> REG: {{vagaMestrado}} / SUP: {{cotasMestrado}} </td>
                                         <td> REG: {{vagaDoutorado}} / SUP: {{cotasDoutorado}} </td>
                                         <td>
-                                            <span id="badge-{{editalId}}" {{#validaLabel status dataInicio dataFim }}
-                                                {{else}} <span class="badge bg-danger">
+                                            <span id="badge-{{id}}" {{#validaLabel status dataInicio dataFim }} {{else}}
+                                                <span class="badge bg-danger">
                                                 Suspenso
                                             </span>
                                             {{/validaLabel}}
@@ -120,17 +120,17 @@
                                                     class='fa fa-solid fa-download' />
                                                 </a>
 
-                                                <a style="margin-right: 2px" href='/edital/listEdital/{{editalId}}'
+                                                <a style="margin-right: 2px" href='/edital/listEdital/{{id}}'
                                                     class='fa fa-solid fa-eye' />
                                                 </a>
                                                 {{#if ../usuarioPermitido}}
                                                 <a class="fa fa-solid {{#ifEqual status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
-                                                    id="icone-{{editalId}}" data-editalId="{{editalId}}"
-                                                    onclick="abrirModal('{{editalId}}', '{{status}}', '{{dataFim}}')"
+                                                    id="icone-{{id}}" data-id="{{id}}"
+                                                    onclick="abrirModal('{{id}}', '{{status}}', '{{dataFim}}')"
                                                     data-toggle="modal" data-target="#removerEdital">
                                                 </a>
 
-                                                <a style="margin-right: 2px" href='/edital/updateEdital/{{editalId}}'
+                                                <a style="margin-right: 2px" href='/edital/updateEdital/{{id}}'
                                                     class='fa fa-solid fa-pen' />
                                                 </a>
                                                 {{/if}}
@@ -184,20 +184,20 @@
 <script>
 
     let csrfToken = "{{csrfToken}}";
-    let editalId;
+    let id;
     let status;
     let dataFim;
 
     function abrirModal(id, statusCorrente, data) {
-        editalId = id;
+        id = id;
         status = statusCorrente;
         dataFim = data;
 
         if (status == '1') {
-            $('#modalArquivarBody').html("Você realmente deseja suspender o edital com ID " + editalId + "?");
+            $('#modalArquivarBody').html("Você realmente deseja suspender o edital com ID " + id + "?");
             $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
         } else {
-            $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + editalId + "?");
+            $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + id + "?");
             $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
         }
 
@@ -218,7 +218,7 @@
 
 
         $.ajax({
-            url: `/edital/arquivarEdital/${editalId}`,
+            url: `/edital/arquivarEdital/${id}`,
             type: 'PUT',
             data: dataFromForm,
             success: function (data) {

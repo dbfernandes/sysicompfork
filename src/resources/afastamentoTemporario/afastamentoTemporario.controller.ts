@@ -17,7 +17,6 @@ const listar = async (req: Request, res: Response) => {
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
         throw new Error('Nenhum pedido de afastamento encontrado');
-
       return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
         afastamentos,
         pageTitle,
@@ -33,7 +32,6 @@ const listar = async (req: Request, res: Response) => {
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
         throw new Error('Nenhum pedido de afastamento encontrado');
-
       return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
         afastamentos,
         pageTitle,
@@ -66,72 +64,40 @@ export const criar = async (req: Request, res: Response) => {
     });
   } else {
     try {
-      const { uid, nome } = req.session
+      const { uid, nome } = req.session;
       const {
-        dataInicio,
-        dataFim,
+        dataSaida,
+        dataRetorno,
         tipoViagem,
         localViagem,
         justificativa,
-        planoReposicao
-      } = req.body
-      const afastamento = {
+        planoReposicao,
+      } = req.body;
+
+      const novoAfastamento: CreateAfastamentoDTO = {
         usuarioId: Number(uid),
-        nomeCompleto: nome!,
-        dataInicio: new Date(dataInicio),
-        dataFim: new Date(dataFim),
-        tipoViagem,
-        localViagem,
-        justificativa,
-        planoReposicao
-      }
-      await afastamentoService.criar(afastamento)
-    } catch (error: any) {
+        nomeCompleto: nome!, // nome do usuário da sessão
+        dataInicio: new Date(dataSaida),
+        dataFim: new Date(dataRetorno),
+        tipoViagem: String(tipoViagem),
+        localViagem: String(localViagem),
+        justificativa: String(justificativa),
+        planoReposicao: String(planoReposicao),
+      };
+
+      await afastamentoService.criar(novoAfastamento);
+      return res.redirect('/afastamentoTemporario/listar');
+    } catch (error: unknown) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitar-afastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
-        nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         error:
-          error.message || 'Não foi possível criar o pedido de afastamento!',
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível criar o pedido de afastamento!',
       });
     }
-  }
-
-  try {
-    const { uid, nome } = req.session;
-    const {
-      dataSaida,
-      dataRetorno,
-      tipoViagem,
-      localViagem,
-      justificativa,
-      planoReposicao,
-    } = req.body;
-
-    const novoAfastamento: CreateAfastamentoDTO = {
-      usuarioId: Number(uid),
-      nomeCompleto: nome!, // nome do usuário da sessão
-      dataInicio: new Date(dataSaida),
-      dataFim: new Date(dataRetorno),
-      tipoViagem: String(tipoViagem),
-      localViagem: String(localViagem),
-      justificativa: String(justificativa),
-      planoReposicao: String(planoReposicao),
-    };
-
-    await afastamentoService.criar(novoAfastamento);
-    return res.redirect('/afastamentoTemporario/listar');
-  } catch (error: unknown) {
-    return res.render(resolveView('solicitar-afastamento'), {
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível criar o pedido de afastamento!',
-    });
   }
 };
 
@@ -140,10 +106,7 @@ const vizualizar = async (req: Request, res: Response) => {
     const afastamento = await afastamentoService.vizualizar(
       Number(req.params.id),
     );
-    if (!afastamento)
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: 'Pedido de afastamento não encontrado' });
+    if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Pedido de afastamento não encontrado' });
     return res.status(StatusCodes.OK).render(resolveView('vizualizar-afastamento'), {
       afastamento,
       pageTitle,

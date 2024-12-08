@@ -115,6 +115,7 @@ class UsuarioService {
       if (usuario.coordenador === 1) usuario.perfil += ' Coordenador |';
       if (usuario.professor === 1) usuario.perfil += ' Professor |';
       if (usuario.secretaria === 1) usuario.perfil += ' Secretaria |';
+      if (usuario.diretor === 1) usuario.perfil += ' Secretaria |';
       if (usuario.perfil?.endsWith(' |')) {
         usuario.perfil = usuario.perfil.substring(0, usuario.perfil.length - 2);
       }

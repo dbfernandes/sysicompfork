@@ -90,7 +90,7 @@ export async function criarAfastamentoPDF(req: Request, res: Response) {
       headless: true,
       args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
       executablePath: '/usr/bin/chromium-browser',
-      protocolTimeout: 60000,
+      protocolTimeout: 2000,
     });
     const page = await browser.newPage();
     await page.setContent(arquivoHTML, { waitUntil: 'networkidle0' });

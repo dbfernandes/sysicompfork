@@ -18,6 +18,7 @@ async function main() {
       coordenador: 0,
       secretaria: 0,
       professor: 1,
+      diretor: 0,
       siape: '0401114',
       dataIngresso: new Date(),
       endereco:
@@ -47,6 +48,7 @@ async function main() {
       coordenador: 0,
       secretaria: 0,
       professor: 1,
+      diretor: 1,
       siape: '0401114',
       dataIngresso: new Date(),
       endereco:
