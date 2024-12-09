@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
     callback(null, path.join(__dirname, '../../uploads'));
   },
   filename: (req, file, callback) => {
-    const id = req.body.idProfessor;
+    const id = req.body.professorId;
     callback(null, `${new Date().getTime()}-${id}-` + file.originalname);
   },
 });

@@ -1,15 +1,17 @@
 import crypto from 'crypto';
-import { PrismaClient, Usuario } from '@prisma/client';
-
+import { Prisma, PrismaClient, Usuario } from '@prisma/client';
 import bcrypt from 'bcrypt';
-
 import { generateHashPassword } from '../../utils/utils';
-import { UsuarioNotFoundError } from './usuario.errors';
-import { sendEmail } from '../email/emailService';
+import {
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  UpdateUsuarioWithPassword,
+  UsuarioWithDate,
+} from './usuario.types';
 const prisma = new PrismaClient();
 
 class UsuarioService {
-  async adicionar(usuario: any): Promise<Usuario> {
+  async adicionar(usuario: CreateUsuarioDto): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
 
@@ -20,7 +22,8 @@ class UsuarioService {
         },
       });
 
-      if (usuarioDiretor && usuarioDiretor.id !== usuario.id) {
+      if (usuarioDiretor) {
+        // removido a verificação do id
         await prisma.usuario.update({
           where: {
             id: usuarioDiretor.id,
@@ -35,7 +38,7 @@ class UsuarioService {
     return await prisma.usuario.create({ data: { ...usuario, senhaHash } });
   }
 
-  async alterar(id: number, user: any) {
+  async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {
     if ('senha' in user && user.senha !== '') {
       user.senhaHash = await generateHashPassword(user.senha);
     }
@@ -60,18 +63,14 @@ class UsuarioService {
     }
 
     await prisma.usuario.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: user,
     });
   }
 
-  async alterarInfo(id: number, user: any) {
+  async alterarInfo(id: number, user: UpdateUsuarioDto): Promise<void> {
     await prisma.usuario.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: user,
     });
   }
@@ -80,7 +79,7 @@ class UsuarioService {
     return await prisma.usuario.findMany();
   }
 
-  async listarUmUsuario(id: number): Promise<any> {
+  async listarUmUsuario(id: number): Promise<UsuarioWithDate> {
     const usuario = await prisma.usuario.findUnique({
       where: {
         id: Number(id),
@@ -103,44 +102,38 @@ class UsuarioService {
         telResidencial: true,
         unidade: true,
         turno: true,
-        idLattes: true,
+        lattesId: true,
         perfil: true,
         createdAt: true,
       },
     });
-    const usuarioDict = usuario;
-    if (!usuarioDict) throw new Error('Usuário não encontrado');
-    if (usuarioDict.status === 1) {
-      if (usuarioDict.administrador === 1)
-        usuarioDict.perfil += ' Administrador |';
-      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |';
-      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |';
-      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |';
 
-      if (usuarioDict.perfil!.endsWith(' |')) {
-        usuarioDict.perfil = usuarioDict.perfil!.substring(
-          0,
-          usuarioDict.perfil!.length - 2,
-        );
+    if (!usuario) throw new Error('Usuário não encontrado');
+
+    if (usuario.status === 1) {
+      if (usuario.administrador === 1) usuario.perfil += ' Administrador |';
+      if (usuario.coordenador === 1) usuario.perfil += ' Coordenador |';
+      if (usuario.professor === 1) usuario.perfil += ' Professor |';
+      if (usuario.secretaria === 1) usuario.perfil += ' Secretaria |';
+      if (usuario.perfil?.endsWith(' |')) {
+        usuario.perfil = usuario.perfil.substring(0, usuario.perfil.length - 2);
       }
     }
-    // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
-    //   timeZone: 'America/Manaus'
-    // }).slice(0, 10)
-    const usuarioComDataFormatada = {
-      ...usuarioDict,
-      DateFormatada: new Date(usuarioDict.createdAt)
+
+    return {
+      ...usuario,
+      DateFormatada: new Date(usuario.createdAt)
         .toLocaleString('pt-BR', {
           timeZone: 'America/Manaus',
         })
         .slice(0, 10),
     };
-
-    return usuarioComDataFormatada;
   }
 
-  async listarTodosPorCondicao(data: any): Promise<any[]> {
-    const usuarios = await prisma.usuario.findMany({
+  async listarTodosPorCondicao(
+    data: Prisma.UsuarioWhereInput,
+  ): Promise<Partial<Usuario>[]> {
+    return await prisma.usuario.findMany({
       where: data,
       orderBy: {
         nomeCompleto: 'asc',
@@ -163,59 +156,31 @@ class UsuarioService {
         telResidencial: true,
         unidade: true,
         turno: true,
-        idLattes: true,
+        lattesId: true,
         formacao: true,
         formacaoIngles: true,
         ultimaAtualizacao: true,
         createdAt: true,
       },
     });
-
-    return usuarios;
   }
 
-  async buscarUsuarioPor(busca: any): Promise<Usuario | null> {
+  async buscarUsuarioPor(
+    busca: Prisma.UsuarioWhereInput,
+  ): Promise<Usuario | null> {
     try {
-      const usuario = await prisma.usuario.findFirst({ where: busca });
-      return usuario;
+      return await prisma.usuario.findFirst({ where: busca });
     } catch (error) {
       throw error;
     }
   }
 
-  async recuperarSenha(data: { email: string; host: string }) {
-    const usuario = await prisma.usuario.findFirst({
-      where: {
-        email: data.email,
-      },
-    });
-
-    if (!usuario) {
-      throw new UsuarioNotFoundError(data.email);
-    }
-    const token = crypto.randomBytes(20).toString('hex');
-    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
-    const timeExpires = new Date();
-    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
-
+  async recuperarSenha(token: string, data: Date, id: number): Promise<void> {
     await prisma.usuario.update({
-      where: {
-        id: usuario.id,
-      },
+      where: { id },
       data: {
-        tokenResetarSenha: token,
-        validadeTokenResetadaSenha: timeExpires,
-      },
-    });
-
-    const url = `http://${data.host}/alterarSenha?token=${token}`;
-    sendEmail({
-      title: '[Syscomp] Troca de senha',
-      to: usuario.email,
-      template: 'recuperarSenha',
-      data: {
-        url,
-        nome: usuario.nomeCompleto,
+        tokenResetSenha: token,
+        validadeTokenResetSenha: data,
       },
     });
   }
@@ -231,8 +196,8 @@ class UsuarioService {
         id,
       },
       data: {
-        tokenResetarSenha: token,
-        validadeTokenResetadaSenha: timeExpires,
+        tokenResetSenha: token,
+        validadeTokenResetSenha: timeExpires,
       },
     });
     return token;
@@ -241,13 +206,13 @@ class UsuarioService {
   async mudarSenhaComToken({ token, password }) {
     const usuario = await prisma.usuario.findFirst({
       where: {
-        tokenResetarSenha: token,
+        tokenResetSenha: token,
       },
     });
     if (!usuario) {
       throw new Error('Token inválido');
     }
-    if (usuario.validadeTokenResetadaSenha < new Date()) {
+    if (usuario.validadeTokenResetSenha < new Date()) {
       throw new Error('Token expirado');
     }
 
@@ -258,8 +223,8 @@ class UsuarioService {
       },
       data: {
         senhaHash: passwordHash,
-        tokenResetarSenha: null,
-        validadeTokenResetadaSenha: null,
+        tokenResetSenha: null,
+        validadeTokenResetSenha: null,
       },
     });
   }

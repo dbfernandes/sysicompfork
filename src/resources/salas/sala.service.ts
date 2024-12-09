@@ -13,17 +13,17 @@ export default new (class SalaService {
     return await prisma.sala.findUnique({ where: { id } });
   }
 
-  // Criar salas
+  // Criar sala
   async criar(sala: any): Promise<Sala> {
     return await prisma.sala.create({ data: sala });
   }
 
-  // Editar salas
+  // Editar sala
   async editar(id: number, sala: any): Promise<Sala> {
     return await prisma.sala.update({ where: { id }, data: sala });
   }
 
-  // Excluir salas
+  // Excluir sala
   async excluir(id: number): Promise<Sala> {
     return await prisma.sala.delete({ where: { id } });
   }

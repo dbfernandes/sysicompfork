@@ -1,7 +1,7 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
-import CandidatoService from '../resources/candidate/candidato.service';
-import { CreateCandidateDto } from '../resources/candidate/candidate.types';
+import CandidatoService from '../resources/candidato/candidato_publicação.service';
+import { CreateCandidatoDto } from '../resources/candidato/candidato.types';
 
 const exceljs = require('exceljs');
 
@@ -83,7 +83,7 @@ function createSeparador(
 
 function createWorksheetTitulo(
   header: any,
-  dados: CreateCandidateDto[],
+  dados: CreateCandidatoDto[],
   worksheet: any,
 ) {
   worksheet.columns = header.map((item: any) => {

@@ -27,22 +27,26 @@ class CandidatoPublicacaoService {
     tipoPublicacao: number,
   ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
-      const publicacoesParaInserir = publicacoes.map((publicacao) => {
-        const ano = publicacao.ano ? parseInt(publicacao.ano.toString()) : null;
+      const publicacoesParaInserir = publicacoes.map(
+        (publicacao): Prisma.CandidatoPublicacaoCreateInput => {
+          const ano = publicacao.ano ? Number(publicacao.ano) : null;
 
-        const publicacaoData: PublicacaoCreate = {
-          candidatoId,
-          titulo: publicacao.titulo || '',
-          local: publicacao.local || '',
-          tipo: tipoPublicacao,
-          natureza: publicacao.natureza || '',
-          autores: publicacao.autores.nomeCompleto.join(', ').substring(0, 255),
-          issn: publicacao.issn || '',
-          ano: ano || null,
-        };
+          const publicacaoData: PublicacaoCreate = {
+            candidatoId,
+            titulo: publicacao.titulo || '',
+            local: publicacao.local || '',
+            tipo: tipoPublicacao,
+            natureza: publicacao.natureza || '',
+            autores: publicacao.autores.nomeCompleto
+              .join(', ')
+              .substring(0, 255),
+            issn: publicacao.issn || '',
+            ano: ano || null,
+          };
 
-        return publicacaoData;
-      });
+          return publicacaoData;
+        },
+      );
       await prisma.$transaction(async (prisma) => {
         try {
           for (const publicacao of publicacoesParaInserir) {
@@ -107,11 +111,10 @@ class CandidatoPublicacaoService {
         }),
       ]);
 
-      const data = {
+      return {
         periodicos,
         conferencias,
       };
-      return data;
     } catch (error) {
       throw new BaseError(
         'Erro ao buscar publicações do candidato',

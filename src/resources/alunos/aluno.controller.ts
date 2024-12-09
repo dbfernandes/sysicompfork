@@ -2,12 +2,16 @@ import { Request, Response } from 'express';
 import AlunoService from './aluno.service';
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
+import { CreateAlunoDto } from './aluno.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const inicio = async (req: Request, res: Response): Promise<any> => {
+const inicio = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
   switch (req.method) {
     case 'GET':
       try {
@@ -28,11 +32,12 @@ const inicio = async (req: Request, res: Response): Promise<any> => {
             message: 'Não foi possível acessar o gerenciamento de alunos.',
             type: 'danger',
             messageTitle: 'Gerenciamento de alunos indisponível!',
-            tipoUsuario: req.session.tipoUsuario,
+            tipoUsuario: req.session.tipoUsuario
+              ? JSON.stringify(req.session.tipoUsuario)
+              : undefined,
           }),
         );
       }
-
     default:
       return res
         .status(400)
@@ -44,7 +49,7 @@ const carregar = async (req: Request, res: Response): Promise<Response> => {
   switch (req.method) {
     case 'POST':
       try {
-        const { alunos } = req.body;
+        const alunos: CreateAlunoDto[] = req.body.alunos;
         await AlunoService.adicionarVarios(alunos);
 
         return res.status(201).send();

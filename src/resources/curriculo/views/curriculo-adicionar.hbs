@@ -209,11 +209,11 @@
     }
 
     function FormSubmit(){
-        const idProfessor = $("#professor").val();
+        const professorId = $("#professor").val();
         const [image] = $('#avatarImage').prop('files');
         const csrfToken = $("#csrfToken").val();
         const data = new FormData()
-        data.append("idProfessor", idProfessor)
+        data.append("professorId", professorId)
         data.append("file", image)
         data.append("_csrf", csrfToken)
 

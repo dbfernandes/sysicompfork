@@ -10,7 +10,7 @@ class PremioService {
   ): Promise<void> {
     await prisma.premio.deleteMany({
       where: {
-        professorId,
+        professorId: professorId,
       },
     });
     const premio: any = {
@@ -24,9 +24,9 @@ class PremioService {
     });
   }
 
-  async adicionarVarios(professorId: number, premios: any[]): Promise<void> {
-    if (premios !== undefined) {
-      const premiosArr = premios.map((p: any) => {
+  async adicionarVarios(professorId: number, premio: any[]): Promise<void> {
+    if (premio !== undefined) {
+      const premioArr = premio.map((p: any) => {
         return {
           professorId,
           entidade: p.entidade,
@@ -42,7 +42,7 @@ class PremioService {
         })
         .then(async () => {
           await prisma.premio.createMany({
-            data: premiosArr,
+            data: premioArr,
           });
         });
     }

@@ -1,22 +1,22 @@
 /* Import routes */
 import express from 'express';
 import inicioRoutes from '../resources/inicio/inicio.routes';
-import usuariosRoutes from '../resources/usuarios/usuarios.routes';
+import usuariosRoutes from '../resources/usuarios/usuario.routes';
 import editalRouter from '../resources/edital/edital.routes';
-import selecaoppgiRouter from '../resources/selecaoPPGI/selecaoppgi.routes';
+import selecaoppgiRouter from '../resources/selecaoPPGI/selecao.ppgi.routes';
 import numerosIcompRouter from '../resources/numerosIcomp/numerosIcomp.routes';
-import linhasDePesquisaRouter from '../resources/linhasDePesquisa/linhasDePesquisa.router';
-import salasRoutes from '../resources/salas/salas.routes';
+import linhasDePesquisaRouter from '../resources/linhasDePesquisa/linha.de.pesquisa.router';
+import salasRoutes from '../resources/salas/sala.routes';
 import perfilRoutes from '../resources/perfil/perfil.routes';
 import autenticacaoController from '../resources/autenticacao/autenticacao.controller';
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
-import horasComplementaresRoutes from '../resources/horasComplementares/horasComplementares.routes';
+import horasComplementaresRoutes from '../resources/horasComplementares/horas.complementares.routes';
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamentoTemporario.routes';
 // import pdfController from '../utils/exportToPDF';
 import { criarAfastamentoPDF } from '../utils/criarAfastamentoPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
-import alunosRoutes from '../resources/alunos/alunos.routes';
+import alunosRoutes from '../resources/alunos/aluno.routes';
 import { isAuth } from '../middlewares/usuarioAutenticacaoMiddleware';
 const router = express.Router();
 
@@ -86,7 +86,7 @@ router.use(
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
 router.use(
   '/downloadCandidateDocument/:id',
-  editalController.getCandidateDocument,
+  editalController.getcandidatoDocument,
 );
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria

@@ -32,7 +32,7 @@ class CandidatoRecomendacaoService {
         token,
       },
       include: {
-        Candidato: true,
+        candidato: true,
       },
     });
   }
@@ -75,7 +75,7 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async createManyByCandidate(
+  async createManyByCandidato(
     data: {
       nome: string;
       email: string;
@@ -170,7 +170,7 @@ class CandidatoRecomendacaoService {
         id: idRecomendacao,
       },
       include: {
-        Candidato: true,
+        candidato: true,
       },
     });
 

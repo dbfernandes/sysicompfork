@@ -1,14 +1,13 @@
 import express from 'express';
 import perfilController from './perfil.controller';
-import usuariosController from '../usuarios/usuarios.controller';
-
+import { usuarioController } from '../usuarios/usuario.controller';
 const router = express.Router();
 
 router.get('/', perfilController.visualizar);
 // router.get('/editar', perfilController.editar);
 // router.post('/editar', perfilController.editar);
-router.get('/editar/:id', usuariosController.editar);
-router.post('/editar/:id', usuariosController.editar);
+router.get('/editar/:id', usuarioController.editar);
+router.post('/editar/:id', usuarioController.editar);
 router.post('/deletar', perfilController.deletar);
 
 export default router;

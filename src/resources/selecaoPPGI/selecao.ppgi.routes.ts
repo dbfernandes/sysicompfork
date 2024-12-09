@@ -7,8 +7,8 @@ import {
 } from '../../middlewares/multer.selecaoppgi.config';
 import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
 import validate from '../../middlewares/validate';
+import selecaoppgiController from './selecao.ppgi.controller';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
-import selecaoppgiController from './selecaoppgi.controller';
 import {
   changePasswordSchema,
   recoverPasswordSchema,

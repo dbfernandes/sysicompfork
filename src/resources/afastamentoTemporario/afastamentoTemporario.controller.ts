@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import afastamentoService from './afastamentoTemporario.service';
 import path from 'path';
+import { CreateAfastamentoDTO } from './afastamentoTemporario.types';
 const pageTitle = 'Afastamento Temporário';
 
 function resolveView(viewName: string): string {
@@ -26,7 +27,7 @@ const listar = async (req: Request, res: Response) => {
     } else {
       console.log('Acessando como Usuário');
       const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(
-        req.session.uid!,
+        Number(req.session.uid!),
       );
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
@@ -40,19 +41,21 @@ const listar = async (req: Request, res: Response) => {
         tipoUsuario: req.session.tipoUsuario,
       });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.render(resolveView('pedidos-afastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
       nome: req.session.nome,
       error:
-        error.message || 'Não foi possível listar os pedidos de afastamento!',
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível listar os pedidos de afastamento!',
     });
   }
 };
 
-const criar = async (req: Request, res: Response) => {
+export const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     return res.status(200).render(resolveView('solicitar-afastamento'), {
       pageTitle,
@@ -64,8 +67,8 @@ const criar = async (req: Request, res: Response) => {
     try {
       const { uid, nome } = req.session;
       const {
-        dataSaida,
-        dataRetorno,
+        dataInicio,
+        dataFim,
         tipoViagem,
         localViagem,
         justificativa,
@@ -73,9 +76,9 @@ const criar = async (req: Request, res: Response) => {
       } = req.body;
       const afastamento = {
         usuarioId: Number(uid),
-        usuarioNome: nome!,
-        dataSaida: new Date(dataSaida),
-        dataRetorno: new Date(dataRetorno),
+        nomeCompleto: nome!,
+        dataInicio: new Date(dataInicio),
+        dataFim: new Date(dataFim),
         tipoViagem,
         localViagem,
         justificativa,
@@ -93,12 +96,49 @@ const criar = async (req: Request, res: Response) => {
       });
     }
   }
-  return res.redirect('/afastamentoTemporario/listar');
+
+  try {
+    const { uid, nome } = req.session;
+    const {
+      dataSaida,
+      dataRetorno,
+      tipoViagem,
+      localViagem,
+      justificativa,
+      planoReposicao,
+    } = req.body;
+
+    const novoAfastamento: CreateAfastamentoDTO = {
+      usuarioId: Number(uid),
+      nomeCompleto: nome!, // nome do usuário da sessão
+      dataInicio: new Date(dataSaida),
+      dataFim: new Date(dataRetorno),
+      tipoViagem: String(tipoViagem),
+      localViagem: String(localViagem),
+      justificativa: String(justificativa),
+      planoReposicao: String(planoReposicao),
+    };
+
+    await afastamentoService.criar(novoAfastamento);
+    return res.redirect('/afastamentoTemporario/listar');
+  } catch (error: unknown) {
+    return res.render(resolveView('solicitar-afastamento'), {
+      pageTitle,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session.tipoUsuario,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível criar o pedido de afastamento!',
+    });
+  }
 };
 
 const vizualizar = async (req: Request, res: Response) => {
   try {
-    const afastamento = await afastamentoService.vizualizar(req.params.id);
+    const afastamento = await afastamentoService.vizualizar(
+      Number(req.params.id),
+    );
     if (!afastamento)
       return res
         .status(400)
@@ -110,14 +150,16 @@ const vizualizar = async (req: Request, res: Response) => {
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return res.render(resolveView('pedidos-afastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
       error:
-        error.message || 'Não foi possível vizualizar o pedido de afastamento!',
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível visualizar o pedido de afastamento!',
     });
   }
 };
@@ -125,17 +167,18 @@ const vizualizar = async (req: Request, res: Response) => {
 const remover = async (req: Request, res: Response) => {
   if (req.method === 'POST') {
     try {
-      console.log(req.params.id);
-      await afastamentoService.delete(req.params.id);
+      await afastamentoService.delete(Number(req.params.id));
       return res.redirect('/afastamentoTemporario/listar');
-    } catch (error: any) {
+    } catch (error: unknown) {
       return res.render(resolveView('pedidos-afastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
         error:
-          error.message || 'Não foi possível remover o pedido de afastamento!',
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível remover o pedido de afastamento!',
       });
     }
   }

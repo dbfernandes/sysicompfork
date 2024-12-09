@@ -1,11 +1,27 @@
-import { ReservaSalas } from "@prisma/client";
+import { ReservaSala } from '@prisma/client';
 
-export type CreateReservaDto = Pick<ReservaSalas,
-    'SalaId' | 'UsuarioId' | 'atividade' | 'dataInicio' | 'dataTermino' | 
-    'tipo' | 'horaInicio' | 'horaTermino' | 'dias'
->
+export type CreateReservaDto = Pick<
+  ReservaSala,
+  | 'salaId'
+  | 'usuarioId'
+  | 'atividade'
+  | 'dataInicio'
+  | 'dataFim'
+  | 'tipo'
+  | 'horaInicio'
+  | 'horaFim'
+  | 'dias'
+>;
 
-export type UpdateReservaDto = Pick<ReservaSalas,
-    'SalaId' | 'UsuarioId' | 'atividade' | 'dataInicio' | 'dataTermino' | 
-    'tipo' | 'horaInicio' | 'horaTermino' | 'dias'
->
+export type UpdateReservaDto = Pick<
+  ReservaSala,
+  | 'salaId'
+  | 'usuarioId'
+  | 'atividade'
+  | 'dataInicio'
+  | 'dataFim'
+  | 'tipo'
+  | 'horaInicio'
+  | 'horaFim'
+  | 'dias'
+>;

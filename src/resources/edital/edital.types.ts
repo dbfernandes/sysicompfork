@@ -1,14 +1,14 @@
-import { Edital } from '@prisma/client';
+import { Edital } from '.prisma/client';
 
 export const enum StatusEdital {
-  BLOQUEADO = '0',
-  ATIVO = '1',
+  BLOQUEADO = 0,
+  ATIVO = 1,
 }
 export type CreateEditalDto = Pick<
   Edital,
-  | 'vagaDoutorado'
+  | 'vagasDoutorado'
   | 'cotasDoutorado'
-  | 'vagaMestrado'
+  | 'vagasMestrado'
   | 'cotasMestrado'
   | 'cartaOrientador'
   | 'cartaRecomendacao'
@@ -18,21 +18,22 @@ export type CreateEditalDto = Pick<
   | 'status'
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
-  | 'editalCodigo'
+  | 'id'
 >;
 
 export type UpdateEditalDto = Pick<
   Edital,
-  | 'vagaDoutorado'
+  | 'vagasDoutorado'
   | 'cotasDoutorado'
-  | 'vagaMestrado'
+  | 'vagasMestrado'
   | 'cotasMestrado'
   | 'cartaOrientador'
   | 'cartaRecomendacao'
   | 'documento'
   | 'dataFim'
   | 'dataInicio'
+  | 'status'
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
-  | 'editalCodigo'
+  | 'id'
 >;

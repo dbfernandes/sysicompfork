@@ -35,8 +35,8 @@ export async function gerarPDF(id: number) {
     const periodicos = candidato.CandidatoPublicacoes.filter(
       (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.PERIODICOS,
     );
-    const conferencias = candidato.CandidatoPublicacoes.filter(
-      (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.EVENTOS,
+    const conferencias = candidato.publicacoes.filter(
+      (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.EVENTOS,
     );
     const numberPeriodicos = periodicos.length;
 
@@ -99,14 +99,14 @@ export async function gerarPDF(id: number) {
       [{ label: 'Curso:', value: candidato.cursoGraduacao }],
       [
         { label: 'Instituição:', value: candidato.instituicaoGraduacao },
-        { label: 'Ano Egresso:', value: candidato.anoEgressoGraduacao },
+        { label: 'Ano Egresso:', value: String(candidato.anoEgressoGraduacao) },
       ],
     ];
     const cursoPosGraduacao = [
       [{ label: 'Curso:', value: candidato.cursoPos }],
       [
         { label: 'Instituição:', value: candidato.instituicaoPos },
-        { label: 'Ano Egresso:', value: candidato.anoEgressoPos },
+        { label: 'Ano Egresso:', value: String(candidato.anoEgressoPos) },
       ],
     ];
     const publicacoes = [
@@ -283,7 +283,7 @@ export async function gerarPDF(id: number) {
           text: '',
           marginTop: 16,
         },
-        ...(candidato.Edital.cartaOrientador === '1'
+        ...(candidato.edital.cartaOrientador === '1'
           ? [
               titleSection('Cartas de Recomendação'),
               renderOptions(recomendacoes, true),

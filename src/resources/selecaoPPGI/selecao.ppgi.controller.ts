@@ -39,7 +39,14 @@ type RenderFunction = (
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
+declare module 'express-session' {
+  interface Session {
+    email?: string;
+    editalId?: string;
+    uid?: string;
+    editalPosition?: number;
+  }
+}
 const locals = {
   layout: 'selecaoppgi',
 };
@@ -571,7 +578,7 @@ async function formProposta(
         const id = Number(uid);
         await candidatoService.update({
           id,
-          data: candidate,
+          data: candidato,
         });
 
         if (body.isNext) {

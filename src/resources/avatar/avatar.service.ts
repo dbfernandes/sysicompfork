@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { PrismaClient } from '@prisma/client';
+import { Avatar, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class AvatarService {
-  async adicionar(usuarioId: number, nome: string, caminho: string) {
+  async adicionar(
+    usuarioId: number,
+    nome: string,
+    caminho: string,
+  ): Promise<void> {
     await this.remover(usuarioId);
     const caminhoArr = caminho.split('/');
     const caminhoParsed = caminhoArr.slice(caminhoArr.length - 3).join('/');
@@ -19,7 +23,7 @@ class AvatarService {
     });
   }
 
-  async listarUmAvatar(usuarioId: number) {
+  async listarUmAvatar(usuarioId: number): Promise<Avatar | null> {
     const avatar = await prisma.avatar.findFirst({
       where: {
         usuarioId,
@@ -28,7 +32,7 @@ class AvatarService {
     return avatar;
   }
 
-  async remover(usuarioId: number) {
+  async remover(usuarioId: number): Promise<void | null> {
     const avatar = await prisma.avatar.findFirst({
       where: {
         usuarioId,

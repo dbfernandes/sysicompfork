@@ -36,11 +36,10 @@ class CandidatoService {
         id,
       },
       include: {
-        Edital: true,
+        edital: true,
       },
     });
   }
-
   async update({ id, data }: { id: number; data: Partial<Candidato> }) {
     return await prisma.candidato.update({
       where: {
@@ -235,7 +234,7 @@ class CandidatoService {
     const senhaHash = await generateHashPassword(senha);
     await prisma.candidato.update({
       where: {
-        id: candidate.id,
+        id: candidato.id,
       },
       data: {
         senhaHash,
@@ -275,4 +274,4 @@ class CandidatoService {
   }
 }
 
-export default new CandidatoService();
+export default new CandidatoServicePublicacao();

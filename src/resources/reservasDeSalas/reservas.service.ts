@@ -10,8 +10,8 @@ export default new (class ReservaService {
   async listarReservasSalas(): Promise<ReservaSala[]> {
     return await prisma.reservaSala.findMany({
       include: {
-        Sala: true,
-        Usuario: {
+        sala: true,
+        usuario: {
           select: { id: true, nomeCompleto: true },
         },
       },
@@ -22,7 +22,7 @@ export default new (class ReservaService {
     return await prisma.reservaSala.findMany({
       where: { usuarioId: id },
       include: {
-        Usuario: {
+        usuario: {
           select: {
             id: true,
             nomeCompleto: true,

@@ -18,15 +18,19 @@ datasource db {
 model AfastamentoTemporario {
   id             Int      @id @default(autoincrement())
   usuarioId      Int
-  usuarioNome    String   @db.VarChar(255)
-  dataSaida      DateTime @db.Date
-  dataRetorno    DateTime @db.Date
+  nomeCompleto   String   @db.VarChar(255)
+  dataInicio     DateTime @db.Date
+  dataFim        DateTime @db.Date
   tipoViagem     String   @db.VarChar(255)
   localViagem    String   @db.VarChar(255)
   justificativa  String   @db.Text
   planoReposicao String   @db.Text
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@index([usuarioId])
 }
 
 model Aluno {
@@ -47,10 +51,9 @@ model Avatar {
   caminho   String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Usuario   Usuario  @relation(fields: [usuarioId], references: [id], onUpdate: Restrict, map: "Avatar_ibfk_1")
 
-  Usuario Usuario @relation(fields: [usuarioId], references: [id], onUpdate: Restrict)
-
-  @@index([usuarioId])
+  @@index([usuarioId], map: "usuarioId")
 }
 
 model Candidato {
@@ -59,8 +62,8 @@ model Candidato {
   senhaHash            String    @db.VarChar(255)
   tokenResetSenha      String?   @db.VarChar(255)
   validadeTokenReset   DateTime? @db.DateTime(0)
-  editalId             Int       @db.Int
-  linhaPesquisaId      Int?      @db.Int
+  editalId             String
+  linhaPesquisaId      Int?
   nome                 String?   @db.VarChar(60)
   email                String?   @db.VarChar(50)
   dataNascimento       DateTime? @db.Date
@@ -80,31 +83,31 @@ model Candidato {
   comoSoube            String?   @db.VarChar(100)
   cursoDesejado        String?
   regime               String?
-  cotista              Boolean?
+  cotista              Int       @default(0) @db.SmallInt
   cotistaTipo          String?   @db.VarChar(100)
-  condicao             Boolean?
+  condicao             Int       @default(0) @db.SmallInt
   condicaoTipo         String?   @db.VarChar(100)
-  bolsista             Boolean?
+  bolsista             Int       @default(0) @db.SmallInt
   cursoGraduacao       String?   @db.VarChar(50)
   instituicaoGraduacao String?   @db.VarChar(50)
-  anoEgressoGraduacao  String?
+  anoEgressoGraduacao  Int?
   cursoPos             String?   @db.VarChar(50)
   tipoPos              String?   @db.VarChar(30)
   instituicaoPos       String?   @db.VarChar(50)
-  anoEgressoPos        String?
+  anoEgressoPos        Int?
   tituloProposta       String?   @db.VarChar(100)
   motivos              String?   @db.VarChar(1001)
   nomeOrientador       String?   @db.VarChar(200)
 
-  // Relations
-  Edital        Edital           @relation(fields: [editalId], references: [id])
-  linhaPesquisa LinhaDePesquisa? @relation(fields: [linhaPesquisaId], references: [id])
+  // Relações
+  edital                 Edital                          @relation(fields: [editalId], references: [id])
+  linhaPesquisa          LinhaPesquisa?                  @relation(fields: [linhaPesquisaId], references: [id])
+  recomendacoes          CandidatoRecomendacao[]
+  experienciasAcademicas CandidatoExperienciaAcademica[]
+  publicacoes            CandidatoPublicacao[]
 
-  CandidatoRecomendacoes         CandidatoRecomendacao[]
-  CandidatoExperienciaAcademicas CandidatoExperienciaAcademica[]
-  CandidatoPublicacoes           CandidatoPublicacao[]
-
-  @@map("Candidato")
+  @@index([editalId])
+  @@index([linhaPesquisaId])
 }
 
 model CandidatoExperienciaAcademica {
@@ -114,9 +117,10 @@ model CandidatoExperienciaAcademica {
   atividade   String? @db.VarChar(60)
   periodo     String? @db.VarChar(30)
 
-  Candidato Candidato @relation(fields: [candidatoId], references: [id])
+  candidato Candidato @relation(fields: [candidatoId], references: [id])
 
   @@id([id, candidatoId])
+  @@index([candidatoId])
 }
 
 model CandidatoPublicacao {
@@ -125,21 +129,22 @@ model CandidatoPublicacao {
   titulo      String   @db.VarChar(255)
   ano         Int
   local       String?  @db.VarChar(255)
-  tipo        Int
+  tipoId      Int      @map("tipo")
   natureza    String   @db.VarChar(255)
   autores     String   @db.VarChar(255)
   issn        String?  @db.VarChar(300)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Candidato Candidato @relation(fields: [candidatoId], references: [id])
+  candidato Candidato @relation(fields: [candidatoId], references: [id])
 
   @@id([id, candidatoId])
+  @@index([candidatoId])
 }
 
 model CandidatoRecomendacao {
   id                   Int       @default(autoincrement())
-  dataEnvio            DateTime  @default(now()) @updatedAt
+  dataEnvio            DateTime  @default(now())
   dataResposta         DateTime?
   prazo                DateTime  @db.Date
   nome                 String?   @db.VarChar(100)
@@ -148,7 +153,7 @@ model CandidatoRecomendacao {
   titulacao            String?   @db.VarChar(50)
   cargo                String?   @db.VarChar(50)
   instituicaoTitulacao String?   @db.VarChar(100)
-  anoTitulacao         Int?      @db.Int
+  anoTitulacao         Int?
   instituicaoAtual     String?   @db.VarChar(100)
   dominio              Int?      @db.SmallInt
   aprendizado          Int?      @db.SmallInt
@@ -174,44 +179,45 @@ model CandidatoRecomendacao {
   outrasFuncoes        String?   @db.VarChar(60)
   passo                String    @default("1") @db.Char(1)
   candidatoId          Int
-  editalId             Int       @db.Int
+  editalId             String?   @db.VarChar(20)
 
-  Candidato Candidato @relation(fields: [candidatoId], references: [id])
-  Edital    Edital?   @relation(fields: [editalId], references: [id])
+  candidato Candidato @relation(fields: [candidatoId], references: [id])
+  edital    Edital?   @relation(fields: [editalId], references: [id])
 
   @@id([id, candidatoId])
+  @@index([candidatoId])
+  @@index([editalId])
 }
 
 model Edital {
-  id                   Int      @id @default(autoincrement())
-  editalCodigo         String   @unique @db.VarChar(50)
-  vagaDoutorado        Int?
+  id                   String   @id @unique
+  vagasDoutorado       Int?
   cotasDoutorado       Int?
-  vagaMestrado         Int?
+  vagasMestrado        Int?
   cotasMestrado        Int?
   cartaOrientador      String   @db.VarChar(255)
   cartaRecomendacao    String   @db.VarChar(255)
   documento            String   @db.VarChar(255)
-  dataInicio           String   @db.VarChar(255)
-  dataFim              String   @db.VarChar(255)
-  status               String   @default("0") @db.VarChar(255)
-  inscricoesIniciadas  Int      @default(0)
-  inscricoesEncerradas Int      @default(0)
+  dataInicio           DateTime @db.Date
+  dataFim              DateTime @db.Date
+  status               Int      @default(0) @db.SmallInt
+  inscricoesIniciadas  Int      @default(0) @db.SmallInt
+  inscricoesEncerradas Int      @default(0) @db.SmallInt
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
-  Candidatos              Candidato[]
-  CandidatosRecomendacoes CandidatoRecomendacao[]
+  candidatos    Candidato[]
+  recomendacoes CandidatoRecomendacao[]
 }
 
-model LinhaDePesquisa {
+model LinhaPesquisa {
   id        Int      @id @default(autoincrement())
   nome      String   @db.VarChar(255)
   sigla     String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Candidatos Candidato[]
+  candidatos Candidato[]
 }
 
 model Orientacao {
@@ -226,7 +232,7 @@ model Orientacao {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Usuario Usuario @relation(fields: [professorId], references: [id], onUpdate: Restrict)
+  professor Usuario @relation(fields: [professorId], references: [id])
 
   @@index([professorId])
 }
@@ -240,7 +246,7 @@ model Premio {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Usuario Usuario @relation(fields: [professorId], references: [id], onUpdate: Restrict)
+  professor Usuario @relation(fields: [professorId], references: [id])
 
   @@index([professorId])
 }
@@ -250,67 +256,67 @@ model Projeto {
   professorId   Int
   titulo        String   @db.VarChar(1024)
   descricao     String   @db.VarChar(5000)
-  inicio        Int
-  fim           Int?
+  dataInicio    Int
+  dataFim       Int?
   papel         String   @db.VarChar(500)
   financiadores String   @db.VarChar(1024)
   integrantes   String   @db.VarChar(1024)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  Usuario Usuario @relation(fields: [professorId], references: [id], onUpdate: Restrict)
+  professor Usuario @relation(fields: [professorId], references: [id])
 
   @@index([professorId])
 }
 
 model Publicacao {
-  id               Int      @id @default(autoincrement())
-  titulo           String   @db.VarChar(1024)
-  ano              Int
-  local            String?  @db.VarChar(1024)
-  tipoPublicacaoId Int
-  natureza         String?  @db.VarChar(100)
-  autores          String   @db.VarChar(1024)
-  issn             String   @db.VarChar(300)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  titulo    String   @db.VarChar(1024)
+  ano       Int
+  local     String?  @db.VarChar(1024)
+  tipoId    Int      @map("tipo")
+  natureza  String?  @db.VarChar(100)
+  autores   String   @db.VarChar(1024)
+  issn      String   @db.VarChar(300)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  TipoPublicacao         TipoPublicacao         @relation(fields: [tipoPublicacaoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  RelUsuariosPublicacoes RelUsuarioPublicacao[]
+  tipo               TipoPublicacao      @relation(fields: [tipoId], references: [id])
+  usuarioPublicacoes UsuarioPublicacao[]
 
-  @@index([tipoPublicacaoId])
+  @@index([tipoId])
 }
 
-model RelUsuarioPublicacao {
-  id           Int      @id @default(autoincrement())
+@@index([tipoPublicacaoId])
+}
+
+model UsuarioPublicacao {
+  id           Int        @id @default(autoincrement())
   usuarioId    Int
   publicacaoId Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  usuario      Usuario    @relation(fields: [usuarioId], references: [id])
+  publicacao   Publicacao @relation(fields: [publicacaoId], references: [id])
 
-  Usuario    Usuario    @relation(fields: [usuarioId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RelUsuarioPublicacao_ibfk_1")
-  Publicacao Publicacao @relation(fields: [publicacaoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RelUsuarioPublicacao_ibfk_2")
-
-  @@index([publicacaoId])
   @@index([usuarioId])
+  @@index([publicacaoId])
 }
 
 model ReservaSala {
-  id          Int       @id @default(autoincrement())
-  salaId      Int?
-  usuarioId   Int?
-  atividade   String?   @db.VarChar(255)
-  tipo        String?   @db.VarChar(255)
-  dias        String?   @db.VarChar(255)
-  dataInicio  DateTime? @db.Date
-  dataTermino DateTime? @db.Date
-  horaInicio  String?   @db.VarChar(255)
-  horaTermino String?   @db.VarChar(255)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         Int       @id @default(autoincrement())
+  salaId     Int?
+  usuarioId  Int?
+  atividade  String?   @db.VarChar(255)
+  tipo       String?   @db.VarChar(255)
+  dias       String?   @db.VarChar(255)
+  dataInicio DateTime? @db.Date
+  dataFim    DateTime? @db.Date
+  horaInicio String?   @db.VarChar(255)
+  horaFim    String?   @db.VarChar(255)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  Sala    Sala?    @relation(fields: [salaId], references: [id], onDelete: Cascade)
-  Usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  sala    Sala?    @relation(fields: [salaId], references: [id], onDelete: Cascade)
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@index([salaId])
   @@index([usuarioId])
@@ -326,7 +332,7 @@ model Sala {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  ReservasSala ReservaSala[]
+  reservas ReservaSala[]
 }
 
 model TipoPublicacao {
@@ -336,44 +342,45 @@ model TipoPublicacao {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Publicacoes Publicacao[]
+  publicacoes Publicacao[]
 }
 
 model Usuario {
-  id                         Int       @id @default(autoincrement())
-  nomeCompleto               String    @db.VarChar(255)
-  cpf                        String    @unique(map: "cpf") @db.VarChar(255)
-  senhaHash                  String    @db.VarChar(255)
-  tokenResetarSenha          String?   @unique(map: "tokenResetSenha") @db.VarChar(255)
-  validadeTokenResetadaSenha DateTime? @db.DateTime(0)
-  email                      String    @unique(map: "email") @db.VarChar(255)
-  status                     Int       @default(1) @db.SmallInt
-  administrador              Int       @default(0) @db.SmallInt
-  coordenador                Int       @default(0) @db.SmallInt
-  secretaria                 Int       @default(0) @db.SmallInt
-  diretor                    Int       @default(0) @db.SmallInt
-  professor                  Int       @default(0) @db.SmallInt
-  perfil                     String?   @db.VarChar(255)
-  siape                      String?   @db.VarChar(10)
-  dataIngresso               String?   @db.VarChar(10)
-  endereco                   String?   @db.VarChar(255)
-  telCelular                 String?   @db.VarChar(20)
-  telResidencial             String?   @db.VarChar(20)
-  unidade                    String?   @db.VarChar(60)
-  turno                      String?   @db.VarChar(32)
-  idLattes                   BigInt?
-  formacao                   String?   @db.VarChar(255)
-  formacaoIngles             String?   @db.VarChar(255)
-  resumo                     String?   @db.VarChar(5000)
-  resumoIngles               String?   @db.VarChar(5000)
-  ultimaAtualizacao          DateTime? @db.DateTime(0)
-  createdAt                  DateTime  @default(now())
-  updatedAt                  DateTime  @updatedAt
+  id                      Int       @id @default(autoincrement())
+  nomeCompleto            String    @db.VarChar(255)
+  cpf                     String    @unique @db.VarChar(255)
+  email                   String    @unique @db.VarChar(255)
+  senhaHash               String    @db.VarChar(255)
+  tokenResetSenha         String?   @unique @db.VarChar(255)
+  validadeTokenResetSenha DateTime? @db.DateTime(0)
+  status                  Int       @default(1) @db.SmallInt
+  administrador           Int       @default(0) @db.SmallInt
+  coordenador             Int       @default(0) @db.SmallInt
+  secretaria              Int       @default(0) @db.SmallInt
+  diretor                 Int       @default(0) @db.SmallInt
+  professor               Int       @default(0) @db.SmallInt
+  perfil                  String?   @db.VarChar(255)
+  siape                   String?   @db.VarChar(10)
+  dataIngresso            DateTime? @db.Date
+  endereco                String?   @db.VarChar(255)
+  telCelular              String?   @db.VarChar(20)
+  telResidencial          String?   @db.VarChar(20)
+  unidade                 String?   @db.VarChar(60)
+  turno                   String?   @db.VarChar(32)
+  lattesId                BigInt?
+  formacao                String?   @db.VarChar(255)
+  formacaoIngles          String?   @db.VarChar(255)
+  resumo                  String?   @db.VarChar(5000)
+  resumoIngles            String?   @db.VarChar(5000)
+  ultimaAtualizacao       DateTime? @db.DateTime(0)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
-  Avatares               Avatar[]
-  Orientacoes            Orientacao[]
-  Premios                Premio[]
-  Projetos               Projeto[]
-  RelUsuariosPublicacaos RelUsuarioPublicacao[]
-  ReservasSalas          ReservaSala[]
+  avatares      Avatar[]
+  orientacoes   Orientacao[]
+  premios       Premio[]
+  projetos      Projeto[]
+  publicacoes   UsuarioPublicacao[]
+  reservasSalas ReservaSala[]
+  afastamentos  AfastamentoTemporario[]
 }
