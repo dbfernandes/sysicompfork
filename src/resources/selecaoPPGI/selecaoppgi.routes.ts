@@ -56,7 +56,7 @@ router.use(isAuthSelecao);
 router.get('/formulario', selecaoppgiController.renderForms);
 
 router.put('/formulario/1', selecaoppgiController.formDados);
-router.put('/formulario/2', uploads, selecaoppgiController.form2);
+router.put('/formulario/2', uploads, selecaoppgiController.formHistorico);
 router.put(
   '/formulario/3',
   uploadsProposta,
@@ -66,19 +66,19 @@ router.put(
 router.get(
   '/formulario/publicacoes',
   uploadsPublicacoes,
-  selecaoppgiController.formPublicacoes,
+  selecaoppgiController.uploadsPublicacoes,
 );
 router.post(
   '/formulario/publicacoes',
   uploads,
-  selecaoppgiController.formPublicacoes,
+  selecaoppgiController.uploadsPublicacoes,
 );
 
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
 
 /////////
 router.post('/logout', selecaoppgiController.logout);
-router.post('/voltar', selecaoppgiController.backStep);
+router.post('/voltar', selecaoppgiController.voltarPassoForm);
 router.post('/voltarInicio', selecaoppgiController.voltarInicio);
 
 export default router;

@@ -119,6 +119,8 @@ export async function sendEmail({
       text,
       html,
     });
+
+    console.log('Email enviado');
   } catch (error) {
     console.error('Error sending email: ', error);
     throw error;

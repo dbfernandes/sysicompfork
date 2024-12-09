@@ -19,7 +19,6 @@
       <form id="candidato-formulario2">
         <input id="csrfToken" type="hidden"  name="_csrf" value="{{csrfToken}}">
         <input id="email" type="hidden" value="{{email}}">
-        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
         <input id="idCandidato" type="hidden"  value="{{id}}">
         <input id="idCandidato" type="hidden" value="{{message}}">
         <p>{{message}}</p>
@@ -407,14 +406,12 @@
       btnVoltar.find("span").prop("hidden", false);
       const csrfToken = $("#csrfToken").val();
       const id = $("#idCandidato").val();
-      const editalPosicao = $("#editalPosicao").val();
 
       $.ajax({
         url: '/selecaoppgi/voltar',
         type: 'POST',
         data: {
           _csrf: csrfToken,
-          editalPosicao: editalPosicao, 
           id: id
         }, success: function (data) {
           window.location.href = '/selecaoppgi/formulario';
@@ -513,12 +510,10 @@
     const formData = new FormData($('#candidato-formulario2')[0]);
     formData.append('csrfToken', $("#csrfToken").val());
     formData.append('email', $("#email").val());
-    formData.append('editalPosicao', $("#editalPosicao").val());
     formData.append('id', $("#idCandidato").val());
      
     const csrfToken = $("#csrfToken").val();
     const email = $("#email").val();
-    const editalPosicao = $("#editalPosicao").val();
     const id = $("#id").val();
 
     $.ajax({
@@ -580,10 +575,8 @@
     console.log(JSON.stringify(DataForm))
     var formData2 = new FormData($('#candidato-formulario2')[0]);
     const email = $("#email").val();
-    const editalPosicao = $("#editalPosicao").val();
     const id = $("#id").val();
     formData2.append('email', email);
-    formData2.append('editalPosicao', editalPosicao);
     formData2.append('id', id);
 
     $.ajax({

@@ -6,6 +6,35 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  projects: [
+    {
+      displayName: 'unit',
+      testMatch: ['<rootDir>/tests/unit/**/*.spec.[jt]s?(x)'],
+      // Configurações específicas para testes unitários
+      // Por exemplo, usar um mock de banco de dados ou evitar qualquer configuração de banco
+      testEnvironment: 'node',
+      setupFilesAfterEnv: ['<rootDir>/tests/unit/setup.ts'], // Se necessário
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc/jest',
+      },
+      moduleNameMapper: {
+        '^@prisma/client$':
+          '<rootDir>/tests/unit/mocks/__mocks__/@prisma/client.ts',
+      },
+      // Outras configurações específicas para unitários
+    },
+    {
+      displayName: 'integration',
+      testMatch: ['<rootDir>/tests/integration/**/*.spec.[jt]s?(x)'],
+      // Configurações específicas para testes de integração
+      testEnvironment: '<rootDir>/prisma/prisma-test-environment.ts',
+      setupFilesAfterEnv: ['<rootDir>/tests/integration/setup.ts'], // Se necessário
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc/jest',
+      },
+      moduleNameMapper: {},
+    },
+  ],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -132,7 +161,7 @@ const config: Config = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['<rootDir>/src/init_test.ts'],
+  // setupFiles: ['<rootDir>/src/init_test.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -144,7 +173,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: './prisma/prisma-test-environment.ts',
+  // testEnvironment: './prisma/prisma-test-environment.ts',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

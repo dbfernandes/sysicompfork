@@ -30,7 +30,8 @@ function formatarPublicacao(publicacao: CandidatoPublicacao) {
 // Função para gerar o PDF de inscrição de um candidato no PPGI
 export async function gerarPDF(id: number) {
   try {
-    const candidato = await candidatoService.listAllInfoCandidate(id);
+    const candidato =
+      await candidatoService.listarTodasInformacoesDeCandidato(id);
     const periodicos = candidato.CandidatoPublicacoes.filter(
       (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.PERIODICOS,
     );

@@ -38,7 +38,7 @@ function formatarDados(dados: any) {
 }
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(EditalId: string) {
-  const candidatos = await candidatoService.listCanditatesByEdital(EditalId);
+  const candidatos = await candidatoService.listarCandidatosPorEdital(EditalId);
   const candidatosFormatado = formatarDados(candidatos);
   return candidatosFormatado;
 }
