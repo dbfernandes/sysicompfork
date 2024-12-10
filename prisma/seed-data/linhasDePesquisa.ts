@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export const linhasDePesquisa: Prisma.LinhaDePesquisaCreateManyInput[] = [
+export const linhasDePesquisa: Prisma.LinhaPesquisaCreateManyInput[] = [
   {
     id: 1,
     nome: 'Banco de Dados e Recuperacao de Informacao',

@@ -49,16 +49,16 @@ class CandidatoService {
     });
   }
 
-  async listarCandidatosPorEdital(editalCodigo: string) {
+  async listarCandidatosPorEdital(id: string) {
     const edital = await prisma.edital.findFirst({
       where: {
-        editalCodigo,
+        id,
       },
       include: {
-        Candidatos: true,
+        candidatos: true,
       },
     });
-    return edital.Candidatos;
+    return edital.candidatos;
   }
 
   async validarTokenTrocarSenha(token: string): Promise<boolean> {
@@ -78,11 +78,11 @@ class CandidatoService {
         id,
       },
       include: {
-        CandidatoExperienciaAcademicas: true,
-        CandidatoPublicacoes: true,
+        experienciasAcademicas: true,
+        publicacoes: true,
         linhaPesquisa: true,
-        CandidatoRecomendacoes: true,
-        Edital: true,
+        recomendacoes: true,
+        edital: true,
       },
     });
   }
@@ -234,7 +234,7 @@ class CandidatoService {
     const senhaHash = await generateHashPassword(senha);
     await prisma.candidato.update({
       where: {
-        id: candidato.id,
+        id: candidate.id,
       },
       data: {
         senhaHash,
@@ -274,4 +274,4 @@ class CandidatoService {
   }
 }
 
-export default new CandidatoServicePublicacao();
+export default new CandidatoService();

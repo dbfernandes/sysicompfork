@@ -16,7 +16,6 @@ import {
 import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
 import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
 import editalService from '../edital/edital.service';
-import linhasDePesquisaService from '../linhasDePesquisa/linhasDePesquisa.service';
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -25,7 +24,8 @@ import {
   PassoFormCandidato,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
-} from './selecaoppgi.types';
+} from './selecao.ppgi.types';
+import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -117,6 +117,7 @@ async function signUp(
     case 'POST': {
       const data = req.body as SignUpDto;
       try {
+        console.log(data);
         const novoCandidato = await candidatoService.signUp(data);
         req.session.uid = novoCandidato.id.toString();
 
@@ -286,9 +287,9 @@ async function renderFormProposta(
   );
 
   const [linhas, recomendacoes, edital] = await Promise.all([
-    linhasDePesquisaService.list(),
+    linhaDePesquisaService.list(),
     candidatoRecomendacaoService.getRecomendacoesByCandidato(Number(uid)),
-    editalService.getEditalById(req.candidato.editalId),
+    editalService.getById(req.candidato.editalId),
   ]);
 
   res.render(resolveView('formProposta'), {
@@ -487,10 +488,12 @@ async function formHistorico(
         const candidato = {
           cursoGraduacao: body.cursoGraduacao,
           instituicaoGraduacao: body.instituicaoGraduacao,
-          anoEgressoGraduacao: body.anoEgressoGraduacao,
+          anoEgressoGraduacao: body.anoEgressoGraduacao
+            ? Number(body.anoEgressoGraduacao)
+            : null,
           cursoPos: body.cursoPos,
           instituicaoPos: body.instituicaoPos,
-          anoEgressoPos: body.anoEgressoPos,
+          anoEgressoPos: body.anoEgressoPos ? Number(body.anoEgressoPos) : null,
           posicaoEdital: 3,
         };
         const id = Number(uid);
@@ -563,12 +566,12 @@ async function formProposta(
             })),
             Number(uid),
             candidato.editalId,
-            new Date(candidato.Edital.dataFim),
+            new Date(candidato.edital.dataFim),
           );
         }
         const posicaoEdital = body.isNext ? 4 : 3;
 
-        const candidate: Partial<Candidato> = {
+        const candidato: Partial<Candidato> = {
           linhaPesquisaId: Number(body.idLinhaPesquisa),
           tituloProposta: body.tituloProposta,
           nomeOrientador: body.nomeOrientador,

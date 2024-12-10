@@ -97,7 +97,7 @@
                                     {{#each editais}}
                                     <tr>
                                         <td> {{add @index 1}} </td>
-                                        <td> {{editalCodigo}} </td>
+                                        <td> {{id}} </td>
                                         <td> {{dataInicio}} </td>
                                         <td> {{dataFim}} </td>
                                         <td> {{qtdeInscricoesPendentes}} </td>
@@ -105,7 +105,7 @@
                                         <td> REG: {{vagaMestrado}} / SUP: {{cotasMestrado}} </td>
                                         <td> REG: {{vagaDoutorado}} / SUP: {{cotasDoutorado}} </td>
                                         <td>
-                                            <span id="badge-{{editalCodigo}}" {{#validaLabel status dataInicio dataFim }}
+                                            <span id="badge-{{id}}" {{#validaLabel status dataInicio dataFim }}
                                                 {{else}} <span class="badge bg-danger">
                                                 Suspenso
                                             </span>
@@ -120,17 +120,17 @@
                                                     class='fa fa-solid fa-download' />
                                                 </a>
 
-                                                <a style="margin-right: 2px" href='/edital/listEdital/{{editalCodigo}}'
+                                                <a style="margin-right: 2px" href='/edital/listEdital/{{id}}'
                                                     class='fa fa-solid fa-eye' />
                                                 </a>
                                                 {{#if ../usuarioPermitido}}
                                                 <a class="fa fa-solid {{#ifEqual status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
-                                                    id="icone-{{editalCodigo}}" data-editalCodigo="{{editalCodigo}}"
-                                                    onclick="abrirModal('{{editalCodigo}}', '{{status}}', '{{dataFim}}')"
+                                                    id="icone-{{id}}" data-editalCodigo="{{id}}"
+                                                    onclick="abrirModal('{{id}}', '{{status}}', '{{dataFim}}')"
                                                     data-toggle="modal" data-target="#removerEdital">
                                                 </a>
 
-                                                <a style="margin-right: 2px" href='/edital/updateEdital/{{editalCodigo}}'
+                                                <a style="margin-right: 2px" href='/edital/updateEdital/{{id}}'
                                                     class='fa fa-solid fa-pen' />
                                                 </a>
                                                 {{/if}}
@@ -218,7 +218,7 @@
 
 
         $.ajax({
-            url: `/edital/arquivarEdital/${editalCodigo}`,
+            url: `/edital/arquivarEdital/${id}`,
             type: 'PUT',
             data: dataFromForm,
             success: function (data) {

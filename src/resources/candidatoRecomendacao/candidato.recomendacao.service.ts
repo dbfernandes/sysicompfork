@@ -75,14 +75,14 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async createManyByCandidato(
+  async createManyByCandidate(
     data: {
       nome: string;
       email: string;
       id?: number;
     }[],
     candidatoId: number,
-    editalId: number,
+    editalId: string,
     prazo: Date,
   ) {
     console.log(data);
@@ -178,7 +178,7 @@ class CandidatoRecomendacaoService {
     sendEmail({
       to: recomendacao.email, // Change to your recipient
       name: 'Coordenação do PPGI',
-      title: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.Candidato.nome}`,
+      title: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.candidato.nome}`,
       template: 'cartaRecomendacaoFinalizada',
       data: {
         recomendacao,

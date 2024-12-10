@@ -7,18 +7,19 @@ import { propostasWorksheet } from './propostasSheet';
 import { titulosWorksheet } from './titulosSheet';
 import { mediaFinalWorksheet } from './mediaFinalSheet';
 import candidatoService from '../../resources/candidato/candidato.service';
+import { Candidato } from '@prisma/client';
 
 // Função pegar dados e formatar
-function formatarDados(dados: any) {
-  return dados.map((dado: any) => ({
-    nome: dado.Nome,
+function formatarDados(dados: Candidato[]) {
+  return dados.map((dado: Candidato) => ({
+    nome: dado.nome,
     email: dado.email,
-    inscricao: dado.inscricaoposcomp,
-    linha: dado.linha,
-    orientador: dado.orientador,
-    bolsa: dado.bolsa,
-    nivel: dado.CursoPosTipo,
-    proposto: dado.proposto,
+    inscricao: '0',
+    linha: dado.linhaPesquisaId,
+    orientador: '',
+    bolsa: dado.bolsista,
+    nivel: dado.cursoDesejado,
+    proposto: dado.tituloProposta,
 
     provaInscricao: { formula: '=Candidato!B:B' },
     propostasMediaFinal: { formula: '=SOMA(B2:D2)', result: '0' },
@@ -48,7 +49,7 @@ export default async function gerarPlanilha(editalId: string) {
   const workbook = new exceljs.Workbook();
 
   const candidatos = await getCandidatos(editalId);
-
+  console.log('candidatos', candidatos);
   const candidateAba = workbook.addWorksheet('Candidato');
   const provasAba = workbook.addWorksheet('Provas');
   const propostasAba = workbook.addWorksheet('Propostas');

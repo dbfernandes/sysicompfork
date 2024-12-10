@@ -9,13 +9,13 @@ import {
 export const signInSchema = Joi.object<SignInDto>({
   email: Joi.string().email().required(),
   senha: Joi.string().required(),
-  editalId: Joi.number().required(),
+  editalId: Joi.string().required(),
 });
 
 export const signUpSchema = Joi.object<SignUpDto>({
   email: Joi.string().email().required(),
   senha: Joi.string().required(),
-  editalId: Joi.number().required(),
+  editalId: Joi.string().required(),
 });
 
 export const recoverPasswordSchema = Joi.object<RecuperarSenhaDto>({

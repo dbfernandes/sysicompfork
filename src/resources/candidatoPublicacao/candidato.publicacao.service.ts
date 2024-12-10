@@ -1,4 +1,4 @@
-import { CandidatoPublicacao, PrismaClient } from '@prisma/client';
+import { CandidatoPublicacao, Prisma, PrismaClient } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import { BaseError } from '../../utils/baseError';
 import {
@@ -28,14 +28,14 @@ class CandidatoPublicacaoService {
   ): Promise<void> {
     if (publicacoes && publicacoes.length > 0) {
       const publicacoesParaInserir = publicacoes.map(
-        (publicacao): Prisma.CandidatoPublicacaoCreateInput => {
+        (publicacao): PublicacaoCreate => {
           const ano = publicacao.ano ? Number(publicacao.ano) : null;
 
           const publicacaoData: PublicacaoCreate = {
             candidatoId,
             titulo: publicacao.titulo || '',
             local: publicacao.local || '',
-            tipo: tipoPublicacao,
+            tipoId: tipoPublicacao,
             natureza: publicacao.natureza || '',
             autores: publicacao.autores.nomeCompleto
               .join(', ')
@@ -56,7 +56,7 @@ class CandidatoPublicacaoService {
                   candidatoId,
                   titulo: publicacao.titulo,
                   ano: publicacao.ano,
-                  tipo: tipoPublicacao,
+                  tipoId: tipoPublicacao,
                 },
               });
 
@@ -100,13 +100,13 @@ class CandidatoPublicacaoService {
         prisma.candidatoPublicacao.findMany({
           where: {
             candidatoId,
-            tipo: TYPES_PUBLICACAO.PERIODICOS,
+            tipoId: TYPES_PUBLICACAO.PERIODICOS,
           },
         }),
         prisma.candidatoPublicacao.findMany({
           where: {
             candidatoId,
-            tipo: TYPES_PUBLICACAO.EVENTOS,
+            tipoId: TYPES_PUBLICACAO.EVENTOS,
           },
         }),
       ]);

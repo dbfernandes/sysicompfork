@@ -3,7 +3,7 @@ node_modules
 /build
 /dist
 uploads/*
-coverage
+/coverage
 #Removing the database credentials
 src/config/database.js
 

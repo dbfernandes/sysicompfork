@@ -125,7 +125,7 @@
 								{{#each editais}}
 								<div class="edital-item">
 									<div class="edital-item-body">
-										<b>{{__ "ppgiSignUp.editalNumber"}}</b> {{editalCodigo}}<br>
+										<b>{{__ "ppgiSignUp.editalNumber"}}</b> {{id}}<br>
 										<b>{{__ "ppgiSignUp.registrationPeriod"}}</b><br>
 										<ul>
 											<li><b>{{__ "ppgiSignUp.start"}}</b> {{formataData dataInicio}}</li>
@@ -170,7 +170,7 @@
 									<select class="form-control" id="edital" name="edital">
 										<option value="">{{__ "ppgiSignUp.selectEdital"}}</option>
 										{{#each editais}}
-											<option value="{{id}}">{{editalCodigo}}</option>
+											<option value="{{id}}">{{id}}</option>
 										{{/each}}
 									</select>
 								</div>
@@ -280,7 +280,7 @@
 						const err = res.responseJSON
 						buttonSubmit.prop("disabled", false)
 						buttonSubmit.find("span").prop("hidden", true)
-						errorSignin = err.error
+						errorSignin = err.message
 						setTimeout(function() {
 							window.alert(errorSignin);
 						}, 20);

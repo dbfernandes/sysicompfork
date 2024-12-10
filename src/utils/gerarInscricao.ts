@@ -14,7 +14,7 @@ import {
 } from './pdf';
 import candidatoService from '../resources/candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
-import { Nacionalidade } from '../resources/selecaoPPGI/selecaoppgi.types';
+import { Nacionalidade } from '../resources/selecaoPPGI/selecao.ppgi.types';
 import { CandidatoPublicacao } from '@prisma/client';
 
 function formatarNumeroInscricao(numberId: number): string {
@@ -32,8 +32,8 @@ export async function gerarPDF(id: number) {
   try {
     const candidato =
       await candidatoService.listarTodasInformacoesDeCandidato(id);
-    const periodicos = candidato.CandidatoPublicacoes.filter(
-      (publicacao) => publicacao.tipo === TYPES_PUBLICACAO.PERIODICOS,
+    const periodicos = candidato.publicacoes.filter(
+      (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS,
     );
     const conferencias = candidato.publicacoes.filter(
       (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.EVENTOS,
@@ -52,7 +52,7 @@ export async function gerarPDF(id: number) {
         },
         {
           label: 'Edital: ',
-          value: candidato.Edital.editalCodigo,
+          value: candidato.edital.id,
         },
       ],
       [
@@ -145,23 +145,21 @@ export async function gerarPDF(id: number) {
       ],
     ];
 
-    const recomendacoes = candidato.CandidatoRecomendacoes.map(
-      (recomendacao) => {
-        return [
-          {
-            label: 'Nome:',
-            value: recomendacao.nome,
-          },
-          {
-            label: 'Email:',
-            value: recomendacao.email,
-          },
-        ];
-      },
-    );
+    const recomendacoes = candidato.recomendacoes.map((recomendacao) => {
+      return [
+        {
+          label: 'Nome:',
+          value: recomendacao.nome,
+        },
+        {
+          label: 'Email:',
+          value: recomendacao.email,
+        },
+      ];
+    });
 
-    const atividades = candidato.CandidatoExperienciaAcademicas.length
-      ? candidato.CandidatoExperienciaAcademicas.reduce((acc, curr) => {
+    const atividades = candidato.experienciasAcademicas.length
+      ? candidato.experienciasAcademicas.reduce((acc, curr) => {
           acc.push([
             {
               label: 'Atividade:',

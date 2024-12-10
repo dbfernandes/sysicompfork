@@ -6,6 +6,7 @@ import { candidatos } from '../../../prisma/seed-data/candidatos';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
+  console.log(body);
   const csrfTokenMatch = body.match(/name="_csrf" value="([^"]+)"/);
 
   if (csrfTokenMatch && csrfTokenMatch[1]) {

@@ -83,11 +83,11 @@ model Candidato {
   comoSoube            String?   @db.VarChar(100)
   cursoDesejado        String?
   regime               String?
-  cotista              Int       @default(0) @db.SmallInt
+  cotista              Boolean   @default(false)
   cotistaTipo          String?   @db.VarChar(100)
-  condicao             Int       @default(0) @db.SmallInt
+  condicao             Boolean   @default(false)
   condicaoTipo         String?   @db.VarChar(100)
-  bolsista             Int       @default(0) @db.SmallInt
+  bolsista             Boolean   @default(false)
   cursoGraduacao       String?   @db.VarChar(50)
   instituicaoGraduacao String?   @db.VarChar(50)
   anoEgressoGraduacao  Int?
@@ -287,7 +287,9 @@ model Publicacao {
   @@index([tipoId])
 }
 
-@@index([tipoPublicacaoId])
+model Recomendacoes {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
 }
 
 model UsuarioPublicacao {

@@ -13,7 +13,7 @@ async function main() {
       skipDuplicates: true,
     });
 
-    await prisma.linhaDePesquisa.createMany({
+    await prisma.linhaPesquisa.createMany({
       data: linhasDePesquisa,
       skipDuplicates: true,
     });

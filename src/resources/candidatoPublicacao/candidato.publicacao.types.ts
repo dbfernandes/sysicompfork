@@ -27,7 +27,7 @@ export type PublicacaoCreate = Pick<
   | 'issn'
   | 'autores'
   | 'candidatoId'
-  | 'tipo'
+  | 'tipoId'
 >;
 
 export interface PublicacoesData {
