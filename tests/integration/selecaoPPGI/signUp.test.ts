@@ -65,7 +65,7 @@ describe('Rota SignUp', () => {
       const loginValue: SignUpDto = {
         email: 'teste2@gmail.com',
         senha: 'senha123',
-        editalId: 1,
+        editalId: '001',
       };
 
       const response = await agent

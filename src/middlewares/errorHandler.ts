@@ -9,7 +9,6 @@ export const errorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
-  console.log('passou aqui');
   if (err instanceof BaseError) {
     // Erros operacionais conhecidos
     return res.status(err.statusCode).json({

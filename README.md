@@ -1,19 +1,10 @@
-
 # SYSICOMP
-
-  
 
 ## Overview
 
-  
-
 Esse projeto é a migração do SYSICOMP para a nova stack (nodejs com express e handlebars).
 
-  
-
 O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.edu.br), porém em uma nova stack.
-
-  
 
 - Padrão de Projeto: [MVC (Model, View, Controller)](https://pt.wikipedia.org/wiki/MVC)
 
@@ -21,68 +12,86 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
 - Tecnologias:
 
-	-  [NodeJs](https://nodejs.org/pt-br/) - Javascript no backend
+  - [NodeJs](https://nodejs.org/pt-br/) - Javascript no backend
 
-	-  [Npm](https://www.npmjs.com/) - Gerenciador de dependencias, baixar bibliotecas e gerenciar suas versões
+  - [Npm](https://www.npmjs.com/) - Gerenciador de dependencias, baixar bibliotecas e gerenciar suas versões
 
-	-  [Express](https://expressjs.com/pt-br/) - Framework de aplicação para facilitar a criação de um sistema e não reinventar a roda
+  - [Express](https://expressjs.com/pt-br/) - Framework de aplicação para facilitar a criação de um sistema e não reinventar a roda
 
-	-  [Handlebars](https://handlebarsjs.com/) - Uma linguagem de template para faiclitar a criação da UI
+  - [Handlebars](https://handlebarsjs.com/) - Uma linguagem de template para faiclitar a criação da UI
 
-	-  [Docker](https://docs.docker.com/) - Containers para "empacotar" as aplicações, facilitar o desenvolvimento em equipe e torná-la mais robusta
+  - [Docker](https://docs.docker.com/) - Containers para "empacotar" as aplicações, facilitar o desenvolvimento em equipe e torná-la mais robusta
 
-	-  [Docker Compose](https://docs.docker.com/compose/) - Gerenciamento de vários containers
+  - [Docker Compose](https://docs.docker.com/compose/) - Gerenciamento de vários containers
 
-	-  [MySQL](https://www.mysql.com/) - Banco de Dados (OBS: O mysql fica num container docker, não se preocupe em instalá-lo)
+  - [MySQL](https://www.mysql.com/) - Banco de Dados (OBS: O mysql fica num container docker, não se preocupe em instalá-lo)
 
-	<!-- -  [Sequelize](https://sequelize.org/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) para facilitar a conexão e gerenciamento do banco de dados -->
+  <!-- -  [Sequelize](https://sequelize.org/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) para facilitar a conexão e gerenciamento do banco de dados -->
 
-	- [Prisma](https://www.prisma.io/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) é a ferramenta mais moderna para atividades de conexão e gerenciamento do banco de dados, oferecendo uma API (Aplication Programming Interface) intuitiva e recursos como migrações de banco de dados, consultas tipadas e um modelo de dados declarativo.
+  - [Prisma](https://www.prisma.io/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) é a ferramenta mais moderna para atividades de conexão e gerenciamento do banco de dados, oferecendo uma API (Aplication Programming Interface) intuitiva e recursos como migrações de banco de dados, consultas tipadas e um modelo de dados declarativo.
 
 ## Desenvolvimento
- ### Requisitos
- ####  NodeJs (>=14.15.3)
- Tenha o NodeJs instalado preferencialmente na versão 14.15.3 para frente. Recomendo utilizar o NVM (Node Version Manager) que lhe permite gerenciar várias versões ao mesmo tempo, podendo migrar entre as mesmas como quiser. 
- - [Instalação](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-####  Docker e Docker Compose
+### Requisitos
+
+#### NodeJs (>=14.15.3)
+
+Tenha o NodeJs instalado preferencialmente na versão 14.15.3 para frente. Recomendo utilizar o NVM (Node Version Manager) que lhe permite gerenciar várias versões ao mesmo tempo, podendo migrar entre as mesmas como quiser.
+
+- [Instalação](https://github.com/nvm-sh/nvm#installing-and-updating)
+
+#### Docker e Docker Compose
+
 - [Instalar Docker](https://docs.docker.com/engine/install/)
 - [Instalar Docker Compose](https://docs.docker.com/compose/install/)
 
-####  Clone Git Repository
+#### Clone Git Repository
+
 ```
 git clone https://github.com/dbfernandes/sysicomp
 ```
+
 ### Configurar
-Basta copiar o arquivo ***database-sample.js*** e ***mail-sample.json*** e alterá-los para ***database.js*** e ***mail.json***. O comando abaixo pode fazer isso para você.
+
+Basta copiar o arquivo **_database-sample.js_** e **_mail-sample.json_** e alterá-los para **_database.js_** e **_mail.json_**. O comando abaixo pode fazer isso para você.
+
 ```
 cd sysicomp
 cat src/config/database-sample.js > src/config/database.js
 cat src/config/mail-sample.json > src/config/mail.json
 ```
+
 ### Rodar a aplicação
+
 #### Para rodar somente através dos containers
+
 ```
 docker-compose up -d sysicomp
 ```
-Esse comando roda também o container do banco de dados automaticamente por estar definida como dependência do sysicomp no ***docker-compose.yml***.
+
+Esse comando roda também o container do banco de dados automaticamente por estar definida como dependência do sysicomp no **_docker-compose.yml_**.
 Se seu docker e docker-compose estiverem configurados corretamente, o comando deve rodar normalmente, irá demorar um pouco na primeira vez por estar baixando as imagens dos containers.
 **Acesse a aplicação na url http://localhost:3001/**
+
 #### Para rodar somente o container do banco de dados e rodar a aplicação diretamente pelo Node
+
 ```
 docker-compose up -d db
-npm install 
+npm install
 <!-- npm run start:dev -->
 npm start
 ```
+
 **Acesse a aplicação na url http://localhost:3000/**
 
 #### Para criar um novo módulo (Trabalho em progresso, mas já podem usar)
+
 ```
 npm run criar-modulo nome-modulo
 ```
 
 ### Rodando as Migrations e Seeds
+
 Para atualizar as tabelas e popular o banco, utilize os seguintes comandos:
 
 ```
@@ -90,4 +99,30 @@ Para atualizar as tabelas e popular o banco, utilize os seguintes comandos:
 npm prisma:init:dev
 ```
 
+### Rodando os testes
 
+#### Rodando os testes unitários
+
+Para rodar os testes unitários, utilize o comando abaixo:
+
+```
+npm test
+```
+
+Eles não precisam de um banco de dados rodando, pois utilizam o [jest](https://jestjs.io/pt-BR/).
+
+#### Rodando os testes de integração
+
+Para rodar os testes de integração, primeiro é necessário subir o banco de dados com o comando abaixo:
+
+```
+docker compose up -f docker-compose.test.yml -d up
+```
+
+E então rodar os testes de integração com o comando abaixo:
+
+```
+npm run test:integration
+```
+
+Eles utilizam o [jest](https://jestjs.io/pt-BR/) e o [supertest](https://www.npmjs.com/package/supertest) para fazer as requisições HTTP.

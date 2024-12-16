@@ -21,7 +21,7 @@ declare module 'express-session' {
       | {
           administrador: number;
           secretaria: number;
-          coordenador: number;
+          coordenador: number; 
           diretor: number;
           professor: number;
         }
@@ -35,7 +35,7 @@ declare module 'express-session' {
 const app = express();
 
 app.engine(
-  'hbs',
+  'hbs', 
   engine({
     defaultLayout: 'main',
     extname: '.hbs',

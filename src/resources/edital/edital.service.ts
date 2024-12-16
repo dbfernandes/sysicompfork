@@ -1,8 +1,7 @@
-import { PrismaClient, Edital, Candidato } from '@prisma/client';
+import prisma from '../../client';
+import { Candidato, Edital } from '@prisma/client';
 import { CreateEditalDto, StatusEdital } from './edital.types';
 /* eslint-disable camelcase */
-
-const prisma = new PrismaClient();
 
 class EditalService {
   async getById(id: string): Promise<Edital | null> {
@@ -177,7 +176,7 @@ class EditalService {
         },
       })
       .catch((err) => {
-        console.log(`[ERROR] Listar Candidatos: ${err}`);
+        console.error(`[ERROR] Listar Candidatos: ${err}`);
         throw new Error('Não foi possivel listar os candidatos');
       });
     return candidatos;

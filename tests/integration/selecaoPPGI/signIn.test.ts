@@ -6,7 +6,6 @@ import { candidatos } from '../../../prisma/seed-data/candidatos';
 
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
-  console.log(body);
   const csrfTokenMatch = body.match(/name="_csrf" value="([^"]+)"/);
 
   if (csrfTokenMatch && csrfTokenMatch[1]) {
@@ -22,14 +21,14 @@ describe('Rota Login', () => {
   const candidato = candidatos[0];
   beforeAll(async () => {
     // Obter o formulário e o token CSRF
-    const getResponse = await agent.get('/selecaoppgi/entrar');
+    const getResponse = await agent.get('/selecaoPPGI/entrar');
     csrfToken = extractCsrfTokenFromBody(getResponse);
   });
 
-  describe('GET /selecaoppgi/entrar', () => {
+  describe('GET /selecaoPPGI/entrar', () => {
     it('deve renderizar a view signIn com status 200', async () => {
       const response = await agent
-        .get('/selecaoppgi/entrar')
+        .get('/selecaoPPGI/entrar')
         .set('Accept', 'text/html');
 
       expect(response.status).toBe(200);

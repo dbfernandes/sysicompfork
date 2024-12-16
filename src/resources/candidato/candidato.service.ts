@@ -68,7 +68,7 @@ class CandidatoService {
       },
     });
     return (
-      !Boolean(candidato) || new Date(candidato.validadeTokenReset) < new Date()
+      Boolean(candidato) && new Date(candidato.validadeTokenReset) > new Date()
     );
   }
 
@@ -175,6 +175,27 @@ class CandidatoService {
     return true;
   }
 
+  async findCandidatoByEmailAndEdital({
+    email,
+    editalId,
+  }: {
+    email: string;
+    editalId: string;
+  }): Promise<Candidato> {
+    const candidato = await prisma.candidato.findFirst({
+      where: {
+        email,
+        editalId,
+      },
+    });
+
+    if (!candidato) {
+      throw new CandidatoNaoExisteError();
+    }
+
+    return candidato;
+  }
+
   async recuperarSenha({
     host,
     ...data
@@ -227,7 +248,7 @@ class CandidatoService {
       throw new TokenInvalidoError();
     }
 
-    if (candidate.validadeTokenReset < new Date()) {
+    if (new Date(candidate.validadeTokenReset) < new Date()) {
       throw new TokenExpiradoError();
     }
 

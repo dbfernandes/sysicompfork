@@ -9,4 +9,4 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3336:3306"
+      - '3328:3306'

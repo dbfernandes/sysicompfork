@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { prismaMock } from '../mocks/prismaMock';
+import { prismaMock } from '@prisma/client';
 import { Candidato } from '@prisma/client';
 
 import CandidatoService from '../../../src/resources/candidato/candidato.service';

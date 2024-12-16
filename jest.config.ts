@@ -9,7 +9,7 @@ const config: Config = {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['<rootDir>/tests/unit/**/*.spec.[jt]s?(x)'],
+      testMatch: ['<rootDir>/tests/unit/**/*.test.[jt]s?(x)'],
       // Configurações específicas para testes unitários
       // Por exemplo, usar um mock de banco de dados ou evitar qualquer configuração de banco
       testEnvironment: 'node',
@@ -18,14 +18,13 @@ const config: Config = {
         '^.+\\.(t|j)sx?$': '@swc/jest',
       },
       moduleNameMapper: {
-        '^@prisma/client$':
-          '<rootDir>/tests/unit/mocks/__mocks__/@prisma/client.ts',
+        '^@prisma/client$': '<rootDir>/tests/unit/mocks/@prisma/client.ts',
       },
       // Outras configurações específicas para unitários
     },
     {
       displayName: 'integration',
-      testMatch: ['<rootDir>/tests/integration/**/*.spec.[jt]s?(x)'],
+      testMatch: ['<rootDir>/tests/integration/**/*.test.[jt]s?(x)'],
       // Configurações específicas para testes de integração
       testEnvironment: '<rootDir>/prisma/prisma-test-environment.ts',
       setupFilesAfterEnv: ['<rootDir>/tests/integration/setup.ts'], // Se necessário

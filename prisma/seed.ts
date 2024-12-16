@@ -20,9 +20,8 @@ async function main() {
 
     await prisma.edital.createMany({
       data: editais,
-      skipDuplicates: true,
     });
-
+    console.log('candidatos criados');
     await prisma.candidato.createMany({
       data: candidatos,
       skipDuplicates: true,

@@ -20,7 +20,7 @@ export const signUpSchema = Joi.object<SignUpDto>({
 
 export const recoverPasswordSchema = Joi.object<RecuperarSenhaDto>({
   email: Joi.string().email().required(),
-  editalId: Joi.number().required(),
+  editalId: Joi.string().required(),
 });
 
 export const changePasswordSchema = Joi.object<MudarSenhaDto>({

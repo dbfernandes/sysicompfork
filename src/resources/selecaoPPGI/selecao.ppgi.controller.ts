@@ -117,7 +117,6 @@ async function signUp(
     case 'POST': {
       const data = req.body as SignUpDto;
       try {
-        console.log(data);
         const novoCandidato = await candidatoService.signUp(data);
         req.session.uid = novoCandidato.id.toString();
 
@@ -151,6 +150,7 @@ async function signIn(
           currentLanguage,
         });
       } catch (err) {
+        console.error(err);
         next(err);
       }
       break;

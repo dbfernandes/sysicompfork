@@ -118,7 +118,7 @@ describe('Rota trocar senha', () => {
         .set('Accept', 'text/html');
 
       expect(response.status).toBe(StatusCodes.OK);
-      expect(response.text).toContain('Token expirado');
+      expect(response.text).toContain('Token inválido');
     });
 
     it('deve renderizar a view corretamente', async () => {

@@ -53,7 +53,6 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
     // Executa as migrações do Prisma no banco de dados de teste
     await execSync(`${prismaBinary} migrate deploy`);
     await execSync(`${prismaBinary} db seed`);
-    console.log('this.databaseName', this.databaseName);
 
     return super.setup();
   }
@@ -68,7 +67,7 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
       multipleStatements: true,
     });
 
-    // Droppa o banco de dados de teste
+    //Droppa o banco de dados de teste
     await rootConnection.query(
       `DROP DATABASE IF EXISTS \`${this.databaseName}\`;`,
     );

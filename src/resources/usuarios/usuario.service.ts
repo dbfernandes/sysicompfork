@@ -1,12 +1,12 @@
+import { Usuario } from '@prisma/client';
 import crypto from 'crypto';
-import { PrismaClient, Usuario } from '@prisma/client';
 
 import bcrypt from 'bcrypt';
 
 import { generateHashPassword } from '../../utils/utils';
-import { UsuarioNotFoundError } from './usuario.errors';
 import { sendEmail } from '../email/emailService';
-const prisma = new PrismaClient();
+import { UsuarioNotFoundError } from './usuario.errors';
+import prisma from '../../client';
 
 class UsuarioService {
   async adicionar(usuario: any): Promise<Usuario> {
