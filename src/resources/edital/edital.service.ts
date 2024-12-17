@@ -1,6 +1,11 @@
+<<<<<<< Updated upstream
 import prisma from '../../client';
 import { Candidato, Edital } from '@prisma/client';
 import { CreateEditalDto, StatusEdital } from './edital.types';
+=======
+import { PrismaClient, Edital, Candidato } from '@prisma/client';
+import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
+>>>>>>> Stashed changes
 /* eslint-disable camelcase */
 
 class EditalService {
@@ -158,10 +163,25 @@ class EditalService {
         where: { id: id_update },
         data: dados,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro ao atualizar edital:', error);
       throw new Error(error);
     }
+  }
+
+  async getEditalByNumber(id: string): Promise<Edital | null> {
+    const edital = await prisma.edital
+      .findFirst({
+        where: {
+          id: id,
+        },
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Buscar Edital: ${err}`);
+        throw new Error('Não foi possivel buscar o edital');
+      });
+
+    return edital;
   }
 
   async listCandidatos(id: string): Promise<Candidato[]> {
