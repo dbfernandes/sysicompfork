@@ -1,11 +1,5 @@
-<<<<<<< Updated upstream
-import prisma from '../../client';
-import { Candidato, Edital } from '@prisma/client';
-import { CreateEditalDto, StatusEdital } from './edital.types';
-=======
 import { PrismaClient, Edital, Candidato } from '@prisma/client';
-import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
->>>>>>> Stashed changes
+import { CreateEditalDto, StatusEdital } from './edital.types';
 /* eslint-disable camelcase */
 
 class EditalService {
@@ -148,7 +142,7 @@ class EditalService {
     return edital;
   }
 
-  async update(id_update: string, dados: any): Promise<Edital> {
+  async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
