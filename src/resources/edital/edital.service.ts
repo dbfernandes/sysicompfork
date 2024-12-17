@@ -1,5 +1,6 @@
-import { PrismaClient, Edital, Candidato } from '@prisma/client';
+import { Edital, Candidato } from '@prisma/client';
 import { CreateEditalDto, StatusEdital } from './edital.types';
+import prisma from '@/client';
 /* eslint-disable camelcase */
 
 class EditalService {
