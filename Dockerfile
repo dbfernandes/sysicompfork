@@ -13,6 +13,7 @@ RUN apk update && \
     wget \
     ca-certificates \
     udev \
+    openssl \
     dumb-init && \
     update-ca-certificates
 
