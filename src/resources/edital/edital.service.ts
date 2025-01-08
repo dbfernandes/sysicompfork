@@ -1,5 +1,5 @@
 import { Edital, Candidato } from '@prisma/client';
-import { CreateEditalDto, StatusEdital } from './edital.types';
+import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
 import prisma from '@/client';
 /* eslint-disable camelcase */
 
@@ -138,6 +138,21 @@ class EditalService {
       .catch((err) => {
         console.error(`[ERROR] Atualizar Edital: ${err}`);
         throw new Error('Não foi possivel alterar o status do edital');
+      });
+
+    return edital;
+  }
+
+  async getEdital(id: string): Promise<Edital | null> {
+    const edital = await prisma.edital
+      .findFirst({
+        where: {
+          id: id,
+        },
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Buscar Edital: ${err}`);
+        throw new Error('Não foi possivel buscar o edital');
       });
 
     return edital;
