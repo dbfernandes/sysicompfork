@@ -21,11 +21,6 @@
       "@utils/*": ["src/utils/*"]
     }
   },
-  "include": [
-    "./src/**/*",
-    "./src/**/*.d.ts",
-    "./test/**/*",
-    "./prisma/seed-data"
-  ],
+  "include": ["./src/**/*", "./src/**/*.d.ts", "./test/**/*", "*.ts"],
   "exclude": ["./build", "node_modules"]
 }

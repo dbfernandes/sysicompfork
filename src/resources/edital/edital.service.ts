@@ -1,6 +1,6 @@
-import prisma from '../../client';
-import { Candidato, Edital } from '@prisma/client';
-import { CreateEditalDto, StatusEdital } from './edital.types';
+import { Edital, Candidato } from '@prisma/client';
+import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
+import prisma from '@/client';
 /* eslint-disable camelcase */
 
 class EditalService {
@@ -143,7 +143,22 @@ class EditalService {
     return edital;
   }
 
-  async update(id_update: string, dados: any): Promise<Edital> {
+  async getEdital(id: string): Promise<Edital | null> {
+    const edital = await prisma.edital
+      .findFirst({
+        where: {
+          id: id,
+        },
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Buscar Edital: ${err}`);
+        throw new Error('Não foi possivel buscar o edital');
+      });
+
+    return edital;
+  }
+
+  async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
@@ -158,10 +173,25 @@ class EditalService {
         where: { id: id_update },
         data: dados,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro ao atualizar edital:', error);
       throw new Error(error);
     }
+  }
+
+  async getEditalByNumber(id: string): Promise<Edital | null> {
+    const edital = await prisma.edital
+      .findFirst({
+        where: {
+          id: id,
+        },
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Buscar Edital: ${err}`);
+        throw new Error('Não foi possivel buscar o edital');
+      });
+
+    return edital;
   }
 
   async listCandidatos(id: string): Promise<Candidato[]> {

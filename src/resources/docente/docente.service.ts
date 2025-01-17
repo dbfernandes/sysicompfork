@@ -1,4 +1,4 @@
-import { Orientacao, PrismaClient } from '@prisma/client';
+import { Orientacao, PrismaClient, Usuario } from '@prisma/client';
 import { PublicacoesDict } from './docente.types';
 
 const prisma = new PrismaClient();
@@ -138,7 +138,7 @@ class DocenteService {
   }
 
   // Função auxiliar para perfis (supondo que essa função exista no seu modelo original)
-  private perfis(usuario: any) {
+  private perfis(usuario: Partial<Usuario>) {
     console.log(usuario);
     // Implementar lógica de perfis conforme necessário
     return [];
