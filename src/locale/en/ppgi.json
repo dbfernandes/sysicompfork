@@ -22,5 +22,7 @@
     "chooseFile": "Choose File",
     "confirm": "Confirm",
     "cancel": "Cancel"
-  }
+  },
+  "hidePassword": "Hide Password",
+  "showPassword": "Show Password"
 }

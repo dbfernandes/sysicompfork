@@ -39,14 +39,7 @@ type RenderFunction = (
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-declare module 'express-session' {
-  interface Session {
-    email?: string;
-    editalId?: string;
-    uid?: string;
-    editalPosition?: number;
-  }
-}
+
 const locals = {
   layout: 'selecaoppgi',
 };
@@ -142,12 +135,14 @@ async function signIn(
       try {
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
+        const email = (req.query.email as string) || '';
 
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
           currentLanguage,
+          email,
         });
       } catch (err) {
         console.error(err);

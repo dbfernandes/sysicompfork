@@ -396,8 +396,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
-        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
+        const data_inicio = new Date($("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD')).toISOString();
+        const data_fim = new Date($("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD')).toISOString();
 
 
         return {

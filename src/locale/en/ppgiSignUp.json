@@ -2,10 +2,10 @@
   "title": "Application Form for the Selection Process for Master's/Doctorate - PPGI/UFAM",
   "instructions": "Instructions:",
   "instructionList": {
-      "fillFields": "Fill in the fields <b>email, password, repeat password, and select a notice</b> to register a new candidate.",
-      "repeatPassword": "The <b>Repeat Password</b> field must be filled with the same value as the <b>Password</b> field.",
-      "registrationEmail": "The registration email cannot be repeated for the same notice. If you have already started your registration in a notice, access the option Continue Registration by clicking the <b>Back</b> button.",
-      "confirmRegistration": "After confirming the registration, you will be directed to the application form."
+    "fillFields": "Fill in the fields <b>email, password, repeat password, and select a notice</b> to register a new candidate.",
+    "repeatPassword": "The <b>Repeat Password</b> field must be filled with the same value as the <b>Password</b> field.",
+    "registrationEmail": "The registration email cannot be repeated for the same notice. If you have already started your registration in a notice, access the option Continue Registration by clicking the <b>Back</b> button.",
+    "confirmRegistration": "After confirming the registration, you will be directed to the application form."
   },
   "noEditals": "No notices available at this time.",
   "availableEditals": "Available Notices",
@@ -19,6 +19,7 @@
   "supplementaryVacancies": "Supplementary Vacancies:",
   "phdVacancies": "Vacancies for Doctorate:",
   "downloadNotice": "Download the notice:",
+  "clickHere": "Click here",
 
   "formTitle": "Application Form",
   "emailLabel": "Email",
@@ -43,5 +44,11 @@
     "repeatPasswordEqual": "The field <b>Repeat Password</b> must match the value in the <b>Password</b> field.",
     "editalRequired": "The field <b>Notice</b> is required."
   },
-  "errorAlert": "Error while registering candidate."
+  "error": {
+    "candidateExists1": "Candidate already exists for this notice.",
+    "candidateExists2": "Click here to continue your registration ",
+    "candidateExists3": "or register with another email and/or notice.",
+    "emailInvalid": "Enter a valid email.",
+    "default": "An error occurred. Please try again later."
+  }
 }

@@ -87,6 +87,14 @@ class CandidatoService {
     });
   }
 
+  /**
+   * Realiza o processo de registro (sign-up) de um novo candidato.
+   *
+   * @param {SignUpDto} param0 - Objeto contendo o email, senha e ID do edital.
+   * @returns {Promise<Candidato>} Retorna o candidato recém-criado, sem o hash da senha.
+   *
+   * @throws {CandidatoJaExisteError} - Se já existir um candidato registrado com o mesmo email e ID de edital código 409.
+   */
   async signUp({ email, senha, editalId }: SignUpDto): Promise<Candidato> {
     const candidato = await prisma.$transaction(async (prisma) => {
       const candidatoVerify = await prisma.candidato.findFirst({
@@ -126,6 +134,15 @@ class CandidatoService {
     return candidato;
   }
 
+  /**
+   * Realiza o processo de login de um candidato.
+   *
+   * @param {SignInDto} param0 - Objeto contendo o email, senha e ID do edital.
+   * @returns {Promise<Candidato>} Retorna o candidato autenticado, sem o hash da senha.
+   *
+   * @throws {CandidatoNaoAutorizadoError} - Se o candidato não for encontrado ou se a senha for inválida código 404.
+   * @throws {CandidatoFinalizadoError} - Se o candidato estiver em uma posição finalizada no edital código 409.
+   */
   async signIn({ email, senha, editalId }: SignInDto): Promise<Candidato> {
     const candidato = await prisma.candidato.findFirst({
       where: {

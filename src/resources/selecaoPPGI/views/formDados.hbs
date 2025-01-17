@@ -15,6 +15,10 @@
    		gap: 1rem;
    		align-items: center;
 	}
+
+	.radio-group {
+		margin-bottom: 8px;
+	}
 </style>
 
 <link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
@@ -63,7 +67,7 @@
 					</div>
 					<div class="card-body">
 						<div class="row">
-
+							{{!-- Campo nome --}}
 							<div class="form-group col-md-6">
 								<label for="candidato-nome">
 									<font color="#FF0000">*</font>
@@ -72,6 +76,8 @@
 								<input class="form-control" id="candidato-nome" placeholder="{{__ "ppgiForm1.identificacaoCandidato.nomePlaceholder"}}" type="text" name="nome"
 									maxlength="60" value="{{nome}}">
 							</div>
+
+							{{!-- Campo data de nascimento --}}
 							<div class="col-md-3 campo-candidato-datanascimento">
 								<label class="control-label" for="data-nascimento">
 									<font color="#FF0000">*</font>
@@ -87,27 +93,24 @@
 										</div>
 									</div>
 								</div>
-
-								<div class="help-block"></div>
 							</div>
-
+							{{!-- Campo sexo --}}
 							<div class="col-md-3 " role="radiogroup">
 								<label class="control-label" for="candidato-sexo">
 									<font color="#FF0000">*</font>
 									<b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
 								</label>
-								<div id="candidato-sexo" role="radiogroup"
-									style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
+								<div id="candidato-sexo" role="radiogroup" class="d-flex align-content-center radio-group"
+									style="column-gap: 20px; max-width: 100%; flex-wrap: wrap; row-gap: 4px;">
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo" name="candidatoSexo" {{#if (eq sexo 'M')}} checked="true" {{/if}}>
+										<input type="radio" id="Sexo"  {{#if (eq sexo 'M')}} checked="true" {{/if}} name="candidatoSexo">
 										<label for="Sexo"> {{__ "ppgiForm1.identificacaoCandidato.masculino"}}</label>
 									</div>
 
 									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo2" name="candidatoSexo"  {{#if (eq sexo 'F')}} checked="true" {{/if}}>
+										<input type="radio" id="Sexo2" {{#if (eq sexo 'F')}} checked="true" {{/if}} name="candidatoSexo">
 										<label for="Sexo2">{{__ "ppgiForm1.identificacaoCandidato.feminino"}}</label>
 									</div>
-
 								</div>
 							</div>
 
@@ -202,13 +205,14 @@
 							</div>
 						</div>
 
+						{{!-- Nacionalidade --}}
 						<div class="row form-group">
 							<div class="col-md-3 field-candidato-nacionalidade">
 								<label for="candidato-sexo" class="control-label">
 									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.title"}}:</b>
 								</label>
 
-								<div id="candidato-sexo" role="radiogroup" style="display: flex; align-content:center; gap: 20px;">
+								<div id="candidato-sexo" role="radiogroup" style="gap: 20px;" class="radio-group d-flex align-content-center">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Nacionalidade1" name="candidatoNacionalidade" 
 										{{#if (eq nacionalidade 'Brasileira')}} checked {{/if}}>
@@ -312,12 +316,13 @@
 					</div>
 					<div class="card-body">
 						<div class="row form-group">
+							{{!-- Curso Desejado --}}
 							<div class="form-group col-md-5">
 								<label class="control-label">
 									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.cursoDesejado"}}:</b>
 								</label>
 
-								<div id="cadidato-curso" role="radiogroup">
+								<div id="cadidato-curso" role="radiogroup" class="radio-group">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Curso1" name="candidatoCurso"  {{#if (eq cursoDesejado 'Mestrado')}} checked="true" {{/if}}>
 										<label for="Curso1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.mestrado"}}
@@ -332,6 +337,7 @@
 								</div>
 							</div>
 
+							{{!-- Regime --}}	
 							<div class="col-md-12">
 								<label class="control-label">
 									<font color="#FF0000">*</font>
@@ -339,7 +345,7 @@
 								</label>
 
 								<input type="hidden" name="candidatoRegime" value="">
-								<div id="candidato-regime" role="radiogroup">
+								<div id="candidato-regime" role="radiogroup" class="radio-group">
 									<div class="icheck-primary d-inline">
 										<input type="radio" id="Regime1" name="candidatoRegime" {{#if (eq regime 'Integral')}} checked="true" {{/if}}>
 										<label for="Regime1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.integral"}} </label>
@@ -826,7 +832,7 @@
 				candidatoCondicao: "{{__ "ppgiForm1.validacao.candidatoCondicao.required"}}",
 				cpf: {
 					required: "{{__ "ppgiForm1.validacao.cpf.required"}}",
-					cpf: "{{__ "ppgiForm1.validacao.cof.cpfInvalido"}}"
+					cpf: "{{__ "ppgiForm1.validacao.cpf.cpfInvalido"}}"
 				},
 				pais: "{{__ "ppgiForm1.validacao.pais.required"}}",
 				passaporte: "{{__ "ppgiForm1.validacao.passaporte.required"}}"
@@ -834,13 +840,26 @@
 			errorElement: 'span',
 			errorPlacement: function (error, element) {
 				error.addClass('invalid-feedback');
-				element.closest('div').append(error);
+				
+				if (element.is(":radio")) {
+					error.insertAfter(element.closest('.radio-group'));
+				} else {
+					element.closest('div').append(error);
+				}
 			},
 			highlight: function (element, errorClass, validClass) {
-				$(element).addClass('is-invalid');
+				if ($(element).is(":radio")) {
+    				$(element).closest('.radio-group').find('label').addClass('text-danger');
+				} else {
+					$(element).addClass('is-invalid');
+				}
 			},
 			unhighlight: function (element, errorClass, validClass) {
-				$(element).removeClass('is-invalid');
+				if ($(element).is(":radio")) {
+					$(element).closest('.radio-group').find('label').removeClass('text-danger');
+				} else {
+					$(element).removeClass('is-invalid');
+				}
 			},
 			submitHandler: function (form, e) {
 				e.preventDefault();
