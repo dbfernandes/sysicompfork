@@ -1,6 +1,7 @@
-import { PrismaClient, ReservaSala } from '@prisma/client';
-
-const prisma = new PrismaClient();
+// import { PrismaClient, ReservaSala } from '@prisma/client';
+// const prisma = new PrismaClient();
+import prisma from '../../client';
+import { ReservaSala } from '@prisma/client';
 
 export default new (class ReservaService {
   async listarTodos(): Promise<ReservaSala[]> {
@@ -46,7 +47,7 @@ export default new (class ReservaService {
     return await prisma.reservaSala.update({ where: { id }, data: reserva });
   }
 
-  async remover(id: number): Promise<ReservaSala> {
-    return await prisma.reservaSala.delete({ where: { id } });
+  async remover(id: number): Promise<undefined> {
+    await prisma.reservaSala.delete({ where: { id } });
   }
 })();
