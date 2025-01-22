@@ -1,8 +1,9 @@
 // aluno.service.ts
-import { PrismaClient, Aluno } from '@prisma/client';
+import prisma from '../../client';
+import { Aluno } from '@prisma/client';
 import { CreateAlunoDto } from './aluno.types';
 
-const prisma = new PrismaClient();
+
 
 class AlunoService {
   async adicionarVarios(alunos: CreateAlunoDto[]): Promise<void> {

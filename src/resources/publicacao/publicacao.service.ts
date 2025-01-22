@@ -1,28 +1,24 @@
-import { Prisma, PrismaClient, Publicacao } from '@prisma/client';
+import prisma from '../../client';
+import { Prisma, Publicacao } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
 import getPublicationsArr from '../../utils/listaPublicacoes';
 import { ContagemResult, PublicacaoCount } from './publicacao.types';
 
 class PublicacaoService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
 
   async adicionarVarios(
     professorId: number,
     publicacoes: Partial<Publicacao>[],
   ): Promise<void> {
     if (publicacoes !== undefined) {
-      const tipos = await this.prisma.tipoPublicacao.findMany();
+      const tipos = await prisma.tipoPublicacao.findMany();
       const publicArr = await getPublicationsArr(
         publicacoes,
         professorId,
         tipos,
       );
 
-      const professor = await this.prisma.usuario.findUnique({
+      const professor = await prisma.usuario.findUnique({
         where: { id: professorId },
         include: {
           publicacoes: {
@@ -38,7 +34,7 @@ class PublicacaoService {
       if (publicacoesExistentes.length > 0) {
         const idPublicacoesExistentes = publicacoesExistentes.map((p) => p.id);
 
-        const todasRelacoes = await this.prisma.usuarioPublicacao.findMany({
+        const todasRelacoes = await prisma.usuarioPublicacao.findMany({
           where: {
             publicacaoId: { in: idPublicacoesExistentes },
           },
@@ -54,7 +50,7 @@ class PublicacaoService {
           },
         );
 
-        await this.prisma.usuario.update({
+        await prisma.usuario.update({
           where: { id: professorId },
           data: {
             publicacoes: {
@@ -65,13 +61,13 @@ class PublicacaoService {
           },
         });
 
-        await this.prisma.publicacao.deleteMany({
+        await prisma.publicacao.deleteMany({
           where: { id: { in: idPublicacoesAExcluir } },
         });
       }
 
       for (const publicacao of publicArr) {
-        const publicacoesMesmoAno = await this.prisma.publicacao.findMany({
+        const publicacoesMesmoAno = await prisma.publicacao.findMany({
           where: {
             ano: publicacao.ano,
           },
@@ -86,12 +82,12 @@ class PublicacaoService {
         );
 
         if (!unicaPublicacao) {
-          unicaPublicacao = await this.prisma.publicacao.create({
+          unicaPublicacao = await prisma.publicacao.create({
             data: publicacao,
           });
         }
 
-        await this.prisma.usuarioPublicacao.create({
+        await prisma.usuarioPublicacao.create({
           data: {
             usuarioId: professorId,
             publicacaoId: unicaPublicacao.id,
@@ -106,15 +102,15 @@ class PublicacaoService {
         tipoId: tipo.length ? { in: tipo } : undefined,
         ano: ano
           ? {
-              in: []
-                .concat(ano)
-                .map(Number)
-                .filter((n) => !isNaN(n)),
-            }
+            in: []
+              .concat(ano)
+              .map(Number)
+              .filter((n) => !isNaN(n)),
+          }
           : undefined,
       };
 
-      return await this.prisma.publicacao.findMany({
+      return await prisma.publicacao.findMany({
         where: whereConditions,
         include: { usuarioPublicacoes: true },
       });
@@ -127,7 +123,7 @@ class PublicacaoService {
       const currentYear = new Date().getFullYear();
       const anos = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i);
 
-      const counts = await this.prisma.$queryRaw<PublicacaoCount[]>`
+      const counts = await prisma.$queryRaw<PublicacaoCount[]>`
         SELECT 
           ano,
           tipo,

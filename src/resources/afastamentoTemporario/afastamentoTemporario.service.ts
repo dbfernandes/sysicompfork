@@ -1,7 +1,7 @@
-import { AfastamentoTemporario, PrismaClient } from '@prisma/client';
-import { AfastamentoTemporarioExtendido } from './afastamentoTemporario.types';
+import prisma from '../../client';
+import { AfastamentoTemporario } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { AfastamentoTemporarioExtendido } from './afastamentoTemporario.types';
 
 class AfastamentoService {
   async listarAfastamentosDoUsuario(
@@ -14,42 +14,28 @@ class AfastamentoService {
         },
       });
       const dataFormatada = allResearchLines.map((afastamento) => {
-        return {
-          ...afastamento,
-          dataCriacaoFormata: new Date(
-            afastamento.createdAt,
-          ).toLocaleDateString('pt-BR', {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric',
-            timeZone: 'UTC',
-          }),
-          dataRetornoFormata: new Date(
-            afastamento.dataInicio,
-          ).toLocaleDateString('pt-BR', {
+        const formatarData = (date: Date | null | undefined) => {
+          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+          return new Date(date).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             timeZone: 'UTC',
-          }),
-          dataSaidaFormata: new Date(afastamento.dataFim).toLocaleDateString(
-            'pt-BR',
-            {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              timeZone: 'UTC',
-            },
-          ),
+          });
+        }
+        return {
+          ...afastamento,
+          dataCriacaoFormata: formatarData(afastamento.createdAt),
+          dataRetornoFormata: formatarData(afastamento.dataFim),
+          dataSaidaFormata: formatarData(afastamento.dataInicio),
         };
       });
-      console.log(dataFormatada);
+
       return dataFormatada;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw error.message;
       } else {
-        console.log('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }
@@ -58,39 +44,32 @@ class AfastamentoService {
   async listarTodos(): Promise<AfastamentoTemporario[]> {
     try {
       const allResearchLines = await prisma.afastamentoTemporario.findMany();
+
       const dataFormatada = allResearchLines.map((afastamento) => {
-        return {
-          ...afastamento,
-          dataCriacaoFormata: new Date(
-            afastamento.createdAt,
-          ).toLocaleDateString('pt-BR', {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric',
-          }),
-          dataRetornoFormata: new Date(
-            afastamento.dataInicio,
-          ).toLocaleDateString('pt-BR', {
+        const formatarData = (date: Date | null | undefined) => {
+          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+          return new Date(date).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             timeZone: 'UTC',
-          }),
-          dataSaidaFormata: new Date(afastamento.dataFim).toLocaleDateString(
-            'pt-BR',
-            {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              timeZone: 'UTC',
-            },
-          ),
+          });
+        }
+
+        return {
+          ...afastamento,
+          dataCriacaoFormata: formatarData(afastamento.createdAt),
+          dataRetornoFormata: formatarData(afastamento.dataFim),
+          dataSaidaFormata: formatarData(afastamento.dataInicio),
+
         };
       });
+
       return dataFormatada;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw error.message;
+        console.error(error.message || 'Erro ao listar afastamentos!');
+        throw error;
       } else {
         console.log('Erro desconhecido');
         throw new Error('Erro desconhecido');
@@ -136,7 +115,7 @@ class AfastamentoService {
     }
   }
 
-  async vizualizar(id: number): Promise<AfastamentoTemporarioExtendido | null> {
+  async detalhes(id: number): Promise<AfastamentoTemporarioExtendido | null> {
     try {
       const afastamento = await prisma.afastamentoTemporario.findUnique({
         where: { id: id },
@@ -144,34 +123,21 @@ class AfastamentoService {
 
       if (!afastamento) return null;
 
+      const formatarData = (date: Date | null | undefined) => {
+        if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+        return new Date(date).toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          timeZone: 'UTC',
+        });
+      }
+
       const afastamentoExtendido: AfastamentoTemporarioExtendido = {
         ...afastamento,
-        dataCriacaoFormata: new Date(afastamento.createdAt).toLocaleDateString(
-          'pt-BR',
-          {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-          },
-        ),
-        dataRetornoFormata: new Date(afastamento.dataInicio).toLocaleDateString(
-          'pt-BR',
-          {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'UTC',
-          },
-        ),
-        dataSaidaFormata: new Date(afastamento.dataFim).toLocaleDateString(
-          'pt-BR',
-          {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'UTC',
-          },
-        ),
+        dataCriacaoFormata: formatarData(afastamento.createdAt),
+        dataRetornoFormata: formatarData(afastamento.dataFim),
+        dataSaidaFormata: formatarData(afastamento.dataInicio),
       };
 
       return afastamentoExtendido;
@@ -198,7 +164,7 @@ class AfastamentoService {
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw error.message;
+        throw error;
       } else {
         console.log('Erro desconhecido');
         throw new Error('Erro desconhecido');

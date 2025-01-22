@@ -1,5 +1,3 @@
-// import { PrismaClient, ReservaSala } from '@prisma/client';
-// const prisma = new PrismaClient();
 import prisma from '../../client';
 import { ReservaSala } from '@prisma/client';
 

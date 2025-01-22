@@ -1,8 +1,9 @@
-import { Candidato, PrismaClient } from '@prisma/client';
+import prisma from '../../client';
+
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../utils/utils';
-const prisma = new PrismaClient();
+import { Candidato } from '@prisma/client';
 
 class CandidatoServicePublicacao {
   validPassword(candidato, password) {
@@ -26,7 +27,9 @@ class CandidatoServicePublicacao {
       },
     });
 
-    delete candidato.senhaHash;
+    if (candidato && candidato.senhaHash) {
+      delete candidato.senhaHash;
+    }
     await prisma.edital.update({
       where: {
         id: edital,
