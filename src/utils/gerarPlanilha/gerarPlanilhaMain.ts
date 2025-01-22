@@ -128,16 +128,6 @@ export default async function gerarPlanilha(editalId: string) {
 
   // Save Excel on Hard Disk
   await workbook.xlsx
-    .writeFile('planilha.xlsx')
-    .then(function () {
-      console.log('Arquivo salvo!');
-    })
-    .catch(function (error: any) {
-      console.log(error.message);
-    });
-
-  // Save Excel on Hard Disk
-  await workbook.xlsx
     .writeFile('public/files/planilha.xlsx')
     .then(function () {
       console.log('Arquivo salvo!');
