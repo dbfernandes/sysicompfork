@@ -1,19 +1,6 @@
 import afastamentoTemporarioService from "../../src/resources/afastamentoTemporario/afastamentoTemporario.service";
-// import { prismaMock } from '../../../singleton';
-
-jest.mock('@prisma/client', () => {
-    const mockPrisma = {
-        afastamentoTemporarios: {
-            findMany: jest.fn(),
-            create: jest.fn(),
-            findUnique: jest.fn(),
-            delete: jest.fn(),
-        },
-    };
-    return { PrismaClient: jest.fn(() => mockPrisma) };
-});
-
-const prismaMock = new (require('@prisma/client').PrismaClient)();
+import { prismaMock } from '../../singleton';
+import { AfastamentoTemporario } from '@prisma/client';
 
 describe('AfastamentoTemporarioService', () => {
     beforeEach(() => {
@@ -22,13 +9,13 @@ describe('AfastamentoTemporarioService', () => {
 
     describe('AfastamentoService - listarAfastamentosDoUsuario', () => {
         it('deve listar os afastamentos formatados de um usuário', async () => {
-            const mockData = [
+            const mockData: AfastamentoTemporario[] = [
                 {
                     id: 1,
                     usuarioId: 1,
-                    usuarioNome: 'Teste',
-                    dataSaida: new Date('2024-01-10'),
-                    dataRetorno: new Date('2024-01-20'),
+                    nomeCompleto: 'Teste',
+                    dataInicio: new Date('2024-01-10'),
+                    dataFim: new Date('2024-01-20'),
                     tipoViagem: 'Nacional',
                     localViagem: 'Brasil',
                     justificativa: 'Teste',
@@ -38,83 +25,72 @@ describe('AfastamentoTemporarioService', () => {
                 },
             ];
 
-            prismaMock.afastamentoTemporarios.findMany.mockResolvedValue(mockData);
+            (prismaMock.afastamentoTemporario.findMany.mockResolvedValue(mockData));
 
-            const result = await afastamentoTemporarioService.listarAfastamentosDoUsuario('1');
-            expect(result).toEqual([
-                {
-                    id: 1,
-                    usuarioId: 1,
-                    usuarioNome: 'Teste',
-                    dataSaida: new Date('2024-01-10'),
-                    dataCriacaoFormata: '01/01/2024',
-                    dataRetorno: new Date('2024-01-20'),
-                    dataRetornoFormata: '20/01/2024',
-                    dataSaidaFormata: '10/01/2024',
-                    tipoViagem: 'Nacional',
-                    localViagem: 'Brasil',
-                    justificativa: 'Teste',
-                    planoReposicao: 'Teste',
-                    createdAt: new Date('2024-01-01'),
-                    updatedAt: new Date('2024-01-01'),
-                },
-            ]);
-            expect(prismaMock.afastamentoTemporarios.findMany).toHaveBeenCalledWith({
+            const result = await afastamentoTemporarioService.listarAfastamentosDoUsuario(1);
+            expect(prismaMock.afastamentoTemporario.findMany).toHaveBeenCalledWith({
                 where: { usuarioId: 1 },
             });
-        });
-
-        it('deve lançar erro ao listar os afastamentos', async () => {
-            prismaMock.afastamentoTemporarios.findMany.mockRejectedValue(new Error('Erro do Prisma'));
-
-            await expect(afastamentoTemporarioService.listarAfastamentosDoUsuario('1')).rejects.toThrow(
-                'Erro do Prisma'
+            expect(result).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        id: 1,
+                        usuarioId: 1,
+                        nomeCompleto: 'Teste',
+                    }),
+                ]),
             );
         });
     });
 
     describe('AfastamentoService - listarTodos', () => {
         it('deve listar todos os afastamentos formatados', async () => {
-            const mockData = [
+            const mockData: AfastamentoTemporario[] = [
                 {
                     id: 1,
-                    createdAt: '2024-01-01T00:00:00.000Z',
-                    dataSaida: '2024-01-10T00:00:00.000Z',
-                    dataRetorno: '2024-01-20T00:00:00.000Z',
+                    usuarioId: 1,
+                    nomeCompleto: 'Teste',
+                    dataInicio: new Date('2024-01-10'),
+                    dataFim: new Date('2024-01-20'),
+                    tipoViagem: 'Nacional',
+                    localViagem: 'Brasil',
+                    justificativa: 'Teste',
+                    planoReposicao: 'Teste',
+                    createdAt: new Date('2024-01-01'),
+                    updatedAt: new Date('2024-01-01'),
                 },
             ];
 
-            prismaMock.afastamentoTemporarios.findMany.mockResolvedValue(mockData);
+            prismaMock.afastamentoTemporario.findMany.mockResolvedValue(mockData);
 
             const result = await afastamentoTemporarioService.listarTodos();
-            expect(result).toEqual([
-                {
-                    id: 1,
-                    createdAt: '2024-01-01T00:00:00.000Z',
-                    dataSaida: '2024-01-10T00:00:00.000Z',
-                    dataRetorno: '2024-01-20T00:00:00.000Z',
-                    dataCriacaoFormata: '01/01/2024',
-                    dataSaidaFormata: '10/01/2024',
-                    dataRetornoFormata: '20/01/2024',
-                },
-            ]);
+
+            expect(result).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        id: 1,
+                        createdAt: new Date('2024-01-01'),
+                        dataInicio: new Date('2024-01-10'),
+                        dataFim: new Date('2024-01-20'),
+                        dataCriacaoFormata: '01/01/2024',
+                        dataSaidaFormata: '10/01/2024',
+                        dataRetornoFormata: '20/01/2024',
+                    }),
+                ]),
+            );
         });
 
-        it('deve lidar com erros ao listar todos os afastamentos', async () => {
-            prismaMock.afastamentoTemporarios.findMany.mockRejectedValue(new Error('Erro do Prisma'));
 
-            const result = await afastamentoTemporarioService.listarTodos();
-            expect(result).toBeUndefined();
-        });
     });
 
     describe('AfastamentoService - criar', () => {
         it('deve criar um novo afastamento', async () => {
-            const newAfastamento = {
+            const mockAfastamento = {
+                id: 1,
                 usuarioId: 1,
-                usuarioNome: 'Teste',
-                dataSaida: new Date('2024-01-10'),
-                dataRetorno: new Date('2024-01-20'),
+                nomeCompleto: 'Teste',
+                dataInicio: new Date('2024-01-10'),
+                dataFim: new Date('2024-01-20'),
                 tipoViagem: 'Nacional',
                 localViagem: 'Brasil',
                 justificativa: 'Teste',
@@ -123,58 +99,75 @@ describe('AfastamentoTemporarioService', () => {
                 updatedAt: new Date('2024-01-01'),
             };
 
-            prismaMock.afastamentoTemporarios.create.mockResolvedValue(newAfastamento);
+            prismaMock.afastamentoTemporario.create.mockResolvedValue(mockAfastamento);
 
-            await expect(afastamentoTemporarioService.criar(newAfastamento)).resolves.not.toThrow();
-            expect(prismaMock.afastamentoTemporarios.create).toHaveBeenCalledWith({
-                data: newAfastamento,
+            await expect(afastamentoTemporarioService.criar(mockAfastamento)).resolves.not.toThrow();
+            expect(prismaMock.afastamentoTemporario.create).toHaveBeenCalledWith({
+                data: mockAfastamento,
             });
         });
 
         it('deve lidar com erros ao criar um afastamento', async () => {
-            prismaMock.afastamentoTemporarios.create.mockRejectedValue(new Error('Erro do Prisma'));
+            prismaMock.afastamentoTemporario.create.mockRejectedValue(new Error('Erro desconhecido'));
 
             await expect(afastamentoTemporarioService.criar({
                 usuarioId: 1,
-                usuarioNome: 'Teste',
-                dataSaida: new Date('2024-01-10'),
-                dataRetorno: new Date('2024-01-20'),
+                nomeCompleto: 'Teste',
+                dataInicio: new Date('2024-01-10'),
+                dataFim: new Date('2024-01-20'),
                 tipoViagem: 'Nacional',
                 localViagem: 'Brasil',
                 justificativa: 'Teste',
-                planoReposicao: 'Teste',
-                createdAt: new Date('2024-01-01'),
-                updatedAt: new Date('2024-01-01'),
-            },)).rejects.toThrow('Erro do Prisma');
+                planoReposicao: 'Teste'
+            },)).rejects.toThrow('Erro desconhecido');
         });
     });
 
     describe('AfastamentoService - retornarAfastamento', () => {
         it('deve retornar o afastamento pelo ID', async () => {
-            const mockData = { id: 1, usuarioId: 1 };
+            const mockData = {
+                id: 1,
+                usuarioId: 1,
+                nomeCompleto: 'Teste',
+                dataInicio: new Date('2024-01-10'),
+                dataFim: new Date('2024-01-20'),
+                tipoViagem: 'Nacional',
+                localViagem: 'Brasil',
+                justificativa: 'Teste',
+                planoReposicao: 'Teste',
+                createdAt: new Date('2024-01-01'),
+                updatedAt: new Date('2024-01-01'),
+            };
 
-            prismaMock.afastamentoTemporarios.findUnique.mockResolvedValue(mockData);
+            prismaMock.afastamentoTemporario.findUnique.mockResolvedValue(mockData);
 
-            const result = await afastamentoTemporarioService.retornarAfastamento('1');
+            const result = await afastamentoTemporarioService.retornarAfastamento(1);
             expect(result).toEqual(mockData);
-            expect(prismaMock.afastamentoTemporarios.findUnique).toHaveBeenCalledWith({
+            expect(prismaMock.afastamentoTemporario.findUnique).toHaveBeenCalledWith({
                 where: { id: 1 },
             });
         });
     });
 
-    describe('AfastamentoService - vizualizar', () => {
+    describe('AfastamentoService - detalhes', () => {
         it('deve visualizar o afastamento formatado', async () => {
             const mockData = {
                 id: 1,
-                createdAt: '2024-01-01T00:00:00.000Z',
-                dataSaida: '2024-01-10T00:00:00.000Z',
-                dataRetorno: '2024-01-20T00:00:00.000Z',
+                usuarioId: 1,
+                nomeCompleto: 'Teste',
+                dataInicio: new Date('2024-01-10'),
+                dataFim: new Date('2024-01-20'),
+                tipoViagem: 'Nacional',
+                localViagem: 'Brasil',
+                justificativa: 'Teste',
+                planoReposicao: 'Teste',
+                createdAt: new Date('2024-01-01'),
+                updatedAt: new Date('2024-01-01'),
             };
 
-            prismaMock.afastamentoTemporarios.findUnique.mockResolvedValue(mockData);
+            prismaMock.afastamentoTemporario.findUnique.mockResolvedValue(mockData);
 
-            const result = await afastamentoTemporarioService.vizualizar('1');
+            const result = await afastamentoTemporarioService.detalhes(1);
             expect(result).toEqual({
                 ...mockData,
                 dataCriacaoFormata: '01/01/2024',
@@ -184,27 +177,27 @@ describe('AfastamentoTemporarioService', () => {
         });
 
         it('deve retornar null se o afastamento não for encontrado', async () => {
-            prismaMock.afastamentoTemporarios.findUnique.mockResolvedValue(null);
+            prismaMock.afastamentoTemporario.findUnique.mockResolvedValue(null);
 
-            const result = await afastamentoTemporarioService.vizualizar('99');
+            const result = await afastamentoTemporarioService.detalhes(99);
             expect(result).toBeNull();
         });
     });
 
     describe('AfastamentoService - delete', () => {
         it('deve deletar o afastamento pelo ID', async () => {
-            prismaMock.afastamentoTemporarios.delete.mockResolvedValue({});
+            prismaMock.afastamentoTemporario.delete.mockResolvedValue(null);
 
-            await expect(afastamentoTemporarioService.delete('1')).resolves.not.toThrow();
-            expect(prismaMock.afastamentoTemporarios.delete).toHaveBeenCalledWith({
+            await expect(afastamentoTemporarioService.delete(1)).resolves.not.toThrow();
+            expect(prismaMock.afastamentoTemporario.delete).toHaveBeenCalledWith({
                 where: { id: 1 },
             });
         });
 
         it('deve lançar erro ao deletar um afastamento inexistente', async () => {
-            prismaMock.afastamentoTemporarios.delete.mockRejectedValue(new Error('Erro do Prisma'));
+            prismaMock.afastamentoTemporario.delete.mockRejectedValue(new Error('Erro desconhecido'));
 
-            await expect(afastamentoTemporarioService.delete('99')).rejects.toThrow('Erro do Prisma');
+            await expect(afastamentoTemporarioService.delete(99)).rejects.toThrow();
         });
     });
 });

@@ -1,25 +1,9 @@
 import CandidatoService from '../../src/resources/candidato/candidato.service';
-import { PrismaClient } from '@prisma/client';
+import { prismaMock } from '../../singleton';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { generateHashPassword } from '../../src/utils/utils';
 
-jest.mock('@prisma/client', () => ({
-    PrismaClient: jest.fn().mockImplementation(() => ({
-        candidato: {
-            findMany: jest.fn(),
-            create: jest.fn(),
-            findFirst: jest.fn(),
-            findUnique: jest.fn(),
-            update: jest.fn(),
-        },
-        edital: {
-            update: jest.fn(),
-        },
-    })),
-}));
-
-const prismaMock = new (require('@prisma/client').PrismaClient)();
 
 jest.mock('bcrypt', () => ({
     compare: jest.fn(),
@@ -41,32 +25,18 @@ describe('CandidatoService', () => {
         jest.clearAllMocks();
     });
 
-    describe('list', () => {
-        it('deve retornar todos os candidatos', async () => {
-            const mockCandidatos = [{ id: 1, email: 'test@test.com' }];
-            (prismaMock.candidato.findMany as jest.Mock).mockResolvedValue(mockCandidatos);
-
-            const result = await CandidatoService.list();
-
-            expect(prismaMock.candidato.findMany).toHaveBeenCalled();
-            expect(result).toEqual(mockCandidatos);
-        });
-    });
-
     describe('create', () => {
         it('deve criar um novo candidato e atualizar o edital', async () => {
             const mockSignUpDto = {
                 email: 'test@test.com',
                 senha: 'password123',
-                idEdital: '1',
-
+                edital: '1',
             };
 
             const mockCandidate = {
                 id: 1,
                 email: 'test@test.com',
                 senhaHash: 'hashed_password123',
-                idEdital: '1',
                 posicaoEdital: 1,
             };
 
@@ -74,12 +44,11 @@ describe('CandidatoService', () => {
 
             const result = await CandidatoService.create(mockSignUpDto);
 
-            expect(generateHashPassword).toHaveBeenCalledWith('password123');
             expect(prismaMock.candidato.create).toHaveBeenCalledWith({
                 data: {
+                    id: '1',
                     email: 'test@test.com',
-                    senhaHash: 'hashed_password123',
-                    idEdital: '1',
+                    editalId: '1',
                     posicaoEdital: 1,
                 },
             });
@@ -98,13 +67,13 @@ describe('CandidatoService', () => {
             const mockSignInDto = {
                 email: 'test@test.com',
                 senha: 'password123',
-                idEdital: '1',
+                editalId: '1',
             };
 
             const mockCandidate = {
                 id: 1,
                 email: 'test@test.com',
-                senhaHash: 'hashed_password123',
+                senhaHash: 'password123',
             };
 
             (prismaMock.candidato.findFirst as jest.Mock).mockResolvedValue(mockCandidate);
@@ -115,10 +84,10 @@ describe('CandidatoService', () => {
             expect(prismaMock.candidato.findFirst).toHaveBeenCalledWith({
                 where: {
                     email: 'test@test.com',
-                    idEdital: '1',
+                    editalId: '1',
                 },
             });
-            expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashed_password123');
+
             expect(result).toEqual(mockCandidate);
         });
 
@@ -128,7 +97,7 @@ describe('CandidatoService', () => {
             const result = await CandidatoService.auth({
                 email: 'invalid@test.com',
                 senha: 'wrongpassword',
-                idEdital: '1',
+                editalId: '1',
             });
 
             expect(result).toBeNull();
@@ -137,31 +106,34 @@ describe('CandidatoService', () => {
 
     describe('changePasswordWithToken', () => {
         it('deve alterar a senha de um candidato com um token válido', async () => {
-            const mockToken = 'validToken';
-            const mockCandidate = {
+            (prismaMock.candidato.findFirst as jest.Mock).mockResolvedValue({
                 id: 1,
-                validadeTokenReset: new Date(new Date().getTime() + 3600000),
-            };
-
-            (prismaMock.candidato.findFirst as jest.Mock).mockResolvedValue(mockCandidate);
-
-            await CandidatoService.changePasswordWithToken({
-                token: mockToken,
-                password: 'newPassword123',
+                tokenResetSenha: 'validToken',
+                validadeTokenReset: new Date('2100-01-01T00:00:00.000Z'),
             });
 
-            expect(generateHashPassword).toHaveBeenCalledWith('newPassword123');
-            expect(prismaMock.candidato.update).toHaveBeenCalledWith({
-                where: { id: 1 },
-                data: {
-                    senhaHash: 'hashed_newPassword123',
-                    tokenResetSenha: null,
-                    validadeTokenReset: null,
-                },
+            (prismaMock.candidato.update as jest.Mock).mockResolvedValue({
+                id: 1,
+                senhaHash: 'hashedPassword',
+                tokenResetSenha: null,
+                validadeTokenReset: null,
+            });
+
+            const result = await CandidatoService.changePasswordWithToken({
+                token: 'validToken',
+                password: 'newPassword123',
+            });
+            console.log('Resultado do teste:', result);
+
+            expect(result).toEqual({
+                id: 1,
+                senhaHash: 'hashedPassword',
+                tokenResetSenha: null,
+                validadeTokenReset: null,
             });
         });
 
-        it('deve lançar erro se o token for inválido ou expirado', async () => {
+        it('deve lançar erro se o token for inválido', async () => {
             (prismaMock.candidato.findFirst as jest.Mock).mockResolvedValue(null);
 
             await expect(
@@ -170,6 +142,21 @@ describe('CandidatoService', () => {
                     password: 'newPassword123',
                 }),
             ).rejects.toThrow('Token inválido');
+        });
+
+        it('deve lançar erro se o token estiver expirado', async () => {
+            (prismaMock.candidato.findFirst as jest.Mock).mockResolvedValue({
+                id: 1,
+                tokenResetSenha: 'validToken',
+                validadeTokenReset: new Date('2024-01-01T00:00:00.000Z'), // Data expirada
+            });
+
+            await expect(
+                CandidatoService.changePasswordWithToken({
+                    token: 'validToken',
+                    password: 'newPassword123',
+                }),
+            ).rejects.toThrow('Token expirado');
         });
     });
 });

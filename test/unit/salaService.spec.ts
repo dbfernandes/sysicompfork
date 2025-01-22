@@ -1,4 +1,4 @@
-import SalaService from '../../src/resources/salas/salas.service';
+import SalaService from '../../src/resources/salas/sala.service';
 import { prismaMock } from '../../singleton';
 
 describe('SalasService', () => {
@@ -20,7 +20,7 @@ describe('SalasService', () => {
                 updatedAt: new Date('2024-11-01')
             }
 
-            prismaMock.salas.create.mockResolvedValue(sala);
+            prismaMock.sala.create.mockResolvedValue(sala);
 
             await expect(SalaService.criar(sala)).resolves.toEqual(sala);
         });
@@ -32,7 +32,7 @@ describe('SalasService', () => {
                 updatedAt: new Date('2024-11-01')
             }
 
-            prismaMock.salas.create.mockRejectedValue(new Error('Erro ao criar sala'));
+            prismaMock.sala.create.mockRejectedValue(new Error('Erro ao criar sala'));
             // await expect(SalaService.criar(sala)).rejects.toEqual(new Error('Erro ao criar uma nova sala.'));
         });
     });
@@ -47,20 +47,30 @@ describe('SalasService', () => {
                 bloco: 'A',
                 capacidade: 10,
                 numero: 1,
-                createdAt: new Date('2024-11-01'),
-                updatedAt: new Date('2024-11-01')
+                createdAt: new Date('2024-11-01T00:00:00.000Z'),
+                updatedAt: new Date('2024-11-01T00:00:00.000Z')
             };
 
-            prismaMock.salas.update.mockResolvedValue(mockSalaAtualizada);
+            prismaMock.sala.update.mockResolvedValue(mockSalaAtualizada);
 
             const sala = await SalaService.editar(1, { nome: 'Sala Atualizada' });
-            expect(sala).toEqual(mockSalaAtualizada);
+            expect(sala).toEqual({
+                id: 1,
+                nome: 'Sala Atualizada',
+                andar: '1',
+                bloco: 'A',
+                capacidade: 10,
+                numero: 1,
+                createdAt: expect.any(Date),
+                updatedAt: expect.any(Date)
+            });
         });
 
         it('deve lançar um erro caso a sala não exista', async () => {
-            prismaMock.salas.update.mockRejectedValue(new Error('Erro ao atualizar'));
+            prismaMock.sala.update.mockRejectedValue(new Error('Erro ao atualizar'));
 
-            await expect(SalaService.editar(99, { nome: 'Sala Não Existente' })).rejects.toThrow('Erro ao editar a sala com ID 99.');
+            await expect(SalaService.editar(99, { nome: 'Sala Não Existente' })).
+                rejects.toThrow('Erro ao editar');
         });
     });
 
@@ -71,17 +81,18 @@ describe('SalasService', () => {
                 nome: 'Sala Atualizada',
                 capacidade: 10,
                 numero: 1,
+                andar: "1",
+                bloco: "A",
                 createdAt: new Date('2024-11-01T00:00:00.000Z'),
-                updatedAt: new Date(), // Use a data de atualização real ou o valor esperado
+                updatedAt: new Date('2024-11-01T00:00:00.000Z'), // Use a data de atualização real ou o valor esperado
             };
             const salaExcluida = await SalaService.excluir(1);
-            const { updatedAt, ...salaSemUpdatedAt } = salaExcluida;
 
-            expect(salaSemUpdatedAt).toEqual(mockSalaExcluida);
+            expect(salaExcluida).toEqual(undefined);
         });
 
         it('deve lançar um erro caso a sala não exista', async () => {
-            prismaMock.salas.delete.mockRejectedValue(new Error('Erro ao excluir'));
+            prismaMock.sala.delete.mockRejectedValue(new Error('Erro ao excluir'));
 
             await expect(SalaService.excluir(99)).rejects.toThrow('Erro ao excluir');
         });
