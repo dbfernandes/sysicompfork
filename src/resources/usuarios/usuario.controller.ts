@@ -245,7 +245,7 @@ const listar = async (
   }
 };
 
-const visualizar = async (
+const detalhes = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -425,7 +425,7 @@ export const usuarioController = {
   adicionar,
   listar,
   deletar,
-  visualizar,
+  detalhes,
   editar,
   restaurar,
   verificarDiretorExistente,

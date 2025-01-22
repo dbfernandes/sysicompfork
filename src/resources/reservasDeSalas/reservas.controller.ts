@@ -90,7 +90,6 @@ const excluir = async (req: Request, res: Response) => {
 
 const gerenciar = async (req: Request, res: Response) => {
   const reservas = await reservasService.listarReservasSalas();
-  console.log(reservas)
   const reservasJSON = reservas.map((reserva: any) => {
     const reservaObj = {
       ...reserva,

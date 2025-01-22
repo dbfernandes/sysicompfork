@@ -72,7 +72,7 @@ const criar = async (req: Request, res: Response) => {
       tipoUsuario: req.session?.tipoUsuario,
       nome: req.session.nome,
     });
-  } else {
+  } else if (req.method === 'POST') {
     try {
       const novaLinhaPesquisa: CreateLinhaDePesquisaDto = {
         nome: req.body.nome,

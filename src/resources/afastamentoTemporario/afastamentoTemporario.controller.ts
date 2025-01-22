@@ -12,7 +12,6 @@ function resolveView(viewName: string): string {
 const listar = async (req: Request, res: Response) => {
   try {
     if (req.session.tipoUsuario?.administrador) {
-      console.log('Acessando como Administrador');
       const afastamentos = await afastamentoService.listarTodos();
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
@@ -25,7 +24,6 @@ const listar = async (req: Request, res: Response) => {
         tipoUsuario: req.session.tipoUsuario,
       });
     } else {
-      console.log('Acessando como Usuário');
       const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(
         Number(req.session.uid!),
       );
@@ -41,16 +39,18 @@ const listar = async (req: Request, res: Response) => {
       });
     }
   } catch (error: unknown) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidos-afastamento'), {
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario,
-      nome: req.session.nome,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível listar os pedidos de afastamento!',
-    });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .render(resolveView('pedidos-afastamento'), {
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario,
+        nome: req.session.nome,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível listar os pedidos de afastamento!',
+      });
   }
 };
 
@@ -101,12 +101,13 @@ export const criar = async (req: Request, res: Response) => {
   }
 };
 
-const vizualizar = async (req: Request, res: Response) => {
+const detalhes = async (req: Request, res: Response) => {
   try {
-    const afastamento = await afastamentoService.vizualizar(
+    const afastamento = await afastamentoService.detalhes(
       Number(req.params.id),
     );
-    if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Pedido de afastamento não encontrado' });
+    if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).
+      json({ message: 'Pedido de afastamento não encontrado' });
     return res.status(StatusCodes.OK).render(resolveView('vizualizar-afastamento'), {
       afastamento,
       pageTitle,
@@ -148,4 +149,4 @@ const remover = async (req: Request, res: Response) => {
   }
 };
 
-export default { criar, listar, vizualizar, remover };
+export default { criar, listar, detalhes, remover };
