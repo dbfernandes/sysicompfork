@@ -11,23 +11,23 @@
         <div class="col">
           <ol class="breadcrumb float-md-right">
             <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
-              <li class="breadcrumb-item">
-                <a href="/afastamentoTemporario/listar">Afastamentos</a>
+            <li class="breadcrumb-item">
+              <a href="/afastamentoTemporario/listar">Afastamentos</a>
             </li>
             <li class="breadcrumb-item active">
               Dados
             </li>
           </ol>
-          <h1>Detalhes de afastamento: {{afastamento.usuarioNome}}</h1>
+          <h1>Detalhes de afastamento: {{afastamento.nomeCompleto}}</h1>
         </div>
       </div>
       <div class="row mb-4">
-          <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
-              <a class="btn btn-warning color-white" onclick="voltarPagina()">
-                <i class="fa fa-arrow-left"></i>
-                Voltar
-              </a>
-          </div>
+        <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+          <a class="btn btn-warning color-white" onclick="voltarPagina()">
+            <i class="fa fa-arrow-left"></i>
+            Voltar
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -53,7 +53,7 @@
             <tbody>
               <tr>
                 <th class="col-3">Nome Completo</th>
-                <td>{{afastamento.usuarioNome}}</td>
+                <td>{{afastamento.nomeCompleto}}</td>
               </tr>
               <tr>
                 <th class="col-3">Data de Requisição</th>
@@ -83,14 +83,14 @@
                 <th class="col-3">Plano de Reposição</th>
                 <td>{{afastamento.planoReposicao}}</td>
               </tr>
-              
+
             </tbody>
           </table>
         </div>
 
       </div>
 
-  
+
   </section>
 </div>
 <script>
@@ -99,15 +99,15 @@
   }
 </script>
 {{#if message}}
-  <script>
-      $(document).Toasts('create', {
-          icon: 'success',
-          class: "bg-{{type}}",
-          autohide: true,
-          delay: 10000,
-          title: '{{messageTitle}}',
-          body: '{{message}}'
-          })
-  </script>
+<script>
+  $(document).Toasts('create', {
+    icon: 'success',
+    class: "bg-{{type}}",
+    autohide: true,
+    delay: 10000,
+    title: '{{messageTitle}}',
+    body: '{{message}}'
+  })
+</script>
 {{/if}}
 {{> footer}}
