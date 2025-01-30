@@ -39,5 +39,9 @@
     "periodo": "Period",
     "adicionarExperiencia": "Add Experience",
     "excluirExperiencia": "Delete Experience"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "conjuntoPreenchido": "Fill the set (Course:, Institution:, Year of Graduation:) and Type: together or leave all blank."
   }
 }

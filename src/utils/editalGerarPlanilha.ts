@@ -1,9 +1,9 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
 import CandidatoService from '../resources/candidato/candidato_publicação.service';
-import { CreateCandidatoDto } from '../resources/candidato/candidato.types';
+import { SignUpDto as CreateCandidatoDto } from '../resources/candidato/candidato.types';
 
-const exceljs = require('exceljs');
+import exceljs from 'exceljs';
 
 function formatarDados(dados: any) {
   return dados.map((dado: any) => ({
@@ -47,7 +47,7 @@ function insertData(worksheet: any, dados: any, filtro: string | null) {
 }
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(EditalId: string) {
-  const candidatos = await CandidatoService.listarCandidatosPorEdital(EditalId);
+  const candidatos = await CandidatoService.listCanditatesByEdital(EditalId);
   const candidatosFormatado = formatarDados(candidatos);
   return candidatosFormatado;
 }

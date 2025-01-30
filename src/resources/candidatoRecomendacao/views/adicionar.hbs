@@ -28,12 +28,7 @@
 		gap: 8px;
 	}
 
-	.container-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0 1rem;
-	}
+
 
 	/* Substituição*/
 	.select2-container--default .select2-selection--multiple {
@@ -41,367 +36,767 @@
 		height: calc(2.25rem + 2px);
 	}
 </style>
-
 <div class="forms-page">
-	<header>
-		<div class="container">
-			<h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
-			<div class="options">
-				{{> ppgi/selectLanguageHeader}}
-			</div>
-		</div>
-	</header>
-	<section class="content container">
-		<h2 class="content-header container container-fluid row mb-2 mx-auto">{{__ "ppgiRecomendacao.header.title"}}</h2>
-
-		<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
-		<div class="callout callout-success mt-1">
-			<h5><i  class="fa fa-user callout-icon" aria-hidden="true"></i>{{__ "ppgiRecomendacao.form.candidate.title"}}</h5>
-			<ul>
-				<li><b>{{__ "ppgiRecomendacao.form.candidate.nameLabel"}}:</b> {{candidato.nome}}</li>
-				<li><b>{{__ "ppgiRecomendacao.form.candidate.graduationLabel"}}:</b> {{candidato.graduado}}</li>
-			</ul>
-		</div>
-		<div class="callout callout-success">
-			<h5><i class="fa fa-calendar callout-icon" aria-hidden="true"></i>{{__ "ppgiRecomendacao.form.deadline.title"}}</h5>
-			<span id="prazo-label"></span>
-		</div>
-		<div class="callout callout-success">
-			<h5><i class="fa fa-info" aria-hidden="true"></i></h5>
-			{{__ "ppgiRecomendacao.form.confidential"}}<font color="#FF0000">{{__ "ppgiRecomendacao.form.labelRequired"}}</font>
-		</div>
-
-		
-		<form id="form-recomendacao" action="">
-			<div class="card card-success">
-				<div class="card-header">
-					<h3 class="card-title">{{__ "ppgiRecomendacao.form.yourData.title"}}</h3>
-				</div>
-				<div class="row card-body">
-					<div class="form-group col-md-8 col-lg-9 ">
-						<label for="nome">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.nameLabel"}}:</b>
-						</label>
-						<input class="form-control" placeholder="{{__ "ppgiRecomendacao.form.yourData.namePlaceholder"}}" type="text" name="nome"
-							maxlength="100" value="{{recomendacao.nome}}">
-					</div>
-					<div class="col-md-4 col-lg-3 campo-titulacao form-group">
-						<label class="control-label" for="titulacao">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.degreeLabel"}}:</b>
-						</label>
-						<select class="custom-select" name="titulacao">
-							<option value="">{{__ "ppgiRecomendacao.form.yourData.selectDegreePlaceholder"}}</option>
-							<option value="Doutorado">{{__ "ppgiRecomendacao.form.yourData.degrees.phd"}}</option>
-							<option value="Mestrado">{{__ "ppgiRecomendacao.form.yourData.degrees.masters"}}</option>
-							<option value="Especialização">{{__ "ppgiRecomendacao.form.yourData.degrees.specialization"}}</option>
-							<option value="Graduação">{{__ "ppgiRecomendacao.form.yourData.degrees.undergraduate"}}</option>
-							<option value="Ensino Médio">{{__ "ppgiRecomendacao.form.yourData.degrees.highSchool"}}</option>
-						</select>
-						<div class="help-block"></div>
-					</div>
-					<div class="form-group col-md-8 col-lg-9 ">
-						<label for="instituicaoTitulacao">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.institutionDegreeLabel"}}:</b>
-						</label>
-						<input class="form-control" id="nome-recomendacao" placeholder="{{__ "ppgiRecomendacao.form.yourData.institutionDegreePlaceholder"}}" type="text" name="instituicaoTitulacao"
-							maxlength="100" value="{{recomendacao.instituicaoTitulacao}}">
-					</div>
-					<div class="col-md-4 col-lg-3 form-group">
-						<label class="control-label" for="anoTitulacao">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.degreeYearLabel"}}:</b>
-						</label>
-						<input class="form-control" placeholder="{{__ "ppgiRecomendacao.form.yourData.yearPlaceholder"}}" type="number" name="anoTitulacao" value="{{recomendacao.anoTitulacao}}">
-						<div class="help-block"></div>
-					</div>
-					<div class="form-group col-md-8 ">
-						<label for="instituicaoAtual">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.currentInstitutionLabel"}}:</b>
-						</label>
-						<input class="form-control" placeholder="{{__ "ppgiRecomendacao.form.yourData.currentInstitutionPlaceholder"}}" type="text" name="instituicaoAtual"
-							maxlength="100" value="{{recomendacao.instituicaoAtual}}">
-					</div>
-					<div class="col-md-4 ">
-						<label class="control-label" for="cargo">
-							<font color="#FF0000">*</font>
-							<b>{{__ "ppgiRecomendacao.form.yourData.positionLabel"}}:</b>
-						</label>
-						<input class="form-control" placeholder="{{__ "ppgiRecomendacao.form.yourData.positionPlaceholder"}}" type="text" name="cargo"
-							maxlength="50" value="{{recomendacao.cargo}}">
-						<div class="help-block"></div>
-					</div>
-				</div>
-			</div>
-			<div class="card card-success">
-				<div class="card-header">
-					<h3 class="card-title">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.title"}}</h3>
-				</div>
-				<div class="card-body">
-					<div class="row">
-						<div class="col-md-8 select2-green form-group" >
-							<label class="control-label" for="places">
-								<font color="#FF0000">*</font>	
-								<b>{{__ "ppgiRecomendacao.form.relationshipWithCandidate.placesLabel"}}:</b>
-							</label>
-							<select data-dropdown-css-class="select2-green" name="places" id="places" class="select2" multiple="multiple" data-placeholder="{{__ "ppgiRecomendacao.form.relationshipWithCandidate.selectPlacesPlaceholder"}}" style="width: 100%;">
-								<option {{#if (eq recomendacao.conheceGraduacao 1)}}selected {{/if}} value="conheceGraduacao">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsUndergraduate"}}</option>
-								<option {{#if (eq recomendacao.conhecePos 1)}}selected {{/if}} value="conhecePos">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsPostgraduate"}}</option>
-								<option {{#if (eq recomendacao.conheceEmpresa 1)}}selected {{/if}} value="conheceEmpresa">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsCompany"}}</option>
-								<option {{#if (eq recomendacao.conheceOutros 1)}}selected {{/if}} value="conheceOutros">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsOthers"}}</option>
-							</select>
-							<div class="help-block"></div>
-						</div>
-						<div class="form-group col-md-4">
-							<div id="group-other-places" {{#if (eq recomendacao.conheceOutros 0)}}style="display: none;"{{/if}}>
-								<label class="control-label" for="outrosLugares">
-								<b>{{__ "ppgiRecomendacao.form.relationshipWithCandidate.specifyOtherPlacesLabel"}}:</b>
-								</label>
-								<input name="outrosLugares" class="form-control" type="text" id="outrosLugares" maxlength="100" value="{{recomendacao.outrosLugares}}">
-								<div class="help-block"></div>
-							</div>	
-						</div>
-						<div class="col-md-8 campo-titulacao select2-green form-group" >
-							<label class="control-label" for="relationships">
-								<font color="#FF0000">*</font>	
-								<b>{{__ "ppgiRecomendacao.form.relationshipWithCandidate.roleWithCandidateLabel"}}:</b>
-							</label>
-							<select data-dropdown-css-class="select2-green" name="relationships" id="relationships" class="select2" multiple="multiple" data-placeholder="{{__ "ppgiRecomendacao.form.relationshipWithCandidate.selectRolesPlaceholder"}}" style="width: 100%;">
-								<option {{#if (eq recomendacao.orientador 1)}}selected {{/if}} value="orientador">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.supervisor"}}</option>
-								<option {{#if (eq recomendacao.professor 1)}}selected {{/if}} value="professor">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.professor"}}</option> 
-								<option {{#if (eq recomendacao.empregador 1)}}selected {{/if}} value="empregador">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.employer"}}</option>
-								<option {{#if (eq recomendacao.coordenador 1)}}selected {{/if}} value="coordenador">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.coordinator"}}</option>
-								<option {{#if (eq recomendacao.colegaCurso 1)}}selected {{/if}} value="colegaCurso">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.classmate"}}</option>
-								<option {{#if (eq recomendacao.colegaTrabalho 1)}}selected {{/if}} value="colegaTrabalho">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.coworker"}}</option>
-								<option {{#if (eq recomendacao.outrosContatos 1)}}selected {{/if}} value="outrosContatos">{{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.otherContacts"}}</option>
-							</select>
-							<div class="help-block"></div>
-						</div>
-						<div class="form-group col-md-4">
-							<div id="group-other-functions" {{#if (eq recomendacao.outrosContatos 0)}}style="display: none;"{{/if}} >
-								<label class="control-label" for="outrasFuncoes">
-								<b>{{__ "ppgiRecomendacao.form.relationshipWithCandidate.specifyOtherRolesLabel"}}:</b>
-								</label>
-								<input name="outrasFuncoes" class="form-control" type="text" id="outrasFuncoes" maxlength="100" value="{{recomendacao.outrasFuncoes}}">
-								<div class="help-block"></div>
-							</div>	
-						</div>
-						<div class="form-group  col-md-4 ">
-							<label class="control-label" for="anoContato">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.relationshipWithCandidate.knownSinceLabel"}}:</b>
-							</label>
-							<input class="form-control" placeholder="{{__ "ppgiRecomendacao.form.yourData.yearPlaceholder"}}" type="number" name="anoContato"
-								maxlength="100" value="{{recomendacao.anoContato}}">
-							<div class="help-block"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="card card-success">
-				<div class="card-header">
-					<h3 class="card-title">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.title"}}</h3>
-				</div>
-				<div class="card-body">
-					<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.label"}}:</b>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="dominio">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.knowledgeDomainLabel"}}:</b>
-							</label>
-							<select  class="custom-select" name="dominio">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="aprendizado">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.learningAbilityLabel"}}:</b>
-							</label>
-							<select class="custom-select" name="aprendizado">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="assiduidade">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.assiduityLabel"}}: </b>
-							</label>
-							<select class="custom-select" name="assiduidade">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="relacionamento">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.relationshipLabel"}}: </b>
-							</label>
-							<select class="custom-select" name="relacionamento">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="iniciativa">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.initiativeLabel"}}</b>
-							</label>
-							<select class="custom-select" name="iniciativa">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label" for="expressao">
-								<font color="#FF0000">*</font>
-								<b>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.expressionLabel"}}: </b>
-							</label>
-							<select class="custom-select" name="expressao">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}</option>
-								<option value="2">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}</option>
-								<option value="3">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}</option>
-								<option value="4">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}</option>
-								<option value="-1">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}</option>
-
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-					<div class="row mt-4 -form-group">
-						<div class="col-md-12">
-							<label class="control-label" for="classificacao">
-								<font color="#FF0000">*</font>
-								<b>
-									{{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonLabel"}}
-								</b>
-							</label>
-							
-						</div>
-						<div class="col-md-6">
-							<select id="classificacao" class="custom-select" name="classificacao">
-								<option value="">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}</option>
-								<option value="5">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.5Percent"}}</option>
-								<option value="10">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.10Percent"}}</option>
-								<option value="30">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.30Percent"}}</option>
-								<option value="50">{{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.50Percent"}}</option>
-							</select>
-							<div class="help-block"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="card card-success">
-				<div class="card-header">
-					<h3 class="card-title">{{__ "ppgiRecomendacao.form.additionalInfo.title"}}</h3>
-				</div>
-				<div class="card-body row">
-					<div class="col-md-12">
-						<div class="form-group">
-						<label class="control-label" for="informacoes">
-							{{__ "ppgiRecomendacao.form.additionalInfo.description"}}
-							(<span id="charCount">1000</span> {{__ "ppgiRecomendacao.form.additionalInfo.remainingCharacters"}}):
-						</label>
-						<textarea class="form-control" rows="5" id="input-informacoes" name="informacoes" maxlength="1000">{{recomendacao.informacoes}}</textarea>
-						</div>
-					</div>
-				</div>
-				<div class="card-footer d-flex justify-content-end flex-wrap">
-					<button type="button" class="btn btn-primary" id="btn-save">
-						{{__ "ppgiRecomendacao.form.buttons.save"}}
-						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-					</button>
-					<button class="btn btn-success" type="submit">
-						{{__ "ppgiRecomendacao.form.buttons.submit"}}
-						<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-					</button>
-				</div>
-			</div>
-		</form>
-	</section>
-    <div class="toast-container position-fixed ">
-        <div id="toastDanger" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-			<div class="alert alert-danger d-flex align-items-center justify-content-start mb-0" role="alert">
-  				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-  				<span id="toastMessageDanger" class="flex-fill"></span>
-				 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    				<span aria-hidden="true">&times;</span>
-  				</button>
-			</div>
-        </div>
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
+      <div class="options">
+        {{> ppgi/selectLanguageHeader}}
+      </div>
     </div>
-    <div class="toast-container position-fixed ">
-        <div id="toastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-			<div class="alert alert-success d-flex align-items-center justify-content-start mb-0" role="alert">
-  				<i class="fa fa-check-circle" aria-hidden="true"></i>
-  				<span id="toastMessageSuccess" class="flex-fill"></span>
-				 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    				<span aria-hidden="true">&times;</span>
-  				</button>
-			</div>
-        </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <section class="content container">
+    <!-- Título da página -->
+    <h2 class="content-header container container-fluid row mb-2 mx-auto">
+      {{__ "ppgiRecomendacao.header.title"}}
+    </h2>
+
+    <!-- Token CSRF -->
+    <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+
+    <!-- Informações sobre o Candidato -->
+    <div class="callout callout-success mt-1">
+      <h5>
+        <i class="fa fa-user callout-icon" aria-hidden="true"></i>
+        {{__ "ppgiRecomendacao.form.candidate.title"}}
+      </h5>
+      <ul>
+        <li>
+          <strong>{{__ "ppgiRecomendacao.form.candidate.nameLabel"}}:</strong>
+          {{candidato.nome}}
+        </li>
+        <li>
+          <strong>{{__ "ppgiRecomendacao.form.candidate.graduationLabel"}}:</strong>
+          {{candidato.graduado}}
+        </li>
+      </ul>
     </div>
-	
-	<footer class="custom-footer" >
-		<div class="container container-footer">
-			<strong><p id="text-icomp">ICOMP 2024</p></strong>
-			<p><strong>PPGI</strong></p>
-		</div>
-	</footer>
+
+    <!-- Prazo -->
+    <div class="callout callout-success">
+      <h5>
+        <i class="fa fa-calendar callout-icon" aria-hidden="true"></i>
+        {{__ "ppgiRecomendacao.form.deadline.title"}}
+      </h5>
+      <span id="prazo-label"></span>
+    </div>
+
+    <!-- Observações Gerais -->
+    <div class="callout callout-success">
+      <h5>
+        <i class="fa fa-info callout-icon" aria-hidden="true"></i>
+      </h5>
+      {{__ "ppgiRecomendacao.form.confidential"}}
+      <span class="text-danger">{{__ "ppgiRecomendacao.form.labelRequired"}}</span>
+    </div>
+
+    <!-- Formulário Principal -->
+    <form id="form-recomendacao">
+      <!-- Card 1: Dados de quem recomenda -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title">
+            {{__ "ppgiRecomendacao.form.yourData.title"}}
+          </h3>
+        </div>
+        <div class="row card-body">
+          <!-- Nome de quem recomenda -->
+          <div class="form-group col-md-8 col-lg-9">
+            <label for="nome">
+              <span class="text-danger">*</span>
+              <strong>{{__ "ppgiRecomendacao.form.yourData.nameLabel"}}:</strong>
+            </label>
+            <input
+              class="form-control"
+              id="nome"
+              placeholder="{{__ 'ppgiRecomendacao.form.yourData.namePlaceholder'}}"
+              type="text"
+              name="nome"
+              maxlength="100"
+              value="{{recomendacao.nome}}"
+              autofocus
+            />
+          </div>
+
+          <!-- Titulação -->
+          <div class="col-md-4 col-lg-3 campo-titulacao form-group">
+            <label for="titulacao" class="control-label">
+              <span class="text-danger">*</span>
+              <strong>{{__ "ppgiRecomendacao.form.yourData.degreeLabel"}}:</strong>
+            </label>
+            <select class="custom-select" id="titulacao" name="titulacao">
+              <option value="">
+                {{__ "ppgiRecomendacao.form.yourData.selectDegreePlaceholder"}}
+              </option>
+              <option value="Doutorado">
+                {{__ "ppgiRecomendacao.form.yourData.degrees.phd"}}
+              </option>
+              <option value="Mestrado">
+                {{__ "ppgiRecomendacao.form.yourData.degrees.masters"}}
+              </option>
+              <option value="Especialização">
+                {{__ "ppgiRecomendacao.form.yourData.degrees.specialization"}}
+              </option>
+              <option value="Graduação">
+                {{__ "ppgiRecomendacao.form.yourData.degrees.undergraduate"}}
+              </option>
+              <option value="Ensino Médio">
+                {{__ "ppgiRecomendacao.form.yourData.degrees.highSchool"}}
+              </option>
+            </select>
+            <div class="help-block"></div>
+          </div>
+
+          <!-- Instituição da Titulação -->
+          <div class="form-group col-md-8 col-lg-9">
+            <label for="instituicaoTitulacao">
+              <span class="text-danger">*</span>
+              <strong>
+                {{__ "ppgiRecomendacao.form.yourData.institutionDegreeLabel"}}
+                :</strong>
+            </label>
+            <input
+              class="form-control"
+              id="instituicaoTitulacao"
+              placeholder="{{__ 'ppgiRecomendacao.form.yourData.institutionDegreePlaceholder'}}"
+              type="text"
+              name="instituicaoTitulacao"
+              maxlength="100"
+              value="{{recomendacao.instituicaoTitulacao}}"
+            />
+          </div>
+
+          <!-- Ano da Titulação -->
+          <div class="col-md-4 col-lg-3 form-group">
+            <label for="anoTitulacao" class="control-label">
+              <span class="text-danger">*</span>
+              <strong>
+                {{__ "ppgiRecomendacao.form.yourData.degreeYearLabel"}}
+                :</strong>
+            </label>
+            <input
+              class="form-control"
+              id="anoTitulacao"
+              placeholder="{{__ 'ppgiRecomendacao.form.yourData.yearPlaceholder'}}"
+              type="number"
+              name="anoTitulacao"
+              value="{{recomendacao.anoTitulacao}}"
+            />
+            <div class="help-block"></div>
+          </div>
+
+          <!-- Instituição Atual -->
+          <div class="form-group col-md-8">
+            <label for="instituicaoAtual">
+              <span class="text-danger">*</span>
+              <strong>
+                {{__ "ppgiRecomendacao.form.yourData.currentInstitutionLabel"}}
+                :</strong>
+            </label>
+            <input
+              class="form-control"
+              id="instituicaoAtual"
+              placeholder="{{__ 'ppgiRecomendacao.form.yourData.currentInstitutionPlaceholder'}}"
+              type="text"
+              name="instituicaoAtual"
+              maxlength="100"
+              value="{{recomendacao.instituicaoAtual}}"
+            />
+          </div>
+
+          <!-- Cargo -->
+          <div class="col-md-4 form-group">
+            <label for="cargo" class="control-label">
+              <span class="text-danger">*</span>
+              <strong>{{__ "ppgiRecomendacao.form.yourData.positionLabel"}}:</strong>
+            </label>
+            <input
+              class="form-control"
+              id="cargo"
+              placeholder="{{__ 'ppgiRecomendacao.form.yourData.positionPlaceholder'}}"
+              type="text"
+              name="cargo"
+              maxlength="50"
+              value="{{recomendacao.cargo}}"
+            />
+            <div class="help-block"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Relação com o Candidato -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title">
+            {{__ "ppgiRecomendacao.form.relationshipWithCandidate.title"}}
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Locais em que conheceu o candidato -->
+            <div class="col-md-8 select2-green form-group">
+              <label for="places" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.placesLabel"}}
+                </strong>
+              </label>
+              <select
+                data-dropdown-css-class="select2-green"
+                name="places"
+                id="places"
+                class="select2"
+                multiple="multiple"
+                data-placeholder="{{__ 'ppgiRecomendacao.form.relationshipWithCandidate.selectPlacesPlaceholder'}}"
+                style="width: 100%;"
+              >
+                <option
+                  value="conheceGraduacao"
+                  {{#if (eq recomendacao.conheceGraduacao 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsUndergraduate"}}
+                </option>
+                <option
+                  value="conhecePos"
+                  {{#if (eq recomendacao.conhecePos 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsPostgraduate"}}
+                </option>
+                <option
+                  value="conheceEmpresa"
+                  {{#if (eq recomendacao.conheceEmpresa 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsCompany"}}
+                </option>
+                <option
+                  value="conheceOutros"
+                  {{#if (eq recomendacao.conheceOutros 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.places.knowsOthers"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+
+            <!-- Especificar outros lugares -->
+            <div class="form-group col-md-4">
+              <div
+                id="group-other-places"
+                {{#if (eq recomendacao.conheceOutros 0)}}style="display: none;"{{/if}}
+              >
+                <label for="outrosLugares" class="control-label">
+                  <strong>
+                    {{__ "ppgiRecomendacao.form.relationshipWithCandidate.specifyOtherPlacesLabel"}}
+                    :</strong>
+                </label>
+                <input
+                  name="outrosLugares"
+                  class="form-control"
+                  id="outrosLugares"
+                  type="text"
+                  maxlength="100"
+                  value="{{recomendacao.outrosLugares}}"
+                />
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <!-- Relações com o Candidato (funções) -->
+            <div class="col-md-8 campo-titulacao select2-green form-group">
+              <label for="relationships" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.roleWithCandidateLabel"}}
+                </strong>
+              </label>
+              <select
+                data-dropdown-css-class="select2-green"
+                name="relationships"
+                id="relationships"
+                class="select2"
+                multiple="multiple"
+                data-placeholder="{{__ 'ppgiRecomendacao.form.relationshipWithCandidate.selectRolesPlaceholder'}}"
+                style="width: 100%;"
+              >
+                <option
+                  value="orientador"
+                  {{#if (eq recomendacao.orientador 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.supervisor"}}
+                </option>
+                <option
+                  value="professor"
+                  {{#if (eq recomendacao.professor 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.professor"}}
+                </option>
+                <option
+                  value="empregador"
+                  {{#if (eq recomendacao.empregador 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.employer"}}
+                </option>
+                <option
+                  value="coordenador"
+                  {{#if (eq recomendacao.coordenador 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.coordinator"}}
+                </option>
+                <option
+                  value="colegaCurso"
+                  {{#if (eq recomendacao.colegaCurso 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.classmate"}}
+                </option>
+                <option
+                  value="colegaTrabalho"
+                  {{#if (eq recomendacao.colegaTrabalho 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.coworker"}}
+                </option>
+                <option
+                  value="outrosContatos"
+                  {{#if (eq recomendacao.outrosContatos 1)}}selected{{/if}}
+                >
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.relationships.otherContacts"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+
+            <!-- Especificar outras funções -->
+            <div class="form-group col-md-4">
+              <div
+                id="group-other-functions"
+                {{#if (eq recomendacao.outrosContatos 0)}}style="display: none;"{{/if}}
+              >
+                <label for="outrasFuncoes" class="control-label">
+                  <strong>
+                    {{__ "ppgiRecomendacao.form.relationshipWithCandidate.specifyOtherRolesLabel"}}
+                    :</strong>
+                </label>
+                <input
+                  name="outrasFuncoes"
+                  class="form-control"
+                  id="outrasFuncoes"
+                  type="text"
+                  maxlength="100"
+                  value="{{recomendacao.outrasFuncoes}}"
+                />
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <!-- Conhecido desde (ano) -->
+            <div class="form-group col-md-4">
+              <label for="anoContato" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.relationshipWithCandidate.knownSinceLabel"}}
+                  :</strong>
+              </label>
+              <input
+                class="form-control"
+                id="anoContato"
+                placeholder="{{__ 'ppgiRecomendacao.form.yourData.yearPlaceholder'}}"
+                type="number"
+                name="anoContato"
+                maxlength="100"
+                value="{{recomendacao.anoContato}}"
+              />
+              <div class="help-block"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Avaliação do Candidato -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title">
+            {{__ "ppgiRecomendacao.form.evaluationOfCandidate.title"}}
+          </h3>
+        </div>
+        <div class="card-body">
+          <strong>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.label"}}:</strong>
+
+          <!-- Domínio de conhecimento -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="dominio" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.knowledgeDomainLabel"}}
+                  :</strong>
+              </label>
+              <select class="custom-select" id="dominio" name="dominio">
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+
+          <!-- Capacidade de Aprendizado -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="aprendizado" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.learningAbilityLabel"}}
+                  :</strong>
+              </label>
+              <select class="custom-select" id="aprendizado" name="aprendizado">
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Assiduidade -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="assiduidade" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.assiduityLabel"}}
+                  :</strong>
+              </label>
+              <select class="custom-select" id="assiduidade" name="assiduidade">
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+
+          <!-- Relacionamento -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="relacionamento" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.relationshipLabel"}}
+                  :</strong>
+              </label>
+              <select
+                class="custom-select"
+                id="relacionamento"
+                name="relacionamento"
+              >
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+
+          <!-- Iniciativa -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="iniciativa" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.initiativeLabel"}}
+                </strong>
+              </label>
+              <select
+                class="custom-select"
+                id="iniciativa"
+                name="iniciativa"
+              >
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+
+          <!-- Expressão Escrita e/ou Falada -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="expressao" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.expressionLabel"}}
+                  :</strong>
+              </label>
+              <select
+                class="custom-select"
+                id="expressao"
+                name="expressao"
+              >
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.one"}}
+                </option>
+                <option value="2">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.two"}}
+                </option>
+                <option value="3">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.three"}}
+                </option>
+                <option value="4">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.four"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.five"}}
+                </option>
+                <option value="-1">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.levelOptions.none"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+
+          <!-- Classificação (Comparação com outros) -->
+          <div class="row mt-4 -form-group">
+            <div class="col-md-12">
+              <label for="classificacao" class="control-label">
+                <span class="text-danger">*</span>
+                <strong>
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonLabel"}}
+                </strong>
+              </label>
+            </div>
+            <div class="col-md-6">
+              <select
+                id="classificacao"
+                class="custom-select"
+                name="classificacao"
+              >
+                <option value="">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.selectEvaluationLevel"}}
+                </option>
+                <option value="5">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.5Percent"}}
+                </option>
+                <option value="10">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.10Percent"}}
+                </option>
+                <option value="30">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.30Percent"}}
+                </option>
+                <option value="50">
+                  {{__ "ppgiRecomendacao.form.evaluationOfCandidate.comparisonOptions.50Percent"}}
+                </option>
+              </select>
+              <div class="help-block"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Informações Adicionais -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title">{{__ "ppgiRecomendacao.form.additionalInfo.title"}}</h3>
+        </div>
+        <div class="card-body row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="input-informacoes" class="control-label">
+                {{__ "ppgiRecomendacao.form.additionalInfo.description"}}
+                (<span id="charCount">1000</span>
+                {{__ "ppgiRecomendacao.form.additionalInfo.remainingCharacters"}}):
+              </label>
+              <textarea
+                class="form-control"
+                rows="5"
+                id="input-informacoes"
+                name="informacoes"
+                maxlength="1000"
+              >{{recomendacao.informacoes}}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões do Formulário -->
+        <div class="card-footer d-flex justify-content-end flex-wrap">
+          <button type="button" class="btn btn-primary" id="btn-save">
+            {{__ "ppgiRecomendacao.form.buttons.save"}}
+            <span
+              class="spinner-border spinner-border-sm"
+              hidden="hidden"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+          <button class="btn btn-success" type="submit">
+            {{__ "ppgiRecomendacao.form.buttons.submit"}}
+            <span
+              class="spinner-border spinner-border-sm"
+              hidden="hidden"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- Toastr containers (mensagens de alerta) -->
+  <div class="toast-container position-fixed">
+    <!-- Alerta de Erro -->
+    <div
+      id="toastDanger"
+      class="toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div
+        class="alert alert-danger d-flex align-items-center justify-content-start mb-0"
+        role="alert"
+      >
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <span id="toastMessageDanger" class="flex-fill"></span>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed">
+    <!-- Alerta de Sucesso -->
+    <div
+      id="toastSuccess"
+      class="toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div
+        class="alert alert-success d-flex align-items-center justify-content-start mb-0"
+        role="alert"
+      >
+        <i class="fa fa-check-circle" aria-hidden="true"></i>
+        <span id="toastMessageSuccess" class="flex-fill"></span>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  {{> ppgi/footer}}
+
 </div>
+
 
 <script>
 	$(document).ready(function() {

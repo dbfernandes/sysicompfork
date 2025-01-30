@@ -7,6 +7,7 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_PORT: '3327'
     ports:
       - '${MYSQL_PORT}:3306'
     volumes:
@@ -17,8 +18,6 @@ services:
   sysicomp:
     container_name: sysicomp
     build: .
-    env_file:
-      - .env
     ports:
       - '${PORT}:3000'
     working_dir: /app
@@ -29,6 +28,8 @@ services:
       - db
     networks:
       - sysicomp-network
+    env_file:
+      - .env.development
 
 #Docker Networks
 networks:

@@ -1,20 +1,21 @@
-<div>
-  Caro(a)
-  {{recomendacao.nome}},
-  <br />
-  <br />
-  A carta de recomendação enviada para
-  {{recomendacao.Candidato.nome}}
-  (email:
-  <a
-    href='malito:{{recomendacao.Candidato.email}}'
-  >{{recomendacao.Candidato.email}}</a>) foi devidamente respondida.
-  <br />
-  Em caso de dúvidas, por favor nos contate. Agradecemos sua colaboração.
-  <br />
-  <p>
-    Coordenação do PPGI -
-    {{dataAtualExtensa}}
-    <br />
-  </p>
-</div>
+<tr>
+  <td style="padding: 20px; font-family: Arial, sans-serif; color: #333333;">
+    <p style="font-size: 16px; line-height: 1.5;">
+      Caro(a) {{recomendacao.nome}},
+    </p>
+    <p style="font-size: 16px; line-height: 1.5;">
+      A carta de recomendação enviada para {{recomendacao.Candidato.nome}}
+      (email:
+      <a
+        href='malito:{{recomendacao.Candidato.email}}'
+      >{{recomendacao.Candidato.email}}</a>) foi devidamente respondida.
+    </p>
+    <p style="font-size: 16px; line-height: 1.5;">
+      Em caso de dúvidas, por favor nos contate. Agradecemos sua colaboração.
+    </p>
+    <p style="font-size: 16px; line-height: 1.5;">
+      Atenciosamente,<br>
+      <strong>Coordenação do PPGI/UFAM</strong>
+    </p>
+  </td>
+</tr>

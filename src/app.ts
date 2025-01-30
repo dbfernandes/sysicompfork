@@ -1,17 +1,20 @@
+import * as path from 'path';
+import * as uuid from 'uuid';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csrf from 'csurf';
 import dotenv from 'dotenv';
 import express from 'express';
-import { engine } from 'express-handlebars';
 import session from 'express-session';
-import * as path from 'path';
-import * as uuid from 'uuid';
+
+import { engine } from 'express-handlebars';
+
 import router from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 dotenv.config({
-  path: `.env.${process.env.NODE_ENV || 'development'}`,
+  path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
 
 // To-Do: mover para um arquivo session.d.ts
@@ -21,7 +24,7 @@ declare module 'express-session' {
       | {
           administrador: number;
           secretaria: number;
-          coordenador: number; 
+          coordenador: number;
           diretor: number;
           professor: number;
         }
@@ -35,12 +38,12 @@ declare module 'express-session' {
 const app = express();
 
 app.engine(
-  'hbs', 
+  'hbs',
   engine({
     defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.ts')),
+    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers')),
   }),
 );
 app.set('view engine', 'hbs');

@@ -46,7 +46,6 @@ header > .container {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
   height: 50px;
   background-color: #222;
   display: flex;
@@ -91,16 +90,25 @@ header > .container {
   color: #fff;
 }
 
-.forms-page section {
+.forms-page .container-main {
   display: flex;
   flex-direction: column;
-  margin: auto;
-  margin-top: 55px;
-  display: flex;
   flex: 1;
   justify-content: space-between;
   align-items: center;
   color: #222;
+  margin: 70px auto auto;
+}
+
+.forms-page section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  color: #222;
+  margin: 70px auto auto;
+
 }
 
 .forms-page section h1 {
@@ -155,11 +163,16 @@ header > .container {
 }
 .custom-footer p {
   margin: 0;
-  color: #333;
+  color: #505050;
 }
 .container-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
+}
+
+.container-main {
+  height: 100%;
+  margin-top: 70px;
 }

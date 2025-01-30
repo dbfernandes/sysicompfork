@@ -1,6 +1,10 @@
-import { Candidato, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+
+import { Candidato, PrismaClient } from '@prisma/client';
+
 import { generateHashPassword } from '../../utils/utils';
 import {
   MudarSenhaDto,
@@ -19,11 +23,11 @@ const prisma = new PrismaClient();
 
 class CandidatoService {
   async list() {
-    return await prisma.candidato.findMany();
+    return prisma.candidato.findMany();
   }
 
   async findById(id: number) {
-    return await prisma.candidato.findUnique({
+    return prisma.candidato.findUnique({
       where: {
         id,
       },
@@ -31,7 +35,7 @@ class CandidatoService {
   }
 
   async findByIdComEdital(id: number) {
-    return await prisma.candidato.findFirst({
+    return prisma.candidato.findFirst({
       where: {
         id,
       },
@@ -40,8 +44,9 @@ class CandidatoService {
       },
     });
   }
+
   async update({ id, data }: { id: number; data: Partial<Candidato> }) {
-    return await prisma.candidato.update({
+    return prisma.candidato.update({
       where: {
         id,
       },
@@ -73,7 +78,7 @@ class CandidatoService {
   }
 
   async listarTodasInformacoesDeCandidato(id: number) {
-    return await prisma.candidato.findFirst({
+    return prisma.candidato.findFirst({
       where: {
         id,
       },
@@ -309,6 +314,59 @@ class CandidatoService {
     }
 
     return candidato.posicaoEdital;
+  }
+
+  async enviarEmailConfirmacao({ id }: { id: number }): Promise<void> {
+    const candidate = await prisma.candidato.findFirst({
+      where: {
+        id,
+      },
+    });
+    const pathCandidate = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'public',
+      'uploads',
+      'candidato',
+      `${candidate.id}`,
+    );
+
+    fs.stat(pathCandidate, async (err, stats) => {
+      if (err || !stats.isDirectory()) {
+        return;
+      }
+      fs.readdir(pathCandidate, async (err, files) => {
+        if (err) {
+          return;
+        }
+        const filesToSend = files.filter(
+          (file) => file !== 'ProvaAnterior.pdf',
+        );
+        const attachments = filesToSend.map((file) => {
+          const filePath = path.join(pathCandidate, file);
+          const fileData = fs.readFileSync(filePath);
+          const base64 = fileData.toString('base64');
+          return {
+            content: base64,
+            filename: file,
+            type: 'application/pdf',
+            disposition: 'attachment',
+          };
+        });
+        await sendEmail({
+          to: candidate.email,
+          name: 'Coordenação do PPGI',
+          title: '[PPGI] Inscrição realizada com sucesso !\n',
+          template: 'inscricaoFinalizada',
+          attachments,
+          data: {
+            nameCandidate: candidate.nome,
+          },
+        });
+      });
+    });
   }
 }
 

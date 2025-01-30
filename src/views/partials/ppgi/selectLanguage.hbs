@@ -1,10 +1,12 @@
 <nav class="dropdown container-language" aria-label="Language selection">
   <!-- Botão para exibir/ocultar o menu de idiomas -->
   <button
-    class="nav-link dropdown-toggle btn text-dark"
+    type="button"
+    class="dropdown-toggle btn text-dark"
     data-toggle="dropdown"
     aria-haspopup="true"
     aria-expanded="false"
+    data-bs-toggle="dropdown"
   >
     {{#if (eq currentLanguage "ptBR")}}
       <!-- Texto alternativo claro, descrevendo a bandeira -->
