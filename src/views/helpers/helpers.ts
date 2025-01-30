@@ -1,7 +1,6 @@
 import moment from 'moment-timezone';
 import language from '../../utils/i18n';
 const whichCourse = (course, lng) => {
-  console.log(course);
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
@@ -16,6 +15,10 @@ const whichCourse = (course, lng) => {
     case 'Doutorado':
       return i18n.t('students.doutorado');
   }
+};
+
+const getYearActual = () => {
+  return new Date().getFullYear();
 };
 
 const isEnLng = (lng) => {
@@ -101,7 +104,6 @@ const checked = (a, b) => {
 };
 
 const checkedIn = (a, b) => {
-  console.log(a);
   if (a && a.includes(b)) {
     return 'checked';
   }
@@ -273,4 +275,5 @@ module.exports = {
   dataAtualExtensa,
   dataAtualToLocaleString,
   dataToLocaleString,
+  getYearActual,
 };

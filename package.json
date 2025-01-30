@@ -7,22 +7,26 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
+    "start": "NODE_ENV=development tsx watch src/server.ts",
+    "start:prod": "NODE_ENV=production node build/src/server.js",
+    "build": "npx tsc && tsc-alias",
+    "start:dev": "NODE_ENV=development tsx watch src/server.ts",
+
     "docker:start": "docker compose up -d",
     "docker:test:start": "docker compose -f docker-compose.test.yml up -d",
-    "start": "NODE_ENV=development nodemon --watch src --exec npx ts-node src/server.ts",
-    "start:prod": "NODE_ENV=production nodemon --watch src --exec npx ts-node src/server.ts",
-    "build": "npx tsc",
-    "start:dev": "NODE_ENV=development nodemon --watch src --exec npx ts-node src/server.ts",
     "criar-modulo": "node src/utils/criarNovoModulo.js",
     "db:up": "docker compose -f docker-compose.test.yml up --build",
     "db:down": "docker compose -f docker-compose.test.yml down",
+
     "test": "NODE_ENV=test jest --verbose --selectProjects unit",
     "test:unit": "NODE_ENV=test jest --selectProjects unit",
     "test:integration": "NODE_ENV=test jest --selectProjects integration",
     "test:watch": "jest --watch",
+
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.{js,ts,json,css,md}\"",
+
     "prisma:init:dev": "dotenv -e .env.development npx prisma migrate dev && npx prisma db seed",
     "prisma:migrate": "dotenv -e .env.development npx prisma migrate dev"
   },
@@ -114,12 +118,12 @@
     "jest-environment-node": "^29.7.0",
     "jest-mock-extended": "^4.0.0-beta1",
     "mysql2": "^3.11.3",
-    "nodemon": "^2.0.14",
     "prettier": "^3.2.5",
     "prisma": "^5.13.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
+    "tsx": "^4.19.2",
     "typescript": "^5.4.5"
   }
 }

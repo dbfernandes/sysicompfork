@@ -1,40 +1,33 @@
 {{ setTitle title="Formulário preenchido" }}
-<style>
-	.text-end {
-		text-align: end;
-	}
-</style>
-
 
 <div class="forms-page">
-	<header>
-		<div class="container">
-			<h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
-			<div class="options">
-				{{> ppgi/selectLanguageHeader}}
-			</div>
-		</div>
-	</header>
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
+      <div class="options">
+        {{> ppgi/selectLanguageHeader}}
+      </div>
+    </div>
+  </header>
 
-	<section class="content container" style="margin-top: 70px;">
-		<div class="alert alert-success">
-			<h5><i class="icon fas fa-exclamation-triangle"></i>{{__ "ppgiRecomendacao.filledLetter.title"}} </h5>
-			{{__ "ppgiRecomendacao.filledLetter.message"}}
-			<div class="container-fluid p-0">
-				<p class="col-12 p-0 mb-0 mx-0 mt-2 text-end">{{__ "ppgiRecomendacao.filledLetter.footer"}}</p>
-			</div>
-		</div>
-	</section>
-	<footer class="custom-footer" >
-		<div class="container container-footer">
-			<strong><p id="text-icomp">ICOMP 2024</p></strong>
-			<P><strong>PPGI</strong></P>
-		</div>
-	</footer>
+  <!-- Conteúdo principal -->
+  <main class="content container container-main">
+    <div class="alert alert-success">
+      <h5>
+        <i class="icon fas fa-check-circle"></i>
+        {{__ "ppgiRecomendacao.filledLetter.title"}}
+      </h5>
+      {{__ "ppgiRecomendacao.filledLetter.message"}}
+
+      <div class="container-fluid p-0">
+        <p class="col-12 p-0 mb-0 mx-0 mt-2 " style="text-align: right">
+          {{__ "ppgiRecomendacao.filledLetter.footer"}}
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  {{> ppgi/footer}}
 </div>
-<script>
-	$(document).ready(function() {
-		const actualYear = new Date().getFullYear();
-		$('#text-icomp').text(`ICOMP ${actualYear}`);
-	});
-</script>

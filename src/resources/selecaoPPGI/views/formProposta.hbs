@@ -28,48 +28,96 @@
 }
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-<div class="modal fade mt-5" id="confirm-register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-               <p>{{__ "ppgiForm3.finalizar"}}</p>
-              </div>
-              <div class="modal-footer">
-                  <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">{{__ "ppgi.form.cancel"}}</a>
-                  <a id="confirmButton" type="button" class="btn btn-warning color-white" onclick="finishRegister()">{{__ "ppgi.form.confirm"}}
-                    <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span></a>
-              </div>
-              <form name="postDelete" id="finish-register" method="POST">
-                  <input type="hidden" name="_csrf" value="{{csrfToken}}"> 
-              </form>
-          </div>
+
+<!-- Modal de Confirmação -->
+<div
+  class="modal fade mt-5"
+  id="confirm-register"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="confirm-register-title"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirm-register-title">
+          {{__ "ppgiForm3.finalizar"}}
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+
+      <div class="modal-body">
+        <p>{{__ "ppgiForm3.finalizar"}}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary color-white"
+          data-dismiss="modal"
+        >
+          {{__ "ppgi.form.cancel"}}
+        </button>
+        <button
+          id="confirmButton"
+          type="button"
+          class="btn btn-warning color-white"
+          onclick="finishRegister()"
+        >
+          {{__ "ppgi.form.confirm"}}
+          <span
+            class="spinner-border spinner-border-sm"
+            hidden="true"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+      </div>
+
+      <!-- Formulário que pode ser usado caso precise de POST isolado -->
+      <form name="postDelete" id="finish-register" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+      </form>
+    </div>
+  </div>
 </div>
 
-<div class="forms-page">
-	<header>
-    <div class="container">
+<!-- Conteúdo principal -->
+<main class="forms-page">
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
       <h1 class="header-title">PPGI</h1>
-		  <div class="options">
+      <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button id="btn_inicio"> {{__ "ppgi.header.initButton"}}</button>
-				<button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
-		  </div>
+        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+      </div>
     </div>
-	</header>
+  </header>
 
+  <!-- Seção de conteúdo -->
   <section class="content container">
     {{> ppgi/nav indexSelect="3" progress="75"}}
 
-    
     <div class="container-fluid">
-      <form id="candidato-formulario">
-        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
-        <input id="email" type="hidden" value="{{email}}">
-        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-        <input id="idCandidato" type="hidden" value="{{id}}">
+      <!-- Formulário principal -->
+      <form id="candidato-formulario" novalidate>
+        <!-- Tokens e inputs ocultos -->
+        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+        <input id="email" type="hidden" value="{{email}}" />
+        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}" />
+        <input id="idCandidato" type="hidden" value="{{id}}" />
 
+        <!-- Card 1: Título e Linha de Pesquisa -->
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">{{__ "ppgiForm3.titulo"}}</h3>
@@ -77,170 +125,431 @@
 
           <div class="card-body">
             <div class="row">
+              <!-- Linha de Pesquisa -->
               <div class="form-group col-md-5">
-                <label for="candidato-curso">
-                  <font color="#FF0000">*</font>
+                <label for="candidato-pesquisa">
+                  <span class="text-danger">*</span>
                   <b>{{__ "ppgiForm3.linhaPesquisaLabel"}}:</b>
                 </label>
-                <select  id="candidato-pesquisa" class="custom-select" name="linhaPesquisa">
-                  <option value="" >{{__ "ppgiForm3.linhaPesquisaPlaceholder"}}:</option>
+                <select
+                  id="candidato-pesquisa"
+                  class="custom-select"
+                  name="linhaPesquisa"
+                  autofocus
+                >
+                  <option value="">
+                    {{__ "ppgiForm3.linhaPesquisaPlaceholder"}}:
+                  </option>
                   {{#each linhasPesquisa}}
-                    <option value="{{id}}" {{#if (eq id ../linhaPesquisaId)}}selected{{/if}}>{{nome}}</option>
+                    <option
+                      value="{{id}}"
+                      {{#if (eq id ../linhaPesquisaId)}}selected{{/if}}
+                    >
+                      {{nome}}
+                    </option>
                   {{/each}}
                 </select>
               </div>
 
-              <div class="col-md-7 ">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>{{__ "ppgiForm3.tituloPropostaLabel"}}: </b>
+              <!-- Título Proposta -->
+              <div class="col-md-7">
+                <label
+                  class="control-label"
+                  for="candidato-titulo-proposta"
+                >
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm3.tituloPropostaLabel"}}:</b>
                 </label>
-                <input class="form-control" id="candidato-titulo-proposta" type="text" name="tituloProposta"  maxlength="60" value="{{tituloProposta}}">
+                <input
+                  class="form-control"
+                  id="candidato-titulo-proposta"
+                  type="text"
+                  name="tituloProposta"
+                  maxlength="60"
+                  value="{{tituloProposta}}"
+                />
               </div>
             </div>
-
           </div>
         </div>
 
+        <!-- Card 2: Orientador -->
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">{{__ "ppgiForm3.orientador.titulo"}}:</h3>
           </div>
-
-
           <div class="card-body">
             <p>{{__ "ppgiForm3.orientador.descricao"}}</p>
             <div class="row">
+              <!-- Nome do Orientador -->
               <div class="form-group col-12">
-                <label for="candidato-curso-pos">
+                <label for="candidato-orientador">
                   <b>{{__ "ppgiForm3.orientador.nomeOrientadorLabel"}}:</b>
                 </label>
-                <input class="form-control" id="candidato-orientador" type="text" name="nomeOrientador"  maxlength="60" value={{nomeOrientador}} >
+                <input
+                  class="form-control"
+                  id="candidato-orientador"
+                  type="text"
+                  name="nomeOrientador"
+                  maxlength="60"
+                  value="{{nomeOrientador}}"
+                />
               </div>
             </div>
-
           </div>
         </div>
-        {{#if (eq edital.cartaRecomendacao 1)}}
-          <div class="card card-primary  ">
-            <div class="card-header">
-              <h3 class="card-title">{{__ "ppgiForm3.cartaRecomendacao.titulo"}}</h3>
-            </div>
 
+        <!-- Card 3: Carta de Recomendação (se aplicável) -->
+        {{#if (eq edital.cartaRecomendacao 1)}}
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                {{__ "ppgiForm3.cartaRecomendacao.titulo"}}
+              </h3>
+            </div>
             <div class="card-body d-flex flex-column">
               <p>{{__ "ppgiForm3.cartaRecomendacao.descricao"}}</p>
-
               <div class="row">
                 {{#each recomendacoes}}
-                  <div class="col-md-6 ">
-                    <label class="control-label" for="candidato-instituicao">
-                      <font color="#FF0000">*</font>
+                  <div class="col-md-6">
+                    <label for="candidatoNomeRecomendacao{{@index}}" class="control-label">
+                      <span class="text-danger">*</span>
                       <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
                     </label>
-                    <input class="form-control" id="candidatoNomeRecomendacao{{@index}}" type="text" name="recomendacaoNome[]" value="{{nome}}" maxlength="60">
+                    <input
+                      class="form-control"
+                      id="candidatoNomeRecomendacao{{@index}}"
+                      type="text"
+                      name="recomendacaoNome[]"
+                      maxlength="60"
+                      value="{{nome}}"
+                    />
                   </div>
 
-                  <div class="col-md-6 ">
-                    <label class="control-label" for="candidato-instituicao">
-                      <font color="#FF0000">*</font>
+                  <div class="col-md-6">
+                    <label for="candidatoEmailRecomendacao{{@index}}" class="control-label">
+                      <span class="text-danger">*</span>
                       <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
                     </label>
-                    <input class="form-control" id="candidatoEmailRecomendacao{{@index}}" type="email" name="recomendacaoEmail[]" value="{{email}}" maxlength="60">
+                    <input
+                      class="form-control"
+                      id="candidatoEmailRecomendacao{{@index}}"
+                      type="email"
+                      name="recomendacaoEmail[]"
+                      maxlength="60"
+                      value="{{email}}"
+                    />
                   </div>
                 {{else}}
-                <div class="col-md-6 form-group">
-                  <label class="control-label" for="candidato-instituicao">
-                    <font color="#FF0000">*</font>
-                    <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
-                  </label>
-                  <input class="form-control" id="candidatoNomeRecomendacao1" type="text" name="recomendacaoNome[]" value="" maxlength="60">
-                </div>
+                  <div class="col-md-6 form-group">
+                    <label for="candidatoNomeRecomendacao1" class="control-label">
+                      <span class="text-danger">*</span>
+                      <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
+                    </label>
+                    <input
+                      class="form-control"
+                      id="candidatoNomeRecomendacao1"
+                      type="text"
+                      name="recomendacaoNome[]"
+                      maxlength="60"
+                    />
+                  </div>
 
-                <div class="col-md-6 ">
-                  <label class="control-label" for="candidato-instituicao">
-                    <font color="#FF0000">*</font>
-                    <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
-                  </label>
-                  <input  class="form-control" id="candidatoEmailRecomendacao1" type="email" name="recomendacaoEmail[]" value="" maxlength="60">
-                </div>
+                  <div class="col-md-6">
+                    <label for="candidatoEmailRecomendacao1" class="control-label">
+                      <span class="text-danger">*</span>
+                      <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
+                    </label>
+                    <input
+                      class="form-control"
+                      id="candidatoEmailRecomendacao1"
+                      type="email"
+                      name="recomendacaoEmail[]"
+                      maxlength="60"
+                    />
+                  </div>
                 {{/each}}
-              
-              </div>
-              <div id="dynamic-inputs">
-                <!-- Novos campos serão adicionados aqui -->
               </div>
 
-              <button id="add-btn" class="btn btn-primary align-self-end">{{__ "ppgiForm3.adicionarRecomendacao"}}</button>
+              <div id="dynamic-inputs">
+                <!-- Campos adicionais de recomendação são adicionados aqui via JS -->
+              </div>
+              <button id="add-btn" class="btn btn-primary align-self-end">
+                {{__ "ppgiForm3.adicionarRecomendacao"}}
+              </button>
             </div>
           </div>
         {{/if}}
+
+        <!-- Card 4: Motivos, Documentos e Uploads -->
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">{{__ "ppgiForm3.motivos.titulo"}}</h3>
           </div>
 
           <div class="card-body">
+            <!-- Motivos -->
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="candidato-Motivo">
+                  <label for="candidato-Motivo" class="control-label">
                     {{__ "ppgiForm3.motivos.descricao"}}
-                    (<span id="charCount">1000</span> {{__ "ppgiForm3.motivos.caracteresRestantesLabel"}}):
+                    (<span id="charCount">1000</span>
+                    {{__ "ppgiForm3.motivos.caracteresRestantesLabel"}}):
                   </label>
-                  <textarea class="form-control" rows="3" id="candidato-Motivo" name="motivos" maxlength="1000">{{motivos}}</textarea>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    id="candidato-Motivo"
+                    name="motivos"
+                    maxlength="1000"
+                  >{{motivos}}</textarea>
                 </div>
               </div>
             </div>
 
+            <!-- Carta de Aceite do Orientador (se aplicável) -->
             {{#if (eq edital.cartaOrientador 1)}}
-              <div>{{#if hasCartaAceiteOrientador}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
-              <div class="row ">
-                  <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                    <input type="file" class="custom-file-input" id="CartaAceiteOrientador" name="CartaAceiteOrientador" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
-                    <label class=" form-control custom-file-label" for="CartaAceiteOrientador"> {{__ "ppgiForm3.documentos.cartaOrientador"}}</label>
+              <div class="row">
+                <div class="col-12">
+                  <label for="CartaAceiteOrientador" class="control-label">
+                    <b> {{__ "ppgiForm3.documentos.cartaOrientador"}}:</b> <br>
+                    <span style="font-weight: normal;">Baixar modelo de carta:
+                      <a href="/public/files/carta-aceite-orientador.docx" download>
+                        <img src="/public/img/docx-logo.png" alt="logo docx" width="25" class="mr-2" />
+                      </a>
+                    </span>
+                  </label>
+                </div>
+                <div id="buttons-aceite" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasCartaAceiteOrientador)}}none{{else}}flex{{/if}}; gap: 16px" >
+                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-aceite"><b>CartaAceiteOrientador.pdf</b></figcaption>
                   </div>
+                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
+                    <a id="url-aceite" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf" class="btn btn-primary" download>
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                       {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-aceite">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-aceite">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
+                <div id="container-aceite" class="col-md-5 custom-file form-group custom-file-container mb-4" {{#if hasCartaAceiteOrientador}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="CartaAceiteOrientador"
+                    name="CartaAceiteOrientador"
+                    accept="application/pdf"
+                    data-msg-accept="{{__ "ppgi.validation.onlyPdf"}}"
+                  />
+                  <label
+                    class="form-control custom-file-label"
+                    for="CartaAceiteOrientador"
+                  >
+                    {{__ "ppgi.form.chooseFile"}}
+                  </label>
+                </div>
               </div>
             {{/if}}
-            <div>{{#if hasPropostaTrabalho}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
+
+            <!-- Proposta de Trabalho -->
             <div class="row">
-                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                  <input type="file" class="custom-file-input" id="PropostaTrabalho" name="PropostaTrabalho" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
-                  <label class="form-control custom-file-label" for="PropostaTrabalho">{{__ "ppgiForm3.documentos.propostaTrabalho"}}</label>
+              <div class="col-12">
+                <label for="PropostaTrabalho" class="control-label">
+                  <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.propostaTrabalho"}}:</b>
+                </label>
+              </div>
+              <div id="buttons-proposta" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasPropostaTrabalho)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                  <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                  <figcaption id="name-proposta"><b>PropostaTrabalho.pdf</b></figcaption>
                 </div>
+                <div class="d-flex flex-row align-items-center" style="gap: 4px">
+                  <a id="url-proposta" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf" class="btn btn-primary" download>
+                    <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                     {{__ "ppgi.form.btnDownload"}}</a>
+                  <button type="button" class="btn btn-success" id="btn-change-proposta">
+                    <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                     {{__ "ppgi.form.btnChange"}}</button>
+                  <button type="button" class="btn btn-danger" id="btn-delete-proposta">
+                    <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                     {{__ "ppgi.form.btnDelete"}}</button>
+                </div>
+              </div>
+              <div id="container-proposta" class="col-md-5 custom-file form-group custom-file-container mb-4" {{#if hasPropostaTrabalho}}style="display: none;"{{/if}}>
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  id="PropostaTrabalho"
+                  name="PropostaTrabalho"
+                  accept="application/pdf"
+                  data-msg-accept="{{__ "ppgi.validation.onlyPdf"}}"
+                />
+                <label
+                  class="form-control custom-file-label"
+                  for="PropostaTrabalho"
+                >
+                  {{__ "ppgi.form.chooseFile"}}
+                </label>
+              </div>
             </div>
 
-            <div>{{#if hasComprovante}}(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}</div>
+            <!-- Comprovante de Pagamento -->
             <div class="row">
-                <div class="col-md-5 custom-file form-group custom-file-container mb-4">
-                  <input type="file" class="custom-file-input" id="ComprovantePagamento" name="ComprovantePagamento" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
-                  <label class=" form-control custom-file-label" for="ComprovantePagamento">{{__ "ppgiForm3.documentos.comprovantePagamento"}}</label>
-               </div>
+              <div class="col-12">
+                <label for="ComprovantePagamento" class="control-label">
+                  <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
+                </label>
+              </div>
+              <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasPropostaTrabalho)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                  <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                  <figcaption id="name-pagamento"><b>ComprovantePagamento.pdf</b></figcaption>
+                </div>
+                <div class="d-flex flex-row align-items-center" style="gap: 4px">
+                  <a id="url-pagamento" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf" class="btn btn-primary" download>
+                    <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                     {{__ "ppgi.form.btnDownload"}}</a>
+                  <button type="button" class="btn btn-success" id="btn-change-pagamento">
+                    <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                     {{__ "ppgi.form.btnChange"}}</button>
+                  <button type="button" class="btn btn-danger" id="btn-delete-pagamento">
+                    <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                     {{__ "ppgi.form.btnDelete"}}</button>
+                </div>
+              </div>
+              <div id="container-pagamento" class="col-md-5 custom-file form-group custom-file-container mb-4" {{#if hasPropostaTrabalho}}style="display: none;"{{/if}}>
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  id="ComprovantePagamento"
+                  name="ComprovantePagamento"
+                  accept="application/pdf"
+                  data-msg-accept="{{__ "ppgi.validation.onlyPdf"}}"
+                />
+                <label
+                  class="form-control custom-file-label"
+                  for="ComprovantePagamento"
+                >
+                  {{__ "ppgi.form.chooseFile"}}
+                </label>
+              </div>
             </div>
           </div>
 
+          <!-- Botões do card -->
           <div class="card-footer">
             <div class="col d-flex flex-row-reverse" style="gap: 6px;">
+              <!-- Botão Finalizar (Save and Continue) -->
               <button class="btn btn-success custom-button">
                 {{__ "ppgi.form.saveAndContinue"}}
-                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
+                <span
+                  class="spinner-border spinner-border-sm"
+                  hidden="true"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               </button>
-              <button  id="save-data" class="btn btn-secondary custom-button" >
+
+              <!-- Botão Salvar -->
+              <button id="save-data" class="btn btn-secondary custom-button">
                 {{__ "ppgi.form.save"}}
-                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
+                <span
+                  class="spinner-border spinner-border-sm"
+                  hidden="true"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               </button>
+
+              <!-- Botão Voltar -->
               <button class="btn btn-warning custom-button" type="button" id="voltarForm">
                 {{__ "ppgi.form.previousStep"}}
-                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
+                <span
+                  class="spinner-border spinner-border-sm"
+                  hidden="true"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               </button>
             </div>
           </div>
-        </div>
+        </div><!-- /card 4 -->
       </form>
     </div>
   </section>
-</div>
+</main>
 
 <script>
+
+  const inputFilesConfig = {
+    CartaAceiteOrientador: {
+      input: "#CartaAceiteOrientador",
+      buttonsElement: "#buttons-aceite",
+      containerInput: "#container-aceite",
+      nameElement: "#name-aceite",
+      changeButton: "#btn-change-aceite",
+      deleteButton: "#btn-delete-aceite",
+      urlElement: "#url-aceite",
+      hasFileSave: {{hasCartaAceiteOrientador}}
+    },
+    PropostaTrabalho: {
+      input: "#PropostaTrabalho",
+      buttonsElement: "#buttons-proposta",
+      containerInput: "#container-proposta",
+      nameElement: "#name-proposta",
+      changeButton: "#btn-change-proposta",
+      deleteButton: "#btn-delete-proposta",
+      urlElement: "#url-proposta",
+      hasFileSave: {{hasPropostaTrabalho}}
+    },
+    ComprovantePagamento: {
+      input: "#ComprovantePagamento",
+      buttonsElement: "#buttons-pagamento",
+      containerInput: "#container-pagamento",
+      nameElement: "#name-pagamento",
+      changeButton: "#btn-change-pagamento",
+      deleteButton: "#btn-delete-pagamento",
+      urlElement: "#url-pagamento",
+      hasFileSave: {{hasComprovante}}
+    }
+  }
+
+  function changeFile(idInput) {
+    $(idInput).click();
+  }
+
+  function actionDeleteFile(idInput, idButtons, idContainerInput){
+    $(idInput).val('');
+    $(idButtons).hide();
+    $(idContainerInput).show();
+    $(idInput).next('label').text('{{__ "ppgi.form.chooseFile"}}');
+  }
+
+  function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
+    const input = $(event.target);
+    if (!input.valid()) {
+      input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
+      return;
+    }
+    const file = event.target.files[0];
+    const fileName = file.name;
+    const url = URL.createObjectURL(file);
+    input.valid()
+    $(idContainerInput).hide();
+    $(idButtons).css('display', 'flex');
+    $(idName).html(`<b>${fileName}</b>`);
+
+    $(aLink)
+      .attr('href', url)
+      .attr('download', fileName);
+  }
+
   function finishRegister(event){
     const linhaDePesquisaId = $("#candidato-pesquisa").val();
     const formData = new FormData($("#candidato-formulario")[0]);
@@ -303,7 +612,29 @@
   });
 
   $(document).ready(function () {
-    let recomendacaoCounter = 1;
+    Object.keys(inputFilesConfig).forEach((key) => {
+      const inputConfig = inputFilesConfig[key];
+      const input = $(inputConfig.input);
+      const buttonsElement = $(inputConfig.buttonsElement);
+      const containerInput = $(inputConfig.containerInput);
+      const nameElement = $(inputConfig.nameElement);
+      const changeButton = $(inputConfig.changeButton);
+      const deleteButton = $(inputConfig.deleteButton);
+      const urlElement = $(inputConfig.urlElement);
+
+      input.change((event) => {
+        changeFileInput(event, urlElement, buttonsElement, containerInput, nameElement);
+      });
+
+      changeButton.click(() => {
+        changeFile(input);
+      });
+
+      deleteButton.click(() => {
+        actionDeleteFile(input, buttonsElement, containerInput);
+      });
+    });
+
     $("#charCount").text(1000 - $("#candidato-Motivo").val().length);
 		$("#btn_logout").click(function () {
 			$.ajax({
@@ -396,6 +727,13 @@
     });
   });
 
+  $.validator.addMethod("fileSize", function(value, element, param) {
+    if (element.files.length === 0) {
+      return true;
+    }
+    return element.files[0].size <= param;
+  }, "O arquivo deve ter no máximo {0} bytes.");
+
   $.validator.prototype.checkForm = function() {
     this.prepareForm();
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
@@ -437,37 +775,45 @@
           email: true 
         },
         "PropostaTrabalho": {
-          required: {{#if hasPropostaTrabalho}}false{{else}}true{{/if}}
+          required: !!inputFilesConfig.PropostaTrabalho.hasFileSave,
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "ComprovantePagamento": {
-          required: {{#if hasComprovante}}false{{else}}true{{/if}}
+          required: !!inputFilesConfig.ComprovantePagamento.hasFileSave,
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "CartaAceiteOrientador": {
-          required: {{#if (and (eq cursoDesejado 'Doutorado') (eq hasComprovante false))}}true{{else}}false{{/if}}
+          required: {{#if (eq cursoDesejado 'Doutorado')}}!!inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}false{{/if}},
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
       },
       messages: {
         "linhaPesquisa": {
-          required: "Linha de Pesquisa é obrigatória",
+          required: "{{__ "ppgiForm3.validation.linhaPesquisa.required"}}",
         },
         "tituloProposta": {
-          required: "Título da Proposta é obrigatório",
+          required: "{{__ "ppgiForm3.validation.tituloProposta.required"}}",
         },
         "recomendacaoNome[]": {
-          required: "Nome é obrigatório",
+          required: "{{__ "ppgiForm3.validation.recomendacaoNome[].required"}}",
         },
         "recomendacaoEmail[]": {
-          required: "Email é obrigatório",
-          email: "Por favor, insira um endereço de email válido"
+          required: "{{__ "ppgiForm3.validation.recomendacaoEmail[].required"}}",
+          email:"{{__ "ppgiForm3.validation.recomendacaoEmail[].email"}}",
         },
         "PropostaTrabalho": {
-          required: "Proposta de Trabalho é obrigatória",
+          required: "{{__ "ppgiForm3.validation.PropostaTrabalho.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
         },
         "ComprovantePagamento": {
-          required: "Comprovante de Pagamento é obrigatório",
+          required: "{{__ "ppgiForm3.validation.ComprovantePagamento.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
+
         },
         "CartaAceiteOrientador": {
-          required: "Carta de Aceite do Orientador é obrigatória para doutorado",
+          required: "{{__ "ppgiForm3.validation.CartaAceiteOrientador.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
+
         },
       },
       submitHandler: (form, e) => {

@@ -22,10 +22,34 @@
     "caracteresRestantesLabel": "Remaining Characters"
   },
   "documentos": {
-    "cartaOrientador": "Advisor's Acceptance Letter (required for PhD)",
-    "propostaTrabalho": "Work Proposal (required)",
-    "comprovantePagamento": "Payment Receipt (required)"
+    "cartaOrientador": "Advisor's Acceptance Letter in PDF (required for PhD)",
+    "propostaTrabalho": "Work Proposal in PDF",
+    "comprovantePagamento": "Payment Receipt in PDF"
   },
   "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed.",
-  "adicionarRecomendacao": "Add Recommendation"
+  "adicionarRecomendacao": "Add Recommendation",
+  "validation": {
+    "linhaPesquisa": {
+      "required": "Research Line is required"
+    },
+    "tituloProposta": {
+      "required": "Proposal Title is required"
+    },
+    "recomendacaoNome[]": {
+      "required": "Name is required"
+    },
+    "recomendacaoEmail[]": {
+      "required": "Email is required",
+      "email": "Please enter a valid email address"
+    },
+    "PropostaTrabalho": {
+      "required": "Work Proposal is required"
+    },
+    "ComprovantePagamento": {
+      "required": "Payment Receipt is required"
+    },
+    "CartaAceiteOrientador": {
+      "required": "Advisor's Acceptance Letter is required for PhD"
+    }
+  }
 }

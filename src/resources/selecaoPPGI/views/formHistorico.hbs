@@ -1,365 +1,662 @@
 {{ setTitle title="Histórico" }}
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-
-<div class="forms-page">
-	<header>
-    <div class="container">
+<main class="forms-page">
+  <!-- Cabeçalho / Header -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
       <h1 class="header-title">PPGI</h1>
-		  <div class="options">
-				{{> ppgi/selectLanguageHeader}}
-        <button id="btn_inicio"> {{__ "ppgi.header.initButton"}}</button>
-				<button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
-		  </div>
+      <div class="options">
+        {{> ppgi/selectLanguageHeader}}
+        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+      </div>
     </div>
-	</header>
+  </header>
+
+  <!-- Seção de conteúdo principal -->
   <section class="content container">
-   	{{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
+    <!-- Possível nav (dependendo de como seu partial é estruturado) -->
+    {{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
     <div class="container-fluid">
-      <form id="candidato-formulario2">
-        <input id="csrfToken" type="hidden"  name="_csrf" value="{{csrfToken}}">
-        <input id="email" type="hidden" value="{{email}}">
-        <input id="idCandidato" type="hidden"  value="{{id}}">
-        <input id="idCandidato" type="hidden" value="{{message}}">
-        <p>{{message}}</p>
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm2.cursoGraduacao.title"}}</h3>
-          </div>
+      <!-- Formulário de histórico (em um <article> semântico, se desejar) -->
+      <article>
+        <form id="candidato-formulario2" novalidate>
+          <!-- Inputs escondidos de controle -->
+          <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+          <input id="email" type="hidden" value="{{email}}" />
+          <input id="idCandidato" type="hidden" value="{{id}}" />
+          <input id="idCandidato" type="hidden" value="{{message}}" />
+          <p>{{message}}</p>
 
-          <div class="card-body">
-            <div class="row">
-              <div class="form-group col-md-6">
-                <label for="candidato-curso">
-                  <font color="#FF0000">*</font>
-                  <b>{{__ "ppgiForm2.cursoGraduacao.curso"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-curso" placeholder="{{__ "ppgiForm2.cursoGraduacao.curso"}}" type="text" name="cursoGraduacao"
-                  maxlength="60" value="{{cursoGraduacao}}">
-              </div>
-
-              <div class="col-md-6 form-group">
-                <label class="control-label" for="candidato-instituicao">
-                  <font color="#FF0000">*</font>
-                  <b>{{__ "ppgiForm2.cursoGraduacao.instituicao"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-instituicao" placeholder="{{__ "ppgiForm2.cursoGraduacao.instituicaoPlaceholder"}}" type="text"
-                  name="instituicaoGraduacao" maxlength="60" value="{{instituicaoGraduacao}}">
-              </div>
+          <!-- Card 1: Curso de Graduação -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm2.cursoGraduacao.title"}}</h3>
             </div>
-            <div class="row">
-              <div class="col-md-3 ">
-                <label class="control-label" for="candidato-ano">
-                  <font color="#FF0000">*</font>
-                  <b>{{__ "ppgiForm2.cursoGraduacao.anoEgresso"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-ano" placeholder="{{__ "ppgiForm2.cursoGraduacao.anoEgressoPlaceholder"}}" type="number" name="anoEgressoGraduacao"
-                  value="{{anoEgressoGraduacao}}" maxlength="60" >
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm2.cursoPos.title"}}:</h3>
-          </div>
-
-
-          <div class="card-body">
-            <div class="row">
-              <div class="form-group col-md-6">
-                <label for="candidato-curso-pos">
-                  <b>{{__ "ppgiForm2.cursoPos.curso"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-curso-pos" type="text" name="cursoPos" maxlength="60"
-                  value="{{cursoPos}}">
-              </div>
-
-              <div class="col-md-6 " role="radiogroup">
-                <label class="control-label" for="candidato-curso-tipo">
-                  <b>{{__ "ppgiForm2.cursoPos.tipo"}}:</b>
-                </label>
-                <div id="candidato-curso-tipo" role="radiogroup"
-                  style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
-                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo1" name="tipoPos" value="Mestrado Acadêmico" {{#if (eq "Mestrado Acadêmico" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo1"> {{__ "ppgiForm2.cursoPos.optionTipo.mestradoAcademico"}} </label>
-                  </div>
-
-                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo2" name="tipoPos" value="Mestrado Profissional" {{#if (eq "Mestrado Profissional" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo2"> {{__ "ppgiForm2.cursoPos.optionTipo.mestradoProfissional"}} </label>
-                  </div>
-
-                  <div class="icheck-primary d-inline" style="margin-right: 20px;">
-                    <input type="radio" id="Tipo3" name="tipoPos" value="Doutorado" {{#if (eq "Doutorado" tipoPos)}}checked{{/if}}>
-                    <label for="Tipo3"> {{__ "ppgiForm2.cursoPos.optionTipo.doutorado"}} </label>
-                  </div>
-
-                  <button id="limparSelecao" class="btn btn-block btn-primary" style="width:50%;">{{__ "ppgiForm2.cursoPos.limparSelecao"}}</button>
+            <div class="card-body">
+              <div class="row">
+                <!-- Curso de Graduação -->
+                <div class="form-group col-md-6">
+                  <label for="candidato-curso">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm2.cursoGraduacao.curso"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-curso"
+                    type="text"
+                    name="cursoGraduacao"
+                    maxlength="60"
+                    placeholder="{{__ "ppgiForm2.cursoGraduacao.curso"}}"
+                    value="{{cursoGraduacao}}"
+                    autofocus
+                  />
                 </div>
 
+                <!-- Instituição de Graduação -->
+                <div class="col-md-6 form-group">
+                  <label for="candidato-instituicao" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm2.cursoGraduacao.instituicao"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-instituicao"
+                    type="text"
+                    name="instituicaoGraduacao"
+                    maxlength="60"
+                    placeholder="{{__ "ppgiForm2.cursoGraduacao.instituicaoPlaceholder"}}"
+                    value="{{instituicaoGraduacao}}"
+                  />
+                </div>
               </div>
 
+              <div class="row">
+                <!-- Ano de Egresso Graduação -->
+                <div class="col-md-3 form-group">
+                  <label for="candidato-ano" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm2.cursoGraduacao.anoEgresso"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-ano"
+                    type="number"
+                    name="anoEgressoGraduacao"
+                    value="{{anoEgressoGraduacao}}"
+                    placeholder="{{__ "ppgiForm2.cursoGraduacao.anoEgressoPlaceholder"}}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Curso de Pós-Graduação -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm2.cursoPos.title"}}</h3>
             </div>
 
-            <div class="row">
-              <div class="col-md-6 ">
-                <label class="control-label" for="candidato-instituicao-pos">
-                  <b>{{__ "ppgiForm2.cursoPos.instituicao"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-instituicao-pos" type="text" name="instituicaoPos"
-                  maxlength="60" value="{{instituicaoPos}}">
-              </div>
-              <div class="col-md-3">
-                <label class="control-label" for="candidato-ano-pos">
-                  <b>{{__ "ppgiForm2.cursoPos.anoEgresso"}}:</b>
-                </label>
-                <input class="form-control" id="candidato-ano-pos" type="number" name="anoEgressoPos" value="{{anoEgressoPos}}">
-              </div>
-            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Curso de Pós -->
+                <div class="form-group col-md-6">
+                  <label for="candidato-curso-pos">
+                    <b>{{__ "ppgiForm2.cursoPos.curso"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-curso-pos"
+                    type="text"
+                    name="cursoPos"
+                    maxlength="60"
+                    value="{{cursoPos}}"
+                  />
+                </div>
 
-          </div>
-        </div>
+                <!-- Tipo do Curso de Pós -->
+                <div class="col-md-6">
+                  <label for="candidato-curso-tipo" class="control-label">
+                    <b>{{__ "ppgiForm2.cursoPos.tipo"}}:</b>
+                  </label>
+                  <!-- Um único container com role="radiogroup" -->
+                  <div
+                    id="candidato-curso-tipo"
+                    role="radiogroup"
+                    aria-label="Tipo de Curso Pós-Graduação"
+                    style="display: flex; align-content:center; gap: 20px; flex-wrap: wrap;"
+                  >
+                    <div class="icheck-primary d-inline" style="margin-right: 20px;">
+                      <input
+                        type="radio"
+                        id="Tipo1"
+                        name="tipoPos"
+                        value="Mestrado Acadêmico"
+                        {{#if (eq "Mestrado Acadêmico" tipoPos)}}checked{{/if}}
+                      />
+                      <label for="Tipo1">
+                        {{__ "ppgiForm2.cursoPos.optionTipo.mestradoAcademico"}}
+                      </label>
+                    </div>
 
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm2.curriculumVittae.title"}}</h3>
-          </div>
+                    <div class="icheck-primary d-inline" style="margin-right: 20px;">
+                      <input
+                        type="radio"
+                        id="Tipo2"
+                        name="tipoPos"
+                        value="Mestrado Profissional"
+                        {{#if (eq "Mestrado Profissional" tipoPos)}}checked{{/if}}
+                      />
+                      <label for="Tipo2">
+                        {{__ "ppgiForm2.cursoPos.optionTipo.mestradoProfissional"}}
+                      </label>
+                    </div>
 
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-6">
-                <label class="control-label" for="vittaepdf">
-                  <font color="#FF0000">*</font> 
-                  <b>{{__ "ppgiForm2.curriculumVittae.pdf"}}:</b>
-                  {{#if hasCurriculum}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/Curriculum.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
-                </label>
-                <div class="form-group">
-                  <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="vittaepdf" name="Curriculum" accept="application/pdf" data-msg-accept="Esse campo so permite arquivos pdf.">
-                    <label class="custom-file-label" for="Curriculum">{{__ "ppgi.form.chooseFile"}}</label>
+                    <div class="icheck-primary d-inline" style="margin-right: 20px;">
+                      <input
+                        type="radio"
+                        id="Tipo3"
+                        name="tipoPos"
+                        value="Doutorado"
+                        {{#if (eq "Doutorado" tipoPos)}}checked{{/if}}
+                      />
+                      <label for="Tipo3">
+                        {{__ "ppgiForm2.cursoPos.optionTipo.doutorado"}}
+                      </label>
+                    </div>
+
+                    <button
+                      id="limparSelecao"
+                      class="btn btn-block btn-primary"
+                      style="width:50%;"
+                    >
+                      {{__ "ppgiForm2.cursoPos.limparSelecao"}}
+                    </button>
                   </div>
                 </div>
-            
-
-                <label class="control-label" for="vittaexml">
-                  <b>{{__ "ppgiForm2.curriculumVittae.xml"}}:</b>
-                </label>
-                <div class="form-group">
-                  <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="vittaexml" name="VitaeXML" accept="text/xml"  data-msg-accept="Esse campo só permite arquivos XML.">
-                    <label class="custom-file-label" for="VitaeXML">{{__ "ppgi.form.chooseFile"}}</label>
-  
-                  </div>
-                </div>
-
               </div>
 
-            </div>
-            <div>
+              <div class="row">
+                <!-- Instituição de Pós -->
+                <div class="col-md-6">
+                  <label for="candidato-instituicao-pos" class="control-label">
+                    <b>{{__ "ppgiForm2.cursoPos.instituicao"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-instituicao-pos"
+                    type="text"
+                    name="instituicaoPos"
+                    maxlength="60"
+                    value="{{instituicaoPos}}"
+                  />
+                </div>
 
+                <!-- Ano de Egresso Pós -->
+                <div class="col-md-3">
+                  <label for="candidato-ano-pos" class="control-label">
+                    <b>{{__ "ppgiForm2.cursoPos.anoEgresso"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-ano-pos"
+                    type="number"
+                    name="anoEgressoPos"
+                    value="{{anoEgressoPos}}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Currículo Vitae -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm2.curriculumVittae.title"}}</h3>
+            </div>
+
+            <div class="card-body">
+              <div class="row">
+                <!-- PDF do currículo -->
+                <div class="col-12">
+                  <label for="vittaepdf" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm2.curriculumVittae.pdf"}}:</b>
+                  </label>
+                </div>
+
+                <div id="buttons-curriculum" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasCurriculum)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-curriculum"><b>Curriculum.pdf</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
+                    <a id="url-curiculum" href="/selecaoppgi/download/arquivo/Curriculum.pdf" class="btn btn-primary" download>
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                       {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-curriculum">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-curriculum">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
+                <div id="input-curriculum" class="custom-file mb-4 col-md-6 form-group" {{#if hasCurriculum}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="vittaepdf"
+                    name="Curriculum"
+                    accept="application/pdf"
+                    data-msg-accept="{{__ "ppgi.form.onlyPdf"}}"/>
+                  <label class="custom-file-label" for="vittaepdf">{{__ "ppgi.form.chooseFile"}}</label>
+                </div>
+
+                <!-- XML do currículo -->
+                  <label for="vittaexml" class="control-label col-12">
+                    <b>{{__ "ppgiForm2.curriculumVittae.xml"}}:</b><br>
+                    <span style="font-weight: normal">(se tiver dúvidas de como gerar o xml, <a href="/public/files/instrucoes-lattes.pdf" target="_blank">siga as instruções desse arquivo.</a>)</span>
+                  </label>
+                  <div class="form-group col-md-6">
+                    <div class="custom-file">
+                      <input
+                        type="file"
+                        class="custom-file-input"
+                        id="vittaexml"
+                        name="VitaeXML"
+                        accept="text/xml"
+                        data-msg-accept="{{__ "ppgi.form.onlyXml"}}"
+                      />
+                      <label class="custom-file-label" for="vittaexml">
+                        {{__ "ppgi.form.chooseFile"}}
+                      </label>
+                    </div>
+                </div>
+              </div>
+
+
+              <!-- Exibição de publicações/Periódicos e Conferências -->
               <div>
                 <p>
                   {{#if periodicos}}
-                  <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button"
-                    aria-expanded="false" aria-controls="multiCollapseExample1">{{__ "ppgiForm2.curriculumVittae.periodicos"}} <span
-                      class="badge badge-light">{{periodicos.length}}</span></a>
+                    <a
+                      class="btn btn-primary"
+                      data-toggle="collapse"
+                      href="#multiCollapseExample1"
+                      role="button"
+                      aria-expanded="false"
+                      aria-controls="multiCollapseExample1"
+                    >
+                      {{__ "ppgiForm2.curriculumVittae.periodicos"}}
+                      <span class="badge badge-light">{{periodicos.length}}</span>
+                    </a>
                   {{/if}}
                 </p>
 
                 <div class="collapse multi-collapse" id="multiCollapseExample1">
-
                   {{#each periodicos}}
-                  <div class="card collapsed-card">
-                    <div class="card-header">
-                      <div style="display:flex; align-items: center; justify-content: space-between;">
-                        <a data-card-widget="collapse" style="color:#000" class="card-title">
-                          {{ano}}: {{titulo}}
-                        </a>
-                        <div class="card-tools">
-                          <!-- Collapse Button -->
-                          <button type="button" class="btn btn-tool" data-card-widget="collapse"
-                            data-card-toggle="collapse"><i class="fas fa-plus"></i></button>
+                    <div class="card collapsed-card">
+                      <div class="card-header">
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                          "
+                        >
+                          <a
+                            data-card-widget="collapse"
+                            style="color: #000"
+                            class="card-title"
+                          >
+                            {{ano}}: {{titulo}}
+                          </a>
+                          <div class="card-tools">
+                            <!-- Botão collapse -->
+                            <button
+                              type="button"
+                              class="btn btn-tool"
+                              data-card-widget="collapse"
+                              data-card-toggle="collapse"
+                            >
+                              <i class="fas fa-plus"></i>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <!-- /.card-tools -->
+                      <div class="card-body">
+                        <li>
+                          <strong>{{titulo}}. </strong>{{autores}};
+                          <i>{{local}}, {{ano}}. </i>{{natureza}}.
+                        </li>
+                      </div>
                     </div>
-                    <!-- /.card-header -->
-
-                    <div class="card-body">
-                      <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b>
-                      </li>
-                    </div>
-                    <!-- /.card-body -->
-                  </div>
                   {{/each}}
                 </div>
+
                 <p>
                   {{#if conferencias.length}}
-                  <button class="btn btn-primary" type="button" data-toggle="collapse"
-                    data-target="#multiCollapseExample2" aria-expanded="false"
-                    aria-controls="multiCollapseExample2">{{__ "ppgiForm2.curriculumVittae.conferencias"}} <span
-                      class="badge badge-light">{{conferencias.length}}</span></button>
+                    <button
+                      class="btn btn-primary"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#multiCollapseExample2"
+                      aria-expanded="false"
+                      aria-controls="multiCollapseExample2"
+                    >
+                      {{__ "ppgiForm2.curriculumVittae.conferencias"}}
+                      <span class="badge badge-light"
+                      >{{conferencias.length}}</span
+                      >
+                    </button>
                   {{/if}}
                 </p>
+
                 <div class="collapse multi-collapse" id="multiCollapseExample2">
-
                   {{#each conferencias}}
-
-                  <div class="card collapsed-card">
-                    <div class="card-header">
-                      <div style="display:flex; align-items: center; justify-content: space-between;">
-                        <a data-card-widget="collapse" style="color:#000" class="card-title">
-                          {{ano}}: {{titulo}}
-                        </a>
-                        <div class="card-tools">
-                          <!-- Collapse Button -->
-                          <button type="button" class="btn btn-tool" data-card-widget="collapse"
-                            data-card-toggle="collapse"><i class="fas fa-plus"></i></button>
+                    <div class="card collapsed-card">
+                      <div class="card-header">
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                          "
+                        >
+                          <a
+                            data-card-widget="collapse"
+                            style="color: #000"
+                            class="card-title"
+                          >
+                            {{ano}}: {{titulo}}
+                          </a>
+                          <div class="card-tools">
+                            <button
+                              type="button"
+                              class="btn btn-tool"
+                              data-card-widget="collapse"
+                              data-card-toggle="collapse"
+                            >
+                              <i class="fas fa-plus"></i>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <!-- /.card-tools -->
+                      <div class="card-body">
+                        <li>
+                          <strong>{{titulo}}. </strong>{{autores}};
+                          <i>{{local}}, {{ano}}. </i>{{natureza}}.
+                        </li>
+                      </div>
                     </div>
-                    <!-- /.card-header -->
-
-                    <div class="card-body">
-                      <li><strong>{{titulo}}. </strong>{{autores}}; <i>{{local}}, {{ano}}. </i>{{natureza}}. <b></b>
-                      </li>
-                    </div>
-                    <!-- /.card-body -->
-                  </div>
-
                   {{/each}}
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm2.provaAnterior.title"}}</h3>
+          </div><!-- /card Currículo Vitae -->
 
-          </div>
+          <!-- Card 4: Prova Anterior -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm2.provaAnterior.title"}}</h3>
+            </div>
 
-          <div class="card-body">
-            <div class="row">
-              <div class="col-12">
-                <label class="control-label" for="candidato-prova">
-                  <b>{{__ "ppgiForm2.provaAnterior.description"}}:</b>
-                  {{#if hasProvaAnterior}}<br>(Você já realizou o upload de um arquivo, <a id="downloadLink" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf"> clique aqui</a> para visualizá-lo.){{/if}}
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12">
+                  <label for="candidato-prova" class="control-label">
+                    <b>{{__ "ppgiForm2.provaAnterior.description"}}:</b>
+                  </label>
+                </div>
+                <div  id="buttons-prova" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasProvaAnterior)}}none{{else}}flex{{/if}}; gap: 16px" >
+                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-prova"><b>ProvaAnterior.pdf</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
+                    <a id="url-prova" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary" download>
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                       {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-prova">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-prova">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                       {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
 
-                </label>
-              </div>
-              
-              
-                <div class="col-md-6" >
-                <div class="form-group">
+                <div id="input-prova" class="form-group col-md-6" {{#if hasProvaAnterior}}style="display: none;"{{/if}}>
                   <div class="custom-file">
-      
-                    <input type="file" class="custom-file-input" id="candidato-prova" name="ProvaAnterior">
-                    <label class="custom-file-label" for="ProvaAnterior">{{__ "ppgi.form.chooseFile"}}</label>
+                    <input
+                      type="file"
+                      class="custom-file-input"
+                      id="candidato-prova"
+                      name="ProvaAnterior"
+                    />
+                    <label class="custom-file-label" for="candidato-prova">
+                      {{__ "ppgi.form.chooseFile"}}
+                    </label>
                   </div>
                 </div>
               </div>
-
-             
             </div>
-          </div>
-        </div>
+          </div><!-- /card Prova Anterior -->
 
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm2.experienciaAcademica.title"}}</h3>
-          </div>
+          <!-- Card 5: Experiência Acadêmica -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm2.experienciaAcademica.title"}}</h3>
+            </div>
 
-          <div class="card-body d-flex flex-column w-100" >
-          
-            <div id="experiencia-container" >
-              {{#each experienciasAcademicas}}
-              <div class="row experiencia-row">
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-instituicao">
-                    {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]" maxlength="60" value="{{instituicao}}">
-                </div>
+            <div class="card-body d-flex flex-column w-100">
+              <div id="experiencia-container">
+                {{#each experienciasAcademicas}}
+                  <div class="row experiencia-row">
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-instituicao"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-instituicao"
+                        type="text"
+                        name="experienciaInstituicao[]"
+                        maxlength="60"
+                        value="{{instituicao}}"
+                      />
+                    </div>
 
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-atividade">
-                    {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-atividade" type="text"
-                    name="experienciaAtividade[]" maxlength="60" value="{{atividade}}">
-                </div>
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-atividade"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-atividade"
+                        type="text"
+                        name="experienciaAtividade[]"
+                        maxlength="60"
+                        value="{{atividade}}"
+                      />
+                    </div>
 
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-periodo">
-                    {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]"
-                    maxlength="30" value="{{periodo}}">
-                </div>
-                <div class="col-1" style="margin-top:10px">
-                  <button type="button" class="btn btn-danger delete-experiencia-button">{{__ "ppgi.delete"}}</button>
-                </div>
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-periodo"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-periodo"
+                        type="text"
+                        name="experienciaPeriodo[]"
+                        maxlength="30"
+                        value="{{periodo}}"
+                      />
+                    </div>
+
+                    <div class="col-1" style="margin-top: 10px;">
+                      <button
+                        type="button"
+                        class="btn btn-danger delete-experiencia-button"
+                      >
+                        {{__ "ppgi.delete"}}
+                      </button>
+                    </div>
+                  </div>
+                {{/each}}
+
+                {{#if (eq experienciasAcademicas.length 0)}}
+                  <div class="row experiencia-row">
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-instituicao"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-instituicao"
+                        type="text"
+                        name="experienciaInstituicao[]"
+                        maxlength="60"
+                      />
+                    </div>
+
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-atividade"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-atividade"
+                        type="text"
+                        name="experienciaAtividade[]"
+                        maxlength="60"
+                      />
+                    </div>
+
+                    <div class="col-md-4">
+                      <label
+                        for="candidato-experiencia-periodo"
+                        class="control-label"
+                      >
+                        {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidato-experiencia-periodo"
+                        type="text"
+                        name="experienciaPeriodo[]"
+                        maxlength="30"
+                      />
+                    </div>
+                    <div class="col-1" style="margin-top: 10px;">
+                      <button
+                        type="button"
+                        class="btn btn-danger delete-experiencia-button"
+                        style="display: none"
+                      >
+                        {{__ "ppgi.delete"}}
+                      </button>
+                    </div>
+                  </div>
+                {{/if}}
               </div>
-              {{/each}}
-              {{#if (eq experienciasAcademicas.length 0)}}
-              <div class="row experiencia-row ">
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-instituicao">
-                    {{__ "ppgiForm2.experienciaAcademica.instituicao"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-instituicao" type="text" name="experienciaInstituicao[]"
-                    maxlength="60">
-                </div>
 
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-atividade">
-                    {{__ "ppgiForm2.experienciaAcademica.atividade"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-atividade" type="text"
-                    name="experienciaAtividade[]" maxlength="60">
-                </div>
+              <!-- Botão para adicionar nova experiência -->
+              <button
+                id="add-experiencia-button"
+                class="btn btn-primary align-self-end"
+                style="margin-left: auto;"
+              >
+                {{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}
+              </button>
+            </div>
 
-                <div class="col-md-4">
-                  <label class="control-label" for="candidato-experiencia-periodo">
-                    {{__ "ppgiForm2.experienciaAcademica.periodo"}}:
-                  </label>
-                  <input class="form-control" id="candidato-experiencia-periodo" type="text" name="experienciaPeriodo[]" maxlength="30">
-                </div>
-                <div class="col-1" style="margin-top:10px">
-                  <button type="button" class="btn btn-danger delete-experiencia-button" style="display: none">{{__ "ppgi.delete"}}</button>
-                </div>
+            <div class="card-footer">
+              <div
+                class="col d-flex align-items-center flex-row-reverse"
+                style="gap: 4px;"
+              >
+                <!-- Botão de Submit -->
+                <button id="btn-submit" class="btn btn-success">
+                  {{__ "ppgi.form.saveAndContinue"}}
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    hidden="hidden"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </button>
+
+                <!-- Botão Voltar -->
+                <button
+                  class="btn btn-warning"
+                  type="button"
+                  id="voltarForm"
+                >
+                  {{__ "ppgi.form.previousStep"}}
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    hidden="hidden"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </button>
               </div>
-              {{/if}}
-            </div>
-            <button id="add-experiencia-button" class="btn btn-primary align-self-end" style="margin-left: auto;">{{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}</button>
-
-          </div>
-          <div class="card-footer">
-            <div class="col d-flex align-items-center flex-row-reverse " style="gap: 4px;">
-              <button id="btn-submit" class="btn btn-success">
-                {{__ "ppgi.form.saveAndContinue"}}
-                <span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
-              </button>
-              <button class="btn btn-warning" type="button" id="voltarForm">
-                {{__ "ppgi.form.previousStep"}}
-								<span class="spinner-border spinner-border-sm" hidden="true" role="status" aria-hidden="true"></span>
-              </button>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </article>
     </div>
   </section>
-</div>
+</main>
 <script>
+
+  const inputFilesConfig = {
+    Curriculum: {
+      input: "#vittaepdf",
+      buttons: "#buttons-curriculum",
+      containerInput: "#input-curriculum",
+      name: "#name-curriculum",
+      btnChange: "#btn-change-curriculum",
+      btnDelete: "#btn-delete-curriculum",
+      aDownload: "#url-curiculum",
+      hasFileSave: {{hasCurriculum}}
+    },
+    Prova: {
+      input: "#candidato-prova",
+      buttons: "#buttons-prova",
+      containerInput: "#input-prova",
+      name: "#name-prova",
+      btnChange: "#btn-change-prova",
+      btnDelete: "#btn-delete-prova",
+      aDownload: "#url-prova",
+      hasFileSave: {{hasProvaAnterior}}
+    }
+  }
+
+
   function changeYear(event) {
     const year = event.target.value;
-    if (year.length === 4) { 
+    if (year.length === 4) {
       const currentYear = new Date().getFullYear();
       if (year > currentYear) {
         $(event.target).addClass("is-invalid");
@@ -369,37 +666,91 @@
     }
   }
 
+  function changeFile(idInput) {
+    $(idInput).click();
+  }
+
+  function actionDeleteFile(idInput, idButtons, idContainerInput){
+    $(idInput).val('');
+    $(idButtons).hide();
+    $(idContainerInput).show();
+    $(idInput).next('label').text('{{__ "ppgi.form.chooseFile"}}');
+  }
+
+  function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
+    const input = $(event.target);
+    if (!input.valid()) {
+      input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
+      return;
+    }
+    const file = event.target.files[0];
+    const fileName = file.name;
+    const url = URL.createObjectURL(file);
+    $(idContainerInput).hide();
+    $(idButtons).show();
+    $(idName).html(`<b>${fileName}</b>`);
+
+    $(aLink)
+      .attr('href', url)
+      .attr('download', fileName);
+  }
+
   $(document).ready(function () {
+    Object.keys(inputFilesConfig).forEach(key => {
+      const inputConfig = inputFilesConfig[key];
+      const input = inputConfig.input;
+      const buttons = inputConfig.buttons;
+      const containerInput = inputConfig.containerInput;
+      const name = inputConfig.name;
+      const btnChange = inputConfig.btnChange;
+      const btnDelete = inputConfig.btnDelete;
+      const aDownload = inputConfig.aDownload;
+
+      $(input).change(function (event) {
+        inputFilesConfig[key].hasFileSave = true;
+        changeFileInput(event, aDownload, buttons, containerInput, name);
+      });
+
+      $(btnChange).click(function () {
+        changeFile(input);
+      });
+
+      $(btnDelete).click(function () {
+        inputFilesConfig[key].hasFileSave = false;
+        actionDeleteFile(input, buttons, containerInput);
+      });
+    });
+
     $("#btn_logout").click(function () {
-			$.ajax({
-				url: "/selecaoppgi/logout",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-		$("#btn_inicio").click(function () {
-				$.ajax({
-				url: "/selecaoppgi/voltarInicio",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi/formulario";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
+      $.ajax({
+        url: "/selecaoppgi/logout",
+        type: "POST",
+        data: {
+          _csrf: $("#csrfToken").val()
+        },
+        success: function (data) {
+          window.location.href = "/selecaoppgi";
+        },
+        error: function (data) {
+          console.error(data);
+        }
+      });
+    });
+    $("#btn_inicio").click(function () {
+      $.ajax({
+        url: "/selecaoppgi/voltarInicio",
+        type: "POST",
+        data: {
+          _csrf: $("#csrfToken").val()
+        },
+        success: function (data) {
+          window.location.href = "/selecaoppgi/formulario";
+        },
+        error: function (data) {
+          console.error(data);
+        }
+      });
+    });
     $("#voltarForm").click(() => {
       const btnVoltar = $("#voltarForm");
       btnVoltar.attr("disabled", true);
@@ -434,7 +785,7 @@
   });
 
   function mostrarPeriodicos() {
-    var accordion = $("#accordion");
+    const accordion = $('#accordion');
     if (accordion.hasClass("show")) {
       accordion.collapse("hide");
     } else {
@@ -464,7 +815,7 @@
     const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
     if (experiencias.length >= 1) {
       for (const experiencia of experiencias) {
-          const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
 
         deleteButton.addEventListener("click", function () {
           experienciaContainer.removeChild(experiencia);
@@ -511,20 +862,18 @@
     formData.append('csrfToken', $("#csrfToken").val());
     formData.append('email', $("#email").val());
     formData.append('id', $("#idCandidato").val());
-     
+
     const csrfToken = $("#csrfToken").val();
-    const email = $("#email").val();
-    const id = $("#id").val();
 
     $.ajax({
       url: '/selecaoppgi/formulario/2?_csrf={{csrfToken}}',
       type: "PUT",
-      data: formData, 
+      data: formData,
       contentType: false,
       processData: false,
       success: function (response) {
-       	window.location.href = '/selecaoppgi/formulario';
-        window.location.reload(true);
+        window.location.href = '/selecaoppgi/formulario';
+        window.location.reload();
       },
       error: function (xhr, status, error) {
         console.error(xhr);
@@ -565,15 +914,13 @@
         const vitaeInput = document.getElementById("vittaexml");
         vitaeInput.setAttribute("disabled", true);
         getCompleteData(formData, GetDataPubli)
-      } 
+      }
     }
   })
 
   function GetDataPubli(data) {
     const DataForm = data;
-    console.log(DataForm)
-    console.log(JSON.stringify(DataForm))
-    var formData2 = new FormData($('#candidato-formulario2')[0]);
+    const formData2 = new FormData($('#candidato-formulario2')[0]);
     const email = $("#email").val();
     const id = $("#id").val();
     formData2.append('email', email);
@@ -624,6 +971,14 @@
     return anoInserido <= anoAtual && anoInserido >= anoMinimo;
   }, "Ano inválido");
 
+  $.validator.addMethod("fileSize", function(value, element, param) {
+    if (element.files.length === 0) {
+      return true;
+    }
+    return element.files[0].size <= param;
+  }, "O arquivo deve ter no máximo {0} bytes.");
+
+
   $.validator.addMethod("anoPosValido", function (value, element) {
     if (value.trim() === "") {
       return true;
@@ -662,7 +1017,11 @@
 
       },
       'Curriculum': {
-        required: {{#if hasCurriculum}}false{{else}}true{{/if}}
+        required: inputFilesConfig.Curriculum.hasFileSave,
+        fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
+      },
+      'ProvaAnterior': {
+        fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
       },
       "cursoPos": {
         conjuntoPreenchido: true
@@ -674,31 +1033,34 @@
         conjuntoPreenchido: true,
         anoPosValido: true
       },
- 
+
     },
     messages: {
       "cursoGraduacao": {
-        required: "Este campo é obrigatório."
+        required: "{{__ "ppgiForm2.validation.required"}}"
       },
       "instituicaoGraduacao": {
-        required: "Este campo é obrigatório."
+        required: "{{__ "ppgiForm2.validation.required"}}"
       },
       "anoEgressoGraduacao": {
-        required: "Este campo é obrigatório."
+        required: "{{__ "ppgiForm2.validation.required"}}"
       },
       "cursoPos": {
-        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
       },
       "instituicaoPos": {
-        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
       },
       "anoEgressoPos": {
-        conjuntoPreenchido: "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios."
+        conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
       },
       "Curriculum": {
-        required: "Este campo é obrigatório."
+        required: "{{__ "ppgiForm2.validation.required"}}",
+        fileSize: "{{__ "ppgi.validation.fileSize"}}"
       },
-  
+      "ProvaAnterior": {
+        fileSize: "{{__ "ppgi.validation.fileSize"}}"
+      }
     },
     submitHandler: (form, e) => {
       e.preventDefault()

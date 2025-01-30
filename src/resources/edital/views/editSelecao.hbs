@@ -9,13 +9,13 @@
         <div class="container-fluid ml-2">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Alterar Edital do PPGI {{edital.editalCodigo}}</h1>
+                    <h1>Alterar Edital do PPGI {{edital.id}}</h1>
                 </div>
                 <div >
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item active"><a href="/edital/listEdital">Editais</a></li>
-                        <li class="breadcrumb-item active">{{edital.editalCodigo}}</li>
+                        <li class="breadcrumb-item active">{{edital.id}}</li>
                         <li class="breadcrumb-item active">Update</li>
                     </ol>
                 </div>
@@ -51,16 +51,19 @@
                         <div class="card-body">
                             <div class="col-md-12">
                                 <div class="form-row">
+                                    {{!-- Código do Edital --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
                                             <label> Número do Edital:</label>
-                                            <input type="text" class="form-control edital" id="num_edital" name="num_edital" value={{edital.editalCodigo}} disabled>
+                                            <input type="text" class="form-control edital" id="num_edital" name="num_edital" value={{edital.id}} disabled>
                                             <div class="hint-block">
                                                 <span>Ex.: 001-2023, sendo o <b>'001'</b> o número do edital e <b>'2023'</b> o ano</span>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {{!-- URL do Edital --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
@@ -79,6 +82,7 @@
                                 </div>
 
                                 <div class="form-row mt-4">
+                                    {{!-- Datas de Início e Fim das Inscrições --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
@@ -150,7 +154,7 @@
                                         <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
                                         <input type="number" name="vaga_regular_mestrado" class="form-control "
                                             placeholder="Vagas Regulares para Mestrado" required
-                                            id="vaga_regular_mestrado" value="{{edital.vagaMestrado}}" min="0">
+                                            id="vaga_regular_mestrado" value="{{edital.vagasMestrado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
@@ -179,7 +183,7 @@
                                         <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
                                         <input type="number" name="vaga_regular_doutorado" class="form-control "
                                             placeholder="Vagas Regulares para Doutorado" required
-                                            id="vaga_regular_doutorado" value="{{edital.vagaDoutorado}}" min="0">
+                                            id="vaga_regular_doutorado" value="{{edital.vagasDoutorado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
@@ -261,8 +265,8 @@
 
     $(document).ready(function () { 
 
-        let dataI = moment('{{edital.dataInicio}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
-        let dataF = moment('{{edital.dataFim}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
+        let dataI = moment('{{edital.dataInicio}}').format('DD/MM/YYYY');
+        let dataF = moment('{{edital.dataFim}}').format('DD/MM/YYYY');
              
         $('#datas').daterangepicker({
             startDate: dataI,
@@ -389,8 +393,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
-        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
+        const data_inicio = new Date($("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD')).toISOString();
+        const data_fim = new Date($("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD')).toISOString();
 
         return {
             vaga_regular_mestrado,
@@ -407,7 +411,7 @@
     }
 
     function submitForm() {
-
+        console.log('submitForm');
         const $form = $('#adicionarSelecaoForm');
         const vagas= verificaVagas();
     
@@ -421,7 +425,7 @@
 
                     dados._csrf = $("#_csrf").val();
                     $.ajax({
-                        url: '{{url}}/edital/updateEdital/{{edital.editalCodigo}} ',
+                        url: '{{url}}/edital/updateEdital/{{edital.id}} ',
                         type: 'PUT',
                         data: dados,
                         success: function (data) {

@@ -1,5 +1,7 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
+
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import {
   footerDoc,
@@ -352,13 +354,23 @@ export async function gerarPDF(id: number) {
     );
 
     // Criar a pasta se não existir
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
 
     // Salvar o PDF na pasta public
     const writeStream = fs.createWriteStream(outputPath);
+    writeStream.on('error', (err) => {
+      console.error('Erro ao escrever no arquivo:', err);
+      throw err;
+    });
+
     pdfDoc.pipe(writeStream);
 
     pdfDoc.end();
+
+    await new Promise((resolve, reject) => {
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+    });
   } catch (error) {
     console.error(error);
   }

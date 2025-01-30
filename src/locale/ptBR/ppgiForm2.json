@@ -39,5 +39,9 @@
     "periodo": "Período",
     "adicionarExperiencia": "Adicionar Experiência",
     "excluirExperiencia": "Excluir Experiência"
+  },
+  "validation": {
+    "required": "Este campo é obrigatório.",
+    "conjuntoPreenchido": "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos em branco."
   }
 }

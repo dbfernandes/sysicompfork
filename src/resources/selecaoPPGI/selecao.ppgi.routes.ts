@@ -75,6 +75,7 @@ router.post(
 );
 
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
+router.get('view/arquivo/:name', selecaoppgiController.viewFile);
 
 /////////
 router.post('/logout', selecaoppgiController.logout);

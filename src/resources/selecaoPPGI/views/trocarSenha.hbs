@@ -1,194 +1,216 @@
-<style>
-	.login-page {
-		height: 100vh;
-		display: flex;
-		background-color: #d2d6de;
-		overflow-y: hidden;
-	}
+{{ setTitle title="Trocar Senha - PPGI/UFAM" }}
 
-	.login-page .box {
-		width: 35%;
-		min-width: 360px;
-		margin: auto; 
-		margin-top: 7%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+<!-- Container principal -->
+<main class="login-box">
 
-	.login-page .box .card {
-		width: 100%;
+  <!-- Cabeçalho com as logos -->
+  <header class="login-logo container-cards">
+    <img
+      src="/public/img/logo-icomp.png"
+      alt="{{__ 'ppgiChangePass.alt_logo_icomp'}}"
+    />
+    <img
+      src="/public/img/logo-ufam.png"
+      alt="{{__ 'ppgiChangePass.alt_logo_ufam'}}"
+    />
+  </header>
 
-		padding: 20px;
-		background-color: #fff;
-		border-radius: 2px;
-		box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
-	}
+  <!-- Cartão de troca de senha -->
+  <article class="card">
+    <div class="card-body login-card-body">
+      <!-- Título principal (h1) -->
+      <h1 class="login-logo">
+        <b>{{__ "ppgiChangePass.title"}}</b>
+      </h1>
 
-	.login-page .box .card .card-body {
-		padding: 20px;
-		color: #666;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+      <!-- Mensagem de erro (exibe se 'error' estiver presente, mas sempre com role="alert") -->
+      <div
+        id="error-msg"
+        class="alert alert-danger"
+        role="alert"
+        aria-live="assertive"
+        {{#unless error}}hidden{{/unless}}
+      >
+        {{#if error}}
+          {{{error}}}
+        {{/if}}
+      </div>
 
-	.login-page .box .card .card-body .title {
-		font-size: 24px;
-		margin-bottom: 16px;
-		text-align: center;
+      <!-- Mensagem de sucesso -->
+      <div
+        id="success-msg"
+        class="alert alert-success"
+        hidden
+        role="alert"
+        aria-live="assertive"
+      ></div>
 
-		font-weight: bold;
-	}
+      <!-- Subtítulo -->
+      <p class="login-box-msg">
+        {{__ "ppgiChangePass.subTitle"}}
+      </p>
 
-	.login-page .box .card .card-body .sub-title {
-		font-size: 14px;
-		margin-bottom: 16px;
-		text-align: center;
-	}
+      <!-- Formulário de troca de senha -->
+      <form id="form-recuperar-senha">
+        <!-- Token CSRF -->
+        <input
+          type="hidden"
+          name="_csrf"
+          value="{{csrfToken}}"
+        />
 
-	.login-page .box .card .card-body .form-group {
-		width: 100% !important;
-		min-width: 280px;
-	}
+        <!-- Senha -->
+        <div class="form-group">
+          <label
+            for="password"
+            class="sr-only"
+          >
+            {{__ "ppgiChangePass.passwordPlaceholder"}}
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="password"
+            placeholder="{{__ "ppgiChangePass.passwordPlaceholder"}}"
+            {{#if error}}disabled{{/if}}
+          />
+          <div class="help-block"></div>
+        </div>
 
-	.login-page .box .card .card-body .form-control:focus {
-		border: 2px solid #3c8dbc;
-	}
+        <!-- Confirmar Senha -->
+        <div class="form-group">
+          <label
+            for="confirmPassword"
+            class="sr-only"
+          >
+            {{__ "ppgiChangePass.confirmPasswordPlaceholder"}}
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="{{__ "ppgiChangePass.confirmPasswordPlaceholder"}}"
+            {{#if error}}disabled{{/if}}
+          />
+          <div class="help-block"></div>
+        </div>
 
-	.login-page .box .card .card-body .btn {
-		width: 100%;
-		margin-top: 20px;
-		background-color: #3c8dbc;
-		border-color: #3c8dbc;
-		color: #fff;
-	}
+        <!-- Botões -->
+        <button
+          id="btn-form-submit"
+          type="submit"
+          class="btn btn-primary btn-block"
+          {{#if error}}disabled{{/if}}
+        >
+          {{__ "ppgiChangePass.submitButton"}}
+          <span
+            class="spinner-border spinner-border-sm"
+            hidden="true"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+        <button
+          type="button"
+          name="voltar"
+          id="btn-voltar"
+          class="btn btn-default btn-block"
+          role="button"
+          onclick="back()"
+        >
+          {{__ "ppgiChangePass.backButton"}}
+        </button>
+      </form>
+    </div>
+  </article>
 
-	.login-page .box .card .card-body .btn-default {
-		background-color: #fff;
-		border-color: #ccc;
-		color: #666;
-		width: 100%;
-	}
+  <!-- Seletor de idioma -->
+  {{> ppgi/selectLanguage}}
 
-</style>
-<div class="login-box"> 
-	<div class="login-logo container-cards">
-    	<img src="/public/img//logo-icomp.png" alt="">
-    	<img src="/public/img//logo-ufam.png" alt="">
-	</div>
-	<div class="card">
-		<div class="card-body login-card-body">
-      		<div class="login-logo">
-            	<b>{{__ "ppgiChangePass.title"}}</b>
-        	</div>
-			<div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
-				{{#if error}}
-					{{{error}}}
-				{{/if}}
-			</div>
-			<div id="success-msg" class="alert alert-success" hidden></div>
+</main>
 
-        	<p class="login-box-msg">{{__ "ppgiChangePass.subTitle"}}
-        	{{#if message}}
-        	  <div class="alert alert-{{type}}">
-        	    {{{message}}}
-        	  </div> 
-        	{{/if}}
-        	 <form id="form-recuperar-senha" >
-        	  <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        	  	<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="{{__ "ppgiChangePass.passwordPlaceholder"}}">
-					<div class="help-block"></div>
-				</div>
-				<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="{{__ "ppgiChangePass.confirmPasswordPlaceholder"}}">
-					<div class="help-block"></div>
-				</div>
-	
-        	  <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">{{__ "ppgiChangePass.submitButton"}}<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
-        	  <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-default" role="button">{{__ "ppgiChangePass.backButton"}}</button>
-        	</form>
-		</div>
-	</div>
-	{{> ppgi/selectLanguage}}
-
-</div>
 <script>
-  function back(){
-      window.location.href = "{{url}}/selecaoppgi";
+  function back() {
+    window.location.href = "{{url}}/selecaoppgi";
   }
 
+  // Esconde mensagem de erro ao digitar algo
   $("#form-recuperar-senha input").on("input", function() {
-        const divError = $("#error-msg");
-        if (!divError.prop("hidden")) {
-            divError.prop("hidden", true);
+    const divError = $("#error-msg");
+    if (!divError.prop("hidden")) {
+      divError.prop("hidden", true);
+    }
+  });
+
+  // Validação do formulário
+  $("#form-recuperar-senha").validate({
+    ignore: ':hidden',
+    rules: {
+      password: {
+        required: true,
+        minlength: 6
+      },
+      confirmPassword: {
+        required: true,
+        equalTo: "#password"
+      }
+    },
+    messages: {
+      password: {
+        required: "{{__ 'ppgiChangePass.validation.passwordRequired'}}",
+        minlength: "{{__ 'ppgiChangePass.validation.passwordMinLength'}}"
+      },
+      confirmPassword: {
+        required: "{{__ 'ppgiChangePass.validation.confirmPasswordRequired'}}",
+        equalTo: "{{__ 'ppgiChangePass.validation.confirmPasswordMismatch'}}"
+      }
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('div').append(error);
+    },
+    highlight: function (element) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element) {
+      $(element).removeClass('is-invalid');
+    },
+    submitHandler: function (form, e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const senha = formData.get("password");
+      const btnSubmit = $("#btn-form-submit");
+      const divError = $("#error-msg");
+
+      btnSubmit.attr("disabled", true);
+      btnSubmit.find("span").prop("hidden", false);
+
+      $.ajax({
+        url: "{{url}}/selecaoppgi/trocarSenha?_csrf={{csrfToken}}",
+        type: "PUT",
+        data: {
+          senha,
+          token: "{{token}}"
+        },
+        success: function () {
+          window.location.href = "{{url}}/selecaoppgi/entrar";
+        },
+        error: function (res) {
+          btnSubmit.attr("disabled", false);
+          btnSubmit.find("span").prop("hidden", true);
+
+          if (res.responseJSON && res.responseJSON.message) {
+            divError.text(res.responseJSON.message);
+          } else {
+            divError.text("{{__ 'ppgiChangePass.errorIncomplete'}}");
+          }
+
+          divError.prop("hidden", false);
         }
-
-    });
-	$("#form-recuperar-senha").validate({
-		ignore: ':hidden',
-		rules: {
-			password: {
-				required: true,
-				minlength: 6
-			},
-			confirmPassword: {
-           		required: true,
-           		equalTo: "#password"
-        	}
-		},
-		messages: {
-			password: {
-				required: "{{__ "ppgiChangePass.validation.passwordRequired"}}",
-				minlength: "{{__ "ppgiChangePass.validation.passwordMinLength"}}"
-			},
-			confirmPassword: {
-				required: "{{__ "ppgiChangePass.validation.confirmPasswordRequired"}}",
-				equalTo: "{{__ "ppgiChangePass.validation.confirmPasswordMismatch"}}"
-			}
-		}, 
-		errorElement: 'span',
-		errorPlacement: function (error, element) {
-			error.addClass('invalid-feedback');
-			element.closest('div').append(error);
-		},
-
-		highlight: function (element, errorClass, validClass) {
-			$(element).addClass('is-invalid');
-		},
-		unhighlight: function (element, errorClass, validClass) {
-			$(element).removeClass('is-invalid');
-		},
-		submitHandler: function (form, e) {
-			e.preventDefault();
-			const formData = new FormData(form);
-			const senha = formData.get("password");
-			const btnSubmit = $("#btn-form-submit");
-			btnSubmit.attr("disabled", true);
-			btnSubmit.find("span").prop("hidden", false);
-			$.ajax({
-				url: "{{url}}/selecaoppgi/trocarSenha?_csrf={{csrfToken}}",
-				type: "PUT",
-				data: {
-					senha,
-					token: "{{token}}"
-				},
-				success: function (data) {
-					window.location.href = "{{url}}/selecaoppgi/entrar";
-
-				},
-				error: function (res, status, error) {
-					btnSubmit.attr("disabled", false);
-					btnSubmit.find("span").prop("hidden", true);
-					if(res.responseJSON.message) {
-						divError.text(res.responseJSON.message);
-					} else {
-						divError.text("{{__ "ppgiChangePass.errorIncomplete"}}");
-					}
-				}
-			})	
-		}
-	})
+      });
+    }
+  });
 </script>

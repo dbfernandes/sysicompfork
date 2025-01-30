@@ -1,30 +1,27 @@
 {{ setTitle title="Token inválido" }}
-<div class="forms-page">
-	<header>
-		<div class="container">
-			<h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
-			<div class="options">
-				{{> ppgi/selectLanguageHeader}}
-			</div>
-		</div>
-	</header>
 
-	<section class="content container" style="margin-top: 70px;">
-		<div class="alert alert-warning alert-dismissible">
-			<h5><i class="icon fas fa-exclamation-triangle"></i> {{__ "ppgiRecomendacao.invalidToken.title"}}</h5>
-			{{__ "ppgiRecomendacao.invalidToken.message"}}
-		</div>
-	</section>
-	<footer class="custom-footer" >
-		<div class="container container-footer">
-			<strong><p id="text-icomp">ICOMP 2024</p></strong>
-			<P><strong>PPGI</strong></P>
-		</div>
-	</footer>
+<div class="forms-page">
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
+      <div class="options">
+        {{> ppgi/selectLanguageHeader}}
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="content container container-main">
+    <div class="alert alert-warning alert-dismissible">
+      <h5>
+        <i class="icon fas fa-exclamation-triangle"></i>
+        {{__ "ppgiRecomendacao.invalidToken.title"}}
+      </h5>
+      {{__ "ppgiRecomendacao.invalidToken.message"}}
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  {{> ppgi/footer}}
 </div>
-<script>
-	$(document).ready(function() {
-		const actualYear = new Date().getFullYear();
-		$('#text-icomp').text(`ICOMP ${actualYear}`);
-	});
-</script>

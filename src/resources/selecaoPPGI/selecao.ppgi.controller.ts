@@ -39,14 +39,7 @@ type RenderFunction = (
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-declare module 'express-session' {
-  interface Session {
-    email?: string;
-    editalId?: string;
-    uid?: string;
-    editalPosition?: number;
-  }
-}
+
 const locals = {
   layout: 'selecaoppgi',
 };
@@ -142,12 +135,14 @@ async function signIn(
       try {
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
+        const email = (req.query.email as string) || '';
 
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
           editais: listEditais,
           currentLanguage,
+          email,
         });
       } catch (err) {
         console.error(err);
@@ -591,6 +586,7 @@ async function formProposta(
             id,
             url,
           });
+          await candidatoService.enviarEmailConfirmacao({ id });
         }
 
         res.status(StatusCodes.OK).send();
@@ -771,6 +767,35 @@ function downloadFile(req: Request, res: Response): void {
   });
 }
 
+function viewFile(req: Request, res: Response): void {
+  const userId = req.session.uid;
+  const nomeArquivo = req.params.name;
+
+  // Monta o caminho até o arquivo
+  const caminhoDoc = path.join(
+    'public',
+    'uploads',
+    'candidato',
+    userId,
+    nomeArquivo,
+  );
+
+  // Ajusta os headers para exibir inline no navegador
+  res.setHeader('Content-Type', 'application/pdf');
+  // Caso queira manter o nome do arquivo correto na aba do navegador:
+  res.setHeader('Content-Disposition', `inline; filename="${nomeArquivo}"`);
+
+  // Envia o arquivo como PDF
+  res.sendFile(caminhoDoc, (error) => {
+    if (error) {
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Arquivo não encontrado' })
+        .end();
+    }
+  });
+}
+
 export default {
   inicio,
   signUp,
@@ -786,4 +811,5 @@ export default {
   recuperarSenha,
   trocarSenha,
   downloadFile,
+  viewFile,
 };
