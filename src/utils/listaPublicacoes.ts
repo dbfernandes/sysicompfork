@@ -17,7 +17,7 @@ async function getPublicationsArr(publicacoes: any, id: number, tipos: any[]) {
           tipo: tipo.id,
           natureza: publicacoesChave[k].natureza,
           autores: publicacoesChave[k].autores.nomeCompleto.join('; '),
-          ISSN:
+          issn:
             publicacoesChave[k].issn !== '' &&
             parseInt(publicacoesChave[k].issn)
               ? parseInt(publicacoesChave[k].issn)

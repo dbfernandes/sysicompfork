@@ -9,34 +9,32 @@ export const enum TYPES_PUBLICACAO {
   PREFACIOS = 6,
 }
 
-export interface Publicacao {
-  titulo?: string;
-  ano?: string | number;
-  local?: string;
-  natureza?: string;
+export type PublicacaoCreateDto = Pick<
+  CandidatoPublicacao,
+  'titulo' | 'ano' | 'local' | 'natureza' | 'issn'
+> & {
   autores: {
     nomeCompleto: string[];
   };
-  ISSN?: string;
-}
-
-export type PublicacaoData = {
-  candidatoId: number;
-  titulo: string;
-  local: string;
-  tipo: number;
-  natureza: string;
-  autores: string;
-  ISSN: string;
-  ano?: number;
 };
 
-export interface PublicacoesResponse {
-  periodicos: CandidatoPublicacao[];
-  conferencias: CandidatoPublicacao[];
-}
-
-export type CandidatoPublicacaoCreate = Omit<
+export type PublicacaoCreate = Pick<
   CandidatoPublicacao,
-  'id' | 'createdAt' | 'updatedAt'
+  | 'titulo'
+  | 'ano'
+  | 'local'
+  | 'natureza'
+  | 'issn'
+  | 'autores'
+  | 'candidatoId'
+  | 'tipoId'
 >;
+
+export interface PublicacoesData {
+  'ARTIGO-PUBLICADO': PublicacaoCreateDto[];
+  'TRABALHO-EM-EVENTOS': PublicacaoCreateDto[];
+  'LIVRO-PUBLICADO-OU-ORGANIZADO': PublicacaoCreateDto[];
+  'CAPITULO-DE-LIVRO-PUBLICADO': PublicacaoCreateDto[];
+  'OUTRA-PRODUCAO-BIBLIOGRAFICA': PublicacaoCreateDto[];
+  'PREFACIO-POSFACIO': PublicacaoCreateDto[];
+}

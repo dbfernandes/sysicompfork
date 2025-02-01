@@ -11,7 +11,7 @@ const inicio = (req: Request, res: Response) => {
       try {
         const { message, type, messageTitle } = req.query;
         return res.render(resolveView('inicio'), {
-          nome: req.session.nome,
+          nome: req.session.nome ?? '',
           message,
           type,
           messageTitle,

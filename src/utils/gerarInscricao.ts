@@ -1,5 +1,7 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
+
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import {
   footerDoc,
@@ -11,11 +13,11 @@ import {
   renderOptions,
   titlePage,
   titleSection,
-} from '../utils/pdf';
-import { Publicacao } from '@prisma/client';
-import { Nacionalidade } from '../resources/selecaoPPGI/selecao.ppgi.types';
+} from './pdf';
+import candidatoService from '../resources/candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '../resources/candidatoPublicacao/candidato.publicacao.types';
-import CandidatoService from '../resources/candidato/candidato.service';
+import { Nacionalidade } from '../resources/selecaoPPGI/selecao.ppgi.types';
+import { CandidatoPublicacao } from '@prisma/client';
 
 function formatarNumeroInscricao(numberId: number): string {
   const num = '000-0000-000';
@@ -23,14 +25,15 @@ function formatarNumeroInscricao(numberId: number): string {
   return num.substring(0, num.length - id.length) + id;
 }
 
-function formatarPublicacao(publicacao: Publicacao) {
+function formatarPublicacao(publicacao: CandidatoPublicacao) {
   return `${publicacao.autores.split(',').join(';')}; ${publicacao.titulo} ${publicacao.local}. ${publicacao.ano}.`;
 }
 
 // Função para gerar o PDF de inscrição de um candidato no PPGI
 export async function gerarPDF(id: number) {
   try {
-    const candidato = await CandidatoService.listAllInfocandidato(id);
+    const candidato =
+      await candidatoService.listarTodasInformacoesDeCandidato(id);
     const periodicos = candidato.publicacoes.filter(
       (publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS,
     );
@@ -51,7 +54,7 @@ export async function gerarPDF(id: number) {
         },
         {
           label: 'Edital: ',
-          value: candidato.editalId,
+          value: candidato.edital.id,
         },
       ],
       [
@@ -339,11 +342,10 @@ export async function gerarPDF(id: number) {
 
     // Criar o documento PDF
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-
     // Caminho para salvar o arquivo na pasta public
     const outputPath = path.join(
       __dirname,
-      '../../..',
+      '../..',
       'public',
       'uploads',
       'candidato',
@@ -352,13 +354,23 @@ export async function gerarPDF(id: number) {
     );
 
     // Criar a pasta se não existir
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
 
     // Salvar o PDF na pasta public
     const writeStream = fs.createWriteStream(outputPath);
+    writeStream.on('error', (err) => {
+      console.error('Erro ao escrever no arquivo:', err);
+      throw err;
+    });
+
     pdfDoc.pipe(writeStream);
 
     pdfDoc.end();
+
+    await new Promise((resolve, reject) => {
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+    });
   } catch (error) {
     console.error(error);
   }

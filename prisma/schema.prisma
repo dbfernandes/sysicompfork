@@ -1,3 +1,11 @@
+// Naming Conventions Applied:
+// 1. Model Names (Tables):
+//    - Model names should be in singular form, unless they are N to N tables.
+// 2. Field Names:
+//    - Foreign key fields are named in camelCase as [entityName]Id.
+//    - Acronyms (abbreviations) are in lowercase.
+//    - Use camelCase for field names.
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -75,11 +83,11 @@ model Candidato {
   comoSoube            String?   @db.VarChar(100)
   cursoDesejado        String?
   regime               String?
-  cotista              Int       @default(0) @db.SmallInt
+  cotista              Boolean   @default(false)
   cotistaTipo          String?   @db.VarChar(100)
-  condicao             Int       @default(0) @db.SmallInt
+  condicao             Boolean   @default(false)
   condicaoTipo         String?   @db.VarChar(100)
-  bolsista             Int       @default(0) @db.SmallInt
+  bolsista             Boolean   @default(false)
   cursoGraduacao       String?   @db.VarChar(50)
   instituicaoGraduacao String?   @db.VarChar(50)
   anoEgressoGraduacao  Int?
@@ -213,31 +221,33 @@ model LinhaPesquisa {
 }
 
 model Orientacao {
-  id        Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   professorId Int
-  titulo    String   @db.VarChar(1024)
-  aluno     String   @db.VarChar(500)
-  ano       Int
-  natureza  String?  @db.VarChar(1024)
-  tipo      Int      @db.SmallInt
-  status    Int      @db.SmallInt
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  titulo      String   @db.VarChar(1024)
+  aluno       String   @db.VarChar(500)
+  ano         Int
+  natureza    String?  @db.VarChar(1024)
+  tipo        Int      @db.SmallInt
+  status      Int      @db.SmallInt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  professor   Usuario  @relation(fields: [professorId], references: [id])
+  professor Usuario @relation(fields: [professorId], references: [id])
+
   @@index([professorId])
 }
 
 model Premio {
-  id        Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   professorId Int
-  titulo    String   @db.VarChar(255)
-  entidade  String   @db.VarChar(255)
-  ano       Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  titulo      String   @db.VarChar(255)
+  entidade    String   @db.VarChar(255)
+  ano         Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  professor   Usuario  @relation(fields: [professorId], references: [id])
+  professor Usuario @relation(fields: [professorId], references: [id])
+
   @@index([professorId])
 }
 

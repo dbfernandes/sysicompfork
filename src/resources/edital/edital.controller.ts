@@ -147,7 +147,7 @@ const viewEdital = async (req: Request, res: Response) => {
       if (!id) {
         return res.status(400).json({ error: 'ID not found' });
       }
-      const edital = await editalService.getEdital(id);
+      const edital = await editalService.getById(id);
 
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
@@ -168,11 +168,12 @@ const updateEdital = async (req: Request, res: Response) => {
   const { id_update } = req.params;
   switch (req.method) {
     case 'GET': {
-      const edital = await EditalService.getEdital(id_update).catch((err) => {
+      const edital = await EditalService.getById(id_update).catch((err) => {
         return res.status(400).json({
           error: err.message,
         });
       });
+      console.log(edital);
       return res.render(resolveView('editSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -182,89 +183,51 @@ const updateEdital = async (req: Request, res: Response) => {
       });
     }
     case 'PUT': {
-      const editalAtualizado: UpdateEditalDto = {
-        id: req.body.num_edital,
-        documento: req.body.documento,
-        dataInicio: req.body.data_inicio,
-        dataFim: req.body.data_fim,
-        cartaRecomendacao: req.body.carta_recomendacao,
-        cartaOrientador: req.body.carta_orientador,
-        vagasMestrado: parseInt(req.body.vaga_regular_mestrado),
-        cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
-        vagasDoutorado: parseInt(req.body.vaga_regular_doutorado),
-        cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
-        inscricoesEncerradas: 0,
-        inscricoesIniciadas: 0,
-        status: 1,
-        // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
-      };
-      const updatedEdital = await EditalService.update(
-        id_update,
-        editalAtualizado,
-      ).catch((err) => {
+      try {
+        const editalAtualizado: UpdateEditalDto = {
+          id: req.body.num_edital,
+          documento: req.body.documento,
+          dataInicio: req.body.data_inicio,
+          dataFim: req.body.data_fim,
+          cartaRecomendacao: req.body.carta_recomendacao,
+          cartaOrientador: req.body.carta_orientador,
+          vagasMestrado: parseInt(req.body.vaga_regular_mestrado),
+          cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
+          vagasDoutorado: parseInt(req.body.vaga_regular_doutorado),
+          cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
+          inscricoesEncerradas: 0,
+          inscricoesIniciadas: 0,
+          status: 1,
+          // updatedAt: new Date (moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss'))
+        };
+        const updatedEdital = await EditalService.update(
+          id_update,
+          editalAtualizado,
+        );
+        return res.status(200).send(updatedEdital);
+      } catch (error) {
+        console.error(error);
         return res.status(400).json({
-          error: err.message,
+          error: error.message,
         });
-      });
-      return res.status(200).send(updatedEdital);
+      }
     }
     default:
       return res.status(404).send();
   }
 };
 
-const listcandidatosEdital = async (req: Request, res: Response) => {
-  switch (req.method) {
-    case 'GET': {
-      const { id } = req.params;
-      if (!id) {
-        return res.status(404).json({ error: 'id não encontrado' });
-      }
-      const edital = await editalService.getEdital(id);
-
-      if (!edital) {
-        return res.status(404).json({ error: 'Edital não encontrado' });
-      }
-      const candidatos = await editalService.listCandidatos(id);
-
-      const amountcandidatoFinish = candidatos.filter(
-        (candidato) => candidato.posicaoEdital >= 4,
-      ).length;
-      const amountcandidatoInProgress = candidatos.filter(
-        (candidato) => candidato.posicaoEdital < 4,
-      ).length;
-      return res.render(resolveView('listcandidatos'), {
-        csrfToken: req.csrfToken(),
-        nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario,
-        edital,
-        amountcandidatoFinish,
-        amountcandidatoInProgress,
-        ...locals,
-      });
-    }
-    case 'POST': {
-      const { id_edital } = req.params;
-      const candidatos = await editalService.listCandidatos(id_edital);
-      if (!candidatos) {
-        return candidatos;
-      }
-      return res.status(200).json(candidatos);
-    }
-  }
-};
-
 // listEditalcandidatos/:id
-const editalcandidatos = async (req: Request, res: Response) => {
+const editalCandidatos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       try {
         const editalID = req.params.id;
         const candidatos = await editalService.listCandidatos(editalID);
-
+        console.log(candidatos);
         if (!Array.isArray(candidatos))
           throw new Error('Erro ao buscar candidatos');
-
+        console.log(candidatos);
         const quantidadeInscricaoAndamento = candidatos.filter(
           (candidato) =>
             candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
@@ -275,7 +238,7 @@ const editalcandidatos = async (req: Request, res: Response) => {
             candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
         ).length;
 
-        return res.render(resolveView('listcandidatos'), {
+        return res.render(resolveView('listCandidates'), {
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           ...locals,
@@ -297,16 +260,22 @@ const editalcandidatos = async (req: Request, res: Response) => {
 };
 
 const geraPlanilha = async (req: Request, res: Response) => {
-  const planilha = await gerarPlanilha(req.params.id);
-  return res
-    .set({
-      'Content-Type':
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': 'attachment; filename=planilha.xlsx',
-      'Content-Length': planilha.length,
-    })
-    .status(200)
-    .send(planilha);
+  try {
+    const planilha = await gerarPlanilha(req.params.id);
+    return res
+      .set({
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': 'attachment; filename=planilha.xlsx',
+        'Content-Length': planilha.length,
+      })
+      .status(200)
+      .send(planilha);
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message,
+    });
+  }
 };
 
 const getcandidatoDocument = async (req: Request, res: Response) => {
@@ -328,7 +297,7 @@ const getcandidatoDocument = async (req: Request, res: Response) => {
   });
 };
 
-const getAllcandidatosDocuments = async (req: Request, res: Response) => {
+const getAllDocumentsToCandidates = async (req: Request, res: Response) => {
   const candidatos = await editalService.listCandidatos(req.params.id);
 
   res.setHeader(
@@ -347,20 +316,20 @@ const getAllcandidatosDocuments = async (req: Request, res: Response) => {
 
   candidatos.forEach((candidato: Candidato) => {
     const candDir = path.join(
-      __dirname,
-      '../../../uploads/candidatos',
-      `${String(candidato.id)}-${candidato.nome}`,
+      'public',
+      'uploads',
+      'candidato',
+      candidato.id.toString(),
     );
-    const pastas = [
-      'Curriculum',
-      'CartaDoOrientador',
-      'PropostaDeTrabalho',
-      'ProvaAnteriorSelecao',
-      'ComprovantePagamento',
-      'Recomendacao',
+    const arquivos = [
+      'CartaAceiteOrientador.pdf',
+      'ComprovantePagamento.pdf',
+      'Curriculum.pdf',
+      'Inscricao.pdf',
+      'PropostaTrabalho.pdf',
     ];
     // archive.directory(candDir, `${candidato.id}-${candidato.nome}`)
-    pastas.forEach((pasta) => {
+    arquivos.forEach((pasta) => {
       const pastaDir = path.join(candDir, pasta);
       if (fs.existsSync(pastaDir)) {
         archive.directory(
@@ -374,51 +343,91 @@ const getAllcandidatosDocuments = async (req: Request, res: Response) => {
   archive.finalize();
 };
 
-const getAllDocumentsFromOnecandidato = async (req: Request, res: Response) => {
-  const candidado = await EditalService.getCandidato(Number(req.params.id));
-  const candDir = path.join(
-    __dirname,
-    '../../../uploads/candidatos',
-    `${String(candidado!.id)}-${candidado!.nome}`,
-  );
+const getAllDocumentsToCandidate = async (req: Request, res: Response) => {
+  try {
+    const candidatoId = Number(req.params.id);
 
-  const pastas = [
-    'Curriculum',
-    'CartaDoOrientador',
-    'PropostaDeTrabalho',
-    'ProvaAnteriorSelecao',
-    'ComprovantePagamento',
-    'Recomendacao',
-  ];
-
-  res.setHeader(
-    'Content-Disposition',
-    `attachment; filename=${candidado?.nome}.zip`,
-  );
-  const archive = archiver('zip', {
-    zlib: { level: 9 },
-  });
-
-  archive.on('error', function (err) {
-    res.status(500).send({ error: err.message });
-  });
-
-  archive.pipe(res);
-
-  pastas.forEach((pasta) => {
-    const pastaDir = path.join(candDir, pasta);
-    if (fs.existsSync(pastaDir)) {
-      archive.directory(pastaDir, pasta);
+    if (isNaN(candidatoId)) {
+      return res.status(400).json({ error: 'ID do candidato inválido.' });
     }
-  });
 
-  archive.finalize();
+    const candidato: Candidato | null =
+      await EditalService.getCandidato(candidatoId);
+
+    if (!candidato) {
+      return res.status(404).json({ error: 'Candidato não encontrado.' });
+    }
+
+    const candDir = path.join(
+      'public',
+      'uploads',
+      'candidato',
+      candidato.id.toString(),
+    );
+
+    const arquivos = [
+      'CartaAceiteOrientador.pdf',
+      'ComprovantePagamento.pdf',
+      'Curriculum.pdf',
+      'Inscricao.pdf',
+      'PropostaTrabalho.pdf',
+    ];
+
+    // Sanitiza o nome do candidato para evitar problemas de segurança
+    const safeNome = candidato.nome ?? candidato.email;
+    const zipFileName = `${candidato.id}-${safeNome}.zip`;
+
+    // Define os cabeçalhos para a resposta
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${zipFileName}"`,
+    );
+    res.setHeader('Content-Type', 'application/zip');
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // Nível de compressão
+    });
+
+    // Trata erros do archiver
+    archive.on('error', (err) => {
+      console.error('Erro ao criar o ZIP:', err);
+      if (!res.headersSent) {
+        res.status(500).send({ error: 'Erro ao criar o arquivo ZIP.' });
+      }
+    });
+
+    // Pipe do archiver para a resposta
+    archive.pipe(res);
+
+    // Itera sobre cada arquivo e adiciona ao ZIP se existir
+    for (const arquivo of arquivos) {
+      const arquivoPath = path.join(candDir, arquivo);
+
+      try {
+        await fs.promises.access(arquivoPath, fs.constants.R_OK);
+        // Adiciona o arquivo ao ZIP na raiz ou dentro de uma pasta específica
+        archive.file(arquivoPath, { name: arquivo });
+        console.log(`Adicionado ao ZIP: ${arquivoPath}`);
+      } catch (err) {
+        console.warn(`Arquivo não encontrado e será ignorado: ${arquivoPath}`);
+        // Opcional: Adicione um placeholder ou registro no ZIP indicando a ausência do arquivo
+      }
+    }
+
+    // Finaliza o arquivo ZIP
+    archive.finalize();
+  } catch (err) {
+    console.error('Erro no processamento da requisição:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
 };
 
 const candidatoDetails = async (req: Request, res: Response) => {
   try {
     const candidato = await editalService.getCandidato(Number(req.params.id));
-    const edital = await editalService.getEdital(candidato!.editalId);
+    const edital = await editalService.getById(candidato!.editalId);
     const candidatoDocs = {
       Curriculum: false,
       CartaDoOrientador: false,
@@ -471,7 +480,7 @@ const candidatoDetails = async (req: Request, res: Response) => {
       candidatoDocs.Recomendacao = true;
     }
 
-    return res.render(resolveView('candidatoDetails'), {
+    return res.render(resolveView('candidateDetails'), {
       candidato: candidato,
       candidatoDocs: candidatoDocs,
       csrfToken: req.csrfToken(),
@@ -493,12 +502,11 @@ export default {
   deleteEdital,
   arquivarEdital,
   viewEdital,
-  listcandidatosEdital,
   updateEdital,
   geraPlanilha,
-  editalcandidatos,
+  editalCandidatos,
   candidatoDetails,
   getcandidatoDocument,
-  getAllDocumentsFromOnecandidato,
-  getAllcandidatosDocuments,
+  getAllDocumentsToCandidate,
+  getAllDocumentsToCandidates,
 };

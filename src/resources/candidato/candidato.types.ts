@@ -1,52 +1,21 @@
 import { Candidato } from '@prisma/client';
 
-export type CreateCandidatoDto = Pick<
-  Candidato,
-  | 'email'
-  | 'senhaHash'
-  | 'editalId'
-  | 'posicaoEdital'
-  | 'linhaPesquisaId'
-  | 'telefone'
-  | 'nome'
-  | 'bairro'
-  | 'cep'
-  | 'cidade'
-  | 'bolsista'
-  | 'anoEgressoGraduacao'
-  | 'cursoPos'
-  | 'instituicaoGraduacao'
-  | 'comoSoube'
-  | 'condicao'
-  | 'condicaoTipo'
-  | 'cotista'
-  | 'cotistaTipo'
-  | 'cursoDesejado'
-  | 'anoEgressoPos'
-  | 'cursoGraduacao'
-  | 'instituicaoPos'
-  | 'tipoPos'
-  | 'endereco'
-  | 'nacionalidade'
-  | 'dataNascimento'
-  | 'nomeSocial'
-  | 'regime'
-  | 'sexo'
-  | 'telefoneSecundario'
-  | 'uf'
+export type SignInDto = Pick<Candidato, 'email' | 'editalId'> & {
+  senha: string;
+};
+
+export type SignUpDto = Pick<Candidato, 'email' | 'editalId'> & {
+  senha: string;
+};
+
+export type RecuperarSenhaDto = NonNullable<
+  Pick<Candidato, 'email' | 'editalId'>
 >;
 
-export type UpdateCandidatoDto = Partial<CreateCandidatoDto>;
-
-export type CandidatoSemSenha = Omit<Candidato, 'senhaHash'>;
-
-export interface Publicacao {
-  titulo?: string;
-  ano?: number;
-  local?: string;
-  natureza?: string;
-  autores: {
-    nomeCompleto: string[];
-  };
-  issn?: string;
-}
+export type FormPassoDadosDto = {
+  teste: string;
+};
+export type MudarSenhaDto = {
+  token: string;
+  senha: string;
+};

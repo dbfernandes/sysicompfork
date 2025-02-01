@@ -125,7 +125,7 @@
                                                 </a>
                                                 {{#if ../usuarioPermitido}}
                                                 <a class="fa fa-solid {{#ifEqual status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
-                                                    id="icone-{{id}}" data-id="{{id}}"
+                                                    id="icone-{{id}}" data-editalCodigo="{{id}}"
                                                     onclick="abrirModal('{{id}}', '{{status}}', '{{dataFim}}')"
                                                     data-toggle="modal" data-target="#removerEdital">
                                                 </a>
@@ -184,20 +184,20 @@
 <script>
 
     let csrfToken = "{{csrfToken}}";
-    let id;
+    let editalCodigo;
     let status;
     let dataFim;
 
     function abrirModal(id, statusCorrente, data) {
-        id = id;
+        editalCodigo = id;
         status = statusCorrente;
         dataFim = data;
 
         if (status == '1') {
-            $('#modalArquivarBody').html("Você realmente deseja suspender o edital com ID " + id + "?");
+            $('#modalArquivarBody').html("Você realmente deseja suspender o edital com ID " + editalCodigo + "?");
             $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
         } else {
-            $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + id + "?");
+            $('#modalArquivarBody').html("Você realmente deseja ativar o edital com ID " + editalCodigo + "?");
             $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
         }
 

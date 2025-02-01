@@ -1,171 +1,291 @@
 {{ setTitle title="Login - PPGI/UFAM" }}
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
-<div class="login-box">
-	<div class="login-logo container-cards">
-		<img src="/public/img/logo-icomp.png" alt="">
-    		<img src="/public/img/logo-ufam.png" alt="">
-  	</div>
-	<div class="card">
-		<div class="card-body login-card-body">
-     		<div class="login-logo">
-				<b>{{__ "ppgiSignIn.title"}}</b>
-			</div>
-			<div id="error-msg" class="alert alert-danger" hidden="true"></div>
-			<p class="sub-title">{{__ "ppgiSignIn.subTitle"}}</p>
-			<form id="loginform">
-				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
-				<div class="form-group">
-					<input type="email" class="form-control" name="email" id="email" aria-describedby="email"
-						placeholder="{{__ "ppgiSignIn.emailPlaceholder"}}">
-					<div class="help-block"></div>
-				</div>
-				<div class="form-group">
-					<div class="input-group mb-3">
-						<input type="password" class="form-control" name="password" id="password" aria-describedby="senha"
-							placeholder="{{__ "ppgiSignIn.passwordPlaceholder"}}">
-					 	<div class="input-group-append" >
-   					 		<span  id="togglePassword" class="input-group-text"style="color: transparent;" id="basic-addon2">====
-								<i  class="bi bi-eye-slash icon-input" style="color: gray;" id="togglePasswordIcon"></i>
-							</span>
-  						</div>
-					</div>
-					<div class="help-block"></div>
-					<div class="col-md-6">
-                    	<div class="form-group">
-                        	<a href="/selecaoppgi/recuperarSenha">{{__ "ppgiSignIn.forgotPassword"}}</a>
-                    	</div>
-                	</div>
-				</div>
-				<div class="form-group">
-					<select class="form-control" name="edital" id="edital">
-						<option value="">{{__ "ppgiSignIn.selectNotice"}}</option>
-						{{#each editais}}
-							<option value="{{editalId}}">{{editalId}}</option>
-						{{/each}}
-					</select>
-					<div class="help-block"></div>
-				</div>
-				<button type="submit" name="logar" id="login-btn" class="btn btn-primary btn-block">
-					{{__ "ppgiSignIn.continueButton"}}
-					<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-				</button>
-				<button name="voltar" type="button" id="voltar" class="btn btn-block  btn-default" role="button">
-					{{__ "ppgiSignIn.backButton"}}
-				</button>
-			</form> 
-		</div>
-	</div>
-	{{> ppgi/selectLanguage}}
-</div>
+<style>
+  /* Mantém o estilo de foco para input e botão dentro do .input-group */
+  .input-eye {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .button-eye {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+</style>
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+/>
+
+<!-- Conteúdo principal -->
+<main class="login-box">
+
+  <!-- Cabeçalho da área de login -->
+  <header class="login-logo container-cards">
+    <!-- Adicione textos alternativos apropriados às imagens -->
+    <img
+      src="/public/img/logo-icomp.png"
+      alt="{{__ 'ppgiSignIn.alt_logo_icomp'}}"
+    />
+    <img
+      src="/public/img/logo-ufam.png"
+      alt="{{__ 'ppgiSignIn.alt_logo_ufam'}}"
+    />
+  </header>
+
+  <!-- Cartão com formulário de login -->
+  <article class="card" role="region" aria-labelledby="main-title">
+    <div class="card-body login-card-body">
+      <!-- Título principal da página -->
+      <h1 class="login-logo" id="main-title">
+        <b>{{__ "ppgiSignIn.title"}}</b>
+      </h1>
+
+      <!-- Mensagem de erro com aria-live="assertive" para leitores de tela -->
+      <div
+        id="error-msg"
+        class="alert alert-danger"
+        hidden="true"
+        role="alert"
+        aria-live="assertive"
+      ></div>
+
+      <!-- Subtítulo ou descrição do formulário -->
+      <p class="sub-title">
+        {{__ "ppgiSignIn.subTitle"}}
+      </p>
+
+      <!-- Formulário de login -->
+      <form id="loginform">
+
+        <!-- Token CSRF -->
+        <input
+          id="csrfToken"
+          type="hidden"
+          name="_csrf"
+          value="{{csrfToken}}"
+        />
+
+        <!-- E-MAIL -->
+        <div class="form-group">
+          <label class="sr-only" for="email">
+            {{__ "ppgiSignIn.emailPlaceholder"}}
+          </label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            aria-describedby="email-help"
+            placeholder="{{__ "ppgiSignIn.emailPlaceholder"}} *"
+            value="{{email}}"
+            autofocus
+          />
+        </div>
+
+        <!-- SENHA -->
+        <div class="form-group">
+          <label class="sr-only" for="password">
+            {{__ "ppgiSignIn.passwordPlaceholder"}}
+          </label>
+          <!-- Usando .input-group para manter estilo Bootstrap consistente -->
+          <div class="mb-3" style="grid-template-columns: 1fr auto; display: grid">
+            <input
+              type="password"
+              class="form-control input-eye"
+              name="password"
+              id="password"
+              aria-describedby="senha-help"
+              placeholder="{{__ "ppgiSignIn.passwordPlaceholder"}} *"
+            />
+            <button
+              type="button"
+              class="btn btn-light button-eye"
+              id="togglePassword"
+              aria-label="{{__ 'ppgi.hidePassword'}}"
+              title="{{__ 'ppgi.hidePassword'}}"
+
+            >
+              <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+            </button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <a href="/selecaoppgi/recuperarSenha">{{__ "ppgiSignIn.forgotPassword"}}</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELEÇÃO DE EDITAL -->
+        <div class="form-group">
+          <label class="sr-only" for="edital">
+            {{__ "ppgiSignIn.selectNotice"}}
+          </label>
+          <select
+            class="form-control"
+            name="edital"
+            id="edital"
+          >
+            <option value="">
+              {{__ "ppgiSignIn.selectNotice"}} *
+            </option>
+            {{#each editais}}
+              <option value="{{id}}">{{id}}</option>
+            {{/each}}
+          </select>
+          <div class="help-block"></div>
+        </div>
+
+        <!-- BOTÕES -->
+        <div class="d-flex flex-column">
+          <button
+            type="submit"
+            name="logar"
+            id="login-btn"
+            class="btn btn-primary mb-2"
+          >
+            {{__ "ppgiSignIn.continueButton"}}
+            <span
+              class="spinner-border spinner-border-sm"
+              hidden="true"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+
+          <button
+            name="voltar"
+            type="button"
+            id="voltar"
+            class="btn btn-default"
+            role="button"
+          >
+            {{__ "ppgiSignIn.backButton"}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </article>
+
+  <!-- Seletor de idioma (pode ser <footer> ou <nav>, dependendo do contexto) -->
+  {{> ppgi/selectLanguage}}
+
+</main>
 
 <script>
-	$("#voltar").click(() => {
-		if (window.history.length > 1) {
-  			window.history.back();
-		} else {
-  			window.location.href = "{{url}}/selecaoppgi";
-		}
-	});
+  // Botão Voltar
+  $("#voltar").click(() => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "{{url}}/selecaoppgi";
+    }
+  });
 
-	$("#togglePassword").click(function() {
-		const typeActual = $("#password").attr("type");
-		if (typeActual === "password") {
-			$("#password").attr("type", "text");
-			$(this).children().toggleClass("bi-eye-slash bi-eye");
-		} else {
-			$("#password").attr("type", "password");
-			$(this).children().toggleClass("bi-eye bi-eye-slash");
-		}
-	});
+  // Exibir/ocultar senha
+  $("#togglePassword").click(function() {
+    const passwordField = $("#password");
+    const icon = $("#togglePasswordIcon");
+    if (passwordField.attr("type") === "password") {
+      passwordField.attr("type", "text");
+      icon.removeClass("bi-eye-slash").addClass("bi-eye");
+      icon.attr('aria-label', '{{__ "ppgi.showPassword"}}');
+      icon.attr('title', '{{__ "ppgi.showPassword"}}');
+    } else {
+      passwordField.attr("type", "password");
+      icon.removeClass("bi-eye").addClass("bi-eye-slash");
+      icon.attr('aria-label', '{{__ "ppgi.hidePassword"}}');
+      icon.attr('title', '{{__ "ppgi.hidePassword"}}');
+    }
+  });
 
-  	$("#loginform input").on("input",() => {
-        const divError = $("#error-msg");
-        if (!divError.prop("hidden")) {
-            divError.prop("hidden", true);
+  $("#loginform input").on("input", () => {
+    const divError = $("#error-msg");
+    if (!divError.prop("hidden")) {
+      divError.prop("hidden", true);
+    }
+  });
+
+  // Validação do formulário
+  $("#loginform").validate({
+    ignore: ':hidden',
+    rules: {
+      email: {
+        required: true,
+        email: true
+      },
+      password: {
+        required: true,
+        minlength: 6
+      },
+      edital: {
+        required: true
+      }
+    },
+    messages: {
+      email: {
+        required: "{{__ 'ppgiSignIn.validation.emailRequired'}}",
+        email: "{{__ 'ppgiSignIn.validation.emailInvalid'}}"
+      },
+      password: {
+        required: "{{__ 'ppgiSignIn.validation.passwordRequired'}}",
+        minlength: "{{__ 'ppgiSignIn.validation.passwordMinLength'}}"
+      },
+      edital: {
+        required: "{{__ 'ppgiSignIn.validation.noticeRequired'}}"
+      }
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('div').append(error);
+    },
+    highlight: function (element) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element) {
+      $(element).removeClass('is-invalid');
+    },
+    submitHandler: function (form, e) {
+      e.preventDefault();
+      const buttonLogin = $("#login-btn");
+      buttonLogin.attr("disabled", true);
+      buttonLogin.find("span").prop("hidden", false);
+
+      const email = $("#email").val();
+      const senha = $("#password").val();
+      const editalId = $("#edital").val();
+      const csrfToken = $("#csrfToken").val();
+
+      $.ajax({
+        url: `{{url}}/selecaoppgi/entrar?_csrf=${csrfToken}`,
+        type: "POST",
+        data: {
+          email,
+          senha,
+          editalId
+        },
+        success: function () {
+          window.location.href = "{{url}}/selecaoppgi/formulario";
+        },
+        error: function (res) {
+          buttonLogin.attr("disabled", false);
+          buttonLogin.find("span").prop("hidden", true);
+
+          const divError = $("#error-msg");
+          divError.prop("hidden", false);
+
+          if (res.status === 422) {
+            divError.text("{{__ 'ppgiSignIn.errorIncomplete'}}");
+          } else if (res.status === 401) {
+            divError.text("{{__ 'ppgiSignIn.errorIncorrect'}}");
+          } else if (res.status === 409) {
+            divError.text("{{__ 'ppgiSignIn.errorAlreadySubmitted'}}");
+          } else {
+            divError.text("{{__ 'ppgiSignIn.errorUnknown'}}");
+          }
         }
-    });
-
-	$("#loginform").validate({
-		ignore: ':hidden',
-		rules: {
-			email: {
-				required: true,
-				email: true
-			},
-			password: {
-				required: true,
-				minlength: 6
-			},
-			edital: {
-				required: true
-			}
-		},
-		messages: {
-			email: {
-				required: "{{__ "ppgiSignIn.validation.emailRequired"}}",
-				email: "{{__ "ppgiSignIn.validation.emailInvalid"}}"
-			},
-			password: {
-				required: "{{__ "ppgiSignIn.validation.passwordRequired"}}",
-				minlength: "{{__ "ppgiSignIn.validation.passwordMinLength"}}"
-			},
-			edital: {
-				required: "{{__ "ppgiSignIn.validation.noticeRequired"}}"
-			},
-		},
-		errorElement: 'span',
-		errorPlacement: function (error, element) {
-			error.addClass('invalid-feedback');
-			element.closest('div').append(error);
-		},
-
-		highlight: function (element, errorClass, validClass) {
-			$(element).addClass('is-invalid');
-		},
-		unhighlight: function (element, errorClass, validClass) {
-			$(element).removeClass('is-invalid');
-		},
-		submitHandler: function (form, e) {
-			e.preventDefault();
-			const buttonLogin = $("#login-btn");
-			buttonLogin.attr("disabled", true);
-			buttonLogin.find("span").prop("hidden", false);
-
-			const email = $("#email").val();
-			const senha = $("#password").val();
-			const edital = $("#edital").val();
-			const csrfToken = $("#csrfToken").val();
-
-			$.ajax({
-				url: `{{url}}/selecaoppgi/entrar?_csrf=${csrfToken}`,
-				type: "POST",
-				data: {
-					email,
-					senha,
-					idEdital: edital,
-				},
-				success: function (data) {
-					window.location.href = "{{url}}/selecaoppgi/formulario";
-				 	}, 
-				error: function (res, status, error) {
-					buttonLogin.attr("disabled", false);
-					buttonLogin.find("span").prop("hidden", true);
-					if(res.status === 422){
-						const divError = $("#error-msg");
-						divError.prop("hidden", false);
-						divError.text("{{__ "ppgiSignIn.errorIncomplete"}}");
-					} else if(res.status === 401){
-						const divError = $("#error-msg");
-						divError.prop("hidden", false);
-						divError.text("{{__ "ppgiSignIn.errorIncorrect"}}");
-					} else if (res.status === 403){
-						const divError = $("#error-msg");
-						divError.prop("hidden", false);
-						divError.text("{{__ "ppgiSignIn.errorAlreadySubmitted"}}");
-					}
-				}
-			})
-		}
-	})
+      });
+    }
+  });
 </script>

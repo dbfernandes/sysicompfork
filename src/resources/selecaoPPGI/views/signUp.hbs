@@ -1,292 +1,449 @@
 <style>
-	.signin-page {
-		height: 100vh;
-		display: flex;
-		background-color: #d2d6de;
-		overflow-y: auto;
-	}
+  .signin-page {
+    height: 100vh;
+    display: flex;
+    background-color: #d2d6de;
+    overflow-y: auto;
+  }
 
-	.signin-page .box {
-		width: 70%;
-		margin: auto;
-		margin-top: 7%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-	@media (max-width: 576px) {
-		.signin-page .box {
-			width: 90%;
-		}
-	}
+  .signin-page .box {
+    width: 70%;
+    margin: 7% auto auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-	.signin-page .box .title {
-		font-size: 24px;
-		margin-bottom: 16px;
-		text-align: center;
-	}
+  @media (max-width: 576px) {
+    .signin-page .box {
+      width: 90%;
+    }
+  }
 
-	.signin-page .box .line {
-		width: 100%;
-		height: 1px;
-		background-color: rgb(16, 1, 36);
-		margin: 10px 0 10px 0;
-	}
+  .signin-page .box .title {
+    font-size: 24px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
 
-	.signin-page .box .card {
-		width: 100%;
-		background-color: #fff;
-		border-radius: 2px;
-		box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
-	}
+  .signin-page .box hr {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(16, 1, 36);
+    margin: 10px 0;
+    border: none; /* remove borda padrão do hr */
+  }
 
-	.signin-page .box .card .card-body {
-		padding: 20px;
-		color: #666;
-	}
+  .signin-page .box .card {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2px;
+  }
 
-	.signin-page .box .card .card-body .erro {
-		color: rgb(255, 0, 0);
-		font-weight: bold;
-	}
+  .signin-page .box .card .card-body {
+    padding: 20px;
+    color: #666;
+  }
 
-	.signin-page .box .card .card-body .actions {
-		justify-content: space-between;
-		gap: 16px;
-	}
+  .signin-page .box .card .card-body .erro {
+    color: rgb(255, 0, 0);
+    font-weight: bold;
+  }
 
-	.signin-page .editais h1 {
-		color: red;
-		text-align: center;
-		font-weight: bold;
-		font-size: 15px;
-		padding: 20px;
-	}
+  .signin-page .box .card .card-body .actions {
+    justify-content: space-between;
+    gap: 16px;
+  }
 
-	.signin-page .editais-list {
-		height: 400px;
-		overflow-y: auto;
-		background-color: #f5f5f5;
-		border: solid 1px #e2e2e2;
-		padding: 10px;
-	}
+  .signin-page .editais h2 {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 20px;
+  }
 
-	.signin-page .editais-list .edital-item {
-		border-bottom: solid 1px #555555;
-		margin-bottom: 8px;
-	}
+  .signin-page .editais-list {
+    height: 400px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    border: solid 1px #e2e2e2;
+    padding: 10px;
+  }
 
-	.signin-page button {
-		color: #fff;
-		text-decoration: none;
-	}
+  .signin-page .editais-list .edital-item {
+    border-bottom: solid 1px #555555;
+    margin-bottom: 8px;
+  }
 
-	.signin-page button:hover {
-		color: #fff;
-		text-decoration: none;
-	}
+  .signin-page button {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .signin-page button:hover {
+    color: #fff;
+    text-decoration: none;
+  }
 </style>
-<div class="signin-page">
-	<div class="box">
-		{{#if errorSignin}}
-			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				{{errorSignin}}
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-		{{/if}}
 
-		<h1 class="title">
-			{{__ "ppgiSignUp.title"}}
-		</h1>
+<!-- Área principal da página -->
+<main class="signin-page">
+  <!-- Seção que agrupa todo o conteúdo central -->
+  <section class="box">
 
-		<div class="card">
-			<div class="card-body">
-				<h3><b>{{__ "ppgiSignUp.instructions"}}</b></h3>
-				<ul>
-					<li>{{__ "ppgiSignUp.instructionList.fillFields"}}</li>
-					<li>{{__ "ppgiSignUp.instructionList.repeatPassword"}}</li>
-					<li>{{__ "ppgiSignUp.instructionList.registrationEmail"}}</li>
-					<li>{{__ "ppgiSignUp.instructionList.confirmRegistration"}}</li>
-				</ul>
-				<div class="line"></div>
-				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
+    {{#if errorSignin}}
+      <!-- Alerta de erro (aria-live="assertive" para leitores de tela) -->
+      <div
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+        aria-live="assertive"
+      >
+        {{errorSignin}}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {{/if}}
 
-				{{#unless editais}}
-					<span class="erro">{{__ "ppgiSignUp.noEditals"}}</span>
-				{{else}}
-					<div class="row editais">
+    <!-- Título principal da página (h1) -->
+    <h1 class="title">
+      {{__ "ppgiSignUp.title"}}
+    </h1>
 
-						<div class=" col-md-5 col-xs-12">
-							<h1>{{__ "ppgiSignUp.availableEditals"}}</h1>
-							<div class="editais-list">
-								{{#each editais}}
-								<div class="edital-item">
-									<div class="edital-item-body">
-										<b>{{__ "ppgiSignUp.editalNumber"}}</b> {{editalId}}<br>
-										<b>{{__ "ppgiSignUp.registrationPeriod"}}</b><br>
-										<ul>
-											<li><b>{{__ "ppgiSignUp.start"}}</b> {{formataData dataInicio}}</li>
-											<li><b>{{__ "ppgiSignUp.end"}}</b> {{formataData dataFim}}</li>
-										</ul>
-										<b>{{__ "ppgiSignUp.courses"}}</b> {{cursos}}<br>
-										<b>{{__ "ppgiSignUp.masterVacancies"}}</b><br>
-										<ul>
-											<li><b>{{__ "ppgiSignUp.regularVacancies"}}</b> {{vagaMestrado}}</li>
-											<li><b>{{__ "ppgiSignUp.supplementaryVacancies"}}</b> {{cotasMestrado}}</li>
-										</ul>
-										<b>{{__ "ppgiSignUp.phdVacancies"}}</b><br>
-										<ul>
-											<li><b>{{__ "ppgiSignUp.regularVacancies"}}</b> {{vagaDoutorado}}</li>
-											<li><b>{{__ "ppgiSignUp.supplementaryVacancies"}}</b> {{cotasDoutorado}}</li>
-										</ul>
-										<b>{{__ "ppgiSignUp.downloadNotice"}}</b> <a href="{{documento}}" target="_blank">{{__ "ppgiSignUp.clickHere"}}</a>
-									</div>
-								</div>
-								{{/each}}
-							</div>
-						</div>
+    <!-- Card principal do formulário -->
+    <article class="card">
+      <div class="card-body">
+        <!-- Subtítulo das instruções (h2, pois já temos um h1 para o título) -->
+        <h3>
+          <b>{{__ "ppgiSignUp.instructions"}}</b>
+        </h3>
+        <ul>
+          <li>{{__ "ppgiSignUp.instructionList.fillFields"}}</li>
+          <li>{{__ "ppgiSignUp.instructionList.repeatPassword"}}</li>
+          <li>{{__ "ppgiSignUp.instructionList.registrationEmail"}}</li>
+          <li>{{__ "ppgiSignUp.instructionList.confirmRegistration"}}</li>
+        </ul>
 
-						<div class="col-md-7 col-xs-12">
-							<h1>{{__ "ppgiSignUp.formTitle"}}</h1>
-							<form id="subscription">
-								<div class="form-group">
-									<label for="email">{{__ "ppgiSignUp.emailLabel"}}</label>
-									<input type="email" class="form-control" id="email" name="email" placeholder="{{__ "ppgiSignUp.emailPlaceholder"}}">
-									<div class="help-block"></div>
-								</div>
-								<div class="form-group">
-									<label for="senha">{{__ "ppgiSignUp.passwordLabel"}}</label>
-									<input type="password" class="form-control" id="senha" name="senha" placeholder="{{__ "ppgiSignUp.passwordPlaceholder"}}">
-								</div>
-								<div class="form-group">
-									<label for="repetir_senha">{{__ "ppgiSignUp.confirmPasswordLabel"}}</label>
-									<input type="password" class="form-control" id="repetir_senha" name="repetir_senha" placeholder="{{__ "ppgiSignUp.confirmPasswordPlaceholder"}}">
-								</div>
-								<div class="form-group">
-									<label for="edital">{{__ "ppgiSignUp.editalLabel"}}</label>
-									<select class="form-control" id="edital" name="edital">
-										<option value="">{{__ "ppgiSignUp.selectEdital"}}</option>
-										{{#each editais}}
-											<option value="{{editalId}}">{{editalId}}</option>
-										{{/each}}
-									</select>
-								</div>
-								<span class="erro"></span>
-								<div class="row actions">
-									<button type="submit" class="btn btn-success col-md-5 col-xs-12">
-										{{__ "ppgiSignUp.submitButton"}}
-										<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-									</button>
-									<button type="button" onclick="back()" class="btn btn-warning col-md-5 col-xs-12">{{__ "ppgiSignUp.backButton"}}</button>
-								</div>
-							</form>
-						</div> 
-					</div>
-				{{/unless}}
-			</div>
-		</div>
-		{{> ppgi/selectLanguage}}
+        <!-- Linha horizontal semântica -->
+        <hr>
 
-	</div>
+        <!-- Token CSRF -->
+        <input
+          id="csrfToken"
+          type="hidden"
+          name="_csrf"
+          value="{{csrfToken}}"
+        >
 
-</div>
+        <!-- Verificação de existência de editais -->
+        {{#unless editais}}
+          <span class="erro">
+            {{__ "ppgiSignUp.noEditals"}}
+          </span>
+        {{else}}
+          <div class="row editais">
+            <!-- Coluna esquerda: Lista de Editais -->
+            <section class="col-md-5 col-xs-12">
+              <!-- Subtítulo para editais disponíveis -->
+              <h2>
+                {{__ "ppgiSignUp.availableEditals"}}
+              </h2>
+              <div class="editais-list">
+                {{#each editais}}
+                  <div class="edital-item">
+                    <div class="edital-item-body">
+                      <strong>{{__ "ppgiSignUp.editalNumber"}}</strong> {{id}}<br>
+                      <strong>{{__ "ppgiSignUp.registrationPeriod"}}</strong><br>
+                      <ul>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.start"}}</strong>
+                          {{formataData dataInicio}}
+                        </li>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.end"}}</strong>
+                          {{formataData dataFim}}
+                        </li>
+                      </ul>
+                      <strong>{{__ "ppgiSignUp.courses"}}</strong> {{cursos}}<br>
+                      <strong>{{__ "ppgiSignUp.masterVacancies"}}</strong><br>
+                      <ul>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.regularVacancies"}}</strong>
+                          {{vagaMestrado}}
+                        </li>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.supplementaryVacancies"}}</strong>
+                          {{cotasMestrado}}
+                        </li>
+                      </ul>
+                      <strong>{{__ "ppgiSignUp.phdVacancies"}}</strong><br>
+                      <ul>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.regularVacancies"}}</strong>
+                          {{vagaDoutorado}}
+                        </li>
+                        <li>
+                          <strong>{{__ "ppgiSignUp.supplementaryVacancies"}}</strong>
+                          {{cotasDoutorado}}
+                        </li>
+                      </ul>
+                      <strong>{{__ "ppgiSignUp.downloadNotice"}}</strong>
+                      <a
+                        href="{{documento}}"
+                        target="_blank"
+                      >
+                        {{__ "ppgiSignUp.clickHere"}}
+                      </a>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </section>
+
+            <!-- Coluna direita: Formulário de inscrição -->
+            <section class="col-md-7 col-xs-12">
+              <!-- Subtítulo para o formulário -->
+              <h2>
+                {{__ "ppgiSignUp.formTitle"}}
+              </h2>
+
+              <form id="subscription">
+                <div
+                  id="error-msg"
+                  class="alert alert-danger"
+                  hidden="hidden"
+                  role="alert"
+                  aria-live="assertive"
+                >
+                </div>
+
+                <div class="form-group">
+                  <label for="email">
+                    {{__ "ppgiSignUp.emailLabel"}} *
+                  </label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="{{__ "ppgiSignUp.emailPlaceholder"}}"
+                    autofocus
+                  >
+                  <div class="help-block"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="senha">
+                    {{__ "ppgiSignUp.passwordLabel"}} *
+                  </label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="senha"
+                    name="senha"
+                    placeholder="{{__ "ppgiSignUp.passwordPlaceholder"}}"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="repetir_senha">
+                    {{__ "ppgiSignUp.confirmPasswordLabel"}} *
+                  </label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="repetir_senha"
+                    name="repetir_senha"
+                    placeholder="{{__ "ppgiSignUp.confirmPasswordPlaceholder"}}"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="edital">
+                    {{__ "ppgiSignUp.editalLabel"}} *
+                  </label>
+                  <select
+                    class="form-control"
+                    id="edital"
+                    name="edital"
+                  >
+                    <option value="">
+                      {{__ "ppgiSignUp.selectEdital"}}
+                    </option>
+                    {{#each editais}}
+                      <option value="{{id}}">
+                        {{id}}
+                      </option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <span class="erro"></span>
+
+                <div class="row actions">
+                  <button
+                    type="button"
+                    onclick="back()"
+                    class="btn btn-block btn-default col-md-5 col-xs-12 text-dark"
+                    role="button"
+                  >
+                    {{__ "ppgiSignUp.backButton"}}
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="btn btn-success col-md-5 col-xs-12"
+                  >
+                    {{__ "ppgiSignUp.submitButton"}}
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      hidden="hidden"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+                </div>
+              </form>
+            </section>
+          </div>
+        {{/unless}}
+      </div>
+    </article>
+
+    <!-- Rodapé (ou barra) para a seleção de idioma -->
+    <footer class="align-self-end w-100 mb-3" role="contentinfo">
+      {{> ppgi/selectLanguage}}
+    </footer>
+  </section>
+</main>
 
 <script>
-	function back() {
-		window.location.href = "{{url}}/selecaoppgi";
-	}
+  function back() {
+    window.location.href = "{{url}}/selecaoppgi";
+  }
 
-	$(document).ready(function () {
-		$.validator.addMethod("strongPassword", function (value, element) {
-			return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value);
-		}, "{{__ 'ppgiSignUp.passwordStrength'}}");
+  $(document).ready(function () {
 
-		$("#subscription").validate({
-			ignore: ':hidden',
-			rules: {
-				email: {
-					required: true,
-					email: true
-				},
-				senha: {
-					required: true,
-					minlength: 6,
-					strongPassword: true,
-				},
-				repetir_senha: {
-					required: true,
-					minlength: 6,
-					equalTo: "#senha"
-				},
-				edital: {
-					required: true
-				}
-			},
-			messages: {
-				email: {
-					required: "{{__ "ppgiSignUp.validation.emailRequired"}}",
-					email: "{{__ "ppgiSignUp.validation.emailInvalid"}}"
-				},
-				senha: {
-					required: "{{__ "ppgiSignUp.validation.passwordRequired"}}",
-					minlength: "{{__ "ppgiSignUp.validation.passwordMinlength"}}",
-					strongPassword: "{{__ "ppgiSignUp.validation.passwordStrong"}}",
-				},
-				repetir_senha: {
-					required: "{{__ "ppgiSignUp.validation.repeatPasswordRequired"}}",
-					minlength: "{{__ "ppgiSignUp.validation.repeatPasswordMinlength"}}",
-					equalTo: "{{__ "ppgiSignUp.validation.repeatPasswordEqual"}}"
-				},
-				edital: {
-					required: "{{__ "ppgiSignUp.validation.editalRequired"}}"
-				},
-			},
-			errorElement: 'span',
-			errorPlacement: function (error, element) {
-				error.addClass('invalid-feedback');
-				element.closest('div').append(error);
-			},
-			highlight: function (element, errorClass, validClass) {
-				$(element).addClass('is-invalid');
-			},
-			unhighlight: function (element, errorClass, validClass) {
-				$(element).removeClass('is-invalid');
-			},
-			submitHandler: function (form, e) {
-				e.preventDefault();
-				const buttonSubmit = $("button[type='submit']")
-				buttonSubmit.prop("disabled", true)
-				buttonSubmit.find("span").prop("hidden", false)
-				const email = $("#email").val();
-				const senha = $("#senha").val();
-				const edital = $("#edital").val();
-				const csrfToken = $("#csrfToken").val();
-				
-				$.ajax({
-					url: `{{url}}/selecaoppgi/cadastro?_csrf=${csrfToken}`,
-					type: "POST",
-					data: {
-						email,
-						senha,
-						idEdital: edital,
-					},
-					success: function (data) {
-						window.location.href = "{{url}}/selecaoppgi/formulario";		
-					},
-					error: function (res, status, error) {
-						const err = res.responseJSON
-						buttonSubmit.prop("disabled", false)
-						buttonSubmit.find("span").prop("hidden", true)
-						errorSignin = err.error
-						setTimeout(function() {
-							window.alert(errorSignin);
-						}, 20);
-					}
-				})
-			}
-		})
-	})
+    $("#subscription input").on("input", () => {
+      const divError = $("#error-msg");
+      if (!divError.prop("hidden")) {
+        divError.prop("hidden", true);
+      }
+    });
+
+    $.validator.addMethod("strongPassword", function (value) {
+      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value);
+    }, "{{__ 'ppgiSignUp.passwordStrength'}}");
+
+    $("#subscription").validate({
+      ignore: ':hidden',
+      rules: {
+        email: {
+          required: true,
+          email: true
+        },
+        senha: {
+          required: true,
+          minlength: 6,
+          strongPassword: true,
+        },
+        repetir_senha: {
+          required: true,
+          minlength: 6,
+          equalTo: "#senha"
+        },
+        edital: {
+          required: true
+        }
+      },
+      messages: {
+        email: {
+          required: "{{__ 'ppgiSignUp.validation.emailRequired'}}",
+          email: "{{__ 'ppgiSignUp.validation.emailInvalid'}}"
+        },
+        senha: {
+          required: "{{__ 'ppgiSignUp.validation.passwordRequired'}}",
+          minlength: "{{__ 'ppgiSignUp.validation.passwordMinlength'}}",
+          strongPassword: "{{__ 'ppgiSignUp.validation.passwordStrong'}}",
+        },
+        repetir_senha: {
+          required: "{{__ 'ppgiSignUp.validation.repeatPasswordRequired'}}",
+          minlength: "{{__ 'ppgiSignUp.validation.repeatPasswordMinlength'}}",
+          equalTo: "{{__ 'ppgiSignUp.validation.repeatPasswordEqual'}}"
+        },
+        edital: {
+          required: "{{__ 'ppgiSignUp.validation.editalRequired'}}"
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+      },
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+      submitHandler: function (form, e) {
+        e.preventDefault();
+        const buttonSubmit = $("button[type='submit']");
+        buttonSubmit.prop("disabled", true);
+        buttonSubmit.find("span").prop("hidden", false);
+
+        const email = $("#email").val();
+        const senha = $("#senha").val();
+        const edital = $("#edital").val();
+        const csrfToken = $("#csrfToken").val();
+
+        $.ajax({
+          url: `{{url}}/selecaoppgi/cadastro?_csrf=${csrfToken}`,
+          type: "POST",
+          data: {
+            email,
+            senha,
+            editalId: edital,
+          },
+          success: function () {
+            window.location.href = "{{url}}/selecaoppgi/formulario";
+          },
+          error: function (res) {
+            buttonSubmit.prop("disabled", false);
+            buttonSubmit.find("span").prop("hidden", true);
+
+            const divError = $("#error-msg");
+            divError.prop("hidden", false);
+
+            switch(res.status) {
+              case 422:
+                divError.text("{{__ 'ppgiSignUp.error.emailInvalid'}}");
+                break;
+              case 409:
+                divError.html(`
+                {{__ 'ppgiSignUp.error.candidateExists1'}}
+                <a href='{{url}}/selecaoppgi/entrar?email=${email}'>
+                  <b>{{__ 'ppgiSignUp.error.candidateExists2'}}</b>
+                </a>
+                {{__ 'ppgiSignUp.error.candidateExists3'}}
+              `);
+                break;
+              default:
+                divError.text("{{__ 'ppgiSignUp.error.default'}}");
+                break;
+            }
+          }
+        });
+      }
+    });
+  });
 </script>

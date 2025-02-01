@@ -15,425 +15,713 @@
    		gap: 1rem;
    		align-items: center;
 	}
+
+	.radio-group {
+		margin-bottom: 8px;
+	}
 </style>
 
 <link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
  
-<div class="forms-page">
-	<header>
-		<div class="container">
-			<h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
-			<div class="options">
-				{{> ppgi/selectLanguageHeader}}
-				<button id="btn_inicio"> {{__ "ppgi.header.initButton"}}</button>
-				<button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
-			</div>
-		</div>
-	</header>
-    <div class="toast-container position-fixed ">
-        <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="alert alert-primary mb-0" role="alert">
-                <span id="toastMessage">This is a primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.</span>
-                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    				<span aria-hidden="true">&times;</span>
-  				</button>
-            </div>
-        </div>
+<!-- Conteúdo principal da página -->
+<main class="forms-page">
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
+      <div class="options">
+        {{> ppgi/selectLanguageHeader}}
+        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+      </div>
     </div>
-	<section class="content container">
-		{{> ppgi/nav indexSelect="1" progress="25"}}
-	 
-		<div class="container-fluid">
-			<form id="candidato-formulario">
-				<input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
-				<input id="email" type="hidden" value="{{email}}">
-				<input id="editalPosicao" type="hidden" value="{{editalPosicao}}">
-				<input id="ComoSoubeObj" type="hidden" value="{{comoSoube}}">
-				<input id="NascimentoObj" type="hidden" value="{{dataNascimento}}">
-				<input id="UFObj" type="hidden" value="{{uf}}">
-				<input id="CotistaObj" type="hidden" value="{{cotista}}">
-				<input id="CotistaTipoObj" type="hidden" value="{{cotistaTipo}}">
-				<input id="CondicaoObj" type="hidden" value="{{condicao}}">
-				<input id="CondicaoTipoObj" type="hidden" value="{{condicaoTipo}}">
-				<input id="BolsaObj" type="hidden" value="{{bolsista}}">
+  </header>
 
-				<div class="card card-primary">
-					<div class="card-header">
-						<h3 class="card-title">{{__ "ppgiForm1.identificacaoCandidato.title"}}</h3>
-					</div>
-					<div class="card-body">
-						<div class="row">
+  <!-- Área de notificações (toast) -->
+  <div class="toast-container position-fixed">
+    <div
+      id="myToast"
+      class="toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div class="alert alert-primary mb-0" role="alert">
+				<span id="toastMessage">
+					This is a primary alert with
+					<a href="#" class="alert-link">an example link</a>.
+					Give it a click if you like.
+				</span>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-							<div class="form-group col-md-6">
-								<label for="candidato-nome">
-									<font color="#FF0000">*</font>
-									<b>{{__ "ppgiForm1.identificacaoCandidato.nome"}}:</b>
-								</label>
-								<input class="form-control" id="candidato-nome" placeholder="{{__ "ppgiForm1.identificacaoCandidato.nomePlaceholder"}}" type="text" name="nome"
-									maxlength="60" value="{{nome}}">
-							</div>
-							<div class="col-md-3 campo-candidato-datanascimento">
-								<label class="control-label" for="data-nascimento">
-									<font color="#FF0000">*</font>
-									<b>{{__ "ppgiForm1.identificacaoCandidato.dataNascimento"}}:</b>
-								</label>
-								<div class="input-group">
-									<div class="input-group date" id="candidato-datanascimento" data-target-input="nearest">
-										<input type="text" class="form-control datetimepicker-input" id="data-nascimento"
-											name="dataNascimento" data-target="#candidato-datanascimento">
-										<div class="input-group-append" data-target="#candidato-datanascimento"
-											data-toggle="datetimepicker">
-											<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-										</div>
-									</div>
-								</div>
+  <!-- Conteúdo da página (formulário) -->
+  <section class="content container">
+    <!-- Navegação (pode ser um <nav> se for menu) -->
+    {{> ppgi/nav indexSelect="1" progress="25"}}
 
-								<div class="help-block"></div>
-							</div>
+    <div class="container-fluid">
+      <!-- Agrupamos o formulário em um <article> para indicar uma seção independente -->
+      <article>
+        <form id="candidato-formulario" novalidate>
+          <!-- Tokens e inputs ocultos -->
+          <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+          <input id="email" type="hidden" value="{{email}}" />
+          <input id="editalPosicao" type="hidden" value="{{editalPosicao}}" />
+          <input id="ComoSoubeObj" type="hidden" value="{{comoSoube}}" />
+          <input id="UFObj" type="hidden" value="{{uf}}" />
+          <input id="CotistaObj" type="hidden" value="{{cotista}}" />
+          <input id="CotistaTipoObj" type="hidden" value="{{cotistaTipo}}" />
+          <input id="CondicaoObj" type="hidden" value="{{condicao}}" />
+          <input id="CondicaoTipoObj" type="hidden" value="{{condicaoTipo}}" />
 
-							<div class="col-md-3 " role="radiogroup">
-								<label class="control-label" for="candidato-sexo">
-									<font color="#FF0000">*</font>
-									<b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
-								</label>
-								<div id="candidato-sexo" role="radiogroup"
-									style="display: flex; align-content:center; gap: 20px; max-width: 100%; flex-wrap: wrap;">
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo" name="candidatoSexo" {{#if (eq sexo 'M')}} checked="true" {{/if}}>
-										<label for="Sexo"> {{__ "ppgiForm1.identificacaoCandidato.masculino"}}</label>
-									</div>
+          <!-- Card 1: Identificação do Candidato -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                {{__ "ppgiForm1.identificacaoCandidato.title"}}
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Nome -->
+                <div class="form-group col-md-6">
+                  <label for="candidato-nome">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nome"}}:</b>
+                  </label>
+                  <input
+                    class="form-control"
+                    id="candidato-nome"
+                    type="text"
+                    name="nome"
+                    maxlength="60"
+                    placeholder="{{__ "ppgiForm1.identificacaoCandidato.nomePlaceholder"}}"
+                    value="{{nome}}"
+                    autofocus
+                  />
+                </div>
 
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Sexo2" name="candidatoSexo"  {{#if (eq sexo 'F')}} checked="true" {{/if}}>
-										<label for="Sexo2">{{__ "ppgiForm1.identificacaoCandidato.feminino"}}</label>
-									</div>
+                <!-- Data de nascimento -->
+                <div class="col-md-3 campo-candidato-datanascimento">
+                  <label for="data-nascimento" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.dataNascimento"}}:</b>
+                  </label>
+                  <div class="input-group" id="candidato-datanascimento" data-target-input="nearest">
+                    <input
+                      type="text"
+                      class="form-control datetimepicker-input"
+                      id="data-nascimento"
+                      name="dataNascimento"
+                      data-target="#candidato-datanascimento"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#candidato-datanascimento"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-								</div>
-							</div>
+                <!-- Sexo -->
+                <div class="col-md-3" role="radiogroup" aria-label="Sexo">
+                  <label for="candidato-sexo" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
+                  </label>
+                  <div
+                    id="candidato-sexo"
+                    class="d-flex align-content-center radio-group"
+                    style="column-gap: 20px; max-width: 100%; flex-wrap: wrap; row-gap: 4px;"
+                  >
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Sexo"
+                        name="candidatoSexo"
+                        {{#if (eq sexo 'M')}}checked{{/if}}
+                      />
+                      <label for="Sexo">
+                        {{__ "ppgiForm1.identificacaoCandidato.masculino"}}
+                      </label>
+                    </div>
 
-						</div>
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Sexo2"
+                        name="candidatoSexo"
+                        {{#if (eq sexo 'F')}}checked{{/if}}
+                      />
+                      <label for="Sexo2">
+                        {{__ "ppgiForm1.identificacaoCandidato.feminino"}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- /row -->
 
-						<div class="form-group row">
-							<div class="col-md-6 campo-candidato-nomesocial">
-								<label class="control-label" for="candidato-nomesocial">
-									<b>{{__ "ppgiForm1.identificacaoCandidato.nomeSocial"}}:</b>
-								</label>
-								<input id="candidato-nomesocial" class="form-control" type="text" name="Candidato[nomesocial]"
-									maxlength="60" value="{{nomeSocial}}" />
-								<div class="help-block"></div>
-							</div>
+              <div class="form-group row">
+                <!-- Nome Social -->
+                <div class="col-md-6 campo-candidato-nomesocial">
+                  <label for="candidato-nomesocial" class="control-label">
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nomeSocial"}}:</b>
+                  </label>
+                  <input
+                    id="candidato-nomesocial"
+                    class="form-control"
+                    type="text"
+                    name="Candidato[nomesocial]"
+                    maxlength="60"
+                    value="{{nomeSocial}}"
+                  />
+                </div>
 
-							<div class="col-md-3 campo-candidato-cep">
-								<label class="control-label" for="candidato-cep">
-									<font color="#FF0000">*</font>
-									<b>{{__ "ppgiForm1.identificacaoCandidato.cep"}}:</b>
-								</label>
-								<input id="candidato-cep" class="form-control" type="text" name="candidatoCep" data-plugin-inputmask=""
-									value="{{cep}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
-								<div class="invalid-feedback"></div>
-								<div class="help-block"></div>
-							</div>
+                <!-- CEP -->
+                <div class="col-md-3 campo-candidato-cep">
+                  <label for="candidato-cep" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.cep"}}:</b>
+                  </label>
+                  <input
+                    id="candidato-cep"
+                    class="form-control"
+                    type="text"
+                    name="candidatoCep"
+                    data-plugin-inputmask=""
+                    value="{{cep}}"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                  />
+                  <div class="invalid-feedback"></div>
+                </div>
 
-							<div class="col-md-3 campo-candidato-uf">
-								<label class="control-label" for="candidato-uf">
-									<font color="#FF0000">*</font>
-									<b>{{__ "ppgiForm1.identificacaoCandidato.estado"}}:</b>
-								</label>
-								<select id="candidato-uf" class="custom-select" name="candidatoUf">
-									<option value="">{{__ "ppgiForm1.identificacaoCandidato.selectEstado"}}:</option>
-									<option value="AC">AC</option>
-									<option value="AL">AL</option>
-									<option value="AM">AM</option>
-									<option value="AP">AP</option>
-									<option value="BA">BA</option>
-									<option value="CE">CE</option>
-									<option value="DF">DF</option>
-									<option value="ES">ES</option>
-									<option value="GO">GO</option>
-									<option value="MA">MA</option>
-									<option value="MG">MG</option>
-									<option value="MS">MS</option>
-									<option value="MT">MT</option>
-									<option value="PA">PA</option>
-									<option value="PB">PB</option>
-									<option value="PE">PE</option>
-									<option value="PI">PI</option>
-									<option value="PR">PR</option>
-									<option value="RJ">RJ</option>
-									<option value="RN">RN</option>
-									<option value="RO">RO</option>
-									<option value="RR">RR</option>
-									<option value="RS">RS</option>
-									<option value="SC">SC</option>
-									<option value="SE">SE</option>
-									<option value="SP">SP</option>
-									<option value="TO">TO</option>
-								</select>
-								<div class="help-block"></div>
-							</div>
+                <!-- UF -->
+                <div class="col-md-3 campo-candidato-uf">
+                  <label for="candidato-uf" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.estado"}}:</b>
+                  </label>
+                  <select
+                    id="candidato-uf"
+                    class="custom-select"
+                    name="candidatoUf"
+                  >
+                    <option value="">
+                      {{__ "ppgiForm1.identificacaoCandidato.selectEstado"}}:
+                    </option>
+                    <option value="AC">AC</option>
+                    <option value="AL">AL</option>
+                    <option value="AM">AM</option>
+                    <option value="AP">AP</option>
+                    <option value="BA">BA</option>
+                    <option value="CE">CE</option>
+                    <option value="DF">DF</option>
+                    <option value="ES">ES</option>
+                    <option value="GO">GO</option>
+                    <option value="MA">MA</option>
+                    <option value="MG">MG</option>
+                    <option value="MS">MS</option>
+                    <option value="MT">MT</option>
+                    <option value="PA">PA</option>
+                    <option value="PB">PB</option>
+                    <option value="PE">PE</option>
+                    <option value="PI">PI</option>
+                    <option value="PR">PR</option>
+                    <option value="RJ">RJ</option>
+                    <option value="RN">RN</option>
+                    <option value="RO">RO</option>
+                    <option value="RR">RR</option>
+                    <option value="RS">RS</option>
+                    <option value="SC">SC</option>
+                    <option value="SE">SE</option>
+                    <option value="SP">SP</option>
+                    <option value="TO">TO</option>
+                  </select>
+                </div>
+              </div><!-- /row -->
 
-						</div>
+              <div class="form-group row">
+                <!-- Endereço -->
+                <div class="col-md-6 field-candidato-endereco">
+                  <label for="candidato-endereco" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.endereco"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-endereco"
+                    class="form-control"
+                    name="candidatoEndereco"
+                    maxlength="160"
+                    value="{{endereco}}"
+                  />
+                </div>
 
-						<div class="form-group row">
-							<div class="col-md-6 field-candidato-endereco">
-								<label class="control-label" for="candidato-endereco">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.endereco"}}:</b>
-								</label>
-								<input type="text" id="candidato-endereco" class="form-control" name="candidatoEndereco" maxlength="160"
-									value="{{endereco}}">
-								<div class="help-block"></div>
-							</div>
+                <!-- Cidade -->
+                <div class="col-md-3 field-candidato-cidade has-error">
+                  <label for="candidato-cidade" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.cidade"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-cidade"
+                    class="form-control"
+                    name="candidatoCidade"
+                    maxlength="40"
+                    value="{{cidade}}"
+                    aria-invalid="true"
+                  />
+                </div>
 
-							<div class="col-md-3 field-candidato-cidade has-error">
-								<label class="control-label" for="candidato-cidade">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.cidade"}}:</b>
-								</label>
-								<input type="text" id="candidato-cidade" class="form-control" name="candidatoCidade" maxlength="40"
-									aria-invalid="true" value="{{cidade}}">
-							</div>
+                <!-- Bairro -->
+                <div class="col-md-3 field-candidato-bairro">
+                  <label for="candidato-bairro" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.bairro"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-bairro"
+                    class="form-control"
+                    name="candidatoBairro"
+                    maxlength="50"
+                    value="{{bairro}}"
+                  />
+                </div>
+              </div><!-- /row -->
 
-							<div class="col-md-3 field-candidato-bairro">
-								<label class="control-label" for="candidato-bairro">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.bairro"}}:</b>
-								</label>
-								<input type="text" id="candidato-bairro" class="form-control" name="candidatoBairro" maxlength="50"
-									value="{{bairro}}">
-								<div class="help-block"></div>
-							</div>
-						</div>
+              <!-- Nacionalidade -->
+              <div class="row form-group">
+                <div class="col-md-3 field-candidato-nacionalidade">
+                  <label for="candidatoNacionalidade" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.title"}}:</b>
+                  </label>
+                  <div
+                    role="radiogroup"
+                    aria-label="Nacionalidade"
+                    class="radio-group d-flex align-content-center"
+                    style="gap: 20px;"
+                  >
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Nacionalidade1"
+                        name="candidatoNacionalidade"
+                        {{#if (eq nacionalidade 'Brasileira')}}checked{{/if}}
+                      />
+                      <label for="Nacionalidade1">
+                        {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.brasileira"}}
+                      </label>
+                    </div>
 
-						<div class="row form-group">
-							<div class="col-md-3 field-candidato-nacionalidade">
-								<label for="candidato-sexo" class="control-label">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.title"}}:</b>
-								</label>
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Nacionalidade2"
+                        name="candidatoNacionalidade"
+                        {{#if (eq nacionalidade 'Estrangeira')}}checked{{/if}}
+                      />
+                      <label for="Nacionalidade2">
+                        {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.estrangeira"}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-								<div id="candidato-sexo" role="radiogroup" style="display: flex; align-content:center; gap: 20px;">
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Nacionalidade1" name="candidatoNacionalidade" 
-										{{#if (eq nacionalidade 'Brasileira')}} checked {{/if}}>
-										<label for="Nacionalidade1"> {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.brasileira"}}</label>
-									</div>
+              <!-- Brasileiro -->
+              <div
+                class="row form-group"
+                id="row-nacionalidade-brasileiro"
+                {{#if (ne nacionalidade 'Brasileira')}}hidden{{/if}}
+              >
+                <div class="col-md-6">
+                  <label for="cpf" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.cpf"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="cpf"
+                    class="form-control cpf"
+                    name="cpf"
+                    value="{{cpf}}"
+                  />
+                </div>
+              </div>
 
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Nacionalidade2" name="candidatoNacionalidade" 
-										{{#if (eq nacionalidade 'Estrangeira')}} checked {{/if}}>
-										<label for="Nacionalidade2"> {{__ "ppgiForm1.identificacaoCandidato.nacionalidade.estrangeira"}}</label>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row form-group" id="row-nacionalidade-brasileiro" {{#if (ne nacionalidade 'Brasileira')}}hidden{{/if}}>
-							<div class="col-md-6">
-								<label class="control-label" for="cpf"></label>
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.cpf"}}:</b>
-								</label>
-								<input type="text" id="cpf" class="form-control cpf" name="cpf" value="{{cpf}}">
-								<div class="help-block"></div>
-							</div>
-						</div>
-						<div class="row form-group" id="row-nacionalidade-estrangeiro" {{#if (ne nacionalidade 'Estrangeira')}}hidden{{/if}}>
-							<div class="col-md-6">
-								<label class="control-label" for="pais"></label>
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.pais"}}:</b>
-								</label>
-								<input type="text" id="pais" class="form-control" name="pais" value="{{pais}}">
-								<div class="help-block"></div>
-							</div>
-							<div class="col-md-6">
-								<label class="control-label" for="passaporte"></label>
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.passaporte"}}:</b>
-								</label>
-								<input type="text" id="passaporte" class="form-control" name="passaporte" value="{{passaporte}}" maxlength="9">
-								<div class="help-block"></div>
-							</div>
-						</div>
-					</div>
-				</div>
+              <!-- Estrangeiro -->
+              <div
+                class="row form-group"
+                id="row-nacionalidade-estrangeiro"
+                {{#if (ne nacionalidade 'Estrangeira')}}hidden{{/if}}
+              >
+                <div class="col-md-6">
+                  <label for="pais" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.pais"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="pais"
+                    class="form-control"
+                    name="pais"
+                    value="{{pais}}"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="passaporte" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.passaporte"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="passaporte"
+                    class="form-control"
+                    name="passaporte"
+                    value="{{passaporte}}"
+                    maxlength="9"
+                  />
+                </div>
+              </div>
 
-				<div class="card card-primary">
-					<div class="card-header">
-						<h3 class="card-title">{{__ "ppgiForm1.contato.title"}}</h3>
-					</div>
+            </div><!-- /card-body -->
+          </div><!-- /card Identificação -->
 
-					<div class="card-body">
-						<div class="row">
-							<div class="form-group col-md-6  col-sm-6">
-								<label class="control-label " for="candidato-telresidencial">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.contato.telefonePrincipal"}}:</b>
-								</label>
-								<input type="text" id="candidato-telresidencial" class="form-control telefone" name="candidatoTelresidencial"
-									value="{{telefone}}">
-								<div class="help-block"></div>
-							</div>
+          <!-- Card 2: Contato -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm1.contato.title"}}</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Telefone Principal -->
+                <div class="form-group col-md-6 col-sm-6">
+                  <label for="candidato-telresidencial" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.contato.telefonePrincipal"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-telresidencial"
+                    class="form-control telefone"
+                    name="candidatoTelresidencial"
+                    value="{{telefone}}"
+                  />
+                </div>
 
-							<div class="form-group col-md-6 col-sm-6">
-								<label class="control-label" for="candidato-telcelular"> {{__ "ppgiForm1.contato.telefoneAlternativo"}}:</label>
-								<input type="text" id="candidato-telcelular " class="form-control telefone" name="Candidato[telcelular]"
-									value="{{telefoneSecundario}}" >
+                <!-- Telefone Alternativo -->
+                <div class="form-group col-md-6 col-sm-6">
+                  <label for="candidato-telcelular" class="control-label">
+                    {{__ "ppgiForm1.contato.telefoneAlternativo"}}:
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-telcelular"
+                    class="form-control telefone"
+                    name="Candidato[telcelular]"
+                    value="{{telefoneSecundario}}"
+                  />
+                </div>
+              </div><!-- /row -->
+            </div>
+          </div><!-- /card Contato -->
 
-								<div class="help-block"></div>
-							</div>
-						</div>
-					</div>
-				</div>
+          <!-- Card 3: Edital (como soube) -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm1.edital.title"}}</h3>
+            </div>
+            <div class="card-body">
+              <div class="row form-group col-sm-6">
+                <div>
+                  <label for="como-soube">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.edital.label"}}</b>
+                  </label>
+                  <select
+                    id="como-soube"
+                    class="custom-select"
+                    name="comoSoube"
+                  >
+                    <option value="">
+                      {{__ "ppgiForm1.edital.placeholder"}}:
+                    </option>
+                    <option value="Facebook">
+                      {{__ "ppgiForm1.edital.options.facebook"}}
+                    </option>
+                    <option value="Instagram">
+                      {{__ "ppgiForm1.edital.options.instagram"}}
+                    </option>
+                    <option value="LinkedIn">
+                      {{__ "ppgiForm1.edital.options.linkedin"}}
+                    </option>
+                    <option value="Email">
+                      {{__ "ppgiForm1.edital.options.email"}}
+                    </option>
+                    <option value="PPGI">
+                      {{__ "ppgiForm1.edital.options.ppgi"}}
+                    </option>
+                    <option value="IComp">
+                      {{__ "ppgiForm1.edital.options.icomp"}}
+                    </option>
+                    <option value="ProprioIcomp">
+                      {{__ "ppgiForm1.edital.options.proprioIcomp"}}
+                    </option>
+                    <option value="Outro">
+                      {{__ "ppgiForm1.edital.options.outro"}}
+                    </option>
+                  </select>
+                </div>
+              </div><!-- /row -->
+            </div>
+          </div><!-- /card Edital -->
 
+          <!-- Card 4: Inscrição -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">{{__ "ppgiForm1.inscricao.title"}}</h3>
+            </div>
+            <div class="card-body">
+              <div class="row form-group">
+                <!-- Curso Desejado -->
+                <div class="form-group col-md-5">
+                  <label class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.cursoDesejado"}}:</b>
+                  </label>
+                  <div
+                    id="cadidato-curso"
+                    role="radiogroup"
+                    class="radio-group"
+                    aria-label="{{__ 'ppgiForm1.inscricao.cursoDesejado'}}"
+                  >
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Curso1"
+                        name="candidatoCurso"
+                        {{#if (eq cursoDesejado 'Mestrado')}}checked{{/if}}
+                      />
+                      <label for="Curso1" style="margin-right: 20px;">
+                        {{__ "ppgiForm1.inscricao.mestrado"}}
+                      </label>
+                    </div>
 
-				<div class="card card-primary">
-					<div class="card-header">
-						<h3 class="card-title">{{__ "ppgiForm1.edital.title"}}</h3>
-					</div>
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Curso2"
+                        name="candidatoCurso"
+                        {{#if (eq cursoDesejado 'Doutorado')}}checked{{/if}}
+                      />
+                      <label for="Curso2">
+                        {{__ "ppgiForm1.inscricao.doutorado"}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
-					<div class="card-body">
-						<div class="row form-group col-sm-6">
-							<div>
-								<label>
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.edital.label"}}</b>
-								</label>
-								<select id="como-soube" class="custom-select" name="comoSoube">
-									<option value="">{{__ "ppgiForm1.edital.placeholder"}}:</option>
-									<option value="Facebook">{{__ "ppgiForm1.edital.options.facebook"}}</option>
-									<option value="Instagram">{{__ "ppgiForm1.edital.options.instagram"}}</option>
-									<option value="LinkedIn">{{__ "ppgiForm1.edital.options.linkedin"}}</option>
-									<option value="Email">{{__ "ppgiForm1.edital.options.email"}}</option>
-									<option value="PPGI">{{__ "ppgiForm1.edital.options.ppgi"}}</option>
-									<option value="IComp">{{__ "ppgiForm1.edital.options.icomp"}}</option>
-									<option value="ProprioIcomp">{{__ "ppgiForm1.edital.options.proprioIcomp"}}</option>
-									<option value="Outro">{{__ "ppgiForm1.edital.options.outro"}}</option>
-								</select>
-							</div>
-						</div>
-					</div>
-				</div>
+                <!-- Regime -->
+                <div class="col-md-12">
+                  <label class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.regime"}}</b>
+                  </label>
+                  <input type="hidden" name="candidatoRegime" value="" />
+                  <div
+                    id="candidato-regime"
+                    role="radiogroup"
+                    class="radio-group"
+                    aria-label="{{__ 'ppgiForm1.inscricao.regime'}}"
+                  >
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Regime1"
+                        name="candidatoRegime"
+                        {{#if (eq regime 'Integral')}}checked{{/if}}
+                      />
+                      <label for="Regime1" style="margin-right: 20px;">
+                        {{__ "ppgiForm1.inscricao.integral"}}
+                      </label>
+                    </div>
+                    <div class="icheck-primary d-inline">
+                      <input
+                        type="radio"
+                        id="Regime2"
+                        name="candidatoRegime"
+                        {{#if (eq regime 'Parcial')}}checked{{/if}}
+                      />
+                      <label for="Regime2">
+                        {{__ "ppgiForm1.inscricao.parcial"}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- /row -->
 
-				<div class="card card-primary">
-					<div class="card-header">
-						<h3 class="card-title">{{__ "ppgiForm1.inscricao.title"}}</h3>
-					</div>
-					<div class="card-body">
-						<div class="row form-group">
-							<div class="form-group col-md-5">
-								<label class="control-label">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.cursoDesejado"}}:</b>
-								</label>
+              <!-- Cotista -->
+              <div id="cotista-div" class="row form-group">
+                <div class="col-md-5 form-group form-switch">
+                  <div>
+                    <label for="cotista">
+                      <span class="text-danger">*</span>
+                      {{__ "ppgiForm1.inscricao.cotista"}}?
+                    </label>
+                  </div>
 
-								<div id="cadidato-curso" role="radiogroup">
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Curso1" name="candidatoCurso"  {{#if (eq cursoDesejado 'Mestrado')}} checked="true" {{/if}}>
-										<label for="Curso1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.mestrado"}}
-										</label>
-									</div>
+                    <input
+                      type="checkbox"
+                      id="cotista"
+                      name="cotista"
+                      role="switch"
+                      data-bootstrap-switch-cotista
+                      data-off-color="danger"
+                      data-on-color="success"
+                      data-on-text="{{__ "ppgi.yesOption"}}"
+                      data-off-text="{{__ "ppgi.noOption"}}"
+                      wrapperClass="teste"
+                    />
 
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Curso2" name="candidatoCurso" {{#if (eq cursoDesejado 'Doutorado')}} checked="true" {{/if}}>
-										<label for="Curso2"> {{__ "ppgiForm1.inscricao.doutorado"}}
-										</label>
-									</div>
-								</div>
-							</div>
+                </div>
+                <div id="cota" class="col-md-6">
+                  <label for="tipo-cota" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.tipoCota"}}:</b>
+                  </label>
+                  <select
+                    id="tipo-cota"
+                    class="custom-select"
+                    name="tipo-cota"
+                  >
+                    <option value="">
+                      {{__ "ppgiForm1.inscricao.placeholderTipoCota"}}:
+                    </option>
+                    <option value="indigena">
+                      {{__ "ppgiForm1.inscricao.optionCota.indigena"}}
+                    </option>
+                    <option value="negro">
+                      {{__ "ppgiForm1.inscricao.optionCota.negro"}}
+                    </option>
+                    <option value="pardo">
+                      {{__ "ppgiForm1.inscricao.optionCota.pardo"}}
+                    </option>
+                    <option>
+                      {{__ "ppgiForm1.inscricao.optionCota.pcd"}}
+                    </option>
+                  </select>
+                </div>
+              </div>
 
-							<div class="col-md-12">
-								<label class="control-label">
-									<font color="#FF0000">*</font>
-									 <b>{{__ "ppgiForm1.inscricao.regime"}}</b>
-								</label>
+              <!-- Deficiência / Condição Especial -->
+              <div id="deficiencia-div" class="row form-group">
+                <div class="col-md-5 form-group">
+                  <label for="candidato-deficiencia1">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.saude"}}?</b>
+                  </label>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="candidato-deficiencia1"
+                      name="deficiencia"
+                      data-bootstrap-switch-deficiencia
+                      data-off-color="danger"
+                      data-on-color="success"
+                      data-on-text="{{__ "ppgi.yesOption"}}"
+                      data-off-text="{{__ "ppgi.noOption"}}"
+                    />
+                  </div>
+                </div>
+                <div id="condicao" class="col-md-6">
+                  <label for="candidato-condicao" class="control-label">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.condicao"}}:</b>
+                  </label>
+                  <input
+                    type="text"
+                    id="candidato-condicao"
+                    class="form-control"
+                    name="candidatoCondicao"
+                    value="{{condicaoTipo}}"
+                  />
+                </div>
+              </div>
 
-								<input type="hidden" name="candidatoRegime" value="">
-								<div id="candidato-regime" role="radiogroup">
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Regime1" name="candidatoRegime" {{#if (eq regime 'Integral')}} checked="true" {{/if}}>
-										<label for="Regime1" style="margin-right: 20px;"> {{__ "ppgiForm1.inscricao.integral"}} </label>
-									</div>
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="Regime2" name="candidatoRegime" {{#if (eq regime 'Parcial')}} checked="true" {{/if}}>
-										<label for="Regime2"> {{__ "ppgiForm1.inscricao.parcial"}} </label>
-									</div>
-								</div>
-								<div class="help-block"></div>
-							</div>
-						</div>
+              <!-- Bolsa -->
+              <div class="row">
+                <div class="col-md-5">
+                  <label for="candidato-bolsa">
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm1.inscricao.bolsa"}}</b>
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="candidato-bolsa"
+                    name="bolsa"
+                    data-bootstrap-switch-bolsa
+                    data-off-color="danger"
+                    data-on-color="success"
+                    data-on-text="{{__ "ppgi.yesOption"}}"
+                    data-off-text="{{__ "ppgi.noOption"}}"
+                  />
+                </div>
+              </div>
+            </div><!-- /card-body -->
 
-						<div id="cotista-div" class="row form-group">
-							<div class="col-md-5 form-group">
-								<div>
-									<label for="cotista">
-										<font color="#FF0000">*</font> {{__ "ppgiForm1.inscricao.cotista"}}?
-									</label>
-								</div>
-
-								<div>
-									<input type="checkbox" id="cotista" name="cotista" data-bootstrap-switch-cotista
-										data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}" data-off-text="{{__ "ppgi.noOption"}}">
-								</div>
-							</div>
-							<div id="cota" class="col-md-6">
-								<label class="control-label" for="tipo-cota">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.tipoCota"}}:</b>
-								</label>
-
-								<select id="tipo-cota" class="custom-select" name="tipo-cota">
-									<option value="">{{__ "ppgiForm1.inscricao.placeholderTipoCota"}}:</option>
-									<option value="indigena">{{__ "ppgiForm1.inscricao.optionCota.indigena"}}</option>
-									<option value="negro">{{__ "ppgiForm1.inscricao.optionCota.negro"}}</option>
-									<option value="pardo">{{__ "ppgiForm1.inscricao.optionCota.pardo"}}</option>
-									<option>{{__ "ppgiForm1.inscricao.optionCota.pcd"}}</option>
-								</select>  
-							</div>
-						</div>
-
-						<div id="deficiencia-div" class="row form-group">
-							<div class="col-md-5 form-group">
-
-								<label for="candidato-deficiencia1">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.saude"}}?
-									</b>
-								</label>
-
-								<div>
-									<input type="checkbox" id="candidato-deficiencia1" name="deficiencia"
-										data-bootstrap-switch-deficiencia data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}"
-										data-off-text="{{__ "ppgi.noOption"}}">
-
-								</div>
-							</div>
-							<div id="condicao" class=" col-md-6">
-								<label class="control-label" for="candidato-condicao">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.condicao"}}:</b>
-								</label>
-								<input type="text" id="candidato-condicao" class="form-control" name="candidatoCondicao"
-									data-plugin-inputmask="inputmask_32e8983f" value="{{condicaoTipo}}">
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-md-5">
-								<label for="candidato-bolsa">
-									<font color="#FF0000">*</font> <b>{{__ "ppgiForm1.inscricao.bolsa"}}
-									</b>
-								</label>
-
-								<input type="checkbox" id="candidato-bolsa" name="bolsa" data-bootstrap-switch-bolsa
-									data-off-color="danger" data-on-color="success" data-on-text="{{__ "ppgi.yesOption"}}" data-off-text="{{__ "ppgi.noOption"}}">
-							</div>
-						</div>
-					</div>
-
-					<div class="card-footer">
-						<div class="col">
-							<button id="btn-save-continue" type="submit" class="btn btn-success float-right" >
-								{{__ "ppgi.form.saveAndContinue"}}
-								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-							</button>
-							<button id="btn-save" type="button" class=" btn btn-secondary float-right" style="margin-right: 1rem;"> 
-								{{__ "ppgi.form.save"}}
-								<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span>
-							</button>
-						</div>
-					</div>
-			</form>
-		</div>
-	</section>
-</div>
+            <div class="card-footer">
+              <div class="col">
+                <button
+                  id="btn-save-continue"
+                  type="submit"
+                  class="btn btn-success float-right"
+                >
+                  {{__ "ppgi.form.saveAndContinue"}}
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    hidden="true"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </button>
+                <button
+                  id="btn-save"
+                  type="button"
+                  class="btn btn-secondary float-right mr-2"
+                >
+                  {{__ "ppgi.form.save"}}
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    hidden="true"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </button>
+              </div>
+            </div>
+          </div><!-- /card Inscrição -->
+        </form>
+      </article>
+    </div><!-- /container-fluid -->
+  </section>
+</main>
 {{> ppgi/_masks }}
 <script>
 	$(document).ready(() => {
@@ -501,13 +789,13 @@
 			}
 		});
 	});
+
 	$("input[data-bootstrap-switch-deficiencia]").each(function () {
 		$(this).bootstrapSwitch('state', $(this).prop('checked'));
 		if (!$(this).prop('checked')) {
 			$("#condicao").slideUp();
 		}
 		$(this).bootstrapSwitch('onSwitchChange', () => {
-			var input = document.getElementById('condicao');
 			if ($(this).is(":checked")) {
 				$("#condicao").slideDown();
 				$("#deficiencia-div").css("height", "auto");
@@ -530,9 +818,24 @@
 		});
 	});
 
-	
+  $('.bootstrap-switch.bootstrap-switch-wrapper').each(function (index, element){
+    console.log(index, element)
+    $(element).attr('tabindex',0)
+      .on('focus', function () {
+        $(this).addClass('bootstrap-switch-focussed');
+      })
+      .on('blur', function () {
+        $(this).removeClass('bootstrap-switch-focussed');
+      })
+      .on('keyup', function (e) {
+        if(e.which===32){
+          $(this).find('input').bootstrapSwitch('toggleState');
+        }
+      });
+  })
 
-	function getSelectedSexo() {
+
+  function getSelectedSexo() {
 		const masculinoRadio = document.getElementById("Sexo");
 		const femininoRadio = document.getElementById("Sexo2");
 		let selectedSexo = "";
@@ -660,7 +963,7 @@
 	}
 
 	$(document).ready(() => {
-  		Inputmask("99999-999").mask("#candidato-cep");
+    Inputmask("99999-999").mask("#candidato-cep");
 		$('#candidato-cep').on('blur', pesquisarCep);
 
 		$("#btn_logout").click(function () {
@@ -826,7 +1129,7 @@
 				candidatoCondicao: "{{__ "ppgiForm1.validacao.candidatoCondicao.required"}}",
 				cpf: {
 					required: "{{__ "ppgiForm1.validacao.cpf.required"}}",
-					cpf: "{{__ "ppgiForm1.validacao.cof.cpfInvalido"}}"
+					cpf: "{{__ "ppgiForm1.validacao.cpf.cpfInvalido"}}"
 				},
 				pais: "{{__ "ppgiForm1.validacao.pais.required"}}",
 				passaporte: "{{__ "ppgiForm1.validacao.passaporte.required"}}"
@@ -834,13 +1137,26 @@
 			errorElement: 'span',
 			errorPlacement: function (error, element) {
 				error.addClass('invalid-feedback');
-				element.closest('div').append(error);
+				
+				if (element.is(":radio")) {
+					error.insertAfter(element.closest('.radio-group'));
+				} else {
+					element.closest('div').append(error);
+				}
 			},
 			highlight: function (element, errorClass, validClass) {
-				$(element).addClass('is-invalid');
+				if ($(element).is(":radio")) {
+    				$(element).closest('.radio-group').find('label').addClass('text-danger');
+				} else {
+					$(element).addClass('is-invalid');
+				}
 			},
 			unhighlight: function (element, errorClass, validClass) {
-				$(element).removeClass('is-invalid');
+				if ($(element).is(":radio")) {
+					$(element).closest('.radio-group').find('label').removeClass('text-danger');
+				} else {
+					$(element).removeClass('is-invalid');
+				}
 			},
 			submitHandler: function (form, e) {
 				e.preventDefault();

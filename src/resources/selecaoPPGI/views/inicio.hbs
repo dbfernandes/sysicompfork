@@ -1,0 +1,65 @@
+{{ setTitle title=('__ppgiBegin.title_header')}}
+
+<style>
+  .card .title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 1rem 0.125rem 0;
+  }
+</style>
+
+<main class="login-box">
+  <!-- Header semântico para agrupar os logotipos -->
+  <header class="login-logo container-cards">
+    <img src="/public/img/logo-icomp.png" alt="{{__ 'ppgiBegin.alt_logo_icomp'}}">
+    <img src="/public/img/logo-ufam.png" alt="{{__ 'ppgiBegin.alt_logo_ufam'}}">
+  </header>
+
+  <!-- Section para o cartão de login/inscrição -->
+  <section class="card" aria-labelledby="main-title">
+    <!-- h1 deve ser o título principal da página -->
+    <h1 class="title" id="main-title">
+      {{__ "ppgiBegin.title"}}
+    </h1>
+
+    <div class="card-body login-card-body">
+      <div class="info">
+        <p class="m-0">{{__ "ppgiBegin.candidate.title"}}</p>
+
+        <ul class="px-4">
+          <li>
+            <strong>{{__ "ppgiBegin.candidate.instructions.new_inscription.title"}}</strong>
+            {{__ "ppgiBegin.candidate.instructions.new_inscription.description"}}
+          </li>
+          <li>
+            <strong>{{__ "ppgiBegin.candidate.instructions.continue_inscription.title"}}</strong>
+            {{__ "ppgiBegin.candidate.instructions.continue_inscription.description"}}
+          </li>
+        </ul>
+      </div>
+
+      <div class="options row my-2 ">
+        <div class="col-12 col-sm-6 mb-1">
+          <a
+            class="btn btn-primary btn-block"
+            href="/selecaoppgi/cadastro"
+            role="button"
+          >
+            {{__ "ppgiBegin.new_inscription"}}
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 ">
+          <a
+            class="btn btn-success btn-block px-0"
+            href="/selecaoppgi/entrar"
+            role="button"
+          >
+            {{__ "ppgiBegin.continue_inscription"}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{> ppgi/selectLanguage}}
+</main>

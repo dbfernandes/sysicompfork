@@ -21,6 +21,18 @@
     "previousStep": "Passo Anterior",
     "chooseFile": "Escolher Arquivo",
     "confirm": "Confirmar",
-    "cancel": "Cancelar"
-  }
+    "cancel": "Cancelar",
+    "btnDelete": "Excluir",
+    "btnDownload": "Baixar",
+    "btnChange": "Alterar"
+  },
+  "validation": {
+    "fileSize": "O tamanho do arquivo deve ser inferior a 30MB",
+    "onlyPdf": "Apenas arquivos PDF são permitidos",
+    "required": "Este campo é obrigatório",
+    "onlyXml": "Apenas arquivos XML são permitidos",
+    "onlyDocx": "Apenas arquivos DOCX são permitidos"
+  },
+  "hidePassword": "Ocultar Senha",
+  "showPassword": "Mostrar Senha"
 }

@@ -1,12 +1,22 @@
-// import { PrismaClient, Edital, Candidato } from '@prisma/client';
-import prisma from '../../client';
 import { Edital, Candidato } from '@prisma/client';
-import { CreateEditalDto, StatusEdital } from './edital.types';
+import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
+import prisma from '@/client';
 /* eslint-disable camelcase */
 
-
-
 class EditalService {
+  async getById(id: string): Promise<Edital | null> {
+    try {
+      return await prisma.edital.findFirst({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      console.error('Erro ao buscar edital:', error);
+      throw new Error(error);
+    }
+  }
+
   async criarEdital(editalDados: CreateEditalDto): Promise<Edital> {
     try {
       const edital = await prisma.edital.findFirst({
@@ -64,6 +74,7 @@ class EditalService {
       };
     });
   }
+
   async listEditalsAvailable(): Promise<Edital[]> {
     const dataToday = new Date();
     const editais = await prisma.edital.findMany().catch((err) => {
@@ -80,7 +91,7 @@ class EditalService {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
-          id: id,
+          id,
         },
       });
 
@@ -100,11 +111,11 @@ class EditalService {
     }
   }
 
-  async arquivar(id_edital: string, { status }: { status: any }) {
+  async arquivar(id: string, { status }: { status: any }) {
     const edital = await prisma.edital
       .findFirst({
         where: {
-          id: id_edital,
+          id,
         },
       })
       .catch((err) => {
@@ -119,7 +130,7 @@ class EditalService {
     await prisma.edital
       .update({
         where: {
-          id: id_edital,
+          id,
         },
         data: {
           status,
@@ -149,7 +160,7 @@ class EditalService {
     return edital;
   }
 
-  async update(id_update: string, dados: any): Promise<Edital> {
+  async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
     try {
       const edital = await prisma.edital.findFirst({
         where: {
@@ -164,17 +175,17 @@ class EditalService {
         where: { id: id_update },
         data: dados,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro ao atualizar edital:', error);
       throw new Error(error);
     }
   }
 
-  async getEditalByNumber(number: any): Promise<Edital | null> {
+  async getEditalByNumber(id: string): Promise<Edital | null> {
     const edital = await prisma.edital
       .findFirst({
         where: {
-          id: number,
+          id: id,
         },
       })
       .catch((err) => {

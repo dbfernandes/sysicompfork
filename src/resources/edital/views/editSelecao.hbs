@@ -1,6 +1,6 @@
 {{> header}}
 {{> sidebar module='selecaoppgi' page='adital-listar'}}
-{{ setTitle title=(concat "Alterar Edital do PPGI " edital.id) }}
+{{ setTitle title=(concat "Alterar Edital do PPGI " edital.editalCodigo) }}
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -51,6 +51,7 @@
                         <div class="card-body">
                             <div class="col-md-12">
                                 <div class="form-row">
+                                    {{!-- Código do Edital --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
@@ -63,6 +64,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    {{!-- URL do Edital --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
@@ -82,6 +85,7 @@
                                 </div>
 
                                 <div class="form-row mt-4">
+                                    {{!-- Datas de Início e Fim das Inscrições --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
@@ -166,7 +170,7 @@
                                         </label>
                                         <input type="number" name="vaga_regular_mestrado" class="form-control "
                                             placeholder="Vagas Regulares para Mestrado" required
-                                            id="vaga_regular_mestrado" value="{{edital.vagaMestrado}}" min="0">
+                                            id="vaga_regular_mestrado" value="{{edital.vagasMestrado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
@@ -201,7 +205,7 @@
                                         </label>
                                         <input type="number" name="vaga_regular_doutorado" class="form-control "
                                             placeholder="Vagas Regulares para Doutorado" required
-                                            id="vaga_regular_doutorado" value="{{edital.vagaDoutorado}}" min="0">
+                                            id="vaga_regular_doutorado" value="{{edital.vagasDoutorado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
@@ -286,8 +290,8 @@
 
     $(document).ready(function () {
 
-        let dataI = moment('{{edital.dataInicio}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
-        let dataF = moment('{{edital.dataFim}}', 'YYYY-MM-DD').format('DD/MM/YYYY');
+        let dataI = moment('{{edital.dataInicio}}').format('DD/MM/YYYY');
+        let dataF = moment('{{edital.dataFim}}').format('DD/MM/YYYY');
 
         $('#datas').daterangepicker({
             startDate: dataI,
@@ -414,8 +418,8 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = $("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD');
-        const data_fim = $("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD');
+        const data_inicio = new Date($("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD')).toISOString();
+        const data_fim = new Date($("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD')).toISOString();
 
         return {
             vaga_regular_mestrado,
@@ -432,7 +436,7 @@
     }
 
     function submitForm() {
-
+        console.log('submitForm');
         const $form = $('#adicionarSelecaoForm');
         const vagas = verificaVagas();
 

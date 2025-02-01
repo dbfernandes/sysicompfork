@@ -1,4 +1,3 @@
-// test/environment/PrismaTestEnvironment.ts
 import type { Config } from '@jest/types';
 import type { EnvironmentContext, JestEnvironmentConfig } from '@jest/environment';
 import { exec } from 'node:child_process';
@@ -8,15 +7,18 @@ import mysql from 'mysql2/promise';
 import util from 'node:util';
 import crypto from 'node:crypto';
 import path from 'node:path';
+import os from 'node:os';
 
 // Carrega as variáveis de ambiente do arquivo .env.testing
 dotenv.config({ path: '.env.test' });
 
 const execSync = util.promisify(exec);
 
-// Caminho para o binário do Prisma
-// const prismaBinary = './node_modules/.bin/prisma';
-const prismaBinary = path.join(process.cwd(), 'node_modules', '.bin', 'prisma');
+// Caminho para o binário do Prisma (adiciona compatibilidade com Windows)
+const prismaBinary =
+  os.platform() === 'win32'
+    ? path.join('.', 'node_modules', '.bin', 'prisma.cmd')
+    : path.join('.', 'node_modules', '.bin', 'prisma');
 
 export default class PrismaTestEnvironment extends NodeEnvironment {
   private databaseName: string;
@@ -29,6 +31,12 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
     const dbPass = process.env.DATABASE_PASS;
     const dbHost = process.env.DATABASE_HOST;
     const dbPort = process.env.DATABASE_PORT;
+
+    if (!dbUser || !dbPass || !dbHost || !dbPort) {
+      throw new Error(
+        'As variáveis de ambiente do banco de dados não estão configuradas corretamente.',
+      );
+    }
 
     // Gera um nome único para o banco de dados de teste
     this.databaseName = `test_${crypto.randomUUID()}`;
@@ -44,19 +52,30 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASS,
       multipleStatements: true,
-    })
+    });
 
-    // Cria o banco de dados de teste
-    await rootConnection.query(`CREATE DATABASE \`${this.databaseName}\`;`);
-    await rootConnection.end();
+    try {
+      // Cria o banco de dados de teste
+      await rootConnection.query(`CREATE DATABASE \`${this.databaseName}\`;`);
+    } finally {
+      await rootConnection.end();
+    }
 
     // Atualiza a variável de ambiente DATABASE_URL para o banco de dados de teste
     process.env.DATABASE_URL = this.connectionString;
     this.global.process.env.DATABASE_URL = this.connectionString;
 
-    // Executa as migrações do Prisma no banco de dados de teste
-    await execSync(`${prismaBinary} migrate deploy`);
-    console.log('DATABASE_URL:', process.env.DATABASE_URL);
+    try {
+      // Executa as migrações do Prisma no banco de dados de teste
+      await execSync(`${prismaBinary} migrate deploy`);
+
+      // Popula o banco de dados com seeds
+      await execSync(`${prismaBinary} db seed`);
+    } catch (error) {
+      console.error('Erro ao executar migrações ou seeds:', error);
+      throw error;
+    }
+
     return super.setup();
   }
 
@@ -69,9 +88,15 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
       password: process.env.DATABASE_PASS,
       multipleStatements: true,
     });
-    // Droppa o banco de dados de teste
-    await rootConnection.query(`DROP DATABASE IF EXISTS \`${this.databaseName}\`;`);
-    await rootConnection.end();
+
+    try {
+      // Droppa o banco de dados de teste
+      await rootConnection.query(
+        `DROP DATABASE IF EXISTS \`${this.databaseName}\`;`,
+      );
+    } finally {
+      await rootConnection.end();
+    }
 
     return super.teardown();
   }

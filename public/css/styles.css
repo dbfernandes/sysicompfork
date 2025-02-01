@@ -162,6 +162,7 @@
 }
 
 /* ESTILOS USADOS EM SELEÇÃOPPGI */
+
 .container-cards {
   display: flex;
   flex-direction: row;
@@ -177,7 +178,7 @@
   display: flex;
   background-color: #d2d6de;
   overflow-y: auto;
-  margin: 1rem;
+  padding: 1rem;
 }
 
 .icon-input {

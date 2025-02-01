@@ -8,8 +8,10 @@ export enum Nacionalidade {
   BRASILEIRA = 'Brasileira',
   ESTRANGEIRA = 'Estrangeira',
 }
-export interface SignInDto {
-  email: string;
-  senha: string;
-  editalId: string;
+
+export enum PassoFormCandidato {
+  DADOS_PESSOAIS = 1,
+  HISTORICO = 2,
+  PROPOSTA = 3,
+  FINALIZACAO = 4,
 }

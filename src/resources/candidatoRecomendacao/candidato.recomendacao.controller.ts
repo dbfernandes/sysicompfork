@@ -5,6 +5,7 @@ import {
   RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -18,68 +19,60 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-export async function adicionar(req: Request, res: Response) {
-  switch (req.method) {
-    case 'POST':
-      candidatoRecomendacaoService.create(req.body).then((aluno) => {
-        res.json(aluno);
-      });
-      break;
-    case 'GET':
-      const { token } = req.query;
-      const currentLanguage = getLanguage(req);
+async function begin(req: Request, res: Response) {
+  const { token } = req.query;
+  const currentLanguage = getLanguage(req);
 
-      try {
-        const recomendacao =
-          await candidatoRecomendacaoService.getRecomendacaoByToken(
-            token.toString(),
-          );
-        const notFoundRecomendacao = !Boolean(recomendacao);
-        if (notFoundRecomendacao) {
-          return res.render(resolveView('tokenInvalido'), {
-            ...locals,
-            currentLanguage,
-          });
-        }
-        const csrfToken = req.csrfToken();
-        switch (recomendacao.passo) {
-          case RecomendacaoStatus.PENDENTE: {
-            const graduacaoCandidato = `${recomendacao.candidato.cursoGraduacao} - ${recomendacao.candidato.instituicaoGraduacao}`;
-            return res.render(resolveView('adicionar'), {
-              ...locals,
-              candidato: {
-                nome: recomendacao.candidato.nome,
-                graduado: graduacaoCandidato,
-              },
-              recomendacao,
-              csrfToken,
-              token,
-              currentLanguage,
-            });
-          }
-          case RecomendacaoStatus.PREENCHIDA: {
-            if (typeof token === 'string') {
-              await candidatoRecomendacaoService.finish(token);
-            }
-            return res.render(resolveView('mensagemPreenchida'), {
-              ...locals,
-              token,
-              currentLanguage,
-            });
-          }
-          case RecomendacaoStatus.FINALIZADA: {
-            return res.render(resolveView('mensagemFinalizada'), {
-              ...locals,
-              currentLanguage,
-            });
-          }
-        }
-      } catch (error) {
+  try {
+    const recomendacao =
+      await candidatoRecomendacaoService.getRecomendacaoByToken(
+        token.toString(),
+      );
+    const notFoundRecomendacao = !Boolean(recomendacao);
+    if (notFoundRecomendacao) {
+      return res.render(resolveView('tokenInvalido'), {
+        ...locals,
+        currentLanguage,
+      });
+    }
+    const csrfToken = req.csrfToken();
+    switch (recomendacao.passo) {
+      case RecomendacaoStatus.PENDENTE: {
+        const graduacaoCandidato = `${recomendacao.candidato.cursoGraduacao} - ${recomendacao.candidato.instituicaoGraduacao}`;
         return res.render(resolveView('adicionar'), {
+          ...locals,
+          candidato: {
+            nome: recomendacao.candidato.nome,
+            graduado: graduacaoCandidato,
+          },
+          recomendacao,
+          csrfToken,
+          token,
+          currentLanguage,
+        });
+      }
+      case RecomendacaoStatus.PREENCHIDA: {
+        if (typeof token === 'string') {
+          await candidatoRecomendacaoService.finish(token);
+        }
+        return res.render(resolveView('mensagemPreenchida'), {
+          ...locals,
+          token,
+          currentLanguage,
+        });
+      }
+      case RecomendacaoStatus.FINALIZADA: {
+        return res.render(resolveView('mensagemFinalizada'), {
           ...locals,
           currentLanguage,
         });
       }
+    }
+  } catch (error) {
+    return res.render(resolveView('adicionar'), {
+      ...locals,
+      currentLanguage,
+    });
   }
 }
 
@@ -189,13 +182,12 @@ async function salvar(req: Request, res: Response) {
     case 'PUT':
       try {
         const { token } = req.params;
-        console.log(req.body);
-        console.log(token);
+        const dataBody = req.body;
 
-        const data = parseDataToSave(req.body);
+        const data = parseDataToSave(dataBody);
 
-        candidatoRecomendacaoService.save(data, token);
-        return res.status(200).send('OK');
+        await candidatoRecomendacaoService.save(data, token);
+        return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
       } catch (error) {
         console.error(error);
         return res.status(500).send('Internal Server Error');
@@ -210,10 +202,9 @@ async function finalizar(req: Request, res: Response) {
     case 'PUT':
       try {
         const { token } = req.params;
-        console.log(req.body);
-        console.log(token);
+        const dataBody = req.body;
 
-        const data = parseDataToSave(req.body);
+        const data = parseDataToSave(dataBody);
 
         await candidatoRecomendacaoService.save(data, token);
         await candidatoRecomendacaoService.finishForm(token);
@@ -225,4 +216,4 @@ async function finalizar(req: Request, res: Response) {
       return res.status(405).send('Method Not Allowed');
   }
 }
-export default { adicionar, salvar, finalizar };
+export default { begin, salvar, finalizar };

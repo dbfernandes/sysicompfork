@@ -6,7 +6,7 @@ import {
   RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
-import sgMail from '../../utils/mailerGrid';
+import { sendEmail } from '../email/emailService';
 
 const prisma = new PrismaClient();
 
@@ -75,7 +75,7 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async createManyByCandidato(
+  async createManyByCandidate(
     data: {
       nome: string;
       email: string;
@@ -89,7 +89,7 @@ class CandidatoRecomendacaoService {
     // Drop recomendacoes
     const listRecomendacoes = await prisma.candidatoRecomendacao.findMany({
       where: {
-        candidatoId,
+        editalId,
       },
     });
     const dropRecomendacoes = listRecomendacoes.filter(
@@ -137,81 +137,30 @@ class CandidatoRecomendacaoService {
       }));
   }
 
-  async sendEmailRecoveryPasswordCandidato({
-    candidatoId,
-    url,
-  }: {
-    candidatoId: number;
-    url: string;
-  }) {
-    const recomendacoes = await this.getRecomendacoesByCandidato(candidatoId);
+  async sendEmailForUsersByCandidate({ id, url }: { id: number; url: string }) {
+    const recomendacoes = await this.getRecomendacoesByCandidato(id);
     const candidato = await prisma.candidato.findUnique({
       where: {
-        id: candidatoId,
+        id,
       },
     });
-    console.log('Send email to:', candidato?.email);
+
     recomendacoes.forEach((recomendacao) => {
       const urlSend = `${url}?token=${recomendacao.token}`;
-      sgMail
-        .send({
-          to: recomendacao.email, // Change to your recipient
-          from: {
-            email: process.env.SENDGRID_EMAIL_SEND,
-            name: 'Coordenação do PPGI',
-          }, // Change to your verified sender
-          subject: `[PPGI/UFAM] Solicitacao de Carta de Recomendacao para ${candidato?.nome}`,
-          text: 'teste',
-          html: `
-            <div>
-              Caro(a) ${recomendacao.nome},
-              <br>
-              <br>
-              Você foi requisitado(a) por ${candidato?.nome} (email: <a href="mailto:${candidato?.email}">${candidato?.email}</a>) para escrever uma carta de recomendação para o processo de seleção do Programa de Pós-Graduação em Informática (PPGI) da Universidade Federal do Amazonas (UFAM).
-              <br>
-              <p>
-              Para isso, a carta deve ser preenchida eletronicamente utilizando o link:<br>
-              <a href="${urlSend}">${urlSend}</a><br>
-              O prazo para preenchimento da carta é ${recomendacao.prazo.toLocaleDateString(
-                'pt-BR',
-                {
-                  timeZone: 'America/Manaus',
-                  timeZoneName: 'long',
-                },
-              )}.<br>
-              Em caso de dúvidas, por favor, entre em contato com <a href="mailto:secretariappgi@icomp.ufam.edu.br">secretariappgi@icomp.ufam.edu.br</a>. Não responda este email.<br>
-              Agradecemos sua colaboração.
-              </p>
-              <p>
-              Coordenação do PPGI - ${new Date().toLocaleString('pt-BR', {
-                timeZone: 'America/Manaus',
-                timeZoneName: 'long',
-              })} <br>
-              <<<--==-->>>
-              </p>
-              <p>English:</p>
-              Dear ${recomendacao.nome},
-              <br>
-              <br>
-              You have been requested by ${candidato?.nome} (email: <a href="mailto:${candidato?.email}">${candidato?.email}</a>) to write a recommendation letter for the selection process of the Graduate Program in Informatics (PPGI) at the Federal University of Amazonas (UFAM).
-              <br>
-              <p>
-              The letter must be completed electronically using the following link:<br>
-              <a href="${urlSend}">${urlSend}</a><br>
-              The deadline to submit the letter is ${recomendacao.prazo.toLocaleDateString()}.<br>
-              If you have any questions, please contact <a href="mailto:secretariappgi@icomp.ufam.edu.br">secretariappgi@icomp.ufam.edu.br</a>. Do not reply to this email.<br>
-              We appreciate your collaboration.
-              </p>
-              <p>
-              PPGI Coordination - ${new Date().toLocaleString()} <br>
-              <<<--==-->>>
-              </p>
+      sendEmail({
+        to: recomendacao.email, // Change to your recipient
 
-            </div>`,
-        })
-        .catch((err) => {
-          console.log('Error:', err);
-        });
+        name: 'Coordenação do PPGI',
+        title: `[PPGI/UFAM] Solicitacao de Carta de Recomendacao para ${candidato?.nome}`,
+        template: 'cartaRecomendacao',
+        data: {
+          recomendacao: recomendacao,
+          candidato: candidato,
+          urlSend,
+        },
+      }).catch((err) => {
+        console.log('Error:', err);
+      });
     });
   }
 
@@ -226,36 +175,17 @@ class CandidatoRecomendacaoService {
     });
 
     console.log('Send email to:', recomendacao.email);
-    sgMail
-      .send({
-        to: recomendacao.email, // Change to your recipient
-        from: {
-          email: process.env.SENDGRID_EMAIL_SEND,
-          name: 'Coordenação do PPGI',
-        }, // Change to your verified sender
-        subject: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.candidato.nome}`,
-        text: 'teste',
-        html: `
-          <div>
-          Caro(a) ${recomendacao.nome},
-          <br>
-          <br>
-          A carta de recomendação enviada para ${recomendacao.candidato.nome} (email: ${recomendacao.candidato.email}">${recomendacao.candidato.email}</a>) foi devidamente respondida.
-          <br>
-          Em caso de dúvidas, por favor nos contate. Agradecemos sua colaboração.
-          <br>
-          <p>
-          Coordenação do PPGI - ${new Date().toLocaleString('pt-BR', {
-            timeZone: 'America/Manaus',
-            timeZoneName: 'long',
-          })} <br>
-          <<<--==-->>>
-          </p>
-        </div>`,
-      })
-      .catch((err) => {
-        console.log('Error:', err);
-      });
+    sendEmail({
+      to: recomendacao.email, // Change to your recipient
+      name: 'Coordenação do PPGI',
+      title: `[PPGI/UFAM] Resposta de Carta de Recomendacao para ${recomendacao.candidato.nome}`,
+      template: 'cartaRecomendacaoFinalizada',
+      data: {
+        recomendacao,
+      },
+    }).catch((err) => {
+      console.log('Error:', err);
+    });
   }
 }
 

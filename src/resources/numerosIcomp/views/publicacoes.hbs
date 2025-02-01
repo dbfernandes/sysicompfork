@@ -41,7 +41,7 @@
                             <td class="ps-4">{{__ Tipo.dataValues.nome}}</td>
                             <td class="ps-4">{{local}}</td>
                             <td class="ps-4">{{autores}}</td>
-                            <td class="ps-4">{{#if ('!=' ISSN "0")}}{{ISSN}}{{else}} {{__ "publications.naoInformado"}}{{/if}}</td>
+                            <td class="ps-4">{{#if ('!=' issn "0")}}{{issn}}{{else}} {{__ "publications.naoInformado"}}{{/if}}</td>
                         </tr>
                         {{/each}}
                     </tbody>

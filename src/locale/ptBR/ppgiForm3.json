@@ -22,10 +22,34 @@
     "caracteresRestantesLabel": "Caracteres Restantes"
   },
   "documentos": {
-    "cartaOrientador": "Carta de Aceite do Orientador (obrigatório para doutorado)",
-    "propostaTrabalho": "Proposta de Trabalho (obrigatório)",
-    "comprovantePagamento": "Comprovante de Pagamento (obrigatório)"
+    "cartaOrientador": "Carta de Aceite do Orientador em PDF (obrigatório para doutorado)",
+    "propostaTrabalho": "Proposta de Trabalho em PDF",
+    "comprovantePagamento": "Comprovante de Pagamento em PDF"
   },
   "finalizar": "Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.",
-  "adicionarRecomendacao": "Adicionar Recomendação"
+  "adicionarRecomendacao": "Adicionar Recomendação",
+  "validation": {
+    "linhaPesquisa": {
+      "required": "Linha de Pesquisa é obrigatória"
+    },
+    "tituloProposta": {
+      "required": "Título da Proposta é obrigatório"
+    },
+    "recomendacaoNome[]": {
+      "required": "Nome é obrigatório"
+    },
+    "recomendacaoEmail[]": {
+      "required": "Email é obrigatório",
+      "email": "Por favor, insira um endereço de email válido"
+    },
+    "PropostaTrabalho": {
+      "required": "Proposta de Trabalho é obrigatória"
+    },
+    "ComprovantePagamento": {
+      "required": "Comprovante de Pagamento é obrigatório"
+    },
+    "CartaAceiteOrientador": {
+      "required": "Carta de Aceite do Orientador é obrigatória para doutorado"
+    }
+  }
 }

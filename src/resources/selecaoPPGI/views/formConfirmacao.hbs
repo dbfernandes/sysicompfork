@@ -1,32 +1,34 @@
 {{ setTitle title="Confirmação" }}
 <style>
-.container-message {
+  .container-message {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex: 1;
     margin-top: 3rem;
     gap: 2rem;
-}
+  }
 
-.container-message .message-footer {
+  .container-message .message-footer {
     align-self: flex-end;
-}
-.container-message .message-buttons {
+  }
+
+  .container-message .message-buttons {
     font-weight: bold;
     color: #222;
     text-align: center;
     margin-top: 1rem;
-}
-.container-buttons {
+  }
+
+  .container-buttons {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
     flex-wrap: wrap;
     justify-content: center;
-}
+  }
 
-.container-button {
+  .container-button {
     display: flex;
     gap: 0.25rem;
     align-items: center;
@@ -34,73 +36,142 @@
     margin-top: 1rem;
     max-width: 150px;
     text-align: center;
+  }
 
-}
-.link-file {
+  .link-file {
     font-weight: bold;
-}
-
+  }
 </style>
+
 <div class="forms-page">
-	<header>
-    <div class="container">
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center py-3">
       <h1 class="header-title">PPGI</h1>
-		  <div class="options">
+      <div class="options">
         {{> ppgi/selectLanguageHeader}}
-		    <button id="btn_logout"><a href="/selecaoppgi" style="color: inherit;">{{__ "ppgi.header.logoutButton"}}</a></button>
-		  </div>
-    </div>		
-	</header>
+        <!-- Botão de logout (se preferir, pode ser <a> em vez de <button>) -->
+        <button type="button" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
   <section class="content container">
-    <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}">
- 
+    <!-- Campo hidden para CSRF -->
+    <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
+
+    <!-- Navegação lateral/abas (conforme seu partial) -->
     {{> ppgi/nav indexSelect="5" progress="100"}}
 
+    <!-- Área principal de mensagem -->
     <main class="container-message">
-        <h2>{{__ "ppgiForm4.title"}}</h2>
-        <p>
-            {{__ "ppgiForm4.message"}}
-        </p>
-        <span class="message-footer">
-            {{__ "ppgiForm4.greeting"}}
-        </span>
-        <p class="message-buttons">
-            {{__ "ppgiForm4.titleButtons"}}
-        </p>
-        <div class="container-buttons">
-          <div class="container-button">
-            <img src="/public/img/edit_f2.png" alt="" width="50">
-            <a class="link-file" href="/selecaoppgi/download/arquivo/Inscricao.pdf">{{__ "ppgiForm4.button.registrationForm"}}</a>
-          </div>
-          <div class="container-button">
-            <img src="/public/img/trabalho.png" alt="" width="50">
-            <a class="link-file" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf">{{__ "ppgiForm4.button.proposol"}}</a>
-          </div>
-         {{#if hasCartaAceiteOrientador}}
-          <div class="container-button">
-            <img src="/public/img/historico.gif" alt="" width="50">
-            <a class="link-file" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf">{{__ "ppgiForm4.button.letter"}}</a>
-          </div>
-          {{/if}}
+      <h2>{{__ "ppgiForm4.title"}}</h2>
+      <p>
+        {{__ "ppgiForm4.message"}}
+      </p>
+      <span class="message-footer">
+        {{__ "ppgiForm4.greeting"}}
+      </span>
 
-          <div class="container-button">
-            <img src="/public/img/curriculum.gif" alt="" width="50">
-            <a class="link-file" href="/selecaoppgi/download/arquivo/Curriculum.pdf">{{__ "ppgiForm4.button.curriculum"}}</a>
-          </div>
-          <div class="container-button">
-            <img src="/public/img/pagamento.png" alt="" width="50">
-            <a class="link-file" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf">{{__ "ppgiForm4.button.payment"}}</a>
-          </div>
+      <p class="message-buttons">
+        {{__ "ppgiForm4.titleButtons"}}
+      </p>
+
+      <!-- Botões de download -->
+      <div class="container-buttons">
+        <div class="container-button">
+          <img
+            src="/public/img/edit_f2.png"
+            alt="{{__ 'ppgiForm4.alt_registrationForm'}}"
+            width="50"
+          />
+          <a
+            class="link-file"
+            href="/selecaoppgi/download/arquivo/Inscricao.pdf"
+          >
+            {{__ "ppgiForm4.button.registrationForm"}}
+          </a>
         </div>
+
+        <div class="container-button">
+          <img
+            src="/public/img/trabalho.png"
+            alt="{{__ 'ppgiForm4.alt_proposal'}}"
+            width="50"
+          />
+          <a
+            class="link-file"
+            href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf"
+          >
+            {{__ "ppgiForm4.button.proposol"}}
+          </a>
+        </div>
+
+        {{#if hasCartaAceiteOrientador}}
+          <div class="container-button">
+            <img
+              src="/public/img/historico.gif"
+              alt="{{__ 'ppgiForm4.alt_letter'}}"
+              width="50"
+            />
+            <a
+              class="link-file"
+              href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf"
+            >
+              {{__ "ppgiForm4.button.letter"}}
+            </a>
+          </div>
+        {{/if}}
+
+        <div class="container-button">
+          <img
+            src="/public/img/curriculum.gif"
+            alt="{{__ 'ppgiForm4.alt_curriculum'}}"
+            width="50"
+          />
+          <a
+            class="link-file"
+            href="/selecaoppgi/download/arquivo/Curriculum.pdf"
+          >
+            {{__ "ppgiForm4.button.curriculum"}}
+          </a>
+        </div>
+
+        <div class="container-button">
+          <img
+            src="/public/img/pagamento.png"
+            alt="{{__ 'ppgiForm4.alt_payment'}}"
+            width="50"
+          />
+          <a
+            class="link-file"
+            href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf"
+          >
+            {{__ "ppgiForm4.button.payment"}}
+          </a>
+        </div>
+      </div>
     </main>
+
     <div class="container-fluid">
       <form id="candidato-formulario">
-          <div class="card-footer">
-            <div class="col">
-              <button class="btn btn-warning float-right custom-button" type="button" id="voltarForm">
-                Passo Anterior
-              </button>
-            </div>
+        <div class="card-footer">
+          <div class="col d-flex justify-content-end">
+            <button
+              class="btn btn-warning custom-button"
+              type="button"
+              id="voltarForm"
+            >
+              {{__ "ppgi.form.previousStep"}}
+              <span
+                class="spinner-border spinner-border-sm"
+                hidden="true"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
           </div>
         </div>
       </form>
@@ -109,28 +180,45 @@
 </div>
 
 <script>
+  $("#btn_logout").click(function () {
+    $.ajax({
+      url: "/selecaoppgi/logout",
+      type: "POST",
+      data: {
+        _csrf: $("#csrfToken").val()
+      },
+      success: function (data) {
+        window.location.href = "/selecaoppgi";
+      },
+      error: function (data) {
+        console.error(data);
+      }
+    });
+  });
+
   $(document).ready(function () {
-     $("#voltarForm").on("click", function (e) {
+    $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
+      // Se esses ids existirem no form, inclua
       const id = $("#idCandidato").val();
       const editalPosicao = $("#editalPosicao").val();
 
-      $.ajax({    
+      $.ajax({
         url: '/selecaoppgi/voltar',
         type: 'POST',
         data: {
           _csrf: csrfToken,
-          editalPosicao: editalPosicao, 
+          editalPosicao: editalPosicao,
           id: id
-        }, success: function (data) {
+        },
+        success: function (data) {
           window.location.href = '/selecaoppgi/formulario';
           window.location.reload(true);
         },
         error: function (data) {
-          console.log(data)
+          console.log(data);
         }
       });
-
     });
   });
 </script>

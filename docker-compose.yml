@@ -7,28 +7,29 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_PORT: '3327'
     ports:
-      - "${MYSQL_PORT}:3306"
+      - '${MYSQL_PORT}:3306'
     volumes:
       - db_sysicomp:/var/lib/mysql
     networks:
       - sysicomp-network
-      
+
   sysicomp:
     container_name: sysicomp
     build: .
-    env_file:
-      - .env
-    ports: 
-      - "${PORT}:3000"
+    ports:
+      - '${PORT}:3000'
     working_dir: /app
-    volumes: 
+    volumes:
       - .:/app
-      - /app/node_modules
-    depends_on: 
+      - /app/node_modules #Docker vai separar o node_modules do container do host, resolução de problema da biblioteca bycript
+    depends_on:
       - db
     networks:
       - sysicomp-network
+    env_file:
+      - .env.development
 
 #Docker Networks
 networks:

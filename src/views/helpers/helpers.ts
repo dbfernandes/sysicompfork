@@ -1,7 +1,6 @@
 import moment from 'moment-timezone';
 import language from '../../utils/i18n';
 const whichCourse = (course, lng) => {
-  console.log(course);
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
@@ -16,6 +15,10 @@ const whichCourse = (course, lng) => {
     case 'Doutorado':
       return i18n.t('students.doutorado');
   }
+};
+
+const getYearActual = () => {
+  return new Date().getFullYear();
 };
 
 const isEnLng = (lng) => {
@@ -101,7 +104,6 @@ const checked = (a, b) => {
 };
 
 const checkedIn = (a, b) => {
-  console.log(a);
   if (a && a.includes(b)) {
     return 'checked';
   }
@@ -209,6 +211,43 @@ function setTitle(options) {
 function concat() {
   return Array.prototype.slice.call(arguments, 0, -1).join('');
 }
+
+function dataAtualExtensa() {
+  const date = new Date();
+  return date.toLocaleString('pt-BR', {
+    timeZone: 'America/Manaus',
+    timeZoneName: 'long',
+  });
+}
+
+function formatarDataExtensa(date) {
+  if (!date) return '';
+
+  // Verifique se 'date' é uma instância de Date ou uma string válida
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+
+  return dateObj.toLocaleDateString('pt-BR', {
+    timeZone: 'America/Manaus',
+    timeZoneName: 'long',
+  });
+}
+
+function dataAtualToLocaleString() {
+  return new Date().toLocaleString();
+}
+
+function dataToLocaleString(date) {
+  if (!date) return '';
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+  return dateObj.toLocaleString();
+}
 module.exports = {
   ...ops,
   ifEqual,
@@ -232,4 +271,9 @@ module.exports = {
   isEnLng,
   setTitle,
   concat,
+  formatarDataExtensa,
+  dataAtualExtensa,
+  dataAtualToLocaleString,
+  dataToLocaleString,
+  getYearActual,
 };

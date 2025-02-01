@@ -6,6 +6,34 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  projects: [
+    {
+      displayName: 'unit',
+      testMatch: ['<rootDir>/tests/unit/**/*.test.[jt]s?(x)'],
+      // Configurações específicas para testes unitários
+      // Por exemplo, usar um mock de banco de dados ou evitar qualquer configuração de banco
+      testEnvironment: 'node',
+      setupFilesAfterEnv: ['<rootDir>/tests/unit/setup.ts'], // Se necessário
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc/jest',
+      },
+      moduleNameMapper: {
+        '^@prisma/client$': '<rootDir>/tests/unit/mocks/@prisma/client.ts',
+      },
+      // Outras configurações específicas para unitários
+    },
+    {
+      displayName: 'integration',
+      testMatch: ['<rootDir>/tests/integration/**/*.test.[jt]s?(x)'],
+      // Configurações específicas para testes de integração
+      testEnvironment: '<rootDir>/prisma/prisma-test-environment.ts',
+      setupFilesAfterEnv: ['<rootDir>/tests/integration/setup.ts'], // Se necessário
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc/jest',
+      },
+      moduleNameMapper: {},
+    },
+  ],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -33,7 +61,7 @@ const config: Config = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -75,9 +103,7 @@ const config: Config = {
   // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: [
-  //   "node_modules"
-  // ],
+  // moduleDirectories: ['node_modules', 'src', 'prisma'],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: [
@@ -136,9 +162,7 @@ const config: Config = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [
-    "<rootDir>/src/init_test.ts",
-  ],
+  // setupFiles: ['<rootDir>/src/init_test.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: ['<rootDir>/singleton.ts'],
@@ -150,7 +174,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: './prisma/prisma-test-environment.ts',
+  // testEnvironment: './prisma/prisma-test-environment.ts',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -180,25 +204,9 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.(t|j)sx?$': '@swc/jest',
+    '^.+\\.ts$': 'ts-jest',
   },
-  // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/",
-  //   "\\.pnp\\.[^\\/]+$"
-  // ],
-
-  // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
-  // unmockedModulePathPatterns: undefined,
-
-  // Indicates whether each individual test should be reported during the run
-  // verbose: undefined,
-
-  // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
-  // watchPathIgnorePatterns: [],
-
-  // Whether to use watchman for file crawling
-  // watchman: true,
+  testMatch: ['**/test/**/*.spec.ts'],
 };
 
 export default config;

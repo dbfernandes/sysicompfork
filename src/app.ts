@@ -1,31 +1,21 @@
+import * as path from 'path';
+import * as uuid from 'uuid';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csrf from 'csurf';
 import dotenv from 'dotenv';
 import express from 'express';
-import { engine } from 'express-handlebars';
 import session from 'express-session';
-import * as path from 'path';
-import * as uuid from 'uuid';
+
+import { engine } from 'express-handlebars';
+
 import router from './routes';
+import { errorHandler } from './middlewares/errorHandler';
 
 dotenv.config({
-  path: `.env.${process.env.NODE_ENV || 'development'}`,
+  path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
-
-const app = express();
-
-app.engine(
-  'hbs',
-  engine({
-    defaultLayout: 'main',
-    extname: '.hbs',
-    partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers.ts')),
-  }),
-);
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, '/views'));
 
 // To-Do: mover para um arquivo session.d.ts
 declare module 'express-session' {
@@ -45,6 +35,20 @@ declare module 'express-session' {
   }
 }
 
+const app = express();
+
+app.engine(
+  'hbs',
+  engine({
+    defaultLayout: 'main',
+    extname: '.hbs',
+    partialsDir: path.join(__dirname, 'views', 'partials'),
+    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers')),
+  }),
+);
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, '/views'));
+
 app.use(cookieParser());
 
 app.use(
@@ -58,7 +62,9 @@ app.use(
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', parameterLimit: 50000 }));
+app.use(
+  express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
+);
 app.use(csrf({ cookie: true }));
 
 app.use(
@@ -77,6 +83,7 @@ app.use(
 // app.use(isUsuarioAutenticado);
 // Colocar o logger depois
 app.use(router);
+app.use(errorHandler);
 
 // app.use(isUsuarioAutenticado)
 

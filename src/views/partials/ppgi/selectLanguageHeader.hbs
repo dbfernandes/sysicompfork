@@ -1,17 +1,60 @@
-<div class="dropdown">
-    <div class="nav-link header-language p-0" data-toggle="dropdown" >
-        {{#if (eq currentLanguage "ptBR")}}
-            <img class="icon-language" src="/public/img/icons/brazil.png" alt=""> 
-        {{else}}
-            <img class="icon-language" src="/public/img/icons/united-states.png" alt=""> 
-        {{/if}}
-    </div>
-    <div class="dropdown-menu dropdown-menu-right p-0">
-        <a class="dropdown-item {{#if (eq currentLanguage "ptBR")}} active{{/if}}"  href="/changeLanguage/ptBR">
-            <img class="icon-language" src="/public/img/icons/brazil.png" alt=""> {{__ "ppgi.portuguese"}}
-        </a>
-        <a  class="dropdown-item {{#if (eq currentLanguage "en")}} active{{/if}}" href="/changeLanguage/en">
-            <img class="icon-language" src="/public/img/icons/united-states.png" alt=""> {{__ "ppgi.english"}}
-        </a>
-    </div>
+<div class="dropdown" aria-label="Language selection">
+  <!-- Botão que abre/fecha o menu -->
+  <button
+    class="nav-link header-language p-0"
+    type="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-label="{{__ 'ppgi.languageSwitcher.label'}}"
+  >
+    {{#if (eq currentLanguage "ptBR")}}
+      <img
+        class="icon-language"
+        src="/public/img/icons/brazil.png"
+        alt="{{__ 'ppgi.languageSwitcher.alt_brazil'}}"
+      />
+    {{else}}
+      <img
+        class="icon-language"
+        src="/public/img/icons/united-states.png"
+        alt="{{__ 'ppgi.languageSwitcher.alt_usa'}}"
+      />
+    {{/if}}
+  </button>
+
+  <!-- Menu de idiomas -->
+  <ul class="dropdown-menu dropdown-menu-right p-0" role="menu">
+    <!-- Português -->
+    <li role="presentation">
+      <a
+        class="dropdown-item {{#if (eq currentLanguage 'ptBR')}}active{{/if}}"
+        role="menuitem"
+        href="/changeLanguage/ptBR"
+      >
+        <img
+          class="icon-language"
+          src="/public/img/icons/brazil.png"
+          alt="{{__ 'ppgi.languageSwitcher.alt_brazil'}}"
+        />
+        {{__ "ppgi.portuguese"}}
+      </a>
+    </li>
+
+    <!-- Inglês -->
+    <li role="presentation">
+      <a
+        class="dropdown-item {{#if (eq currentLanguage 'en')}}active{{/if}}"
+        role="menuitem"
+        href="/changeLanguage/en"
+      >
+        <img
+          class="icon-language"
+          src="/public/img/icons/united-states.png"
+          alt="{{__ 'ppgi.languageSwitcher.alt_usa'}}"
+        />
+        {{__ "ppgi.english"}}
+      </a>
+    </li>
+  </ul>
 </div>

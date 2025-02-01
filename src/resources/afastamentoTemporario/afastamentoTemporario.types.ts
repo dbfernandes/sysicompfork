@@ -1,9 +1,3 @@
-export type ExtendedAfastamentoTemporarios = AfastamentoTemporario & {
-  dataCriacaoFormata?: string;
-  dataRetornoFormata?: string;
-  dataSaidaFormata?: string;
-};
-
 export interface AfastamentoTemporario {
   id: number;
   usuarioId: number;

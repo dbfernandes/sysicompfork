@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 export const isAuth = async (
   req: Request,
@@ -15,8 +16,8 @@ export const isAuthSelecao = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.session.uid || req.session.tipoUsuario)
-    return res.redirect('/selecaoPPGI');
+  if (!req.session.uid)
+    return res.status(StatusCodes.UNAUTHORIZED).redirect('/selecaoPPGI');
   next();
 };
 

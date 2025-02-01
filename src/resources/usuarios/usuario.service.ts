@@ -9,9 +9,11 @@ import {
   UpdateUsuarioWithPassword,
   UsuarioWithDate,
 } from './usuario.types';
+import { sendEmail } from '../email/emailService';
+import { UsuarioNotFoundError } from './usuario.errors';
 
 class UsuarioService {
-  async adicionar(usuario: CreateUsuarioDto): Promise<Usuario> {
+  async adicionar(usuario: any): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
     try {
@@ -75,9 +77,11 @@ class UsuarioService {
     }
   }
 
-  async alterarInfo(id: number, user: UpdateUsuarioDto): Promise<void> {
+  async alterarInfo(id: number, user: any) {
     await prisma.usuario.update({
-      where: { id },
+      where: {
+        id,
+      },
       data: user,
     });
   }
@@ -86,7 +90,7 @@ class UsuarioService {
     return await prisma.usuario.findMany();
   }
 
-  async listarUmUsuario(id: number): Promise<UsuarioWithDate> {
+  async listarUmUsuario(id: number): Promise<any> {
     const usuario = await prisma.usuario.findUnique({
       where: {
         id: Number(id),
@@ -114,34 +118,40 @@ class UsuarioService {
         createdAt: true,
       },
     });
-
-    if (!usuario) throw new Error('Usuário não encontrado');
-
-    if (usuario.status === 1) {
-      if (usuario.administrador === 1) usuario.perfil += ' Administrador |';
-      if (usuario.coordenador === 1) usuario.perfil += ' Coordenador |';
-      if (usuario.professor === 1) usuario.perfil += ' Professor |';
+    const usuarioDict = usuario;
+    if (!usuarioDict) throw new Error('Usuário não encontrado');
+    if (usuarioDict.status === 1) {
+      if (usuarioDict.administrador === 1)
+        usuarioDict.perfil += ' Administrador |';
+      if (usuarioDict.coordenador === 1) usuarioDict.perfil += ' Coordenador |';
+      if (usuarioDict.professor === 1) usuarioDict.perfil += ' Professor |';
+      if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |';
       if (usuario.secretaria === 1) usuario.perfil += ' Secretaria |';
       if (usuario.diretor === 1) usuario.perfil += ' Secretaria |';
-      if (usuario.perfil?.endsWith(' |')) {
-        usuario.perfil = usuario.perfil.substring(0, usuario.perfil.length - 2);
+      if (usuarioDict.perfil!.endsWith(' |')) {
+        usuarioDict.perfil = usuarioDict.perfil!.substring(
+          0,
+          usuarioDict.perfil!.length - 2,
+        );
       }
     }
-
-    return {
-      ...usuario,
-      DateFormatada: new Date(usuario.createdAt)
+    // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
+    //   timeZone: 'America/Manaus'
+    // }).slice(0, 10)
+    const usuarioComDataFormatada = {
+      ...usuarioDict,
+      DateFormatada: new Date(usuarioDict.createdAt)
         .toLocaleString('pt-BR', {
           timeZone: 'America/Manaus',
         })
         .slice(0, 10),
     };
+
+    return usuarioComDataFormatada;
   }
 
-  async listarTodosPorCondicao(
-    data: Prisma.UsuarioWhereInput,
-  ): Promise<Partial<Usuario>[]> {
-    return await prisma.usuario.findMany({
+  async listarTodosPorCondicao(data: any): Promise<any[]> {
+    const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
         nomeCompleto: 'asc',
@@ -171,30 +181,54 @@ class UsuarioService {
         createdAt: true,
       },
     });
+
+    return usuarios;
   }
 
-  async buscarUsuarioPor(
-    busca: Prisma.UsuarioWhereInput,
-  ): Promise<Usuario | null> {
+  async buscarUsuarioPor(busca: any): Promise<Usuario | null> {
     try {
-      return await prisma.usuario.findFirst({ where: busca });
+      const usuario = await prisma.usuario.findFirst({ where: busca });
+      return usuario;
     } catch (error) {
       throw error;
     }
   }
 
-  async recuperarSenha(token: string, data: Date, id: number): Promise<void> {
-    try {
-      await prisma.usuario.update({
-        where: { id },
-        data: {
-          tokenResetSenha: token,
-          validadeTokenResetSenha: data,
-        },
-      });
-    } catch (error) {
-      throw new Error('Erro ao recuperar senha');
+  async recuperarSenha(data: { email: string; host: string }) {
+    const usuario = await prisma.usuario.findFirst({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (!usuario) {
+      throw new UsuarioNotFoundError(data.email);
     }
+    const token = crypto.randomBytes(20).toString('hex');
+    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
+    const timeExpires = new Date();
+    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
+
+    await prisma.usuario.update({
+      where: {
+        id: usuario.id,
+      },
+      data: {
+        tokenResetSenha: token,
+        validadeTokenResetSenha: timeExpires,
+      },
+    });
+
+    const url = `http://${data.host}/alterarSenha?token=${token}`;
+    sendEmail({
+      title: '[Syscomp] Troca de senha',
+      to: usuario.email,
+      template: 'recuperarSenha',
+      data: {
+        url,
+        nome: usuario.nomeCompleto,
+      },
+    });
   }
 
   async atualizarTokenSenha(id: number) {

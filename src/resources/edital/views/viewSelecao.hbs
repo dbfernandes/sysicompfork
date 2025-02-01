@@ -288,6 +288,97 @@
                     body: 'Erro: ' + data.responseJSON.error
                 });
             }
+            else if(dataFim <dataAtual) {
+                labelStatus = 'Encerrado';
+            }
+            else{
+                labelStatus = 'Aberto';
+            }
+        }else {
+            labelStatus = 'Suspenso';
+        }
+
+        
+        document.getElementById("labelStatus").innerText = labelStatus;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        let csrfToken = "{{csrfToken}}";
+        let id = "{{edital.id}}";
+
+
+
+
+        function abrirModal() {
+
+            if (status == '1') {
+                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + id + "?");
+                $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+            } else {
+                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + id + "?");
+                $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
+            }
+
+            $('#modalArquivar').modal('show');
+        }
+
+        function arquivarEdital() {
+
+            let novoStatus = (status == '1' ? '0' : '1');
+
+            const dataFromForm = {
+                status: novoStatus,
+                _csrf: csrfToken
+            };
+
+
+            // Fechar o modal
+            $('#modalArquivar').modal('hide');
+
+            $.ajax({
+                url: `/edital/arquivarEdital/${id}`,
+                type: 'PUT',
+                data: dataFromForm,
+                success: function (data) {
+
+                    const mensagem = "Status do Edital alterado no sistema com sucesso";
+                    const expirationTime = new Date(new Date().getTime() + 5000);
+
+                    document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+                    document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+                    window.location.href = '/edital/listEdital';
+
+                },
+                error: function (data) {
+                    $(document).Toasts('create', {
+                        icon: 'error',
+                        class: "bg-danger",
+                        autohide: true,
+                        delay: 3000,
+                        title: 'Erro!',
+                        body: 'Erro: ' + data.responseJSON.error
+                    });
+                }
+            });
+        }
+
+
+        document.getElementById("voltarBtnView").addEventListener("click", function () {
+            window.history.back();
         });
     }
 

@@ -135,23 +135,6 @@ class CandidatoService {
     return candidatoAtualizado;
   }
 
-  async findOnecandidato(id: number) {
-    const candidato = await prisma.candidato
-      .findUnique({
-        where: {
-          id,
-        },
-      })
-      .catch((err) => {
-        console.log(err);
-        throw new Error('Não foi possivel encontrar o candidato');
-      });
-    if (!candidato) {
-      throw new Error('Candidato não encontrado');
-    }
-    return candidato;
-  }
-
   async back(id: number) {
     const candidato = await prisma.candidato
       .findUnique({

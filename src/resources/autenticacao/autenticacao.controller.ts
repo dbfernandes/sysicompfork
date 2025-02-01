@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt';
-import path from 'path';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import path from 'path';
 import UsuarioService from '../usuarios/usuario.service';
-import { sendEmailRecoveryPasswordUser } from '../../utils/mailerGrid';
 
 const optionsLogin = {
   layout: 'begin',
@@ -64,7 +63,8 @@ const login = async (req: Request, res: Response) => {
     try {
       const { cpf, senha } = await req.body;
       const usuario = await UsuarioService.buscarUsuarioPor({ cpf });
-
+      console.log(req.body);
+      console.log(usuario);
       if (!usuario) {
         return res.status(StatusCodes.NOT_FOUND).render(resolveView('login'), {
           ...optionsLogin,
@@ -134,23 +134,10 @@ const recuperarSenha = async (req: Request, res: Response) => {
     case 'POST': {
       const { email } = req.body;
       try {
-        const user = await UsuarioService.buscarUsuarioPor({ email });
-        if (!user) {
-          return res.status(404).send({ message: 'Usuário não encontrado' });
-        }
-        const token = await UsuarioService.atualizarTokenSenha(user.id);
-
-        const url = `http://${req.headers.host}/alterarSenha?token=${token}`;
-        try {
-          sendEmailRecoveryPasswordUser({
-            email: user.email,
-            userName: user.nomeCompleto,
-            url,
-          });
-        } catch (err) {
-          console.error(err);
-          return res.status(500).send({ message: 'Erro ao enviar e-mail' });
-        }
+        await UsuarioService.recuperarSenha({
+          email,
+          host: req.headers.host,
+        });
 
         return res
           .status(200)
