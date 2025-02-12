@@ -108,7 +108,6 @@ const login = async (req: Request, res: Response) => {
         professor: usuario.professor,
         diretor: usuario.diretor,
       };
-      req.session.uid = String(usuario.id);
       return res.status(StatusCodes.ACCEPTED).redirect('/inicio');
     } catch (err) {
       console.log(err);

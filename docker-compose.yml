@@ -29,7 +29,7 @@ services:
     networks:
       - sysicomp-network
     env_file:
-      - .env.development
+      - .env
 
 #Docker Networks
 networks:

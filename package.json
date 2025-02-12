@@ -17,6 +17,7 @@
     "db:up": "docker compose -f docker-compose.test.yml up --build",
     "db:down": "docker compose -f docker-compose.test.yml down",
     "test": "NODE_ENV=test jest --verbose --selectProjects unit",
+    "test:prisma": "dotenv -e .env.test npx prisma migrate dev && dotenv -e .env.test npx prisma db seed",
     "test:unit": "NODE_ENV=test jest --selectProjects unit",
     "test:integration": "NODE_ENV=test jest --selectProjects integration",
     "test:watch": "jest --watch",

@@ -31,7 +31,7 @@ const config: Config = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc/jest',
       },
-      moduleNameMapper: {},
+      moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
     },
   ],
   // All imported modules in your tests should be mocked automatically
