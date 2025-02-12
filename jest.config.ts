@@ -31,7 +31,10 @@ const config: Config = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc/jest',
       },
-      moduleNameMapper: {},
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@prisma/client$': '<rootDir>/node_modules/.prisma/client/index.js',
+      },
     },
   ],
   // All imported modules in your tests should be mocked automatically
@@ -103,7 +106,7 @@ const config: Config = {
   // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: ['node_modules', 'src', 'prisma'],
+  moduleDirectories: ['node_modules', 'src', 'prisma'],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: [

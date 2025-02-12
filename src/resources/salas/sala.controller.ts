@@ -8,13 +8,23 @@ function resolveView(viewName: string): string {
 
 const adicionar = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
+    if (!req.session.tipoUsuario?.professor) {
+      res.status(401).send('Não autorizado');
+      return;
+    }
+
     res.render(resolveView('salas-adicionar'), {
       nome: req.session.nome,
-      csrf: req.csrfToken(),
+      csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
     });
   } else if (req.method === 'POST') {
     try {
+      if (!req.session.tipoUsuario?.professor) {
+        res.status(401).send('Não autorizado');
+        return;
+      }
+
       let { andar, bloco, nome, numero, capacidade } = req.body;
 
       if (!andar || !bloco || !nome) {
@@ -23,10 +33,10 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
         });
         return;
       }
-      // numero = parseInt(numero & numero == ''? 0 : req.body.numero,10)
+
       numero = parseInt(req.body.numero, 10) || 0;
-      // capacidade = parseInt(capacidade & capacidade== ''? 0 : req.body.capacidade,10)
       capacidade = parseInt(req.body.capacidade, 10) || 0;
+
       const sala = {
         andar,
         bloco,
@@ -34,33 +44,46 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
         numero,
         capacidade,
       };
+
       await SalaService.criar(sala);
       res.redirect('/salas/gerenciar');
     } catch (e) {
       console.log(e);
-      res.status(500).send({ error: e });
+      res.status(400).json({ error: e });
     }
   }
 };
 
 const excluir = async (req: Request, res: Response): Promise<void> => {
+  if (!req.session.tipoUsuario?.professor) {
+    res.status(401).send('não encontrada');
+    return;
+  }
+
   const { id } = req.params;
   try {
     const salaId = parseInt(id);
     const sala = await SalaService.listarUmaSala(salaId);
+
     if (!sala) {
-      throw new Error('Sala não encontrada!');
+      res.status(404).json({ error: 'Sala não encontrada!' });
+      return;
     }
 
     await SalaService.excluir(salaId);
     res.redirect('/salas/gerenciar');
   } catch (e) {
     console.log(e);
-    res.status(500).json({ error: e });
+    res.status(404).json({ error: e });
   }
 };
 
 const gerenciar = async (req: Request, res: Response): Promise<void> => {
+  if (!req.session.tipoUsuario?.professor) {
+    res.status(401).send('Não autorizado');
+    return;
+  }
+
   const salas = await SalaService.listarTodos();
   res.render(resolveView('salas-gerenciar'), {
     salas,
@@ -71,35 +94,57 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
 };
 
 const editar = async (req: Request, res: Response): Promise<void> => {
+  if (!req.session.tipoUsuario?.professor) {
+    res.status(401).send('Não autorizado');
+    return;
+  }
+
   if (req.method === 'GET') {
     try {
       const sala = await SalaService.listarUmaSala(parseInt(req.params.id));
+
+      if (!sala) {
+        res.status(404).send({ message: 'Sala não encontrada' });
+        return;
+      }
+
       res.render(resolveView('salas-editar'), {
         sala: sala,
-        csrf: req.csrfToken(),
+        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(500).send({ message: error.message });
+        res.status(404).send({ message: error.message });
       } else {
-        res.status(500).send({ message: 'Unknown error' });
+        res.status(404).send({ message: 'Unknown error' });
       }
     }
   } else if (req.method === 'POST') {
     try {
+      if (!req.body.nome) {
+        res.status(400).json({ error: 'Nome é obrigatório' });
+        return;
+      }
+      const salaFind = await SalaService.listarUmaSala(parseInt(req.params.id));
+      if (!salaFind) {
+        res.status(404).json({ error: 'Sala não encontrada' });
+        return;
+      }
       const sala = {
         andar: req.body.andar,
         bloco: req.body.bloco,
         nome: req.body.nome,
-        numero: parseInt(req.body.numero, 10),
-        capacidade: parseInt(req.body.capacidade, 10),
+        numero: parseInt(req.body.numero, 10) || 0,
+        capacidade: parseInt(req.body.capacidade, 10) || 0,
       };
+
       await SalaService.editar(parseInt(req.params.id), sala);
+
       res.redirect('/salas/gerenciar');
-    } catch (error: any) {
-      res.status(500).send({ message: error.message });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
   }
 };
