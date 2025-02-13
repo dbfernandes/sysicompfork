@@ -212,7 +212,8 @@ const logout = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     req.session.destroy(function (err) {
       if (err) {
-        return console.log(err);
+        console.error(err);
+        return;
       }
       res.redirect('/login');
     });

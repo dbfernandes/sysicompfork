@@ -24,7 +24,8 @@
     "cancel": "Cancel",
     "btnDelete": "Delete",
     "btnDownload": "Download",
-    "btnChange": "Change"
+    "btnChange": "Change",
+    "btnDeletePublications": "Delete Publications"
   },
   "validation": {
     "fileSize": "The file size must be less than 30MB",

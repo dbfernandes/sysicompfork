@@ -173,7 +173,6 @@ const updateEdital = async (req: Request, res: Response) => {
           error: err.message,
         });
       });
-      console.log(edital);
       return res.render(resolveView('editSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -227,7 +226,6 @@ const editalCandidatos = async (req: Request, res: Response) => {
         console.log(candidatos);
         if (!Array.isArray(candidatos))
           throw new Error('Erro ao buscar candidatos');
-        console.log(candidatos);
         const quantidadeInscricaoAndamento = candidatos.filter(
           (candidato) =>
             candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,

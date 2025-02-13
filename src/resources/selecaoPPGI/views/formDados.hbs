@@ -27,12 +27,12 @@
 <main class="forms-page">
   <!-- Cabeçalho -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
-        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+        <button class="p-0" id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button class="p-0" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
       </div>
     </div>
   </header>
@@ -112,7 +112,7 @@
                 </div>
 
                 <!-- Data de nascimento -->
-                <div class="col-md-3 campo-candidato-datanascimento">
+                <div class="col-md-3 campo-candidato-datanascimento form-group">
                   <label for="data-nascimento" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.dataNascimento"}}:</b>
@@ -138,7 +138,7 @@
                 </div>
 
                 <!-- Sexo -->
-                <div class="col-md-3" role="radiogroup" aria-label="Sexo">
+                <div class="col-md-3 form-group" role="radiogroup" aria-label="Sexo">
                   <label for="candidato-sexo" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
@@ -173,11 +173,11 @@
                     </div>
                   </div>
                 </div>
-              </div><!-- /row -->
+              </div>
 
-              <div class="form-group row">
+              <div class="row">
                 <!-- Nome Social -->
-                <div class="col-md-6 campo-candidato-nomesocial">
+                <div class="col-md-6 campo-candidato-nomesocial form-group">
                   <label for="candidato-nomesocial" class="control-label">
                     <b>{{__ "ppgiForm1.identificacaoCandidato.nomeSocial"}}:</b>
                   </label>
@@ -192,7 +192,7 @@
                 </div>
 
                 <!-- CEP -->
-                <div class="col-md-3 campo-candidato-cep">
+                <div class="col-md-3 campo-candidato-cep form-group">
                   <label for="candidato-cep" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.cep"}}:</b>
@@ -210,7 +210,7 @@
                 </div>
 
                 <!-- UF -->
-                <div class="col-md-3 campo-candidato-uf">
+                <div class="col-md-3 campo-candidato-uf form-group">
                   <label for="candidato-uf" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.estado"}}:</b>
@@ -252,11 +252,11 @@
                     <option value="TO">TO</option>
                   </select>
                 </div>
-              </div><!-- /row -->
+              </div>
 
-              <div class="form-group row">
+              <div class="row">
                 <!-- Endereço -->
-                <div class="col-md-6 field-candidato-endereco">
+                <div class="col-md-6 field-candidato-endereco form-group">
                   <label for="candidato-endereco" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.endereco"}}:</b>
@@ -272,7 +272,7 @@
                 </div>
 
                 <!-- Cidade -->
-                <div class="col-md-3 field-candidato-cidade has-error">
+                <div class="col-md-3 field-candidato-cidade form-group">
                   <label for="candidato-cidade" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.cidade"}}:</b>
@@ -289,7 +289,7 @@
                 </div>
 
                 <!-- Bairro -->
-                <div class="col-md-3 field-candidato-bairro">
+                <div class="col-md-3 field-candidato-bairro form-group">
                   <label for="candidato-bairro" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.bairro"}}:</b>
@@ -305,9 +305,9 @@
                 </div>
               </div><!-- /row -->
 
-              <!-- Nacionalidade -->
-              <div class="row form-group">
-                <div class="col-md-3 field-candidato-nacionalidade">
+              <div class="row ">
+                <!-- Nacionalidade -->
+                <div class="col-md-3 field-candidato-nacionalidade form-group">
                   <label for="candidatoNacionalidade" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.title"}}:</b>
@@ -347,11 +347,11 @@
 
               <!-- Brasileiro -->
               <div
-                class="row form-group"
+                class="row"
                 id="row-nacionalidade-brasileiro"
                 {{#if (ne nacionalidade 'Brasileira')}}hidden{{/if}}
               >
-                <div class="col-md-6">
+                <div class="col-md-6 form-group">
                   <label for="cpf" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.cpf"}}:</b>
@@ -368,11 +368,12 @@
 
               <!-- Estrangeiro -->
               <div
-                class="row form-group"
+                class="row"
                 id="row-nacionalidade-estrangeiro"
                 {{#if (ne nacionalidade 'Estrangeira')}}hidden{{/if}}
               >
-                <div class="col-md-6">
+                <!-- País -->
+                <div class="col-md-6 form-group">
                   <label for="pais" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.pais"}}:</b>
@@ -385,7 +386,8 @@
                     value="{{pais}}"
                   />
                 </div>
-                <div class="col-md-6">
+                <!-- Passaporte -->
+                <div class="col-md-6 form-group">
                   <label for="passaporte" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.nacionalidade.passaporte"}}:</b>
@@ -427,7 +429,7 @@
                 </div>
 
                 <!-- Telefone Alternativo -->
-                <div class="form-group col-md-6 col-sm-6">
+                <div class="form-group col-sm-6">
                   <label for="candidato-telcelular" class="control-label">
                     {{__ "ppgiForm1.contato.telefoneAlternativo"}}:
                   </label>
@@ -449,6 +451,7 @@
               <h3 class="card-title">{{__ "ppgiForm1.edital.title"}}</h3>
             </div>
             <div class="card-body">
+              <!-- Como soube -->
               <div class="row form-group col-sm-6">
                 <div>
                   <label for="como-soube">
@@ -499,7 +502,7 @@
               <h3 class="card-title">{{__ "ppgiForm1.inscricao.title"}}</h3>
             </div>
             <div class="card-body">
-              <div class="row form-group">
+              <div class="row ">
                 <!-- Curso Desejado -->
                 <div class="form-group col-md-5">
                   <label class="control-label">
@@ -539,7 +542,7 @@
                 </div>
 
                 <!-- Regime -->
-                <div class="col-md-12">
+                <div class="col-md-12 form-group">
                   <label class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.inscricao.regime"}}</b>
@@ -578,7 +581,7 @@
               </div><!-- /row -->
 
               <!-- Cotista -->
-              <div id="cotista-div" class="row form-group">
+              <div id="cotista-div" class="row">
                 <div class="col-md-5 form-group form-switch">
                   <div>
                     <label for="cotista">
@@ -601,7 +604,8 @@
                     />
 
                 </div>
-                <div id="cota" class="col-md-6">
+                <!-- Tipo de Cota -->
+                <div id="cota" class="col-md-6 form-group">
                   <label for="tipo-cota" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.inscricao.tipoCota"}}:</b>
@@ -631,7 +635,7 @@
               </div>
 
               <!-- Deficiência / Condição Especial -->
-              <div id="deficiencia-div" class="row form-group">
+              <div id="deficiencia-div" class="row">
                 <div class="col-md-5 form-group">
                   <label for="candidato-deficiencia1">
                     <span class="text-danger">*</span>
@@ -650,7 +654,8 @@
                     />
                   </div>
                 </div>
-                <div id="condicao" class="col-md-6">
+                <!-- Condição -->
+                <div id="condicao" class="col-md-6 form-group">
                   <label for="candidato-condicao" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.inscricao.condicao"}}:</b>
@@ -667,7 +672,7 @@
 
               <!-- Bolsa -->
               <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-5 form-group">
                   <label for="candidato-bolsa">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.inscricao.bolsa"}}</b>
@@ -687,7 +692,7 @@
             </div><!-- /card-body -->
 
             <div class="card-footer">
-              <div class="col">
+              <div class="col p-0">
                 <button
                   id="btn-save-continue"
                   type="submit"
@@ -721,6 +726,8 @@
       </article>
     </div><!-- /container-fluid -->
   </section>
+  {{> ppgi/footer}}
+
 </main>
 {{> ppgi/_masks }}
 <script>

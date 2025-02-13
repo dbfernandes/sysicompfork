@@ -1,4 +1,4 @@
-import { CandidatoPublicacao, Prisma, PrismaClient } from '@prisma/client';
+import { CandidatoPublicacao, PrismaClient } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import { BaseError } from '../../utils/baseError';
 import {
@@ -21,7 +21,14 @@ type ResponseListPublicacoes = {
 };
 
 class CandidatoPublicacaoService {
-  async adicionarVarios(
+  async deleteAllPublicacoes(candidatoId: number): Promise<void> {
+    await prisma.candidatoPublicacao.deleteMany({
+      where: {
+        candidatoId,
+      },
+    });
+  }
+  async addMany(
     candidatoId: number,
     publicacoes: PublicacaoCreateDto[],
     tipoPublicacao: number,
@@ -31,7 +38,7 @@ class CandidatoPublicacaoService {
         (publicacao): PublicacaoCreate => {
           const ano = publicacao.ano ? Number(publicacao.ano) : null;
 
-          const publicacaoData: PublicacaoCreate = {
+          return {
             candidatoId,
             titulo: publicacao.titulo || '',
             local: publicacao.local || '',
@@ -43,8 +50,6 @@ class CandidatoPublicacaoService {
             issn: publicacao.issn || '',
             ano: ano || null,
           };
-
-          return publicacaoData;
         },
       );
       await prisma.$transaction(async (prisma) => {
@@ -70,16 +75,10 @@ class CandidatoPublicacaoService {
                 },
                 data: publicacao,
               });
-              console.log(
-                `Publicação ${publicacao.titulo} atualizada com sucesso para o candidato ${candidatoId}!`,
-              );
             } else {
               await prisma.candidatoPublicacao.create({
                 data: publicacao,
               });
-              console.log(
-                `Publicação ${publicacao.titulo} adicionada com sucesso para o candidato ${candidatoId}!`,
-              );
             }
           }
         } catch (error) {
@@ -92,9 +91,7 @@ class CandidatoPublicacaoService {
     }
   }
 
-  async publicacoesCandidato(
-    candidatoId: number,
-  ): Promise<ResponseListPublicacoes> {
+  async getPublicacoes(candidatoId: number): Promise<ResponseListPublicacoes> {
     try {
       const [periodicos, conferencias] = await Promise.all([
         prisma.candidatoPublicacao.findMany({
@@ -123,7 +120,7 @@ class CandidatoPublicacaoService {
     }
   }
 
-  async processarPublicacoes({
+  async processPublicacoes({
     uid,
     publicacoes,
   }: ProcessarPublicacoesParams): Promise<void> {
@@ -135,27 +132,21 @@ class CandidatoPublicacaoService {
       'OUTRA-PRODUCAO-BIBLIOGRAFICA': outras,
       'PREFACIO-POSFACIO': prefacios,
     } = publicacoes;
-
-    const promessas = [
-      this.adicionarVarios(uid, periodicos, TYPES_PUBLICACAO.PERIODICOS),
-      this.adicionarVarios(uid, eventos, TYPES_PUBLICACAO.EVENTOS),
-      this.adicionarVarios(uid, livros, TYPES_PUBLICACAO.LIVROS),
-      this.adicionarVarios(uid, capitulos, TYPES_PUBLICACAO.CAPITULOS),
-      this.adicionarVarios(uid, outras, TYPES_PUBLICACAO.OUTRAS),
-      this.adicionarVarios(uid, prefacios, TYPES_PUBLICACAO.PREFACIOS),
-    ];
-
-    const resultados = await Promise.allSettled(promessas);
-
-    resultados.forEach((resultado, indice) => {
-      if (resultado.status === 'fulfilled') {
-        console.log(`Operação ${indice + 1} concluída com sucesso.`);
-        console.log('Resultado:', resultado.value);
-      } else {
-        console.error(`Operação ${indice + 1} falhou.`);
-        console.error('Erro:', resultado.reason);
-      }
+    await prisma.candidatoPublicacao.deleteMany({
+      where: {
+        candidatoId: uid,
+      },
     });
+
+    await Promise.all([
+      this.addMany(uid, periodicos, TYPES_PUBLICACAO.PERIODICOS),
+      this.addMany(uid, eventos, TYPES_PUBLICACAO.EVENTOS),
+      this.addMany(uid, livros, TYPES_PUBLICACAO.LIVROS),
+
+      this.addMany(uid, capitulos, TYPES_PUBLICACAO.CAPITULOS),
+      this.addMany(uid, outras, TYPES_PUBLICACAO.OUTRAS),
+      this.addMany(uid, prefacios, TYPES_PUBLICACAO.PREFACIOS),
+    ]);
   }
 }
 

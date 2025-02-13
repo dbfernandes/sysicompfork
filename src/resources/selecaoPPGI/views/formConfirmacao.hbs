@@ -43,22 +43,22 @@
   }
 </style>
 
-<div class="forms-page">
+<main class="forms-page">
   <!-- Cabeçalho -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
         <!-- Botão de logout (se preferir, pode ser <a> em vez de <button>) -->
-        <button type="button" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+        <button class="p-0" type="button" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
 
       </div>
     </div>
   </header>
 
   <!-- Conteúdo principal -->
-  <section class="content container">
+  <section class="content container px-3">
     <!-- Campo hidden para CSRF -->
     <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
 
@@ -177,7 +177,9 @@
       </form>
     </div>
   </section>
-</div>
+  {{> ppgi/footer}}
+
+</main>
 
 <script>
   $("#btn_logout").click(function () {
@@ -216,7 +218,7 @@
           window.location.reload(true);
         },
         error: function (data) {
-          console.log(data);
+          console.error(data);
         }
       });
     });

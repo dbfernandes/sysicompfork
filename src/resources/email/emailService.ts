@@ -17,7 +17,6 @@ function dataAtualExtensa() {
 function formatarDataExtensa(date) {
   if (!date) return '';
 
-  console.log(date);
   // Verifique se 'date' é uma instância de Date ou uma string válida
   const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
 
@@ -174,8 +173,6 @@ export async function sendEmail({
       html,
       attachments: attachmentsSend,
     });
-
-    console.log('Email enviado');
   } catch (error) {
     console.error('Error sending email: ', error);
     throw error;

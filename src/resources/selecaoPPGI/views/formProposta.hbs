@@ -1,34 +1,33 @@
 {{ setTitle title="Proposta de Projeto" }}
 
 <style>
-  .remove-btn {
-    color: white;
-    background-color: red;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin-left: 5px;
-  }
-
   #add-btn {
     margin-top: 10px;
   }
 
-.custom-file-container .custom-file-input {
-  padding: 10px;
-}
+  .custom-file-container .custom-file-input {
+    padding: 10px;
+  }
 
-/* Adicione a seguinte regra se necessário, para ajustar a largura do label associado */
-.custom-file-container .custom-file-label {
+  .custom-file-container .custom-file-label {
     white-space: nowrap;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
     margin-left: 5px;
     margin-right: 5px;
-}
+  }
+
+  .container-buttons-icon {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    max-width: 50vw;
+    overflow: hidden;
+    flex-basis: 210px;
+    align-items: center;
+  }
 </style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-
 <!-- Modal de Confirmação -->
 <div
   class="modal fade mt-5"
@@ -75,7 +74,7 @@
           {{__ "ppgi.form.confirm"}}
           <span
             class="spinner-border spinner-border-sm"
-            hidden="true"
+            hidden="hidden"
             role="status"
             aria-hidden="true"
           ></span>
@@ -94,23 +93,23 @@
 <main class="forms-page">
   <!-- Cabeçalho -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
-        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+        <button class="p-0" id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button class="p-0" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
       </div>
     </div>
   </header>
 
   <!-- Seção de conteúdo -->
-  <section class="content container">
+  <section class="content container px-3">
     {{> ppgi/nav indexSelect="3" progress="75"}}
 
-    <div class="container-fluid">
+    <div class="container-fluid p-0">
       <!-- Formulário principal -->
-      <form id="candidato-formulario" novalidate>
+      <form id="candidato-formulario" novalidate autofocus>
         <!-- Tokens e inputs ocultos -->
         <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
         <input id="email" type="hidden" value="{{email}}" />
@@ -125,6 +124,26 @@
 
           <div class="card-body">
             <div class="row">
+
+              <!-- Título Proposta -->
+              <div class="col-md-7 form-group">
+                <label
+                  class="control-label"
+                  for="candidato-titulo-proposta"
+                >
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm3.tituloPropostaLabel"}}:</b>
+                </label>
+                <input
+                  autofocus
+                  class="form-control"
+                  id="candidato-titulo-proposta"
+                  type="text"
+                  name="tituloProposta"
+                  maxlength="60"
+                  value="{{tituloProposta}}"
+                />
+              </div>
               <!-- Linha de Pesquisa -->
               <div class="form-group col-md-5">
                 <label for="candidato-pesquisa">
@@ -135,7 +154,6 @@
                   id="candidato-pesquisa"
                   class="custom-select"
                   name="linhaPesquisa"
-                  autofocus
                 >
                   <option value="">
                     {{__ "ppgiForm3.linhaPesquisaPlaceholder"}}:
@@ -151,24 +169,6 @@
                 </select>
               </div>
 
-              <!-- Título Proposta -->
-              <div class="col-md-7">
-                <label
-                  class="control-label"
-                  for="candidato-titulo-proposta"
-                >
-                  <span class="text-danger">*</span>
-                  <b>{{__ "ppgiForm3.tituloPropostaLabel"}}:</b>
-                </label>
-                <input
-                  class="form-control"
-                  id="candidato-titulo-proposta"
-                  type="text"
-                  name="tituloProposta"
-                  maxlength="60"
-                  value="{{tituloProposta}}"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -209,68 +209,111 @@
             </div>
             <div class="card-body d-flex flex-column">
               <p>{{__ "ppgiForm3.cartaRecomendacao.descricao"}}</p>
-              <div class="row">
                 {{#each recomendacoes}}
-                  <div class="col-md-6">
-                    <label for="candidatoNomeRecomendacao{{@index}}" class="control-label">
-                      <span class="text-danger">*</span>
-                      <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
-                    </label>
-                    <input
-                      class="form-control"
-                      id="candidatoNomeRecomendacao{{@index}}"
-                      type="text"
-                      name="recomendacaoNome[]"
-                      maxlength="60"
-                      value="{{nome}}"
-                    />
-                  </div>
-
-                  <div class="col-md-6">
-                    <label for="candidatoEmailRecomendacao{{@index}}" class="control-label">
-                      <span class="text-danger">*</span>
-                      <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
-                    </label>
-                    <input
-                      class="form-control"
-                      id="candidatoEmailRecomendacao{{@index}}"
-                      type="email"
-                      name="recomendacaoEmail[]"
-                      maxlength="60"
-                      value="{{email}}"
-                    />
-                  </div>
+                <blockquote class="quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="candidatoNomeRecomendacao{{@index}}" class="control-label">
+                        <span class="text-danger">*</span>
+                        <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidatoNomeRecomendacao{{@index}}"
+                        type="text"
+                        name="recomendacaoNome[]"
+                        maxlength="60"
+                        value="{{nome}}"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label for="candidatoEmailRecomendacao{{@index}}" class="control-label">
+                        <span class="text-danger">*</span>
+                        <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
+                      </label>
+                      <input
+                        class="form-control"
+                        id="candidatoEmailRecomendacao{{@index}}"
+                        type="email"
+                        name="recomendacaoEmail[]"
+                        maxlength="60"
+                        value="{{email}}"
+                      />
+                    </div>
+                    {{#if (gt @index 1)}}
+                      <div class="col-12 align-self-end d-flex justify-content-end">
+                        <button type="button" class="btn btn-danger delete-experiencia-button mt-1"
+                              onclick="$(this).closest('blockquote').remove();">
+                          {{__ "ppgi.delete"}}
+                        </button>
+                      </div>
+                    {{/if}}
+                 </div>
+                </blockquote>
                 {{else}}
-                  <div class="col-md-6 form-group">
-                    <label for="candidatoNomeRecomendacao1" class="control-label">
-                      <span class="text-danger">*</span>
-                      <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
-                    </label>
-                    <input
-                      class="form-control"
-                      id="candidatoNomeRecomendacao1"
-                      type="text"
-                      name="recomendacaoNome[]"
-                      maxlength="60"
-                    />
-                  </div>
+                <blockquote class="quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
+                    <div class="row ">
+                      <div class="col-md-6 ">
+                        <label for="candidatoNomeRecomendacao1" class="control-label">
+                          <span class="text-danger">*</span>
+                          <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
+                        </label>
+                        <input
+                          class="form-control"
+                          id="candidatoNomeRecomendacao1"
+                          type="text"
+                          name="recomendacaoNome[]"
+                          maxlength="60"
+                        />
+                      </div>
 
-                  <div class="col-md-6">
-                    <label for="candidatoEmailRecomendacao1" class="control-label">
-                      <span class="text-danger">*</span>
-                      <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
-                    </label>
-                    <input
-                      class="form-control"
-                      id="candidatoEmailRecomendacao1"
-                      type="email"
-                      name="recomendacaoEmail[]"
-                      maxlength="60"
-                    />
+                      <div class="col-md-6">
+                        <label for="candidatoEmailRecomendacao1" class="control-label">
+                          <span class="text-danger">*</span>
+                          <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
+                        </label>
+                        <input
+                          class="form-control"
+                          id="candidatoEmailRecomendacao1"
+                          type="email"
+                          name="recomendacaoEmail[]"
+                          maxlength="60"
+                        />
+                      </div>
                   </div>
+                </blockquote>
+                  <blockquote class="quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
+                    <div class="row ">
+                      <div class="col-md-6 ">
+                        <label for="candidatoNomeRecomendacao2" class="control-label">
+                          <span class="text-danger">*</span>
+                          <b>{{__ "ppgiForm3.cartaRecomendacao.nomeLabel"}}:</b>
+                        </label>
+                        <input
+                          class="form-control"
+                          id="candidatoNomeRecomendacao2"
+                          type="text"
+                          name="recomendacaoNome[]"
+                          maxlength="60"
+                        />
+                      </div>
+
+                      <div class="col-md-6">
+                        <label for="candidatoEmailRecomendacao2" class="control-label">
+                          <span class="text-danger">*</span>
+                          <b>{{__ "ppgiForm3.cartaRecomendacao.emailLabel"}}:</b>
+                        </label>
+                        <input
+                          class="form-control"
+                          id="candidatoEmailRecomendacao2"
+                          type="email"
+                          name="recomendacaoEmail[]"
+                          maxlength="60"
+                        />
+                      </div>
+                    </div>
+                  </blockquote>
                 {{/each}}
-              </div>
-
               <div id="dynamic-inputs">
                 <!-- Campos adicionais de recomendação são adicionados aqui via JS -->
               </div>
@@ -314,7 +357,7 @@
                 <div class="col-12">
                   <label for="CartaAceiteOrientador" class="control-label">
                     <b> {{__ "ppgiForm3.documentos.cartaOrientador"}}:</b> <br>
-                    <span style="font-weight: normal;">Baixar modelo de carta:
+                    <span style="font-weight: normal;">{{__ "ppgiForm3.downloadModelLetter"}}:
                       <a href="/public/files/carta-aceite-orientador.docx" download>
                         <img src="/public/img/docx-logo.png" alt="logo docx" width="25" class="mr-2" />
                       </a>
@@ -322,18 +365,18 @@
                   </label>
                 </div>
                 <div id="buttons-aceite" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasCartaAceiteOrientador)}}none{{else}}flex{{/if}}; gap: 16px" >
-                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                  <div class="container-buttons-icon ">
                     <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                    <figcaption id="name-aceite"><b>CartaAceiteOrientador.pdf</b></figcaption>
+                    <figcaption id="name-aceite" style="word-break: break-word;"><b>CartaAceiteOrientador.pdf</b></figcaption>
                   </div>
-                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
-                    <a id="url-aceite" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf" class="btn btn-primary" download>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-aceite" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                       <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                        {{__ "ppgi.form.btnDownload"}}</a>
-                    <button type="button" class="btn btn-success" id="btn-change-aceite">
+                    <button type="button" class="btn btn-success" id="btn-change-aceite" style="flex-grow: 1;">
                       <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnChange"}}</button>
-                    <button type="button" class="btn btn-danger" id="btn-delete-aceite">
+                    <button type="button" class="btn btn-danger" id="btn-delete-aceite" style="flex-grow: 1;">
                       <i class="fa fa-trash mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnDelete"}}</button>
                   </div>
@@ -365,18 +408,18 @@
                 </label>
               </div>
               <div id="buttons-proposta" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasPropostaTrabalho)}}none{{else}}flex{{/if}}; gap: 16px"  >
-                <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                <div class="container-buttons-icon ">
                   <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                  <figcaption id="name-proposta"><b>PropostaTrabalho.pdf</b></figcaption>
+                  <figcaption id="name-proposta" style="word-break: break-word;"><b>PropostaTrabalho.pdf</b></figcaption>
                 </div>
-                <div class="d-flex flex-row align-items-center" style="gap: 4px">
-                  <a id="url-proposta" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf" class="btn btn-primary" download>
+                <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px;">
+                  <a id="url-proposta" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf" class="btn btn-primary"  download style="flex-grow: 1;">
                     <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                      {{__ "ppgi.form.btnDownload"}}</a>
-                  <button type="button" class="btn btn-success" id="btn-change-proposta">
+                  <button type="button" class="btn btn-success" id="btn-change-proposta" style="flex-grow: 1;">
                     <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
                      {{__ "ppgi.form.btnChange"}}</button>
-                  <button type="button" class="btn btn-danger" id="btn-delete-proposta">
+                  <button type="button" class="btn btn-danger" id="btn-delete-proposta" style="flex-grow: 1;">
                     <i class="fa fa-trash mr-2" aria-hidden="true"></i>
                      {{__ "ppgi.form.btnDelete"}}</button>
                 </div>
@@ -407,18 +450,18 @@
                 </label>
               </div>
               <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasPropostaTrabalho)}}none{{else}}flex{{/if}}; gap: 16px"  >
-                <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                <div class="container-buttons-icon ">
                   <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                  <figcaption id="name-pagamento"><b>ComprovantePagamento.pdf</b></figcaption>
+                  <figcaption id="name-pagamento" style="word-break: break-word;"><b>ComprovantePagamento.pdf</b></figcaption>
                 </div>
-                <div class="d-flex flex-row align-items-center" style="gap: 4px">
-                  <a id="url-pagamento" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf" class="btn btn-primary" download>
+                <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                  <a id="url-pagamento" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                     <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                      {{__ "ppgi.form.btnDownload"}}</a>
-                  <button type="button" class="btn btn-success" id="btn-change-pagamento">
+                  <button type="button" class="btn btn-success" id="btn-change-pagamento" style="flex-grow: 1;">
                     <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
                      {{__ "ppgi.form.btnChange"}}</button>
-                  <button type="button" class="btn btn-danger" id="btn-delete-pagamento">
+                  <button type="button" class="btn btn-danger" id="btn-delete-pagamento" style="flex-grow: 1;">
                     <i class="fa fa-trash mr-2" aria-hidden="true"></i>
                      {{__ "ppgi.form.btnDelete"}}</button>
                 </div>
@@ -443,14 +486,14 @@
           </div>
 
           <!-- Botões do card -->
-          <div class="card-footer">
-            <div class="col d-flex flex-row-reverse" style="gap: 6px;">
+          <div class="card-footer ">
+            <div class="col d-flex flex-row-reverse p-0" style="gap: 6px;">
               <!-- Botão Finalizar (Save and Continue) -->
               <button class="btn btn-success custom-button">
                 {{__ "ppgi.form.saveAndContinue"}}
                 <span
                   class="spinner-border spinner-border-sm"
-                  hidden="true"
+                  hidden="hidden"
                   role="status"
                   aria-hidden="true"
                 ></span>
@@ -461,7 +504,7 @@
                 {{__ "ppgi.form.save"}}
                 <span
                   class="spinner-border spinner-border-sm"
-                  hidden="true"
+                  hidden="hidden"
                   role="status"
                   aria-hidden="true"
                 ></span>
@@ -472,7 +515,7 @@
                 {{__ "ppgi.form.previousStep"}}
                 <span
                   class="spinner-border spinner-border-sm"
-                  hidden="true"
+                  hidden="hidden"
                   role="status"
                   aria-hidden="true"
                 ></span>
@@ -483,6 +526,8 @@
       </form>
     </div>
   </section>
+  {{> ppgi/footer}}
+
 </main>
 
 <script>
@@ -550,7 +595,7 @@
       .attr('download', fileName);
   }
 
-  function finishRegister(event){
+  function finishRegister(){
     const linhaDePesquisaId = $("#candidato-pesquisa").val();
     const formData = new FormData($("#candidato-formulario")[0]);
     const btnSubmit = $("#confirmButton");
@@ -697,7 +742,9 @@
  
     $("#add-btn").click(function (e) {
       e.preventDefault();
-      var newInput = '<div class="row form-group">' +
+      const newInput = '' +
+        '<blockquote class="quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px; ">' +
+        '<div class="row ">' +
         '<div class="col-md-6">' +
         '<label class="control-label" for="candidato-Nome-Recomendacao">' +
         '<font color="#FF0000">*</font>' +
@@ -712,9 +759,12 @@
         '</label>' +
         '<input class="form-control" type="text" name="recomendacaoEmail[]" value="" maxlength="60">' +
         '</div>' +
-        '<div class="col-md-2 align-self-end">' +
-        '<button class="btn btn-danger delete-experiencia-button mt-1" onclick="$(this).closest(\'.row\').remove();">{{__ "ppgi.delete"}}</button>' + '</div>' +
-        '</div>';
+        '<div class="col-12 align-self-end d-flex justify-content-end">' +
+        '<button class="btn btn-danger delete-experiencia-button mt-1" onclick="$(this).closest(\'blockquote\').remove();">{{__
+          "ppgi.delete"}}</button>' +
+        '</div>' +
+        '</div>' +
+        '</blockquote>';
 
       $("#dynamic-inputs").append(newInput);
     });

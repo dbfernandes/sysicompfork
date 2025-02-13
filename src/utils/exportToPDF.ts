@@ -91,7 +91,7 @@ async function gerarPDF(req: Request, res: Response, next: NextFunction) {
       })
       .send(pdfBuffer);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: 500, details: error });
   }
 }

@@ -85,7 +85,6 @@ class CandidatoRecomendacaoService {
     editalId: string,
     prazo: Date,
   ) {
-    console.log(data);
     // Drop recomendacoes
     const listRecomendacoes = await prisma.candidatoRecomendacao.findMany({
       where: {
@@ -159,7 +158,7 @@ class CandidatoRecomendacaoService {
           urlSend,
         },
       }).catch((err) => {
-        console.log('Error:', err);
+        console.error('Error:', err);
       });
     });
   }
@@ -174,7 +173,6 @@ class CandidatoRecomendacaoService {
       },
     });
 
-    console.log('Send email to:', recomendacao.email);
     sendEmail({
       to: recomendacao.email, // Change to your recipient
       name: 'Coordenação do PPGI',
@@ -184,7 +182,7 @@ class CandidatoRecomendacaoService {
         recomendacao,
       },
     }).catch((err) => {
-      console.log('Error:', err);
+      console.error('Error:', err);
     });
   }
 }

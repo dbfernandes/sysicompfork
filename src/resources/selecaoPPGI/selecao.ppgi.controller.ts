@@ -245,7 +245,7 @@ async function renderFormHistorico(
   const experienciasAcademicas =
     await candidatoExperienciaAcademicaService.listByCandidateId(Number(uid));
   const { conferencias, periodicos } =
-    await candidatoPublicacaoService.publicacoesCandidato(Number(uid));
+    await candidatoPublicacaoService.getPublicacoes(Number(uid));
 
   res.render(resolveView('formHistorico'), {
     ...locals,
@@ -260,6 +260,10 @@ async function renderFormHistorico(
     hasProvaAnterior: verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       PROVA_ANTERIOR_FILE,
+    ),
+    hasVitaeXML: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      'VitaeXML.xml',
     ),
     experienciasAcademicas,
     conferencias,
@@ -608,7 +612,7 @@ async function uploadsPublicacoes(
 ): Promise<void> {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatoPublicacaoService.publicacoesCandidato(
+      const data = await candidatoPublicacaoService.getPublicacoes(
         Number(req.session.uid),
       );
 
@@ -626,10 +630,8 @@ async function uploadsPublicacoes(
     case 'POST':
       try {
         const uid = req.session.uid;
-        const dados = req.body;
-
-        await candidatoPublicacaoService.processarPublicacoes({
-          publicacoes: dados,
+        await candidatoPublicacaoService.processPublicacoes({
+          publicacoes: JSON.parse(req.body.publicacoes),
           uid: Number(uid),
         });
 
@@ -796,6 +798,36 @@ function viewFile(req: Request, res: Response): void {
   });
 }
 
+async function deleteAllPublications(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  switch (req.method) {
+    case 'DELETE':
+      try {
+        const { uid } = req.session;
+        const caminhoDoc = path.join(
+          'public',
+          'uploads',
+          'candidato',
+          uid,
+          'VitaeXML.xml',
+        );
+        if (fs.existsSync(caminhoDoc)) {
+          fs.unlinkSync(caminhoDoc);
+        }
+        await candidatoPublicacaoService.deleteAllPublicacoes(Number(uid));
+        res.status(StatusCodes.OK).send();
+      } catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+      }
+      break;
+    default:
+      res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
+      break;
+  }
+}
+
 export default {
   inicio,
   signUp,
@@ -812,4 +844,5 @@ export default {
   trocarSenha,
   downloadFile,
   viewFile,
+  deleteAllPublications,
 };
