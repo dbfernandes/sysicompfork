@@ -11,7 +11,7 @@
                 <div>
                     <h1>Alterar Edital do PPGI {{edital.id}}</h1>
                 </div>
-                <div >
+                <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item active"><a href="/edital/listEdital">Editais</a></li>
@@ -25,29 +25,29 @@
                     <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </a> 
+                    </a>
                 </div>
-                
+
             </div>
         </div><!-- /.container-fluid -->
     </section>
 
 
-<!-- Main content -->
+    <!-- Main content -->
     <section class="content">
 
         <div class="container-fluid">
 
             <div class="col-md-12">
 
-                <form action="/edital/addEdital" method="post"  id="adicionarSelecaoForm">
+                <form action="/edital/addEdital" method="post" id="adicionarSelecaoForm">
                     <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Dados do Edital</b></h3>
                         </div>
-                        
+
                         <div class="card-body">
                             <div class="col-md-12">
                                 <div class="form-row">
@@ -56,9 +56,11 @@
                                         <div class="form-group">
                                             <font color="#FF0000">*</font>
                                             <label> Número do Edital:</label>
-                                            <input type="text" class="form-control edital" id="num_edital" name="num_edital" value={{edital.id}} disabled>
+                                            <input type="text" class="form-control edital" id="num_edital"
+                                                name="num_edital" value={{edital.id}} disabled>
                                             <div class="hint-block">
-                                                <span>Ex.: 001-2023, sendo o <b>'001'</b> o número do edital e <b>'2023'</b> o ano</span>
+                                                <span>Ex.: 001-2023, sendo o <b>'001'</b> o número do edital e
+                                                    <b>'2023'</b> o ano</span>
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +76,8 @@
                                                         <i class="fa fa-globe"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control" id="documento" name="documento" value= "{{edital.documento}}" required>
+                                                <input type="text" class="form-control" id="documento" name="documento"
+                                                    value="{{edital.documento}}" required>
                                             </div>
                                             <div class="hint-block">Ex.: http://www.propesp.ufam.edu.br</div>
                                         </div>
@@ -94,15 +97,16 @@
                                                         <i class="far fa-calendar-alt"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control float-right" id="datas" name="datas" required>
+                                                <input type="text" class="form-control float-right" id="datas"
+                                                    name="datas" required>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
-                                </div>                              
-                                
+                                </div>
+
                             </div>
-                        </div> 
+                        </div>
                     </div>
 
 
@@ -110,15 +114,19 @@
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
-                        <div class="card-body">                            
+                        <div class="card-body">
                             <div class="form-group">
-                                <div class="form-row">                                        
+                                <div class="form-row">
                                     <div class="col-sm-5 col-md-3">
                                         <div class="form-group">
-                                            <div class="form-row">                                                
-                                                <label for="carta_recomendacao"> <font color="#FF0000">*</font> Carta de Recomendação? </label>
+                                            <div class="form-row">
+                                                <label for="carta_recomendacao">
+                                                    <font color="#FF0000">*</font> Carta de Recomendação?
+                                                </label>
                                             </div>
-                                            <input type="checkbox" name="carta_recomendacao" {{#ifEqual edital.cartaRecomendacao '1'}}checked data-bootstrap-switch{{else}}data-bootstrap-switch{{/ifEqual}} 
+                                            <input type="checkbox" name="carta_recomendacao" {{#ifEqual
+                                                edital.cartaRecomendacao '1' }}checked
+                                                data-bootstrap-switch{{else}}data-bootstrap-switch{{/ifEqual}}
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_recomendacao">
                                         </div>
@@ -126,39 +134,49 @@
 
                                     <div class="col-sm-3 col-md-3 ">
                                         <div class="form-group">
-                                            <div class="form-row">            
-                                                <label for="carta_orientador"> <font color="#FF0000">*</font>Carta Orientador?</label>
+                                            <div class="form-row">
+                                                <label for="carta_orientador">
+                                                    <font color="#FF0000">*</font>Carta Orientador?
+                                                </label>
                                             </div>
-                                            <input type="checkbox" name="carta_orientador" {{#ifEqual edital.cartaOrientador '1'}}checked data-bootstrap-switch{{else}}data-bootstrap-switch{{/ifEqual}} 
+                                            <input type="checkbox" name="carta_orientador" {{#ifEqual
+                                                edital.cartaOrientador '1' }}checked
+                                                data-bootstrap-switch{{else}}data-bootstrap-switch{{/ifEqual}}
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_orientador">
-                                        </div>   
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                                                        
-                            <div class="form-group">                            
+
+                            <div class="form-group">
                                 <div class="form-row">
                                     <div class="col-sm-3 col-md-3">
                                         <div class="form-group">
-                                            <div class="form-row">            
-                                                <label for="mestrado"> <font color="#FF0000">*</font>Mestrado?</label>
+                                            <div class="form-row">
+                                                <label for="mestrado">
+                                                    <font color="#FF0000">*</font>Mestrado?
+                                                </label>
                                             </div>
                                             <input type="checkbox" name="mestrado" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="mestrado">
-                                        </div>                                            
+                                        </div>
                                     </div>
 
-                                    <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Mestrado:</label>
+                                    <div class="col-sm-4">
+                                        <label>
+                                            <font color="#FF0000">*</font> Vagas Regulares para Mestrado:
+                                        </label>
                                         <input type="number" name="vaga_regular_mestrado" class="form-control "
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_regular_mestrado" value="{{edital.vagasMestrado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
-                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:</label>
+                                        <label>
+                                            <font color="#FF0000">*</font> Vagas Suplementares para Mestrado:
+                                        </label>
                                         <input type="number" class="form-control " name="vaga_suplementar_mestrado"
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_suplementar_mestrado" value="{{edital.cotasMestrado}}" min="0">
@@ -166,47 +184,54 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">                            
+                            <div class="form-group">
                                 <div class="form-row">
                                     <div class="col-sm-3 col-md-3">
                                         <div class="form-group">
-                                            <div class="form-row">            
-                                                <label for="doutorado"> <font color="#FF0000">*</font>Doutorado?</label>
+                                            <div class="form-row">
+                                                <label for="doutorado">
+                                                    <font color="#FF0000">*</font>Doutorado?
+                                                </label>
                                             </div>
                                             <input type="checkbox" name="doutorado" checked data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="doutorado">
-                                        </div> 
+                                        </div>
                                     </div>
 
-                                    <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">*</font> Vagas Regulares para Doutorado:</label>
+                                    <div class="col-sm-4">
+                                        <label>
+                                            <font color="#FF0000">*</font> Vagas Regulares para Doutorado:
+                                        </label>
                                         <input type="number" name="vaga_regular_doutorado" class="form-control "
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_regular_doutorado" value="{{edital.vagasDoutorado}}" min="0">
                                     </div>
 
                                     <div class="col-sm-5 col-md-5">
-                                        <label> <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:</label>
+                                        <label>
+                                            <font color="#FF0000">*</font> Vagas Suplementares para Doutorado:
+                                        </label>
                                         <input type="number" class="form-control" name="vaga_suplementar_doutorado"
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_suplementar_doutorado" value="{{edital.cotasDoutorado}}" min="0">
                                     </div>
                                 </div>
-                            </div>                
+                            </div>
                         </div>
 
                         <div class="card-footer">
                             <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                <button id="botaoSubmit" type="button" class="btn btn-success float-right" onclick="submitForm()">
+                                <button id="botaoSubmit" type="button" class="btn btn-success float-right"
+                                    onclick="submitForm()">
                                     <i class="fas fa-check-circle"></i>
                                     Alterar Edital
                                 </button>
                             </div>
                         </div>
 
-                    </div>      
-                </form>        
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -216,11 +241,11 @@
 <script>
 
 
-    document.getElementById("voltarBtn").addEventListener("click", function() {
+    document.getElementById("voltarBtn").addEventListener("click", function () {
         window.history.back();
     });
 
-   //verifica se pelo menos um dos quatro campos de vagas tem valor maior que 0
+    //verifica se pelo menos um dos quatro campos de vagas tem valor maior que 0
     function verificaVagas() {
         const vaga_regular_mestrado = parseInt($('#vaga_regular_mestrado').val());
         const vaga_suplementar_mestrado = parseInt($('#vaga_suplementar_mestrado').val());
@@ -233,46 +258,46 @@
             vaga_regular_doutorado > 0 ||
             vaga_suplementar_doutorado > 0
         ) {
-            return true;             
+            return true;
         }
 
         return false;
     }
 
 
-     //se o switch estiver desabilitado, bloqueia o campo correspondente e altera o valor pra 0
-        function toggleFields() {
-            let mestradoChecked = $("#mestrado").prop('checked');
-            let doutoradoChecked = $("#doutorado").prop('checked');
+    //se o switch estiver desabilitado, bloqueia o campo correspondente e altera o valor pra 0
+    function toggleFields() {
+        let mestradoChecked = $("#mestrado").prop('checked');
+        let doutoradoChecked = $("#doutorado").prop('checked');
 
-            let vagaRegularMestrado = $("#vaga_regular_mestrado");
-            vagaRegularMestrado.prop('disabled', !mestradoChecked);
-            vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');     //se unchecked, valor=0
+        let vagaRegularMestrado = $("#vaga_regular_mestrado");
+        vagaRegularMestrado.prop('disabled', !mestradoChecked);
+        vagaRegularMestrado.val(mestradoChecked ? vagaRegularMestrado.val() : '0');     //se unchecked, valor=0
 
-            let vagaSuplementarMestrado = $("#vaga_suplementar_mestrado");
-            vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
-            vagaSuplementarMestrado.val(mestradoChecked ? vagaSuplementarMestrado.val() : '0');
+        let vagaSuplementarMestrado = $("#vaga_suplementar_mestrado");
+        vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
+        vagaSuplementarMestrado.val(mestradoChecked ? vagaSuplementarMestrado.val() : '0');
 
-            let vagaRegularDoutorado = $("#vaga_regular_doutorado");
-            vagaRegularDoutorado.prop('disabled', !doutoradoChecked);
-            vagaRegularDoutorado.val(doutoradoChecked ? vagaRegularDoutorado.val() : '0');
+        let vagaRegularDoutorado = $("#vaga_regular_doutorado");
+        vagaRegularDoutorado.prop('disabled', !doutoradoChecked);
+        vagaRegularDoutorado.val(doutoradoChecked ? vagaRegularDoutorado.val() : '0');
 
-            let vagaSuplementarDoutorado = $("#vaga_suplementar_doutorado");
-            vagaSuplementarDoutorado.prop('disabled', !doutoradoChecked);
-            vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');            
-        }
+        let vagaSuplementarDoutorado = $("#vaga_suplementar_doutorado");
+        vagaSuplementarDoutorado.prop('disabled', !doutoradoChecked);
+        vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');
+    }
 
 
-    $(document).ready(function () { 
+    $(document).ready(function () {
 
         let dataI = moment('{{edital.dataInicio}}').format('DD/MM/YYYY');
         let dataF = moment('{{edital.dataFim}}').format('DD/MM/YYYY');
-             
+
         $('#datas').daterangepicker({
             startDate: dataI,
             endDate: dataF,
             locale: {
-                format: 'DD/MM/YYYY', 
+                format: 'DD/MM/YYYY',
                 separator: ' - ',
                 applyLabel: 'Aplicar',
                 cancelLabel: 'Cancelar',
@@ -286,9 +311,9 @@
             $(this).bootstrapSwitch('state', $(this).is(':checked'));
         });
         //--
-    
 
-         //chamado sempre q o switch mudar
+
+        //chamado sempre q o switch mudar
         $("#mestrado, #doutorado").on('switchChange.bootstrapSwitch', function (event, state) {
 
             toggleFields();
@@ -307,26 +332,26 @@
             }
         });
     });
-    
+
 
     //validação dos campos do formulário
-    $('#adicionarSelecaoForm').validate({ 
+    $('#adicionarSelecaoForm').validate({
         rules: {
             vaga_regular_mestrado: {
                 required: true,
-                digits: true,                
+                digits: true,
             },
             vaga_suplementar_mestrado: {
                 required: true,
-                digits: true,               
+                digits: true,
             },
             vaga_regular_doutorado: {
                 required: true,
-                digits: true,                
+                digits: true,
             },
             vaga_suplementar_doutorado: {
                 required: true,
-                digits: true,                
+                digits: true,
             },
             num_edital: {
                 required: true,
@@ -336,26 +361,26 @@
                 url: true,
             },
             datas: {
-                required: true,            
+                required: true,
             },
-            
+
         },
         messages: {
             vaga_regular_mestrado: {
                 required: 'Este campo é obrigatório.',
-                digits: 'Por favor, insira apenas números inteiros.',                              
+                digits: 'Por favor, insira apenas números inteiros.',
             },
             vaga_suplementar_mestrado: {
                 required: 'Este campo é obrigatório.',
-                digits: 'Por favor, insira apenas números inteiros.',                
+                digits: 'Por favor, insira apenas números inteiros.',
             },
             vaga_regular_doutorado: {
                 required: 'Este campo é obrigatório.',
-                digits: 'Por favor, insira apenas números inteiros.',                
+                digits: 'Por favor, insira apenas números inteiros.',
             },
             vaga_suplementar_doutorado: {
                 required: 'Este campo é obrigatório.',
-                digits: 'Por favor, insira apenas números inteiros.',                
+                digits: 'Por favor, insira apenas números inteiros.',
             },
             num_edital: {
                 required: 'Este campo é obrigatório.',
@@ -365,7 +390,7 @@
                 url: 'Por favor, insira uma URL válida.',
             },
             datas: {
-                required: 'Este campo é obrigatório.',                               
+                required: 'Este campo é obrigatório.',
             },
         },
         errorElement: 'span',
@@ -373,7 +398,7 @@
             error.addClass('invalid-feedback');
             element.closest('.form-group').append(error);
         },
-        
+
         highlight: function (element, errorClass, validClass) {
             $(element).addClass('is-invalid');
         },
@@ -384,7 +409,7 @@
     });
 
 
-    function pegaDados() {       
+    function pegaDados() {
         const vaga_regular_mestrado = parseInt($("#vaga_regular_mestrado").val(), 10);
         const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
         const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
@@ -412,15 +437,15 @@
 
     function submitForm() {
         const $form = $('#adicionarSelecaoForm');
-        const vagas= verificaVagas();
-    
-        if($form.valid()){
+        const vagas = verificaVagas();
 
-            if(vagas){
-                
+        if ($form.valid()) {
+
+            if (vagas) {
+
                 const dados = pegaDados();
 
-                if(dados){
+                if (dados) {
 
                     dados._csrf = $("#_csrf").val();
                     $.ajax({
@@ -428,7 +453,7 @@
                         type: 'PUT',
                         data: dados,
                         success: function (data) {
-                            
+
                             $(document).Toasts('create', {
                                 icon: 'success',
                                 class: "bg-success",
@@ -438,7 +463,7 @@
                                 body: 'Edital atualizado no sistema com sucesso'
                             });
 
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 window.location.href = '/edital/listEdital';
                             }, 1500);
 
@@ -456,7 +481,7 @@
                     });
 
                 }
-            }else{
+            } else {
                 $(document).Toasts('create', {
                     icon: 'error',
                     class: "bg-danger",
@@ -470,7 +495,7 @@
         }
 
     }
-    
+
 </script>
 
 {{> footer}}

@@ -38,11 +38,13 @@ class EditalService {
   }
 
   async listEdital() {
-    const editais = await prisma.edital.findMany().catch((err) => {
-      console.error(`[ERROR] Listar Editais: ${err}`);
+    try {
+      const editais = await prisma.edital.findMany();
+      return editais;
+    } catch (error) {
+      console.error(`[ERROR] Listar Editais: ${error}`);
       throw new Error('Não foi possivel listar o edital');
-    });
-    return editais;
+    }
   }
 
   async listEditaisDisponiveis(): Promise<Edital[]> {

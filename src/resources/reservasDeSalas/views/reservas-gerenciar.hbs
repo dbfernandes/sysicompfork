@@ -54,12 +54,12 @@
                                 <tbody>
                                     {{#each reservas}}
                                     <tr style="text-align: center;">
-                                        <td> {{Salas.nome}} - {{Salas.bloco}} - {{Salas.andar}} andar </td>
-                                        <td> {{Usuario.nomeCompleto}} </td>
+                                        <td> {{sala.nome}} - {{sala.bloco}} - {{sala.andar}} andar </td>
+                                        <td> {{usuario.nomeCompleto}} </td>
                                         <td> {{atividade}} </td>
                                         <td> {{tipo}} </td>
-                                        <td> {{dataInicio}} - {{dataTermino}} </td>
-                                        <td> {{horaInicio}} - {{horaTermino}} </td>
+                                        <td> {{dataInicio}} - {{dataFim}} </td>
+                                        <td> {{horaInicio}} - {{horaFim}} </td>
                                         {{#if dias}}
 
                                         <td>{{dias}}</td>
@@ -103,30 +103,31 @@
             <!-- /.col -->
         </div>
         <!-- /.row -->
-<!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
 
-<div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="tituloModal"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModal"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+                    <a id="deleteButton" type="button" class="btn btn-warning color-white"
+                        onclick="deleteUser()">Sim</a>
+                </div>
+                <form name="postDelete" id="postDelete" method="POST">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                </form>
             </div>
-            <div class="modal-footer">
-                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
-            </div>
-            <form name="postDelete" id="postDelete" method="POST">
-                <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            </form>
         </div>
     </div>
-</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -184,7 +185,7 @@
                 { responsivePriority: 6, orderable: false },
                 { responsivePriority: 3, orderable: false },
                 { responsivePriority: 4, orderable: false },
-                { responsivePriority: 5, orderable: true }, 
+                { responsivePriority: 5, orderable: true },
                 { responsivePriority: 7, orderable: true },
                 { responsivePriority: 2, orderable: false },
                 { responsivePriority: 8, orderable: false },

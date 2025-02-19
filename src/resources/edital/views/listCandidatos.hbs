@@ -1,21 +1,21 @@
 {{> header}}
 
 {{> sidebar module="edital" page="listCandidates"}}
-{{ setTitle title=(concat "Candidatos do PPGI - Edital " editalID) }}
+{{ setTitle title=(concat "Candidatos do PPGI - Edital " id) }}
 
-<div class="content-wrapper"> 
+<div class="content-wrapper">
     <section class="content-header">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Candidatos do PPGI - Edital {{editalID}} </h1>
+                    <h1>Candidatos do PPGI - Edital {{id}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/inicio">Página Inical</a></li>
                         <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI</a></li>
-                        <li class="breadcrumb-item active"><a href="/edital/listEdital/{{editalID}}">
+                        <li class="breadcrumb-item active"><a href="/edital/listEdital/{{id}}">
                                 Detalhes de edital</a></li>
                         <li class="breadcrumb-item active"> Lista de Candidados</li>
                     </ol>
@@ -27,10 +27,10 @@
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
-                    <a class="btn btn-primary color-white" href="/edital/getEditalCandidatesDocs/{{editalID}}">
+                    <a class="btn btn-primary color-white" href="/edital/getEditalCandidatesDocs/{{id}}">
                         <i class="fas fa-plus"></i>
                         Baixar Documentação
-                    </a>      
+                    </a>
                 </div>
             </div>
         </div>
@@ -41,11 +41,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    
+
                     <div class="card-body mr-auto ml-n3">
-                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas: {{quantidadeInscricaoFinalizada}}</b></h4>
+                        <h4 style="font-family: sans-serif;"><b>Inscrições Finalizadas:
+                                {{quantidadeInscricaoFinalizada}}</b></h4>
                     </div>
- 
+
                     <div class="card card-primary">
 
                         <div class="card-body" style="overflow-x:auto;">
@@ -73,15 +74,13 @@
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
                                             <div class="d-flex justify-content-between">
-                                                <a  style="margin-right: 0px"
-                                                    target="_blank"
+                                                <a style="margin-right: 0px" target="_blank"
                                                     href='/edital/getCandidateDocs/{{id}}'
-                                                    class='fa fa-solid fa-download'/>
+                                                    class='fa fa-solid fa-download' />
                                                 </a>
-                                                
-                                                <a  style="margin-right: 0px"
-                                                    href='/edital/candidateDetails/{{id}}'
-                                                    class='fa fa-solid fa-eye'/>
+
+                                                <a style="margin-right: 0px" href='/edital/candidateDetails/{{id}}'
+                                                    class='fa fa-solid fa-eye' />
                                                 </a>
                                             </div>
                                         </td>
@@ -91,15 +90,16 @@
                                 </tbody>
                             </table>
                         </div>
-                            
+
                     </div>
-                    
-                    <div class="card-body mr-auto ml-n3" >
-                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento: {{quantidadeInscricaoAndamento}}</b></h4>
+
+                    <div class="card-body mr-auto ml-n3">
+                        <h4 style="font-family: sans-serif;"><b>Inscrições em Andamento:
+                                {{quantidadeInscricaoAndamento}}</b></h4>
                     </div>
 
                     <div class="card card-primary">
-                        
+
 
                         <div class="card-body" style="overflow-x:auto;">
                             <table id="tableCandidatesAndamento" class="table table-hover w-100">
@@ -117,36 +117,34 @@
                                 </thead>
                                 <tbody>
                                     {{#each candidatos}}
-                                        {{#if (ne posicaoEdital 4) }}
-                                        <tr>
-                                            <td>{{id}}</td>
-                                            <td>{{idEdital}}</td>
-                                            <td>{{nome}}</td>
-                                            <td>{{email}}</td>
-                                            <td>{{cursoDesejado}}</td>
-                                            <td>{{idLinhaPesquisa}}</td>
-                                            <td>{{posicaoEdital}}/4</td>
-                                            <td>
-                                                <div class="d-flex justify-content-between">
-                                                    <a  style="margin-right: 0px"
-                                                        target="_blank"
-                                                        href='/edital/getCandidateDocs/{{id}}'
-                                                        class='fa fa-solid fa-download'/>
-                                                    </a>    
-                                                    
-                                                    <a  style="margin-right: 0px"
-                                                        href='/edital/candidateDetails/{{id}}'
-                                                        class='fa fa-solid fa-eye'/>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {{/if}}
+                                    {{#if (ne posicaoEdital 4) }}
+                                    <tr>
+                                        <td>{{id}}</td>
+                                        <td>{{idEdital}}</td>
+                                        <td>{{nome}}</td>
+                                        <td>{{email}}</td>
+                                        <td>{{cursoDesejado}}</td>
+                                        <td>{{idLinhaPesquisa}}</td>
+                                        <td>{{posicaoEdital}}/4</td>
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <a style="margin-right: 0px" target="_blank"
+                                                    href='/edital/getCandidateDocs/{{id}}'
+                                                    class='fa fa-solid fa-download' />
+                                                </a>
+
+                                                <a style="margin-right: 0px" href='/edital/candidateDetails/{{id}}'
+                                                    class='fa fa-solid fa-eye' />
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{/if}}
                                     {{/each}}
                                 </tbody>
                             </table>
                         </div>
-                            
+
                     </div>
                 </div>
             </div>
@@ -156,22 +154,22 @@
 </div>
 
 <head>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-  <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet">
 
-  <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-  <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
+    <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script defer src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script>
 </head>
 
 <script>
-    
+
     function voltarPagina() {
         window.history.back();
     }
-    
-    document.addEventListener("DOMContentLoaded", function(event) {
+
+    document.addEventListener("DOMContentLoaded", function (event) {
         var datatable = $("#tableCandidatesFinalizados").DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
@@ -186,10 +184,10 @@
                 { responsivePriority: 6 },
                 { responsivePriority: 7 },
             ],
-            columnDefs: [ {
+            columnDefs: [{
                 "targets": [6],
                 "orderable": false
-            } ]
+            }]
         });
         var datatable = $("#tableCandidatesAndamento").DataTable({
             language: {
@@ -206,16 +204,16 @@
                 { responsivePriority: 7 },
                 { responsivePriority: 8 },
             ],
-            columnDefs: [ {
+            columnDefs: [{
                 "targets": [7],
                 "orderable": false
-            } ]
+            }]
         });
 
-        document.getElementById("voltarBtn").addEventListener("click", function() {
+        document.getElementById("voltarBtn").addEventListener("click", function () {
             window.history.back();
         });
-    }); 
+    });
 
 </script>
 

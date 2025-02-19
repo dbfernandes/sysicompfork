@@ -31,7 +31,10 @@ const config: Config = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc/jest',
       },
-      moduleNameMapper: {},
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@prisma/client$': '<rootDir>/node_modules/.prisma/client/index.js',
+      },
     },
   ],
   // All imported modules in your tests should be mocked automatically
@@ -95,13 +98,15 @@ const config: Config = {
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
-  // globals: {},
+  globals: {
+    TZ: 'UTC'
+  },
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
   // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: ['node_modules', 'src', 'prisma'],
+  moduleDirectories: ['node_modules', 'src', 'prisma'],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: [
@@ -128,7 +133,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -163,7 +168,7 @@ const config: Config = {
   // setupFiles: ['<rootDir>/src/init_test.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/singleton.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,

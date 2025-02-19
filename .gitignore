@@ -1,38 +1,30 @@
-node_modules
-/node_modules
 .idea
+/node_modules
 /build
 /dist
-uploads/*
 /coverage
-#Removing the database credentials
-src/config/database.js
-
-#Removing the mail credentials
-src/config/mail.json
-
-#Removing upload files
-src/uploads/*
-
-# exception to the rule
-!src/uploads/.gitkeep 
-
-public/candidato/uploads/*
-public/afastamentos/*
 
 uploads/*
-public/uploads/*
 public/candidato/*
+public/afastamentos/*
+public/uploads/*
 
-!src/candidato/uploads/.gitkeep 
 #Removing the .xlsx file
 /planilha.xlsx
+public/files/planilha.xlsx
 public/uploads/candidato/*
 !/logs/.gitkeep
 /logs/*
+
+#Removing upload files
+src/uploads/*
 
 # Removing the .env file
 .env
 .env.development
 .env.production
 .env.test
+
+# exception to the rule
+!src/uploads/.gitkeep
+!src/candidato/uploads/.gitkeep

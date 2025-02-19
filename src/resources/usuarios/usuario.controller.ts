@@ -3,6 +3,7 @@ import usuarioService from './usuario.service';
 import criarURL from '../../utils/criarUrl';
 
 import path from 'path';
+import { StatusCodes } from 'http-status-codes';
 import {
   CreateUsuarioDto,
   UpdateUsuarioDto,
@@ -19,7 +20,7 @@ const adicionar = async (
 ): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('usuarios-adicionar'), {
+      return res.status(StatusCodes.OK).render(resolveView('usuarios-adicionar'), {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
@@ -244,7 +245,7 @@ const listar = async (
   }
 };
 
-const visualizar = async (
+const detalhes = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -424,7 +425,7 @@ export const usuarioController = {
   adicionar,
   listar,
   deletar,
-  visualizar,
+  detalhes,
   editar,
   restaurar,
   verificarDiretorExistente,

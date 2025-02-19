@@ -1,9 +1,11 @@
+import prisma from '../../client';
+
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-import { Candidato, PrismaClient } from '@prisma/client';
+import { Candidato } from '@prisma/client';
 
 import { generateHashPassword } from '../../utils/utils';
 import {
@@ -19,11 +21,55 @@ import { CandidatoNaoAutorizadoError } from './errors/candidatoNaoAutorizadoErro
 import { CandidatoNaoExisteError } from './errors/candidatoNaoExiteError';
 import { TokenExpiradoError } from './errors/tokenExpiradoError';
 import { TokenInvalidoError } from './errors/tokenInvalidoError.';
-const prisma = new PrismaClient();
 
 class CandidatoService {
   async list() {
-    return prisma.candidato.findMany();
+    return await prisma.candidato.findMany();
+  }
+
+  async create({ email, senha, edital }) {
+    const step = 1;
+
+    const passwordHash = await generateHashPassword(senha);
+    const candidato = await prisma.candidato.create({
+      data: {
+        email,
+        senhaHash: passwordHash,
+        editalId: edital,
+        posicaoEdital: step,
+      },
+    });
+
+    if (candidato && candidato.senhaHash) {
+      delete candidato.senhaHash;
+    }
+    await prisma.edital.update({
+      where: {
+        id: edital,
+      },
+      data: {
+        inscricoesIniciadas: {
+          increment: 1,
+        },
+      },
+    });
+    return candidato;
+  }
+
+  async auth({ email, senha, editalId }) {
+    const candidato = await prisma.candidato.findFirst({
+      where: {
+        email,
+        editalId: editalId,
+      },
+    });
+
+    if (!candidato) {
+      return null;
+    }
+    return (await bcrypt.compare(senha, candidato.senhaHash))
+      ? candidato
+      : null;
   }
 
   async findById(id: number) {

@@ -29,7 +29,6 @@
             </p>
           </a>
         </li>
-        {{#if (autorizarUsuario tipoUsuario "administrador")}}
         <li class="nav-header">Administração</li>
         <li class="nav-item {{#ifEqual module 'usuarios'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'usuarios'}}active{{/ifEqual}}">
@@ -40,13 +39,15 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/usuarios/adicionar"
-                class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-user-plus nav-icon"></i>
-                <p>Adicionar Usuário</p>
-              </a>
-            </li>
+            {{#if (autorizarUsuario tipoUsuario "administrador")}}
+              <li class="nav-item">
+                <a href="/usuarios/adicionar"
+                  class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-user-plus nav-icon"></i>
+                  <p>Adicionar Usuário</p>
+                </a>
+              </li>
+            {{/if}}
             <li class="nav-item">
               <a href="/usuarios/listar" class="nav-link {{#ifEqual page 'usuarios-listar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-table nav-icon"></i>
@@ -55,8 +56,6 @@
             </li>
           </ul>
         </li>
-        {{/if}}
-        {{#if (autorizarUsuario tipoUsuario "coordenador")}}
         <li class="nav-header">Coordenação PPGI</li>
         <!--<li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
@@ -92,13 +91,15 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/edital/addEdital"
-                class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-search-plus nav-icon "></i>
-                <p>Criar Edital de Seleção</p>
-              </a>
-            </li>
+            {{#if (autorizarUsuario tipoUsuario "coordenador")}}
+              <li class="nav-item">
+                <a href="/edital/addEdital"
+                  class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-search-plus nav-icon "></i>
+                  <p>Criar Edital de Seleção</p>
+                </a>
+              </li>
+            {{/if}}
             <li class="nav-item">
               <a href="/edital/listEdital" class="nav-link {{#ifEqual page 'edital-listar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-table nav-icon"></i>
@@ -117,12 +118,14 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
+            {{#if (autorizarUsuario tipoUsuario "coordenador")}}
             <li class="nav-item">
               <a href="/linhasdepesquisa/criar" class="nav-link {{#ifEqual page 'linhasDePesquisa-criar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-search-plus nav-icon"></i>
                 <p>Adicionar Linha de Pesquisa</p>
               </a>
             </li>
+            {{/if}}
             <li class="nav-item">
               <a href="/linhasdepesquisa/listar" class="nav-link {{#ifEqual page 'linhasDePesquisa-listar'}}active{{/ifEqual}} text-sm">
                 <i class="fas fa-table nav-icon"></i>
@@ -131,7 +134,6 @@
             </li>
           </ul>
         </li>
-         {{/if}}
          {{#if (autorizarUsuario tipoUsuario "professor")}}
         <li class="nav-header">Professor</li>
         <li class="nav-item {{#ifEqual module 'afastamentoTemporario'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">

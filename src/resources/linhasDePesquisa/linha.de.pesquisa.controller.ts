@@ -5,7 +5,7 @@ import {
   UpdateLinhaDePesquisaDto,
 } from './linha.de.pesquisa.types';
 import path from 'path';
-
+import { StatusCodes } from 'http-status-codes';
 const pageTitle = 'Linhas De Pesquisa';
 
 function resolveView(viewName: string): string {
@@ -20,7 +20,7 @@ const listar = async (req: Request, res: Response) => {
     if (doesNotExists) throw new Error('Nenhuma linha de pesquisa cadastrada');
 
     return res
-      .status(200)
+      .status(StatusCodes.OK)
       .render(resolveView('linhasDePesquisa-listar'), {
         linhaDePesquisa,
         pageTitle,
@@ -29,7 +29,7 @@ const listar = async (req: Request, res: Response) => {
         tipoUsuario: req.session?.tipoUsuario
       });
   } catch (error: any) { // Definindo o tipo da variável error como Error
-    return res.status(400).render(resolveView('linhasDePesquisa-listar'), {
+    return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-listar'), {
       pageTitle,
       error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
@@ -46,12 +46,12 @@ const buscar = async (req: Request, res: Response) => {
 
     if (!result)
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Linha de Pesquisa Não Encontrada!' });
 
     const { nome, sigla } = result;
 
-    return res.status(200).render(resolveView('linhasDePesquisa-busca'), {
+    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisa-busca'), {
       nome,
       sigla,
       pageTitle,
@@ -59,20 +59,20 @@ const buscar = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res
-      .status(400)
+      .status(StatusCodes.BAD_REQUEST)
       .json({ message: 'Erro ao buscar linha de pesquisa!' });
   }
 };
 
 const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(200).render(resolveView('linhasDePesquisa-criar'), {
+    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisa-criar'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session?.tipoUsuario,
       nome: req.session.nome,
     });
-  } else {
+  } else if (req.method === 'POST') {
     try {
       const novaLinhaPesquisa: CreateLinhaDePesquisaDto = {
         nome: req.body.nome,
@@ -89,7 +89,7 @@ const criar = async (req: Request, res: Response) => {
     } catch (error: any) {
       // Definindo o tipo da variável error como Error
       console.log(error);
-      return res.render(resolveView('linhasDePesquisa-criar'), {
+      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-criar'), {
         pageTitle,
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
@@ -155,7 +155,7 @@ const editar = async (req: Request, res: Response) => {
       return res.redirect('/linhasDePesquisa/listar');
     } catch (error: any) {
       console.log(error);
-      return res.render(resolveView('linhasDePesquisa-editar'), {
+      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-editar'), {
         pageTitle,
         linhaPesquisa,
         nome: req.session.nome,

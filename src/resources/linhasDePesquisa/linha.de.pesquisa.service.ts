@@ -9,7 +9,12 @@ export default new (class LinhaDePesquisaService {
   }
 
   async findById(id: number): Promise<LinhaPesquisa | null> {
-    return await prisma.linhaPesquisa.findFirst({ where: { id } });
+    try {
+      return await prisma.linhaPesquisa.findFirst({ where: { id } });
+    } catch (error: any) {
+      console.error('Erro ao buscar linha de pesquisa por id:', error);
+      throw new Error(error);
+    }
   }
 
   async findByName(name: string): Promise<LinhaPesquisa | null> {
@@ -21,7 +26,12 @@ export default new (class LinhaDePesquisaService {
   }
 
   async criar(newResearchLine: any): Promise<LinhaPesquisa> {
-    return await prisma.linhaPesquisa.create({ data: newResearchLine });
+    try {
+      return await prisma.linhaPesquisa.create({ data: newResearchLine });
+    } catch (error: any) {
+      console.error('Erro ao criar linha de pesquisa:', error);
+      throw new Error(error);
+    }
   }
 
   async update(id: number, linhaDePesquisa: any): Promise<LinhaPesquisa> {

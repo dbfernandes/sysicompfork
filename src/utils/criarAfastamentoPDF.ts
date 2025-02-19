@@ -9,12 +9,25 @@ import usuarioService from '../resources/usuarios/usuario.service';
 import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
 import { Request, Response } from 'express';
 
+interface dadosDocumento {
+  nomeCompleto: string
+  dataSaida: string,
+  dataRetorno: string,
+  localViagem: string,
+  tipoViagem: string,
+  justificativa: string,
+  planoReposicao: string,
+  diretorNome: string,
+  data: string,
+  hora: string,
+  email: string,
+}
+
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
 async function getAfastamento(id: number) {
   const afastamento = await afastamentoService.retornarAfastamento(id);
   const usuario = await usuarioService.listarUmUsuario(id);
   const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
-  console.log('Diretor:', diretor);
   const email = usuario.email;
 
   if (!afastamento) return null;
@@ -45,12 +58,11 @@ async function getAfastamento(id: number) {
   return afastamentoDoc;
 }
 
-// 2. Pegar o modelo do afastamento e compilar o HTML
-function HBStoPDF(
-  afastamentoPath: any,
-  dados: any,
-  footerPath: any,
-  headerPath: any,
+function compilarTemplates(
+  afastamentoPath: string,
+  dados: dadosDocumento,
+  footerPath: string,
+  headerPath: string,
 ) {
   const footer = fs.readFileSync(footerPath, 'utf8');
   const header = fs.readFileSync(headerPath, 'utf8');
@@ -79,8 +91,7 @@ export async function criarAfastamentoPDF(req: Request, res: Response) {
       '/src/views/layouts/modeloAfastamento/header.hbs',
     );
     const dados = await getAfastamento(Number(id));
-    console.log('Dados:', dados);
-    const arquivoHTML = HBStoPDF(
+    const arquivoHTML = compilarTemplates(
       afastamentoPath,
       dados,
       footerPath,
@@ -90,7 +101,7 @@ export async function criarAfastamentoPDF(req: Request, res: Response) {
       headless: true,
       args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
       executablePath: '/usr/bin/chromium-browser',
-      protocolTimeout: 60000,
+      protocolTimeout: 2000,
     });
     const page = await browser.newPage();
     await page.setContent(arquivoHTML, { waitUntil: 'networkidle0' });

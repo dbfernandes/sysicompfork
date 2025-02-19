@@ -61,13 +61,19 @@ router.use('/inicio', inicioRoutes);
 router.use('/perfil', perfilRoutes);
 
 // Rotas Exclusivas Administrador e Secretaria
-router.use('/usuarios', autenticacaoController.autorizarAdmin, usuariosRoutes);
+// router.use('/usuarios', autenticacaoController.autorizarAdmin, usuariosRoutes);
+router.use('/usuarios', usuariosRoutes);
 // router.use("/projetos", projetosRoutes);
 // Rotas Exclusivas Coordenador
-router.use('/edital', autenticacaoController.autorizarCoord, editalRouter);
+// router.use('/edital', autenticacaoController.autorizarCoord, editalRouter);
+router.use('/edital', editalRouter);
+// router.use(
+//   '/linhasdepesquisa',
+//   autenticacaoController.autorizarCoord,
+//   linhasDePesquisaRouter,
+// );
 router.use(
   '/linhasdepesquisa',
-  autenticacaoController.autorizarCoord,
   linhasDePesquisaRouter,
 );
 // Rotas Exclusivas Professor
@@ -80,7 +86,7 @@ router.use(
 );
 router.use(
   '/afastamentotemporario',
-  autenticacaoController.autorizarProf,
+  // autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
@@ -91,4 +97,5 @@ router.use(
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
+
 export default router;

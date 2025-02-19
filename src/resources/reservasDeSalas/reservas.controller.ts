@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import reservasService from './reservas.service';
 import salasService from '../salas/sala.service';
 import path from 'path';
+import { StatusCodes } from 'http-status-codes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -17,7 +18,7 @@ const listar = async (req: Request, res: Response) => {
 const adicionar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos();
-    res.render(resolveView('reservas-adicionar'), {
+    res.status(StatusCodes.OK).render(resolveView('reservas-adicionar'), {
       salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
@@ -40,27 +41,27 @@ const adicionar = async (req: Request, res: Response) => {
           req.body.dias = '';
         }
       }
-      // const dados = {
-      //   ...req.body
-      // }
+
       const novaReserva: any = {
-        SalaId: parseInt(req.body.SalaId),
-        UsuarioId: parseInt(req.body.UsuarioId),
+        // salaId: parseInt(req.body.SalaId),
+        sala: { connect: { id: parseInt(req.body.SalaId) } },
+        // usuarioId: parseInt(req.body.UsuarioId),
+        usuario: { connect: { id: parseInt(req.body.UsuarioId) } },
         atividade: req.body.atividade,
         dataInicio: req.body.dataInicio
           ? new Date(`${req.body.dataInicio}T00:00:00.000Z`)
           : null,
-        dataTermino: req.body.dataTermino
+        dataFim: req.body.dataTermino
           ? new Date(`${req.body.dataTermino}T00:00:00.000Z`)
           : null,
         tipo: req.body.tipo,
         horaInicio: req.body.horaInicio,
-        horaTermino: req.body.horaTermino,
+        horaFim: req.body.horaTermino,
         dias: req.body.dias,
       };
 
-      await reservasService.criar(novaReserva);
-
+      const reserva = await reservasService.criar(novaReserva);
+      console.log(reserva);
       // if (!reserva) {
       //   res.redirect('/reservas/gerenciar')
       // }
@@ -83,28 +84,27 @@ const excluir = async (req: Request, res: Response) => {
     res.redirect('/reservas/gerenciar');
   } catch (e) {
     console.log(e);
-    res.status(500).json({ error: e });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error: e.message });
   }
 };
 
 const gerenciar = async (req: Request, res: Response) => {
   const reservas = await reservasService.listarReservasSalas();
-  // console.log(reservas)
   const reservasJSON = reservas.map((reserva: any) => {
     const reservaObj = {
       ...reserva,
       dataInicio: reserva.dataInicio
         ? reserva.dataInicio.toLocaleDateString('pt-BR')
         : null,
-      dataTermino: reserva.dataTermino
-        ? reserva.dataTermino.toLocaleDateString('pt-BR')
+      dataFim: reserva.dataFim
+        ? reserva.dataFim.toLocaleDateString('pt-BR')
         : null,
       // horaInicio: reserva.horaInicio ? new Date(reserva.horaInicio).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null,
       // horaTermino: reserva.horaTermino ? new Date(reserva.horaTermino).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null
     };
     const dataAtual = new Date();
     const dataTerminoReserva = new Date(
-      reservaObj.dataTermino + ' ' + reservaObj.horaTermino,
+      reservaObj.dataFim + ' ' + reservaObj.horaTermino,
     );
     reservaObj.terminou = dataTerminoReserva < dataAtual;
 
@@ -129,7 +129,7 @@ const editar = async (req: Request, res: Response) => {
       if (!reserva) throw new Error('Reserva não encontrado!');
       console.log(reserva);
 
-      res.render(resolveView('reservas-editar'), {
+      res.status(StatusCodes.OK).render(resolveView('reservas-editar'), {
         salas: salas,
         nome: req.session.nome,
         reserva: reserva,

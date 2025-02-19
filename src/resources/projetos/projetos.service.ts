@@ -1,7 +1,6 @@
-// const { Projeto } = require('../models')
-import { PrismaClient, Projeto } from '@prisma/client';
+import prisma from '../../client';
+import { Projeto } from '@prisma/client';
 import { ProjetoData } from './projetos.types';
-const prisma = new PrismaClient();
 
 class ProjetoService {
   async adicionarVarios(
