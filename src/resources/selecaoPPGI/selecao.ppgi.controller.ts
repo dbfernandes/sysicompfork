@@ -1,21 +1,25 @@
 import fs from 'fs';
 import path from 'path';
-import { NextFunction, Request, Response } from 'express';
 
-import { Candidato } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import { gerarPDF } from '../../utils/gerarInscricao';
+import { NextFunction, Request, Response } from 'express';
+import { Candidato } from '@prisma/client';
+
 import candidatoService from '../candidato/candidato.service';
+import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
+import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
+import editalService from '../edital/edital.service';
+import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
+
+import { gerarPDF } from '../../utils/gerarInscricao';
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
 } from '../candidato/candidato.types';
-import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
-import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import editalService from '../edital/edital.service';
+
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -25,7 +29,6 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
-import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato

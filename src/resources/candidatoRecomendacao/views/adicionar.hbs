@@ -823,8 +823,8 @@
 		currentTarget.querySelector('span').hidden = false;
 		const data = $("#form-recomendacao").serialize();
 		$.ajax({
-			url: `/selecaoppgi/recomendacoes/salvar/{{token}}?_csrf=${$("#csrfToken").val()}`,
-			type: "PUT",
+			url: `/selecaoppgi/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
+			type: "PATCH",
 			data,
 			success: function (data) {
 				const toastMessage = document.getElementById('toastMessageSuccess');
@@ -981,7 +981,7 @@
 				buttonSubmit.querySelector('span').hidden = false;
 				const data = $("#form-recomendacao").serialize();
 				$.ajax({
-					url: `/selecaoppgi/recomendacoes/finalizar/{{token}}?_csrf=${$("#csrfToken").val()}`,
+					url: `/selecaoppgi/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
 					type: "PUT",
 					data,
 					success: function (data) {

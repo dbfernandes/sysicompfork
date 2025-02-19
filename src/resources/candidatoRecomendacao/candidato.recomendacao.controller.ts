@@ -179,7 +179,7 @@ function parseDataToSave(data: {
 
 async function salvar(req: Request, res: Response) {
   switch (req.method) {
-    case 'PUT':
+    case 'PATCH':
       try {
         const { token } = req.params;
         const dataBody = req.body;

@@ -195,28 +195,30 @@ class EditalService {
   }
 
   async listCandidatos(id: string): Promise<Candidato[]> {
-    const candidatos = await prisma.candidato
-      .findMany({
+    try {
+      const candidatos = await prisma.candidato.findMany({
         where: {
           editalId: id,
         },
-
         include: {
           linhaPesquisa: true,
         },
-      })
-      .catch((err) => {
-        console.error(`[ERROR] Listar Candidatos: ${err}`);
-        throw new Error('Não foi possivel listar os candidatos');
       });
-    return candidatos;
+      return candidatos;
+    } catch (error) {
+      console.error('Erro ao listar candidatos:', error);
+      throw new Error(error);
+    }
   }
 
-  async getCandidato(id: number): Promise<Candidato | null> {
+  async getCandidato(id: number) {
     try {
       return await prisma.candidato.findFirst({
         where: {
           id,
+        },
+        include: {
+          recomendacoes: true,
         },
       });
     } catch (error) {
