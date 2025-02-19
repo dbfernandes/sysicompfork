@@ -52,7 +52,6 @@ header > .container {
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
-  padding: 10px 45px;
   z-index: 9999;
 }
 
@@ -66,11 +65,7 @@ header > .container {
   color: #fff;
 }
 
-@media screen and (max-width: 720pt) {
-  .forms-page header {
-    padding: 10px 15px;
-  }
-}
+
 
 .forms-page header .options {
   display: flex;
@@ -129,11 +124,6 @@ header > .container {
   height: 100%;
 }
 
-@media (max-width: 576px) {
-  .forms-page section form {
-    padding: 0;
-  }
-}
 
 .forms-page section button {
   position: relative;

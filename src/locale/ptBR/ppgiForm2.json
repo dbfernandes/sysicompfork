@@ -26,7 +26,10 @@
     "pdf": "Curriculum Vittae PDF (no formato Lattes - http://lattes.cnpq.br)",
     "xml": "Curriculum Vittae XML no formato Lattes (não incluir significa não ter publicações a serem contadas na seleção)",
     "periodicos": "Periódicos",
-    "conferencias": "Conferências"
+    "conferencias": "Conferências",
+    "doubtXml": "Caso tenha dúvidas de como gerar o XML",
+    "doubtXmlInstructions": "siga as instruções deste arquivo",
+    "emptyPublications": "Nenhuma publicação encontrada no arquivo XML."
   },
   "provaAnterior": {
     "title": "Aproveitamento de Prova de Seleção Anterior",

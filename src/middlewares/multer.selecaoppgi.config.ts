@@ -9,7 +9,6 @@ const ensureDirectoryExistence = (filePath) => {
     currentPath += parts[i] + '/';
 
     if (!fs.existsSync(currentPath)) {
-      console.log('Diretório não existe, criando:', currentPath);
       fs.mkdirSync(currentPath);
     }
   }
@@ -17,14 +16,14 @@ const ensureDirectoryExistence = (filePath) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    console.log(file);
     const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
     ensureDirectoryExistence(uploadDir);
     callback(null, uploadDir);
   },
-  filename: function (req, file, callback) {
-    console.log(file);
-    const name = `${file.fieldname}.pdf`;
+  filename: function (req, { mimetype, fieldname }, callback) {
+    const name =
+      mimetype === 'text/xml' ? `${fieldname}.xml` : `${fieldname}.pdf`;
+
     callback(null, name);
   },
 });
@@ -43,13 +42,11 @@ const uploadsProposta = multer({ storage }).fields([
 
 const storagePublicacoes = multer.diskStorage({
   destination: function (req, file, callback) {
-    console.log(file);
     const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
     ensureDirectoryExistence(uploadDir);
     callback(null, uploadDir);
   },
   filename: function (req, file, callback) {
-    console.log(file);
     const name = `${file.fieldname}.xml`;
     callback(null, name);
   },

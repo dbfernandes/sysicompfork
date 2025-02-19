@@ -8,9 +8,11 @@ import path from 'path';
 import editalService from './edital.service';
 import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
+  CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   PROPOSTA_FILE,
+  PROVA_ANTERIOR_FILE,
 } from '../selecaoPPGI/selecao.ppgi.types';
 import { Candidato } from '@prisma/client';
 
@@ -173,7 +175,6 @@ const updateEdital = async (req: Request, res: Response) => {
           error: err.message,
         });
       });
-      console.log(edital);
       return res.render(resolveView('editSelecao'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -224,10 +225,9 @@ const editalCandidatos = async (req: Request, res: Response) => {
       try {
         const editalID = req.params.id;
         const candidatos = await editalService.listCandidatos(editalID);
-        console.log(candidatos);
+
         if (!Array.isArray(candidatos))
           throw new Error('Erro ao buscar candidatos');
-        console.log(candidatos);
         const quantidadeInscricaoAndamento = candidatos.filter(
           (candidato) =>
             candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
@@ -436,6 +436,10 @@ const candidatoDetails = async (req: Request, res: Response) => {
       ComprovantePagamento: false,
       Recomendacao: false,
     };
+    const countRecomendations = candidato.recomendacoes.length;
+    const countRecomendationsFinished = candidato.recomendacoes.filter(
+      (recomendacao) => Boolean(recomendacao.dataResposta),
+    ).length;
     const caminhoDiretorioUsuario = path.join(
       'public',
       'uploads',
@@ -443,42 +447,30 @@ const candidatoDetails = async (req: Request, res: Response) => {
       candidato.id.toString(),
     );
 
-    const cartaOrientadorpath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/CartaDoOrientador`,
+    candidatoDocs.Curriculum = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CURRICULUM_FILE,
     );
 
-    const provaAnteriorpath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/ProvaAnteriorSelecao`,
+    candidatoDocs.CartaDoOrientador = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CARTA_ACEITE_ORIENTADOR_FILE,
     );
 
-    const recomendacaopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/Recomendacao`,
+    candidatoDocs.PropostaDeTrabalho = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROPOSTA_FILE,
     );
 
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE)) {
-      candidatoDocs.Curriculum = true;
-    }
-    if (fs.existsSync(cartaOrientadorpath)) {
-      candidatoDocs.CartaDoOrientador = true;
-    }
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, PROPOSTA_FILE)) {
-      candidatoDocs.PropostaDeTrabalho = true;
-    }
-    if (fs.existsSync(provaAnteriorpath)) {
-      candidatoDocs.ProvaAnteriorSelecao = true;
-    }
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, COMPROVANTE_FILE)) {
-      candidatoDocs.ComprovantePagamento = true;
-    }
-    if (fs.existsSync(recomendacaopath)) {
-      candidatoDocs.Recomendacao = true;
-    }
+    candidatoDocs.ProvaAnteriorSelecao = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROVA_ANTERIOR_FILE,
+    );
+
+    candidatoDocs.ComprovantePagamento = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_FILE,
+    );
 
     return res.render(resolveView('candidateDetails'), {
       candidato: candidato,
@@ -488,6 +480,8 @@ const candidatoDetails = async (req: Request, res: Response) => {
       ...locals,
       tipoUsuario: req.session.tipoUsuario,
       edital,
+      countRecomendationsFinished,
+      countRecomendations,
     });
   } catch (error) {
     return res.status(400).json({

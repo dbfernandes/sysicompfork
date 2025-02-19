@@ -74,8 +74,12 @@ router.post(
   selecaoppgiController.uploadsPublicacoes,
 );
 
+router.delete(
+  '/formulario/publicacoes',
+  selecaoppgiController.deleteAllPublications,
+);
+
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
-router.get('view/arquivo/:name', selecaoppgiController.viewFile);
 
 /////////
 router.post('/logout', selecaoppgiController.logout);

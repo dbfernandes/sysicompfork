@@ -26,7 +26,10 @@
     "pdf": "Curriculum Vitae PDF (in Lattes format - http://lattes.cnpq.br)",
     "xml": "Curriculum Vitae XML in Lattes format (not including means having no publications to be counted in the selection)",
     "periodicos": "Journals",
-    "conferencias": "Conferences"
+    "conferencias": "Conferences",
+    "doubtXml": "If you have any doubts about how to generate the XML",
+    "doubtXmlInstructions": "follow the instructions in this file",
+    "emptyPublications": "No publications found in the XML file."
   },
   "provaAnterior": {
     "title": "Previous Selection Exam Score",

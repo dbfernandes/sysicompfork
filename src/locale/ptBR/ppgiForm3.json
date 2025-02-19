@@ -28,6 +28,7 @@
   },
   "finalizar": "Finalizar a sua inscrição? Após esse passo seus dados serão submetidos para avaliação e não poderão ser alterados.",
   "adicionarRecomendacao": "Adicionar Recomendação",
+  "downloadModelLetter": "Baixar Modelo de Carta",
   "validation": {
     "linhaPesquisa": {
       "required": "Linha de Pesquisa é obrigatória"
