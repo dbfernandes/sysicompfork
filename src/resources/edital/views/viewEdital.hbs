@@ -35,9 +35,9 @@
                         {{#ifEqual edital.status '1'}}btn-success{{else}}btn-danger{{/ifEqual}}"
                         onclick="abrirModal()">
                         <i id="icone-{{edital.id}}" class="fa color-white
-                            {{#ifEqual edital.status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}">
+                            {{#ifEqual edital.status 1}}fa-lock-open{{else}}fa-lock{{/ifEqual}}">
                         </i>
-                        {{#ifEqual edital.status '1'}}Não Suspenso{{else}}Suspenso{{/ifEqual}}
+                        {{#ifEqual edital.status 1}}Não Suspenso{{else}}Suspenso{{/ifEqual}}
                     </a>
                     {{!-- Editar aqui --}}
                     <a id="test" class="btn btn-info" href="/edital/listEditalCandidates/{{edital.id}}">
@@ -190,13 +190,10 @@
     document.getElementById("curso").innerText = curso;
 
 
-
-
     const dataInicio = "{{edital.dataInicio}}";
     const dataFim = "{{edital.dataFim}}";
 
     const dataAtual = moment.tz('America/Manaus').format('YYYY-MM-DD');
-
 
     let labelStatus;
     if (status == '1') {
@@ -213,29 +210,10 @@
         labelStatus = 'Suspenso';
     }
 
-
     document.getElementById("labelStatus").innerText = labelStatus;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     let csrfToken = "{{csrfToken}}";
     let id = "{{edital.id}}";
-
-
-
 
     function abrirModal() {
 
@@ -288,39 +266,7 @@
                     body: 'Erro: ' + data.responseJSON.error
                 });
             }
-            else if(dataFim <dataAtual) {
-                labelStatus = 'Encerrado';
-            }
-            else{
-                labelStatus = 'Aberto';
-            }
-        }else {
-            labelStatus = 'Suspenso';
-        }
-
-        
-        document.getElementById("labelStatus").innerText = labelStatus;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        let csrfToken = "{{csrfToken}}";
-        let id = "{{edital.id}}";
-
-
-
+        });
 
         function abrirModal() {
 
@@ -375,18 +321,11 @@
                 }
             });
         }
-
-
-        document.getElementById("voltarBtnView").addEventListener("click", function () {
-            window.history.back();
-        });
     }
-
 
     document.getElementById("voltarBtnView").addEventListener("click", function () {
         window.history.back();
     });
-
 </script>
 
 {{> footer}}

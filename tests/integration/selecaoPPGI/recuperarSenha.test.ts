@@ -19,7 +19,7 @@ function extractCsrfTokenFromBody(res: request.Response): string {
   }
 }
 
-jest.mock('../../../src/resources/email/emailService', () => ({
+jest.mock('../../../src/resources/email/email.service', () => ({
   sendEmail: jest.fn(),
 }));
 

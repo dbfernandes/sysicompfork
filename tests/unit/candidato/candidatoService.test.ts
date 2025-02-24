@@ -1,7 +1,4 @@
-import crypto from 'crypto';
-import bcrypt from 'bcrypt';
-import { prismaMock } from '@prisma/client';
-import { Candidato } from '@prisma/client';
+import { Candidato, prismaMock } from '@prisma/client';
 
 import CandidatoService from '../../../src/resources/candidato/candidato.service';
 
@@ -17,7 +14,7 @@ export const sendEmail = jest.fn();
 export const generateHashPassword = jest.fn();
 
 // Mockando os módulos externos
-jest.mock('../../../src/resources/email/emailService.ts', () => ({
+jest.mock('../../../src/resources/email/email.service.ts', () => ({
   sendEmail: jest.fn(),
 }));
 

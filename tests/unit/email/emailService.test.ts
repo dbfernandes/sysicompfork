@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
-import { sendEmail } from '../../../src/resources/email/emailService';
+import { sendEmail } from '../../../src/resources/email/email.service';
 
 jest.mock('@sendgrid/mail');
 jest.mock('fs');

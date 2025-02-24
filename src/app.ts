@@ -21,14 +21,14 @@ dotenv.config({
 declare module 'express-session' {
   export interface SessionData {
     tipoUsuario?:
-    | {
-      administrador: number;
-      secretaria: number;
-      coordenador: number;
-      diretor: number;
-      professor: number;
-    }
-    | undefined;
+      | {
+          administrador: number;
+          secretaria: number;
+          coordenador: number;
+          diretor: number;
+          professor: number;
+        }
+      | undefined;
     uid: string;
     nome: string;
     editalPosition?: number; // Posição no formulário de inscrição de um candidato
@@ -65,6 +65,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(
   express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
 );
+// @ts-ignore
 app.use(csrf({ cookie: true }));
 
 app.use(

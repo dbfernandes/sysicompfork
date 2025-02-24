@@ -1,25 +1,24 @@
 import express from 'express';
-import selecaoppgiRoutes from './edital.controller';
-import autenticacaoController from '../autenticacao/autenticacao.controller';
+import editalController from './edital.controller';
+
 const router = express.Router();
 
-router.all('/listEdital', selecaoppgiRoutes.listEditalSelecao);
-router.all('/listEdital/:id', selecaoppgiRoutes.viewEdital);
-router.all('/updateEdital/:id_update', selecaoppgiRoutes.updateEdital);
-router.all('/listEditalCandidates/:id', selecaoppgiRoutes.editalCandidatos);
-router.all('/geraPlanilha/:id', selecaoppgiRoutes.geraPlanilha);
-router.all('/candidateDetails/:id', selecaoppgiRoutes.candidatoDetails);
+router.all('/addEdital', editalController.addEditalSelecao);
+router.all('/listEdital', editalController.listEditalSelecao);
+router.all('/listEdital/:id', editalController.viewEdital);
+router.all('/arquivarEdital/:id_edital', editalController.arquivarEdital);
+router.all('/updateEdital/:id_update', editalController.updateEdital);
+router.all('/listEditalCandidates/:id', editalController.listCandidatos);
+router.all('/geraPlanilha/:id', editalController.geraPlanilha);
+router.all('/candidateDetails/:id', editalController.candidatoDetails);
 router.all(
   '/downloadCandidateDocument/:id',
-  selecaoppgiRoutes.getcandidatoDocument,
+  editalController.getDocumentToCandidate,
 );
+router.all('/getCandidateDocs/:id', editalController.getDocumentsToCandidate);
 router.all(
-  '/getCandidateDocs/:id',
-  selecaoppgiRoutes.getAllDocumentsToCandidate,
-);
-router.all(
-  '/getAllcandidatosDocuments/:id',
-  selecaoppgiRoutes.getAllDocumentsToCandidates,
+  '/getEditalCandidatesDocs/:id',
+  editalController.getDocumentsToAllCandidates,
 );
 
 export default router;

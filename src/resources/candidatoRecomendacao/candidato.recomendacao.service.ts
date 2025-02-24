@@ -1,25 +1,40 @@
 import crypto from 'crypto';
 
-import { PrismaClient } from '@prisma/client';
+import {
+  CandidatoRecomendacao,
+  PrismaClient,
+  Recomendacoes,
+} from '@prisma/client';
 import {
   CreateRecomendacaoDto,
   RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
-import { sendEmail } from '../email/emailService';
+import { sendEmail } from '../email/email.service';
 
 const prisma = new PrismaClient();
 
 class CandidatoRecomendacaoService {
   async create(data: CreateRecomendacaoDto) {
     const token = crypto.randomBytes(20).toString('hex');
-    return await prisma.candidatoRecomendacao.create({
+    return prisma.candidatoRecomendacao.create({
       data: { ...data, token },
     });
   }
 
+  async getAllRecomendationsFromCandidate(candidatoId: number) {
+    return prisma.candidatoRecomendacao.findMany({
+      where: {
+        candidatoId,
+      },
+      include: {
+        candidato: true,
+      },
+    });
+  }
+
   async getRecomendacoesByCandidato(candidatoId: number) {
-    return await prisma.candidatoRecomendacao.findMany({
+    return prisma.candidatoRecomendacao.findMany({
       where: {
         candidatoId,
       },
@@ -27,7 +42,7 @@ class CandidatoRecomendacaoService {
   }
 
   async getRecomendacaoByToken(token: string) {
-    return await prisma.candidatoRecomendacao.findFirst({
+    return prisma.candidatoRecomendacao.findFirst({
       where: {
         token,
       },
@@ -38,7 +53,7 @@ class CandidatoRecomendacaoService {
   }
 
   async save(data: SaveRecomendacaoDto, token: string) {
-    return await prisma.candidatoRecomendacao.updateMany({
+    return prisma.candidatoRecomendacao.updateMany({
       where: {
         token,
       },
@@ -65,7 +80,7 @@ class CandidatoRecomendacaoService {
   }
 
   async finish(token: string) {
-    return await prisma.candidatoRecomendacao.updateMany({
+    return prisma.candidatoRecomendacao.updateMany({
       where: {
         token,
       },
@@ -184,6 +199,134 @@ class CandidatoRecomendacaoService {
     }).catch((err) => {
       console.error('Error:', err);
     });
+  }
+
+  getLabelClassificação(classificacao: number) {
+    return `Entre os ${classificacao}% mais aptos`;
+  }
+
+  getLabelAttribute(value: number) {
+    switch (value) {
+      case 1:
+        return 'Fraco';
+      case 2:
+        return 'Regular';
+      case 3:
+        return 'Bom';
+      case 4:
+        return 'Muito Bom';
+      case 5:
+        return 'Excelente';
+      default:
+        return 'Não Informado';
+    }
+  }
+
+  getLabelKnowFron(recommendation: CandidatoRecomendacao) {
+    const places: string[] = [];
+    if (recommendation.conheceGraduacao) {
+      places.push('Graduação');
+    }
+    if (recommendation.conhecePos) {
+      places.push('Pós-Graduação');
+    }
+    if (recommendation.conheceEmpresa) {
+      places.push('Empresa');
+    }
+    if (recommendation.conheceOutros && recommendation.outrosLugares) {
+      places.push(recommendation.outrosLugares);
+    }
+    const last = places.pop();
+
+    if (places.length === 0) {
+      return last;
+    }
+    return `${places.join(', ')} e ${last}`;
+  }
+
+  getLabelWasYour(recommendation: CandidatoRecomendacao) {
+    const profissional = [];
+    if (recommendation.orientador) {
+      profissional.push('Orientador');
+    }
+    if (recommendation.professor) {
+      profissional.push('Professor');
+    }
+    if (recommendation.empregador) {
+      profissional.push('Empregador');
+    }
+
+    if (recommendation.coordenador) {
+      profissional.push('Coordenador');
+    }
+    if (recommendation.colegaCurso) {
+      profissional.push(recommendation.colegaCurso);
+    }
+    if (recommendation.colegaTrabalho) {
+      profissional.push(recommendation.colegaTrabalho);
+    }
+    if (recommendation.outrosContatos && recommendation.outrasFuncoes) {
+      profissional.push(recommendation.outrasFuncoes);
+    }
+
+    const last = profissional.pop();
+    if (profissional.length === 0) {
+      return last;
+    }
+    return `${profissional.join(', ')} e ${last}`;
+  }
+  async getRecomendationsForPDF(candidatoId: number) {
+    const recommendations =
+      await this.getAllRecomendationsFromCandidate(candidatoId);
+    const recommendationsFinish = recommendations.filter((recomendation) =>
+      Boolean(recomendation.dataResposta),
+    );
+    const recommendationsFormated = recommendationsFinish.map(
+      (recommendation) => {
+        const { candidato } = recommendation;
+        const graduated = `${candidato?.cursoGraduacao} - ${candidato?.instituicaoGraduacao}`;
+        const knownSince = `${recommendation.anoContato} por meio de ${this.getLabelKnowFron(recommendation)}`;
+        const wasYour = this.getLabelWasYour(recommendation);
+        const informations = recommendation.informacoes;
+        const classification = this.getLabelClassificação(
+          recommendation.classificacao,
+        );
+        const domain = this.getLabelAttribute(recommendation.dominio);
+        const apprenticeship = this.getLabelAttribute(
+          recommendation.aprendizado,
+        );
+        const attendance = this.getLabelAttribute(recommendation.assiduidade);
+        const relationship = this.getLabelAttribute(
+          recommendation.relacionamento,
+        );
+        const initiative = this.getLabelAttribute(recommendation.iniciativa);
+        const expression = this.getLabelAttribute(recommendation.expressao);
+
+        return {
+          name: recommendation.nome,
+          titration: recommendation.titulacao,
+          institution: recommendation.instituicaoTitulacao,
+          yearTitration: recommendation.anoTitulacao,
+          institutionCurrent: recommendation.instituicaoAtual,
+          position: recommendation.cargo,
+          classification,
+          knownSince,
+          wasYour,
+          informations,
+          domain,
+          apprenticeship,
+          attendance,
+          relationship,
+          initiative,
+          expression,
+          candidate: {
+            name: candidato.nome,
+            graduated,
+          },
+        };
+      },
+    );
+    return recommendationsFormated;
   }
 }
 

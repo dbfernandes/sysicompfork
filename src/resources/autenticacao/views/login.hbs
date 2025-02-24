@@ -1,27 +1,15 @@
 <style>
-  .error {
-    color: red
-  }
-
-  .success {
-    color: green;
-  }
-
 	 form i {
-            margin-left: -30px;
-            cursor: pointer;
-        }
+     margin-left: -30px;
+     cursor: pointer;
+   }
 
-		.input-password {
-			position: relative;
-		}
-
-		.input-password i {
+   .input-password i {
 			position: absolute;
 			top: 10px;
 			right: 10px;
 			cursor: pointer;
-		}
+   }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 
@@ -47,55 +35,83 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="form-group">
           <label for="cpfInput">CPF</label>
-          <input id="cpfInput" name="cpf" type="text" autocomplete="off" class="form-control cpf" placeholder="___.___.___-__">
+          <input id="cpfInput" name="cpf" type="text" autocomplete="on" class="form-control cpf" placeholder="___.___.___-__">
         </div>
-        <div class="form-group"> 
-      
-        <label for="password">Senha</label>
-        <div class="form-group input-group ">
-          <input id="senhaInput" name="senha" type="password" class="form-control" placeholder="*********">
-          <div class="input-group-append" >
-   				  <span  id="togglePassword" class="input-group-text"style="color: transparent;" id="basic-addon2">===
-					    <i  class="bi bi-eye-slash" style="color: gray;" id="togglePasswordIcon"></i>
-					  </span>
-  				</div>
-        </div>
-        <div class="row">
-          <div class="col-md-8">
-            <div class="checkbox icheck">
-              <label>
-                <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
-              </label>
+
+        <!--SENHA-->
+        <div class="form-group">
+          <label for="senhaInput">Senha</label>
+          <div class="form-group input-group ">
+            <input id="senhaInput" name="senha" type="password" class="form-control" placeholder="*********">
+            <div class="input-group-append" >
+              <span  id="togglePassword" class="input-group-text" style="color: transparent;" >===
+                <i  class="bi bi-eye-slash" style="color: gray;" id="togglePasswordIcon"></i>
+              </span>
+  				  </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <div class="checkbox icheck">
+                <label>
+                  <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
+                </label>
+              </div>
             </div>
+            <!-- /.col -->
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.col -->
-          <div class="col-md-4">
-            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
-          </div>
-          <!-- /.col -->
         </div>
+<!--        <div class="form-group">-->
+<!--          <label class="sr-only" for="password">-->
+<!--            Senha-->
+<!--          </label>-->
+<!--          &lt;!&ndash; Usando .input-group para manter estilo Bootstrap consistente &ndash;&gt;-->
+<!--          <div class="mb-3" style="grid-template-columns: 1fr auto; display: grid">-->
+<!--            <input-->
+<!--              type="password"-->
+<!--              class="form-control input-eye"-->
+<!--              name="password"-->
+<!--              id="password"-->
+<!--              aria-describedby="senha-help"-->
+<!--              placeholder="{{__ "ppgiSignIn.passwordPlaceholder"}} *"-->
+<!--              autocomplete="current-password"-->
+<!--            />-->
+<!--            <button-->
+<!--              type="button"-->
+<!--              class="btn btn-light button-eye"-->
+<!--              id="togglePassword"-->
+<!--              aria-label="{{__ 'ppgi.hidePassword'}}"-->
+<!--              title="{{__ 'ppgi.hidePassword'}}"-->
+
+<!--            >-->
+<!--              <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>-->
+<!--            </button>-->
+<!--          </div>-->
       </form>
 
       <a href="/recuperarSenha">Esqueci minha senha</a><br>
     </div>
   </div>
-
+</div>
   <!-- /.login-box-body -->
-</di>
 <!-- /.login-box -->
 
 <script>
   function loginPage() {
     $("#togglePassword").click(function() {
 		  const typeActual = $("#senhaInput").attr("type");
-        if (typeActual === "password") {
-			    $("#senhaInput").attr("type", "text");
-          $(this).children().toggleClass("bi-eye-slash bi-eye");
-        } else {
-			    $("#senhaInput").attr("type", "password");
-			    $(this).children().toggleClass("bi-eye bi-eye-slash");
-		    }
-	    });
+      if (typeActual === "password") {
+        $("#senhaInput").attr("type", "text");
+        $(this).children().toggleClass("bi-eye-slash bi-eye");
+      } else {
+         $("#senhaInput").attr("type", "password");
+         $(this).children().toggleClass("bi-eye bi-eye-slash");
+      }
+    });
 
     $.validator.addMethod("cpfLength", function (el) {
       const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
