@@ -29,10 +29,6 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
-import {
-  generatePdfRecommendations,
-  gerarPdf,
-} from '@resources/pdf/pdf.controller';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -143,7 +139,6 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
-        generatePdfRecommendations('3');
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
@@ -243,7 +238,10 @@ async function renderFormHistorico(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     uid.toString(),
@@ -286,7 +284,10 @@ async function renderFormProposta(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     uid.toString(),
@@ -330,7 +331,6 @@ async function renderFormConfirmacao(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
     'uploads',
     'candidato',
     uid.toString(),
@@ -757,7 +757,10 @@ function downloadFile(req: Request, res: Response): void {
   const userId = req.session.uid;
   const nomeArquivo = req.params.name;
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     userId,
@@ -782,7 +785,10 @@ function viewFile(req: Request, res: Response): void {
 
   // Monta o caminho até o arquivo
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     userId,
@@ -814,7 +820,10 @@ async function deleteAllPublications(
       try {
         const { uid } = req.session;
         const caminhoDoc = path.join(
-          'public',
+          __dirname,
+          '..',
+          '..',
+          '..',
           'uploads',
           'candidato',
           uid,

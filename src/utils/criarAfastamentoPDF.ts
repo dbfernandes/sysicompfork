@@ -59,20 +59,28 @@ export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
 export async function criarAfastamentoPDF(req: Request, res: Response) {
   try {
     const id = req.params.id;
-
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      `public/afastamentos/${id}.pdf`,
+    );
     const dados = await getAfastamento(Number(id));
-    await generatePdfLeave(id, dados.nomeCompleto);
+    await generatePdfLeave(id, id.toString());
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
       `inline; filename=${dados!.nomeCompleto}.pdf`,
     );
-    fs.createReadStream(
-      path.join(
-        __dirname,
-        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
-      ),
-    ).pipe(res);
+    fs.createReadStream(filePath).pipe(res);
+    // Quando a resposta terminar, remove o arquivo
+    res.on('finish', () => {
+      try {
+        fs.promises.unlink(filePath);
+      } catch (error) {
+        console.error(error);
+      }
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 500, details: error });

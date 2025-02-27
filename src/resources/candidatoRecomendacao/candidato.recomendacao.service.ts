@@ -11,6 +11,7 @@ import {
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
 import { sendEmail } from '../email/email.service';
+import { generatePdfRecommendations } from '@resources/pdf/pdf.controller';
 
 const prisma = new PrismaClient();
 
@@ -77,6 +78,7 @@ class CandidatoRecomendacaoService {
       },
     });
     await this.sendEmailFinish({ idRecomendacao: recomendacao.id });
+    generatePdfRecommendations(recomendacao.candidatoId.toString());
   }
 
   async finish(token: string) {

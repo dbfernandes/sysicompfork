@@ -92,7 +92,6 @@ export async function generatePdfRecommendations(candidateId: string) {
     '..',
     '..',
     '..',
-    'public',
     'uploads',
     'candidato',
     candidateId,

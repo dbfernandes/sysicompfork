@@ -1,5 +1,6 @@
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 // Função para garantir que o diretório exista, se não, cria-o
 const ensureDirectoryExistence = (filePath) => {
   const parts = filePath.split('/');
@@ -16,7 +17,14 @@ const ensureDirectoryExistence = (filePath) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
+    const uploadDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      'uploads',
+      'candidato',
+      req.session.uid,
+    );
     ensureDirectoryExistence(uploadDir);
     callback(null, uploadDir);
   },
@@ -42,7 +50,14 @@ const uploadsProposta = multer({ storage }).fields([
 
 const storagePublicacoes = multer.diskStorage({
   destination: function (req, file, callback) {
-    const uploadDir = `./public/uploads/candidato/${req.session.uid}`;
+    const uploadDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      'uploads',
+      'candidato',
+      req.session.uid,
+    );
     ensureDirectoryExistence(uploadDir);
     callback(null, uploadDir);
   },

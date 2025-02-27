@@ -57,8 +57,8 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>N° de Inscrição</th>
                                         <th>Nome</th>
+                                        <th>Email</th>
                                         <th>Curso Desejado</th>
                                         <th>Linha Pesquisa</th>
                                         <th>Fase</th>
@@ -70,13 +70,13 @@
                                     {{#if (eq posicaoEdital 4) }}
                                     <tr>
                                         <td>{{id}}</td>
-                                        <td>{{idEdital}}</td>
                                         <td>{{nome}}</td>
+                                        <td>{{email}}</td>
                                         <td>{{cursoDesejado}}</td>
                                         <td>{{linhaPesquisa.sigla}}</td>
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
-                                            <div class="d-flex justify-content-between">
+                                              <div class="d-flex justify-content-start" style="gap: 8px;">
                                                 <a style="margin-right: 0" target="_blank"
                                                    href='/edital/getCandidateDocs/{{id}}'
                                                    class='fa fa-solid fa-download' >
@@ -130,7 +130,7 @@
                                             <td>{{idLinhaPesquisa}}</td>
                                             <td>{{posicaoEdital}}/4</td>
                                             <td>
-                                                <div class="d-flex justify-content-between">
+                                              <div class="d-flex justify-content-start" style="gap: 8px;">
                                                     <a style="margin-right: 0" target="_blank"
                                                        href='/edital/getCandidateDocs/{{id}}'
                                                        class='fa fa-solid fa-download' >
