@@ -3,37 +3,50 @@ import Handlebars from 'handlebars';
 import fs from 'fs/promises';
 import path from 'path';
 import CandidatoRecomendacaoService from '@resources/candidatoRecomendacao/candidato.recomendacao.service';
+import { getAfastamento } from '@utils/criarAfastamentoPDF';
 
-async function compilarTemplates(templatePath: string, data?: object) {
+type ContentPdf = 'recomendacoes' | 'afastamento';
+
+async function compileTemplates(templatePath: string, data?: object) {
   const mainTemplate = await fs.readFile(templatePath, 'utf8');
 
   const template = Handlebars.compile(mainTemplate);
   return template(data);
 }
 
-export async function gerarPdf() {
+export async function generatePdf(
+  type: ContentPdf,
+  pathSave: string,
+  id?: string,
+) {
   try {
     const footerPath = path.join(__dirname, 'views', 'footer.hbs');
     const headerPath = path.join(__dirname, 'views', 'header.hbs');
-    const afastamentoPath = path.join(__dirname, 'views', 'template.hbs');
-    const recommendations =
-      await CandidatoRecomendacaoService.getRecomendationsForPDF(3);
-    console.log({
-      recommendations,
-    });
+    const template = path.join(__dirname, 'views', `${type}.hbs`);
+    let data = {};
 
-    const arquivoHTML = await compilarTemplates(afastamentoPath, {
-      recommendations,
-    });
+    if (type === 'recomendacoes' && id) {
+      data = {
+        recommendations:
+          await CandidatoRecomendacaoService.getRecomendationsForPDF(
+            Number(id),
+          ),
+      };
+    }
+
+    if (type === 'afastamento' && id) {
+      data = {
+        afastamentoDoc: await getAfastamento(Number(id)),
+      };
+    }
+
+    const arquivoHTML = await compileTemplates(template, data);
     const headerHtml = await fs
       .readFile(headerPath)
       .then((data) => data.toString());
     const footerHtml = await fs
       .readFile(footerPath)
       .then((data) => data.toString());
-    // 1. Ler o arquivo de template (ex.: "template.hbs")
-
-    const pathSave = path.join(__dirname, 'saida.pdf');
 
     // 4. Abrir o navegador com Puppeteer
     const browser = await puppeteer.launch({
@@ -71,4 +84,32 @@ export async function gerarPdf() {
   } catch (err) {
     console.error('Erro ao gerar PDF:', err);
   }
+}
+
+export async function generatePdfRecommendations(candidateId: string) {
+  const pathSave = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'public',
+    'uploads',
+    'candidato',
+    candidateId,
+    'Recomendacoes.pdf',
+  );
+  await generatePdf('recomendacoes', pathSave, candidateId);
+}
+
+export async function generatePdfLeave(id: string, name: string) {
+  const pathSave = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'public',
+    'afastamentos',
+    `${name}.pdf`,
+  );
+  await generatePdf('afastamento', pathSave, id);
 }

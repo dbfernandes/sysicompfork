@@ -368,6 +368,7 @@ export async function gerarPDF(id: number) {
     pdfDoc.end();
 
     await new Promise((resolve, reject) => {
+      // @ts-ignore
       writeStream.on('finish', resolve);
       writeStream.on('error', reject);
     });

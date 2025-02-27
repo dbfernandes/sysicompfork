@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      .body-content {
+        line-height: 1.1;
+      }
+
+      .body-table-info {
+        border-collapse: collapse;
+      }
+
+      .body-table-info td {
+        text-align: left;
+      }
+
+      .diminuir-margem {
+        margin-bottom: 1px;
+      }
+
+      .linha-preta {
+        width: 100%;
+        height: 3px;
+        background-color: black;
+      }
+
+      .container-assinatura {
+        text-align: center;
+        margin-top: 2cm;
+      }
+
+      .linha-assinatura {
+        width: 55%;
+        height: 1px;
+        background-color: gray;
+        margin: 5px auto;
+      }
+
+      .resposavel-assinatura {
+        font-size: 17px;
+        line-height: 0.4;
+      }
+
+      .rodape-info td {
+        padding: 0 45px;
+        text-align: center;
+      }
+
+      footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 2.5cm;
+      }
+    </style>
+</head>
+<body>
+    {{#with afastamentoDoc}}
+    <!-- Content -->
+    <div style="display:block">
+        <div>
+            <table style="font-size: 16px;">
+                <td>
+                    <div><strong>SOLICITAÇÃO DE AFASTAMENTO TEMPORÁRIO</strong></div>
+                </td>
+                <td>
+                    <div style="margin-left: 3cm;">
+                        <div><strong>Hora:</strong> {{hora}}</div>
+                        <div><strong>Data:</strong> {{data}}</div>
+                    </div>
+                </td>
+            </table>
+            <div class="linha-preta"></div>
+            <div class="body-content">
+                <p>
+                    O(A) professor(a) <strong>{{usuarioNome}}</strong> estará afastado de suas atividades
+                    presenciais na UFAM no período de <strong>{{dataSaida}}</strong> a <strong>{{dataRetorno}}</strong>.
+                </p>
+
+
+                <p>
+                    O motivo deste afastamento: <strong>{{justificativa}}</strong>.
+                </p>
+
+
+                <p>
+                    Para reposição de suas aulas, o(a) professor(a) fez o seguinte planejamento:
+                    {{planoReposicao}}
+                </p>
+            </div>
+
+            <div>
+                <p class="diminuir-margem">Os dados desse funcionário estão descritos a seguir:</p>
+                <div class="body-table-info">
+                    <table>
+                        <tr>
+                            <td><strong>Professor(a)</strong>: {{nomeCompleto}}</td>
+                            <td><strong>E-mail</strong>: {{email}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Local</strong>: {{localViagem}}</td>
+                            <td><strong>Tipo de Viagem</strong>: {{tipoViagem}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data de Saída</strong>: {{dataSaida}}</td>
+                            <td><strong>Data de Retorno</strong>: {{dataRetorno}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container-assinatura">
+                <div class="linha-assinatura"></div>
+                <div class="resposavel-assinatura">
+                    <p><strong>Prof. {{diretorNome}}</strong> </p>
+                    <p>Diretor do Instituto de Computação - IComp</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {{/with}}
+</body>
+</html>

@@ -5,6 +5,24 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
 import { AttachmentData } from '@sendgrid/helpers/classes/attachment';
+//
+// import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
+//
+// const mailerSend = new MailerSend({
+//   apiKey:
+//     'mlsn.859070a7681ac18fea3232a7cabad7a28e850d0d0cd3b4d11b36ccda4858d1fd',
+// });
+//
+//
+// const recipients = [new Recipient("recipient@email.com", "Recipient")];
+//
+// const emailParams = new EmailParams()
+//   .setFrom("info@domain.com")
+//   .setFromName("Your Name")
+//   .setRecipients(recipients)
+//   .setSubject("Subject")
+//   .setHtml("Greetings from the team, you got this message through MailerSend.")
+//   .setText("Greetings from the team, you got this message through MailerSend.").se
 
 function dataAtualExtensa() {
   const date = new Date();
