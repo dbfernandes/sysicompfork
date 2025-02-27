@@ -29,6 +29,10 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
+import {
+  generatePdfRecommendations,
+  gerarPdf,
+} from '@resources/pdf/pdf.controller';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -139,7 +143,7 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
-
+        generatePdfRecommendations('3');
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),

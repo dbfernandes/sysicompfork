@@ -1,15 +1,10 @@
 import crypto from 'crypto';
 import prisma from '../../client';
 import bcrypt from 'bcrypt';
-import { Usuario, Prisma } from '@prisma/client';
+import { Usuario } from '@prisma/client';
 import { generateHashPassword } from '../../utils/utils';
-import {
-  CreateUsuarioDto,
-  UpdateUsuarioDto,
-  UpdateUsuarioWithPassword,
-  UsuarioWithDate,
-} from './usuario.types';
-import { sendEmail } from '../email/emailService';
+import { UpdateUsuarioWithPassword } from './usuario.types';
+import { sendEmail } from '../email/email.service';
 import { UsuarioNotFoundError } from './usuario.errors';
 
 class UsuarioService {
@@ -40,7 +35,6 @@ class UsuarioService {
     } catch (error) {
       throw new Error('Erro ao adicionar usuário');
     }
-
   }
 
   async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {

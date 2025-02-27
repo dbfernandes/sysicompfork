@@ -39,23 +39,23 @@
                         <table class="table table-bordered" style="border-color: black;">
                             <tr style="background-color: #dcdcdc;">
                                 <td colspan="2"
-                                    style="text-align: center; font-size: 15px; padding: 0px 50px; border-color: black;">
+                                    style="text-align: center; font-size: 15px; padding: 0 50px; border-color: black;">
                                     Legenda</td>
                             </tr>
                             <tr style="background-color: #a0c6e4;">
                                 <td
-                                    style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">
+                                    style="text-align: center; font-size: 14px; padding: 0 50px; border-color: black;">
                                     REG</td>
                                 <td
-                                    style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">
+                                    style="text-align: center; font-size: 14px; padding: 0 50px; border-color: black;">
                                     Vagas Regulares</td>
                             </tr>
                             <tr style="background-color: #8fdf7b;">
                                 <td
-                                    style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">
+                                    style="text-align: center; font-size: 14px; padding: 0 50px; border-color: black;">
                                     SUP</td>
                                 <td
-                                    style="text-align: center; font-size: 14px; padding: 0px 50px; border-color: black;">
+                                    style="text-align: center; font-size: 14px; padding: 0 50px; border-color: black;">
                                     Vagas Suplementares</td>
                             </tr>
                         </table>
@@ -110,35 +110,27 @@
                                                 Suspenso
                                             </span>
                                             {{/validaLabel}}
-
-                                            </span>
                                         </td>
                                         <td class='links-container'>
                                             <div class="d-flex justify-content-between">
 
                                                 <a style="margin-right: 2px" target="_blank" href='{{documento}}'
-                                                    class='fa fa-solid fa-download' />
-                                                </a>
+                                                    class='fa fa-solid fa-download'></a>
 
                                                 <a style="margin-right: 2px" href='/edital/listEdital/{{id}}'
-                                                    class='fa fa-solid fa-eye' />
-                                                </a>
+                                                    class='fa fa-solid fa-eye'></a>
                                                 {{#if ../usuarioPermitido}}
-                                                <a class="fa fa-solid {{#ifEqual status '1'}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
-                                                    id="icone-{{id}}" data-editalCodigo="{{id}}"
-                                                    onclick="abrirModal('{{id}}', '{{status}}', '{{dataFim}}')"
-                                                    data-toggle="modal" data-target="#removerEdital">
-                                                </a>
+                                                  <a class="fa fa-solid {{#ifEqual status 0}}fa-lock-open{{else}}fa-lock{{/ifEqual}}"
+                                                      id="icone-{{id}}" data-editalCodigo="{{id}}"
+                                                      onclick="abrirModal('{{id}}', '{{status}}', '{{dataFim}}')"
+                                                      data-toggle="modal" data-target="#removerEdital">
+                                                  </a>
 
-                                                <a style="margin-right: 2px" href='/edital/updateEdital/{{id}}'
-                                                    class='fa fa-solid fa-pen' />
-                                                </a>
+                                                  <a href='/edital/updateEdital/{{id}}'
+                                                      class='fa fa-solid fa-pen mr-2'></a>
                                                 {{/if}}
-
                                             </div>
                                         </td>
-
-
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -174,7 +166,7 @@
                     </div>
                 </div>
             </div>
-
+        </div>
             <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
@@ -212,17 +204,15 @@
 
 
         const dataFromForm = {
-            status: status == '1' ? '0' : '1',
+            status: status == '1' ? 0 : 1,
             _csrf: csrfToken
         }
 
-
         $.ajax({
-            url: `/edital/arquivarEdital/${id}`,
+            url: `/edital/arquivarEdital/${editalCodigo}`,
             type: 'PUT',
             data: dataFromForm,
-            success: function (data) {
-
+            success: function () {
                 const mensagem = "Status do Edital alterado no sistema com sucesso";
                 const expirationTime = new Date(new Date().getTime() + 5000);
 
@@ -270,8 +260,8 @@
 
 
 
-    document.addEventListener("DOMContentLoaded", function (event) {
-        var datatable = $("#tableEdital").DataTable({
+    document.addEventListener("DOMContentLoaded", function () {
+         $("#tableEdital").DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
             },

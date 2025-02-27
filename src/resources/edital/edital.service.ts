@@ -133,7 +133,7 @@ class EditalService {
           id,
         },
         data: {
-          status,
+          status: Number(status),
           // updatedAt: moment.tz('America/Manaus').format('YYYY-MM-DD HH:mm:ss')
         },
       })

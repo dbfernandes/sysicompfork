@@ -14,7 +14,7 @@ import {
   SignInDto,
   SignUpDto,
 } from '../candidato/candidato.types';
-import { sendEmail } from '../email/emailService';
+import { sendEmail } from '../email/email.service';
 import { CandidatoFinalizadoError } from './errors/candidatoFinalizadoError';
 import { CandidatoJaExisteError } from './errors/candidatoJaExisteError';
 import { CandidatoNaoAutorizadoError } from './errors/candidatoNaoAutorizadoError';
@@ -24,7 +24,7 @@ import { TokenInvalidoError } from './errors/tokenInvalidoError.';
 
 class CandidatoService {
   async list() {
-    return await prisma.candidato.findMany();
+    return prisma.candidato.findMany();
   }
 
   async create({ email, senha, edital }) {
