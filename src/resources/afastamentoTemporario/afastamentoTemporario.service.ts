@@ -15,14 +15,14 @@ class AfastamentoService {
       });
       const dataFormatada = allResearchLines.map((afastamento) => {
         const formatarData = (date: Date | null | undefined) => {
-          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
           return new Date(date).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             timeZone: 'UTC',
           });
-        }
+        };
         return {
           ...afastamento,
           dataCriacaoFormata: formatarData(afastamento.createdAt),
@@ -47,21 +47,20 @@ class AfastamentoService {
 
       const dataFormatada = allResearchLines.map((afastamento) => {
         const formatarData = (date: Date | null | undefined) => {
-          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
           return new Date(date).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             timeZone: 'UTC',
           });
-        }
+        };
 
         return {
           ...afastamento,
           dataCriacaoFormata: formatarData(afastamento.createdAt),
           dataRetornoFormata: formatarData(afastamento.dataFim),
           dataSaidaFormata: formatarData(afastamento.dataInicio),
-
         };
       });
 
@@ -71,7 +70,7 @@ class AfastamentoService {
         console.error(error.message || 'Erro ao listar afastamentos!');
         throw error;
       } else {
-        console.log('Erro desconhecido');
+        console.error('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }
@@ -91,7 +90,7 @@ class AfastamentoService {
       if (error instanceof Error) {
         throw new Error(error.message);
       } else {
-        console.log('Erro desconhecido');
+        console.error('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }
@@ -109,7 +108,7 @@ class AfastamentoService {
       if (error instanceof Error) {
         throw error.message;
       } else {
-        console.log('Erro desconhecido');
+        console.error('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }
@@ -124,14 +123,14 @@ class AfastamentoService {
       if (!afastamento) return null;
 
       const formatarData = (date: Date | null | undefined) => {
-        if (!date || isNaN(new Date(date).getTime())) return 'Data inválida'
+        if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
         return new Date(date).toLocaleDateString('pt-BR', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
           timeZone: 'UTC',
         });
-      }
+      };
 
       const afastamentoExtendido: AfastamentoTemporarioExtendido = {
         ...afastamento,
@@ -143,13 +142,13 @@ class AfastamentoService {
       return afastamentoExtendido;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(
+        console.error(
           error.message ||
-          'Não foi possível visualizar o pedido de afastamento!',
+            'Não foi possível visualizar o pedido de afastamento!',
         );
         throw error;
       } else {
-        console.log('Erro desconhecido');
+        console.error('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }
@@ -166,7 +165,7 @@ class AfastamentoService {
       if (error instanceof Error) {
         throw error;
       } else {
-        console.log('Erro desconhecido');
+        console.error('Erro desconhecido');
         throw new Error('Erro desconhecido');
       }
     }

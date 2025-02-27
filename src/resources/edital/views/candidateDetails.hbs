@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Candidato {{candidato.id}} - Edital {{candidato.idEdital}} </h1>
+                    <h1>Candidato {{candidato.id}} - Edital {{candidato.editalId}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
@@ -209,18 +209,20 @@
                                     </span></td>
                                 </tr>
                                 {{#if (eq edital.cartaRecomendacao 1)}}
-<!--                                <tr>-->
-<!--                                    <th class="col-3">Cartas de Recomendação (PDF)</th>-->
-<!--                                    <td>-->
-<!--                                        <span class="{{#if candidatoDocs.Recomendacao}}">-->
-<!--                                            <a  style="margin-right: 3px"-->
-<!--                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=recommendationLetter"-->
-<!--                                                class='fa fa-solid fa-download'-->
-<!--                                            />-->
-<!--                                            {{else}}badge bg-warning">Pendente{{/if}}-->
-<!--                                        </span>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <tr>
+                                    <th class="col-3">Cartas de Recomendação (PDF)</th>
+                                    <td>
+                                      {{#if candidatoDocs.Recomendacoes}}
+                                        <span>
+                                          <a  style="margin-right: 3px"
+                                              href="/downloadCandidateDocument/{{candidato.id}}?documento=Recomendacoes.pdf"
+                                              class='fa fa-solid fa-download'></a>
+                                        </span>
+                                      {{else}}
+                                        <span class="badge bg-warning">Nenhuma resposta</span>
+                                      {{/if}}
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th class="col-3">N° de Cartas de Recomendação (Emitidas)</th>
                                     <td>{{countRecomendations}}</td>

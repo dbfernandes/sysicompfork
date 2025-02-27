@@ -345,8 +345,8 @@ export async function gerarPDF(id: number) {
     // Caminho para salvar o arquivo na pasta public
     const outputPath = path.join(
       __dirname,
-      '../..',
-      'public',
+      '..',
+      '..',
       'uploads',
       'candidato',
       `${candidato.id}`,

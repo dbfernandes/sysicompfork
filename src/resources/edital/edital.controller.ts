@@ -151,7 +151,6 @@ const viewEdital = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'ID not found' });
       }
       const edital = await editalService.getById(id);
-      console.log(edital);
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
@@ -282,7 +281,10 @@ const geraPlanilha = async (req: Request, res: Response) => {
 const getDocumentToCandidate = async (req: Request, res: Response) => {
   const candidato = await EditalService.getCandidato(Number(req.params.id));
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     candidato.id.toString(),
@@ -334,7 +336,10 @@ export const getDocumentsToAllCandidates = async (
     // Para cada candidato, vamos procurar pelos arquivos específicos
     for (const candidato of candidatos) {
       const candDir = path.join(
-        'public',
+        __dirname,
+        '..',
+        '..',
+        '..',
         'uploads',
         'candidato',
         candidato.id.toString(),
@@ -350,6 +355,7 @@ export const getDocumentsToAllCandidates = async (
         'Curriculum.pdf',
         'Inscricao.pdf',
         'PropostaTrabalho.pdf',
+        'Recomendacoes.pdf',
       ];
 
       for (const fileName of pdfFiles) {
@@ -396,7 +402,10 @@ const getDocumentsToCandidate = async (req: Request, res: Response) => {
     }
 
     const candDir = path.join(
-      'public',
+      __dirname,
+      '..',
+      '..',
+      '..',
       'uploads',
       'candidato',
       candidato.id.toString(),
@@ -408,6 +417,7 @@ const getDocumentsToCandidate = async (req: Request, res: Response) => {
       'Curriculum.pdf',
       'Inscricao.pdf',
       'PropostaTrabalho.pdf',
+      'Recomendacoes.pdf',
     ];
 
     // Sanitiza o nome do candidato para evitar problemas de segurança
@@ -471,14 +481,17 @@ const candidatoDetails = async (req: Request, res: Response) => {
       PropostaDeTrabalho: false,
       ProvaAnteriorSelecao: false,
       ComprovantePagamento: false,
-      Recomendacao: false,
+      Recomendacoes: false,
     };
     const countRecomendations = candidato.recomendacoes.length;
     const countRecomendationsFinished = candidato.recomendacoes.filter(
       (recomendacao) => Boolean(recomendacao.dataResposta),
     ).length;
     const caminhoDiretorioUsuario = path.join(
-      'public',
+      __dirname,
+      '..',
+      '..',
+      '..',
       'uploads',
       'candidato',
       candidato.id.toString(),
@@ -507,6 +520,10 @@ const candidatoDetails = async (req: Request, res: Response) => {
     candidatoDocs.ComprovantePagamento = verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       COMPROVANTE_FILE,
+    );
+    candidatoDocs.Recomendacoes = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      'Recomendacoes.pdf',
     );
 
     return res.render(resolveView('candidateDetails'), {

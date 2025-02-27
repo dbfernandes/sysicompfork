@@ -373,7 +373,6 @@ class CandidatoService {
       '..',
       '..',
       '..',
-      'public',
       'uploads',
       'candidato',
       `${candidate.id}`,
@@ -387,9 +386,7 @@ class CandidatoService {
         if (err) {
           return;
         }
-        const filesToSend = files.filter(
-          (file) => file !== 'ProvaAnterior.pdf',
-        );
+        const filesToSend = files.filter((file) => file == 'Inscricao.pdf');
         const attachments = filesToSend.map((file) => {
           const filePath = path.join(pathCandidate, file);
           const fileData = fs.readFileSync(filePath);
