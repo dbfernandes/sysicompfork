@@ -1059,7 +1059,9 @@
 
       },
       'Curriculum': {
-        required: inputFilesConfig.Curriculum.hasFileSave,
+        required: function(){
+          return !inputFilesConfig.Curriculum.hasFileSave
+        },
         fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
       },
       'ProvaAnterior': {
