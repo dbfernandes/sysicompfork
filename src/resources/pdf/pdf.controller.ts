@@ -4,8 +4,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import CandidatoRecomendacaoService from '@resources/candidatoRecomendacao/candidato.recomendacao.service';
 import { getAfastamento } from '@utils/criarAfastamentoPDF';
+import { getFormattedDataCandidateFinish } from '@resources/pdf/pdf.util';
 
-type ContentPdf = 'recomendacoes' | 'afastamento';
+type ContentPdf = 'recomendacoes' | 'afastamento' | 'inscricao';
 
 async function compileTemplates(templatePath: string, data?: object) {
   const mainTemplate = await fs.readFile(templatePath, 'utf8');
@@ -38,6 +39,10 @@ export async function generatePdf(
       data = {
         afastamentoDoc: await getAfastamento(Number(id)),
       };
+    }
+
+    if (type === 'inscricao' && id) {
+      data = await getFormattedDataCandidateFinish(id);
     }
 
     const arquivoHTML = await compileTemplates(template, data);
@@ -98,6 +103,21 @@ export async function generatePdfRecommendations(candidateId: string) {
     'Recomendacoes.pdf',
   );
   await generatePdf('recomendacoes', pathSave, candidateId);
+}
+
+export async function generatePdfEnrollment(candidateId: string) {
+  const pathSave = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'uploads',
+    'candidato',
+    candidateId,
+    'Inscricao2.pdf',
+  );
+  console.log('teste');
+  await generatePdf('inscricao', pathSave, candidateId);
 }
 
 export async function generatePdfLeave(id: string, name: string) {

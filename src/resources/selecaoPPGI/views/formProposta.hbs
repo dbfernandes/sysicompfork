@@ -797,6 +797,7 @@
     }
     return this.valid();
   }
+  console.log(inputFilesConfig.PropostaTrabalho.hasFileSave)
  
   $("#candidato-formulario").validate({
       errorElement: 'span',
@@ -825,15 +826,15 @@
           email: true 
         },
         "PropostaTrabalho": {
-          required: !!inputFilesConfig.PropostaTrabalho.hasFileSave,
+          required: !inputFilesConfig.PropostaTrabalho.hasFileSave,
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "ComprovantePagamento": {
-          required: !!inputFilesConfig.ComprovantePagamento.hasFileSave,
+          required: !inputFilesConfig.ComprovantePagamento.hasFileSave,
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "CartaAceiteOrientador": {
-          required: {{#if (eq cursoDesejado 'Doutorado')}}!!inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}false{{/if}},
+          required: {{#if (eq cursoDesejado 'Doutorado')}}!inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}false{{/if}},
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
       },

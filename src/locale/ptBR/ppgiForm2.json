@@ -36,9 +36,9 @@
     "description": "Caso você deseja aproveitar a nota de uma prova de seleção PPGI de algum ano anterior (no máximo 2 anos), pro favor faça o upload do PDF da prova através da opção abaixo"
   },
   "experienciaAcademica": {
-    "title": "Experiência Acadêmica",
+    "title": "Experiência Acadêmica (Monitoria, PIBIC, PET, Instrutor, Professor)",
     "instituicao": "Instituição Acadêmica",
-    "atividade": "Atividade",
+    "atividade": "Atividade/Cargo",
     "periodo": "Período",
     "adicionarExperiencia": "Adicionar Experiência",
     "excluirExperiencia": "Excluir Experiência"

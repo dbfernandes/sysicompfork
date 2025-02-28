@@ -1,12 +1,7 @@
 import crypto from 'crypto';
 
+import { CandidatoRecomendacao, PrismaClient } from '@prisma/client';
 import {
-  CandidatoRecomendacao,
-  PrismaClient,
-  Recomendacoes,
-} from '@prisma/client';
-import {
-  CreateRecomendacaoDto,
   RecomendacaoStatus,
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
@@ -16,13 +11,6 @@ import { generatePdfRecommendations } from '@resources/pdf/pdf.controller';
 const prisma = new PrismaClient();
 
 class CandidatoRecomendacaoService {
-  async create(data: CreateRecomendacaoDto) {
-    const token = crypto.randomBytes(20).toString('hex');
-    return prisma.candidatoRecomendacao.create({
-      data: { ...data, token },
-    });
-  }
-
   async getAllRecomendationsFromCandidate(candidatoId: number) {
     return prisma.candidatoRecomendacao.findMany({
       where: {
@@ -165,7 +153,6 @@ class CandidatoRecomendacaoService {
       const urlSend = `${url}?token=${recomendacao.token}`;
       sendEmail({
         to: recomendacao.email, // Change to your recipient
-
         name: 'Coordenação do PPGI',
         title: `[PPGI/UFAM] Solicitacao de Carta de Recomendacao para ${candidato?.nome}`,
         template: 'cartaRecomendacao',

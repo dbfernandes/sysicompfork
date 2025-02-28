@@ -29,6 +29,7 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
+import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -139,6 +140,7 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
+        generatePdfEnrollment('3');
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
@@ -501,7 +503,9 @@ async function formHistorico(
           instituicaoPos: body.instituicaoPos,
           anoEgressoPos: body.anoEgressoPos ? Number(body.anoEgressoPos) : null,
           posicaoEdital: 3,
+          tipoPos: body.tipoPos,
         };
+        console.log(candidato);
         const id = Number(uid);
         await candidatoService.update({
           id,
@@ -583,7 +587,9 @@ async function formProposta(
           nomeOrientador: body.nomeOrientador,
           motivos: body.motivos,
           posicaoEdital,
+          ...(body.isNext && { finishedAt: new Date() }),
         };
+
         const id = Number(uid);
         await candidatoService.update({
           id,
