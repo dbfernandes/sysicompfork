@@ -48,11 +48,10 @@ export default class PrismaTestEnvironment extends NodeEnvironment {
       }
 
       this.databaseName = `test_${crypto.randomUUID()}`;
-      this.connectionString = `mysql://${requiredEnvVars.DATABASE_USER}:${
-        requiredEnvVars.DATABASE_PASS
-      }@${requiredEnvVars.DATABASE_HOST}:${requiredEnvVars.DATABASE_PORT}/${
-        this.databaseName
-      }`;
+      this.connectionString = `mysql://${requiredEnvVars.DATABASE_USER}:${requiredEnvVars.DATABASE_PASS
+        }@${requiredEnvVars.DATABASE_HOST}:${requiredEnvVars.DATABASE_PORT}/${this.databaseName
+        }`;
+      console.log('Conexão de teste:', this.connectionString);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

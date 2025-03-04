@@ -211,7 +211,7 @@
         const prefixo = tipo == "removerUser" ? "Deseja realmente bloquear o usuário " : "Deseja realmente desbloquear o usuário "
         document.getElementById("tituloModal").innerHTML = prefixo + nome + "?";
         const formDelete = document.getElementById("postDelete")
-        const url = tipo == "removerUser" ? `/usuarios/deletar/${id}` : `/usuarios/restaurar/${id}`
+        const url = tipo == "removerUser" ? `/usuarios/bloquear/${id}` : `/usuarios/restaurar/${id}`
         formDelete.setAttribute('action', url);
     }
     if ("{{message}}") {

@@ -86,7 +86,7 @@ export const criar = async (req: Request, res: Response) => {
       };
 
       await afastamentoService.criar(novoAfastamento);
-      return res.redirect('/afastamentoTemporario/listar');
+      return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitar-afastamento'), {
         pageTitle,

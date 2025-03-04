@@ -13,7 +13,7 @@ import {
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
+//criarUsuario
 const adicionar = async (
   req: Request,
   res: Response,
@@ -46,6 +46,19 @@ const adicionar = async (
           turno,
         } = req.body as usuarioBodyDTO;
 
+        const cpfExiste = await usuarioService.verificaCpf(cpf);
+        if (cpfExiste) {
+          return res.status(StatusCodes.BAD_REQUEST).render(resolveView('usuarios-adicionar'), {
+            nome: req.session.nome,
+            csrfToken: req.csrfToken(),
+            message:
+              'Este CPF já está cadastrado no sistema.',
+            type: 'danger',
+            messageTitle: 'Criação de usuário indisponível!',
+            tipoUsuario: req.session.tipoUsuario,
+          })
+        }
+
         const novoUsuario: CreateUsuarioDto = {
           nomeCompleto,
           cpf,
@@ -77,7 +90,7 @@ const adicionar = async (
 
         await usuarioService.adicionar(novoUsuario);
 
-        return res.status(201).redirect(
+        return res.status(StatusCodes.CREATED).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Criação de usuário bem-sucedida!',
             message: 'Usuário adicionado no sistema com sucesso.',
@@ -87,7 +100,7 @@ const adicionar = async (
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.render(resolveView('usuarios-adicionar'), {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuarios-adicionar'), {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
           errors: (error as { errors: Record<string, { message: string }> })
@@ -102,12 +115,12 @@ const adicionar = async (
 
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-
-const deletar = async (
+//bloquearUsuario
+const bloquear = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -132,7 +145,7 @@ const deletar = async (
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.status(500).redirect(
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Bloqueio de usuário indisponível!',
             message: 'Não foi possível bloquear este usuário.',
@@ -143,7 +156,7 @@ const deletar = async (
       }
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
@@ -171,7 +184,7 @@ const restaurar = async (
         };
 
         return res
-          .status(200)
+          .status(StatusCodes.OK)
           .redirect(criarURL('/usuarios/listar', successParams));
       } catch (error: unknown) {
         console.log(error);
@@ -184,14 +197,14 @@ const restaurar = async (
         };
 
         return res
-          .status(500)
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .redirect(criarURL('/usuarios/listar', errorParams));
       }
     }
 
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
@@ -219,7 +232,7 @@ const listar = async (
             usuario.perfil += ' professor';
           }
         });
-        return res.status(200).render(resolveView('usuarios-listar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuarios-listar'), {
           usuarios,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -229,7 +242,7 @@ const listar = async (
           tipoUsuario: req.session.tipoUsuario,
         });
       } catch (error: unknown) {
-        return res.status(500).redirect(
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).redirect(
           criarURL('/inicio', {
             message: 'Não foi possível listar os usuários.',
             type: 'danger',
@@ -240,11 +253,11 @@ const listar = async (
       }
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-
+//detalhesUsuario
 const detalhes = async (
   req: Request,
   res: Response,
@@ -257,7 +270,7 @@ const detalhes = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(200).render(resolveView('usuario-visualizar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuario-visualizar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -268,7 +281,7 @@ const detalhes = async (
         });
       } catch (error: unknown) {
         console.log(error);
-        return res.status(503).redirect(
+        return res.status(StatusCodes.SERVICE_UNAVAILABLE).redirect(
           criarURL('/usuarios/listar', {
             message: 'Não foi possível visualizar este usuário.',
             type: 'danger',
@@ -279,11 +292,11 @@ const detalhes = async (
       }
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-
+//editarUsuario
 const editar = async (
   req: Request,
   res: Response,
@@ -295,7 +308,7 @@ const editar = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(200).render(resolveView('usuarios-editar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuarios-editar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -315,7 +328,7 @@ const editar = async (
         };
 
         return res
-          .status(503)
+          .status(StatusCodes.SERVICE_UNAVAILABLE)
           .redirect(criarURL('/usuarios/listar', errorParams));
       }
     }
@@ -365,7 +378,7 @@ const editar = async (
         };
 
         return res
-          .status(200)
+          .status(StatusCodes.OK)
           .redirect(criarURL(`/usuarios/dados/${userId}`, successParams));
       } catch (error: unknown) {
         console.log(error);
@@ -380,7 +393,7 @@ const editar = async (
           id: req.params.id,
         };
 
-        return res.status(500).render(resolveView('usuarios-editar'), {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuarios-editar'), {
           usuario: formData,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -396,12 +409,12 @@ const editar = async (
 
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
-
-const verificarDiretorExistente = async (
+//verificarUsuarioDiretor
+const verificarDiretor = async (
   req: Request,
   res: Response,
 ): Promise<any> => {
@@ -409,14 +422,14 @@ const verificarDiretorExistente = async (
     case 'GET':
       try {
         const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
-        return res.status(200).json({ diretor: !!diretor });
+        return res.status(StatusCodes.OK).json({ diretor: !!diretor });
       } catch (error: unknown) {
         console.log(error);
-        return res.status(500).json({ diretor: false });
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ diretor: false });
       }
     default:
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
@@ -424,9 +437,9 @@ const verificarDiretorExistente = async (
 export const usuarioController = {
   adicionar,
   listar,
-  deletar,
+  bloquear,
   detalhes,
   editar,
   restaurar,
-  verificarDiretorExistente,
+  verificarDiretor,
 };
