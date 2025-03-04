@@ -3,4 +3,4 @@ export const emailService = {
   sendEmail: jest.fn(),
 };
 
-jest.mock('@/resources/email/emailService', () => emailService);
+jest.mock('@/resources/email/email.service', () => emailService);

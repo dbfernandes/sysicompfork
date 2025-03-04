@@ -72,10 +72,7 @@ router.use('/edital', editalRouter);
 //   autenticacaoController.autorizarCoord,
 //   linhasDePesquisaRouter,
 // );
-router.use(
-  '/linhasdepesquisa',
-  linhasDePesquisaRouter,
-);
+router.use('/linhasdepesquisa', linhasDePesquisaRouter);
 // Rotas Exclusivas Professor
 router.use('/salas', autenticacaoController.autorizarProf, salasRoutes);
 router.use('/reservas', autenticacaoController.autorizarProf, reservasRoutes);
@@ -92,7 +89,7 @@ router.use(
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
 router.use(
   '/downloadCandidateDocument/:id',
-  editalController.getcandidatoDocument,
+  editalController.getDocumentToCandidate,
 );
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria

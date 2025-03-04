@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', candidatoRecomendacaoController.begin);
 
-router.put('/salvar/:token', candidatoRecomendacaoController.salvar);
-router.put('/finalizar/:token', candidatoRecomendacaoController.finalizar);
+router.patch('/:token', candidatoRecomendacaoController.salvar);
+router.put('/:token', candidatoRecomendacaoController.finalizar);
 
 export default router;

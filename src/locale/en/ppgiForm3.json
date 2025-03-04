@@ -28,6 +28,7 @@
   },
   "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed.",
   "adicionarRecomendacao": "Add Recommendation",
+  "downloadModelLetter": "Download Model Letter",
   "validation": {
     "linhaPesquisa": {
       "required": "Research Line is required"

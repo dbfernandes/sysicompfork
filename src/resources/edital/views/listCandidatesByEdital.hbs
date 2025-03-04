@@ -1,7 +1,7 @@
 {{> header}}
 
 {{> sidebar module="edital" page="listCandidates"}}
-{{ setTitle title=(concat "Candidatos do PPGI - Edital " id) }}
+{{ setTitle title=(concat "Candidatos do PPGI - Edital " editalID) }}
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -9,14 +9,17 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Candidatos do PPGI - Edital {{id}} </h1>
+                    <h1>Candidatos do PPGI - Edital {{editalID}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/inicio">Página Inical</a></li>
                         <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI</a></li>
-                        <li class="breadcrumb-item active"><a href="/edital/listEdital/{{id}}">
-                                Detalhes de edital</a></li>
+                        <li class="breadcrumb-item active">
+                          <a href="/edital/listEdital/{{editalID}}" target="_blank">
+                                Detalhes de edital
+                          </a>
+                        </li>
                         <li class="breadcrumb-item active"> Lista de Candidados</li>
                     </ol>
                 </div>
@@ -27,7 +30,7 @@
                         <i class="fa fa-arrow-left"></i>
                         Voltar
                     </a>
-                    <a class="btn btn-primary color-white" href="/edital/getEditalCandidatesDocs/{{id}}">
+                    <a class="btn btn-primary color-white" href="/edital/getEditalCandidatesDocs/{{editalID}}">
                         <i class="fas fa-plus"></i>
                         Baixar Documentação
                     </a>
@@ -54,8 +57,8 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>N° de Inscrição</th>
                                         <th>Nome</th>
+                                        <th>Email</th>
                                         <th>Curso Desejado</th>
                                         <th>Linha Pesquisa</th>
                                         <th>Fase</th>
@@ -67,20 +70,20 @@
                                     {{#if (eq posicaoEdital 4) }}
                                     <tr>
                                         <td>{{id}}</td>
-                                        <td>{{idEdital}}</td>
                                         <td>{{nome}}</td>
+                                        <td>{{email}}</td>
                                         <td>{{cursoDesejado}}</td>
                                         <td>{{linhaPesquisa.sigla}}</td>
                                         <td>{{#if (eq status 0)}}Não Julgado{{else}}{{status}}{{/if}}</td>
                                         <td>
-                                            <div class="d-flex justify-content-between">
-                                                <a style="margin-right: 0px" target="_blank"
-                                                    href='/edital/getCandidateDocs/{{id}}'
-                                                    class='fa fa-solid fa-download' />
+                                              <div class="d-flex justify-content-start" style="gap: 8px;">
+                                                <a style="margin-right: 0" target="_blank"
+                                                   href='/edital/getCandidateDocs/{{id}}'
+                                                   class='fa fa-solid fa-download' >
                                                 </a>
 
-                                                <a style="margin-right: 0px" href='/edital/candidateDetails/{{id}}'
-                                                    class='fa fa-solid fa-eye' />
+                                                <a style="margin-right: 0" href='/edital/candidateDetails/{{id}}'
+                                                   class='fa fa-solid fa-eye' >
                                                 </a>
                                             </div>
                                         </td>
@@ -117,29 +120,29 @@
                                 </thead>
                                 <tbody>
                                     {{#each candidatos}}
-                                    {{#if (ne posicaoEdital 4) }}
-                                    <tr>
-                                        <td>{{id}}</td>
-                                        <td>{{idEdital}}</td>
-                                        <td>{{nome}}</td>
-                                        <td>{{email}}</td>
-                                        <td>{{cursoDesejado}}</td>
-                                        <td>{{idLinhaPesquisa}}</td>
-                                        <td>{{posicaoEdital}}/4</td>
-                                        <td>
-                                            <div class="d-flex justify-content-between">
-                                                <a style="margin-right: 0px" target="_blank"
-                                                    href='/edital/getCandidateDocs/{{id}}'
-                                                    class='fa fa-solid fa-download' />
-                                                </a>
+                                      {{#if (ne posicaoEdital 4) }}
+                                        <tr>
+                                            <td>{{id}}</td>
+                                            <td>{{idEdital}}</td>
+                                            <td>{{nome}}</td>
+                                            <td>{{email}}</td>
+                                            <td>{{cursoDesejado}}</td>
+                                            <td>{{idLinhaPesquisa}}</td>
+                                            <td>{{posicaoEdital}}/4</td>
+                                            <td>
+                                              <div class="d-flex justify-content-start" style="gap: 8px;">
+                                                    <a style="margin-right: 0" target="_blank"
+                                                       href='/edital/getCandidateDocs/{{id}}'
+                                                       class='fa fa-solid fa-download' >
+                                                    </a>
 
-                                                <a style="margin-right: 0px" href='/edital/candidateDetails/{{id}}'
-                                                    class='fa fa-solid fa-eye' />
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {{/if}}
+                                                    <a style="margin-right: 0" href='/edital/candidateDetails/{{id}}'
+                                                       class='fa fa-solid fa-eye' >
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                      {{/if}}
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -164,13 +167,12 @@
 </head>
 
 <script>
-
     function voltarPagina() {
         window.history.back();
     }
 
-    document.addEventListener("DOMContentLoaded", function (event) {
-        var datatable = $("#tableCandidatesFinalizados").DataTable({
+    document.addEventListener("DOMContentLoaded", function () {
+         $("#tableCandidatesFinalizados").DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
             },
@@ -189,7 +191,7 @@
                 "orderable": false
             }]
         });
-        var datatable = $("#tableCandidatesAndamento").DataTable({
+        $("#tableCandidatesAndamento").DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
             },
@@ -214,7 +216,6 @@
             window.history.back();
         });
     });
-
 </script>
 
 {{> footer}}

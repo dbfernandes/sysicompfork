@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Candidato {{candidato.id}} - Edital {{candidato.idEdital}} </h1>
+                    <h1>Candidato {{candidato.id}} - Edital {{candidato.editalId}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
@@ -166,8 +166,7 @@
                                     <td><span class="{{#if candidatoDocs.CartaDoOrientador}}">
                                             <a  style="margin-right: 3px"
                                                 href="/downloadCandidateDocument/{{candidato.id}}?documento=CartaDoOrientador"
-                                                class='fa fa-solid fa-download'
-                                            />
+                                                class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
@@ -178,8 +177,7 @@
                                     <td><span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
                                             <a  style="margin-right: 3px"
                                                 href="/downloadCandidateDocument/{{candidato.id}}?documento=PropostaTrabalho.pdf"
-                                                class='fa fa-solid fa-download'
-                                            />
+                                                class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
@@ -188,8 +186,7 @@
                                     <td><span class="{{#if candidatoDocs.Curriculum}}">
                                             <a  style="margin-right: 3px"
                                                 href="/downloadCandidateDocument/{{candidato.id}}?documento=Curriculum.pdf"
-                                                class='fa fa-solid fa-download'
-                                            />
+                                                class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
@@ -198,8 +195,7 @@
                                     <td><span class="{{#if candidatoDocs.ProvaAnteriorSelecao}}">
                                             <a  style="margin-right: 3px"
                                                 href="/downloadCandidateDocument/{{candidato.id}}?documento=prova_anterior"
-                                                class='fa fa-solid fa-download'
-                                            />
+                                                class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
@@ -208,8 +204,7 @@
                                     <td><span class="{{#if candidatoDocs.ComprovantePagamento}}">
                                             <a  style="margin-right: 3px"
                                                 href="/downloadCandidateDocument/{{candidato.id}}?documento=ComprovantePagamento.pdf"
-                                                class='fa fa-solid fa-download'
-                                            />
+                                                class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
@@ -217,67 +212,110 @@
                                 <tr>
                                     <th class="col-3">Cartas de Recomendação (PDF)</th>
                                     <td>
-                                        <span class="{{#if candidatoDocs.Recomendacao}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=recommendationLetter"
-                                                class='fa fa-solid fa-download'
-                                            />
-                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                      {{#if candidatoDocs.Recomendacoes}}
+                                        <span>
+                                          <a  style="margin-right: 3px"
+                                              href="/downloadCandidateDocument/{{candidato.id}}?documento=Recomendacoes.pdf"
+                                              class='fa fa-solid fa-download'></a>
                                         </span>
+                                      {{else}}
+                                        <span class="badge bg-warning">Nenhuma resposta</span>
+                                      {{/if}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">N° de Cartas de Recomendação (Emitidas)</th>
-                                    <td>0</td>
+                                    <td>{{countRecomendations}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">N° de Cartas de Recomendação (Respondidas)</th>
-                                    <td>0</td>
+                                    <td>{{countRecomendationsFinished}}</td>
                                 </tr>
                                 {{/if}}
 
                              
                                 <tr>
                                     <th class="col-3">Curso de graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.cursoGraduacao)}}">{{candidato.cursoGraduacao}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
-
-                                    </span></td>
+                                    <td>
+                                      {{#if (notEmpty candidato.cursoGraduacao)}}
+                                        <span>
+                                          {{candidato.cursoGraduacao}}
+                                        </span>
+                                      {{else}}
+                                        <span class="badge bg-danger">Não Registrado</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Instituição da graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.instituicaoGraduacao)}}">{{candidato.instituicaoGraduacao}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}</span></td>
+                                    <td>
+                                        {{#if (notEmpty candidato.instituicaoGraduacao)}}
+                                          <span>{{candidato.instituicaoGraduacao}}</span>
+                                        {{else}}
+                                          <span class="badge bg-danger">Não Registrado</span>
+                                        {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano de Egresso na Graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.anoEgressoGraduacao)}}">{{candidato.anoEgressoGraduacao}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    <td>
+                                      {{#if (notEmpty candidato.anoEgressoGraduacao)}}
+                                        {{candidato.anoEgressoGraduacao}}
+                                      {{else}}
+                                        <span class="badge bg-danger">Não Registrado</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curso de Pós Graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.cursoPos)}}">{{candidato.cursoPos}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    <td>
+                                      {{#if (notEmpty candidato.cursoPos)}}
+                                          {{candidato.cursoPos}}
+                                      {{else}}
+                                          <span class="badge bg-danger">Não Registrado</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Tipo de Pós Graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.tipoPos)}}">{{candidato.tipoPos}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    <td>
+                                        {{#if (notEmpty candidato.tipoPos)}}
+                                          {{candidato.tipoPos}}
+                                        {{else}}
+                                          <span class="badge bg-danger">Não Registrado</span>
+                                        {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Instituição da Pós Graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.instituicaoPos)}}">{{candidato.instituicaoPos}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    <td>
+                                      {{#if (notEmpty candidato.instituicaoPos)}}
+                                        {{candidato.instituicaoPos}}
+                                      {{else}}
+                                        <span class="badge bg-danger">Não Registrado</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Ano de Egresso na Pós Graduação</th>
-                                    <td><span class="{{#if (notEmpty candidato.anoEgressoPos)}}">{{candidato.anoEgressoPos}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    <td>
+                                        {{#if (notEmpty candidato.anoEgressoPos)}}
+                                          {{candidato.anoEgressoPos}}
+                                        {{else}}
+                                          <span class="badge bg-danger">Não Registrado</span>
+                                        {{/if}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Resultado da Avaliação</th>
-                                    
-                                    <td><span class="{{#if candidato.notaposcomp}}">{{candidato.notaposcomp}}{{else}}badge bg-danger">Não Julgado{{/if}}</span></td>
+
+                                    <td>
+                                      {{#if candidato.notaposcomp}}
+                                        {{candidato.notaposcomp}}
+                                      {{else}}
+                                        <span class="badge bg-danger">Não Julgado</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

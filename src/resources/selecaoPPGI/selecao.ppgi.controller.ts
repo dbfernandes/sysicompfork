@@ -1,21 +1,25 @@
 import fs from 'fs';
 import path from 'path';
-import { NextFunction, Request, Response } from 'express';
 
-import { Candidato } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
-import { gerarPDF } from '../../utils/gerarInscricao';
+import { NextFunction, Request, Response } from 'express';
+import { Candidato } from '@prisma/client';
+
 import candidatoService from '../candidato/candidato.service';
+import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
+import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
+import editalService from '../edital/edital.service';
+import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
+
+import { gerarPDF } from '../../utils/gerarInscricao';
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
 } from '../candidato/candidato.types';
-import candidatoPublicacaoService from '../candidatoPublicacao/candidato.publicacao.service';
-import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import editalService from '../edital/edital.service';
+
 import {
   CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
@@ -25,7 +29,6 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
-import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -136,7 +139,6 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
-
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
@@ -236,7 +238,10 @@ async function renderFormHistorico(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     uid.toString(),
@@ -245,7 +250,7 @@ async function renderFormHistorico(
   const experienciasAcademicas =
     await candidatoExperienciaAcademicaService.listByCandidateId(Number(uid));
   const { conferencias, periodicos } =
-    await candidatoPublicacaoService.publicacoesCandidato(Number(uid));
+    await candidatoPublicacaoService.getPublicacoes(Number(uid));
 
   res.render(resolveView('formHistorico'), {
     ...locals,
@@ -261,6 +266,10 @@ async function renderFormHistorico(
       caminhoDiretorioUsuario,
       PROVA_ANTERIOR_FILE,
     ),
+    hasVitaeXML: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      'VitaeXML.xml',
+    ),
     experienciasAcademicas,
     conferencias,
     periodicos,
@@ -275,7 +284,10 @@ async function renderFormProposta(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     uid.toString(),
@@ -319,7 +331,6 @@ async function renderFormConfirmacao(
   const uid = req.session.uid;
   const currentLanguage = getLanguage(req);
   const caminhoDiretorioUsuario = path.join(
-    'public',
     'uploads',
     'candidato',
     uid.toString(),
@@ -608,7 +619,7 @@ async function uploadsPublicacoes(
 ): Promise<void> {
   switch (req.method) {
     case 'GET': {
-      const data = await candidatoPublicacaoService.publicacoesCandidato(
+      const data = await candidatoPublicacaoService.getPublicacoes(
         Number(req.session.uid),
       );
 
@@ -626,10 +637,8 @@ async function uploadsPublicacoes(
     case 'POST':
       try {
         const uid = req.session.uid;
-        const dados = req.body;
-
-        await candidatoPublicacaoService.processarPublicacoes({
-          publicacoes: dados,
+        await candidatoPublicacaoService.processPublicacoes({
+          publicacoes: JSON.parse(req.body.publicacoes),
           uid: Number(uid),
         });
 
@@ -748,7 +757,10 @@ function downloadFile(req: Request, res: Response): void {
   const userId = req.session.uid;
   const nomeArquivo = req.params.name;
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     userId,
@@ -773,7 +785,10 @@ function viewFile(req: Request, res: Response): void {
 
   // Monta o caminho até o arquivo
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     userId,
@@ -796,6 +811,39 @@ function viewFile(req: Request, res: Response): void {
   });
 }
 
+async function deleteAllPublications(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  switch (req.method) {
+    case 'DELETE':
+      try {
+        const { uid } = req.session;
+        const caminhoDoc = path.join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'uploads',
+          'candidato',
+          uid,
+          'VitaeXML.xml',
+        );
+        if (fs.existsSync(caminhoDoc)) {
+          fs.unlinkSync(caminhoDoc);
+        }
+        await candidatoPublicacaoService.deleteAllPublicacoes(Number(uid));
+        res.status(StatusCodes.OK).send();
+      } catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+      }
+      break;
+    default:
+      res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
+      break;
+  }
+}
+
 export default {
   inicio,
   signUp,
@@ -812,4 +860,5 @@ export default {
   trocarSenha,
   downloadFile,
   viewFile,
+  deleteAllPublications,
 };

@@ -1,24 +1,35 @@
 {{ setTitle title="Histórico" }}
+<style>
+  .container-buttons-icon {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    max-width: 50vw;
+    overflow: hidden;
+    flex-basis: 210px;
+    align-items: center;
+  }
+</style>
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 <main class="forms-page">
   <!-- Cabeçalho / Header -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
-        <button id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
+        <button class="p-0" id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
+        <button class="p-0" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
       </div>
     </div>
   </header>
 
   <!-- Seção de conteúdo principal -->
-  <section class="content container">
+  <section class="content container px-3">
     <!-- Possível nav (dependendo de como seu partial é estruturado) -->
     {{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
-    <div class="container-fluid">
+    <div class="container-fluid p-0">
       <!-- Formulário de histórico (em um <article> semântico, se desejar) -->
       <article>
         <form id="candidato-formulario2" novalidate>
@@ -117,7 +128,7 @@
                 </div>
 
                 <!-- Tipo do Curso de Pós -->
-                <div class="col-md-6">
+                <div class="col-md-6 form-group">
                   <label for="candidato-curso-tipo" class="control-label">
                     <b>{{__ "ppgiForm2.cursoPos.tipo"}}:</b>
                   </label>
@@ -180,7 +191,7 @@
 
               <div class="row">
                 <!-- Instituição de Pós -->
-                <div class="col-md-6">
+                <div class="col-md-6 form-group">
                   <label for="candidato-instituicao-pos" class="control-label">
                     <b>{{__ "ppgiForm2.cursoPos.instituicao"}}:</b>
                   </label>
@@ -195,7 +206,7 @@
                 </div>
 
                 <!-- Ano de Egresso Pós -->
-                <div class="col-md-3">
+                <div class="col-md-3 form-group">
                   <label for="candidato-ano-pos" class="control-label">
                     <b>{{__ "ppgiForm2.cursoPos.anoEgresso"}}:</b>
                   </label>
@@ -220,26 +231,24 @@
             <div class="card-body">
               <div class="row">
                 <!-- PDF do currículo -->
-                <div class="col-12">
-                  <label for="vittaepdf" class="control-label">
-                    <span class="text-danger">*</span>
-                    <b>{{__ "ppgiForm2.curriculumVittae.pdf"}}:</b>
-                  </label>
-                </div>
+                <label for="vittaepdf" class="control-label col-12">
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm2.curriculumVittae.pdf"}}:</b>
+                </label>
 
                 <div id="buttons-curriculum" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasCurriculum)}}none{{else}}flex{{/if}}; gap: 16px"  >
-                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                  <div class="container-buttons-icon ">
                     <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                    <figcaption id="name-curriculum"><b>Curriculum.pdf</b></figcaption>
+                    <figcaption id="name-curriculum" style="word-break: break-word;"><b>Curriculum.pdf</b></figcaption>
                   </div>
-                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
-                    <a id="url-curiculum" href="/selecaoppgi/download/arquivo/Curriculum.pdf" class="btn btn-primary" download>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-curiculum" href="/selecaoppgi/download/arquivo/Curriculum.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                       <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                        {{__ "ppgi.form.btnDownload"}}</a>
-                    <button type="button" class="btn btn-success" id="btn-change-curriculum">
+                    <button type="button" class="btn btn-success" id="btn-change-curriculum" style="flex-grow: 1;">
                       <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnChange"}}</button>
-                    <button type="button" class="btn btn-danger" id="btn-delete-curriculum">
+                    <button type="button" class="btn btn-danger" id="btn-delete-curriculum" style="flex-grow: 1;">
                       <i class="fa fa-trash mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnDelete"}}</button>
                   </div>
@@ -256,45 +265,59 @@
                 </div>
 
                 <!-- XML do currículo -->
-                  <label for="vittaexml" class="control-label col-12">
-                    <b>{{__ "ppgiForm2.curriculumVittae.xml"}}:</b><br>
-                    <span style="font-weight: normal">(se tiver dúvidas de como gerar o xml, <a href="/public/files/instrucoes-lattes.pdf" target="_blank">siga as instruções desse arquivo.</a>)</span>
+                <label for="vittaexml" class="control-label col-12">
+                  <b>{{__ "ppgiForm2.curriculumVittae.xml"}}:</b><br>
+                  <span style="font-weight: normal">({{__ "ppgiForm2.curriculumVittae.doubtXml"}}, <a href="/public/files/instrucoes-lattes.pdf" target="_blank">{{__ "ppgiForm2.curriculumVittae.doubtXmlInstructions"}}</a>)</span>
+                </label>
+                <div id="buttons-vittae" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasVitaeXML)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                  <div class="container-buttons-icon ">
+                    <img src="/public/img/xml-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-vittae" style="word-break: break-word;"><b>VitaeXML.xml</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-vittae" href="/selecaoppgi/download/arquivo/VitaeXML.xml" class="btn btn-primary" download style="flex-grow: 1;">
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                      {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-vittae" style="flex-grow: 1;">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-vittae" style="flex-grow: 1;">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnDeletePublications"}} </button>
+                  </div>
+                </div>
+                <div id="input-vittae" class="custom-file mb-4 col-md-6 form-group" {{#if hasVitaeXML}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="vittaexml"
+                    name="VitaeXML"
+                    accept="text/xml"
+                    data-msg-accept="{{__ "ppgi.form.onlyXml"}}"
+                  />
+                  <label class="custom-file-label" for="vittaexml">
+                    {{__ "ppgi.form.chooseFile"}}
                   </label>
-                  <div class="form-group col-md-6">
-                    <div class="custom-file">
-                      <input
-                        type="file"
-                        class="custom-file-input"
-                        id="vittaexml"
-                        name="VitaeXML"
-                        accept="text/xml"
-                        data-msg-accept="{{__ "ppgi.form.onlyXml"}}"
-                      />
-                      <label class="custom-file-label" for="vittaexml">
-                        {{__ "ppgi.form.chooseFile"}}
-                      </label>
-                    </div>
                 </div>
               </div>
-
+              {{#if (and hasVitaeXML (eq periodicos.length 0) (eq conferencias.length 0))}}
+                <p class="text-gray">
+                  <i class="fa fa-info-circle" aria-hidden="true"></i> {{__ "ppgiForm2.curriculumVittae.emptyPublications"}}
+                </p>
+              {{/if}}
 
               <!-- Exibição de publicações/Periódicos e Conferências -->
-              <div>
-                <p>
-                  {{#if periodicos}}
-                    <a
-                      class="btn btn-primary"
-                      data-toggle="collapse"
-                      href="#multiCollapseExample1"
-                      role="button"
-                      aria-expanded="false"
-                      aria-controls="multiCollapseExample1"
-                    >
-                      {{__ "ppgiForm2.curriculumVittae.periodicos"}}
-                      <span class="badge badge-light">{{periodicos.length}}</span>
-                    </a>
-                  {{/if}}
-                </p>
+              {{#if periodicos.length}}
+                <button
+                  class="btn btn-primary mb-2"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#multiCollapseExample1"
+                  aria-expanded="false"
+                  aria-controls="multiCollapseExample1">
+                  {{__ "ppgiForm2.curriculumVittae.periodicos"}}
+                  <span class="badge badge-light">{{periodicos.length}}</span>
+                </button>
 
                 <div class="collapse multi-collapse" id="multiCollapseExample1">
                   {{#each periodicos}}
@@ -336,24 +359,20 @@
                     </div>
                   {{/each}}
                 </div>
-
-                <p>
-                  {{#if conferencias.length}}
-                    <button
-                      class="btn btn-primary"
-                      type="button"
-                      data-toggle="collapse"
-                      data-target="#multiCollapseExample2"
-                      aria-expanded="false"
-                      aria-controls="multiCollapseExample2"
-                    >
-                      {{__ "ppgiForm2.curriculumVittae.conferencias"}}
-                      <span class="badge badge-light"
-                      >{{conferencias.length}}</span
-                      >
-                    </button>
-                  {{/if}}
-                </p>
+                <br/>
+              {{/if}}
+              {{#if conferencias.length}}
+                <button
+                  class="btn btn-primary mb-2"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#multiCollapseExample2"
+                  aria-expanded="false"
+                  aria-controls="multiCollapseExample2"
+                >
+                  {{__ "ppgiForm2.curriculumVittae.conferencias"}}
+                  <span class="badge badge-light">{{conferencias.length}}</span>
+                </button>
 
                 <div class="collapse multi-collapse" id="multiCollapseExample2">
                   {{#each conferencias}}
@@ -394,7 +413,8 @@
                     </div>
                   {{/each}}
                 </div>
-              </div>
+              {{/if}}
+
             </div>
           </div><!-- /card Currículo Vitae -->
 
@@ -412,18 +432,18 @@
                   </label>
                 </div>
                 <div  id="buttons-prova" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasProvaAnterior)}}none{{else}}flex{{/if}}; gap: 16px" >
-                  <div class="d-flex flex-column align-items-center" style="gap: 4px">
+                  <div class="container-buttons-icon ">
                     <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                    <figcaption id="name-prova"><b>ProvaAnterior.pdf</b></figcaption>
+                    <figcaption id="name-prova" style="word-break: break-word;"><b>ProvaAnterior.pdf</b></figcaption>
                   </div>
-                  <div class="d-flex flex-row align-items-center" style="gap: 4px">
-                    <a id="url-prova" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary" download>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-prova" href="/selecaoppgi/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                       <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                        {{__ "ppgi.form.btnDownload"}}</a>
-                    <button type="button" class="btn btn-success" id="btn-change-prova">
+                    <button type="button" class="btn btn-success" id="btn-change-prova" style="flex-grow: 1;">
                       <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnChange"}}</button>
-                    <button type="button" class="btn btn-danger" id="btn-delete-prova">
+                    <button type="button" class="btn btn-danger" id="btn-delete-prova" style="flex-grow: 1;">
                       <i class="fa fa-trash mr-2" aria-hidden="true"></i>
                        {{__ "ppgi.form.btnDelete"}}</button>
                   </div>
@@ -455,7 +475,8 @@
             <div class="card-body d-flex flex-column w-100">
               <div id="experiencia-container">
                 {{#each experienciasAcademicas}}
-                  <div class="row experiencia-row">
+                <blockquote class=" experiencia-row quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
+                  <div class="row ">
                     <div class="col-md-4">
                       <label
                         for="candidato-experiencia-instituicao"
@@ -507,7 +528,7 @@
                       />
                     </div>
 
-                    <div class="col-1" style="margin-top: 10px;">
+                    <div class="col-12 align-self-end d-flex justify-content-end mt-1">
                       <button
                         type="button"
                         class="btn btn-danger delete-experiencia-button"
@@ -516,10 +537,13 @@
                       </button>
                     </div>
                   </div>
+                </blockquote>
                 {{/each}}
 
                 {{#if (eq experienciasAcademicas.length 0)}}
-                  <div class="row experiencia-row">
+                <blockquote class="experiencia-row quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
+
+                  <div class="row">
                     <div class="col-md-4">
                       <label
                         for="candidato-experiencia-instituicao"
@@ -567,7 +591,7 @@
                         maxlength="30"
                       />
                     </div>
-                    <div class="col-1" style="margin-top: 10px;">
+                    <div class="col-12 align-self-end d-flex justify-content-end mt-1">
                       <button
                         type="button"
                         class="btn btn-danger delete-experiencia-button"
@@ -577,6 +601,7 @@
                       </button>
                     </div>
                   </div>
+                </blockquote>
                 {{/if}}
               </div>
 
@@ -592,7 +617,7 @@
 
             <div class="card-footer">
               <div
-                class="col d-flex align-items-center flex-row-reverse"
+                class="col d-flex align-items-center flex-row-reverse p-0"
                 style="gap: 4px;"
               >
                 <!-- Botão de Submit -->
@@ -627,6 +652,7 @@
       </article>
     </div>
   </section>
+  {{> ppgi/footer}}
 </main>
 <script>
 
@@ -718,6 +744,23 @@
       $(btnDelete).click(function () {
         inputFilesConfig[key].hasFileSave = false;
         actionDeleteFile(input, buttons, containerInput);
+      });
+    });
+
+    $('#btn-change-vittae').click(function () {
+      changeFile('#vittaexml');
+    });
+
+    $('#btn-delete-vittae').click(function () {
+      $.ajax({
+        url: '/selecaoppgi/formulario/publicacoes?_csrf={{csrfToken}}',
+        type: "DELETE",
+        success: function (data) {
+          window.location.href = "/selecaoppgi/formulario";
+        },
+        error: function (data) {
+          console.error(data);
+        }
       });
     });
 
@@ -919,17 +962,15 @@
   })
 
   function GetDataPubli(data) {
-    const DataForm = data;
-    const formData2 = new FormData($('#candidato-formulario2')[0]);
-    const email = $("#email").val();
-    const id = $("#id").val();
-    formData2.append('email', email);
-    formData2.append('id', id);
+    const formData = new FormData();
+    const file = $('#vittaexml')[0].files[0];
+    file && formData.append('VitaeXML', file);
+    data.publicacoes && formData.append('publicacoes', JSON.stringify(data.publicacoes));
 
     $.ajax({
       url: '/selecaoppgi/formulario/publicacoes?_csrf={{csrfToken}}',
       type: "POST",
-      data: JSON.stringify(DataForm),
+      data: formData,
       success: function (data) {
         window.location.href = '/selecaoppgi/formulario';
       },
@@ -945,7 +986,8 @@
         const vitaeInput = document.getElementById("vittaexml");
         vitaeInput.setAttribute("disabled", false);
       },
-      contentType: 'application/json',
+      contentType: false,
+      processData: false,
     })
 
 
@@ -1062,6 +1104,7 @@
         fileSize: "{{__ "ppgi.validation.fileSize"}}"
       }
     },
+
     submitHandler: (form, e) => {
       e.preventDefault()
       const VitaeXML = $("#vittaexml").val()

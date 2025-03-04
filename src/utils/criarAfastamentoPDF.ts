@@ -1,30 +1,27 @@
-//### A ser Removido ###//
-
 import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
-import puppeteer from 'puppeteer';
-import Handlebars from 'handlebars';
 import usuarioService from '../resources/usuarios/usuario.service';
 import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
 import { Request, Response } from 'express';
+import { generatePdfLeave } from '@resources/pdf/pdf.controller';
 
-interface dadosDocumento {
-  nomeCompleto: string
-  dataSaida: string,
-  dataRetorno: string,
-  localViagem: string,
-  tipoViagem: string,
-  justificativa: string,
-  planoReposicao: string,
-  diretorNome: string,
-  data: string,
-  hora: string,
-  email: string,
+interface DataAfastamentoPDF {
+  nomeCompleto: string;
+  dataSaida: string;
+  dataRetorno: string;
+  localViagem: string;
+  tipoViagem: string;
+  justificativa: string;
+  planoReposicao: string;
+  diretorNome: string;
+  data: string;
+  hora: string;
+  email: string;
 }
 
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
-async function getAfastamento(id: number) {
+export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
   const afastamento = await afastamentoService.retornarAfastamento(id);
   const usuario = await usuarioService.listarUmUsuario(id);
   const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
@@ -58,79 +55,34 @@ async function getAfastamento(id: number) {
   return afastamentoDoc;
 }
 
-function compilarTemplates(
-  afastamentoPath: string,
-  dados: dadosDocumento,
-  footerPath: string,
-  headerPath: string,
-) {
-  const footer = fs.readFileSync(footerPath, 'utf8');
-  const header = fs.readFileSync(headerPath, 'utf8');
-  const afastamentoDoc = fs.readFileSync(afastamentoPath, 'utf8');
-  Handlebars.registerPartial('header', header);
-  Handlebars.registerPartial('footer', footer);
-  const template = Handlebars.compile(afastamentoDoc);
-  return template({ afastamentoDoc: dados });
-}
-
 // 3. Gerar o PDF
 export async function criarAfastamentoPDF(req: Request, res: Response) {
   try {
     const id = req.params.id;
-
-    const afastamentoPath = path.join(
-      process.cwd(),
-      '/src/views/layouts/modeloAfastamento/afastamentoPDF.hbs',
-    );
-    const footerPath = path.join(
-      process.cwd(),
-      '/src/views/layouts/modeloAfastamento/footer.hbs',
-    );
-    const headerPath = path.join(
-      process.cwd(),
-      '/src/views/layouts/modeloAfastamento/header.hbs',
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      `public/afastamentos/${id}.pdf`,
     );
     const dados = await getAfastamento(Number(id));
-    const arquivoHTML = compilarTemplates(
-      afastamentoPath,
-      dados,
-      footerPath,
-      headerPath,
-    );
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
-      executablePath: '/usr/bin/chromium-browser',
-      protocolTimeout: 2000,
-    });
-    const page = await browser.newPage();
-    await page.setContent(arquivoHTML, { waitUntil: 'networkidle0' });
-    const pdf = await page.pdf({
-      path: path.join(
-        __dirname,
-        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
-      ),
-      format: 'A4',
-      printBackground: true,
-      displayHeaderFooter: true,
-    });
-    // console.log('Tamanho do PDF Buffer:', pdf.length);
-
-    await browser.close();
-
+    await generatePdfLeave(id, id.toString());
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
       `inline; filename=${dados!.nomeCompleto}.pdf`,
     );
-    fs.createReadStream(
-      path.join(
-        __dirname,
-        `/../../public/afastamentos/${dados!.nomeCompleto}.pdf`,
-      ),
-    ).pipe(res);
+    fs.createReadStream(filePath).pipe(res);
+    // Quando a resposta terminar, remove o arquivo
+    res.on('finish', () => {
+      try {
+        fs.promises.unlink(filePath);
+      } catch (error) {
+        console.error(error);
+      }
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: 500, details: error });
   }
 }

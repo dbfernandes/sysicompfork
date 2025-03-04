@@ -189,8 +189,9 @@ const formataFormacaoAno = (formacao) => {
 };
 
 const validaLabel = (status, dataInicio, dataFim, options) => {
-  const dataAtual = moment.tz('America/Manaus').format('YYYY-MM-DD');
-
+  const dataAtual = new Date();
+  console.log(dataAtual);
+  console.log(dataInicio);
   if (status == '1') {
     if (moment(dataAtual).isBefore(dataInicio)) {
       return '<span class="badge bg-info">Não Iniciado</span>';

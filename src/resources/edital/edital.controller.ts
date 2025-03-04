@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Response, Request } from 'express';
-import { CreateEditalDto, UpdateEditalDto } from './edital.types';
+import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
 import EditalService from './edital.service';
 import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
 import archiver from 'archiver';
@@ -8,11 +8,14 @@ import path from 'path';
 import editalService from './edital.service';
 import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
+  CARTA_ACEITE_ORIENTADOR_FILE,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   PROPOSTA_FILE,
+  PROVA_ANTERIOR_FILE,
 } from '../selecaoPPGI/selecao.ppgi.types';
 import { Candidato } from '@prisma/client';
+import { StatusCodes } from 'http-status-codes';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -25,7 +28,7 @@ function resolveView(viewName: string): string {
 const addEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('addNewSelecao'), {
+      return res.render(resolveView('addEdital'), {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
@@ -44,7 +47,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
         vagasDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
-        status: 1,
+        status: StatusEdital.ATIVO,
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
       };
@@ -74,7 +77,7 @@ const listEditalSelecao = async (req: Request, res: Response) => {
     case 'GET':
       const editais = await editalService.listEditalComQtdeCandidatos();
 
-      return res.render(resolveView('listSelecao'), {
+      return res.render(resolveView('listEditais'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         editais,
@@ -122,7 +125,7 @@ const arquivarEdital = async (req: Request, res: Response) => {
 
   switch (req.method) {
     case 'PUT': {
-      const { status } = await req.body;
+      const { status } = req.body;
 
       const edital_update = await editalService
         .arquivar(id_edital, {
@@ -148,12 +151,11 @@ const viewEdital = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'ID not found' });
       }
       const edital = await editalService.getById(id);
-
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
 
-      return res.render(resolveView('viewSelecao'), {
+      return res.render(resolveView('viewEdital'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -173,8 +175,7 @@ const updateEdital = async (req: Request, res: Response) => {
           error: err.message,
         });
       });
-      console.log(edital);
-      return res.render(resolveView('editSelecao'), {
+      return res.render(resolveView('editEdital'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -218,16 +219,15 @@ const updateEdital = async (req: Request, res: Response) => {
 };
 
 // listEditalcandidatos/:id
-const editalCandidatos = async (req: Request, res: Response) => {
+const listCandidatos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       try {
         const editalID = req.params.id;
         const candidatos = await editalService.listCandidatos(editalID);
-        console.log(candidatos);
+
         if (!Array.isArray(candidatos))
           throw new Error('Erro ao buscar candidatos');
-        console.log(candidatos);
         const quantidadeInscricaoAndamento = candidatos.filter(
           (candidato) =>
             candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
@@ -238,7 +238,7 @@ const editalCandidatos = async (req: Request, res: Response) => {
             candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
         ).length;
 
-        return res.render(resolveView('listCandidates'), {
+        return res.render(resolveView('listCandidatesByEdital'), {
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           ...locals,
@@ -255,7 +255,7 @@ const editalCandidatos = async (req: Request, res: Response) => {
       }
     }
     default:
-      return res.status(404).send();
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
   }
 };
 
@@ -278,10 +278,13 @@ const geraPlanilha = async (req: Request, res: Response) => {
   }
 };
 
-const getcandidatoDocument = async (req: Request, res: Response) => {
+const getDocumentToCandidate = async (req: Request, res: Response) => {
   const candidato = await EditalService.getCandidato(Number(req.params.id));
   const caminhoDoc = path.join(
-    'public',
+    __dirname,
+    '..',
+    '..',
+    '..',
     'uploads',
     'candidato',
     candidato.id.toString(),
@@ -297,53 +300,93 @@ const getcandidatoDocument = async (req: Request, res: Response) => {
   });
 };
 
-const getAllDocumentsToCandidates = async (req: Request, res: Response) => {
-  const candidatos = await editalService.listCandidatos(req.params.id);
+export const getDocumentsToAllCandidates = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const editalId = req.params.id;
+    const candidatos = await editalService.listCandidatos(editalId);
 
-  res.setHeader(
-    'Content-Disposition',
-    `attachment; filename=${req.params.id}-candidatos.zip`,
-  );
-  const archive = archiver('zip', {
-    zlib: { level: 9 },
-  });
-
-  archive.on('error', function (err) {
-    res.status(500).send({ error: err.message });
-  });
-
-  archive.pipe(res);
-
-  candidatos.forEach((candidato: Candidato) => {
-    const candDir = path.join(
-      'public',
-      'uploads',
-      'candidato',
-      candidato.id.toString(),
+    // Define cabeçalhos de resposta para download
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${editalId}-candidatos.zip`,
     );
-    const arquivos = [
-      'CartaAceiteOrientador.pdf',
-      'ComprovantePagamento.pdf',
-      'Curriculum.pdf',
-      'Inscricao.pdf',
-      'PropostaTrabalho.pdf',
-    ];
-    // archive.directory(candDir, `${candidato.id}-${candidato.nome}`)
-    arquivos.forEach((pasta) => {
-      const pastaDir = path.join(candDir, pasta);
-      if (fs.existsSync(pastaDir)) {
-        archive.directory(
-          pastaDir,
-          `${candidato.id}-${candidato.nome}/${pasta}`,
-        );
+    res.setHeader('Content-Type', 'application/zip');
+
+    // Cria a instância do archiver
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    // Trata erros do archiver
+    archive.on('error', (err) => {
+      if (!res.headersSent) {
+        // Se ainda não enviamos cabeçalhos, podemos enviar status 500
+        return res.status(500).json({ error: err.message });
+      } else {
+        // Se parte do ZIP já foi enviada, só podemos logar e encerrar
+        console.error('Erro após início do envio:', err);
+        return res.end();
       }
     });
-  });
 
-  archive.finalize();
+    // Inicia o streaming para a resposta
+    archive.pipe(res);
+
+    // Para cada candidato, vamos procurar pelos arquivos específicos
+    for (const candidato of candidatos) {
+      const candDir = path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'uploads',
+        'candidato',
+        candidato.id.toString(),
+      );
+
+      // Montamos o nome da pasta que aparecerá no ZIP
+      const candidateFolderName = `${candidato.id}-${candidato.nome}`;
+
+      // Lista de PDFs que desejamos incluir, se existirem
+      const pdfFiles = [
+        'CartaAceiteOrientador.pdf',
+        'ComprovantePagamento.pdf',
+        'Curriculum.pdf',
+        'Inscricao.pdf',
+        'PropostaTrabalho.pdf',
+        'Recomendacoes.pdf',
+      ];
+
+      for (const fileName of pdfFiles) {
+        const filePath = path.join(candDir, fileName);
+
+        try {
+          // Verificamos se o arquivo existe e pode ser lido
+          await fs.promises.access(filePath, fs.constants.R_OK);
+
+          // Incluímos o arquivo no ZIP, definindo o caminho interno
+          archive.file(filePath, {
+            name: path.join(candidateFolderName, fileName),
+          });
+        } catch {
+          // Se não existir ou não for legível, ignoramos sem gerar erro
+        }
+      }
+    }
+
+    // Finaliza (inicia o fechamento) do arquivo ZIP
+    archive.finalize();
+  } catch (err: any) {
+    console.error('Erro ao gerar .zip:', err);
+    if (!res.headersSent) {
+      // Se ainda não enviamos nada ao cliente, podemos retornar status 500
+      res.status(500).json({ error: err.message });
+    }
+  }
 };
 
-const getAllDocumentsToCandidate = async (req: Request, res: Response) => {
+const getDocumentsToCandidate = async (req: Request, res: Response) => {
   try {
     const candidatoId = Number(req.params.id);
 
@@ -359,7 +402,10 @@ const getAllDocumentsToCandidate = async (req: Request, res: Response) => {
     }
 
     const candDir = path.join(
-      'public',
+      __dirname,
+      '..',
+      '..',
+      '..',
       'uploads',
       'candidato',
       candidato.id.toString(),
@@ -371,6 +417,7 @@ const getAllDocumentsToCandidate = async (req: Request, res: Response) => {
       'Curriculum.pdf',
       'Inscricao.pdf',
       'PropostaTrabalho.pdf',
+      'Recomendacoes.pdf',
     ];
 
     // Sanitiza o nome do candidato para evitar problemas de segurança
@@ -434,51 +481,50 @@ const candidatoDetails = async (req: Request, res: Response) => {
       PropostaDeTrabalho: false,
       ProvaAnteriorSelecao: false,
       ComprovantePagamento: false,
-      Recomendacao: false,
+      Recomendacoes: false,
     };
+    const countRecomendations = candidato.recomendacoes.length;
+    const countRecomendationsFinished = candidato.recomendacoes.filter(
+      (recomendacao) => Boolean(recomendacao.dataResposta),
+    ).length;
     const caminhoDiretorioUsuario = path.join(
-      'public',
+      __dirname,
+      '..',
+      '..',
+      '..',
       'uploads',
       'candidato',
       candidato.id.toString(),
     );
 
-    const cartaOrientadorpath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/CartaDoOrientador`,
+    candidatoDocs.Curriculum = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CURRICULUM_FILE,
     );
 
-    const provaAnteriorpath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/ProvaAnteriorSelecao`,
+    candidatoDocs.CartaDoOrientador = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      CARTA_ACEITE_ORIENTADOR_FILE,
     );
 
-    const recomendacaopath = path.join(
-      __dirname,
-      '../../../uploads/candidatos/',
-      `${String(candidato!.id)}-${candidato!.nome}/Recomendacao`,
+    candidatoDocs.PropostaDeTrabalho = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROPOSTA_FILE,
     );
 
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, CURRICULUM_FILE)) {
-      candidatoDocs.Curriculum = true;
-    }
-    if (fs.existsSync(cartaOrientadorpath)) {
-      candidatoDocs.CartaDoOrientador = true;
-    }
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, PROPOSTA_FILE)) {
-      candidatoDocs.PropostaDeTrabalho = true;
-    }
-    if (fs.existsSync(provaAnteriorpath)) {
-      candidatoDocs.ProvaAnteriorSelecao = true;
-    }
-    if (verificarArquivoDiretorio(caminhoDiretorioUsuario, COMPROVANTE_FILE)) {
-      candidatoDocs.ComprovantePagamento = true;
-    }
-    if (fs.existsSync(recomendacaopath)) {
-      candidatoDocs.Recomendacao = true;
-    }
+    candidatoDocs.ProvaAnteriorSelecao = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      PROVA_ANTERIOR_FILE,
+    );
+
+    candidatoDocs.ComprovantePagamento = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_FILE,
+    );
+    candidatoDocs.Recomendacoes = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      'Recomendacoes.pdf',
+    );
 
     return res.render(resolveView('candidateDetails'), {
       candidato: candidato,
@@ -488,6 +534,8 @@ const candidatoDetails = async (req: Request, res: Response) => {
       ...locals,
       tipoUsuario: req.session.tipoUsuario,
       edital,
+      countRecomendationsFinished,
+      countRecomendations,
     });
   } catch (error) {
     return res.status(400).json({
@@ -504,9 +552,9 @@ export default {
   viewEdital,
   updateEdital,
   geraPlanilha,
-  editalCandidatos,
+  listCandidatos,
   candidatoDetails,
-  getcandidatoDocument,
-  getAllDocumentsToCandidate,
-  getAllDocumentsToCandidates,
+  getDocumentToCandidate,
+  getDocumentsToCandidate,
+  getDocumentsToAllCandidates,
 };

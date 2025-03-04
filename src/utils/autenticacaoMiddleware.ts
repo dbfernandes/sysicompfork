@@ -22,8 +22,6 @@ module.exports.isUsuarioAutenticado = async function (
     },
   });
 
-  console.log(req.session);
-
   if (!usuario) {
     return res.redirect('/login');
   }
