@@ -3,10 +3,10 @@ import afastamentoTemporarioController from './afastamentoTemporario.controller'
 
 const router = express.Router();
 
-router.get('/criar', afastamentoTemporarioController.criar);
-router.post('/criar', afastamentoTemporarioController.criar);
-router.get('/listar', afastamentoTemporarioController.listar);
-router.get('/dados/:id', afastamentoTemporarioController.detalhes);
+router.get('/criar', afastamentoTemporarioController.adicionarAfastamento);
+router.post('/criar', afastamentoTemporarioController.adicionarAfastamento);
+router.get('/listar', afastamentoTemporarioController.listarAfastamentos);
+router.get('/dados/:id', afastamentoTemporarioController.exibirDetalhes);
 router.post('/remover/:id', afastamentoTemporarioController.remover);
 
 export default router;

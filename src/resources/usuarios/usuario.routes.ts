@@ -7,7 +7,7 @@ router.post('/adicionar', usuarioController.adicionar);
 router.get('/listar', usuarioController.listar);
 router.post('/bloquear/:id', usuarioController.bloquear);
 router.post('/restaurar/:id', usuarioController.restaurar);
-router.get('/dados/:id', usuarioController.detalhes);
+router.get('/dados/:id', usuarioController.exibirDetalhes);
 router.get('/editar/:id', usuarioController.editar);
 router.post('/editar/:id', usuarioController.editar);
 router.get(

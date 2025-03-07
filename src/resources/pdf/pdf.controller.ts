@@ -2,8 +2,8 @@ import puppeteer from 'puppeteer';
 import Handlebars from 'handlebars';
 import fs from 'fs/promises';
 import path from 'path';
-import CandidatoRecomendacaoService from '@resources/candidatoRecomendacao/candidato.recomendacao.service';
-import { getAfastamento } from '@utils/criarAfastamentoPDF';
+import CandidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
+import { getAfastamento } from '../../utils/criarAfastamentoPDF';
 
 type ContentPdf = 'recomendacoes' | 'afastamento';
 

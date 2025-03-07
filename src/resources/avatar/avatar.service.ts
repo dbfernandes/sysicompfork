@@ -4,7 +4,7 @@ import { Avatar, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class AvatarService {
-  async adicionar(
+  async adicionarAvatar(
     usuarioId: number,
     nome: string,
     caminho: string,

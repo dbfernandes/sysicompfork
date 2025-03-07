@@ -115,7 +115,7 @@ const carregar = (req: UploadRequest, res: Response) => {
 
       // Upload do avatar se existir
       if (req.file) {
-        await AvatarService.adicionar(
+        await AvatarService.adicionarAvatar(
           professorId,
           req.file.filename,
           req.file.path,

@@ -9,7 +9,7 @@ import { CreateAfastamentoDTO } from '../../../src/resources/afastamentoTemporar
 const SENHA_TESTE = 'senha123';
 const agent = request.agent(app);
 
-describe('Testes de Intregracao: AfastamentoTemporario', () => {
+describe('Testes de Intregracao: Linha de Pesquisa', () => {
     let csrfToken: string;
     const userMock: CreateUsuarioDto = {
         nomeCompleto: 'Usuário Mock',
@@ -41,14 +41,6 @@ describe('Testes de Intregracao: AfastamentoTemporario', () => {
 
     }
 
-    const afastamentoMock = {
-        localViagem: 'a',
-        planoReposicao: 'a',
-        justificativa: 'a',
-        tipoViagem: 'a',
-        dataFim: new Date(),
-        dataInicio: new Date(),
-    }
     beforeAll(async () => {
         try {
             console.log('1. Verificando conexão com banco de dados...');
@@ -113,7 +105,7 @@ describe('Testes de Intregracao: AfastamentoTemporario', () => {
             }
 
             const gerenciarResponse = await agent
-                .get('/afastamento/listar')
+                .get('/linhaPesquisa/listar')
                 .set('Accept', 'text/html');
 
             const newCsrfMatch = gerenciarResponse.text.match(
@@ -160,116 +152,154 @@ describe('Testes de Intregracao: AfastamentoTemporario', () => {
         }
     })
 
-    describe('GET /afastamentoTemporario/listar', () => {
-        it('Deve listar afastamentos', async () => {
-            const usuarioCriado = await prisma.usuario.create({
-                data: userMock
-            })
+    describe('GET /linhaPesquisa/listar', () => {
+        test('Deve retornar status 200 e listar as linhas de pesquisa', async () => {
 
-            const afastamento = await prisma.afastamentoTemporario.create({
-                data: {
-                    usuarioId: usuarioCriado.id,
-                    nomeCompleto: usuarioCriado.nomeCompleto,
-                    dataFim: afastamentoMock.dataFim,
-                    dataInicio: afastamentoMock.dataInicio,
-                    justificativa: afastamentoMock.justificativa,
-                    localViagem: afastamentoMock.localViagem,
-                    planoReposicao: afastamentoMock.planoReposicao,
-                    tipoViagem: afastamentoMock.tipoViagem
-                }
-            })
-
-            const resposta = await agent.get('/afastamentoTemporario/listar')
-                .set('Accept', 'application/json')
-                .send({
-                    _csurf: csrfToken
-                })
-            expect(resposta.status).toBe(StatusCodes.OK);
-        });
-    });
-
-    describe('POST /afastamentoTemporario/criar', () => {
-        it('Deve criar um novo afastamento', async () => {
-            const usuarioCriado = await prisma.usuario.create({
-                data: userMock
-            })
-
-
-            const afastamento = {
-                nomeCompleto: usuarioCriado.nomeCompleto,
-                dataFim: afastamentoMock.dataFim,
-                dataInicio: afastamentoMock.dataInicio,
-                justificativa: afastamentoMock.justificativa,
-                localViagem: afastamentoMock.localViagem,
-                planoReposicao: afastamentoMock.planoReposicao,
-                tipoViagem: afastamentoMock.tipoViagem
+            const linhaPesquisa = {
+                nome: 'Linha de Pesquisa Teste',
+                sigla: 'LPT'
             }
 
+            await prisma.linhaPesquisa.create({
+                data: linhaPesquisa
+            });
 
-            const resposta = await agent.post('/afastamentoTemporario/criar')
+            const response = await agent.get('/linhasdepesquisa/listar')
                 .send({
-                    ...afastamento,
-                    _csurf: csrfToken,
+                    _csrf: csrfToken
                 })
-                .set('Content-Type', 'application/json');
-
-            expect(resposta.status).toBe(StatusCodes.TEMPORARY_REDIRECT); // Redireciona após criação
-        });
-    });
-
-    describe('GET /afastamentoTemporario/dados/:id', () => {
-        it('Deve retornar os detalhes de um afastamento', async () => {
-            const usuarioCriado = await prisma.usuario.create({
-                data: userMock
-            })
-
-            const afastamento = await prisma.afastamentoTemporario.create({
-                data: {
-                    usuarioId: usuarioCriado.id,
-                    nomeCompleto: usuarioCriado.nomeCompleto,
-                    dataFim: afastamentoMock.dataFim,
-                    dataInicio: afastamentoMock.dataInicio,
-                    justificativa: afastamentoMock.justificativa,
-                    localViagem: afastamentoMock.localViagem,
-                    planoReposicao: afastamentoMock.planoReposicao,
-                    tipoViagem: afastamentoMock.tipoViagem
-                }
-            })
-
-
-            const resposta = await agent.get(`/afastamentoTemporario/dados/${afastamento.id}`)
                 .set('Accept', 'application/json')
+
+            expect(response.status).toBe(StatusCodes.OK);
+            expect(response.text).toContain('Linhas de Pesquisa');
+        });
+    });
+
+    describe('GET /linhaPesquisa/criar', () => {
+        test('Deve retornar status 200 e renderizar o formulário de criação de linha de pesquisa', async () => {
+            const linhaPesquisa = {
+                nome: 'Linha de Pesquisa Teste',
+                sigla: 'LPT'
+            }
+
+            const response = await agent
+                .get('/linhasdepesquisa/criar')
+                .set('Accept', 'text/html')
                 .send({
-                    _csurf: csrfToken
+                    ...linhaPesquisa,
+                    _csrf: csrfToken
                 })
-            expect(resposta.status).toBe(StatusCodes.OK);
+
+            expect(response.status).toBe(StatusCodes.OK);
         });
     });
 
-    describe('POST /afastamentoTemporario/remover/:id', () => {
-        it('Deve remover um afastamento existente', async () => {
-            const usuarioCriado = await prisma.usuario.create({
-                data: userMock
-            })
+    describe('POST /linhaPesquisa/criar', () => {
 
-            const afastamento = await prisma.afastamentoTemporario.create({
+        test('Deve retornar status 400 e mensagem de erro ao tentar criar linha de pesquisa já existente', async () => {
+            await prisma.linhaPesquisa.create({
                 data: {
-                    usuarioId: usuarioCriado.id,
-                    nomeCompleto: usuarioCriado.nomeCompleto,
-                    dataFim: afastamentoMock.dataFim,
-                    dataInicio: afastamentoMock.dataInicio,
-                    justificativa: afastamentoMock.justificativa,
-                    localViagem: afastamentoMock.localViagem,
-                    planoReposicao: afastamentoMock.planoReposicao,
-                    tipoViagem: afastamentoMock.tipoViagem
+                    nome: 'Linha de Pesquisa Teste',
+                    sigla: 'LPT'
                 }
-            })
+            });
 
+            const novaLinhaPesquisa = {
+                nome: 'Linha de Pesquisa Teste',
+                sigla: 'LPT'
+            }
 
-            const resposta = await agent.post(`/afastamentoTemporario/remover/${afastamento.id}`)
-                .send({ _csrf: csrfToken })
-                .set('Accept', 'application/json');
-            expect(resposta.status).toBe(StatusCodes.MOVED_TEMPORARILY);
+            const response = await agent
+                .post('/linhasDePesquisa/criar')
+                .set('Accept', 'text/html')
+                .send({
+                    ...novaLinhaPesquisa,
+                    _csrf: csrfToken
+                });
+
+            expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+            expect(response.text).toContain('Linha de Pesquisa já cadastrada!');
+        });
+
+        test('Deve retornar status 400 ao tentar criar linha de pesquisa com sigla já existente', async () => {
+            await prisma.linhaPesquisa.create({
+                data: {
+                    nome: 'Linha de Pesquisa Teste',
+                    sigla: 'LPT'
+                }
+            });
+
+            const novaLinhaPesquisa = {
+                nome: 'Linha de Pesquisa Teste 2',
+                sigla: 'LPT'
+            }
+
+            const response = await agent
+                .post('/linhasDePesquisa/criar')
+                .set('Accept', 'text/html')
+                .send({
+                    ...novaLinhaPesquisa,
+                    _csrf: csrfToken
+                });
+
+            expect(response.status).toBe(StatusCodes.BAD_REQUEST);
         });
     });
-});
+
+    describe('GET /linhaPesquisa/editar/:id', () => {
+        test('Deve retornar status 200 e renderizar o formulário de edição de linha de pesquisa', async () => {
+            const response = await agent
+                .get('/linhasdepesquisa/editar/1')
+                .set('Accept', 'text/html')
+                .send({
+                    _csrf: csrfToken
+                })
+
+            expect(response.status).toBe(StatusCodes.OK);
+            expect(response.text).toContain('Editar Linha de Pesquisa');
+        });
+    });
+
+    describe('POST /linhaPesquisa/editar/:id', () => {
+        test('Deve editar uma linha de pesquisa e redirecionar para a listagem', async () => {
+            const linhaPesquisaEditada = {
+                nome: 'Linha de Pesquisa Teste Editada',
+                sigla: 'LPTE'
+            }
+
+            const response = await agent
+                .post('/linhasdepesquisa/editar/1')
+                .set('Accept', 'text/html')
+                .send({
+                    ...linhaPesquisaEditada,
+                    _csrf: csrfToken
+                });
+
+            expect(response.status).toBe(StatusCodes.MOVED_TEMPORARILY);
+            expect(response.header.location).toBe('/linhasDePesquisa/listar');
+        });
+    });
+
+    describe('POST /linhaPesquisa/remover/:id', () => {
+        test('Deve remover uma linha de pesquisa e redirecionar para a listagem', async () => {
+            await prisma.linhaPesquisa.create({
+                data: {
+                    nome: 'Linha de Pesquisa Teste',
+                    sigla: 'LPT'
+                }
+            });
+
+            const response = await agent
+                .post('/linhasdepesquisa/remover/1')
+                .set('Accept', 'text/html')
+                .send({
+                    _csrf: csrfToken
+                });
+
+            expect(response.status).toBe(StatusCodes.MOVED_TEMPORARILY);
+            expect(response.header.location).toBe('/linhasDePesquisa/listar');
+        });
+    });
+
+
+})

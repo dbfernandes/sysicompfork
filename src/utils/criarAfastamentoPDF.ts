@@ -4,7 +4,7 @@ import moment from 'moment';
 import usuarioService from '../resources/usuarios/usuario.service';
 import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
 import { Request, Response } from 'express';
-import { generatePdfLeave } from '@resources/pdf/pdf.controller';
+import { generatePdfLeave } from '../resources/pdf/pdf.controller';
 
 interface DataAfastamentoPDF {
   nomeCompleto: string;

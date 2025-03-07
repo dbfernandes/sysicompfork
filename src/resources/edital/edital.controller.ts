@@ -25,7 +25,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const addEditalSelecao = async (req: Request, res: Response) => {
+const adicionarEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.render(resolveView('addEdital'), {
@@ -72,7 +72,7 @@ const addEditalSelecao = async (req: Request, res: Response) => {
   }
 };
 
-const listEditalSelecao = async (req: Request, res: Response) => {
+const listarEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       const editais = await editalService.listEditalComQtdeCandidatos();
@@ -101,7 +101,7 @@ const listEditalSelecao = async (req: Request, res: Response) => {
   }
 };
 
-const deleteEdital = async (req: Request, res: Response) => {
+const deletarEdital = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'DELETE':
       const { id } = req.params;
@@ -143,7 +143,7 @@ const arquivarEdital = async (req: Request, res: Response) => {
   }
 };
 
-const viewEdital = async (req: Request, res: Response) => {
+const exibirDetalhesEdital = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       const { id } = req.params;
@@ -219,7 +219,7 @@ const updateEdital = async (req: Request, res: Response) => {
 };
 
 // listEditalcandidatos/:id
-const listCandidatos = async (req: Request, res: Response) => {
+const listarCandidatos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET': {
       try {
@@ -471,7 +471,7 @@ const getDocumentsToCandidate = async (req: Request, res: Response) => {
   }
 };
 
-const candidatoDetails = async (req: Request, res: Response) => {
+const exibirDetalhesCandidato = async (req: Request, res: Response) => {
   try {
     const candidato = await editalService.getCandidato(Number(req.params.id));
     const edital = await editalService.getById(candidato!.editalId);
@@ -545,15 +545,15 @@ const candidatoDetails = async (req: Request, res: Response) => {
 };
 
 export default {
-  listEditalSelecao,
-  addEditalSelecao,
-  deleteEdital,
+  listarEditalSelecao,
+  adicionarEditalSelecao,
+  deletarEdital,
   arquivarEdital,
-  viewEdital,
+  exibirDetalhesEdital,
   updateEdital,
   geraPlanilha,
-  listCandidatos,
-  candidatoDetails,
+  listarCandidatos,
+  exibirDetalhesCandidato,
   getDocumentToCandidate,
   getDocumentsToCandidate,
   getDocumentsToAllCandidates,

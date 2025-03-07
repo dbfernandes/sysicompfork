@@ -98,7 +98,7 @@ const criar = async (req: Request, res: Response) => {
       });
     }
 
-    return res.redirect('/linhasDePesquisa/listar');
+    return res.status(StatusCodes.OK).redirect('/linhasDePesquisa/listar');
   }
 };
 
