@@ -1,6 +1,6 @@
 import fs from 'fs';
 // import CandidatoService from '../services/candidateService';
-import CandidatoService from '../resources/candidato/candidato_publicação.service';
+import CandidatoService from '../resources/candidato/candidatoPublicação.service';
 import { SignUpDto as CreateCandidatoDto } from '../resources/candidato/candidato.types';
 
 import exceljs from 'exceljs';

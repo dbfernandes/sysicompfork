@@ -11,34 +11,33 @@ function resolveView(viewName: string): string {
 
 const listarAfastamentos = async (req: Request, res: Response) => {
   try {
+    let afastamentos;
+
     if (req.session.tipoUsuario?.administrador) {
-      const afastamentos = await afastamentoService.listarTodos();
-      const doesNotExists = !afastamentos || afastamentos.length === 0;
-      if (doesNotExists)
-        throw new Error('Nenhum pedido de afastamento encontrado');
-      return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
-        afastamentos,
-        pageTitle,
-        csrfToken: req.csrfToken(),
-        nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario,
-      });
+      afastamentos = await afastamentoService.listarTodos();
     } else {
-      const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(
+      afastamentos = await afastamentoService.listarPorUsuario(
         Number(req.session.uid!),
       );
-      const doesNotExists = !afastamentos || afastamentos.length === 0;
-      if (doesNotExists)
-        throw new Error('Nenhum pedido de afastamento encontrado');
-      return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
+    }
+
+    if (!afastamentos || afastamentos.length === 0) {
+      throw new Error('Nenhum pedido de afastamento encontrado');
+    }
+
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('pedidos-afastamento'), {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });
-    }
-  } catch (error: unknown) {
+  } catch (erro) {
+    console.error(
+      `[ERRO] Listar afastamentos: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+    );
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .render(resolveView('pedidos-afastamento'), {
@@ -46,9 +45,9 @@ const listarAfastamentos = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
-        error:
-          error instanceof Error
-            ? error.message
+        erro:
+          erro instanceof Error
+            ? erro.message
             : 'Não foi possível listar os pedidos de afastamento!',
       });
   }
@@ -56,12 +55,14 @@ const listarAfastamentos = async (req: Request, res: Response) => {
 
 export const adicionarAfastamento = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(StatusCodes.OK).render(resolveView('solicitar-afastamento'), {
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      nome: req.session.nome,
-      tipoUsuario: req.session.tipoUsuario,
-    });
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('solicitar-afastamento'), {
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        nome: req.session.nome,
+        tipoUsuario: req.session.tipoUsuario,
+      });
   } else {
     try {
       const { uid, nome } = req.session;
@@ -76,7 +77,7 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
 
       const novoAfastamento: CreateAfastamentoDTO = {
         usuarioId: Number(uid),
-        nomeCompleto: nome!, // nome do usuário da sessão
+        nomeCompleto: nome!,
         dataInicio: new Date(dataSaida),
         dataFim: new Date(dataRetorno),
         tipoViagem: String(tipoViagem),
@@ -86,67 +87,94 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
       };
 
       await afastamentoService.criar(novoAfastamento);
-      return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
+      return res
+        .status(StatusCodes.OK)
+        .redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitar-afastamento'), {
-        pageTitle,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session.tipoUsuario,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Não foi possível criar o pedido de afastamento!',
-      });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('solicitar-afastamento'), {
+          pageTitle,
+          csrfToken: req.csrfToken(),
+          tipoUsuario: req.session.tipoUsuario,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Não foi possível criar o pedido de afastamento!',
+        });
     }
   }
 };
 
 const exibirDetalhes = async (req: Request, res: Response) => {
   try {
-    const afastamento = await afastamentoService.detalhes(
+    const afastamento = await afastamentoService.buscarDetalhesPorId(
       Number(req.params.id),
     );
-    if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).
-      json({ message: 'Pedido de afastamento não encontrado' });
-    return res.status(StatusCodes.OK).render(resolveView('vizualizar-afastamento'), {
-      afastamento,
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      nome: req.session.nome,
-      tipoUsuario: req.session.tipoUsuario,
-    });
-  } catch (error: unknown) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidos-afastamento'), {
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      nome: req.session.nome,
-      tipoUsuario: req.session.tipoUsuario,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível visualizar o pedido de afastamento!',
-    });
-  }
-};
 
-const remover = async (req: Request, res: Response) => {
-  if (req.method === 'POST') {
-    try {
-      await afastamentoService.delete(Number(req.params.id));
-      return res.redirect('/afastamentoTemporario/listar');
-    } catch (error: unknown) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidos-afastamento'), {
+    if (!afastamento) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ mensagem: 'Pedido de afastamento não encontrado' });
+    }
+
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('vizualizar-afastamento'), {
+        afastamento,
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Não foi possível remover o pedido de afastamento!',
       });
+  } catch (erro) {
+    console.error(
+      `[ERRO] Detalhar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .render(resolveView('pedidos-afastamento'), {
+        pageTitle,
+        csrfToken: req.csrfToken(),
+        nome: req.session.nome,
+        tipoUsuario: req.session.tipoUsuario,
+        erro:
+          erro instanceof Error
+            ? erro.message
+            : 'Não foi possível visualizar o pedido de afastamento!',
+      });
+  }
+};
+
+//Remove um afastamento
+const excluir = async (req: Request, res: Response) => {
+  if (req.method === 'POST') {
+    try {
+      await afastamentoService.excluir(Number(req.params.id));
+      return res.redirect('/afastamentoTemporario/listar');
+    } catch (erro) {
+      console.error(
+        `[ERRO] Excluir afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('pedidos-afastamento'), {
+          pageTitle,
+          csrfToken: req.csrfToken(),
+          nome: req.session.nome,
+          tipoUsuario: req.session.tipoUsuario,
+          erro:
+            erro instanceof Error
+              ? erro.message
+              : 'Não foi possível remover o pedido de afastamento!',
+        });
     }
   }
 };
 
-export default { adicionarAfastamento, listarAfastamentos, exibirDetalhes, remover };
+export default {
+  adicionarAfastamento,
+  listarAfastamentos,
+  exibirDetalhes,
+  excluir,
+};

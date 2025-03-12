@@ -1,191 +1,197 @@
 import { Request, Response } from 'express';
-
+import { StatusCodes } from 'http-status-codes';
 import reservasService from './reservas.service';
 import salasService from '../salas/sala.service';
 import path from 'path';
-import { StatusCodes } from 'http-status-codes';
+import { Prisma } from '@prisma/client';
+import { ReservaFormularioDto } from './reservas.types';
+
+// Interfaces para tipagem dos dados
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const listar = async (req: Request, res: Response) => {
-  const reservas = await reservasService.listarTodos();
-  // res.json({ reservas: reservas.map((sala: { toJSON: () => any; }) => sala.toJSON()) })
-  res.json({ reservas });
+const listarReservas = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const reservas = await reservasService.listarTodos();
+    res.status(StatusCodes.OK).json({ reservas });
+  } catch (error) {
+    console.error('Erro ao listar reservas:', error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Erro ao listar reservas' });
+  }
 };
 
-const adicionar = async (req: Request, res: Response) => {
+const criarReserva = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
-    const salas = await salasService.listarTodos();
-    res.status(StatusCodes.OK).render(resolveView('reservas-adicionar'), {
-      salas: salas,
-      nome: req.session.nome,
-      UsuarioId: req.session.uid,
-      csrf: req.csrfToken(),
-      tipoUsuario: req.session.tipoUsuario,
-    });
+    try {
+      const salas = await salasService.listarTodos();
+      res.status(StatusCodes.OK).render(resolveView('reservas-adicionar'), {
+        salas,
+        nome: req.session.nome,
+        usuarioId: req.session.uid, // Mudado de UsuarioId para usuarioId
+        csrf: req.csrfToken(),
+        tipoUsuario: req.session.tipoUsuario,
+      });
+    } catch (error) {
+      console.error('Erro ao carregar formulário:', error);
+      res.redirect('/reservas/gerenciar');
+    }
   } else if (req.method === 'POST') {
     try {
-      if (req.body.dataTermino === '') {
-        req.body.dataTermino = req.body.dataInicio;
-        req.body.dias = '';
-      } else {
-        if (typeof req.body.dia === 'string') {
-          const dias = req.body.dia;
-          req.body.dias = dias;
-        } else if (req.body.dia) {
-          const dias = req.body.dia.join(', ');
-          req.body.dias = dias;
-        } else {
-          req.body.dias = '';
-        }
-      }
+      const {
+        salaId,
+        usuarioId,
+        atividade,
+        tipo,
+        dia,
+        dataInicio,
+        dataFim, // Mudado de dataTermino para dataFim
+        horaInicio,
+        horaFim, // Mudado de horaTermino para horaFim
+      } = req.body as ReservaFormularioDto;
 
-      const novaReserva: any = {
-        // salaId: parseInt(req.body.SalaId),
-        sala: { connect: { id: parseInt(req.body.SalaId) } },
-        // usuarioId: parseInt(req.body.UsuarioId),
-        usuario: { connect: { id: parseInt(req.body.UsuarioId) } },
-        atividade: req.body.atividade,
-        dataInicio: req.body.dataInicio
-          ? new Date(`${req.body.dataInicio}T00:00:00.000Z`)
-          : null,
-        dataFim: req.body.dataTermino
-          ? new Date(`${req.body.dataTermino}T00:00:00.000Z`)
-          : null,
-        tipo: req.body.tipo,
-        horaInicio: req.body.horaInicio,
-        horaFim: req.body.horaTermino,
-        dias: req.body.dias,
+      // Processamento dos dias da semana
+      const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
+
+      // Conversão para o formato esperado pelo service
+      const novaReserva: Prisma.ReservaSalaUncheckedCreateInput = {
+        salaId: Number(salaId),
+        usuarioId: Number(usuarioId),
+        atividade,
+        tipo,
+        dias, // Campo dias para armazenar os dias da semana
+        dataInicio,
+        dataFim: dataFim || dataInicio,
+        horaInicio,
+        horaFim: horaFim || horaInicio,
       };
 
-      const reserva = await reservasService.criar(novaReserva);
-      console.log(reserva);
-      // if (!reserva) {
-      //   res.redirect('/reservas/gerenciar')
-      // }
-
+      await reservasService.criar(novaReserva);
       res.redirect('/reservas/gerenciar');
-    } catch (e) {
-      console.log(e);
-      res.status(500).send({ error: e });
+    } catch (error) {
+      console.error('Erro ao criar reserva:', error);
+      res.redirect('/reservas/gerenciar');
     }
   }
 };
 
-const excluir = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const reserva = await reservasService.buscarReserva(parseInt(id));
+const deletarReserva = async (req: Request, res: Response): Promise<void> => {
   try {
-    if (!reserva) throw new Error('Sala não encontrado!');
+    const reservaId = parseInt(req.params.id);
+    const reserva = await reservasService.buscarReserva(reservaId);
 
-    await reservasService.remover(parseInt(id));
+    if (!reserva) {
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Reserva não encontrada' });
+      return;
+    }
+
+    await reservasService.remover(reservaId);
     res.redirect('/reservas/gerenciar');
-  } catch (e) {
-    console.log(e);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error: e.message });
+  } catch (error) {
+    console.error('Erro ao excluir reserva:', error);
+    res.redirect('/reservas/gerenciar');
   }
 };
 
-const gerenciar = async (req: Request, res: Response) => {
-  const reservas = await reservasService.listarReservasSalas();
-  const reservasJSON = reservas.map((reserva: any) => {
-    const reservaObj = {
+const listarReservasFormatadas = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const reservas = await reservasService.listarReservasSalas();
+    const reservasFormatadas = reservas.map((reserva) => ({
       ...reserva,
-      dataInicio: reserva.dataInicio
-        ? reserva.dataInicio.toLocaleDateString('pt-BR')
-        : null,
-      dataFim: reserva.dataFim
-        ? reserva.dataFim.toLocaleDateString('pt-BR')
-        : null,
-      // horaInicio: reserva.horaInicio ? new Date(reserva.horaInicio).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null,
-      // horaTermino: reserva.horaTermino ? new Date(reserva.horaTermino).toLocaleTimeString('pt-BR', {timeZone: 'UTC'}) : null
-    };
-    const dataAtual = new Date();
-    const dataTerminoReserva = new Date(
-      reservaObj.dataFim + ' ' + reservaObj.horaTermino,
-    );
-    reservaObj.terminou = dataTerminoReserva < dataAtual;
+      dataInicio: reserva.dataInicio?.toLocaleDateString('pt-BR'),
+      dataFim: reserva.dataFim?.toLocaleDateString('pt-BR'),
+      terminou: reserva.dataFim
+        ? new Date(reserva.dataFim) < new Date()
+        : false,
+    }));
 
-    return reservaObj;
-  });
-
-  res.render(resolveView('reservas-gerenciar'), {
-    reservas: reservasJSON,
-    nome: req.session.nome,
-    csrfToken: req.csrfToken(),
-    tipoUsuario: req.session.tipoUsuario,
-  });
+    res.render(resolveView('reservas-gerenciar'), {
+      reservas: reservasFormatadas,
+      nome: req.session.nome,
+      csrfToken: req.csrfToken(),
+      tipoUsuario: req.session.tipoUsuario,
+    });
+  } catch (error) {
+    console.error('Erro ao gerenciar reservas:', error);
+    res.redirect('/inicio');
+  }
 };
 
-const editar = async (req: Request, res: Response) => {
+const editarReserva = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos();
       const reserva = await reservasService.buscarReserva(
         parseInt(req.params.id),
       );
-      if (!reserva) throw new Error('Reserva não encontrado!');
-      console.log(reserva);
 
-      res.status(StatusCodes.OK).render(resolveView('reservas-editar'), {
-        salas: salas,
+      if (!reserva) {
+        res.redirect('/reservas/gerenciar');
+        return;
+      }
+
+      res.render(resolveView('reservas-editar'), {
+        salas,
         nome: req.session.nome,
-        reserva: reserva,
+        reserva,
         csrf: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
       });
-    } catch (error: any) {
-      res.status(500).send({ message: error.message });
+    } catch (error) {
+      console.error('Erro ao carregar edição:', error);
+      res.redirect('/reservas/gerenciar');
     }
   } else if (req.method === 'POST') {
-    if (req.body.dataTermino === '') {
-      req.body.dataTermino = req.body.dataInicio;
-      req.body.dias = '';
-    } else {
-      if (typeof req.body.dia === 'string') {
-        const dias = req.body.dia;
-        req.body.dias = dias;
-      } else if (req.body.dia) {
-        const dias = req.body.dia.join(', ');
-        req.body.dias = dias;
-        console.log(req.body.dias);
-      } else {
-        req.body.dias = '';
-      }
-    }
-
-    // const dados = {
-    //   ...req.body,
-    //   dataInicio: req.body.dataInicio ? `${req.body.dataInicio}T00:00:00.000Z` : undefined
-    // }
-    const dados: any = {
-      SalaId: parseInt(req.body.SalaId),
-      UsuarioId: parseInt(req.body.UsuarioId),
-      atividade: req.body.atividade,
-      dataInicio: req.body.dataInicio
-        ? new Date(`${req.body.dataInicio}T00:00:00.000Z`)
-        : null,
-      dataTermino: req.body.dataTermino
-        ? new Date(`${req.body.dataTermino}T00:00:00.000Z`)
-        : null,
-      tipo: req.body.tipo,
-      horaInicio: req.body.horaInicio,
-      horaTermino: req.body.horaTermino,
-      dias: req.body.dias,
-    };
-
     try {
-      // const reserva = await ReservaSala.update({
-      //     ...req.body
-      // }, { where: { id: req.params.id } });
-      await reservasService.atualizar(parseInt(req.params.id), dados);
+      const reservaId = parseInt(req.params.id);
+      const {
+        salaId,
+        usuarioId,
+        atividade,
+        tipo,
+        dia,
+        dataInicio,
+        dataFim, // Mudado de dataTermino para dataFim
+        horaInicio,
+        horaFim, // Mudado de horaTermino para horaFim
+      } = req.body as ReservaFormularioDto;
+
+      // Processamento dos dias da semana
+      const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
+
+      const dadosAtualizados: Prisma.ReservaSalaUncheckedUpdateInput = {
+        salaId: Number(salaId),
+        usuarioId: Number(usuarioId),
+        atividade,
+        tipo,
+        dias,
+        dataInicio: new Date(dataInicio),
+        dataFim: dataFim ? new Date(dataFim) : new Date(dataInicio),
+        horaInicio,
+        horaFim: horaFim || horaInicio,
+      };
+
+      await reservasService.atualizar(reservaId, dadosAtualizados);
       res.redirect('/reservas/gerenciar');
-    } catch (error: any) {
-      res.status(500).send({ message: error.message });
+    } catch (error) {
+      console.error('Erro ao atualizar reserva:', error);
+      res.redirect('/reservas/gerenciar');
     }
   }
 };
 
-export default { adicionar, excluir, gerenciar, editar, listar };
+export default {
+  criarReserva,
+  deletarReserva,
+  listarReservasFormatadas,
+  editarReserva,
+  listarReservas,
+};

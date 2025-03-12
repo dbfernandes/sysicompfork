@@ -3,8 +3,10 @@ import alunosController from './aluno.controller';
 
 const router = express.Router();
 
-router.all('/', alunosController.inicio);
+// Rota para gerenciar página principal de alunos
+router.get('/', alunosController.exibirPaginaGerenciamento);
 
-router.all('/upload', alunosController.carregar);
+// Rota para importar lista de alunos
+router.post('/importar', alunosController.importarListaAlunos);
 
 export default router;

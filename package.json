@@ -21,6 +21,9 @@
     "test:unit": "NODE_ENV=test jest --selectProjects unit",
     "test:integration": "NODE_ENV=test jest --selectProjects integration",
     "test:salas": "NODE_ENV=test jest ./tests/integration/sala/salas.test.ts --detectOpenHandles --verbose",
+    "test:reservas": "NODE_ENV=test jest ./tests/integration/reserva/reservas.test.ts --detectOpenHandles --verbose",
+
+    "test:alunos": "NODE_ENV=test jest ./tests/integration/aluno/alunos.test.ts --detectOpenHandles --verbose",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",

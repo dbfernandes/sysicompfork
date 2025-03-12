@@ -7,6 +7,6 @@ router.get('/criar', afastamentoTemporarioController.adicionarAfastamento);
 router.post('/criar', afastamentoTemporarioController.adicionarAfastamento);
 router.get('/listar', afastamentoTemporarioController.listarAfastamentos);
 router.get('/dados/:id', afastamentoTemporarioController.exibirDetalhes);
-router.post('/remover/:id', afastamentoTemporarioController.remover);
+router.post('/remover/:id', afastamentoTemporarioController.excluir);
 
 export default router;

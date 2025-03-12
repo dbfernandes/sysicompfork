@@ -21,7 +21,7 @@ class CandidatoService {
           },
         })
         .catch((err) => {
-          console.error(err);
+          console.log(err);
           throw new Error(
             'Não foi possivel criar o candidato erro no find one ',
           );
