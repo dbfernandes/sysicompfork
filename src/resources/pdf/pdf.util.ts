@@ -42,7 +42,7 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
   const socialName = candidato.nomeSocial || '-';
   const address = candidato.endereco || '-';
   const city = candidato.cidade || '-';
-  const state = candidato.estado || '-';
+  // const state = candidato.estado || '-';
   const neighborhood = candidato.bairro || '-';
   const cep = candidato.cep || '-';
   const country = candidato.pais || '-';
@@ -89,7 +89,7 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
     socialName,
     address,
     city,
-    state,
+    // state,
     neighborhood,
     cep,
     cpf,

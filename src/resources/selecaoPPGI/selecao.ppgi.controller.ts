@@ -11,8 +11,6 @@ import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.rec
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import editalService from '../edital/edital.service';
 import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
-
-import { gerarPDF } from '../../utils/gerarInscricao';
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
@@ -140,7 +138,6 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
-        generatePdfEnrollment('3');
         res.render(resolveView('signIn'), {
           ...localsBegin,
           csrfToken: req.csrfToken(),
@@ -598,12 +595,12 @@ async function formProposta(
 
         if (body.isNext) {
           const url = `http://${req.headers.host}/selecaoppgi/recomendacoes`;
-          await gerarPDF(id);
-          await candidatoRecomendacaoService.sendEmailForUsersByCandidate({
-            id,
-            url,
-          });
-          await candidatoService.enviarEmailConfirmacao({ id });
+          await generatePdfEnrollment(uid.toString());
+          // await candidatoRecomendacaoService.sendEmailForUsersByCandidate({
+          //   id,
+          //   url,
+          // });
+          // await candidatoService.enviarEmailConfirmacao({ id });
         }
 
         res.status(StatusCodes.OK).send();
