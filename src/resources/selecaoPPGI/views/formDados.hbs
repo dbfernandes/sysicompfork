@@ -20,9 +20,10 @@
 		margin-bottom: 8px;
 	}
 </style>
+<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css">-->
 
-<link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
- 
+<!--<link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">-->
+<!-- -->
 <!-- Conteúdo principal da página -->
 <main class="forms-page">
   <!-- Cabeçalho -->
@@ -144,33 +145,39 @@
                     <b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
                   </label>
                   <div
-                    id="candidato-sexo"
+
                     class="d-flex align-content-center radio-group"
                     style="column-gap: 20px; max-width: 100%; flex-wrap: wrap; row-gap: 4px;"
                   >
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Sexo"
-                        name="candidatoSexo"
-                        {{#if (eq sexo 'M')}}checked{{/if}}
-                      />
-                      <label for="Sexo">
-                        {{__ "ppgiForm1.identificacaoCandidato.masculino"}}
-                      </label>
-                    </div>
+                    <select id="candidato-sexo" name="candidato-sexo" class="custom-select">
+                      <option value="">{{__ "ppgiForm1.identificacaoCandidato.notInform"}}</option>
+                      <option {{#if (eq sexo 'M')}}selected{{/if}} value="M">{{__ "ppgiForm1.identificacaoCandidato.masculino"}}</option>
+                      <option {{#if (eq sexo 'F')}}selected{{/if}} value="F">{{__ "ppgiForm1.identificacaoCandidato.feminino"}}</option>
+                    </select>
 
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Sexo2"
-                        name="candidatoSexo"
-                        {{#if (eq sexo 'F')}}checked{{/if}}
-                      />
-                      <label for="Sexo2">
-                        {{__ "ppgiForm1.identificacaoCandidato.feminino"}}
-                      </label>
-                    </div>
+                    <!--                    <div class="icheck-primary d-inline">-->
+<!--                      <input-->
+<!--                        type="radio"-->
+<!--                        id="Sexo"-->
+<!--                        name="candidatoSexo"-->
+<!--                        {{#if (eq sexo 'M')}}checked{{/if}}-->
+<!--                      />-->
+<!--                      <label for="Sexo">-->
+<!--                        {{__ "ppgiForm1.identificacaoCandidato.masculino"}}-->
+<!--                      </label>-->
+<!--                    </div>-->
+
+<!--                    <div class="icheck-primary d-inline">-->
+<!--                      <input-->
+<!--                        type="radio"-->
+<!--                        id="Sexo2"-->
+<!--                        name="candidatoSexo"-->
+<!--                        {{#if (eq sexo 'F')}}checked{{/if}}-->
+<!--                      />-->
+<!--                      <label for="Sexo2">-->
+<!--                        {{__ "ppgiForm1.identificacaoCandidato.feminino"}}-->
+<!--                      </label>-->
+<!--                    </div>-->
                   </div>
                 </div>
               </div>
@@ -443,6 +450,9 @@
                 </div>
               </div><!-- /row -->
             </div>
+<!--            <label for="phone">Telefone:</label>-->
+<!--            <input type="tel" id="phone" name="phone">-->
+<!--            <input type="hidden" id="phone-full" name="phoneFull"> &lt;!&ndash; Campo oculto para armazenar o número formatado &ndash;&gt;-->
           </div><!-- /card Contato -->
 
           <!-- Card 3: Edital (como soube) -->
@@ -706,19 +716,19 @@
                     aria-hidden="true"
                   ></span>
                 </button>
-                <button
-                  id="btn-save"
-                  type="button"
-                  class="btn btn-secondary float-right mr-2"
-                >
-                  {{__ "ppgi.form.save"}}
-                  <span
-                    class="spinner-border spinner-border-sm"
-                    hidden="true"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                </button>
+<!--                <button-->
+<!--                  id="btn-save"-->
+<!--                  type="button"-->
+<!--                  class="btn btn-secondary float-right mr-2"-->
+<!--                >-->
+<!--                  {{__ "ppgi.form.save"}}-->
+<!--                  <span-->
+<!--                    class="spinner-border spinner-border-sm"-->
+<!--                    hidden="true"-->
+<!--                    role="status"-->
+<!--                    aria-hidden="true"-->
+<!--                  ></span>-->
+<!--                </button>-->
               </div>
             </div>
           </div><!-- /card Inscrição -->
@@ -730,7 +740,15 @@
 
 </main>
 {{> ppgi/_masks }}
+<!--<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>-->
+<!--<script>-->
+<!--  const input = document.querySelector("#phone");-->
+<!--  window.intlTelInput(input, {-->
+<!--    loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"),-->
+<!--  });-->
+<!--</script>-->
 <script>
+  console.log("{{sexo}}")
 	$(document).ready(() => {
 		const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
 		$("#como-soube").val(comoSoubeValue);
@@ -766,18 +784,17 @@
 		$("#candidato-condicao").change(function () {
 			$("#CondicaoTipoObj").val($(this).val());
 		});
+    {{#if dataNascimento}}
+        const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
+        const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
+        $("#data-nascimento").val(formattedDate);
+        $('#candidato-datanascimento').datetimepicker({
+          format: 'DD/MM/YYYY',
+        });
+    {{/if}}
 	});
 
-	{{#if dataNascimento}}
-		$(document).ready(function () { 
-			const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
-			const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
-			$("#data-nascimento").val(formattedDate);
-			$('#candidato-datanascimento').datetimepicker({
-				format: 'DD/MM/YYYY',
-			});
-		});
-	{{/if}}
+
 	
 	$('#candidato-datanascimento').datetimepicker({
 		format: 'DD/MM/YYYY',
@@ -943,9 +960,10 @@
 	function getValueFromForm() {
 		const form = document.getElementById('candidato-formulario');
 		const data = {}
+    console.log(document.getElementById('candidato-sexo').value)
 		data.nome = document.getElementById('candidato-nome').value;
 		data.dataNascimento = document.getElementById('data-nascimento').value;
-		data.sexo = getSelectedSexo()
+		data.sexo = document.getElementById('candidato-sexo').value;
 		data.nomeSocial = document.getElementById('candidato-nomesocial').value;
 		data.cep = document.getElementById('candidato-cep').value;
 		data.uf = document.getElementById('candidato-uf').value;
@@ -970,8 +988,8 @@
 	}
 
 	$(document).ready(() => {
-    Inputmask("99999-999").mask("#candidato-cep");
-		$('#candidato-cep').on('blur', pesquisarCep);
+    // Inputmask("99999-999").mask("#candidato-cep");
+		// $('#candidato-cep').on('blur', pesquisarCep);
 
 		$("#btn_logout").click(function () {
 			$.ajax({
@@ -1058,9 +1076,7 @@
 					required: true,
 					dateBR: true
 				}, 
-				candidatoSexo: {
-					required: true
-				},
+
 				candidatoCep: {
 					required: true
 				},

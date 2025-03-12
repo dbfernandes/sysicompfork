@@ -7,7 +7,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const visualizar = async (req: Request, res: Response) => {
+const exibirDetalhes = async (req: Request, res: Response) => {
   try {
     const { message, type, messageTitle } = req.query;
     const id = req.session.uid;
@@ -143,4 +143,4 @@ const deletar = async (req: Request, res: Response) => {
   }
 };
 
-export default { visualizar, editar, deletar };
+export default { exibirDetalhes, editar, deletar };

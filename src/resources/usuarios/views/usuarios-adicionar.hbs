@@ -363,14 +363,14 @@
     $(Document).ready(function () {
         $('#diretorCurso').on('switchChange.bootstrapSwitch', function (event, state) {
             if (state) {
-                verificarDiretorExistente()
+                verificarDiretor()
             }
         })
     })
 
-    function verificarDiretorExistente() {
+    function verificarDiretor() {
         $.ajax({
-            url: '/usuarios/verificarDiretorExistente',
+            url: '/usuarios/verificarDiretor',
             type: 'GET',
             success: function (data) {
                 if (data) {

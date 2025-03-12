@@ -9,7 +9,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const listar = async (req: Request, res: Response) => {
+const listarAfastamentos = async (req: Request, res: Response) => {
   try {
     if (req.session.tipoUsuario?.administrador) {
       const afastamentos = await afastamentoService.listarTodos();
@@ -54,7 +54,7 @@ const listar = async (req: Request, res: Response) => {
   }
 };
 
-export const criar = async (req: Request, res: Response) => {
+export const adicionarAfastamento = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     return res.status(StatusCodes.OK).render(resolveView('solicitar-afastamento'), {
       pageTitle,
@@ -86,7 +86,7 @@ export const criar = async (req: Request, res: Response) => {
       };
 
       await afastamentoService.criar(novoAfastamento);
-      return res.redirect('/afastamentoTemporario/listar');
+      return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitar-afastamento'), {
         pageTitle,
@@ -101,7 +101,7 @@ export const criar = async (req: Request, res: Response) => {
   }
 };
 
-const detalhes = async (req: Request, res: Response) => {
+const exibirDetalhes = async (req: Request, res: Response) => {
   try {
     const afastamento = await afastamentoService.detalhes(
       Number(req.params.id),
@@ -149,4 +149,4 @@ const remover = async (req: Request, res: Response) => {
   }
 };
 
-export default { criar, listar, detalhes, remover };
+export default { adicionarAfastamento, listarAfastamentos, exibirDetalhes, remover };

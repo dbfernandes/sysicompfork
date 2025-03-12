@@ -28,7 +28,7 @@ COPY . .
 
 # Definimos a variável de ambiente que informa qual binário o Puppeteer deve usar
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
+RUN npx prisma generate
 # Liberar a porta (caso a sua app use)
 EXPOSE 3000
 

@@ -6,7 +6,7 @@ import {
   SaveRecomendacaoDto,
 } from './candidato.recomendacao.types';
 import { sendEmail } from '../email/email.service';
-import { generatePdfRecommendations } from '@resources/pdf/pdf.controller';
+import { generatePdfRecommendations } from '../pdf/pdf.controller';
 
 const prisma = new PrismaClient();
 

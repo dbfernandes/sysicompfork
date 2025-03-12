@@ -116,7 +116,6 @@ export async function generatePdfEnrollment(candidateId: string) {
     candidateId,
     'Inscricao2.pdf',
   );
-  console.log('teste');
   await generatePdf('inscricao', pathSave, candidateId);
 }
 
