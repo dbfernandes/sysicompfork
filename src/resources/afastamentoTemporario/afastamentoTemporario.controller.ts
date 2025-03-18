@@ -16,7 +16,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
         throw new Error('Nenhum pedido de afastamento encontrado');
-      return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
+      return res.status(StatusCodes.OK).render(resolveView('pedidosAfastamento'), {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
@@ -30,7 +30,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
       const doesNotExists = !afastamentos || afastamentos.length === 0;
       if (doesNotExists)
         throw new Error('Nenhum pedido de afastamento encontrado');
-      return res.status(StatusCodes.OK).render(resolveView('pedidos-afastamento'), {
+      return res.status(StatusCodes.OK).render(resolveView('pedidosAfastamento'), {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
@@ -41,7 +41,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
   } catch (error: unknown) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .render(resolveView('pedidos-afastamento'), {
+      .render(resolveView('pedidosAfastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
@@ -56,7 +56,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
 
 export const adicionarAfastamento = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(StatusCodes.OK).render(resolveView('solicitar-afastamento'), {
+    return res.status(StatusCodes.OK).render(resolveView('solicitarAfastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
@@ -88,7 +88,7 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
       await afastamentoService.criar(novoAfastamento);
       return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitar-afastamento'), {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitarAfastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
@@ -108,7 +108,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
     );
     if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).
       json({ message: 'Pedido de afastamento não encontrado' });
-    return res.status(StatusCodes.OK).render(resolveView('vizualizar-afastamento'), {
+    return res.status(StatusCodes.OK).render(resolveView('vizualizarAfastamento'), {
       afastamento,
       pageTitle,
       csrfToken: req.csrfToken(),
@@ -116,7 +116,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
       tipoUsuario: req.session.tipoUsuario,
     });
   } catch (error: unknown) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidos-afastamento'), {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidosAfastamento'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
@@ -135,7 +135,7 @@ const remover = async (req: Request, res: Response) => {
       await afastamentoService.delete(Number(req.params.id));
       return res.redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidos-afastamento'), {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidosAfastamento'), {
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,

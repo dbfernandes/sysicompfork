@@ -21,7 +21,7 @@ const listar = async (req: Request, res: Response) => {
 
     return res
       .status(StatusCodes.OK)
-      .render(resolveView('linhasDePesquisa-listar'), {
+      .render(resolveView('linhasDePesquisaListar'), {
         linhaDePesquisa,
         pageTitle,
         csrfToken: req.csrfToken(),
@@ -29,7 +29,7 @@ const listar = async (req: Request, res: Response) => {
         tipoUsuario: req.session?.tipoUsuario
       });
   } catch (error: any) { // Definindo o tipo da variável error como Error
-    return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-listar'), {
+    return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaListar'), {
       pageTitle,
       error: error.message || 'Não foi possível listar as linhas de pesquisa!',
       csrfToken: req.csrfToken(),
@@ -51,7 +51,7 @@ const buscar = async (req: Request, res: Response) => {
 
     const { nome, sigla } = result;
 
-    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisa-busca'), {
+    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisaBusca'), {
       nome,
       sigla,
       pageTitle,
@@ -66,7 +66,7 @@ const buscar = async (req: Request, res: Response) => {
 
 const criar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisa-criar'), {
+    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisaCriar'), {
       pageTitle,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session?.tipoUsuario,
@@ -89,7 +89,7 @@ const criar = async (req: Request, res: Response) => {
     } catch (error: any) {
       // Definindo o tipo da variável error como Error
       console.log(error);
-      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-criar'), {
+      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaCriar'), {
         pageTitle,
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
@@ -108,7 +108,7 @@ const remover = async (req: Request, res: Response) => {
       await linhasDePesquisaService.delete(parseInt(req.params.id));
       return res.redirect('/linhasDePesquisa/listar');
     } catch (error: any) {
-      return res.render(resolveView('linhasDePesquisa-listar.hbs'), {
+      return res.render(resolveView('linhasDePesquisaListar.hbs'), {
         pageTitle,
         error: error.message || 'Não foi possível remover a linha de pesquisa!',
         nome: req.session.nome,
@@ -124,7 +124,7 @@ const editar = async (req: Request, res: Response) => {
     parseInt(req.params.id),
   );
   if (req.method === 'GET') {
-    return res.status(200).render(resolveView('linhasDePesquisa-editar'), {
+    return res.status(200).render(resolveView('linhasDePesquisaEditar'), {
       linhaPesquisa,
       pageTitle,
       csrfToken: req.csrfToken(),
@@ -155,7 +155,7 @@ const editar = async (req: Request, res: Response) => {
       return res.redirect('/linhasDePesquisa/listar');
     } catch (error: any) {
       console.log(error);
-      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisa-editar'), {
+      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaEditar'), {
         pageTitle,
         linhaPesquisa,
         nome: req.session.nome,

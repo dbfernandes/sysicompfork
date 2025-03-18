@@ -12,7 +12,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
     const { message, type, messageTitle } = req.query;
     const id = req.session.uid;
     const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
-    return res.render(resolveView('perfil-dados'), {
+    return res.render(resolveView('perfilDados'), {
       usuario,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
@@ -41,7 +41,7 @@ const editar = async (req: Request, res: Response) => {
     try {
       const { message, type, messageTitle } = req.query;
       const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
-      return res.render(resolveView('perfil-editar'), {
+      return res.render(resolveView('perfilEditar'), {
         usuario,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -90,7 +90,7 @@ const editar = async (req: Request, res: Response) => {
     } catch (error: any) {
       console.log(error);
       dados.id = id;
-      return res.status(500).render(resolveView('perfil-editar'), {
+      return res.status(500).render(resolveView('perfilEditar'), {
         usuario: dados,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,

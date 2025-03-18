@@ -46,7 +46,7 @@ const adicionarAtividade = async (_req: Request, res: Response) => {
     { name: '9.1: Carga Horária Optativa Excedente' },
   ];
 
-  return res.status(200).render(resolveView('adicionar-atividade'), {
+  return res.status(200).render(resolveView('adicionarAtividade'), {
     atividades: MockAtividades,
     tipoUsuario: _req.session?.tipoUsuario,
   });

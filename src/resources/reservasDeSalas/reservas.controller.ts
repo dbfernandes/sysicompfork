@@ -18,7 +18,7 @@ const listar = async (req: Request, res: Response) => {
 const adicionar = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     const salas = await salasService.listarTodos();
-    res.status(StatusCodes.OK).render(resolveView('reservas-adicionar'), {
+    res.status(StatusCodes.OK).render(resolveView('reservasAdicionar'), {
       salas: salas,
       nome: req.session.nome,
       UsuarioId: req.session.uid,
@@ -111,7 +111,7 @@ const gerenciar = async (req: Request, res: Response) => {
     return reservaObj;
   });
 
-  res.render(resolveView('reservas-gerenciar'), {
+  res.render(resolveView('reservasGerenciar'), {
     reservas: reservasJSON,
     nome: req.session.nome,
     csrfToken: req.csrfToken(),
@@ -129,7 +129,7 @@ const editar = async (req: Request, res: Response) => {
       if (!reserva) throw new Error('Reserva não encontrado!');
       console.log(reserva);
 
-      res.status(StatusCodes.OK).render(resolveView('reservas-editar'), {
+      res.status(StatusCodes.OK).render(resolveView('reservasEditar'), {
         salas: salas,
         nome: req.session.nome,
         reserva: reserva,

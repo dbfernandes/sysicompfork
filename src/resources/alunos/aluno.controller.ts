@@ -16,7 +16,7 @@ const inicio = async (
     case 'GET':
       try {
         const { message, type, messageTitle } = req.query;
-        return res.render(resolveView('alunos-gerenciar'), {
+        return res.render(resolveView('alunosGerenciar'), {
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           usuarioId: req.session.uid,

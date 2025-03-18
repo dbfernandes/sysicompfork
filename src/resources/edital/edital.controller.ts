@@ -28,7 +28,7 @@ function resolveView(viewName: string): string {
 const adicionarEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
-      return res.render(resolveView('addEdital'), {
+      return res.render(resolveView('adicionarEdital'), {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
@@ -77,7 +77,7 @@ const listarEditalSelecao = async (req: Request, res: Response) => {
     case 'GET':
       const editais = await editalService.listEditalComQtdeCandidatos();
 
-      return res.render(resolveView('listEditais'), {
+      return res.render(resolveView('listarEditais'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         editais,
@@ -155,7 +155,7 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
 
-      return res.render(resolveView('viewEdital'), {
+      return res.render(resolveView('vizualizarEdital'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -175,7 +175,7 @@ const updateEdital = async (req: Request, res: Response) => {
           error: err.message,
         });
       });
-      return res.render(resolveView('editEdital'), {
+      return res.render(resolveView('editarEdital'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
@@ -238,7 +238,7 @@ const listarCandidatos = async (req: Request, res: Response) => {
             candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
         ).length;
 
-        return res.render(resolveView('listCandidatesByEdital'), {
+        return res.render(resolveView('listarCandidatosPorEdital'), {
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
           ...locals,
@@ -526,7 +526,7 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       'Recomendacoes.pdf',
     );
 
-    return res.render(resolveView('candidateDetails'), {
+    return res.render(resolveView('detalhesCandidato'), {
       candidato: candidato,
       candidatoDocs: candidatoDocs,
       csrfToken: req.csrfToken(),

@@ -13,7 +13,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    res.render(resolveView('salas-adicionar'), {
+    res.render(resolveView('salasAdicionar'), {
       nome: req.session.nome,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
@@ -85,7 +85,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   }
 
   const salas = await SalaService.listarTodos();
-  res.render(resolveView('salas-gerenciar'), {
+  res.render(resolveView('salasGerenciar'), {
     salas,
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
@@ -108,7 +108,7 @@ const editar = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      res.render(resolveView('salas-editar'), {
+      res.render(resolveView('salasEditar'), {
         sala: sala,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
