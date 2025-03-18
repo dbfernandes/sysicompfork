@@ -1,120 +1,114 @@
 import prisma from '../../client';
 import { AfastamentoTemporario } from '@prisma/client';
-
-import { AfastamentoTemporarioExtendido } from './afastamento.temporario.types';
+import { formatarData } from '../../utils/formatadores';
+import {
+  AfastamentoTemporarioExtendido,
+  CreateAfastamentoDTO,
+} from './afastamento.temporario.types';
 
 class AfastamentoService {
-  async listarAfastamentosDoUsuario(
+  // Lista todos os afastamentos de um usuário específico
+  // @param id ID do usuário
+  // @returns Lista de afastamentos
+
+  async listarPorUsuario(
     id: number,
-  ): Promise<AfastamentoTemporario[]> {
+  ): Promise<AfastamentoTemporarioExtendido[]> {
     try {
-      const allResearchLines = await prisma.afastamentoTemporario.findMany({
+      const afastamentos = await prisma.afastamentoTemporario.findMany({
         where: {
           usuarioId: id,
         },
       });
-      const dataFormatada = allResearchLines.map((afastamento) => {
-        const formatarData = (date: Date | null | undefined) => {
-          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
-          return new Date(date).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'UTC',
-          });
-        };
-        return {
-          ...afastamento,
-          dataCriacaoFormata: formatarData(afastamento.createdAt),
-          dataRetornoFormata: formatarData(afastamento.dataFim),
-          dataSaidaFormata: formatarData(afastamento.dataInicio),
-        };
-      });
 
-      return dataFormatada;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error.message;
-      } else {
-        throw new Error('Erro desconhecido');
-      }
+      return afastamentos.map((afastamento) => ({
+        ...afastamento,
+        dataCriacaoFormata: formatarData(afastamento.createdAt),
+        dataRetornoFormata: formatarData(afastamento.dataFim),
+        dataSaidaFormata: formatarData(afastamento.dataInicio),
+      }));
+    } catch (erro) {
+      console.error(
+        `[ERRO] Listar afastamentos do usuário: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao listar afastamentos do usuário: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
 
-  async listarTodos(): Promise<AfastamentoTemporario[]> {
+  // Lista todos os afastamentos temporários
+  // @returns Lista de afastamentos
+
+  async listarTodos(): Promise<AfastamentoTemporarioExtendido[]> {
     try {
-      const allResearchLines = await prisma.afastamentoTemporario.findMany();
+      const afastamentos = await prisma.afastamentoTemporario.findMany();
 
-      const dataFormatada = allResearchLines.map((afastamento) => {
-        const formatarData = (date: Date | null | undefined) => {
-          if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
-          return new Date(date).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'UTC',
-          });
-        };
-
-        return {
-          ...afastamento,
-          dataCriacaoFormata: formatarData(afastamento.createdAt),
-          dataRetornoFormata: formatarData(afastamento.dataFim),
-          dataSaidaFormata: formatarData(afastamento.dataInicio),
-        };
-      });
-
-      return dataFormatada;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message || 'Erro ao listar afastamentos!');
-        throw error;
-      } else {
-        console.error('Erro desconhecido');
-        throw new Error('Erro desconhecido');
-      }
+      return afastamentos.map((afastamento) => ({
+        ...afastamento,
+        dataCriacaoFormata: formatarData(afastamento.createdAt),
+        dataRetornoFormata: formatarData(afastamento.dataFim),
+        dataSaidaFormata: formatarData(afastamento.dataInicio),
+      }));
+    } catch (erro) {
+      console.error(
+        `[ERRO] Listar todos os afastamentos: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao listar todos os afastamentos: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
+
+  // Cria um novo afastamento temporário
+  // @param novoAfastamento Dados do novo afastamento
+  // @returns Afastamento criado
 
   async criar(
-    newAfastamento: Omit<
-      AfastamentoTemporario,
-      'id' | 'createdAt' | 'updatedAt'
-    >,
-  ): Promise<void> {
+    novoAfastamento: CreateAfastamentoDTO,
+  ): Promise<AfastamentoTemporario> {
     try {
-      await prisma.afastamentoTemporario.create({
-        data: newAfastamento,
+      return await prisma.afastamentoTemporario.create({
+        data: novoAfastamento,
       });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      } else {
-        console.error('Erro desconhecido');
-        throw new Error('Erro desconhecido');
-      }
+    } catch (erro) {
+      console.error(
+        `[ERRO] Criar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao criar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
 
-  async retornarAfastamento(id: number): Promise<AfastamentoTemporario | null> {
+  //Busca um afastamento pelo ID
+  //@param id ID do afastamento
+  //@returns Afastamento encontrado ou null
+
+  async buscarPorId(id: number): Promise<AfastamentoTemporario | null> {
     try {
-      const afastamento = await prisma.afastamentoTemporario.findUnique({
+      return await prisma.afastamentoTemporario.findUnique({
         where: {
           id: id,
         },
       });
-      return afastamento;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error.message;
-      } else {
-        console.error('Erro desconhecido');
-        throw new Error('Erro desconhecido');
-      }
+    } catch (erro) {
+      console.error(
+        `[ERRO] Buscar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao buscar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
 
-  async detalhes(id: number): Promise<AfastamentoTemporarioExtendido | null> {
+  // Busca detalhes de um afastamento com datas formatadas
+  // @param id ID do afastamento
+  // @returns Detalhes do afastamento ou null
+
+  async buscarDetalhesPorId(
+    id: number,
+  ): Promise<AfastamentoTemporarioExtendido | null> {
     try {
       const afastamento = await prisma.afastamentoTemporario.findUnique({
         where: { id: id },
@@ -122,52 +116,39 @@ class AfastamentoService {
 
       if (!afastamento) return null;
 
-      const formatarData = (date: Date | null | undefined) => {
-        if (!date || isNaN(new Date(date).getTime())) return 'Data inválida';
-        return new Date(date).toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          timeZone: 'UTC',
-        });
-      };
-
-      const afastamentoExtendido: AfastamentoTemporarioExtendido = {
+      return {
         ...afastamento,
         dataCriacaoFormata: formatarData(afastamento.createdAt),
         dataRetornoFormata: formatarData(afastamento.dataFim),
         dataSaidaFormata: formatarData(afastamento.dataInicio),
       };
-
-      return afastamentoExtendido;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(
-          error.message ||
-          'Não foi possível visualizar o pedido de afastamento!',
-        );
-        throw error;
-      } else {
-        console.error('Erro desconhecido');
-        throw new Error('Erro desconhecido');
-      }
+    } catch (erro) {
+      console.error(
+        `[ERRO] Buscar detalhes do afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao buscar detalhes do afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
 
-  async delete(id: number): Promise<void> {
+  //Exclui um afastamento pelo ID
+  //ID do afastamento
+
+  async excluir(id: number): Promise<void> {
     try {
       await prisma.afastamentoTemporario.delete({
         where: {
           id: id,
         },
       });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        console.error('Erro desconhecido');
-        throw new Error('Erro desconhecido');
-      }
+    } catch (erro) {
+      console.error(
+        `[ERRO] Excluir afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
+      throw new Error(
+        `Falha ao excluir afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+      );
     }
   }
 }

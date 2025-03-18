@@ -26,16 +26,19 @@ const listar = async (req: Request, res: Response) => {
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
-        tipoUsuario: req.session?.tipoUsuario
+        tipoUsuario: req.session?.tipoUsuario,
       });
-  } catch (error: any) { // Definindo o tipo da variável error como Error
-    return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaListar'), {
-      pageTitle,
-      error: error.message || 'Não foi possível listar as linhas de pesquisa!',
-      csrfToken: req.csrfToken(),
-      nome: req.session.nome,
-      tipoUsuario: req.session?.tipoUsuario,
-    });
+  } catch (error) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .render(resolveView('linhasDePesquisaListar'), {
+        pageTitle,
+        error:
+          error.message || 'Não foi possível listar as linhas de pesquisa!',
+        csrfToken: req.csrfToken(),
+        nome: req.session.nome,
+        tipoUsuario: req.session?.tipoUsuario,
+      });
   }
 };
 
@@ -51,13 +54,15 @@ const buscar = async (req: Request, res: Response) => {
 
     const { nome, sigla } = result;
 
-    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisaBusca'), {
-      nome,
-      sigla,
-      pageTitle,
-      tipoUsuario: req.session?.tipoUsuario,
-    });
-  } catch (error: any) {
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('linhasDePesquisaBusca'), {
+        nome,
+        sigla,
+        pageTitle,
+        tipoUsuario: req.session?.tipoUsuario,
+      });
+  } catch (error) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: 'Erro ao buscar linha de pesquisa!' });
@@ -86,16 +91,17 @@ const criar = async (req: Request, res: Response) => {
         throw new Error('Sigla já cadastrada!');
 
       await linhasDePesquisaService.criar(novaLinhaPesquisa);
-    } catch (error: any) {
-      // Definindo o tipo da variável error como Error
+    } catch (error) {
       console.log(error);
-      return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaCriar'), {
-        pageTitle,
-        nome: req.session.nome,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session?.tipoUsuario,
-        error: error.message || 'Não foi possível criar a linha de pesquisa!',
-      });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .render(resolveView('linhasDePesquisaCriar'), {
+          pageTitle,
+          nome: req.session.nome,
+          csrfToken: req.csrfToken(),
+          tipoUsuario: req.session?.tipoUsuario,
+          error: error.message || 'Não foi possível criar a linha de pesquisa!',
+        });
     }
 
     return res.status(StatusCodes.OK).redirect('/linhasDePesquisa/listar');
@@ -107,7 +113,7 @@ const remover = async (req: Request, res: Response) => {
     try {
       await linhasDePesquisaService.delete(parseInt(req.params.id));
       return res.redirect('/linhasDePesquisa/listar');
-    } catch (error: any) {
+    } catch (error) {
       return res.render(resolveView('linhasDePesquisaListar.hbs'), {
         pageTitle,
         error: error.message || 'Não foi possível remover a linha de pesquisa!',
@@ -153,7 +159,7 @@ const editar = async (req: Request, res: Response) => {
         editarLinhaPesquisa,
       );
       return res.redirect('/linhasDePesquisa/listar');
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       return res.status(StatusCodes.BAD_REQUEST).render(resolveView('linhasDePesquisaEditar'), {
         pageTitle,

@@ -11,6 +11,8 @@ function resolveView(viewName: string): string {
 
 const listarAfastamentos = async (req: Request, res: Response) => {
   try {
+    let afastamentos;
+
     if (req.session.tipoUsuario?.administrador) {
       const afastamentos = await afastamentoService.listarTodos();
       const doesNotExists = !afastamentos || afastamentos.length === 0;
@@ -24,21 +26,28 @@ const listarAfastamentos = async (req: Request, res: Response) => {
         tipoUsuario: req.session.tipoUsuario,
       });
     } else {
-      const afastamentos = await afastamentoService.listarAfastamentosDoUsuario(
+      afastamentos = await afastamentoService.listarPorUsuario(
         Number(req.session.uid!),
       );
-      const doesNotExists = !afastamentos || afastamentos.length === 0;
-      if (doesNotExists)
-        throw new Error('Nenhum pedido de afastamento encontrado');
-      return res.status(StatusCodes.OK).render(resolveView('pedidosAfastamento'), {
+    }
+
+    if (!afastamentos || afastamentos.length === 0) {
+      throw new Error('Nenhum pedido de afastamento encontrado');
+    }
+
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('pedidosAfastamento'), {
         afastamentos,
         pageTitle,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });
-    }
-  } catch (error: unknown) {
+  } catch (erro) {
+    console.error(
+      `[ERRO] Listar afastamentos: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
+    );
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .render(resolveView('pedidosAfastamento'), {
@@ -46,9 +55,9 @@ const listarAfastamentos = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
-        error:
-          error instanceof Error
-            ? error.message
+        erro:
+          erro instanceof Error
+            ? erro.message
             : 'Não foi possível listar os pedidos de afastamento!',
       });
   }
@@ -76,7 +85,7 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
 
       const novoAfastamento: CreateAfastamentoDTO = {
         usuarioId: Number(uid),
-        nomeCompleto: nome!, // nome do usuário da sessão
+        nomeCompleto: nome!,
         dataInicio: new Date(dataSaida),
         dataFim: new Date(dataRetorno),
         tipoViagem: String(tipoViagem),
@@ -86,24 +95,28 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
       };
 
       await afastamentoService.criar(novoAfastamento);
-      return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
+      return res
+        .status(StatusCodes.OK)
+        .redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('solicitarAfastamento'), {
-        pageTitle,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session.tipoUsuario,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Não foi possível criar o pedido de afastamento!',
-      });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('solicitarAfastamento'), {
+          pageTitle,
+          csrfToken: req.csrfToken(),
+          tipoUsuario: req.session.tipoUsuario,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Não foi possível criar o pedido de afastamento!',
+        });
     }
   }
 };
 
 const exibirDetalhes = async (req: Request, res: Response) => {
   try {
-    const afastamento = await afastamentoService.detalhes(
+    const afastamento = await afastamentoService.buscarDetalhesPorId(
       Number(req.params.id),
     );
     if (!afastamento) return res.status(StatusCodes.BAD_REQUEST).
@@ -132,7 +145,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
 const removerAfastamento = async (req: Request, res: Response) => {
   if (req.method === 'POST') {
     try {
-      await afastamentoService.delete(Number(req.params.id));
+      await afastamentoService.excluir(Number(req.params.id));
       return res.redirect('/afastamentoTemporario/listar');
     } catch (error: unknown) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('pedidosAfastamento'), {
@@ -140,10 +153,6 @@ const removerAfastamento = async (req: Request, res: Response) => {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Não foi possível remover o pedido de afastamento!',
       });
     }
   }

@@ -1,14 +1,14 @@
 import request from 'supertest';
-import app from '../../../src/app';
 import bcrypt from 'bcrypt';
-import { CreateSalaDto } from '../../../src/resources/salas/sala.types';
 import prisma, { checkDatabaseConnection } from '../../mocks/prismaClient';
 import { StatusCodes } from 'http-status-codes';
+import app from '@/app';
+import { CreateSalaDto } from '@/resources/salas/sala.types';
 
 const SENHA_TESTE = 'senha123';
 const agent = request.agent(app);
 
-// Revised CSRF token extraction without cheerio
+//CSRF token
 function extractCsrfTokenFromBody(res: request.Response): string {
   const body = res.text;
   const csrfTokenMatch = body.match(
@@ -36,7 +36,7 @@ describe('Salas Integration Tests', () => {
     secretaria: 0,
     diretor: 0,
     senhaHash: '',
-    perfil: 'PROFESSOR', // Se este campo for obrigatório
+    perfil: 'PROFESSOR',
     tokenResetSenha: null,
     validadeTokenResetSenha: null,
     createdAt: new Date(),
@@ -269,7 +269,6 @@ describe('Salas Integration Tests', () => {
     });
 
     it('deve retornar erro quando sala não existe', async () => {
-      // Ensure we're using a valid ID format but non-existent ID
       const nonExistentId = 999999;
 
       const response = await agent
@@ -281,7 +280,6 @@ describe('Salas Integration Tests', () => {
           _csrf: csrfToken,
         });
 
-      // Check for either 404 or 400 with appropriate error message
       expect([StatusCodes.NOT_FOUND, StatusCodes.BAD_REQUEST]).toContain(
         response.status,
       );
@@ -338,10 +336,8 @@ describe('Salas Integration Tests', () => {
     });
 
     it('deve retornar erro quando não autenticado', async () => {
-      // Create a new agent for unauthenticated request
       const unauthAgent = request.agent(app);
 
-      // First get a CSRF token
       const loginPage = await unauthAgent.get('/login');
       const newCsrfToken = extractCsrfTokenFromBody(loginPage);
 

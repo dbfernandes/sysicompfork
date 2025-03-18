@@ -3,8 +3,6 @@ import prisma from '../../client';
 import { Aluno } from '@prisma/client';
 import { CreateAlunoDto } from './aluno.types';
 
-
-
 class AlunoService {
   async adicionarVarios(alunos: CreateAlunoDto[]): Promise<void> {
     if (alunos !== undefined && alunos.length > 0) {
