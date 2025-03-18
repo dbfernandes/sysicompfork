@@ -2,17 +2,17 @@ import express from 'express';
 import { usuarioController } from './usuario.controller';
 const router = express.Router();
 
-router.get('/adicionar', usuarioController.adicionar);
-router.post('/adicionar', usuarioController.adicionar);
-router.get('/listar', usuarioController.listar);
-router.post('/bloquear/:id', usuarioController.bloquear);
-router.post('/restaurar/:id', usuarioController.restaurar);
-router.get('/dados/:id', usuarioController.exibirDetalhes);
-router.get('/editar/:id', usuarioController.editar);
-router.post('/editar/:id', usuarioController.editar);
+router.get('/adicionar', usuarioController.adicionarUsuario);
+router.post('/adicionar', usuarioController.adicionarUsuario);
+router.get('/listar', usuarioController.listarUsuario);
+router.post('/bloquear/:id', usuarioController.bloquearUsuario);
+router.post('/restaurar/:id', usuarioController.restaurarUsuario);
+router.get('/dados/:id', usuarioController.exibirDetalhesUsuario);
+router.get('/editar/:id', usuarioController.editarUsuario);
+router.post('/editar/:id', usuarioController.editarUsuario);
 router.get(
   '/verificarDiretor',
-  usuarioController.verificarDiretor,
+  usuarioController.verificarUsuarioDiretor,
 );
 
 export default router;

@@ -14,7 +14,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 //criarUsuario
-const adicionar = async (
+const adicionarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -119,8 +119,8 @@ const adicionar = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//bloquearUsuario
-const bloquear = async (
+
+const bloquearUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -161,7 +161,7 @@ const bloquear = async (
   }
 };
 
-const restaurar = async (
+const restaurarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -209,7 +209,7 @@ const restaurar = async (
   }
 };
 
-const listar = async (
+const listarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -257,8 +257,8 @@ const listar = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//detalhesUsuario
-const exibirDetalhes = async (
+
+const exibirDetalhesUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -296,8 +296,8 @@ const exibirDetalhes = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//editarUsuario
-const editar = async (
+
+const editarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -413,8 +413,7 @@ const editar = async (
         .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
-//verificarUsuarioDiretor
-const verificarDiretor = async (
+const verificarUsuarioDiretor = async (
   req: Request,
   res: Response,
 ): Promise<any> => {
@@ -435,11 +434,11 @@ const verificarDiretor = async (
 };
 
 export const usuarioController = {
-  adicionar,
-  listar,
-  bloquear,
-  exibirDetalhes,
-  editar,
-  restaurar,
-  verificarDiretor,
+  adicionarUsuario,
+  listarUsuario,
+  bloquearUsuario,
+  exibirDetalhesUsuario,
+  editarUsuario,
+  restaurarUsuario,
+  verificarUsuarioDiretor,
 };

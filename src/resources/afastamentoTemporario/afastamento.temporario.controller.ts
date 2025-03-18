@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import afastamentoService from './afastamentoTemporario.service';
+import afastamentoService from './afastamento.temporario.service';
 import path from 'path';
 import { StatusCodes } from 'http-status-codes';
-import { CreateAfastamentoDTO } from './afastamentoTemporario.types';
+import { CreateAfastamentoDTO } from './afastamento.temporario.types';
 const pageTitle = 'Afastamento Temporário';
 
 function resolveView(viewName: string): string {
@@ -129,7 +129,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
   }
 };
 
-const remover = async (req: Request, res: Response) => {
+const removerAfastamento = async (req: Request, res: Response) => {
   if (req.method === 'POST') {
     try {
       await afastamentoService.delete(Number(req.params.id));
@@ -149,4 +149,4 @@ const remover = async (req: Request, res: Response) => {
   }
 };
 
-export default { adicionarAfastamento, listarAfastamentos, exibirDetalhes, remover };
+export default { adicionarAfastamento, listarAfastamentos, exibirDetalhes, removerAfastamento };

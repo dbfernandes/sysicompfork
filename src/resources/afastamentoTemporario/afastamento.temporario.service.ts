@@ -1,7 +1,7 @@
 import prisma from '../../client';
 import { AfastamentoTemporario } from '@prisma/client';
 
-import { AfastamentoTemporarioExtendido } from './afastamentoTemporario.types';
+import { AfastamentoTemporarioExtendido } from './afastamento.temporario.types';
 
 class AfastamentoService {
   async listarAfastamentosDoUsuario(
@@ -144,7 +144,7 @@ class AfastamentoService {
       if (error instanceof Error) {
         console.error(
           error.message ||
-            'Não foi possível visualizar o pedido de afastamento!',
+          'Não foi possível visualizar o pedido de afastamento!',
         );
         throw error;
       } else {
