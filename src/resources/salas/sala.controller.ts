@@ -6,7 +6,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const adicionar = async (req: Request, res: Response): Promise<void> => {
+const criarSala = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     if (!req.session.tipoUsuario?.professor) {
       res.status(401).send('Não autorizado');
@@ -54,7 +54,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const excluir = async (req: Request, res: Response): Promise<void> => {
+const excluirSala = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('não encontrada');
     return;
@@ -78,7 +78,7 @@ const excluir = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const gerenciar = async (req: Request, res: Response): Promise<void> => {
+const listarSalas = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('Não autorizado');
     return;
@@ -93,7 +93,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
-const editar = async (req: Request, res: Response): Promise<void> => {
+const editarSala = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('Não autorizado');
     return;
@@ -149,4 +149,4 @@ const editar = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { adicionar, excluir, gerenciar, editar };
+export default { criarSala, excluirSala, listarSalas, editarSala };

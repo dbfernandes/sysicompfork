@@ -13,12 +13,12 @@ router.all('/geraPlanilha/:id', editalController.geraPlanilha);
 router.all('/candidateDetails/:id', editalController.exibirDetalhesCandidato);
 router.all(
   '/downloadCandidateDocument/:id',
-  editalController.getDocumentToCandidate,
+  editalController.pegarDocumentoCandidato,
 );
-router.all('/getCandidateDocs/:id', editalController.getDocumentsToCandidate);
+router.all('/getCandidateDocs/:id', editalController.pegarDocumentsDeUmCandidate);
 router.all(
   '/getEditalCandidatesDocs/:id',
-  editalController.getDocumentsToAllCandidates,
+  editalController.pegarDocumentosDeTodosCandidatos,
 );
 
 export default router;

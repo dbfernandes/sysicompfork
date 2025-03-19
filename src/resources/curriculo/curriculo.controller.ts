@@ -22,7 +22,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const visualizar = async (req: Request, res: Response) => {
+const visualizarCurriculo = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {
@@ -134,4 +134,4 @@ const carregar = (req: UploadRequest, res: Response) => {
   });
 };
 
-export default { visualizar, verificarAvatar, carregar };
+export default { visualizarCurriculo, verificarAvatar, carregar };

@@ -12,7 +12,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const listar = async (req: Request, res: Response) => {
+const listarPesquisas = async (req: Request, res: Response) => {
   try {
     const linhaDePesquisa = await linhasDePesquisaService.list();
     const doesNotExists = !linhaDePesquisa || linhaDePesquisa.length === 0;
@@ -42,7 +42,7 @@ const listar = async (req: Request, res: Response) => {
   }
 };
 
-const buscar = async (req: Request, res: Response) => {
+const buscarPesquisa = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const result = await linhasDePesquisaService.findById(parseInt(id));
@@ -69,7 +69,7 @@ const buscar = async (req: Request, res: Response) => {
   }
 };
 
-const criar = async (req: Request, res: Response) => {
+const criarPesquisa = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
     return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisaCriar'), {
       pageTitle,
@@ -108,7 +108,7 @@ const criar = async (req: Request, res: Response) => {
   }
 };
 
-const remover = async (req: Request, res: Response) => {
+const removerPesquisa = async (req: Request, res: Response) => {
   if (req.method === 'POST') {
     try {
       await linhasDePesquisaService.delete(parseInt(req.params.id));
@@ -125,7 +125,7 @@ const remover = async (req: Request, res: Response) => {
   }
 };
 
-const editar = async (req: Request, res: Response) => {
+const editarPesquisa = async (req: Request, res: Response) => {
   const linhaPesquisa = await linhasDePesquisaService.findById(
     parseInt(req.params.id),
   );
@@ -173,4 +173,4 @@ const editar = async (req: Request, res: Response) => {
   }
 };
 
-export default { listar, buscar, criar, remover, editar };
+export default { listarPesquisas, buscarPesquisa, criarPesquisa, removerPesquisa, editarPesquisa };

@@ -3,32 +3,32 @@ import linhasDePesquisaController from './linha.de.pesquisa.controller';
 import autenticacaoController from '../autenticacao/autenticacao.controller';
 const router = express.Router();
 
-router.get('/listar', linhasDePesquisaController.listar);
-router.get('/busca/:id', linhasDePesquisaController.buscar);
+router.get('/listar', linhasDePesquisaController.listarPesquisas);
+router.get('/busca/:id', linhasDePesquisaController.buscarPesquisa);
 router.get(
   '/criar',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.criar,
+  linhasDePesquisaController.criarPesquisa,
 );
 router.post(
   '/criar',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.criar,
+  linhasDePesquisaController.criarPesquisa,
 );
 router.post(
   '/remover/:id',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.remover,
+  linhasDePesquisaController.removerPesquisa,
 );
 router.get(
   '/editar/:id',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.editar,
+  linhasDePesquisaController.editarPesquisa,
 );
 router.post(
   '/editar/:id',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.editar,
+  linhasDePesquisaController.editarPesquisa,
 );
 
 export default router;

@@ -278,7 +278,7 @@ const geraPlanilha = async (req: Request, res: Response) => {
   }
 };
 
-const getDocumentToCandidate = async (req: Request, res: Response) => {
+const pegarDocumentoCandidato = async (req: Request, res: Response) => {
   const candidato = await EditalService.getCandidato(Number(req.params.id));
   const caminhoDoc = path.join(
     __dirname,
@@ -300,7 +300,7 @@ const getDocumentToCandidate = async (req: Request, res: Response) => {
   });
 };
 
-export const getDocumentsToAllCandidates = async (
+export const pegarDocumentosDeTodosCandidatos = async (
   req: Request,
   res: Response,
 ) => {
@@ -386,7 +386,7 @@ export const getDocumentsToAllCandidates = async (
   }
 };
 
-const getDocumentsToCandidate = async (req: Request, res: Response) => {
+const pegarDocumentsDeUmCandidate = async (req: Request, res: Response) => {
   try {
     const candidatoId = Number(req.params.id);
 
@@ -554,7 +554,7 @@ export default {
   geraPlanilha,
   listarCandidatos,
   exibirDetalhesCandidato,
-  getDocumentToCandidate,
-  getDocumentsToCandidate,
-  getDocumentsToAllCandidates,
+  pegarDocumentoCandidato,
+  pegarDocumentosDeTodosCandidatos,
+  pegarDocumentsDeUmCandidate,
 };
