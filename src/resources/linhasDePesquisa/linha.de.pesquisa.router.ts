@@ -3,8 +3,13 @@ import linhasDePesquisaController from './linha.de.pesquisa.controller';
 import autenticacaoController from '../autenticacao/autenticacao.controller';
 const router = express.Router();
 
+// Rota para listar todas as linhas de pesquisa
 router.get('/listar', linhasDePesquisaController.listar);
-router.get('/busca/:id', linhasDePesquisaController.buscar);
+
+// Rota para detalhar uma linha de pesquisa
+router.get('/detalhar/:id', linhasDePesquisaController.detalhar);
+
+// Rotas para criar uma linha de pesquisa
 router.get(
   '/criar',
   autenticacaoController.autorizarCoord,
@@ -15,11 +20,15 @@ router.post(
   autenticacaoController.autorizarCoord,
   linhasDePesquisaController.criar,
 );
+
+// Rota para excluir uma linha de pesquisa
 router.post(
-  '/remover/:id',
+  '/excluir/:id',
   autenticacaoController.autorizarCoord,
-  linhasDePesquisaController.remover,
+  linhasDePesquisaController.excluir,
 );
+
+// Rotas para editar uma linha de pesquisa
 router.get(
   '/editar/:id',
   autenticacaoController.autorizarCoord,

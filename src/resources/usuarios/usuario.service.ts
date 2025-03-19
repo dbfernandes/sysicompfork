@@ -6,20 +6,19 @@ import { generateHashPassword } from '../../utils/utils';
 import { UpdateUsuarioWithPassword } from './usuario.types';
 import { sendEmail } from '../email/email.service';
 import { UsuarioNotFoundError } from './usuario.errors';
-import { promises } from 'dns';
 
 class UsuarioService {
   async verificaCpf(cpf: string): Promise<boolean> {
     const usuario = await prisma.usuario.findUnique({
-      where: { cpf }
-    })
-    return !!usuario
+      where: { cpf },
+    });
+    return !!usuario;
   }
 
   async adicionar(usuario: any): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
-    const cpfExiste = await this.verificaCpf(usuario.cpf)
+    const cpfExiste = await this.verificaCpf(usuario.cpf);
 
     try {
       if (cpfExiste) throw new Error('Este CPF já está cadastrado.');

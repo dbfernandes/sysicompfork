@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import usuarioService from "../usuarios/usuario.service";
-import criarURL from '../../utils/criarUrl'
-import path from 'path'
+import { Request, Response } from 'express';
+import usuarioService from '../usuarios/usuario.service';
+import criarURL from '../../utils/criarUrl';
+import path from 'path';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -87,7 +87,7 @@ const editar = async (req: Request, res: Response) => {
     };
     try {
       await usuarioService.alterar(parseInt(id!), dados);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       dados.id = id;
       return res.status(500).render(resolveView('perfil-editar'), {
