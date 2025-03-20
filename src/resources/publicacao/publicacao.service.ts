@@ -5,7 +5,6 @@ import getPublicationsArr from '../../utils/listaPublicacoes';
 import { ContagemResult, PublicacaoCount } from './publicacao.types';
 
 class PublicacaoService {
-
   async adicionarVarios(
     professorId: number,
     publicacoes: Partial<Publicacao>[],
@@ -102,11 +101,11 @@ class PublicacaoService {
         tipoId: tipo.length ? { in: tipo } : undefined,
         ano: ano
           ? {
-            in: []
-              .concat(ano)
-              .map(Number)
-              .filter((n) => !isNaN(n)),
-          }
+              in: []
+                .concat(ano)
+                .map(Number)
+                .filter((n) => !isNaN(n)),
+            }
           : undefined,
       };
 

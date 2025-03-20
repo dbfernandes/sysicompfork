@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../../src/app';
 import bcrypt from 'bcrypt';
-import prisma, { checkDatabaseConnection } from '../mocks/prismaClient';
 import { StatusCodes } from 'http-status-codes';
-import { CreateAlunoDto } from '../../src/resources/alunos/aluno.types';
+import app from '@/app';
+import { CreateAlunoDto } from '@/resources/alunos/aluno.types';
+import prisma, { checkDatabaseConnection } from 'tests/mocks/prismaClient';
 
 const SENHA_TESTE = 'senha123';
 const agent = request.agent(app);

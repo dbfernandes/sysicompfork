@@ -294,7 +294,7 @@ async function renderFormProposta(
   );
 
   const [linhas, recomendacoes, edital] = await Promise.all([
-    linhaDePesquisaService.list(),
+    linhaDePesquisaService.listarTodos(),
     candidatoRecomendacaoService.getRecomendacoesByCandidato(Number(uid)),
     editalService.getById(req.candidato.editalId),
   ]);
