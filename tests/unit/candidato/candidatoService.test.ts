@@ -1,4 +1,5 @@
-import { Candidato, prismaMock } from '@prisma/client';
+import { Candidato } from '@prisma/client';
+import { prismaMock } from '../../../singleton';
 
 import CandidatoService from '../../../src/resources/candidato/candidato.service';
 
@@ -43,7 +44,7 @@ describe('CandidatoService', () => {
           id: 1,
           email: 'user1@example.com',
           senhaHash: 'hash1',
-          editalId: 1,
+          editalId: '1',
           posicaoEdital: 1,
           tokenResetSenha: null,
           validadeTokenReset: null,
@@ -52,7 +53,7 @@ describe('CandidatoService', () => {
           id: 2,
           email: 'user2@example.com',
           senhaHash: 'hash2',
-          editalId: 1,
+          editalId: '1',
           posicaoEdital: 2,
           tokenResetSenha: null,
           validadeTokenReset: null,

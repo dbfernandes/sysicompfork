@@ -54,11 +54,23 @@ function resolveView(viewName: string): string {
 
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    if (req.session.uid) return res.redirect('/');
-    return res.status(StatusCodes.OK).render(resolveView('login'), {
-      ...optionsLogin,
-      csrfToken: req.csrfToken(),
-    });
+    try {
+      if (req.session.uid) return res.redirect('/');
+      return res.status(StatusCodes.OK).render(resolveView('login'), {
+        ...optionsLogin,
+        csrfToken: req.csrfToken(),
+      });
+    } catch (err) {
+      console.error(err);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('login'), {
+          ...optionsLogin,
+          csrfToken: req.csrfToken(),
+          message: 'Erro interno',
+          type: 'danger',
+        });
+    }
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body;
@@ -85,22 +97,25 @@ const login = async (req: Request, res: Response) => {
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
       if (!isSenhaCorreta) {
-        return res.status(StatusCodes.UNAUTHORIZED).render(resolveView('login'), {
-          ...optionsLogin,
-          csrfToken: req.csrfToken(),
-          message: 'Senha inválida',
-          type: 'danger',
-        });
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .render(resolveView('login'), {
+            ...optionsLogin,
+            csrfToken: req.csrfToken(),
+            message: 'Senha inválida',
+            type: 'danger',
+          });
       }
 
       req.session.uid = String(usuario.id);
-      req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${usuario.nomeCompleto.split(' ').length > 1
-        ? ' ' +
-        usuario.nomeCompleto.split(' ')[
-        usuario.nomeCompleto.split(' ').length - 1
-        ]
-        : ' '
-        }`;
+      req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
+        usuario.nomeCompleto.split(' ').length > 1
+          ? ' ' +
+            usuario.nomeCompleto.split(' ')[
+              usuario.nomeCompleto.split(' ').length - 1
+            ]
+          : ' '
+      }`;
       req.session.tipoUsuario = {
         administrador: usuario.administrador,
         coordenador: usuario.coordenador,
@@ -112,12 +127,14 @@ const login = async (req: Request, res: Response) => {
     } catch (err) {
       console.log(err);
       // return res.status(500).send({ message: 'Erro interno' });
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('login'), {
-        ...optionsLogin,
-        csrfToken: req.csrfToken(),
-        message: 'Erro interno',
-        type: 'danger',
-      });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('login'), {
+          ...optionsLogin,
+          csrfToken: req.csrfToken(),
+          message: 'Erro interno',
+          type: 'danger',
+        });
     }
   }
 };
@@ -165,20 +182,24 @@ const trocaSenha = async (req: Request, res: Response) => {
       });
       const hasUser = Boolean(user);
       if (!hasUser) {
-        return res.status(StatusCodes.FORBIDDEN).render(resolveView('trocarSenha'), {
-          csrfToken: req.csrfToken(),
-          error: 'Token invalido',
-          ...optionsLogin,
-        });
+        return res
+          .status(StatusCodes.FORBIDDEN)
+          .render(resolveView('trocarSenha'), {
+            csrfToken: req.csrfToken(),
+            error: 'Token invalido',
+            ...optionsLogin,
+          });
       }
 
       const isTokenValid = user.validadeTokenResetSenha > new Date();
       if (!isTokenValid) {
-        return res.status(StatusCodes.FAILED_DEPENDENCY).render(resolveView('trocarSenha'), {
-          csrfToken: req.csrfToken(),
-          error: 'Token expirado',
-          ...optionsLogin,
-        });
+        return res
+          .status(StatusCodes.FAILED_DEPENDENCY)
+          .render(resolveView('trocarSenha'), {
+            csrfToken: req.csrfToken(),
+            error: 'Token expirado',
+            ...optionsLogin,
+          });
       }
 
       return res.status(StatusCodes.OK).render(resolveView('trocarSenha'), {
@@ -203,13 +224,17 @@ const trocaSenha = async (req: Request, res: Response) => {
       } catch (err) {
         console.error(err);
         if (err instanceof Error) {
-          return res.status(StatusCodes.BAD_REQUEST).send({ message: err.message });
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .send({ message: err.message });
         }
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
       }
     }
     default:
-      return res.status(StatusCodes.FORBIDDEN).send({ message: 'Método não permitido' });
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .send({ message: 'Método não permitido' });
   }
 };
 
