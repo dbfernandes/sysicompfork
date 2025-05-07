@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import usuarioService from "../usuarios/usuario.service";
-import criarURL from '../../utils/criarUrl'
-import path from 'path'
+import { Request, Response } from 'express';
+import usuarioService from '../usuarios/usuario.service';
+import criarURL from '../../utils/criarUrl';
+import path from 'path';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -12,7 +12,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
     const { message, type, messageTitle } = req.query;
     const id = req.session.uid;
     const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
-    return res.render(resolveView('perfil-dados'), {
+    return res.render(resolveView('perfilDados'), {
       usuario,
       csrfToken: req.csrfToken(),
       nome: req.session.nome,
@@ -41,7 +41,7 @@ const editar = async (req: Request, res: Response) => {
     try {
       const { message, type, messageTitle } = req.query;
       const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
-      return res.render(resolveView('perfil-editar'), {
+      return res.render(resolveView('perfilEditar'), {
         usuario,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -87,10 +87,10 @@ const editar = async (req: Request, res: Response) => {
     };
     try {
       await usuarioService.alterar(parseInt(id!), dados);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       dados.id = id;
-      return res.status(500).render(resolveView('perfil-editar'), {
+      return res.status(500).render(resolveView('perfilEditar'), {
         usuario: dados,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,

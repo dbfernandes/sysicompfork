@@ -193,13 +193,15 @@ describe('UsuarioService', () => {
 
   describe('RecuperarSenha', () => {
     it('deve lançar um erro se a atualização falhar', async () => {
-      const mockDate = new Date();
       prismaMock.usuario.update.mockRejectedValue(
         new Error('Erro ao recuperar senha'),
       );
 
       await expect(
-        UsuarioService.recuperarSenha('token', mockDate, 1),
+        UsuarioService.recuperarSenha({
+          email: 'user@email.com',
+          host: 'localhost:3000',
+        }),
       ).rejects.toThrow('Erro ao recuperar senha');
     });
   });

@@ -14,13 +14,13 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 //criarUsuario
-const adicionar = async (
+const adicionarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
-      return res.status(StatusCodes.OK).render(resolveView('usuarios-adicionar'), {
+      return res.status(StatusCodes.OK).render(resolveView('usuariosAdicionar'), {
         nome: req.session.nome,
         csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
@@ -48,7 +48,7 @@ const adicionar = async (
 
         const cpfExiste = await usuarioService.verificaCpf(cpf);
         if (cpfExiste) {
-          return res.status(StatusCodes.BAD_REQUEST).render(resolveView('usuarios-adicionar'), {
+          return res.status(StatusCodes.BAD_REQUEST).render(resolveView('usuariosAdicionar'), {
             nome: req.session.nome,
             csrfToken: req.csrfToken(),
             message:
@@ -100,7 +100,7 @@ const adicionar = async (
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuarios-adicionar'), {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuariosAdicionar'), {
           nome: req.session.nome,
           csrfToken: req.csrfToken(),
           errors: (error as { errors: Record<string, { message: string }> })
@@ -119,8 +119,8 @@ const adicionar = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//bloquearUsuario
-const bloquear = async (
+
+const bloquearUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -161,7 +161,7 @@ const bloquear = async (
   }
 };
 
-const restaurar = async (
+const restaurarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -209,7 +209,7 @@ const restaurar = async (
   }
 };
 
-const listar = async (
+const listarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -232,7 +232,7 @@ const listar = async (
             usuario.perfil += ' professor';
           }
         });
-        return res.status(StatusCodes.OK).render(resolveView('usuarios-listar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuariosListar'), {
           usuarios,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -257,8 +257,8 @@ const listar = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//detalhesUsuario
-const exibirDetalhes = async (
+
+const exibirDetalhesUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -270,7 +270,7 @@ const exibirDetalhes = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(StatusCodes.OK).render(resolveView('usuario-visualizar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuarioVisualizar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -296,8 +296,8 @@ const exibirDetalhes = async (
         .send('A requisição enviada ao servidor é invalida. Bad Request (400)');
   }
 };
-//editarUsuario
-const editar = async (
+
+const editarUsuario = async (
   req: Request,
   res: Response,
 ): Promise<void | Response> => {
@@ -308,7 +308,7 @@ const editar = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(StatusCodes.OK).render(resolveView('usuarios-editar'), {
+        return res.status(StatusCodes.OK).render(resolveView('usuariosEditar'), {
           usuario,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -393,7 +393,7 @@ const editar = async (
           id: req.params.id,
         };
 
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuarios-editar'), {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuariosEditar'), {
           usuario: formData,
           csrfToken: req.csrfToken(),
           nome: req.session.nome,
@@ -413,8 +413,7 @@ const editar = async (
         .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
-//verificarUsuarioDiretor
-const verificarDiretor = async (
+const verificarUsuarioDiretor = async (
   req: Request,
   res: Response,
 ): Promise<any> => {
@@ -435,11 +434,11 @@ const verificarDiretor = async (
 };
 
 export const usuarioController = {
-  adicionar,
-  listar,
-  bloquear,
-  exibirDetalhes,
-  editar,
-  restaurar,
-  verificarDiretor,
+  adicionarUsuario,
+  listarUsuario,
+  bloquearUsuario,
+  exibirDetalhesUsuario,
+  editarUsuario,
+  restaurarUsuario,
+  verificarUsuarioDiretor,
 };

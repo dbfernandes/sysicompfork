@@ -6,9 +6,9 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const adicionar = (req: Request, res: Response): any => {
+const criarProjetos = (req: Request, res: Response): any => {
   if (req.method === 'GET') {
-    res.render(resolveView('projetos-adicionar'), {
+    res.render(resolveView('projetosAdicionar'), {
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
@@ -17,11 +17,11 @@ const adicionar = (req: Request, res: Response): any => {
   }
 };
 
-const listar = (req: Request, res: Response): any => {
-  res.render(resolveView('projetos-listar'), {
+const listarProjetos = (req: Request, res: Response): any => {
+  res.render(resolveView('projetosListar'), {
     nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
   });
 };
 
-export default { adicionar, listar };
+export default { criarProjetos, listarProjetos };

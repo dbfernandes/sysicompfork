@@ -8,7 +8,7 @@ async function validPassword(password: string, passwordHash: string) {
 }
 
 class CandidatoService {
-  async create(email: string, password: string, editalNumber: string) {
+  async criarCandidato(email: string, password: string, editalNumber: string) {
     try {
       const salt = await genSalt(10);
       const passwordHash = await hash(password, salt);
@@ -21,7 +21,7 @@ class CandidatoService {
           },
         })
         .catch((err) => {
-          console.error(err);
+          console.log(err);
           throw new Error(
             'Não foi possivel criar o candidato erro no find one ',
           );
@@ -55,7 +55,7 @@ class CandidatoService {
     }
   }
 
-  async list() {
+  async listarCandidatos() {
     const candidatos = await prisma.candidato
       .findMany({
         select: {
@@ -149,7 +149,7 @@ class CandidatoService {
     return candidato;
   }
 
-  async listCanditatesByEdital(editalId: string) {
+  async listarCandidatosPorEdital(editalId: string) {
     const candidatos = await prisma.candidato
       .findMany({
         where: {

@@ -4,7 +4,7 @@ import curriculoController from './curriculo.controller';
 
 const router = express.Router();
 
-router.get('/', curriculoController.visualizar);
+router.get('/', curriculoController.visualizarCurriculo);
 router.get('/avatar/:id', curriculoController.verificarAvatar);
 router.post('/upload', curriculoController.carregar);
 

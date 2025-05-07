@@ -3,9 +3,9 @@ import salasController from './sala.controller';
 
 const router = express.Router();
 
-router.all('/adicionar', salasController.adicionar);
-router.post('/excluir/:id', salasController.excluir);
-router.get('/gerenciar', salasController.gerenciar);
-router.all('/editar/:id', salasController.editar);
+router.all('/adicionar', salasController.criarSala);
+router.post('/excluir/:id', salasController.excluirSala);
+router.get('/gerenciar', salasController.listarSalas);
+router.all('/editar/:id', salasController.editarSala);
 
 export default router;

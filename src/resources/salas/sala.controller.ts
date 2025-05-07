@@ -6,14 +6,14 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const adicionar = async (req: Request, res: Response): Promise<void> => {
+const criarSala = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     if (!req.session.tipoUsuario?.professor) {
       res.status(401).send('Não autorizado');
       return;
     }
 
-    res.render(resolveView('salas-adicionar'), {
+    res.render(resolveView('salasAdicionar'), {
       nome: req.session.nome,
       csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
@@ -54,7 +54,7 @@ const adicionar = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const excluir = async (req: Request, res: Response): Promise<void> => {
+const excluirSala = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('não encontrada');
     return;
@@ -78,14 +78,14 @@ const excluir = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const gerenciar = async (req: Request, res: Response): Promise<void> => {
+const listarSalas = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('Não autorizado');
     return;
   }
 
   const salas = await SalaService.listarTodos();
-  res.render(resolveView('salas-gerenciar'), {
+  res.render(resolveView('salasGerenciar'), {
     salas,
     csrfToken: req.csrfToken(),
     nome: req.session.nome,
@@ -93,7 +93,7 @@ const gerenciar = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
-const editar = async (req: Request, res: Response): Promise<void> => {
+const editarSala = async (req: Request, res: Response): Promise<void> => {
   if (!req.session.tipoUsuario?.professor) {
     res.status(401).send('Não autorizado');
     return;
@@ -108,7 +108,7 @@ const editar = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      res.render(resolveView('salas-editar'), {
+      res.render(resolveView('salasEditar'), {
         sala: sala,
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -149,4 +149,4 @@ const editar = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { adicionar, excluir, gerenciar, editar };
+export default { criarSala, excluirSala, listarSalas, editarSala };

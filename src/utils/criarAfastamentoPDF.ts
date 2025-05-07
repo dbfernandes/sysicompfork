@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
 import usuarioService from '../resources/usuarios/usuario.service';
-import afastamentoService from '../resources/afastamentoTemporario/afastamentoTemporario.service';
+import afastamentoService from '../resources/afastamentoTemporario/afastamento.temporario.service';
 import { Request, Response } from 'express';
 import { generatePdfLeave } from '../resources/pdf/pdf.controller';
 
@@ -22,7 +22,7 @@ interface DataAfastamentoPDF {
 
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
 export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
-  const afastamento = await afastamentoService.retornarAfastamento(id);
+  const afastamento = await afastamentoService.buscarPorId(id);
   const usuario = await usuarioService.listarUmUsuario(id);
   const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
   const email = usuario.email;

@@ -1,5 +1,5 @@
 import prisma from '../../client';
-import { ReservaSala } from '@prisma/client';
+import { Prisma, ReservaSala } from '@prisma/client';
 
 export default new (class ReservaService {
   async listarTodos(): Promise<ReservaSala[]> {
@@ -35,17 +35,41 @@ export default new (class ReservaService {
     return await prisma.reservaSala.findUnique({ where: { id } });
   }
 
-  async criar(reserva: any): Promise<ReservaSala> {
+  async criar(
+    dados: Prisma.ReservaSalaUncheckedCreateInput,
+  ): Promise<ReservaSala> {
+    const dataInicio =
+      dados.dataInicio instanceof Date
+        ? dados.dataInicio
+        : new Date(dados.dataInicio as string);
+
+    const dataFim =
+      dados.dataFim instanceof Date
+        ? dados.dataFim
+        : new Date((dados.dataFim as string) || (dados.dataInicio as string));
+
     return await prisma.reservaSala.create({
-      data: reserva,
+      data: {
+        ...dados,
+        dataInicio,
+        dataFim,
+        salaId: Number(dados.salaId),
+        usuarioId: Number(dados.usuarioId),
+      },
     });
   }
 
-  async atualizar(id: number, reserva: any): Promise<ReservaSala> {
-    return await prisma.reservaSala.update({ where: { id }, data: reserva });
+  async atualizar(
+    id: number,
+    data: Prisma.ReservaSalaUncheckedUpdateInput,
+  ): Promise<ReservaSala> {
+    return await prisma.reservaSala.update({
+      where: { id },
+      data,
+    });
   }
 
-  async remover(id: number): Promise<undefined> {
-    await prisma.reservaSala.delete({ where: { id } });
+  async remover(id: number): Promise<ReservaSala> {
+    return await prisma.reservaSala.delete({ where: { id } });
   }
 })();
