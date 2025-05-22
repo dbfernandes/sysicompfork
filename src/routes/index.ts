@@ -12,20 +12,16 @@ import autenticacaoController from '../resources/autenticacao/autenticacao.contr
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
 import horasComplementaresRoutes from '../resources/horasComplementares/horas.complementares.routes';
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamento.temporario.routes';
-// import pdfController from '../utils/exportToPDF';
-import { criarAfastamentoPDF } from '../utils/criarAfastamentoPDF';
+import { criarAfastamentoPDF } from '@utils/criarAfastamentoPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/aluno.routes';
-import { isAuth } from '../middlewares/usuarioAutenticacaoMiddleware';
+import { isAuth } from '@/middlewares/usuarioAutenticacaoMiddleware';
 const router = express.Router();
 
-// const { isUsuarioAutenticado } = require('../utils/autenticacaoMiddleware')
-
-/* Add routes */
-// router.use('/', isUsuarioAutenticado)
-// router.use('/', autenticacaoRoutes)
-// router.use('/inscricao', inscricaoRouter);
+// ROTAS DE OUTROS PROJETOS
+router.use('/selecaoppgi', selecaoppgiRouter);
+router.use('/numerosIcomp', numerosIcompRouter);
 
 router.get('/changeLanguage/:lang', (req, res) => {
   const supportedLanguages = ['en', 'ptBR']; // Exemplo de idiomas suportados
@@ -40,7 +36,6 @@ router.get('/changeLanguage/:lang', (req, res) => {
 });
 
 // ROTAS DE AUTENTICAÇÃO
-
 router.get('/login', autenticacaoController.login);
 router.post('/login', autenticacaoController.login);
 
@@ -51,9 +46,6 @@ router.get('/logout', autenticacaoController.logout);
 
 router.get('/alterarSenha', autenticacaoController.trocaSenha);
 router.put('/alterarSenha', autenticacaoController.trocaSenha);
-
-router.use('/selecaoppgi', selecaoppgiRouter);
-router.use('/numerosIcomp', numerosIcompRouter);
 
 router.use(isAuth);
 router.use('//', (req, res) => res.redirect('/inicio'));

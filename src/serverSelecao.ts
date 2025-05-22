@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import app from './app';
+import app from './appSelecao';
 import validateEnv from './utils/validateEnv';
 
 dotenv.config({
@@ -8,10 +8,10 @@ dotenv.config({
 
 validateEnv();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT_SELECAO || 3001;
 
 const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server seleção is running on port ${port}`);
   console.log(`http://localhost:${port}/`);
 });
 

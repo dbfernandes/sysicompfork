@@ -99,6 +99,13 @@ async function signUp(
       const listEditais = await editalService.listEditaisDisponiveis();
       const currentLanguage = getLanguage(req);
 
+      console.log({
+        csrfToken: req.csrfToken(),
+        editais: listEditais,
+        errorSignin: null,
+        currentLanguage,
+        ...locals,
+      });
       res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
@@ -502,7 +509,6 @@ async function formHistorico(
           posicaoEdital: 3,
           tipoPos: body.tipoPos,
         };
-        console.log(candidato);
         const id = Number(uid);
         await candidatoService.update({
           id,

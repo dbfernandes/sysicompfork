@@ -178,7 +178,7 @@
                       <ul>
                         <li>
                           <strong>{{__ "ppgiSignUp.regularVacancies"}}</strong>
-                          {{vagaMestrado}}
+                          {{vagasMestrado}}
                         </li>
                         <li>
                           <strong>{{__ "ppgiSignUp.supplementaryVacancies"}}</strong>
@@ -189,7 +189,7 @@
                       <ul>
                         <li>
                           <strong>{{__ "ppgiSignUp.regularVacancies"}}</strong>
-                          {{vagaDoutorado}}
+                          {{vagasDoutorado}}
                         </li>
                         <li>
                           <strong>{{__ "ppgiSignUp.supplementaryVacancies"}}</strong>
@@ -291,7 +291,7 @@
                 <div class="row actions">
                   <button
                     type="button"
-                    onclick="back()"
+                    id="voltar"
                     class="btn btn-block btn-default col-md-5 col-xs-12 text-dark"
                     role="button"
                   >
@@ -326,9 +326,15 @@
 </main>
 
 <script>
-  function back() {
-    window.location.href = "{{url}}/selecaoppgi";
-  }
+  const basePath = "{{basePath}}";
+
+  $("#voltar").click(() => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = `${basePath}/`;
+    }
+  });
 
   $(document).ready(function () {
 
@@ -406,7 +412,7 @@
         const csrfToken = $("#csrfToken").val();
 
         $.ajax({
-          url: `{{url}}/selecaoppgi/cadastro?_csrf=${csrfToken}`,
+          url: `${basePath}/cadastro?_csrf=${csrfToken}`,
           type: "POST",
           data: {
             email,
@@ -414,7 +420,7 @@
             editalId: edital,
           },
           success: function () {
-            window.location.href = "{{url}}/selecaoppgi/formulario";
+            window.location.href = `${basePath}/formulario`;
           },
           error: function (res) {
             buttonSubmit.prop("disabled", false);
@@ -430,7 +436,7 @@
               case 409:
                 divError.html(`
                 {{__ 'ppgiSignUp.error.candidateExists1'}}
-                <a href='{{url}}/selecaoppgi/entrar?email=${email}'>
+                <a href='${basePath}/entrar?email=${email}'>
                   <b>{{__ 'ppgiSignUp.error.candidateExists2'}}</b>
                 </a>
                 {{__ 'ppgiSignUp.error.candidateExists3'}}

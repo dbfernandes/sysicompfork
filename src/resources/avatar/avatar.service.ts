@@ -52,7 +52,6 @@ class AvatarService {
             id: avatar.id,
           },
         });
-        console.log('File deleted successfully');
       });
     }
   }

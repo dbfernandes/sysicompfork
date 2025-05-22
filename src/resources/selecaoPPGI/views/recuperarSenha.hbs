@@ -106,10 +106,9 @@
         <button
           type="button"
           name="voltar"
-          id="btn-voltar"
           class="btn btn-default btn-block"
           role="button"
-          onclick="back()"
+          id="voltar"
         >
           {{__ "ppgiRecPass.backButton"}}
         </button>
@@ -122,9 +121,15 @@
 </main>
 
 <script>
-  function back(){
-    window.location.href = "{{url}}/selecaoppgi";
-  }
+  const basePath = "{{basePath}}";
+
+  $("#voltar").click(() => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = `${basePath}/`;
+    }
+  });
 
   // Esconde a mensagem de erro ao digitar
   $("#form-recuperar-senha input").on("input", function() {
@@ -175,7 +180,7 @@
       buttonLogin.find("span").prop("hidden", false);
 
       $.ajax({
-        url: "{{url}}/selecaoppgi/recuperarSenha?_csrf={{csrfToken}}",
+        url: `${basePath}/recuperarSenha?_csrf={{csrfToken}}`,
         type: "POST",
         data: {
           email: formData.get("email"),

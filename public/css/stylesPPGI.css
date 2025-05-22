@@ -65,8 +65,6 @@ header > .container {
   color: #fff;
 }
 
-
-
 .forms-page header .options {
   display: flex;
   align-items: center;
@@ -124,7 +122,6 @@ header > .container {
   height: 100%;
 }
 
-
 .forms-page section button {
   position: relative;
   bottom: 0;
@@ -151,10 +148,12 @@ header > .container {
   background-color: #f5f5f5;
   border-top: 1px solid #ddd;
 }
+
 .custom-footer p {
   margin: 0;
   color: #505050;
 }
+
 .container-footer {
   display: flex;
   justify-content: space-between;

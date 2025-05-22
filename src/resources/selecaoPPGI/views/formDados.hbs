@@ -51,7 +51,6 @@
       <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button class="p-0" id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
         <button class="p-0" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
       </div>
     </div>
@@ -92,7 +91,7 @@
     <div class="container-fluid">
       <!-- Agrupamos o formulário em um <article> para indicar uma seção independente -->
       <article>
-        <form id="candidato-formulario" novalidate>
+        <form id="candidato-formulario" >
           <!-- Tokens e inputs ocultos -->
           <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
           <input id="email" type="hidden" value="{{email}}" />
@@ -467,14 +466,7 @@
                     value="{{telefoneSecundario}}"
                   />
                 </div>
-                <div class="form-group col-sm-6">
-                  <label for="candidato-telcelular" class="control-label">
-                    {{__ "ppgiForm1.contato.telefoneAlternativo"}}:
-                  </label>
-                  <br>
-                  <input type="tel" id="phone" name="phone">
-                  <input class="form-control telefone" type="hidden" id="phoneFull" name="phoneFull"> <!-- Campo oculto para armazenar o número formatado -->
-                </div>
+               
 
               </div><!-- /row -->
             </div>
@@ -737,24 +729,11 @@
                   {{__ "ppgi.form.saveAndContinue"}}
                   <span
                     class="spinner-border spinner-border-sm"
-                    hidden="true"
+                    hidden="hidden"
                     role="status"
                     aria-hidden="true"
                   ></span>
                 </button>
-<!--                <button-->
-<!--                  id="btn-save"-->
-<!--                  type="button"-->
-<!--                  class="btn btn-secondary float-right mr-2"-->
-<!--                >-->
-<!--                  {{__ "ppgi.form.save"}}-->
-<!--                  <span-->
-<!--                    class="spinner-border spinner-border-sm"-->
-<!--                    hidden="true"-->
-<!--                    role="status"-->
-<!--                    aria-hidden="true"-->
-<!--                  ></span>-->
-<!--                </button>-->
               </div>
             </div>
           </div><!-- /card Inscrição -->
@@ -768,20 +747,23 @@
 {{> ppgi/_masks }}
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
 <script>
-
-
 	$(document).ready(() => {
-		const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+    const basePath = "{{basePath}}";
+    const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+
 		$("#como-soube").val(comoSoubeValue);
 
     const condicaoInicial = $("#candidato-deficiencia1").prop("checked");
     $("#CondicaoObj").val(condicaoInicial);
+
     $("#candidato-deficiencia1").change(function () {
       $("#CondicaoObj").val($(this).prop("checked"));
     });
+
     $("#candidato-condicao").change(function () {
       $("#CondicaoTipoObj").val($(this).val());
     });
+
     {{#if dataNascimento}}
       const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
       const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
@@ -830,15 +812,16 @@
         break;
       }
     }
+
     {{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
     {{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
     {{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
-
 
     $('#candidato-datanascimento').datetimepicker({
       format: 'DD/MM/YYYY',
       locale: 'pt-br',
     });
+
     $("input[data-bootstrap-switch-cotista]").each(function () {
       $(this).bootstrapSwitch('state', $(this).prop('checked'));
       if (!$(this).prop('checked')) {
@@ -852,7 +835,6 @@
         }
       });
     });
-
 
     $("input[data-bootstrap-switch-deficiencia]").each(function () {
       $(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -1030,13 +1012,13 @@
 
     $("#btn_logout").click(function () {
       $.ajax({
-        url: "/selecaoppgi/logout",
+        url: `${basePath}/logout`,
         type: "POST",
         data: {
           _csrf: $("#csrfToken").val()
         },
         success: function (data) {
-          window.location.href = "/selecaoppgi";
+          window.location.href = `${basePath}`;
         },
         error: function (data) {
           console.error(data);
@@ -1044,22 +1026,6 @@
       });
     });
 
-    $("#btn_inicio").click(function () {
-
-      $.ajax({
-        url: "/selecaoppgi/voltarInicio",
-        type: "POST",
-        data: {
-          _csrf: $("#csrfToken").val()
-        },
-        success: function (data) {
-          window.location.href = "/selecaoppgi/formulario";
-        },
-        error: function (data) {
-          console.error(data);
-        }
-      });
-    });
 
     $.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
     $.validator.addMethod("validPhoneNumber", function (value, element) {
@@ -1235,6 +1201,7 @@
         }
       },
       submitHandler: function (form, e) {
+        console.log(`treste`)
         e.preventDefault();
         console.log("paasou aqui")
         const btnSave = $("#btn-save-continue");
@@ -1245,27 +1212,27 @@
         const email = $("#email").val();
         const editalPosicao = $("#editalPosicao").val();
         const id = $("#id").val();
-
-        $.ajax({
-        	url: '/selecaoppgi/formulario/1',
-        	type: "PUT",
-        	data: {
-        		data: data,
-        		_csrf: csrfToken,
-        		email: email,
-        		editalPosicao: editalPosicao,
-        		id: id
-        	},
-        	success: (data) => {
-        		window.location.href = '/selecaoppgi/formulario';
-        		window.location.reload(true);
-        	},
-        	error: (data) => {
-        		btnSave.find("span").prop("hidden", true);
-        		btnSave.prop("disabled", false);
-        		console.log(data)
-        	}
-        });
+console.log(`Teste`)
+        // $.ajax({
+        // 	url:`${basePath}/formulario/1`,
+        // 	type: "PUT",
+        // 	data: {
+        // 		data: data,
+        // 		_csrf: csrfToken,
+        // 		email: email,
+        // 		editalPosicao: editalPosicao,
+        // 		id: id
+        // 	},
+        // 	success: (data) => {
+        // 		window.location.href = `${basePath}/formulario`;
+        // 		window.location.reload(true);
+        // 	},
+        // 	error: (data) => {
+        // 		btnSave.find("span").prop("hidden", true);
+        // 		btnSave.prop("disabled", false);
+        // 		console.log(data)
+        // 	}
+        // });
       }
     });
 

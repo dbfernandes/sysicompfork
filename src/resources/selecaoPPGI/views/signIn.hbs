@@ -113,7 +113,7 @@
           </div>
           <div class="col-md-6">
             <div class="form-group">
-              <a href="/selecaoppgi/recuperarSenha">{{__ "ppgiSignIn.forgotPassword"}}</a>
+              <a href="recuperarSenha">{{__ "ppgiSignIn.forgotPassword"}}</a>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@
             {{__ "ppgiSignIn.continueButton"}}
             <span
               class="spinner-border spinner-border-sm"
-              hidden="true"
+              hidden="hidden"
               role="status"
               aria-hidden="true"
             ></span>
@@ -175,12 +175,13 @@
 </main>
 
 <script>
-  // Botão Voltar
+  const basePath = "{{basePath}}";
+
   $("#voltar").click(() => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = "{{url}}/selecaoppgi";
+      window.location.href = `${basePath}/`;
     }
   });
 
@@ -260,7 +261,7 @@
       const csrfToken = $("#csrfToken").val();
 
       $.ajax({
-        url: `{{url}}/selecaoppgi/entrar?_csrf=${csrfToken}`,
+        url: `${basePath}/entrar?_csrf=${csrfToken}`,
         type: "POST",
         data: {
           email,
@@ -268,7 +269,7 @@
           editalId
         },
         success: function () {
-          window.location.href = "{{url}}/selecaoppgi/formulario";
+          window.location.href = `${basePath}/formulario`;
         },
         error: function (res) {
           buttonLogin.attr("disabled", false);
