@@ -17,7 +17,7 @@ export const isAuthSelecao = async (
   next: NextFunction,
 ) => {
   if (!req.session.uid)
-    return res.status(StatusCodes.UNAUTHORIZED).redirect('/selecaoPPGI');
+    return res.status(StatusCodes.UNAUTHORIZED).redirect('/');
   next();
 };
 
@@ -58,7 +58,7 @@ export const isUsuarioAutenticadoSelecao = async (
     '/entrar',
     '/cadastro',
     '/recuperarSenha',
-    '/trocarSenha'
+    '/trocarSenha',
   ];
   if (rotasSemAutenticacao.includes(req.path)) {
     return next();

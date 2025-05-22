@@ -25,7 +25,8 @@ RUN npm install
 # Copiar restante do código
 COPY . .
 
-RUN npx prisma generate
 # Liberar a porta (caso a sua app use)
+RUN npx prisma generate
+
 # Executar a aplicação
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start-selecao"]

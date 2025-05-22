@@ -713,7 +713,7 @@
     const fileName = file.name;
     const url = URL.createObjectURL(file);
     $(idContainerInput).hide();
-    $(idButtons).show();
+    $(idButtons).css('display', 'flex');
     $(idName).html(`<b>${fileName}</b>`);
 
     $(aLink)
@@ -907,9 +907,9 @@
     formData.append('id', $("#idCandidato").val());
 
     const csrfToken = $("#csrfToken").val();
-
+    console.log(data);
     $.ajax({
-      url: '/selecaoppgi/formulario/2?_csrf={{csrfToken}}',
+      url: `/selecaoppgi/formulario/2?_csrf=${csrfToken}`,
       type: "PUT",
       data: formData,
       contentType: false,
@@ -1059,7 +1059,9 @@
 
       },
       'Curriculum': {
-        required: inputFilesConfig.Curriculum.hasFileSave,
+        required: function(){
+          return !inputFilesConfig.Curriculum.hasFileSave
+        },
         fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
       },
       'ProvaAnterior': {

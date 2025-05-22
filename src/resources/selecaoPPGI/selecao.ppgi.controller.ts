@@ -11,8 +11,6 @@ import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.rec
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import editalService from '../edital/edital.service';
 import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
-
-import { gerarPDF } from '../../utils/gerarInscricao';
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
@@ -29,6 +27,7 @@ import {
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
+import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
@@ -100,6 +99,13 @@ async function signUp(
       const listEditais = await editalService.listEditaisDisponiveis();
       const currentLanguage = getLanguage(req);
 
+      console.log({
+        csrfToken: req.csrfToken(),
+        editais: listEditais,
+        errorSignin: null,
+        currentLanguage,
+        ...locals,
+      });
       res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
@@ -501,6 +507,7 @@ async function formHistorico(
           instituicaoPos: body.instituicaoPos,
           anoEgressoPos: body.anoEgressoPos ? Number(body.anoEgressoPos) : null,
           posicaoEdital: 3,
+          tipoPos: body.tipoPos,
         };
         const id = Number(uid);
         await candidatoService.update({
@@ -583,7 +590,9 @@ async function formProposta(
           nomeOrientador: body.nomeOrientador,
           motivos: body.motivos,
           posicaoEdital,
+          ...(body.isNext && { finishedAt: new Date() }),
         };
+
         const id = Number(uid);
         await candidatoService.update({
           id,
@@ -592,12 +601,12 @@ async function formProposta(
 
         if (body.isNext) {
           const url = `http://${req.headers.host}/selecaoppgi/recomendacoes`;
-          await gerarPDF(id);
-          await candidatoRecomendacaoService.sendEmailForUsersByCandidate({
-            id,
-            url,
-          });
-          await candidatoService.enviarEmailConfirmacao({ id });
+          await generatePdfEnrollment(uid.toString());
+          // await candidatoRecomendacaoService.sendEmailForUsersByCandidate({
+          //   id,
+          //   url,
+          // });
+          // await candidatoService.enviarEmailConfirmacao({ id });
         }
 
         res.status(StatusCodes.OK).send();

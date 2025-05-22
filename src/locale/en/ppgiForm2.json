@@ -36,9 +36,9 @@
     "description": "If you wish to use the score from a PPGI selection exam from a previous year (maximum of 2 years), please upload the PDF of the exam through the option below"
   },
   "experienciaAcademica": {
-    "title": "Academic Experience",
+    "title": "Academic Experience (Monitoring, PIBIC, PET, Instructor, Professor)",
     "instituicao": "Academic Institution",
-    "atividade": "Activity",
+    "atividade": "Activity/Position",
     "periodo": "Period",
     "adicionarExperiencia": "Add Experience",
     "excluirExperiencia": "Delete Experience"

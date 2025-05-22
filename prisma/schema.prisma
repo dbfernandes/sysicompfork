@@ -98,6 +98,8 @@ model Candidato {
   tituloProposta       String?   @db.VarChar(100)
   motivos              String?   @db.VarChar(1001)
   nomeOrientador       String?   @db.VarChar(200)
+  createdAt            DateTime  @default(now())
+  finishedAt           DateTime?
 
   // Relações
   edital                 Edital                          @relation(fields: [editalId], references: [id])

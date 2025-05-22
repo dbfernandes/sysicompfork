@@ -54,11 +54,23 @@ function resolveView(viewName: string): string {
 
 const login = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    if (req.session.uid) return res.redirect('/');
-    return res.status(StatusCodes.OK).render(resolveView('login'), {
-      ...optionsLogin,
-      csrfToken: req.csrfToken(),
-    });
+    try {
+      if (req.session.uid) return res.redirect('/');
+      return res.status(StatusCodes.OK).render(resolveView('login'), {
+        ...optionsLogin,
+        csrfToken: req.csrfToken(),
+      });
+    } catch (err) {
+      console.error(err);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .render(resolveView('login'), {
+          ...optionsLogin,
+          csrfToken: req.csrfToken(),
+          message: 'Erro interno',
+          type: 'danger',
+        });
+    }
   } else if (req.method === 'POST') {
     try {
       const { cpf, senha } = await req.body;

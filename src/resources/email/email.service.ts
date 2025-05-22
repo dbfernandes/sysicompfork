@@ -31,7 +31,13 @@ function dataAtualExtensa() {
     timeZoneName: 'long',
   });
 }
-
+function dataAtualExtensaEng() {
+  const date = new Date();
+  return date.toLocaleString('en-US', {
+    timeZone: 'America/Manaus',
+    timeZoneName: 'long',
+  });
+}
 function formatarDataExtensa(date) {
   if (!date) return '';
 
@@ -61,6 +67,7 @@ function dataToLocaleString(date) {
   return dateObj.toLocaleString();
 }
 
+Handlebars.registerHelper('dataAtualExtensaEng', dataAtualExtensaEng);
 Handlebars.registerHelper('dataAtualExtensa', dataAtualExtensa);
 Handlebars.registerHelper('formatarDataExtensa', formatarDataExtensa);
 Handlebars.registerHelper('dataAtualToLocaleString', dataAtualToLocaleString);

@@ -56,30 +56,44 @@ export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
 }
 
 // 3. Gerar o PDF
+
 export async function criarAfastamentoPDF(req: Request, res: Response) {
   try {
     const id = req.params.id;
+
     const filePath = path.join(
       __dirname,
       '..',
       '..',
       `public/afastamentos/${id}.pdf`,
     );
+
     const dados = await getAfastamento(Number(id));
+    if (!dados) {
+      return res.status(404).json({ error: 'Afastamento não encontrado' });
+    }
+
     await generatePdfLeave(id, id.toString());
+
+    try {
+      await fs.promises.access(filePath, fs.constants.F_OK);
+    } catch {
+      return res.status(404).json({ error: 'Arquivo PDF não encontrado.' });
+    }
+
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `inline; filename=${dados!.nomeCompleto}.pdf`,
+      `inline; filename="${dados.nomeCompleto}.pdf"`,
     );
-    fs.createReadStream(filePath).pipe(res);
-    // Quando a resposta terminar, remove o arquivo
+
+    const stream = fs.createReadStream(filePath);
+    stream.pipe(res);
+
     res.on('finish', () => {
-      try {
-        fs.promises.unlink(filePath);
-      } catch (error) {
-        console.error(error);
-      }
+      fs.promises
+        .unlink(filePath)
+        .catch((err) => console.error('Erro ao deletar arquivo:', err));
     });
   } catch (error) {
     console.error(error);

@@ -107,7 +107,7 @@
           {{__ "ppgiChangePass.submitButton"}}
           <span
             class="spinner-border spinner-border-sm"
-            hidden="true"
+            hidden="hidden"
             role="status"
             aria-hidden="true"
           ></span>
@@ -115,10 +115,9 @@
         <button
           type="button"
           name="voltar"
-          id="btn-voltar"
           class="btn btn-default btn-block"
           role="button"
-          onclick="back()"
+          id="voltar"
         >
           {{__ "ppgiChangePass.backButton"}}
         </button>
@@ -132,9 +131,15 @@
 </main>
 
 <script>
-  function back() {
-    window.location.href = "{{url}}/selecaoppgi";
-  }
+  const basePath = "{{basePath}}";
+
+  $("#voltar").click(() => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = `${basePath}/`;
+    }
+  });
 
   // Esconde mensagem de erro ao digitar algo
   $("#form-recuperar-senha input").on("input", function() {
@@ -189,14 +194,14 @@
       btnSubmit.find("span").prop("hidden", false);
 
       $.ajax({
-        url: "{{url}}/selecaoppgi/trocarSenha?_csrf={{csrfToken}}",
+        url: `${basePath}/trocarSenha?_csrf={{csrfToken}}`,
         type: "PUT",
         data: {
           senha,
           token: "{{token}}"
         },
         success: function () {
-          window.location.href = "{{url}}/selecaoppgi/entrar";
+          window.location.href = `${basePath}/entrar`;
         },
         error: function (res) {
           btnSubmit.attr("disabled", false);

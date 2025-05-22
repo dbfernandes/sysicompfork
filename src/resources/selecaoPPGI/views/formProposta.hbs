@@ -578,6 +578,7 @@
 
   function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
     const input = $(event.target);
+
     if (!input.valid()) {
       input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
       return;
@@ -668,6 +669,7 @@
       const urlElement = $(inputConfig.urlElement);
 
       input.change((event) => {
+        inputFilesConfig[key].hasFileSave = true;
         changeFileInput(event, urlElement, buttonsElement, containerInput, nameElement);
       });
 
@@ -676,6 +678,7 @@
       });
 
       deleteButton.click(() => {
+        inputFilesConfig[key].hasFileSave = false;
         actionDeleteFile(input, buttonsElement, containerInput);
       });
     });
@@ -797,7 +800,7 @@
     }
     return this.valid();
   }
- 
+
   $("#candidato-formulario").validate({
       errorElement: 'span',
       errorPlacement: function (error, element) {
@@ -825,15 +828,21 @@
           email: true 
         },
         "PropostaTrabalho": {
-          required: !!inputFilesConfig.PropostaTrabalho.hasFileSave,
+          required: function() {
+            return !inputFilesConfig.PropostaTrabalho.hasFileSave;
+          },
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "ComprovantePagamento": {
-          required: !!inputFilesConfig.ComprovantePagamento.hasFileSave,
+          required: function() {
+            return !inputFilesConfig.ComprovantePagamento.hasFileSave;
+          },
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "CartaAceiteOrientador": {
-          required: {{#if (eq cursoDesejado 'Doutorado')}}!!inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}false{{/if}},
+          required: function() {
+            {{#if (eq cursoDesejado 'Doutorado')}}return !inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}return false{{/if}}
+          },
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
       },

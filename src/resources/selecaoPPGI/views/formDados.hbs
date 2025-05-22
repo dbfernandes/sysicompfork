@@ -19,10 +19,30 @@
 	.radio-group {
 		margin-bottom: 8px;
 	}
+
+  .iti__tel-input {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+  }
+  .iti__tel-input:focus {
+    outline: none;
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: inset 0 0 0 transparent;
+  }
+
+  .iti { width: 100%; }
+  .iti__tel-input { width: 100%; }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css">
 
 <link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
- 
+<!-- -->
 <!-- Conteúdo principal da página -->
 <main class="forms-page">
   <!-- Cabeçalho -->
@@ -31,7 +51,6 @@
       <h1 class="header-title">{{__ "ppgi.header.title"}}</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <button class="p-0" id="btn_inicio">{{__ "ppgi.header.initButton"}}</button>
         <button class="p-0" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
       </div>
     </div>
@@ -72,7 +91,7 @@
     <div class="container-fluid">
       <!-- Agrupamos o formulário em um <article> para indicar uma seção independente -->
       <article>
-        <form id="candidato-formulario" novalidate>
+        <form id="candidato-formulario" >
           <!-- Tokens e inputs ocultos -->
           <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
           <input id="email" type="hidden" value="{{email}}" />
@@ -144,33 +163,39 @@
                     <b>{{__ "ppgiForm1.identificacaoCandidato.sexo"}}:</b>
                   </label>
                   <div
-                    id="candidato-sexo"
+
                     class="d-flex align-content-center radio-group"
                     style="column-gap: 20px; max-width: 100%; flex-wrap: wrap; row-gap: 4px;"
                   >
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Sexo"
-                        name="candidatoSexo"
-                        {{#if (eq sexo 'M')}}checked{{/if}}
-                      />
-                      <label for="Sexo">
-                        {{__ "ppgiForm1.identificacaoCandidato.masculino"}}
-                      </label>
-                    </div>
+                    <select id="candidato-sexo" name="candidato-sexo" class="custom-select">
+                      <option value="">{{__ "ppgiForm1.identificacaoCandidato.notInform"}}</option>
+                      <option {{#if (eq sexo 'M')}}selected{{/if}} value="M">{{__ "ppgiForm1.identificacaoCandidato.masculino"}}</option>
+                      <option {{#if (eq sexo 'F')}}selected{{/if}} value="F">{{__ "ppgiForm1.identificacaoCandidato.feminino"}}</option>
+                    </select>
 
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Sexo2"
-                        name="candidatoSexo"
-                        {{#if (eq sexo 'F')}}checked{{/if}}
-                      />
-                      <label for="Sexo2">
-                        {{__ "ppgiForm1.identificacaoCandidato.feminino"}}
-                      </label>
-                    </div>
+                    <!--                    <div class="icheck-primary d-inline">-->
+<!--                      <input-->
+<!--                        type="radio"-->
+<!--                        id="Sexo"-->
+<!--                        name="candidatoSexo"-->
+<!--                        {{#if (eq sexo 'M')}}checked{{/if}}-->
+<!--                      />-->
+<!--                      <label for="Sexo">-->
+<!--                        {{__ "ppgiForm1.identificacaoCandidato.masculino"}}-->
+<!--                      </label>-->
+<!--                    </div>-->
+
+<!--                    <div class="icheck-primary d-inline">-->
+<!--                      <input-->
+<!--                        type="radio"-->
+<!--                        id="Sexo2"-->
+<!--                        name="candidatoSexo"-->
+<!--                        {{#if (eq sexo 'F')}}checked{{/if}}-->
+<!--                      />-->
+<!--                      <label for="Sexo2">-->
+<!--                        {{__ "ppgiForm1.identificacaoCandidato.feminino"}}-->
+<!--                      </label>-->
+<!--                    </div>-->
                   </div>
                 </div>
               </div>
@@ -441,8 +466,11 @@
                     value="{{telefoneSecundario}}"
                   />
                 </div>
+               
+
               </div><!-- /row -->
             </div>
+
           </div><!-- /card Contato -->
 
           <!-- Card 3: Edital (como soube) -->
@@ -701,20 +729,7 @@
                   {{__ "ppgi.form.saveAndContinue"}}
                   <span
                     class="spinner-border spinner-border-sm"
-                    hidden="true"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                </button>
-                <button
-                  id="btn-save"
-                  type="button"
-                  class="btn btn-secondary float-right mr-2"
-                >
-                  {{__ "ppgi.form.save"}}
-                  <span
-                    class="spinner-border spinner-border-sm"
-                    hidden="true"
+                    hidden="hidden"
                     role="status"
                     aria-hidden="true"
                   ></span>
@@ -730,575 +745,596 @@
 
 </main>
 {{> ppgi/_masks }}
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
 <script>
 	$(document).ready(() => {
-		const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+    const basePath = "{{basePath}}";
+    const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
+
 		$("#como-soube").val(comoSoubeValue);
-	});
-	var cotistaValue = document.getElementById("CotistaObj").value;
-	var cotistaTipoValue = document.getElementById("CotistaTipoObj").value;
-	
-	var select = document.getElementById("tipo-cota");
-	for (var i = 0; i < select.options.length; i++) {
-		if (select.options[i].value === cotistaTipoValue) {
-			select.selectedIndex = i;
-			break;
-		}
-	}
-	var ufValue = document.getElementById('UFObj').value;
-	var selectElement = document.getElementById('candidato-uf');
-	for (var i = 0; i < selectElement.options.length; i++) {
-		if (selectElement.options[i].value === ufValue) {
-			selectElement.options[i].selected = true;
-			break;
-		}
-	}
-	{{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
-	{{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
-	{{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
-	
-	$(document).ready(function () {
-		const condicaoInicial = $("#candidato-deficiencia1").prop("checked");
-		$("#CondicaoObj").val(condicaoInicial);
-		$("#candidato-deficiencia1").change(function () {
-			$("#CondicaoObj").val($(this).prop("checked"));
-		});
-		$("#candidato-condicao").change(function () {
-			$("#CondicaoTipoObj").val($(this).val());
-		});
-	});
 
-	{{#if dataNascimento}}
-		$(document).ready(function () { 
-			const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
-			const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
-			$("#data-nascimento").val(formattedDate);
-			$('#candidato-datanascimento').datetimepicker({
-				format: 'DD/MM/YYYY',
-			});
-		});
-	{{/if}}
-	
-	$('#candidato-datanascimento').datetimepicker({
-		format: 'DD/MM/YYYY',
-		locale: 'pt-br',
-	});
-	$("input[data-bootstrap-switch-cotista]").each(function () {
-		$(this).bootstrapSwitch('state', $(this).prop('checked'));
-		if (!$(this).prop('checked')) {
-			$("#cota").slideUp();
-		}
-		$(this).bootstrapSwitch('onSwitchChange', () => {
-			if ($(this).is(":checked")) {
-				$("#cota").slideDown();
-			} else {
-				$("#cota").slideUp();
-			}
-		});
-	});
+    const condicaoInicial = $("#candidato-deficiencia1").prop("checked");
+    $("#CondicaoObj").val(condicaoInicial);
 
-	$("input[data-bootstrap-switch-deficiencia]").each(function () {
-		$(this).bootstrapSwitch('state', $(this).prop('checked'));
-		if (!$(this).prop('checked')) {
-			$("#condicao").slideUp();
-		}
-		$(this).bootstrapSwitch('onSwitchChange', () => {
-			if ($(this).is(":checked")) {
-				$("#condicao").slideDown();
-				$("#deficiencia-div").css("height", "auto");
-			} else {
-				$("#condicao").slideUp();
-				$("#deficiencia-div").css("height", "auto");
-			}
-		})
-	})
-	
-	$("input[data-bootstrap-switch-bolsa]").each(function () {
-		$(this).bootstrapSwitch('state', $(this).prop('checked'));
-		$(this).bootstrapSwitch('onSwitchChange', () => {
-			if ($(this).is(":checked")) {
-				$("#Regime1").prop("checked", true);
-				$("#Regime2").prop("checked", false).prop("disabled", true);
-			} else {
-				$("#Regime2").prop("disabled", false);
-			}
-		});
-	});
+    $("#candidato-deficiencia1").change(function () {
+      $("#CondicaoObj").val($(this).prop("checked"));
+    });
 
-  $('.bootstrap-switch.bootstrap-switch-wrapper').each(function (index, element){
-    console.log(index, element)
-    $(element).attr('tabindex',0)
-      .on('focus', function () {
-        $(this).addClass('bootstrap-switch-focussed');
-      })
-      .on('blur', function () {
-        $(this).removeClass('bootstrap-switch-focussed');
-      })
-      .on('keyup', function (e) {
-        if(e.which===32){
-          $(this).find('input').bootstrapSwitch('toggleState');
-        }
+    $("#candidato-condicao").change(function () {
+      $("#CondicaoTipoObj").val($(this).val());
+    });
+
+    {{#if dataNascimento}}
+      const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
+      const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
+      $("#data-nascimento").val(formattedDate);
+      $('#candidato-datanascimento').datetimepicker({
+        format: 'DD/MM/YYYY',
       });
-  })
+    {{/if}}
 
+    const input = document.querySelector("#phone");
+    const inputPhone =  window.intlTelInput(input, {
+      initialCountry: "br",
+      customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => "e.x. " + selectedCountryPlaceholder,
+      loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"),
+      i18n: {
+        "selectedCountryAriaLabel": "{{__ "intlTel.selectedCountryAriaLabel"}}",
+        "noCountrySelected": "{{__ "intlTel.noCountrySelected"}}",
+        "countryListAriaLabel": "{{__ "intlTel.countryListAriaLabel"}}",
+        "searchPlaceholder": "{{__ "intlTel.searchPlaceholder"}}",
+        "zeroSearchResults": "{{__ "intlTel.zeroSearchResults"}}",
+        "oneSearchResult": "{{__ "intlTel.oneSearchResult"}}",
+        "multipleSearchResults": "{{__ "intlTel.multipleSearchResults"}}",
+        "ac": "{{__ "intlTel.ac"}}",
+        "xk": "{{__ "intlTel.xk"}}",
+      },
+      separateDialCode: true,
+      countryOrder: ["br", "us", "gb"],
+      strictMode: true,
+      validationNumberTypes: null
+    });
+    const cotistaValue = document.getElementById('CotistaObj').value;
+    const cotistaTipoValue = document.getElementById('CotistaTipoObj').value;
 
-  function getSelectedSexo() {
-		const masculinoRadio = document.getElementById("Sexo");
-		const femininoRadio = document.getElementById("Sexo2");
-		let selectedSexo = "";
-
-		if (masculinoRadio.checked) {
-			selectedSexo = "M";
-		} else if (femininoRadio.checked) {
-			selectedSexo = "F";
-		}
-
-		return selectedSexo;
-	}
-
-	function getSelectedNacionalidade() {
-		let brasileiraRadio = document.getElementById("Nacionalidade1");
-		let estrangeiraRadio = document.getElementById("Nacionalidade2");
-		let selectedNacionalidade = "";
-		if (brasileiraRadio.checked) {
-			selectedNacionalidade = "Brasileira";
-		} else if (estrangeiraRadio.checked) {
-			selectedNacionalidade = "Estrangeira";
-		}
-		return selectedNacionalidade;
-	}
-
-	function getSelectedComoSoube() {
-		let selectComoSoube = document.getElementById("como-soube");
-		let selectedComoSoube = selectComoSoube.options[selectComoSoube.selectedIndex].value;
-		return selectedComoSoube;
-	}
-
-	function getSelectedCurso() {
-		let MestradoRadio = document.getElementById("Curso1");
-		let DoutoradoRadio = document.getElementById("Curso2");
-		let selectedCurso = "";
-		if (MestradoRadio.checked) {
-			selectedCurso = "Mestrado";
-		} else if (DoutoradoRadio.checked) {
-			selectedCurso = "Doutorado";
-		}
-		return selectedCurso;
-	}
-
-	function getSelectedRegime() {
-		let IntegralRadio = document.getElementById("Regime1");
-		let ParcialRadio = document.getElementById("Regime2");
-		let selectedRegime = "";
-		if (IntegralRadio.checked) {
-			selectedRegime = "Integral";
-		} else if (ParcialRadio.checked) {
-			selectedRegime = "Parcial";
-		}
-		return selectedRegime;
-	}
-
-	function getSelectedCota() {
-		let cotista = document.getElementById("cotista").checked;
-		if (!cotista) {
-			return null;
-		}
-		let selectCota = document.getElementById("tipo-cota");
-		let selectedCota = selectCota.options[selectCota.selectedIndex].value;
-		return selectedCota;
-	}
-
-	function getCondicao() {
-		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
-		if (!deficiencia) {
-			return null;
-		}
-		let condicao = document.getElementById("candidato-condicao").value;
-		return condicao;
-	}
-
-	function getBolsa() {
-		let bolsa = document.getElementById("candidato-bolsa").checked;
-		return Boolean(bolsa);
-	}
-
-	function checkCondicao() {
-		let deficiencia = document.getElementById("candidato-deficiencia1").checked;
-		let condicaoInput = document.getElementById("candidato-condicao");
-		if (!deficiencia) {
-			condicaoInput.value = "";
-		}
-		return Boolean(deficiencia);
-	}
-
-	function checkCotista() {
-		let cotista = document.getElementById("cotista").checked;
-		let cotistaCota = document.getElementById("tipo-cota");
-		if (!cotista) {
-			cotistaCota.value = "";
-		}
-		return Boolean(cotista);
-	}
-
-	function getValueFromForm() {
-		const form = document.getElementById('candidato-formulario');
-		const data = {}
-		data.nome = document.getElementById('candidato-nome').value;
-		data.dataNascimento = document.getElementById('data-nascimento').value;
-		data.sexo = getSelectedSexo()
-		data.nomeSocial = document.getElementById('candidato-nomesocial').value;
-		data.cep = document.getElementById('candidato-cep').value;
-		data.uf = document.getElementById('candidato-uf').value;
-		data.endereco = document.getElementById('candidato-endereco').value;
-		data.cidade = document.getElementById('candidato-cidade').value;
-		data.bairro = document.getElementById('candidato-bairro').value;
-		data.nacionalidade = getSelectedNacionalidade();
-		data.telefone = document.getElementById('candidato-telresidencial').value;
-		data.telefoneSecundario = $(form).find('#candidato-telcelular').val();
-		data.comoSoube = getSelectedComoSoube();
-		data.cursoDesejado = getSelectedCurso();
-		data.regime = getSelectedRegime();
-		data.cotista = checkCotista();
-		data.cotistaTipo = getSelectedCota();
-		data.condicao = checkCondicao()
-		data.condicaoTipo = getCondicao();
-		data.bolsista = getBolsa()
-		data.cpf = document.getElementById('cpf').value;
-		data.pais = document.getElementById('pais').value;
-		data.passaporte = document.getElementById('passaporte').value;
-		return data;
-	}
-
-	$(document).ready(() => {
-    Inputmask("99999-999").mask("#candidato-cep");
-		$('#candidato-cep').on('blur', pesquisarCep);
-
-		$("#btn_logout").click(function () {
-			$.ajax({
-				url: "/selecaoppgi/logout",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-		
-		$("#btn_inicio").click(function () {
-
-				$.ajax({
-				url: "/selecaoppgi/voltarInicio",
-				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
-				success: function (data) {
-					window.location.href = "/selecaoppgi/formulario";
-				},
-				error: function (data) {
-					console.error(data);
-				}
-			});
-		});
-		
-		$.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
-		
-		$.validator.addMethod("cpf", (value, element) => {
-		    value = value.replace(/[.\-]/g, ""); 
-		    if (value.length !== 11 || /^(\d)\1+$/.test(value)) {
-		        return false;
-		    }
-
-		    let sum = 0;
-		    let remainder;
-
-		    // Valida o primeiro dígito verificador
-		    for (var i = 1; i <= 9; i++) {
-		        sum = sum + parseInt(value.substring(i - 1, i)) * (11 - i);
-		    }
-		    remainder = (sum * 10) % 11;
-		    if ((remainder == 10) || (remainder == 11)) {
-		        remainder = 0;
-		    }
-		    if (remainder != parseInt(value.substring(9, 10))) {
-		        return false;
-		    }
-
-		    sum = 0;
-
-		    // Valida o segundo dígito verificador
-		    for (var i = 1; i <= 10; i++) {
-		        sum = sum + parseInt(value.substring(i - 1, i)) * (12 - i);
-		    }
-		    remainder = (sum * 10) % 11;
-		    if ((remainder == 10) || (remainder == 11)) {
-		        remainder = 0;
-		    }
-		    if (remainder != parseInt(value.substring(10, 11))) {
-		        return false;
-		    }
-
-		    return true;
-		}, "Por favor, insira um CPF válido.");
-
-		$("#candidato-formulario").validate({
-			ignore: ':hidden',
-			rules: {
-				nome: {
-					required: true,
-					minlength: 3,
-					maxlength: 50
-				},
-				dataNascimento: {
-					required: true,
-					dateBR: true
-				}, 
-				candidatoSexo: {
-					required: true
-				},
-				candidatoCep: {
-					required: true
-				},
-				candidatoUf: {
-					required: true
-				},
-				candidatoEndereco: {
-					required: true
-				},
-				candidatoCidade: {
-					required: true
-				},
-				candidatoBairro: {
-					required: true
-				},
-				candidatoNacionalidade: {
-					required: true
-				},
-				candidatoTelresidencial: {
-					required: true
-				},
-				comoSoube: {
-					required: true
-				},
-				candidatoCurso: {
-					required: true
-				},
-				candidatoRegime: {
-					required: true
-				},
-				"tipo-cota": {
-					required: function (element) {
-						return $("#cotista:checked").length > 0;
-					}
-				},
-				candidatoCondicao: {
-					required: function (element) {
-						return $("#candidato-deficiencia1:checked").length > 0;
-					}
-				},
-				cpf: {
-					required: (element) => $("#Nacionalidade1:checked").length > 0,
-					cpf: true
-				},
-				pais: {
-					required: (element) => $("#Nacionalidade2:checked").length > 0
-				},
-				passaporte: {
-					required: (element) => $("#Nacionalidade2:checked").length > 0
-				}
-			},
-			messages: {
-				nome: {
-					required: "{{__ "ppgiForm1.validacao.nome.required"}}",
-					minlength: "{{__ "ppgiForm1.validacao.nome.minlengtg"}}",
-					maxlength: "{{__ "ppgiForm1.validacao.nome.maxlength"}}"
-				},
-				dataNascimento: {
-					required: "{{__ "ppgiForm1.validacao.dataNascimento.required"}}",
-				},
-				candidatoSexo:"{{__ "ppgiForm1.validacao.candidatoSexo.required"}}",
-				candidatoUf:"{{__ "ppgiForm1.validacao.candidatoUf.required"}}",
-				candidatoCep: "{{__ "ppgiForm1.validacao.candidatoCep.required"}}",
-				candidatoEndereco: "{{__ "ppgiForm1.validacao.candidatoEndereco.required"}}",
-				candidatoCidade: "{{__ "ppgiForm1.validacao.candidatoCidade.required"}}",
-				candidatoBairro: "{{__ "ppgiForm1.validacao.candidatoBairro.required"}}",
-				candidatoNacionalidade: "{{__ "ppgiForm1.validacao.candidatoNacionalidade.required"}}",
-				candidatoTelresidencial: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
-				comoSoube: "{{__ "ppgiForm1.validacao.comoSoube.required"}}",
-				candidatoCurso: "{{__ "ppgiForm1.validacao.candidatoCurso.required"}}",
-				candidatoRegime: "{{__ "ppgiForm1.validacao.candidatoRegime.required"}}",
-				"tipo-cota": "{{__ "ppgiForm1.validacao.tipoCota.required"}}",
-				candidatoCondicao: "{{__ "ppgiForm1.validacao.candidatoCondicao.required"}}",
-				cpf: {
-					required: "{{__ "ppgiForm1.validacao.cpf.required"}}",
-					cpf: "{{__ "ppgiForm1.validacao.cpf.cpfInvalido"}}"
-				},
-				pais: "{{__ "ppgiForm1.validacao.pais.required"}}",
-				passaporte: "{{__ "ppgiForm1.validacao.passaporte.required"}}"
-			},
-			errorElement: 'span',
-			errorPlacement: function (error, element) {
-				error.addClass('invalid-feedback');
-				
-				if (element.is(":radio")) {
-					error.insertAfter(element.closest('.radio-group'));
-				} else {
-					element.closest('div').append(error);
-				}
-			},
-			highlight: function (element, errorClass, validClass) {
-				if ($(element).is(":radio")) {
-    				$(element).closest('.radio-group').find('label').addClass('text-danger');
-				} else {
-					$(element).addClass('is-invalid');
-				}
-			},
-			unhighlight: function (element, errorClass, validClass) {
-				if ($(element).is(":radio")) {
-					$(element).closest('.radio-group').find('label').removeClass('text-danger');
-				} else {
-					$(element).removeClass('is-invalid');
-				}
-			},
-			submitHandler: function (form, e) {
-				e.preventDefault();
-				const btnSave = $("#btn-save-continue");
-				btnSave.find("span").prop("hidden", false);
-				btnSave.prop("disabled", true);
-				const data = getValueFromForm();
-				const csrfToken = $("#csrfToken").val();
-				const email = $("#email").val();
-				const editalPosicao = $("#editalPosicao").val();
-				const id = $("#id").val();
-
-				$.ajax({ 
-					url: '/selecaoppgi/formulario/1',
-					type: "PUT",
-					data: {
-						data: data,
-						_csrf: csrfToken,
-						email: email,
-						editalPosicao: editalPosicao,
-						id: id
-					},
-					success: (data) => {
-						window.location.href = '/selecaoppgi/formulario';
-						window.location.reload(true);
-					},
-					error: (data) => {
-						btnSave.find("span").prop("hidden", true);
-						btnSave.prop("disabled", false);
-						console.log(data)
-					}
-				});
-			}
-		});
-	
-
-		$("#btn-save").click(function () {
-			const btnSave = $("#btn-save");
-			btnSave.find("span").prop("hidden", false);
-			btnSave.prop("disabled", true);
-
-			const data = getValueFromForm();
-			const csrfToken = $("#csrfToken").val();
-			const email = $("#email").val();
-			const editalPosicao = $("#editalPosicao").val();
-			const id = $("#id").val();
-			/*$.ajax({ 
-				url: '/selecaoppgi/editCandidate',
-				type: "PUT",
-				data: {
-					data: data,
-					_csrf: csrfToken,
-					email: email,
-					editalPosicao: editalPosicao,
-					id: id
-				},
-				success: function (data) {
-					btnSave.find("span").prop("hidden", true);
-					btnSave.prop("disabled", false);
-					showToast("Dados salvos com sucesso!", "alert-success");
-				},
-				error: function (data) {
-					btnSave.find("span").prop("hidden", true);
-					btnSave.prop("disabled", false);
-					console.error(data)
-				}
-			});*/
-			
-		});
-	
-		$("#Nacionalidade1").change(() => {
-			$("#row-nacionalidade-estrangeiro").attr("hidden", '');
-			$("#row-nacionalidade-brasileiro").removeAttr("hidden");
-		});
-
-		$("#Nacionalidade2").change(() => {
-			$("#row-nacionalidade-brasileiro").attr("hidden", '');
-			$("#row-nacionalidade-estrangeiro").removeAttr("hidden");
-		});
-	});
-
-	function showToast(message, alertClass) {
-        const toastElement = $('#myToast');
-        const toastBody = toastElement.find('.alert');
-        
-        // Remove qualquer classe de alerta existente
-        toastBody.removeClass('alert-primary alert-success alert-warning alert-danger alert-info');
-        // Adiciona a classe de alerta apropriada
-        toastBody.addClass(alertClass);
-        // Define a mensagem do toast
-        $('#toastMessage').text(message);
-        // Inicializa e configura o delay do toast
-        const toast = new bootstrap.Toast(toastElement[0], {
-            delay: 5000 // Tempo em milissegundos (por exemplo, 5000 ms = 5 segundos)
-        });
-        toast.show();
+    const select = document.getElementById('tipo-cota');
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].value === cotistaTipoValue) {
+        select.selectedIndex = i;
+        break;
+      }
+    }
+    const ufValue = document.getElementById('UFObj').value;
+    const selectElement = document.getElementById('candidato-uf');
+    for (let i = 0; i < selectElement.options.length; i++) {
+      if (selectElement.options[i].value === ufValue) {
+        selectElement.options[i].selected = true;
+        break;
+      }
     }
 
-	function pesquisarCep() {
-		const cep = $('#candidato-cep').val();
-		const cepInput = $('#candidato-cep')[0];
-		const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
+    {{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
+    {{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
+    {{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
 
-		const cepValido = /^[0-9]{5}-[0-9]{3}$/.test(cep);
+    $('#candidato-datanascimento').datetimepicker({
+      format: 'DD/MM/YYYY',
+      locale: 'pt-br',
+    });
 
-		if (!cepValido) {
-			cepInput.classList.add('is-invalid');
-			invalidFeedback.textContent = "{{__ "ppgiForm1.validacao.candidatoCep.cepInvalido"}}";
-			return;
-		}
+    $("input[data-bootstrap-switch-cotista]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+      if (!$(this).prop('checked')) {
+        $("#cota").slideUp();
+      }
+      $(this).bootstrapSwitch('onSwitchChange', () => {
+        if ($(this).is(":checked")) {
+          $("#cota").slideDown();
+        } else {
+          $("#cota").slideUp();
+        }
+      });
+    });
 
-		cepInput.classList.remove('is-invalid');
+    $("input[data-bootstrap-switch-deficiencia]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+      if (!$(this).prop('checked')) {
+        $("#condicao").slideUp();
+      }
+      $(this).bootstrapSwitch('onSwitchChange', () => {
+        if ($(this).is(":checked")) {
+          $("#condicao").slideDown();
+          $("#deficiencia-div").css("height", "auto");
+        } else {
+          $("#condicao").slideUp();
+          $("#deficiencia-div").css("height", "auto");
+        }
+      })
+    })
 
-		const url = `https://viacep.com.br/ws/${cep}/json/`;
+    $("input[data-bootstrap-switch-bolsa]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+      $(this).bootstrapSwitch('onSwitchChange', () => {
+        if ($(this).is(":checked")) {
+          $("#Regime1").prop("checked", true);
+          $("#Regime2").prop("checked", false).prop("disabled", true);
+        } else {
+          $("#Regime2").prop("disabled", false);
+        }
+      });
+    });
 
-		fetch(url)
-			.then(response => {
-				if (!response.ok ) {
-					throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
-				}
-				return response.json();
-			})
-			.then(data => {
-				if (data.erro) {
-					throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
-				}
-				document.getElementById('candidato-endereco').value = data.logradouro;
-				document.getElementById('candidato-cidade').value = data.localidade;
-				document.getElementById('candidato-bairro').value = data.bairro;
-				document.getElementById('candidato-uf').value = data.uf;
-			})
-			.catch(error => {
-				cepInput.classList.add('is-invalid');
-				invalidFeedback.textContent = error.message;
-			});
-	}
+    $('.bootstrap-switch.bootstrap-switch-wrapper').each(function (index, element){
+      $(element).attr('tabindex',0)
+        .on('focus', function () {
+          $(this).addClass('bootstrap-switch-focussed');
+        })
+        .on('blur', function () {
+          $(this).removeClass('bootstrap-switch-focussed');
+        })
+        .on('keyup', function (e) {
+          if(e.which===32){
+            $(this).find('input').bootstrapSwitch('toggleState');
+          }
+        });
+    })
 
+    function getSelectedSexo() {
+      const masculinoRadio = document.getElementById("Sexo");
+      const femininoRadio = document.getElementById("Sexo2");
+      let selectedSexo = "";
+
+      if (masculinoRadio.checked) {
+        selectedSexo = "M";
+      } else if (femininoRadio.checked) {
+        selectedSexo = "F";
+      }
+
+      return selectedSexo;
+    }
+
+    function getSelectedNacionalidade() {
+      let brasileiraRadio = document.getElementById("Nacionalidade1");
+      let estrangeiraRadio = document.getElementById("Nacionalidade2");
+      let selectedNacionalidade = "";
+      if (brasileiraRadio.checked) {
+        selectedNacionalidade = "Brasileira";
+      } else if (estrangeiraRadio.checked) {
+        selectedNacionalidade = "Estrangeira";
+      }
+      return selectedNacionalidade;
+    }
+
+    function getSelectedComoSoube() {
+      let selectComoSoube = document.getElementById("como-soube");
+      let selectedComoSoube = selectComoSoube.options[selectComoSoube.selectedIndex].value;
+      return selectedComoSoube;
+    }
+
+    function getSelectedCurso() {
+      let MestradoRadio = document.getElementById("Curso1");
+      let DoutoradoRadio = document.getElementById("Curso2");
+      let selectedCurso = "";
+      if (MestradoRadio.checked) {
+        selectedCurso = "Mestrado";
+      } else if (DoutoradoRadio.checked) {
+        selectedCurso = "Doutorado";
+      }
+      return selectedCurso;
+    }
+
+    function getSelectedRegime() {
+      let IntegralRadio = document.getElementById("Regime1");
+      let ParcialRadio = document.getElementById("Regime2");
+      let selectedRegime = "";
+      if (IntegralRadio.checked) {
+        selectedRegime = "Integral";
+      } else if (ParcialRadio.checked) {
+        selectedRegime = "Parcial";
+      }
+      return selectedRegime;
+    }
+
+    function getSelectedCota() {
+      let cotista = document.getElementById("cotista").checked;
+      if (!cotista) {
+        return null;
+      }
+      let selectCota = document.getElementById("tipo-cota");
+      let selectedCota = selectCota.options[selectCota.selectedIndex].value;
+      return selectedCota;
+    }
+
+    function getCondicao() {
+      let deficiencia = document.getElementById("candidato-deficiencia1").checked;
+      if (!deficiencia) {
+        return null;
+      }
+      let condicao = document.getElementById("candidato-condicao").value;
+      return condicao;
+    }
+
+    function getBolsa() {
+      let bolsa = document.getElementById("candidato-bolsa").checked;
+      return Boolean(bolsa);
+    }
+
+    function checkCondicao() {
+      let deficiencia = document.getElementById("candidato-deficiencia1").checked;
+      let condicaoInput = document.getElementById("candidato-condicao");
+      if (!deficiencia) {
+        condicaoInput.value = "";
+      }
+      return Boolean(deficiencia);
+    }
+
+    function checkCotista() {
+      let cotista = document.getElementById("cotista").checked;
+      let cotistaCota = document.getElementById("tipo-cota");
+      if (!cotista) {
+        cotistaCota.value = "";
+      }
+      return Boolean(cotista);
+    }
+
+    function getValueFromForm() {
+      const form = document.getElementById('candidato-formulario');
+      const data = {}
+      data.nome = document.getElementById('candidato-nome').value;
+      data.dataNascimento = document.getElementById('data-nascimento').value;
+      data.sexo = document.getElementById('candidato-sexo').value;
+      data.nomeSocial = document.getElementById('candidato-nomesocial').value;
+      data.cep = document.getElementById('candidato-cep').value;
+      data.uf = document.getElementById('candidato-uf').value;
+      data.endereco = document.getElementById('candidato-endereco').value;
+      data.cidade = document.getElementById('candidato-cidade').value;
+      data.bairro = document.getElementById('candidato-bairro').value;
+      data.nacionalidade = getSelectedNacionalidade();
+      data.telefone = document.getElementById('candidato-telresidencial').value;
+      data.telefoneSecundario = $(form).find('#candidato-telcelular').val();
+      data.comoSoube = getSelectedComoSoube();
+      data.cursoDesejado = getSelectedCurso();
+      data.regime = getSelectedRegime();
+      data.cotista = checkCotista();
+      data.cotistaTipo = getSelectedCota();
+      data.condicao = checkCondicao()
+      data.condicaoTipo = getCondicao();
+      data.bolsista = getBolsa()
+      data.cpf = document.getElementById('cpf').value;
+      data.pais = document.getElementById('pais').value;
+      data.passaporte = document.getElementById('passaporte').value;
+      console.log(inputPhone.getNumber());
+      return data;
+    }
+
+    // Inputmask("99999-999").mask("#candidato-cep");
+    // $('#candidato-cep').on('blur', pesquisarCep);
+
+    $("#btn_logout").click(function () {
+      $.ajax({
+        url: `${basePath}/logout`,
+        type: "POST",
+        data: {
+          _csrf: $("#csrfToken").val()
+        },
+        success: function (data) {
+          window.location.href = `${basePath}`;
+        },
+        error: function (data) {
+          console.error(data);
+        }
+      });
+    });
+
+
+    $.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
+    $.validator.addMethod("validPhoneNumber", function (value, element) {
+      return phoneNumber.isValidNumber();
+    }, "Por favor, insira um número de telefone válido.");
+    $.validator.addMethod("cpf", (value, element) => {
+      value = value.replace(/[.\-]/g, "");
+      if (value.length !== 11 || /^(\d)\1+$/.test(value)) {
+        return false;
+      }
+
+      let sum = 0;
+      let remainder;
+
+      // Valida o primeiro dígito verificador
+      for (var i = 1; i <= 9; i++) {
+        sum = sum + parseInt(value.substring(i - 1, i)) * (11 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if ((remainder == 10) || (remainder == 11)) {
+        remainder = 0;
+      }
+      if (remainder != parseInt(value.substring(9, 10))) {
+        return false;
+      }
+
+      sum = 0;
+
+      // Valida o segundo dígito verificador
+      for (var i = 1; i <= 10; i++) {
+        sum = sum + parseInt(value.substring(i - 1, i)) * (12 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if ((remainder == 10) || (remainder == 11)) {
+        remainder = 0;
+      }
+      if (remainder != parseInt(value.substring(10, 11))) {
+        return false;
+      }
+
+      return true;
+    }, "Por favor, insira um CPF válido.");
+
+    $("#candidato-formulario").validate({
+      ignore: ':hidden',
+      rules: {
+        nome: {
+          required: true,
+          minlength: 3,
+          maxlength: 50
+        },
+        dataNascimento: {
+          required: true,
+          dateBR: true
+        },
+
+        candidatoCep: {
+          required: true
+        },
+        candidatoUf: {
+          required: true
+        },
+        candidatoEndereco: {
+          required: true
+        },
+        candidatoCidade: {
+          required: true
+        },
+        candidatoBairro: {
+          required: true
+        },
+        candidatoNacionalidade: {
+          required: true
+        },
+        candidatoTelresidencial: {
+          required: true
+        },
+        comoSoube: {
+          required: true
+        },
+        candidatoCurso: {
+          required: true
+        },
+        candidatoRegime: {
+          required: true
+        },
+        "tipo-cota": {
+          required: function (element) {
+            return $("#cotista:checked").length > 0;
+          }
+        },
+        candidatoCondicao: {
+          required: function (element) {
+            return $("#candidato-deficiencia1:checked").length > 0;
+          }
+        },
+        cpf: {
+          required: (element) => $("#Nacionalidade1:checked").length > 0,
+          cpf: true
+        },
+        pais: {
+          required: (element) => $("#Nacionalidade2:checked").length > 0
+        },
+        passaporte: {
+          required: (element) => $("#Nacionalidade2:checked").length > 0
+        },
+        phone: {
+          validPhoneNumber: true,
+          required: true,
+        }
+      },
+      messages: {
+        nome: {
+          required: "{{__ "ppgiForm1.validacao.nome.required"}}",
+          minlength: "{{__ "ppgiForm1.validacao.nome.minlengtg"}}",
+          maxlength: "{{__ "ppgiForm1.validacao.nome.maxlength"}}"
+        },
+        dataNascimento: {
+          required: "{{__ "ppgiForm1.validacao.dataNascimento.required"}}",
+        },
+        candidatoSexo:"{{__ "ppgiForm1.validacao.candidatoSexo.required"}}",
+        candidatoUf:"{{__ "ppgiForm1.validacao.candidatoUf.required"}}",
+        candidatoCep: "{{__ "ppgiForm1.validacao.candidatoCep.required"}}",
+        candidatoEndereco: "{{__ "ppgiForm1.validacao.candidatoEndereco.required"}}",
+        candidatoCidade: "{{__ "ppgiForm1.validacao.candidatoCidade.required"}}",
+        candidatoBairro: "{{__ "ppgiForm1.validacao.candidatoBairro.required"}}",
+        candidatoNacionalidade: "{{__ "ppgiForm1.validacao.candidatoNacionalidade.required"}}",
+        candidatoTelresidencial: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
+        comoSoube: "{{__ "ppgiForm1.validacao.comoSoube.required"}}",
+        candidatoCurso: "{{__ "ppgiForm1.validacao.candidatoCurso.required"}}",
+        candidatoRegime: "{{__ "ppgiForm1.validacao.candidatoRegime.required"}}",
+        "tipo-cota": "{{__ "ppgiForm1.validacao.tipoCota.required"}}",
+        candidatoCondicao: "{{__ "ppgiForm1.validacao.candidatoCondicao.required"}}",
+        cpf: {
+          required: "{{__ "ppgiForm1.validacao.cpf.required"}}",
+          cpf: "{{__ "ppgiForm1.validacao.cpf.cpfInvalido"}}"
+        },
+        pais: "{{__ "ppgiForm1.validacao.pais.required"}}",
+        passaporte: "{{__ "ppgiForm1.validacao.passaporte.required"}}"
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        console.log()
+        console.log(element)
+        // console.log($(element).select('phone'))
+
+        // console.log($(element).id === 'phone')
+        if (element.is(":radio")) {
+          error.insertAfter(element.closest('.radio-group'));
+        }
+        // else if($(element).get(0).id === 'phone') {
+        //   error.insertAfter(element.);
+        //
+        // }
+        else {
+          element.closest('div').append(error);
+        }
+      },
+      highlight: function (element, errorClass, validClass) {
+
+        if ($(element).is(":radio")) {
+          $(element).closest('.radio-group').find('label').addClass('text-danger');
+        } else {
+          $(element).addClass('is-invalid');
+        }
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        if ($(element).is(":radio")) {
+          $(element).closest('.radio-group').find('label').removeClass('text-danger');
+        } else {
+          $(element).removeClass('is-invalid');
+        }
+      },
+      submitHandler: function (form, e) {
+        console.log(`treste`)
+        e.preventDefault();
+        console.log("paasou aqui")
+        const btnSave = $("#btn-save-continue");
+        btnSave.find("span").prop("hidden", false);
+        btnSave.prop("disabled", true);
+        const data = getValueFromForm();
+        const csrfToken = $("#csrfToken").val();
+        const email = $("#email").val();
+        const editalPosicao = $("#editalPosicao").val();
+        const id = $("#id").val();
+console.log(`Teste`)
+        // $.ajax({
+        // 	url:`${basePath}/formulario/1`,
+        // 	type: "PUT",
+        // 	data: {
+        // 		data: data,
+        // 		_csrf: csrfToken,
+        // 		email: email,
+        // 		editalPosicao: editalPosicao,
+        // 		id: id
+        // 	},
+        // 	success: (data) => {
+        // 		window.location.href = `${basePath}/formulario`;
+        // 		window.location.reload(true);
+        // 	},
+        // 	error: (data) => {
+        // 		btnSave.find("span").prop("hidden", true);
+        // 		btnSave.prop("disabled", false);
+        // 		console.log(data)
+        // 	}
+        // });
+      }
+    });
+
+
+    $("#btn-save").click(function () {
+      const btnSave = $("#btn-save");
+      btnSave.find("span").prop("hidden", false);
+      btnSave.prop("disabled", true);
+
+      const data = getValueFromForm();
+      const csrfToken = $("#csrfToken").val();
+      const email = $("#email").val();
+      const editalPosicao = $("#editalPosicao").val();
+      const id = $("#id").val();
+      /*$.ajax({
+                url: '/selecaoppgi/editCandidate',
+                type: "PUT",
+                data: {
+                    data: data,
+                    _csrf: csrfToken,
+                    email: email,
+                    editalPosicao: editalPosicao,
+                    id: id
+                },
+                success: function (data) {
+                    btnSave.find("span").prop("hidden", true);
+                    btnSave.prop("disabled", false);
+                    showToast("Dados salvos com sucesso!", "alert-success");
+                },
+                error: function (data) {
+                    btnSave.find("span").prop("hidden", true);
+                    btnSave.prop("disabled", false);
+                    console.error(data)
+                }
+            });*/
+
+    });
+
+    $("#Nacionalidade1").change(() => {
+      $("#row-nacionalidade-estrangeiro").attr("hidden", '');
+      $("#row-nacionalidade-brasileiro").removeAttr("hidden");
+    });
+
+    $("#Nacionalidade2").change(() => {
+      $("#row-nacionalidade-brasileiro").attr("hidden", '');
+      $("#row-nacionalidade-estrangeiro").removeAttr("hidden");
+    });
+
+    function showToast(message, alertClass) {
+      const toastElement = $('#myToast');
+      const toastBody = toastElement.find('.alert');
+
+      // Remove qualquer classe de alerta existente
+      toastBody.removeClass('alert-primary alert-success alert-warning alert-danger alert-info');
+      // Adiciona a classe de alerta apropriada
+      toastBody.addClass(alertClass);
+      // Define a mensagem do toast
+      $('#toastMessage').text(message);
+      // Inicializa e configura o delay do toast
+      const toast = new bootstrap.Toast(toastElement[0], {
+        delay: 5000 // Tempo em milissegundos (por exemplo, 5000 ms = 5 segundos)
+      });
+      toast.show();
+    }
+
+    function pesquisarCep() {
+      const cep = $('#candidato-cep').val();
+      const cepInput = $('#candidato-cep')[0];
+      const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
+
+      const cepValido = /^[0-9]{5}-[0-9]{3}$/.test(cep);
+
+      if (!cepValido) {
+        cepInput.classList.add('is-invalid');
+        invalidFeedback.textContent = "{{__ "ppgiForm1.validacao.candidatoCep.cepInvalido"}}";
+        return;
+      }
+
+      cepInput.classList.remove('is-invalid');
+
+      const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok ) {
+            throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.erro) {
+            throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
+          }
+          document.getElementById('candidato-endereco').value = data.logradouro;
+          document.getElementById('candidato-cidade').value = data.localidade;
+          document.getElementById('candidato-bairro').value = data.bairro;
+          document.getElementById('candidato-uf').value = data.uf;
+        })
+        .catch(error => {
+          cepInput.classList.add('is-invalid');
+          invalidFeedback.textContent = error.message;
+        });
+    }
+  });
 </script>

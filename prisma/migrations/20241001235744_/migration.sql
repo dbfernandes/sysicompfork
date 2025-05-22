@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `Usuario` ADD COLUMN `diretor` SMALLINT NOT NULL DEFAULT 0;

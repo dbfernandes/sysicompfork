@@ -1,29 +1,45 @@
-import puppeteer from 'puppeteer';
+// pdf.service.ts ------------------------------------------------------------
+import { HtmlConverter, Chromiumly } from 'chromiumly';
 import Handlebars from 'handlebars';
 import fs from 'fs/promises';
 import path from 'path';
-import CandidatoRecomendacaoService from '../candidatoRecomendacao/candidato.recomendacao.service';
-import { getAfastamento } from '../../utils/criarAfastamentoPDF';
+import os from 'os';
+import { randomUUID } from 'crypto';
 
-type ContentPdf = 'recomendacoes' | 'afastamento';
+import CandidatoRecomendacaoService from '@resources/candidatoRecomendacao/candidato.recomendacao.service';
+import { getAfastamento } from '@utils/criarAfastamentoPDF';
+import { getFormattedDataCandidateFinish } from '@resources/pdf/pdf.util';
 
+type ContentPdf = 'recomendacoes' | 'afastamento' | 'inscricao';
+
+/**
+ * Configure apenas uma vez logo que a aplicação subir.
+ * Em Docker Compose, considere expor o serviço como http://gotenberg:3000
+ */
+Chromiumly.configure({
+  endpoint: process.env.GOTENBERG_ENDPOINT ?? 'http://gotenberg:3000',
+});
+
+// --------------------------------------------------------------------------
 async function compileTemplates(templatePath: string, data?: object) {
   const mainTemplate = await fs.readFile(templatePath, 'utf8');
-
   const template = Handlebars.compile(mainTemplate);
   return template(data);
 }
 
+// --------------------------------------------------------------------------
 export async function generatePdf(
   type: ContentPdf,
   pathSave: string,
   id?: string,
 ) {
   try {
-    const footerPath = path.join(__dirname, 'views', 'footer.hbs');
-    const headerPath = path.join(__dirname, 'views', 'header.hbs');
-    const template = path.join(__dirname, 'views', `${type}.hbs`);
-    let data = {};
+    /* ---------- 1. DADOS ------------------------------ */
+    const footerPathSrc = path.join(__dirname, 'views', 'footer.hbs');
+    const headerPathSrc = path.join(__dirname, 'views', 'header.hbs');
+    const templateSrc = path.join(__dirname, 'views', `${type}.hbs`);
+
+    let data: object = {};
 
     if (type === 'recomendacoes' && id) {
       data = {
@@ -35,57 +51,64 @@ export async function generatePdf(
     }
 
     if (type === 'afastamento' && id) {
-      data = {
-        afastamentoDoc: await getAfastamento(Number(id)),
-      };
+      data = { afastamentoDoc: await getAfastamento(Number(id)) };
     }
 
-    const arquivoHTML = await compileTemplates(template, data);
-    const headerHtml = await fs
-      .readFile(headerPath)
-      .then((data) => data.toString());
-    const footerHtml = await fs
-      .readFile(footerPath)
-      .then((data) => data.toString());
+    if (type === 'inscricao' && id) {
+      data = await getFormattedDataCandidateFinish(id);
+    }
 
-    // 4. Abrir o navegador com Puppeteer
-    const browser = await puppeteer.launch({
-      headless: true, // ou 'new' dependendo da sua versão do Puppeteer
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      executablePath: '/usr/bin/chromium-browser',
-    });
-    const page = await browser.newPage();
+    /* ---------- 2. HTML compilado --------------------- */
+    const compiledHtml = await compileTemplates(templateSrc, data);
+    const compiledHeader = await compileTemplates(headerPathSrc, data);
+    const compiledFooter = await compileTemplates(footerPathSrc, data);
 
-    // 5. Carregar o HTML gerado
-    await page.setContent(arquivoHTML, {
-      waitUntil: 'networkidle0',
-    });
+    /* ---------- 3. Arquivos temporários --------------- */
+    const workDir = await fs.mkdtemp(
+      path.join(os.tmpdir(), `pdf-${randomUUID()}-`),
+    );
+    const htmlFile = path.join(workDir, 'index.html');
+    const headerFile = path.join(workDir, 'header.html');
+    const footerFile = path.join(workDir, 'footer.html');
 
-    // 6. Gerar o PDF
-    await page.pdf({
-      path: pathSave,
-      format: 'A4',
-      printBackground: true,
-      displayHeaderFooter: true,
-      headerTemplate: headerHtml,
-      footerTemplate: footerHtml,
-      outline: true,
+    await Promise.all([
+      fs.writeFile(htmlFile, compiledHtml),
+      fs.writeFile(headerFile, compiledHeader),
+      fs.writeFile(footerFile, compiledFooter),
+    ]);
 
-      margin: {
-        top: '180px', // ajuste conforme o tamanho do seu header
-        bottom: '100px', // ajuste conforme o tamanho do seu footer
-        left: '1.5cm',
-        right: '1.5cm',
+    /* ---------- 4. Conversão via Gotenberg ------------ */
+    const htmlConverter = new HtmlConverter();
+    const pdfBuffer = await htmlConverter.convert({
+      html: htmlFile,
+      header: headerFile,
+      footer: footerFile,
+      properties: {
+        printBackground: true,
+        size: { width: 8.27, height: 11.69 }, // A4 em polegadas
+        margins: {
+          top: 1.9, // ≅ 180 px
+          bottom: 1.05, // ≅ 100 px
+          left: 0.6,
+          right: 0.6,
+        },
       },
     });
 
-    await browser.close();
+    /* ---------- 5. Salvando no destino --------------- */
+    await fs.mkdir(path.dirname(pathSave), { recursive: true });
+    await fs.writeFile(pathSave, pdfBuffer);
+
+    /* ---------- 6. Limpeza --------------------------- */
+    await fs.rm(workDir, { recursive: true, force: true });
+
     console.log('PDF gerado com sucesso!');
   } catch (err) {
     console.error('Erro ao gerar PDF:', err);
   }
 }
 
+/* ------------------------------------------------------------------------ */
 export async function generatePdfRecommendations(candidateId: string) {
   const pathSave = path.join(
     __dirname,
@@ -98,6 +121,20 @@ export async function generatePdfRecommendations(candidateId: string) {
     'Recomendacoes.pdf',
   );
   await generatePdf('recomendacoes', pathSave, candidateId);
+}
+
+export async function generatePdfEnrollment(candidateId: string) {
+  const pathSave = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'uploads',
+    'candidato',
+    candidateId,
+    'Inscricao.pdf',
+  );
+  await generatePdf('inscricao', pathSave, candidateId);
 }
 
 export async function generatePdfLeave(id: string, name: string) {

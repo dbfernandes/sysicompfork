@@ -10,7 +10,7 @@ import session from 'express-session';
 
 import { engine } from 'express-handlebars';
 
-import router from './routes';
+import router from './routes/routesSelecao';
 import { errorHandler } from './middlewares/errorHandler';
 
 dotenv.config({
@@ -79,6 +79,10 @@ app.use('/public', express.static(path.join(__dirname, '/../public/')));
 app.use('/img', express.static(path.join(__dirname, '/../public/img/')));
 
 // Colocar o logger depois
+app.use((req, res, next) => {
+  res.locals.basePath = req.baseUrl || ''; // Se usar Router
+  next();
+});
 app.use(router);
 app.use(errorHandler);
 

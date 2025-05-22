@@ -218,31 +218,6 @@ class CandidatoService {
     return candidato;
   }
 
-  async atualizarPassoDados() {
-    // const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
-
-    // const dataNascimento = data.dataNascimento
-    //   ? new Date(parseDate(data.dataNascimento))
-    //   : null;
-    // const candidato = {
-    //   ...data,
-    //   dataNascimento,
-    //   posicaoEdital: 2,
-    //   condicao: data.condicao === 'true',
-    //   bolsista: data.bolsista === 'true',
-    //   cotista: data.cotista === 'true',
-    //   cpf: isBrasileira ? data.cpf : null,
-    //   passaporte: isBrasileira ? null : data.passaporte,
-    //   pais: isBrasileira ? null : data.pais,
-    // };
-
-    // await candidatoService.update({
-    //   id,
-    //   data: candidato,
-    // });
-    return true;
-  }
-
   async findCandidatoByEmailAndEdital({
     email,
     editalId,

@@ -8,6 +8,7 @@ import publications from './publications.json';
 import teachers from './teachers.json';
 import db from './fromDB.json';
 
+import intlTel from './intlTel.json';
 import ppgi from './ppgi.json';
 import ppgiBegin from './ppgi_begin.json';
 import ppgiSignIn from './ppgiSignIn.json';
@@ -41,6 +42,8 @@ export default {
     ppgiForm3,
     ppgiForm4,
     ppgiRecomendacao,
+    intlTel,
+
     ...db,
   },
 };
