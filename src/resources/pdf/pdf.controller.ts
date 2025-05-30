@@ -101,8 +101,6 @@ export async function generatePdf(
 
     /* ---------- 6. Limpeza --------------------------- */
     await fs.rm(workDir, { recursive: true, force: true });
-
-    console.log('PDF gerado com sucesso!');
   } catch (err) {
     console.error('Erro ao gerar PDF:', err);
   }

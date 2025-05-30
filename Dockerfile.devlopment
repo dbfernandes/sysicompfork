@@ -1,0 +1,15 @@
+FROM node:23
+
+# Criar diretório de trabalho
+WORKDIR /app
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar dependências do Node
+RUN npm install
+
+# Copiar restante do código
+COPY . .
+
+RUN npx prisma generate

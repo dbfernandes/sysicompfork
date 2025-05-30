@@ -10,7 +10,7 @@ validateEnv();
 
 const port = process.env.PORT_SELECAO || 3001;
 
-const server = app.listen(port, () => {
+const server = app.listen(Number(port), '0.0.0.0', () => {
   console.log(`Server seleção is running on port ${port}`);
   console.log(`http://localhost:${port}/`);
 });

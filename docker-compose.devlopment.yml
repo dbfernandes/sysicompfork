@@ -1,9 +1,8 @@
 services:
   db:
-    container_name: db_sysicomp
+    container_name: db_sysicomp-dev
     image: mysql:8.4
-    restart: unless-stopped
-    mem_limit: 767m
+    restart: no
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -12,20 +11,36 @@ services:
     ports:
       - '${MYSQL_PORT:-3306}:3306'
     volumes:
-      - db_sysicomp:/var/lib/mysql
+      - db-sysicomp-dev:/var/lib/mysql
     networks:
-      - sysicomp-network
+      - sysicomp-network-dev
+
+  phpmyadmin:
+    container_name: phpmyadmin_sysicomp-dev
+    image: phpmyadmin/phpmyadmin:latest
+    restart: no
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+    depends_on:
+      - db
+    networks:
+      - sysicomp-network-dev
 
   sysicomp:
-    container_name: sysicomp
-    mem_limit: 512m
+    container_name: sysicomp-dev
     build:
       context: .
-    command: 'node build/server.js'
-    restart: unless-stopped
+      dockerfile: Dockerfile.devlopment
+    command: 'npm run start:syscomp'
+    restart: no
     ports:
       - '${PORT:-3000}:${PORT:-3000}'
+    working_dir: /app
     volumes:
+      - .:/app:delegated
       - /app/node_modules
       - ./logs:/app/logs
     depends_on:
@@ -34,18 +49,20 @@ services:
     env_file:
       - .env
     networks:
-      - sysicomp-network
+      - sysicomp-network-dev
 
   selecao_ppgi:
-    container_name: selecao_ppgi
-    mem_limit: 512m
+    container_name: selecao_ppgi-dev
     build:
       context: .
-    command: 'node build/serverSelecao.js'
-    restart: unless-stopped
+      dockerfile: Dockerfile.devlopment
+    command: 'npm run start:selecao'
+    restart: no
     ports:
       - '${PORT_SELECAO:-4000}:${PORT_SELECAO:-4000}'
+    working_dir: /app
     volumes:
+      - .:/app:delegated
       - /app/node_modules
       - ./logs:/app/logs
     depends_on:
@@ -54,23 +71,21 @@ services:
     env_file:
       - .env
     networks:
-      - sysicomp-network
+      - sysicomp-network-dev
 
   gotenberg:
-    container_name: gotenberg
+    container_name: gotenberg-dev
     image: gotenberg/gotenberg:8
-    restart: unless-stopped
-    mem_limit: 256m
+    restart: no
     ports:
-      - '${PORT_GOTENBERG:-3002}:3000'
+      - '${PORT_GOTENBERG:-3002}:3000'  # Expondo porta padrão 3000 do Gotenberg para localhost na 3001
     networks:
-      - sysicomp-network
-
+      - sysicomp-network-dev
 
   portainer:
-    container_name: portainer
+    container_name: portainer-dev
     image: portainer/portainer-ce
-    restart: unless-stopped
+    restart: no
     ports:
       - "9000:9000"
     volumes:
@@ -78,14 +93,15 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
       - portainer_data:/data
       - /:/host  # Habilita o gerenciamento do host
-    mem_limit: 256m
     networks:
-      - sysicomp-network
+      - sysicomp-network-dev
 
+# Redes isoladas para os serviços
 networks:
-  sysicomp-network:
+  sysicomp-network-dev:
     driver: bridge
 
+# Persistência do banco de dados
 volumes:
-  db_sysicomp:
+  db-sysicomp-dev:
   portainer_data:

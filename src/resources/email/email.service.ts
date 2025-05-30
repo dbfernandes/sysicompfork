@@ -132,7 +132,7 @@ async function compileTemplate(
 
 async function getAttachments() {
   // Caminho para as imagens a serem incorporadas
-  const imagesFolder = path.join(__dirname, '..', '..', '..', 'public', 'img');
+  const imagesFolder = path.resolve(process.cwd(), 'public', 'img');
 
   // Lista de imagens a serem incorporadas
   const images = [

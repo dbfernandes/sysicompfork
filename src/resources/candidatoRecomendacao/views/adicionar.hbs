@@ -416,8 +416,8 @@
           <strong>{{__ "ppgiRecomendacao.form.evaluationOfCandidate.label"}}:</strong>
 
           <!-- Domínio de conhecimento -->
-          <div class="row">
-            <div class="col-md-6">
+          <div class=" row">
+            <div class="  form-group col-md-6">
               <label for="dominio" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -452,8 +452,8 @@
           </div>
 
           <!-- Capacidade de Aprendizado -->
-          <div class="row">
-            <div class="col-md-6">
+          <div class=" row">
+            <div class=" form-group col-md-6">
               <label for="aprendizado" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -487,8 +487,8 @@
           </div>
 
           <!-- Assiduidade -->
-          <div class="row">
-            <div class="col-md-6">
+          <div class=" row">
+            <div class=" form-group col-md-6">
               <label for="assiduidade" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -524,7 +524,7 @@
 
           <!-- Relacionamento -->
           <div class="row">
-            <div class="col-md-6">
+            <div class=" form-group col-md-6">
               <label for="relacionamento" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -564,7 +564,7 @@
 
           <!-- Iniciativa -->
           <div class="row">
-            <div class="col-md-6">
+            <div class=" form-group col-md-6">
               <label for="iniciativa" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -603,8 +603,8 @@
           </div>
 
           <!-- Expressão Escrita e/ou Falada -->
-          <div class="row">
-            <div class="col-md-6">
+          <div class="row ">
+            <div class="col-md-6 form-group">
               <label for="expressao" class="control-label">
                 <span class="text-danger">*</span>
                 <strong>
@@ -643,7 +643,7 @@
           </div>
 
           <!-- Classificação (Comparação com outros) -->
-          <div class="row mt-4 -form-group">
+          <div class="row mt-4 form-group">
             <div class="col-md-12">
               <label for="classificacao" class="control-label">
                 <span class="text-danger">*</span>
@@ -652,7 +652,7 @@
                 </strong>
               </label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 ">
               <select
                 id="classificacao"
                 class="custom-select"
@@ -792,7 +792,9 @@
 
 <script>
 	$(document).ready(function() {
-		{{#if recomendacao.conheceOutros}} $('#group-other-places').show(); {{/if}}
+    const basePath = "{{basePath}}";
+
+    {{#if recomendacao.conheceOutros}} $('#group-other-places').show(); {{/if}}
 		{{#if recomendacao.outrosContatos}} $('#group-other-functions').show(); {{/if}}
 		{{#if recomendacao.titulacao}} $('select[name="titulacao"]').val('{{recomendacao.titulacao}}'); {{/if}}
 		{{#if recomendacao.dominio}} $('select[name="dominio"]').val('{{recomendacao.dominio}}');{{/if}}
@@ -803,250 +805,252 @@
 		{{#if recomendacao.expressao}} $('select[name="expressao"]').val('{{recomendacao.expressao}}'); {{/if}}
 		{{#if recomendacao.informacoes}} $('#charCount').text(1000 - '{{recomendacao.informacoes.length}}'); {{/if}}
 		{{#if recomendacao.classificacao}} $('select[name="classificacao"]').val('{{recomendacao.classificacao}}'); {{/if}}
+
+    const prazo = new Date('{{recomendacao.prazo}}');
+    const prazoLabel = document.getElementById('prazo-label');
+    prazoLabel.innerHTML = prazo.toLocaleString();
+    const today = new Date();
+    if (today > prazo) {
+      prazoLabel.style.color = 'red';
+    }
+
+    $("#input-informacoes").on('input', function() {
+      const charCount = $(this).val().length;
+      $("#charCount").text(1000 - charCount);
+    });
+    $("#btn-save").click(function({currentTarget}) {
+      currentTarget.disabled = true;
+      currentTarget.querySelector('span').hidden = false;
+      const data = $("#form-recomendacao").serialize();
+      $.ajax({
+        url: `${basePath}/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
+        type: "PATCH",
+        data,
+        success: function (data) {
+          const toastMessage = document.getElementById('toastMessageSuccess');
+          const myToast = new bootstrap.Toast(document.getElementById('toastSuccess'), {
+            delay: 5000
+          });
+          toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.success"}}';
+          myToast.show();
+        },
+        error: function (data) {
+          const toastMessage = document.getElementById('toastMessageDanger');
+          const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
+            delay: 5000
+          });
+          toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.danger"}}';
+          myToast.show();
+        },
+        complete: function() {
+          currentTarget.disabled = false;
+          currentTarget.querySelector('span').hidden = true;
+        }
+      });
+    });
+    $("#form-recomendacao").validate({
+      rules: {
+        nome: {
+          required: true,
+          minlength: 3,
+          maxlength: 100
+        },
+        titulacao: {
+          required: true,
+        },
+        instituicaoTitulacao: {
+          required: true,
+          minlength: 2,
+          maxlength: 100
+        },
+        instituicaoAtual: {
+          required: true,
+          minlength: 2,
+          maxlength: 100
+        },
+        cargo: {
+          required: true,
+          minlength: 2,
+          maxlength: 50
+        },
+        anoTitulacao: {
+          required: true,
+          number: true,
+          range: [1950, new Date().getFullYear() + 10]
+        },
+        anoContato: {
+          required: true,
+          number: true,
+          range: [1950, new Date().getFullYear()]
+        },
+        dominio: {
+          required: true,
+        },
+        aprendizado: {
+          required: true,
+        },
+        assiduidade: {
+          required: true,
+        },
+        relacionamento: {
+          required: true,
+        },
+        iniciativa: {
+          required: true,
+        },
+        expressao: {
+          required: true,
+        },
+        informacoes: {
+          required: true,
+          minlength: 10,
+          maxlength: 1000
+        },
+        ['places']: {
+          required: true,
+        },
+        ['relationships']: {
+          required: true,
+        },
+        classificacao: {
+          required: true,
+        }
+      },
+      messages: {
+        nome: {
+          required: "{{__ "ppgiRecomendacao.validation.nome.required"}}",
+          minlength: "{{__ "ppgiRecomendacao.validation.nome.minlength"}}",
+          maxlength: "{{__ "ppgiRecomendacao.validation.nome.maxlength"}}"
+        },
+        titulacao: "{{__ "ppgiRecomendacao.validation.titulacao"}}",
+        instituicaoTitulacao: {
+          required: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.required"}}",
+          minlength: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.minlength"}}",
+          maxlength: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.maxlength"}}"
+        },
+        instituicaoAtual: {
+          required: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.required"}}",
+          minlength: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.minlength"}}",
+          maxlength: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.maxlength"}}"
+        },
+        cargo: {
+          required: "{{__ "ppgiRecomendacao.validation.cargo.required"}}",
+          minlength: "{{__ "ppgiRecomendacao.validation.cargo.minlength"}}",
+          maxlength: "{{__ "ppgiRecomendacao.validation.cargo.maxlength"}}"
+        },
+        anoTitulacao: {
+          required: "{{__ "ppgiRecomendacao.validation.anoTitulacao.required"}}",
+          number: "{{__ "ppgiRecomendacao.validation.anoTitulacao.number"}}",
+          range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear() + 10})`
+        },
+        anoContato: {
+          required: "{{__ "ppgiRecomendacao.validation.anoContato.required"}}",
+          number: "{{__ "ppgiRecomendacao.validation.anoContato.number"}}",
+          range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear()})`
+        },
+        dominio: "{{__ "ppgiRecomendacao.validation.dominio"}}",
+        aprendizado: "{{__ "ppgiRecomendacao.validation.aprendizado"}}",
+        assiduidade: "{{__ "ppgiRecomendacao.validation.assiduidade"}}",
+        relacionamento: "{{__ "ppgiRecomendacao.validation.relacionamento"}}",
+        iniciativa: "{{__ "ppgiRecomendacao.validation.iniciativa"}}",
+        expressao: "{{__ "ppgiRecomendacao.validation.expressao"}}",
+        informacoes: {
+          required: "{{__ "ppgiRecomendacao.validation.informacoes.required"}}",
+          minlength: "{{__ "ppgiRecomendacao.validation.informacoes.minlength"}}",
+          maxlength: "{{__ "ppgiRecomendacao.validation.informacoes.maxlength"}}"
+        },
+        ['places']: "{{__ "ppgiRecomendacao.validation.places"}}",
+        ['relationships']: "{{__ "ppgiRecomendacao.validation.relationships"}}",
+        classificacao: "{{__ "ppgiRecomendacao.validation.classificacao"}}"
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      },
+      submitHandler: function (form, e) {
+        e.preventDefault();
+        const buttonSubmit = form.querySelector('button[type="submit"]');
+        buttonSubmit.disabled = true;
+        buttonSubmit.querySelector('span').hidden = false;
+        const data = $("#form-recomendacao").serialize();
+        $.ajax({
+          url: `${basePath}/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
+          type: "PUT",
+          data,
+          success: function (data) {
+            window.location.reload(true);
+          },
+          error: function (data) {
+            const toastMessage = document.getElementById('toastMessageDanger');
+            const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
+              delay: 5000
+            });
+            toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.danger"}}';
+            myToast.show();
+          },
+          complete: function() {
+            currentTarget.disabled = false;
+            currentTarget.querySelector('span').hidden = true;
+          }
+        });
+      }
+    });
+    $(document).ready(function() {
+      $('#relationships').select2()
+      $('#places').select2()
+
+      $('#places').on('select2:select', function ({params}) {
+        const { data } = params;
+        const errorRelationships = document.getElementById('places-error');
+        if (data.id === 'conheceOutros') {
+          $('#group-other-places').slideDown();
+        }
+        if( errorRelationships) {
+          errorRelationships.setAttribute('hidden', true);
+        }
+      });
+      $('#places').on('select2:unselect', function (ev) {
+        const { data } = ev.params;
+        const errorRelationships = document.getElementById('places-error');
+        if (data.id === 'conheceOutros') {
+          $('#group-other-places').slideUp();
+        }
+        if(!ev.target.value && errorRelationships) {
+          errorRelationships.removeAttribute('hidden');
+        }
+      });
+      $('#relationships').on('select2:select', function (ev) {
+        const { data } = ev.params;
+        const errorRelationships = document.getElementById('relationships-error');
+
+        if (data.id === 'outrosContatos'){
+          $('#group-other-functions').slideDown();
+        }
+        if( errorRelationships) {
+          errorRelationships.setAttribute('hidden', true);
+        }
+      });
+      $('#relationships').on('select2:unselect', function (ev) {
+
+        const errorRelationships = document.getElementById('relationships-error');
+        const { data } = ev.params;
+        if (data.id === 'outrosContatos') {
+          $('#group-other-functions').slideUp();
+        }
+        if(!ev.target.value && errorRelationships) {
+          errorRelationships.removeAttribute('hidden');
+        }
+      });
+    });
 	});
 	
 
-	const prazo = new Date('{{recomendacao.prazo}}');
-	const prazoLabel = document.getElementById('prazo-label');
-	prazoLabel.innerHTML = prazo.toLocaleString();
-	const today = new Date();
-	if (today > prazo) {
-		prazoLabel.style.color = 'red';
-	}
 
-	$("#input-informacoes").on('input', function() {
-		const charCount = $(this).val().length;
-		$("#charCount").text(1000 - charCount);
-	});
-	$("#btn-save").click(function({currentTarget}) {
-		currentTarget.disabled = true;
-		currentTarget.querySelector('span').hidden = false;
-		const data = $("#form-recomendacao").serialize();
-		$.ajax({
-			url: `/selecaoppgi/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
-			type: "PATCH",
-			data,
-			success: function (data) {
-				const toastMessage = document.getElementById('toastMessageSuccess');
-				const myToast = new bootstrap.Toast(document.getElementById('toastSuccess'), {
-					delay: 5000
-				});
-				toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.success"}}';
-				myToast.show();
-			},
-			error: function (data) {
-				const toastMessage = document.getElementById('toastMessageDanger');
-				const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
-					delay: 5000
-				});
-				toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.danger"}}';
-				myToast.show();
-			},
-			complete: function() {
-				currentTarget.disabled = false;
-				currentTarget.querySelector('span').hidden = true;
-			}
-		});
-	});
-	$("#form-recomendacao").validate({
-		rules: {
-			nome: {
-				required: true,
-				minlength: 3,
-				maxlength: 100
-			},
-			titulacao: {
-				required: true,
-			}, 
-			instituicaoTitulacao: {
-				required: true,
-				minlength: 2,
-				maxlength: 100
-			},
-			instituicaoAtual: {
-				required: true,
-				minlength: 2,
-				maxlength: 100
-			},
-			cargo: {
-				required: true,
-				minlength: 2,
-				maxlength: 50
-			},
-			anoTitulacao: {
-                required: true,
-                number: true,
-                range: [1950, new Date().getFullYear() + 10]
-            },
-			anoContato: {
-                required: true,
-                number: true,
-                range: [1950, new Date().getFullYear()]
-            },
-			dominio: { 
-                required: true,
-            },
-			aprendizado: {
-                required: true,
-            },
-			assiduidade: {
-				required: true,
-			},
-			relacionamento: {
-				required: true,
-			},
-			iniciativa: {
-				required: true,
-			},
-			expressao: {
-				required: true,
-			},
-			informacoes: {
-				required: true,
-				minlength: 10,
-				maxlength: 1000
-			},
-			['places']: {
-				required: true,
-			},
-			['relationships']: {
-				required: true,
-			},
-			classificacao: {
-				required: true,
-			}
-		},
-		messages: {
-			nome: {
-				required: "{{__ "ppgiRecomendacao.validation.nome.required"}}",
-					minlength: "{{__ "ppgiRecomendacao.validation.nome.minlength"}}",
-					maxlength: "{{__ "ppgiRecomendacao.validation.nome.maxlength"}}"
-				},
-				titulacao: "{{__ "ppgiRecomendacao.validation.titulacao"}}",
-				instituicaoTitulacao: {
-					required: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.required"}}",
-					minlength: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.minlength"}}",
-					maxlength: "{{__ "ppgiRecomendacao.validation.instituicaoTitulacao.maxlength"}}"
-				},
-				instituicaoAtual: {
-					required: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.required"}}",
-					minlength: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.minlength"}}",
-					maxlength: "{{__ "ppgiRecomendacao.validation.instituicaoAtual.maxlength"}}"
-				},
-				cargo: {
-					required: "{{__ "ppgiRecomendacao.validation.cargo.required"}}",
-					minlength: "{{__ "ppgiRecomendacao.validation.cargo.minlength"}}",
-					maxlength: "{{__ "ppgiRecomendacao.validation.cargo.maxlength"}}"
-				},
-				anoTitulacao: {
-                	required: "{{__ "ppgiRecomendacao.validation.anoTitulacao.required"}}",
-                	number: "{{__ "ppgiRecomendacao.validation.anoTitulacao.number"}}",
-                	range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear() + 10})`
-            	},
-				anoContato: {
-                	required: "{{__ "ppgiRecomendacao.validation.anoContato.required"}}",
-                	number: "{{__ "ppgiRecomendacao.validation.anoContato.number"}}",
-                	range: `Por favor, insira um ano válido (entre 1950 e ${new Date().getFullYear()})`
-            	},
-				dominio: "{{__ "ppgiRecomendacao.validation.dominio"}}",
-				aprendizado: "{{__ "ppgiRecomendacao.validation.aprendizado"}}",
-				assiduidade: "{{__ "ppgiRecomendacao.validation.assiduidade"}}",
-				relacionamento: "{{__ "ppgiRecomendacao.validation.relacionamento"}}",
-				iniciativa: "{{__ "ppgiRecomendacao.validation.iniciativa"}}",
-				expressao: "{{__ "ppgiRecomendacao.validation.expressao"}}",
-				informacoes: {
-					required: "{{__ "ppgiRecomendacao.validation.informacoes.required"}}",
-					minlength: "{{__ "ppgiRecomendacao.validation.informacoes.minlength"}}",
-					maxlength: "{{__ "ppgiRecomendacao.validation.informacoes.maxlength"}}"
-				},
-				['places']: "{{__ "ppgiRecomendacao.validation.places"}}",
-				['relationships']: "{{__ "ppgiRecomendacao.validation.relationships"}}",
-				classificacao: "{{__ "ppgiRecomendacao.validation.classificacao"}}"
-			},
-			errorElement: 'span',
-			errorPlacement: function (error, element) {
-				error.addClass('invalid-feedback');
-				element.closest('div').append(error);
-			},
-			highlight: function (element, errorClass, validClass) {
-				$(element).addClass('is-invalid');
-			},
-			unhighlight: function (element, errorClass, validClass) {
-				$(element).removeClass('is-invalid');
-			},
-			submitHandler: function (form, e) {
-				e.preventDefault();
-				const buttonSubmit = form.querySelector('button[type="submit"]');
-				buttonSubmit.disabled = true;
-				buttonSubmit.querySelector('span').hidden = false;
-				const data = $("#form-recomendacao").serialize();
-				$.ajax({
-					url: `/selecaoppgi/recomendacoes/{{token}}?_csrf=${$("#csrfToken").val()}`,
-					type: "PUT",
-					data,
-					success: function (data) {
-						window.location.reload(true);
-					},
-					error: function (data) {
-						const toastMessage = document.getElementById('toastMessageDanger');
-						const myToast = new bootstrap.Toast(document.getElementById('toastDanger'), {
-							delay: 5000
-						});
-						toastMessage.innerHTML = '{{__ "ppgiRecomendacao.toast.danger"}}';
-						myToast.show();
-					},
-					complete: function() {
-						currentTarget.disabled = false;
-						currentTarget.querySelector('span').hidden = true;
-					}
-				});
-			}
-		});
-	$(document).ready(function() {
-		$('#relationships').select2()
-		$('#places').select2()
-
-		$('#places').on('select2:select', function ({params}) {
-			const { data } = params;
-			const errorRelationships = document.getElementById('places-error');
-			if (data.id === 'conheceOutros') {
-				$('#group-other-places').slideDown();
-			}
-			if( errorRelationships) {
-				errorRelationships.setAttribute('hidden', true);
-			}
-		});
-		$('#places').on('select2:unselect', function (ev) {
-			const { data } = ev.params;
-			const errorRelationships = document.getElementById('places-error');
-			if (data.id === 'conheceOutros') {
-				$('#group-other-places').slideUp();
-			}
-			if(!ev.target.value && errorRelationships) {
-				errorRelationships.removeAttribute('hidden');
-			}
-		});
-		$('#relationships').on('select2:select', function (ev) {
-			const { data } = ev.params;
-			const errorRelationships = document.getElementById('relationships-error');
-
-			if (data.id === 'outrosContatos'){
-				$('#group-other-functions').slideDown();
-			}
-			if( errorRelationships) {
-				errorRelationships.setAttribute('hidden', true);
-			}
-		});
-		$('#relationships').on('select2:unselect', function (ev) {
-
-			const errorRelationships = document.getElementById('relationships-error');
-			const { data } = ev.params;
-			if (data.id === 'outrosContatos') {
-				$('#group-other-functions').slideUp();
-			}
-			if(!ev.target.value && errorRelationships) {
-				errorRelationships.removeAttribute('hidden');
-			}
-		});
-	});
 </script>

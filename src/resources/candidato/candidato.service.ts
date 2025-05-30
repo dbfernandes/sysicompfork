@@ -255,7 +255,7 @@ class CandidatoService {
     }
 
     const token = crypto.randomBytes(20).toString('hex');
-    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
+    const timeAdd = Number(process.env.TIME_MILLIS_EXPIRE_EMAIL) || 3600000;
     const timeExpires = new Date();
     timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
     await prisma.candidato.update({
@@ -268,7 +268,7 @@ class CandidatoService {
       },
     });
 
-    const url = `http://${host}/selecaoppgi/trocarSenha?token=${token}`;
+    const url = `http://${host}/trocarSenha?token=${token}`;
     sendEmail({
       to: candidato.email,
       name: 'Coordenação do PPGI',

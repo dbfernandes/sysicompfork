@@ -99,13 +99,6 @@ async function signUp(
       const listEditais = await editalService.listEditaisDisponiveis();
       const currentLanguage = getLanguage(req);
 
-      console.log({
-        csrfToken: req.csrfToken(),
-        editais: listEditais,
-        errorSignin: null,
-        currentLanguage,
-        ...locals,
-      });
       res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
         editais: listEditais,
@@ -600,13 +593,13 @@ async function formProposta(
         });
 
         if (body.isNext) {
-          const url = `http://${req.headers.host}/selecaoppgi/recomendacoes`;
+          const url = `http://${req.headers.host}/recomendacoes`;
           await generatePdfEnrollment(uid.toString());
-          // await candidatoRecomendacaoService.sendEmailForUsersByCandidate({
-          //   id,
-          //   url,
-          // });
-          // await candidatoService.enviarEmailConfirmacao({ id });
+          candidatoRecomendacaoService.sendEmailForUsersByCandidate({
+            id,
+            url,
+          });
+          candidatoService.enviarEmailConfirmacao({ id });
         }
 
         res.status(StatusCodes.OK).send();

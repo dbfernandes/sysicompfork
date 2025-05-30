@@ -89,7 +89,7 @@
           />
           <a
             class="link-file"
-            href="/selecaoppgi/download/arquivo/Inscricao.pdf"
+            href="/download/arquivo/Inscricao.pdf"
           >
             {{__ "ppgiForm4.button.registrationForm"}}
           </a>
@@ -103,7 +103,7 @@
           />
           <a
             class="link-file"
-            href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf"
+            href="/download/arquivo/PropostaTrabalho.pdf"
           >
             {{__ "ppgiForm4.button.proposol"}}
           </a>
@@ -118,7 +118,7 @@
             />
             <a
               class="link-file"
-              href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf"
+              href="/download/arquivo/CartaAceiteOrientador.pdf"
             >
               {{__ "ppgiForm4.button.letter"}}
             </a>
@@ -133,7 +133,7 @@
           />
           <a
             class="link-file"
-            href="/selecaoppgi/download/arquivo/Curriculum.pdf"
+            href="/download/arquivo/Curriculum.pdf"
           >
             {{__ "ppgiForm4.button.curriculum"}}
           </a>
@@ -147,7 +147,7 @@
           />
           <a
             class="link-file"
-            href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf"
+            href="/download/arquivo/ComprovantePagamento.pdf"
           >
             {{__ "ppgiForm4.button.payment"}}
           </a>
@@ -182,23 +182,27 @@
 </main>
 
 <script>
-  $("#btn_logout").click(function () {
-    $.ajax({
-      url: "/selecaoppgi/logout",
-      type: "POST",
-      data: {
-        _csrf: $("#csrfToken").val()
-      },
-      success: function (data) {
-        window.location.href = "/selecaoppgi";
-      },
-      error: function (data) {
-        console.error(data);
-      }
-    });
-  });
+
 
   $(document).ready(function () {
+    const basePath = "{{basePath}}";
+
+    $("#btn_logout").click(function () {
+      $.ajax({
+        url: `${basePath}/logout`,
+        type: "POST",
+        data: {
+          _csrf: $("#csrfToken").val()
+        },
+        success: function (data) {
+          window.location.href = `${basePath}`;
+        },
+        error: function (data) {
+          console.error(data);
+        }
+      });
+    });
+
     $("#voltarForm").on("click", function (e) {
       const csrfToken = $("#csrfToken").val();
       // Se esses ids existirem no form, inclua
@@ -206,7 +210,7 @@
       const editalPosicao = $("#editalPosicao").val();
 
       $.ajax({
-        url: '/selecaoppgi/voltar',
+        url: `${basePath}/voltar`,
         type: 'POST',
         data: {
           _csrf: csrfToken,
@@ -214,7 +218,7 @@
           id: id
         },
         success: function (data) {
-          window.location.href = '/selecaoppgi/formulario';
+          window.location.href = `${basePath}/formulario`;
           window.location.reload(true);
         },
         error: function (data) {

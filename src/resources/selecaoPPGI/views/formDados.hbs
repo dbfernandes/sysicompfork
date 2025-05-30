@@ -773,7 +773,7 @@
       });
     {{/if}}
 
-    const input = document.querySelector("#phone");
+ /*   const input = document.querySelector("#phone");
     const inputPhone =  window.intlTelInput(input, {
       initialCountry: "br",
       customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => "e.x. " + selectedCountryPlaceholder,
@@ -793,7 +793,8 @@
       countryOrder: ["br", "us", "gb"],
       strictMode: true,
       validationNumberTypes: null
-    });
+    });*/
+
     const cotistaValue = document.getElementById('CotistaObj').value;
     const cotistaTipoValue = document.getElementById('CotistaTipoObj').value;
 
@@ -1003,12 +1004,12 @@
       data.cpf = document.getElementById('cpf').value;
       data.pais = document.getElementById('pais').value;
       data.passaporte = document.getElementById('passaporte').value;
-      console.log(inputPhone.getNumber());
+      // console.log(inputPhone.getNumber());
       return data;
     }
 
-    // Inputmask("99999-999").mask("#candidato-cep");
-    // $('#candidato-cep').on('blur', pesquisarCep);
+    Inputmask("99999-999").mask("#candidato-cep");
+    $('#candidato-cep').on('blur', pesquisarCep);
 
     $("#btn_logout").click(function () {
       $.ajax({
@@ -1169,18 +1170,11 @@
       errorElement: 'span',
       errorPlacement: function (error, element) {
         error.addClass('invalid-feedback');
-        console.log()
-        console.log(element)
-        // console.log($(element).select('phone'))
 
-        // console.log($(element).id === 'phone')
         if (element.is(":radio")) {
           error.insertAfter(element.closest('.radio-group'));
         }
-        // else if($(element).get(0).id === 'phone') {
-        //   error.insertAfter(element.);
-        //
-        // }
+
         else {
           element.closest('div').append(error);
         }
@@ -1201,9 +1195,7 @@
         }
       },
       submitHandler: function (form, e) {
-        console.log(`treste`)
         e.preventDefault();
-        console.log("paasou aqui")
         const btnSave = $("#btn-save-continue");
         btnSave.find("span").prop("hidden", false);
         btnSave.prop("disabled", true);
@@ -1212,27 +1204,26 @@
         const email = $("#email").val();
         const editalPosicao = $("#editalPosicao").val();
         const id = $("#id").val();
-console.log(`Teste`)
-        // $.ajax({
-        // 	url:`${basePath}/formulario/1`,
-        // 	type: "PUT",
-        // 	data: {
-        // 		data: data,
-        // 		_csrf: csrfToken,
-        // 		email: email,
-        // 		editalPosicao: editalPosicao,
-        // 		id: id
-        // 	},
-        // 	success: (data) => {
-        // 		window.location.href = `${basePath}/formulario`;
-        // 		window.location.reload(true);
-        // 	},
-        // 	error: (data) => {
-        // 		btnSave.find("span").prop("hidden", true);
-        // 		btnSave.prop("disabled", false);
-        // 		console.log(data)
-        // 	}
-        // });
+        $.ajax({
+        	url: `${basePath}/formulario/1`,
+        	type: "PUT",
+        	data: {
+        		data: data,
+        		_csrf: csrfToken,
+        		email: email,
+        		editalPosicao: editalPosicao,
+        		id: id
+        	},
+        	success: (data) => {
+        		window.location.href = `${basePath}/formulario`;
+        		window.location.reload(true);
+        	},
+        	error: (data) => {
+        		btnSave.find("span").prop("hidden", true);
+        		btnSave.prop("disabled", false);
+        		console.log(data)
+        	}
+        });
       }
     });
 

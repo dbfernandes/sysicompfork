@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es2016",
-    "module": "commonjs",
-    "rootDir": ".", // Mudando de "./src" para "."
+    "target": "ES2023",          // ①
+    "module": "CommonJS",        // ② continua em CJS
+    "moduleResolution": "Node",
+    "rootDir": "./src", // Mudando de "./src" para "."
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
@@ -33,12 +33,12 @@
   "include": [
     "./src/**/*",
     "./src/**/*.d.ts",
-    "./test/**/*",
-    "singleton.ts",
-      "**/*.ts"
+
   ],
   "exclude": [
     "./build",
-    "node_modules"
+    "node_modules",
+    "tests",
+    "prisma"
   ]
 }

@@ -25,6 +25,8 @@
         class="dropdown-item {{#if (eq currentLanguage "ptBR")}}active{{/if}}"
         href="/changeLanguage/ptBR"
         role="menuitem"
+        onclick="this.href = this.href + '?nocache=' + Date.now();"
+
       >
         <img class="icon-language" src="/public/img/icons/brazil.png" alt="Bandeira do Brasil">
         {{__ "ppgi.portuguese"}}
@@ -35,6 +37,8 @@
         class="dropdown-item {{#if (eq currentLanguage "en")}}active{{/if}}"
         href="/changeLanguage/en"
         role="menuitem"
+        onclick="this.href = this.href + '?nocache=' + Date.now();"
+
       >
         <img class="icon-language" src="/public/img/icons/united-states.png" alt="Bandeira dos Estados Unidos">
         {{__ "ppgi.english"}}

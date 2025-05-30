@@ -1,7 +1,8 @@
 import moment from 'moment-timezone';
-import language from '../../utils/i18n';
+import { i18next } from '../../utils/i18n';
+
 const whichCourse = (course, lng) => {
-  const i18n = language.i18next;
+  const i18n = i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Processamento de Dados':
@@ -17,16 +18,12 @@ const whichCourse = (course, lng) => {
   }
 };
 
-const getYearActual = () => {
-  return new Date().getFullYear();
-};
+const getYearActual = () => new Date().getFullYear();
 
-const isEnLng = (lng) => {
-  return lng === 'en';
-};
+const isEnLng = (lng) => lng === 'en';
 
 const guidencesOnGoing = (course, lng) => {
-  const i18n = language.i18next;
+  const i18n = i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -39,8 +36,7 @@ const guidencesOnGoing = (course, lng) => {
 };
 
 const guidencesEnded = (course, lng) => {
-  const i18n = language.i18next;
-
+  const i18n = i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -52,7 +48,6 @@ const guidencesEnded = (course, lng) => {
   }
 };
 
-/* eslint-disable eqeqeq */
 const ops = {
   not: (v1) => !v1,
   '!': (v1) => !v1,
@@ -89,126 +84,80 @@ const autorizarUsuario = (tipos, autorizacao) => {
   }
 };
 
-const ifEqual = (a, b, options) => {
+const ifEqual = function (a, b, options) {
   if (a === b) {
     return options.fn(this);
   }
   return options.inverse(this);
 };
 
-const checked = (a, b) => {
-  if (a == b) {
-    return 'selected';
-  }
-  return '';
-};
+const checked = (a, b) => (a == b ? 'selected' : '');
 
-const checkedIn = (a, b) => {
-  if (a && a.includes(b)) {
-    return 'checked';
-  }
-  return '';
-};
+const checkedIn = (a, b) => (a && a.includes(b) ? 'checked' : '');
 
-const checkedUnica = (a) => {
-  if (a !== '') {
-    return 'checked';
-  }
-  return '';
-};
+const checkedUnica = (a) => (a !== '' ? 'checked' : '');
 
-// const getJsonContext = (data, options) => {
-//   return options.fn(JSON.parse(data))
-// }
-
-const showError = function (errors, field) {
-  if (errors instanceof Array) {
+const showError = (errors, field) => {
+  if (Array.isArray(errors)) {
     const error = errors.find((e) => e.path == field);
     return error ? error.message : '';
-  } else if (errors instanceof Object) {
+  } else if (typeof errors === 'object' && errors !== null) {
     const error = errors[field];
-    if (error instanceof Array) return error[0];
+    if (Array.isArray(error)) return error[0];
     else if (typeof error === 'string') return error;
     return '';
   }
+  return '';
 };
 
-const add = (a, b) => {
-  return a + b;
-};
+const add = (a, b) => a + b;
+
 const formataBioSex = (data) => {
-  if (data === 'M') {
-    return 'Masculino';
-  } else if (data === 'F') {
-    return 'Feminino';
-  } else {
-    return 'Outro';
-  }
+  if (data === 'M') return 'Masculino';
+  if (data === 'F') return 'Feminino';
+  return 'Outro';
 };
-const formataData = (data) => {
-  return moment(data).format('DD/MM/YYYY');
-};
+
+const formataData = (data) => moment(data).format('DD/MM/YYYY');
+
 const formataDataLng = (data, lng) => {
-  if (lng === 'en') {
-    return moment(data).format('MM/DD/YYYY');
-  }
-  return moment(data).format('DD/MM/YYYY');
+  return moment(data).format(lng === 'en' ? 'MM/DD/YYYY' : 'DD/MM/YYYY');
 };
+
 const formataFormacao = (formacao, lng) => {
-  const formacaoArr = formacao.split(';');
-  let prep = ' em ';
-  if (lng === 'en') {
-    prep = ' in ';
-  }
-  return (
-    formacaoArr[0] +
-    prep +
-    formacaoArr[1] +
-    '. ' +
-    formacaoArr[2] +
-    ', ' +
-    formacaoArr[3] +
-    '.'
-  );
+  const arr = formacao.split(';');
+  const prep = lng === 'en' ? ' in ' : ' em ';
+  return arr[0] + prep + arr[1] + '. ' + arr[2] + ', ' + arr[3] + '.';
 };
+
 const formataFormacaoTitulo = (formacao, lng) => {
-  const formacaoArr = formacao.split(';');
-  let prep = ' em ';
-  if (lng == 'en') {
-    prep = ' in ';
-  }
-  return formacaoArr[0] + prep + formacaoArr[1];
+  const arr = formacao.split(';');
+  const prep = lng === 'en' ? ' in ' : ' em ';
+  return arr[0] + prep + arr[1];
 };
-const formataFormacaoLocal = (formacao) => {
-  const formacaoArr = formacao.split(';');
-  return formacaoArr[2];
-};
-const formataFormacaoAno = (formacao) => {
-  const formacaoArr = formacao.split(';');
-  return formacaoArr[3];
-};
+
+const formataFormacaoLocal = (formacao) => formacao.split(';')[2];
+const formataFormacaoAno = (formacao) => formacao.split(';')[3];
 
 const validaLabel = (status, dataInicio, dataFim, options) => {
-  const dataAtual = new Date();
-  console.log(dataAtual);
-  console.log(dataInicio);
+  const now = new Date();
   if (status == '1') {
-    if (moment(dataAtual).isBefore(dataInicio)) {
+    if (moment(now).isBefore(dataInicio)) {
       return '<span class="badge bg-info">Não Iniciado</span>';
-    } else if (moment(dataAtual).isAfter(dataFim)) {
+    } else if (moment(now).isAfter(dataFim)) {
       return '<span class="badge bg-warning">Encerrado</span>';
     } else {
       return '<span class="badge bg-success">Aberto</span>';
     }
-  } else {
-    return options.inverse(this);
   }
+  return options.inverse(this);
 };
 
 function setTitle(options) {
   this.title = options.hash.title;
   return '';
 }
+
 function concat() {
   return Array.prototype.slice.call(arguments, 0, -1).join('');
 }
@@ -223,14 +172,8 @@ function dataAtualExtensa() {
 
 function formatarDataExtensa(date) {
   if (!date) return '';
-
-  // Verifique se 'date' é uma instância de Date ou uma string válida
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-
-  if (isNaN(dateObj.getTime())) {
-    return '';
-  }
-
+  if (isNaN(dateObj.getTime())) return '';
   return dateObj.toLocaleDateString('pt-BR', {
     timeZone: 'America/Manaus',
     timeZoneName: 'long',
@@ -244,12 +187,10 @@ function dataAtualToLocaleString() {
 function dataToLocaleString(date) {
   if (!date) return '';
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  if (isNaN(dateObj.getTime())) {
-    return '';
-  }
+  if (isNaN(dateObj.getTime())) return '';
   return dateObj.toLocaleString();
 }
-module.exports = {
+export default {
   ...ops,
   ifEqual,
   checked,

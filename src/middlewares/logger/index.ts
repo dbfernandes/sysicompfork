@@ -1,10 +1,6 @@
 import winston from 'winston';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
-// Custom tamplate for logs
-// const logFormat = winston.format.printf(({ level, message, timestamp }) => {
-//     return `${timestamp} ${level}: ${message}`;
-// });
 
 // Caminho para a pasta de logs
 const logDir = path.join(__dirname, '../../../logs');

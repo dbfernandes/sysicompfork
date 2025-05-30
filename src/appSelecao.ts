@@ -1,6 +1,8 @@
 import * as path from 'path';
 import * as uuid from 'uuid';
 
+import helpers from './views/helpers/helpers'; // se o export for `export default`
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csrf from 'csurf';
@@ -12,6 +14,8 @@ import { engine } from 'express-handlebars';
 
 import router from './routes/routesSelecao';
 import { errorHandler } from './middlewares/errorHandler';
+import morgan from 'morgan';
+import logger from '@utils/logger';
 
 dotenv.config({
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
@@ -43,7 +47,7 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers')),
+    helpers: helpers,
   }),
 );
 
@@ -72,13 +76,19 @@ app.use(csrf({ cookie: true }));
 
 app.use(
   '/script-adminlte',
-  express.static(path.join(__dirname, '/../node_modules/admin-lte/')),
+  express.static(path.resolve(process.cwd(), 'node_modules/admin-lte')),
+);
+app.use('/public', express.static(path.resolve(process.cwd(), 'public')));
+app.use('/img', express.static(path.resolve(process.cwd(), 'public/img')));
+// Colocar o logger depois
+app.use(
+  morgan('combined', {
+    stream: {
+      write: (message: string) => logger.info(message.trim()),
+    },
+  }),
 );
 
-app.use('/public', express.static(path.join(__dirname, '/../public/')));
-app.use('/img', express.static(path.join(__dirname, '/../public/img/')));
-
-// Colocar o logger depois
 app.use((req, res, next) => {
   res.locals.basePath = req.baseUrl || ''; // Se usar Router
   next();

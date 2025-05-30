@@ -370,7 +370,7 @@
                     <figcaption id="name-aceite" style="word-break: break-word;"><b>CartaAceiteOrientador.pdf</b></figcaption>
                   </div>
                   <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
-                    <a id="url-aceite" href="/selecaoppgi/download/arquivo/CartaAceiteOrientador.pdf" class="btn btn-primary" download style="flex-grow: 1;">
+                    <a id="url-aceite" href="/download/arquivo/CartaAceiteOrientador.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                       <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                        {{__ "ppgi.form.btnDownload"}}</a>
                     <button type="button" class="btn btn-success" id="btn-change-aceite" style="flex-grow: 1;">
@@ -413,7 +413,7 @@
                   <figcaption id="name-proposta" style="word-break: break-word;"><b>PropostaTrabalho.pdf</b></figcaption>
                 </div>
                 <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px;">
-                  <a id="url-proposta" href="/selecaoppgi/download/arquivo/PropostaTrabalho.pdf" class="btn btn-primary"  download style="flex-grow: 1;">
+                  <a id="url-proposta" href="/download/arquivo/PropostaTrabalho.pdf" class="btn btn-primary"  download style="flex-grow: 1;">
                     <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                      {{__ "ppgi.form.btnDownload"}}</a>
                   <button type="button" class="btn btn-success" id="btn-change-proposta" style="flex-grow: 1;">
@@ -455,7 +455,7 @@
                   <figcaption id="name-pagamento" style="word-break: break-word;"><b>ComprovantePagamento.pdf</b></figcaption>
                 </div>
                 <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
-                  <a id="url-pagamento" href="/selecaoppgi/download/arquivo/ComprovantePagamento.pdf" class="btn btn-primary" download style="flex-grow: 1;">
+                  <a id="url-pagamento" href="/download/arquivo/ComprovantePagamento.pdf" class="btn btn-primary" download style="flex-grow: 1;">
                     <i class="fa fa-download mr-2" aria-hidden="true" ></i>
                      {{__ "ppgi.form.btnDownload"}}</a>
                   <button type="button" class="btn btn-success" id="btn-change-pagamento" style="flex-grow: 1;">
@@ -531,133 +531,108 @@
 </main>
 
 <script>
-
-  const inputFilesConfig = {
-    CartaAceiteOrientador: {
-      input: "#CartaAceiteOrientador",
-      buttonsElement: "#buttons-aceite",
-      containerInput: "#container-aceite",
-      nameElement: "#name-aceite",
-      changeButton: "#btn-change-aceite",
-      deleteButton: "#btn-delete-aceite",
-      urlElement: "#url-aceite",
-      hasFileSave: {{hasCartaAceiteOrientador}}
-    },
-    PropostaTrabalho: {
-      input: "#PropostaTrabalho",
-      buttonsElement: "#buttons-proposta",
-      containerInput: "#container-proposta",
-      nameElement: "#name-proposta",
-      changeButton: "#btn-change-proposta",
-      deleteButton: "#btn-delete-proposta",
-      urlElement: "#url-proposta",
-      hasFileSave: {{hasPropostaTrabalho}}
-    },
-    ComprovantePagamento: {
-      input: "#ComprovantePagamento",
-      buttonsElement: "#buttons-pagamento",
-      containerInput: "#container-pagamento",
-      nameElement: "#name-pagamento",
-      changeButton: "#btn-change-pagamento",
-      deleteButton: "#btn-delete-pagamento",
-      urlElement: "#url-pagamento",
-      hasFileSave: {{hasComprovante}}
-    }
-  }
-
-  function changeFile(idInput) {
-    $(idInput).click();
-  }
-
-  function actionDeleteFile(idInput, idButtons, idContainerInput){
-    $(idInput).val('');
-    $(idButtons).hide();
-    $(idContainerInput).show();
-    $(idInput).next('label').text('{{__ "ppgi.form.chooseFile"}}');
-  }
-
-  function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
-    const input = $(event.target);
-
-    if (!input.valid()) {
-      input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
-      return;
-    }
-    const file = event.target.files[0];
-    const fileName = file.name;
-    const url = URL.createObjectURL(file);
-    input.valid()
-    $(idContainerInput).hide();
-    $(idButtons).css('display', 'flex');
-    $(idName).html(`<b>${fileName}</b>`);
-
-    $(aLink)
-      .attr('href', url)
-      .attr('download', fileName);
-  }
-
-  function finishRegister(){
-    const linhaDePesquisaId = $("#candidato-pesquisa").val();
-    const formData = new FormData($("#candidato-formulario")[0]);
-    const btnSubmit = $("#confirmButton");
-    btnSubmit.attr("disabled", true);
-    btnSubmit.find("span").prop("hidden", false);
-    formData.append('idLinhaPesquisa', linhaDePesquisaId);
-    formData.append('isNext', true);
-    $.ajax({
-      headers: {
-        'X-CSRF-TOKEN': $("#csrfToken").val()
-      },
-      url: '/selecaoppgi/formulario/3',
-      type: 'PUT',
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        window.location.href = '/selecaoppgi/formulario';
-      },
-      error: function (data) {
-        console.error(data);
-        btnSubmit.attr("disabled", false);
-        btnSubmit.find("span").prop("hidden", true);
-      }
-    });
-  }
-  
-  $("#save-data").click(function (e) {
-    e.preventDefault();
-    const form = $("#candidato-formulario");
-    if (!form.valid()) {
-      return;
-    }
-    const linhaDePesquisaId = $("#candidato-pesquisa").val();
-    const formData = new FormData($("#candidato-formulario")[0]);
-    const btnSubmit = $("#save-data");
-    btnSubmit.attr("disabled", true);
-    btnSubmit.find("span").prop("hidden", false);
-    formData.append('idLinhaPesquisa', linhaDePesquisaId);
-
-    $.ajax({
-      headers: {
-        'X-CSRF-TOKEN': $("#csrfToken").val()
-      },
-      url: '/selecaoppgi/formulario/3',
-      type: 'PUT',
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        window.location.href = '/selecaoppgi/formulario';
-      },
-      error: function (data) {
-        console.error(data);
-        btnSubmit.attr("disabled", false);
-        btnSubmit.find("span").prop("hidden", true);
-      }
-    });
-  });
-
   $(document).ready(function () {
+    const basePath = "{{basePath}}";
+
+    const inputFilesConfig = {
+      CartaAceiteOrientador: {
+        input: "#CartaAceiteOrientador",
+        buttonsElement: "#buttons-aceite",
+        containerInput: "#container-aceite",
+        nameElement: "#name-aceite",
+        changeButton: "#btn-change-aceite",
+        deleteButton: "#btn-delete-aceite",
+        urlElement: "#url-aceite",
+        hasFileSave: {{hasCartaAceiteOrientador}}
+      },
+      PropostaTrabalho: {
+        input: "#PropostaTrabalho",
+        buttonsElement: "#buttons-proposta",
+        containerInput: "#container-proposta",
+        nameElement: "#name-proposta",
+        changeButton: "#btn-change-proposta",
+        deleteButton: "#btn-delete-proposta",
+        urlElement: "#url-proposta",
+        hasFileSave: {{hasPropostaTrabalho}}
+      },
+      ComprovantePagamento: {
+        input: "#ComprovantePagamento",
+        buttonsElement: "#buttons-pagamento",
+        containerInput: "#container-pagamento",
+        nameElement: "#name-pagamento",
+        changeButton: "#btn-change-pagamento",
+        deleteButton: "#btn-delete-pagamento",
+        urlElement: "#url-pagamento",
+        hasFileSave: {{hasComprovante}}
+      }
+    }
+
+    function changeFile(idInput) {
+      $(idInput).click();
+    }
+
+    function actionDeleteFile(idInput, idButtons, idContainerInput){
+      $(idInput).val('');
+      $(idButtons).hide();
+      $(idContainerInput).show();
+      $(idInput).next('label').text('{{__ "ppgi.form.chooseFile"}}');
+    }
+
+    function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
+      const input = $(event.target);
+
+      if (!input.valid()) {
+        input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
+        return;
+      }
+      const file = event.target.files[0];
+      const fileName = file.name;
+      const url = URL.createObjectURL(file);
+      input.valid()
+      $(idContainerInput).hide();
+      $(idButtons).css('display', 'flex');
+      $(idName).html(`<b>${fileName}</b>`);
+
+      $(aLink)
+        .attr('href', url)
+        .attr('download', fileName);
+    }
+
+
+
+    $("#save-data").click(function (e) {
+      e.preventDefault();
+      const form = $("#candidato-formulario");
+      if (!form.valid()) {
+        return;
+      }
+      const linhaDePesquisaId = $("#candidato-pesquisa").val();
+      const formData = new FormData($("#candidato-formulario")[0]);
+      const btnSubmit = $("#save-data");
+      btnSubmit.attr("disabled", true);
+      btnSubmit.find("span").prop("hidden", false);
+      formData.append('idLinhaPesquisa', linhaDePesquisaId);
+
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': $("#csrfToken").val()
+        },
+        url: `${basePath}/formulario/3`,
+        type: 'PUT',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          window.location.href = `${basePath}/formulario`;
+        },
+        error: function (data) {
+          console.error(data);
+          btnSubmit.attr("disabled", false);
+          btnSubmit.find("span").prop("hidden", true);
+        }
+      });
+    });
+
     Object.keys(inputFilesConfig).forEach((key) => {
       const inputConfig = inputFilesConfig[key];
       const input = $(inputConfig.input);
@@ -686,13 +661,13 @@
     $("#charCount").text(1000 - $("#candidato-Motivo").val().length);
 		$("#btn_logout").click(function () {
 			$.ajax({
-				url: "/selecaoppgi/logout",
+				url: `${basePath}/logout`,
 				type: "POST",
 				data: {
 					_csrf: $("#csrfToken").val()
 				},
 				success: function (data) {
-					window.location.href = "/selecaoppgi";
+					window.location.href = `${basePath}`;
 				},
 				error: function (data) {
 					console.error(data);
@@ -702,13 +677,13 @@
 
 		$("#btn_inicio").click(function () {
 			$.ajax({
-				url: "/selecaoppgi/voltarInicio",
+				url: `${basePath}/voltarInicio`,
 				type: "POST",
 				data: {
 					_csrf: $("#csrfToken").val()
 				},
 				success: function (data) {
-					window.location.href = "/selecaoppgi/formulario";
+					window.location.href = `${basePath}/formulario`;
 				},
 				error: function (data) {
 					console.error(data);
@@ -725,14 +700,14 @@
         const editalPosicao = $("#editalPosicao").val();
 
         $.ajax({    
-          url: '/selecaoppgi/voltar',
+          url: `${basePath}/voltar`,
           type: 'POST',
           data: {
             _csrf: csrfToken,
             editalPosicao: editalPosicao, 
             id: id
           }, success: function (data) {
-            window.location.href = '/selecaoppgi/formulario';
+            window.location.href = `${basePath}/formulario`;
             window.location.reload(true);
           },
           error: function (data) {
@@ -778,30 +753,28 @@
       var charactersRemaining = maxLength - currentLength;
       $("#charCount").text(charactersRemaining);
     });
-  });
+    $.validator.addMethod("fileSize", function(value, element, param) {
+      if (element.files.length === 0) {
+        return true;
+      }
+      return element.files[0].size <= param;
+    }, "O arquivo deve ter no máximo {0} bytes.");
 
-  $.validator.addMethod("fileSize", function(value, element, param) {
-    if (element.files.length === 0) {
-      return true;
-    }
-    return element.files[0].size <= param;
-  }, "O arquivo deve ter no máximo {0} bytes.");
-
-  $.validator.prototype.checkForm = function() {
-    this.prepareForm();
-    for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+    $.validator.prototype.checkForm = function() {
+      this.prepareForm();
+      for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
         if (this.findByName(elements[i].name).length != undefined && this.findByName(elements[i].name).length > 1) {
-            for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-                this.check(this.findByName(elements[i].name)[cnt]);
-            }
+          for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
+            this.check(this.findByName(elements[i].name)[cnt]);
+          }
         } else {
-            this.check(elements[i]);
+          this.check(elements[i]);
         }
+      }
+      return this.valid();
     }
-    return this.valid();
-  }
 
-  $("#candidato-formulario").validate({
+    $("#candidato-formulario").validate({
       errorElement: 'span',
       errorPlacement: function (error, element) {
         error.addClass('invalid-feedback');
@@ -825,7 +798,7 @@
         },
         "recomendacaoEmail[]": {
           required: false,
-          email: true 
+          email: true
         },
         "PropostaTrabalho": {
           required: function() {
@@ -880,4 +853,35 @@
         $('#confirm-register').modal()
       }
     });
+
+
+  });
+  function finishRegister(){
+    const linhaDePesquisaId = $("#candidato-pesquisa").val();
+    const formData = new FormData($("#candidato-formulario")[0]);
+    const btnSubmit = $("#confirmButton");
+    btnSubmit.attr("disabled", true);
+    btnSubmit.find("span").prop("hidden", false);
+    formData.append('idLinhaPesquisa', linhaDePesquisaId);
+    formData.append('isNext', true);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $("#csrfToken").val()
+      },
+      url: `{{basePath}}/formulario/3`,
+      type: 'PUT',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        window.location.href = `{{basePath}}/formulario`;
+      },
+      error: function (data) {
+        console.error(data);
+        btnSubmit.attr("disabled", false);
+        btnSubmit.find("span").prop("hidden", true);
+      }
+    });
+  }
+
 </script>

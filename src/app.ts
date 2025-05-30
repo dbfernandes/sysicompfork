@@ -1,40 +1,31 @@
-import * as path from 'path';
-import * as uuid from 'uuid';
+/* app.ts — CommonJS-friendly (TypeScript) */
+import csurf from 'csurf'; // com “s” no final
+import path from 'node:path';
+import { v4 as uuidv4 } from 'uuid';
+import helpers from './views/helpers/helpers'; // se o export for `export default`
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import csrf from 'csurf';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
-
 import { engine } from 'express-handlebars';
 
-import router from './routes';
+import router from './routes/index';
 import { errorHandler } from './middlewares/errorHandler';
 
+import morgan from 'morgan';
+import logger from './utils/logger';
+
+/* ───────── env ───────── */
 dotenv.config({
+  // __dirname já existe em CJS; não precisamos de import.meta
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
 
-// To-Do: mover para um arquivo session.d.ts
-declare module 'express-session' {
-  export interface SessionData {
-    tipoUsuario?:
-      | {
-          administrador: number;
-          secretaria: number;
-          coordenador: number;
-          diretor: number;
-          professor: number;
-        }
-      | undefined;
-    uid: string;
-    nome: string;
-    editalPosition?: number; // Posição no formulário de inscrição de um candidato
-  }
-}
+/* ───────── helpers (require síncrono) ───────── */
 
+/* ───────── Express + Handlebars ───────── */
 const app = express();
 
 app.engine(
@@ -43,21 +34,22 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     partialsDir: path.join(__dirname, 'views', 'partials'),
-    helpers: require(path.join(__dirname, 'views', 'helpers', 'helpers')),
+    helpers: helpers,
   }),
 );
 
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, 'views'));
 
+/* ───────── middlewares ───────── */
 app.use(cookieParser());
 
 app.use(
   session({
-    genid: () => uuid.v4(), // usamos UUIDs para gerar os SESSID
-    secret: 'eb9ac99d8a53fbfae6cae8e7a48c5b45',
-    resave: true,
-    saveUninitialized: true,
+    genid: () => uuidv4(), // CORRIGIDO (wrapper)
+    secret: process.env.SESSION_SECRET ?? 'dev-secret',
+    resave: false,
+    saveUninitialized: false,
   }),
 );
 
@@ -66,19 +58,26 @@ app.use(express.json({ limit: '50mb' }));
 app.use(
   express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
 );
-
 // @ts-ignore
-app.use(csrf({ cookie: true }));
+app.use(csurf());
 
 app.use(
-  '/script-adminlte',
-  express.static(path.join(__dirname, '/../node_modules/admin-lte/')),
+  morgan('combined', {
+    stream: {
+      write: (message: string) => logger.info(message.trim()),
+    },
+  }),
 );
 
-app.use('/public', express.static(path.join(__dirname, '/../public/')));
-app.use('/img', express.static(path.join(__dirname, '/../public/img/')));
+/* ───────── assets estáticos ───────── */
+app.use(
+  '/script-adminlte',
+  express.static(path.resolve(process.cwd(), 'node_modules/admin-lte')),
+);
+app.use('/public', express.static(path.resolve(process.cwd(), 'public')));
+app.use('/img', express.static(path.resolve(process.cwd(), 'public/img')));
 
-// Colocar o logger depois
+/* ───────── rotas / erros ───────── */
 app.use(router);
 app.use(errorHandler);
 

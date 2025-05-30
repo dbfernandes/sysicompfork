@@ -1,4 +1,4 @@
-import afastamentoTemporarioService from '../../src/resources/afastamentoTemporario/afastamentoTemporario.service';
+import afastamentoTemporarioService from '@resources/afastamentoTemporario/afastamento.temporario.service';
 import { prismaMock } from '../../singleton';
 import { AfastamentoTemporario } from '@prisma/client';
 

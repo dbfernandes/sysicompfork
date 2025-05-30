@@ -75,8 +75,6 @@ const login = async (req: Request, res: Response) => {
     try {
       const { cpf, senha } = await req.body;
       const usuario = await UsuarioService.buscarUsuarioPor({ cpf });
-      console.log(req.body);
-      console.log(usuario);
       if (!usuario) {
         return res.status(StatusCodes.NOT_FOUND).render(resolveView('login'), {
           ...optionsLogin,
@@ -125,7 +123,7 @@ const login = async (req: Request, res: Response) => {
       };
       return res.status(StatusCodes.ACCEPTED).redirect('/inicio');
     } catch (err) {
-      console.log(err);
+      console.error(err);
       // return res.status(500).send({ message: 'Erro interno' });
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
