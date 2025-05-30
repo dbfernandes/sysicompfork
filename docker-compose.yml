@@ -28,6 +28,8 @@ services:
     volumes:
       - /app/node_modules
       - ./logs:/app/logs
+      - ./uploads:/app/uploads
+
     depends_on:
       - db
       - gotenberg
@@ -48,6 +50,8 @@ services:
     volumes:
       - /app/node_modules
       - ./logs:/app/logs
+      - ./uploads:/app/uploads
+
     depends_on:
       - db
       - gotenberg

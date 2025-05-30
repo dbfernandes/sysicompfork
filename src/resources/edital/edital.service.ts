@@ -52,7 +52,12 @@ class EditalService {
     const editais = await prisma.edital.findMany();
     return editais.filter((edital) => {
       const dateEnd = new Date(edital.dataFim);
-      return dateEnd >= dataToday && edital.status === StatusEdital.ATIVO;
+      const dataInicio = new Date(edital.dataInicio);
+      return (
+        dateEnd >= dataToday &&
+        edital.status === StatusEdital.ATIVO &&
+        dataInicio <= dataToday
+      );
     });
   }
 
