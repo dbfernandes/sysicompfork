@@ -39,3 +39,4 @@ COPY --from=builder /app/logs ./logs
 # Instala apenas as dependências de produção
 RUN npm ci --only=production
 
+

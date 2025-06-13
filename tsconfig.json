@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2023",          // ①
-    "module": "CommonJS",        // ② continua em CJS
+    "target": "ES2023",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "rootDir": "./src", // Mudando de "./src" para "."
+    "rootDir": "./src", // ✅ Mantém como src para compilar direto na raiz do build
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
@@ -17,26 +17,19 @@
     "skipLibCheck": true,
     "noImplicitAny": false,
     "resolveJsonModule": true,
-    "baseUrl": ".", // Ajustando baseUrl também
+    "baseUrl": ".", // ✅ Pode ser raiz para os paths funcionarem
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@resources/*": [
-        "src/resources/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ]
+      "@/*": ["src/*"],
+      "@resources/*": ["src/resources/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": [
-    "./src/**/*",
-    "./src/**/*.d.ts",
-
+    "src/**/*",
+    "src/**/*.d.ts"
   ],
   "exclude": [
-    "./build",
+    "build",
     "node_modules",
     "tests",
     "prisma"

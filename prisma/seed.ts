@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { candidatos } from './seed-data/candidatos';
-import { editais } from './seed-data/editais';
-import { linhasDePesquisa } from './seed-data/linhasDePesquisa';
-import { usuarios } from './seed-data/usuarios';
+import { candidatos } from './seed-data/candidatos.ts';
+import { editais } from './seed-data/editais.ts';
+import { linhasDePesquisa } from './seed-data/linhasDePesquisa.ts';
+import { usuarios } from './seed-data/usuarios.ts';
 
 const prisma = new PrismaClient();
 
