@@ -21,6 +21,7 @@ import { CandidatoNaoAutorizadoError } from './errors/candidatoNaoAutorizadoErro
 import { CandidatoNaoExisteError } from './errors/candidatoNaoExiteError';
 import { TokenExpiradoError } from './errors/tokenExpiradoError';
 import { TokenInvalidoError } from './errors/tokenInvalidoError.';
+import { Edital } from '.prisma/client';
 
 class CandidatoService {
   async list() {
@@ -80,7 +81,7 @@ class CandidatoService {
     });
   }
 
-  async findByIdComEdital(id: number) {
+  async findByIdComEdital(id: number): Promise<Candidato & { edital: Edital }> {
     return prisma.candidato.findFirst({
       where: {
         id,

@@ -80,18 +80,6 @@ class EditalService {
     });
   }
 
-  async listEditalsAvailable(): Promise<Edital[]> {
-    const dataToday = new Date();
-    const editais = await prisma.edital.findMany().catch((err) => {
-      console.error(`[ERROR] Listar Editais: ${err}`);
-      throw new Error('Não foi possivel listar o edital');
-    });
-    return editais.filter((edital) => {
-      const dateEnd = new Date(edital.dataFim);
-      return dateEnd >= dataToday && edital.status === 1;
-    });
-  }
-
   async delete(id: string) {
     try {
       const edital = await prisma.edital.findFirst({
@@ -150,21 +138,6 @@ class EditalService {
     return edital;
   }
 
-  async getEdital(id: string): Promise<Edital | null> {
-    const edital = await prisma.edital
-      .findFirst({
-        where: {
-          id: id,
-        },
-      })
-      .catch((err) => {
-        console.error(`[ERROR] Buscar Edital: ${err}`);
-        throw new Error('Não foi possivel buscar o edital');
-      });
-
-    return edital;
-  }
-
   async update(id_update: string, dados: UpdateEditalDto): Promise<Edital> {
     try {
       const edital = await prisma.edital.findFirst({
@@ -184,21 +157,6 @@ class EditalService {
       console.error('Erro ao atualizar edital:', error);
       throw new Error(error);
     }
-  }
-
-  async getEditalByNumber(id: string): Promise<Edital | null> {
-    const edital = await prisma.edital
-      .findFirst({
-        where: {
-          id: id,
-        },
-      })
-      .catch((err) => {
-        console.error(`[ERROR] Buscar Edital: ${err}`);
-        throw new Error('Não foi possivel buscar o edital');
-      });
-
-    return edital;
   }
 
   async listCandidatos(id: string): Promise<Candidato[]> {
@@ -226,6 +184,7 @@ class EditalService {
         },
         include: {
           recomendacoes: true,
+          linhaPesquisa: true,
         },
       });
     } catch (error) {

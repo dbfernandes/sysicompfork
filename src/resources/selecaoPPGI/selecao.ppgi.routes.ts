@@ -15,6 +15,7 @@ import {
   signInSchema,
   signUpSchema,
 } from '../candidato/candidato.schema';
+import { validateEditInfoCandidate } from '@/middlewares/validateEditInfoCandidate';
 
 const router = express.Router();
 
@@ -55,10 +56,20 @@ router.use(isAuthSelecao);
 
 router.get('/formulario', selecaoppgiController.renderForms);
 
-router.put('/formulario/1', selecaoppgiController.formDados);
-router.put('/formulario/2', uploads, selecaoppgiController.formHistorico);
+router.put(
+  '/formulario/1',
+  validateEditInfoCandidate,
+  selecaoppgiController.formDados,
+);
+router.put(
+  '/formulario/2',
+  validateEditInfoCandidate,
+  uploads,
+  selecaoppgiController.formHistorico,
+);
 router.put(
   '/formulario/3',
+  validateEditInfoCandidate,
   uploadsProposta,
   selecaoppgiController.formProposta,
 );

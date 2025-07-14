@@ -84,6 +84,7 @@ model Candidato {
   comoSoube            String?   @db.VarChar(100)
   cursoDesejado        String?
   regime               String?
+  tae                  Boolean   @default(false)
   cotista              Boolean   @default(false)
   cotistaTipo          String?   @db.VarChar(100)
   condicao             Boolean   @default(false)
@@ -196,8 +197,10 @@ model Edital {
   id                   String   @id @unique
   vagasDoutorado       Int?
   cotasDoutorado       Int?
+  taesDoutorado        Int?
   vagasMestrado        Int?
   cotasMestrado        Int?
+  taesMestrado         Int?
   cartaOrientador      String   @db.VarChar(255)
   cartaRecomendacao    String   @db.VarChar(255)
   documento            String   @db.VarChar(255)

@@ -27,6 +27,7 @@
   <!-- Seção de conteúdo principal -->
   <section class="content container px-3">
     <!-- Possível nav (dependendo de como seu partial é estruturado) -->
+    {{> ppgi/infoEdital editalNome=edital.id dataFimInscricao=edital.dataFim  link=edital.documento }}
     {{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
     <div class="container-fluid p-0">
@@ -419,52 +420,53 @@
           </div><!-- /card Currículo Vitae -->
 
           <!-- Card 4: Prova Anterior -->
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">{{__ "ppgiForm2.provaAnterior.title"}}</h3>
-            </div>
+<!--          <div class="card card-primary">-->
+<!--            <div class="card-header">-->
+<!--              <h3 class="card-title">{{__ "ppgiForm2.provaAnterior.title"}}</h3>-->
+<!--            </div>-->
 
-            <div class="card-body">
-              <div class="row">
-                <div class="col-12">
-                  <label for="candidato-prova" class="control-label">
-                    <b>{{__ "ppgiForm2.provaAnterior.description"}}:</b>
-                  </label>
-                </div>
-                <div  id="buttons-prova" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasProvaAnterior)}}none{{else}}flex{{/if}}; gap: 16px" >
-                  <div class="container-buttons-icon ">
-                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
-                    <figcaption id="name-prova" style="word-break: break-word;"><b>ProvaAnterior.pdf</b></figcaption>
-                  </div>
-                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
-                    <a id="url-prova" href="/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary" download style="flex-grow: 1;">
-                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
-                       {{__ "ppgi.form.btnDownload"}}</a>
-                    <button type="button" class="btn btn-success" id="btn-change-prova" style="flex-grow: 1;">
-                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
-                       {{__ "ppgi.form.btnChange"}}</button>
-                    <button type="button" class="btn btn-danger" id="btn-delete-prova" style="flex-grow: 1;">
-                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
-                       {{__ "ppgi.form.btnDelete"}}</button>
-                  </div>
-                </div>
+<!--            <div class="card-body">-->
+<!--              <div class="row">-->
+<!--                <div class="col-12">-->
+<!--                  <label for="candidato-prova" class="control-label">-->
+<!--                    <b>{{__ "ppgiForm2.provaAnterior.description"}}:</b>-->
+<!--                  </label>-->
+<!--                </div>-->
+<!--                <div  id="buttons-prova" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasProvaAnterior)}}none{{else}}flex{{/if}}; gap: 16px" >-->
+<!--                  <div class="container-buttons-icon ">-->
+<!--                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />-->
+<!--                    <figcaption id="name-prova" style="word-break: break-word;"><b>ProvaAnterior.pdf</b></figcaption>-->
+<!--                  </div>-->
+<!--                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">-->
+<!--                    <a id="url-prova" href="/download/arquivo/ProvaAnterior.pdf" class="btn btn-primary" download style="flex-grow: 1;">-->
+<!--                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>-->
+<!--                       {{__ "ppgi.form.btnDownload"}}</a>-->
+<!--                    <button type="button" class="btn btn-success" id="btn-change-prova" style="flex-grow: 1;">-->
+<!--                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>-->
+<!--                       {{__ "ppgi.form.btnChange"}}</button>-->
+<!--                    <button type="button" class="btn btn-danger" id="btn-delete-prova" style="flex-grow: 1;">-->
+<!--                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>-->
+<!--                       {{__ "ppgi.form.btnDelete"}}</button>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-                <div id="input-prova" class="form-group col-md-6" {{#if hasProvaAnterior}}style="display: none;"{{/if}}>
-                  <div class="custom-file">
-                    <input
-                      type="file"
-                      class="custom-file-input"
-                      id="candidato-prova"
-                      name="ProvaAnterior"
-                    />
-                    <label class="custom-file-label" for="candidato-prova">
-                      {{__ "ppgi.form.chooseFile"}}
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- /card Prova Anterior -->
+<!--                <div id="input-prova" class="form-group col-md-6" {{#if hasProvaAnterior}}style="display: none;"{{/if}}>-->
+<!--                  <div class="custom-file">-->
+<!--                    <input-->
+<!--                      type="file"-->
+<!--                      class="custom-file-input"-->
+<!--                      id="candidato-prova"-->
+<!--                      name="ProvaAnterior"-->
+<!--                    />-->
+<!--                    <label class="custom-file-label" for="candidato-prova">-->
+<!--                      {{__ "ppgi.form.chooseFile"}}-->
+<!--                    </label>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+          <!-- /card Prova Anterior -->
 
           <!-- Card 5: Experiência Acadêmica -->
           <div class="card card-primary">

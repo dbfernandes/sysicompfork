@@ -42,9 +42,9 @@
             <div class="col-md-12">
 
                 <form action="/edital/addEdital" method="post"  id="adicionarSelecaoForm">
-                    <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+                  <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
 
-                    <div class="card card-primary">
+                  <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Dados do Edital</b></h3>
                         </div>
@@ -102,7 +102,7 @@
                     </div>
 
 
-                    <div class="card card-primary">
+                  <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
                         </div>
@@ -132,11 +132,11 @@
                                     </div>
                                 </div>
                             </div>
-                                                        
 
-                            <div class="form-group">                            
+
+                          <div class="form-group card bg-light p-1">
                                 <div class="form-row">
-                                    <div class="col-sm-3 col-md-3">
+                                    <div class="col-sm-3 ">
                                         <div class="form-group">
                                             <div class="form-row">            
                                                 <label for="mestrado"> <font color="#FF0000">* </font>Mestrado?</label>
@@ -146,25 +146,29 @@
                                                 data-off-text="Não" id="mestrado">
                                         </div>                                            
                                     </div>
-
-                                    <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Mestrado:</label>
+                                    <div class="col-sm-3">
+                                        <label for="vaga_regular_mestrado"> <span style="color: #FF0000; ">* </span>Vagas Regulares:</label>
                                         <input type="number" name="vaga_regular_mestrado" class="form-control "
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_regular_mestrado" value="0" min="0">
                                     </div>
-
-                                    <div class="col-sm-5 col-md-5">
-                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Mestrado:</label>
+                                    <div class="col-sm-3">
+                                        <label for="vaga_suplementar_mestrado"> <span style="color: #FF0000; ">* </span>Vagas Suplementares:</label>
                                         <input type="number" class="form-control " name="vaga_suplementar_mestrado"
                                             placeholder="Vagas Regulares para Mestrado" required
                                             id="vaga_suplementar_mestrado" value="0" min="0">
                                     </div>
+                                    <div class="col-sm-3">
+                                      <label for="vaga_taes_mestrado"> <span style="color: #FF0000; ">* </span>Vagas para TAEs:</label>
+                                      <input type="number" class="form-control " name="vaga_taes_mestrado"
+                                             placeholder="Vagas Taes para Mestrado" required
+                                             id="vaga_taes_mestrado" value="0" min="0">
+                                    </div>
                                 </div>
-                            </div>
+                          </div>
 
-                            <div class="form-group">                            
-                                <div class="form-row">
+                            <div class="form-group card bg-light p-1">
+                                <div class="form-row ">
                                     <div class="col-sm-3 col-md-3">
                                         <div class="form-group">
                                             <div class="form-row">            
@@ -176,24 +180,31 @@
                                         </div> 
                                     </div>
 
-                                    <div class="col-sm-4">                                                
-                                        <label> <font color="#FF0000">* </font>Vagas Regulares para Doutorado:</label>
+                                    <div class="col-sm-3">
+                                        <label for="vaga_regular_doutorado"> <span style="color: #FF0000; ">* </span>Vagas Regulares:</label>
                                         <input type="number" name="vaga_regular_doutorado" class="form-control "
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_regular_doutorado" value="0" min="0">
                                     </div>
 
-                                    <div class="col-sm-5 col-md-5">
-                                        <label> <font color="#FF0000">* </font>Vagas Suplementares para Doutorado:</label>
+                                    <div class="col-sm-3 col-md-3">
+                                        <label for="vaga_suplementar_doutorado"> <span style="color: #FF0000; ">* </span>Vagas Suplementares:</label>
                                         <input type="number" class="form-control" name="vaga_suplementar_doutorado"
                                             placeholder="Vagas Regulares para Doutorado" required
                                             id="vaga_suplementar_doutorado" value="0" min="0">
                                     </div>
+                                  <div class="col-sm-3">
+                                    <label for="vaga_taes_doutorado"> <span style="color: #FF0000; ">* </span>Vagas para TAEs:</label>
+                                    <input type="number" class="form-control " name="vaga_taes_doutorado"
+                                           placeholder="Vagas Taes para Doutorado" required
+                                           id="vaga_taes_doutorado" value="0" min="0">
+                                  </div>
+                                </div>
                                 </div>
                             </div>                                                      
                         </div>
 
-                        <div class="card-footer">
+                  <div class="card-footer">
                             <div style="margin-right: auto;" class="d-flex justify-content-end">
                                 <button id="botaoSubmit" type="button" class="btn btn-success float-right" onclick="submitForm()">
                                     <i class="fas fa-check-circle"></i>
@@ -202,8 +213,7 @@
                             </div>
                         </div>
 
-                    </div>      
-                </form>        
+                </form>
             </div>
         </div>
     </section>
@@ -215,23 +225,21 @@
         window.history.back();
     });
 
-    //verifica se pelo menos um dos quatro campos de vagas tem valor maior que 0
+    //verifica se pelo menos um dos 6 campos de vagas tem valor maior que 0
     function verificaVagas() {
         const vaga_regular_mestrado = parseInt($('#vaga_regular_mestrado').val());
         const vaga_suplementar_mestrado = parseInt($('#vaga_suplementar_mestrado').val());
+        const vaga_taes_mestrado = parseInt($('#vaga_taes_mestrado').val());
         const vaga_regular_doutorado = parseInt($('#vaga_regular_doutorado').val());
         const vaga_suplementar_doutorado = parseInt($('#vaga_suplementar_doutorado').val());
+        const vaga_taes_doutorado = parseInt($('#vaga_taes_doutorado').val());
 
-        if (
-            vaga_regular_mestrado > 0 ||
-            vaga_suplementar_mestrado > 0 ||
-            vaga_regular_doutorado > 0 ||
-            vaga_suplementar_doutorado > 0
-        ) {
-            return true;             
-        }
-
-        return false;
+        return vaga_regular_mestrado > 0 ||
+          vaga_suplementar_mestrado > 0 ||
+          vaga_taes_mestrado > 0 ||
+          vaga_regular_doutorado > 0 ||
+          vaga_suplementar_doutorado > 0 ||
+          vaga_taes_doutorado > 0;
     }
 
 
@@ -248,13 +256,21 @@
             vagaSuplementarMestrado.prop('disabled', !mestradoChecked);
             vagaSuplementarMestrado.val(mestradoChecked ? vagaSuplementarMestrado.val() : '0');
 
+            let vagaTaesMestrado = $("#vaga_taes_mestrado");
+            vagaTaesMestrado.prop('disabled', !mestradoChecked);
+            vagaTaesMestrado.val(mestradoChecked ? vagaTaesMestrado.val() : '0');
+
             let vagaRegularDoutorado = $("#vaga_regular_doutorado");
             vagaRegularDoutorado.prop('disabled', !doutoradoChecked);
             vagaRegularDoutorado.val(doutoradoChecked ? vagaRegularDoutorado.val() : '0');
 
             let vagaSuplementarDoutorado = $("#vaga_suplementar_doutorado");
             vagaSuplementarDoutorado.prop('disabled', !doutoradoChecked);
-            vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');            
+            vagaSuplementarDoutorado.val(doutoradoChecked ? vagaSuplementarDoutorado.val() : '0');
+
+            let vagaTaesDoutorado = $("#vaga_taes_doutorado");
+            vagaTaesDoutorado.prop('disabled', !doutoradoChecked);
+            vagaTaesDoutorado.val(doutoradoChecked ? vagaTaesDoutorado.val() : '0');
         }
     
 
@@ -323,6 +339,10 @@
                 required: true,
                 digits: true,               
             },
+            vaga_taes_mestrado: {
+                required: true,
+                digits: true,
+            },
             vaga_regular_doutorado: {
                 required: true,
                 digits: true,                
@@ -330,6 +350,10 @@
             vaga_suplementar_doutorado: {
                 required: true,
                 digits: true,                
+            },
+            vaga_taes_doutorado: {
+                required: true,
+                digits: true,
             },
             num_edital: {
                 required: true,
@@ -351,6 +375,10 @@
                 required: 'Este campo é obrigatório.',
                 digits: 'Por favor, insira apenas números inteiros.',                
             },
+            vaga_taes_mestrado: {
+                required: 'Este campo é obrigatório.',
+                digits: 'Por favor, insira apenas números inteiros.',
+            },
             vaga_regular_doutorado: {
                 required: 'Este campo é obrigatório.',
                 digits: 'Por favor, insira apenas números inteiros.',                
@@ -358,6 +386,10 @@
             vaga_suplementar_doutorado: {
                 required: 'Este campo é obrigatório.',
                 digits: 'Por favor, insira apenas números inteiros.',                
+            },
+            vaga_taes_doutorado: {
+                required: 'Este campo é obrigatório.',
+                digits: 'Por favor, insira apenas números inteiros.',
             },
             num_edital: {
                 required: 'Este campo é obrigatório.',
@@ -390,8 +422,10 @@
     function pegaDados() {       
         const vaga_regular_mestrado = parseInt($("#vaga_regular_mestrado").val(), 10);
         const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
+        const vaga_taes_mestrado = parseInt($("#vaga_taes_mestrado").val(), 10);
         const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
         const vaga_suplementar_doutorado = parseInt($("#vaga_suplementar_doutorado").val(), 10);
+        const vaga_taes_doutorado = parseInt($("#vaga_taes_doutorado").val(), 10);
         const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
@@ -403,8 +437,10 @@
         return {
             vaga_regular_mestrado,
             vaga_suplementar_mestrado,
+            vaga_taes_mestrado,
             vaga_regular_doutorado,
             vaga_suplementar_doutorado,
+            vaga_taes_doutorado,
             carta_recomendacao,
             carta_orientador,
             num_edital,
@@ -433,7 +469,7 @@
                         url: '/edital/addEdital',
                         type: 'POST',
                         data: dados,
-                        success: function (data) {                               
+                        success: function () {
                             const mensagem = "Edital adicionado no sistema com sucesso";            
                             const expirationTime = new Date(new Date().getTime() + 5000);
 

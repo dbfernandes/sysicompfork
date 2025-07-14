@@ -135,6 +135,10 @@
 
                                 </tr>
                                 <tr>
+                                  <th class="col-3">Tae?</th>
+                                  <td><span class="{{#if (eq candidato.tae '1')}} badge bg-success">Sim{{else}}badge bg-danger">Não{{/if}}</span></td>
+                                </tr>
+                                <tr>
                                     <th class="col-3">Cotista?</th>
                                     <td><span class="{{#if (eq candidato.cotista '1')}} badge bg-success">{{candidato.cotistaTipo}}{{else}}badge bg-danger">Não{{/if}}</span></td>
                                 </tr>
@@ -144,7 +148,7 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Linha de Pesquisa</th>
-                                    <td>{{candidato.idLinhaPesquisa}}</td>
+                                    <td>{{candidato.linhaPesquisa.nome}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Título da Proposta</th>
@@ -190,15 +194,15 @@
                                             {{else}}badge bg-warning">Pendente{{/if}}
                                     </span></td>
                                 </tr>
-                                <tr>
-                                    <th class="col-3">Prova de seleção anterior para aproveitamento de nota (PDF)</th>
-                                    <td><span class="{{#if candidatoDocs.ProvaAnteriorSelecao}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=ProvaAnterior.pdf"
-                                                class='fa fa-solid fa-download'></a>
-                                            {{else}}badge bg-warning">Pendente{{/if}}
-                                    </span></td>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <th class="col-3">Prova de seleção anterior para aproveitamento de nota (PDF)</th>-->
+<!--                                    <td><span class="{{#if candidatoDocs.ProvaAnteriorSelecao}}">-->
+<!--                                            <a  style="margin-right: 3px"-->
+<!--                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=ProvaAnterior.pdf"-->
+<!--                                                class='fa fa-solid fa-download'></a>-->
+<!--                                            {{else}}badge bg-warning">Pendente{{/if}}-->
+<!--                                    </span></td>-->
+<!--                                </tr>-->
                                 <tr>
                                     <th class="col-3">Comprovante de Pagamento (PDF)</th>
                                     <td><span class="{{#if candidatoDocs.ComprovantePagamento}}">

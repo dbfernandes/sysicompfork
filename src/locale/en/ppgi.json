@@ -1,5 +1,11 @@
 {
   "english": "English",
+  "edital": "Notice",
+  "remainingTime": "Remaining Time for Registration",
+  "calculating": "Calculating",
+  "masters": "Master's Degree",
+  "phd": "PhD",
+  "and": "and",
   "portuguese": "Português",
   "header": {
     "title": "PPGI",

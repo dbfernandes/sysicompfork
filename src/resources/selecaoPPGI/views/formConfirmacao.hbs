@@ -41,31 +41,29 @@
   .link-file {
     font-weight: bold;
   }
+
+
+
 </style>
 
 <main class="forms-page">
-  <!-- Cabeçalho -->
   <header>
     <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
-        <!-- Botão de logout (se preferir, pode ser <a> em vez de <button>) -->
         <button class="p-0" type="button" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
 
       </div>
     </div>
   </header>
 
-  <!-- Conteúdo principal -->
   <section class="content container px-3">
-    <!-- Campo hidden para CSRF -->
     <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
 
-    <!-- Navegação lateral/abas (conforme seu partial) -->
+
     {{> ppgi/nav indexSelect="5" progress="100"}}
 
-    <!-- Área principal de mensagem -->
     <main class="container-message">
       <h2>{{__ "ppgiForm4.title"}}</h2>
       <p>
@@ -79,7 +77,6 @@
         {{__ "ppgiForm4.titleButtons"}}
       </p>
 
-      <!-- Botões de download -->
       <div class="container-buttons">
         <div class="container-button">
           <img
@@ -155,37 +152,49 @@
       </div>
     </main>
 
-    <div class="container-fluid">
-      <form id="candidato-formulario">
-        <div class="card-footer">
-          <div class="col d-flex justify-content-end">
-            <button
-              class="btn btn-warning custom-button"
-              type="button"
-              id="voltarForm"
-            >
-              {{__ "ppgi.form.previousStep"}}
-              <span
-                class="spinner-border spinner-border-sm"
-                hidden="true"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
   </section>
   {{> ppgi/footer}}
 
 </main>
 
 <script>
-
-
   $(document).ready(function () {
     const basePath = "{{basePath}}";
+
+    // --- SCRIPT DO CONTADOR ADICIONADO ---
+    const countdownElement = $("#countdown");
+    const deadline = countdownElement.data("deadline");
+
+    if (deadline) {
+      const countdownInterval = setInterval(function() {
+        const finalDate = new Date(deadline).getTime();
+        const now = new Date().getTime();
+        const distance = finalDate - now;
+
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          countdownElement.text("Prazo Esgotado");
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        let result = "";
+        if (days > 0) result += days + "d ";
+        if (hours > 0 || days > 0) result += hours + "h ";
+        if (minutes > 0 || hours > 0 || days > 0) result += minutes + "m ";
+        result += seconds + "s";
+
+        countdownElement.text(result);
+
+      }, 1000);
+    } else {
+      countdownElement.text("Data não definida");
+    }
+    // --- FIM DO SCRIPT DO CONTADOR ---
 
     $("#btn_logout").click(function () {
       $.ajax({

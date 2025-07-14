@@ -45,8 +45,10 @@ const adicionarEditalSelecao = async (req: Request, res: Response) => {
         cartaOrientador: req.body.carta_orientador,
         vagasMestrado: Number(req.body.vaga_regular_mestrado),
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
+        taesMestrado: Number(req.body.vaga_taes_mestrado),
         vagasDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
+        taesDoutorado: Number(req.body.vaga_taes_doutorado),
         status: StatusEdital.ATIVO,
         inscricoesEncerradas: 0,
         inscricoesIniciadas: 0,
@@ -76,7 +78,6 @@ const listarEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       const editais = await editalService.listEditalComQtdeCandidatos();
-
       return res.render(resolveView('listarEditais'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
@@ -194,6 +195,9 @@ const updateEdital = async (req: Request, res: Response) => {
           cartaOrientador: req.body.carta_orientador,
           vagasMestrado: parseInt(req.body.vaga_regular_mestrado),
           cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
+          taesMestrado: Number(req.body.vaga_taes_mestrado),
+          taesDoutorado: Number(req.body.vaga_taes_doutorado),
+
           vagasDoutorado: parseInt(req.body.vaga_regular_doutorado),
           cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
           inscricoesEncerradas: 0,
@@ -525,6 +529,8 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       caminhoDiretorioUsuario,
       'Recomendacoes.pdf',
     );
+
+    console.log('candidato', candidato);
 
     return res.render(resolveView('detalhesCandidato'), {
       candidato: candidato,

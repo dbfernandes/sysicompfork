@@ -1,5 +1,11 @@
 {
   "english": "English",
+  "edital": "Edital",
+  "masters": "Mestrado",
+  "phd": "Doutorado",
+  "and": "e",
+  "remainingTime": "Tempo Restante para inscrição",
+  "calculating": "Calculando",
   "portuguese": "Português",
   "header": {
     "title": "PPGI",

@@ -43,6 +43,12 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
   const address = candidato.endereco || '-';
   const city = candidato.cidade || '-';
   // const state = candidato.estado || '-';
+  const sexo =
+    candidato.sexo === 'M'
+      ? 'Masculino'
+      : candidato.sexo === 'F'
+        ? 'Feminino'
+        : '-';
   const neighborhood = candidato.bairro || '-';
   const cep = candidato.cep || '-';
   const country = candidato.pais || '-';
@@ -93,6 +99,7 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
     neighborhood,
     cep,
     cpf,
+    sexo,
     passport,
     nacionality,
     country,

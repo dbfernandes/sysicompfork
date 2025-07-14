@@ -11,6 +11,8 @@ import candidatoRecomendacaoService from '../candidatoRecomendacao/candidato.rec
 import candidatoExperienciaAcademicaService from '../../resources/candidatoExperienciaAcademica/candidato.experiencia.academica.service';
 import editalService from '../edital/edital.service';
 import linhaDePesquisaService from '../linhasDePesquisa/linha.de.pesquisa.service';
+import teste from '../../utils/i18n';
+
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
@@ -28,9 +30,10 @@ import {
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
 import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
+import { Edital } from '.prisma/client';
 
 interface AuthenticatedRequest extends Request {
-  candidato?: Candidato; // Substitua `any` pelo tipo correto do candidato
+  candidato?: Candidato & { edital: Edital }; // Substitua `any` pelo tipo correto do candidato
 }
 
 type RenderFunction = (
@@ -89,6 +92,18 @@ function inicio(req: Request, res: Response): void {
   }
 }
 
+function getCursos(edital: Edital) {
+  const hasDoutorado =
+    edital.vagasDoutorado || edital.taesDoutorado || edital.cotasDoutorado;
+  const hasMestrado =
+    edital.vagasMestrado || edital.taesMestrado || edital.cotasMestrado;
+
+  const cursos = [];
+
+  hasMestrado && cursos.push(teste.i18next.t('ppgi.masters'));
+  hasDoutorado && cursos.push(teste.i18next.t('ppgi.phd'));
+  return cursos.join(` ${teste.i18next.t('ppgi.and')} `);
+}
 async function signUp(
   req: Request,
   res: Response,
@@ -101,7 +116,13 @@ async function signUp(
 
       res.render(resolveView('signUp'), {
         csrfToken: req.csrfToken(),
-        editais: listEditais,
+        editais: listEditais.map((edital) => {
+          return {
+            ...edital,
+            cursos: getCursos(edital),
+          };
+        }),
+
         errorSignin: null,
         currentLanguage,
         ...locals,
@@ -370,7 +391,7 @@ async function renderForms(
           break;
         }
 
-        const candidato = await candidatoService.findById(Number(uid));
+        const candidato = await candidatoService.findByIdComEdital(Number(uid));
 
         if (!candidato) {
           res.redirect('/selecaoppgi/entrar');
@@ -425,6 +446,7 @@ async function formDados(
           condicao: data.condicao === 'true',
           bolsista: data.bolsista === 'true',
           cotista: data.cotista === 'true',
+          tae: data.tae === 'true',
           cpf: isBrasileira ? data.cpf : null,
           passaporte: isBrasileira ? null : data.passaporte,
           pais: isBrasileira ? null : data.pais,

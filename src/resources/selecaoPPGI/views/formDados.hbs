@@ -1,6 +1,12 @@
 {{ setTitle title="Dados Pessoais" }}
 
 <style>
+
+  .icon-info {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
 	.toast-container {
 		top: 0;
     	right: 0;
@@ -86,6 +92,8 @@
   <!-- Conteúdo da página (formulário) -->
   <section class="content container">
     <!-- Navegação (pode ser um <nav> se for menu) -->
+    {{> ppgi/infoEdital editalNome=edital.id dataFimInscricao=edital.dataFim  link=edital.documento }}
+
     {{> ppgi/nav indexSelect="1" progress="25"}}
 
     <div class="container-fluid">
@@ -699,17 +707,42 @@
               </div>
 
               <!-- Bolsa -->
+<!--              <div class="row">-->
+<!--                <div class="col-md-5 form-group">-->
+<!--                  <label for="candidato-bolsa">-->
+<!--                    <span class="text-danger">*</span>-->
+<!--                    <b>{{__ "ppgiForm1.inscricao.bolsa"}}</b>-->
+<!--                  </label>-->
+<!--                  <input-->
+<!--                    type="checkbox"-->
+<!--                    id="candidato-bolsa"-->
+<!--                    name="bolsa"-->
+<!--                    data-bootstrap-switch-bolsa-->
+<!--                    data-off-color="danger"-->
+<!--                    data-on-color="success"-->
+<!--                    data-on-text="{{__ "ppgi.yesOption"}}"-->
+<!--                    data-off-text="{{__ "ppgi.noOption"}}"-->
+<!--                  />-->
+<!--                </div>-->
+<!--              </div>-->
+
+              <!-- TAEs -->
               <div class="row">
                 <div class="col-md-5 form-group">
-                  <label for="candidato-bolsa">
+                  <label for="candidato-tae">
                     <span class="text-danger">*</span>
-                    <b>{{__ "ppgiForm1.inscricao.bolsa"}}</b>
+                    <b>Candidata-se para vaga destinadas aos TAEs?</b>
+
                   </label>
+<!--                  <span data-bs-toggle="tooltip" data-bs-title="Default tooltip" class="icon-info">-->
+<!--                      <i  class="fa fa-info-circle" aria-hidden="true"></i>-->
+<!--                    </span>-->
+                  <br>
                   <input
                     type="checkbox"
-                    id="candidato-bolsa"
-                    name="bolsa"
-                    data-bootstrap-switch-bolsa
+                    id="candidato-tae"
+                    name="tae"
+                    data-bootstrap-switch-tae
                     data-off-color="danger"
                     data-on-color="success"
                     data-on-text="{{__ "ppgi.yesOption"}}"
@@ -748,6 +781,7 @@
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
 <script>
 	$(document).ready(() => {
+
     const basePath = "{{basePath}}";
     const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
 
@@ -817,6 +851,7 @@
     {{#if condicao}} document.getElementById("candidato-deficiencia1").checked = true;{{/if}}
     {{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
     {{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
+    {{#if tae}} document.getElementById("candidato-tae").checked = true;{{/if}}
 
     $('#candidato-datanascimento').datetimepicker({
       format: 'DD/MM/YYYY',
@@ -852,6 +887,17 @@
         }
       })
     })
+    $("input[data-bootstrap-switch-tae]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+      // $(this).bootstrapSwitch('onSwitchChange', () => {
+      //   if ($(this).is(":checked")) {
+      //     $("#Regime1").prop("checked", true);
+      //     $("#Regime2").prop("checked", false).prop("disabled", true);
+      //   } else {
+      //     $("#Regime2").prop("disabled", false);
+      //   }
+      // });
+    });
 
     $("input[data-bootstrap-switch-bolsa]").each(function () {
       $(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -955,9 +1001,13 @@
       return condicao;
     }
 
-    function getBolsa() {
-      let bolsa = document.getElementById("candidato-bolsa").checked;
-      return Boolean(bolsa);
+    // function getBolsa() {
+    //   let bolsa = document.getElementById("candidato-bolsa").checked;
+    //   return Boolean(bolsa);
+    // }
+
+    function getTae() {
+      return Boolean(document.getElementById("candidato-tae").checked)
     }
 
     function checkCondicao() {
@@ -1000,11 +1050,11 @@
       data.cotistaTipo = getSelectedCota();
       data.condicao = checkCondicao()
       data.condicaoTipo = getCondicao();
-      data.bolsista = getBolsa()
+      // data.bolsista = getBolsa()
+      data.tae = getTae()
       data.cpf = document.getElementById('cpf').value;
       data.pais = document.getElementById('pais').value;
       data.passaporte = document.getElementById('passaporte').value;
-      // console.log(inputPhone.getNumber());
       return data;
     }
 
@@ -1221,7 +1271,6 @@
         	error: (data) => {
         		btnSave.find("span").prop("hidden", true);
         		btnSave.prop("disabled", false);
-        		console.log(data)
         	}
         });
       }

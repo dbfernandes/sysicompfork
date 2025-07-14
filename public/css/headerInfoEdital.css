@@ -1,0 +1,37 @@
+/* public/css/components/edital-header.css */
+.edital-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f0f3f5;
+    border: 1px solid #dde3e7;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* Para responsividade */
+    gap: 1rem;
+}
+
+.edital-info,
+.tempo-restante {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+}
+
+.edital-info span,
+.tempo-restante span {
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.tempo-restante .js-countdown {
+    color: #d9534f; /* Cor vermelha para urgência */
+    font-weight: bold;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}

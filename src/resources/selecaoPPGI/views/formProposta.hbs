@@ -105,6 +105,7 @@
 
   <!-- Seção de conteúdo -->
   <section class="content container px-3">
+    {{> ppgi/infoEdital editalNome=edital.id dataFimInscricao=edital.dataFim  link=edital.documento }}
     {{> ppgi/nav indexSelect="3" progress="75"}}
 
     <div class="container-fluid p-0">

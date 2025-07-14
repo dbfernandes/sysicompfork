@@ -8,6 +8,8 @@ export type CreateEditalDto = Pick<
   Edital,
   | 'vagasDoutorado'
   | 'cotasDoutorado'
+  | 'taesDoutorado'
+  | 'taesMestrado'
   | 'vagasMestrado'
   | 'cotasMestrado'
   | 'cartaOrientador'
@@ -25,6 +27,8 @@ export type UpdateEditalDto = Pick<
   Edital,
   | 'vagasDoutorado'
   | 'cotasDoutorado'
+  | 'taesDoutorado'
+  | 'taesMestrado'
   | 'vagasMestrado'
   | 'cotasMestrado'
   | 'cartaOrientador'
