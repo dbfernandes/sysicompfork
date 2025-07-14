@@ -58,7 +58,7 @@ model Avatar {
 }
 
 model Candidato {
-  id                   Int       @id @default(autoincrement())
+  id                   String    @id @default(cuid())
   posicaoEdital        Int?      @db.SmallInt
   senhaHash            String    @db.VarChar(255)
   tokenResetSenha      String?   @db.VarChar(255)
@@ -116,7 +116,7 @@ model Candidato {
 
 model CandidatoExperienciaAcademica {
   id          Int     @default(autoincrement())
-  candidatoId Int
+  candidatoId String
   instituicao String? @db.VarChar(60)
   atividade   String? @db.VarChar(60)
   periodo     String? @db.VarChar(30)
@@ -129,7 +129,7 @@ model CandidatoExperienciaAcademica {
 
 model CandidatoPublicacao {
   id          Int      @default(autoincrement())
-  candidatoId Int
+  candidatoId String
   titulo      String   @db.VarChar(255)
   ano         Int
   local       String?  @db.VarChar(255)
@@ -182,7 +182,7 @@ model CandidatoRecomendacao {
   outrosContatos       Int       @default(0) @db.SmallInt
   outrasFuncoes        String?   @db.VarChar(60)
   passo                String    @default("1") @db.Char(1)
-  candidatoId          Int
+  candidatoId          String
   editalId             String?   @db.VarChar(20)
 
   candidato Candidato @relation(fields: [candidatoId], references: [id])

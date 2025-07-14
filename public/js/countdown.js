@@ -19,7 +19,6 @@ function initializeCountdown(selector) {
       const finalDate = new Date(deadline);
       const now = new Date().getTime();
       const distance = finalDate - now;
-      console.log('dsfasdf', finalDate, deadline);
       if (distance < 0) {
         clearInterval(countdownInterval);
         countdownElement.text('Prazo Esgotado');

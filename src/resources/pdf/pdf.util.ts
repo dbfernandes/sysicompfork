@@ -2,10 +2,11 @@ import candidatoService from '@resources/candidato/candidato.service';
 import { TYPES_PUBLICACAO } from '@resources/candidatoPublicacao/candidato.publicacao.types';
 import { CandidatoPublicacao } from '@prisma/client';
 
-function formatarNumeroInscricao(numberId: number): string {
-  const num = '000-0000-000';
-  const id = numberId.toString();
-  return num.substring(0, num.length - id.length) + id;
+function formatarNumeroInscricao(numberId: string): string {
+  // const num = '000-0000-000';
+  // const id = numberId.toString();
+  // return num.substring(0, num.length - id.length) + id;
+  return numberId;
 }
 
 function formatarPublicacao(publicacao: CandidatoPublicacao) {
@@ -13,9 +14,8 @@ function formatarPublicacao(publicacao: CandidatoPublicacao) {
 }
 
 export async function getFormattedDataCandidateFinish(candidateId: string) {
-  const candidato = await candidatoService.listarTodasInformacoesDeCandidato(
-    Number(candidateId),
-  );
+  const candidato =
+    await candidatoService.listarTodasInformacoesDeCandidato(candidateId);
   const periodicals = candidato.publicacoes
     .filter((publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS)
     .map(formatarPublicacao);

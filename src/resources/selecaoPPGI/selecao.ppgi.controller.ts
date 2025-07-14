@@ -214,7 +214,7 @@ async function voltarInicio(
 ): Promise<void> {
   switch (req.method) {
     case 'POST':
-      const id = Number(req.session.uid);
+      const id = req.session.uid;
       try {
         await candidatoService.voltarInicioEdital({
           id,
@@ -268,9 +268,9 @@ async function renderFormHistorico(
   );
 
   const experienciasAcademicas =
-    await candidatoExperienciaAcademicaService.listByCandidateId(Number(uid));
+    await candidatoExperienciaAcademicaService.listByCandidateId(uid);
   const { conferencias, periodicos } =
-    await candidatoPublicacaoService.getPublicacoes(Number(uid));
+    await candidatoPublicacaoService.getPublicacoes(uid);
 
   res.render(resolveView('formHistorico'), {
     ...locals,
@@ -315,7 +315,7 @@ async function renderFormProposta(
 
   const [linhas, recomendacoes, edital] = await Promise.all([
     linhaDePesquisaService.listarTodos(),
-    candidatoRecomendacaoService.getRecomendacoesByCandidato(Number(uid)),
+    candidatoRecomendacaoService.getRecomendacoesByCandidato(uid),
     editalService.getById(req.candidato.editalId),
   ]);
 
@@ -382,6 +382,7 @@ async function renderForms(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  console.log(req.session);
   switch (req.method) {
     case 'GET':
       try {
@@ -391,7 +392,7 @@ async function renderForms(
           break;
         }
 
-        const candidato = await candidatoService.findByIdComEdital(Number(uid));
+        const candidato = await candidatoService.findByIdComEdital(uid);
 
         if (!candidato) {
           res.redirect('/selecaoppgi/entrar');
@@ -430,8 +431,7 @@ async function formDados(
     case 'PUT':
       try {
         const { data } = req.body;
-        const { uid } = req.session;
-        const id = Number(uid);
+        const { uid: id } = req.session;
 
         const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
 
@@ -451,9 +451,9 @@ async function formDados(
           passaporte: isBrasileira ? null : data.passaporte,
           pais: isBrasileira ? null : data.pais,
         };
-
+        console.log(id, candidato);
         await candidatoService.update({
-          id,
+          id: id,
           data: candidato,
         });
 
@@ -482,9 +482,7 @@ async function formHistorico(
         const experienciasAtividade = req.body.experienciaAtividade as string[];
         const experienciasPeriodo = req.body.experienciaPeriodo as string[];
 
-        await candidatoExperienciaAcademicaService.dropAllByCandidateId(
-          Number(uid),
-        );
+        await candidatoExperienciaAcademicaService.dropAllByCandidateId(uid);
         if (
           experienciaInstituicao &&
           experienciasAtividade &&
@@ -506,7 +504,7 @@ async function formHistorico(
                   atividade: experienciasAtividade[index],
                   periodo: experienciasPeriodo[index],
                 },
-                candidatoId: Number(uid),
+                candidatoId: uid,
               });
             }),
           );
@@ -524,7 +522,7 @@ async function formHistorico(
           posicaoEdital: 3,
           tipoPos: body.tipoPos,
         };
-        const id = Number(uid);
+        const id = uid;
         await candidatoService.update({
           id,
           data: candidato,
@@ -583,16 +581,14 @@ async function formProposta(
           body.recomendacaoEmail &&
           body.recomendacaoNome.length === body.recomendacaoEmail.length
         ) {
-          const candidato = await candidatoService.findByIdComEdital(
-            Number(uid),
-          );
+          const candidato = await candidatoService.findByIdComEdital(uid);
 
           await candidatoRecomendacaoService.createManyByCandidate(
             body.recomendacaoNome.map((nome, index) => ({
               nome,
               email: body.recomendacaoEmail[index],
             })),
-            Number(uid),
+            uid,
             candidato.editalId,
             new Date(candidato.edital.dataFim),
           );
@@ -608,7 +604,7 @@ async function formProposta(
           ...(body.isNext && { finishedAt: new Date() }),
         };
 
-        const id = Number(uid);
+        const id = uid;
         await candidatoService.update({
           id,
           data: candidato,
@@ -644,7 +640,7 @@ async function uploadsPublicacoes(
   switch (req.method) {
     case 'GET': {
       const data = await candidatoPublicacaoService.getPublicacoes(
-        Number(req.session.uid),
+        req.session.uid,
       );
 
       const { periodicos, conferencias } = data;
@@ -663,7 +659,7 @@ async function uploadsPublicacoes(
         const uid = req.session.uid;
         await candidatoPublicacaoService.processPublicacoes({
           publicacoes: JSON.parse(req.body.publicacoes),
-          uid: Number(uid),
+          uid,
         });
 
         res.status(StatusCodes.OK).send('Dados salvos com sucesso.');
@@ -685,7 +681,7 @@ async function voltarPassoForm(
   switch (req.method) {
     case 'POST': {
       try {
-        const id = Number(req.session.uid);
+        const id = req.session.uid;
         await candidatoService.voltarPassoEdital({
           id,
         });
@@ -856,7 +852,7 @@ async function deleteAllPublications(
         if (fs.existsSync(caminhoDoc)) {
           fs.unlinkSync(caminhoDoc);
         }
-        await candidatoPublicacaoService.deleteAllPublicacoes(Number(uid));
+        await candidatoPublicacaoService.deleteAllPublicacoes(uid);
         res.status(StatusCodes.OK).send();
       } catch (err) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();

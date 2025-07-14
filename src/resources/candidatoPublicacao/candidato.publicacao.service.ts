@@ -1,6 +1,6 @@
 import { CandidatoPublicacao, PrismaClient } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import { BaseError } from '../../utils/baseError';
+import { BaseError } from '@utils/baseError';
 import {
   PublicacaoCreate,
   PublicacaoCreateDto,
@@ -11,7 +11,7 @@ import {
 const prisma = new PrismaClient();
 
 interface ProcessarPublicacoesParams {
-  uid: number;
+  uid: string;
   publicacoes: PublicacoesData;
 }
 
@@ -21,15 +21,16 @@ type ResponseListPublicacoes = {
 };
 
 class CandidatoPublicacaoService {
-  async deleteAllPublicacoes(candidatoId: number): Promise<void> {
+  async deleteAllPublicacoes(candidatoId: string): Promise<void> {
     await prisma.candidatoPublicacao.deleteMany({
       where: {
         candidatoId,
       },
     });
   }
+
   async addMany(
-    candidatoId: number,
+    candidatoId: string,
     publicacoes: PublicacaoCreateDto[],
     tipoPublicacao: number,
   ): Promise<void> {
@@ -91,7 +92,7 @@ class CandidatoPublicacaoService {
     }
   }
 
-  async getPublicacoes(candidatoId: number): Promise<ResponseListPublicacoes> {
+  async getPublicacoes(candidatoId: string): Promise<ResponseListPublicacoes> {
     try {
       const [periodicos, conferencias] = await Promise.all([
         prisma.candidatoPublicacao.findMany({

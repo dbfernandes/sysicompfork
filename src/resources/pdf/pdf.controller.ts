@@ -44,9 +44,7 @@ export async function generatePdf(
     if (type === 'recomendacoes' && id) {
       data = {
         recommendations:
-          await CandidatoRecomendacaoService.getRecomendationsForPDF(
-            Number(id),
-          ),
+          await CandidatoRecomendacaoService.getRecomendationsForPDF(id),
       };
     }
 

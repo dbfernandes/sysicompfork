@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class CandidatoExperienciaAcademicaService {
-  async create({ data, candidatoId }) {
-    return await prisma.candidatoExperienciaAcademica.create({
+  async create({ data, candidatoId }: { data: any; candidatoId: string }) {
+    return prisma.candidatoExperienciaAcademica.create({
       data: {
         ...data,
         candidatoId,
@@ -11,16 +11,16 @@ class CandidatoExperienciaAcademicaService {
     });
   }
 
-  async dropAllByCandidateId(candidatoId: number) {
-    return await prisma.candidatoExperienciaAcademica.deleteMany({
+  async dropAllByCandidateId(candidatoId: string) {
+    return prisma.candidatoExperienciaAcademica.deleteMany({
       where: {
         candidatoId,
       },
     });
   }
 
-  async listByCandidateId(candidatoId: number) {
-    return await prisma.candidatoExperienciaAcademica.findMany({
+  async listByCandidateId(candidatoId: string) {
+    return prisma.candidatoExperienciaAcademica.findMany({
       where: {
         candidatoId,
       },

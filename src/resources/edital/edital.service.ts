@@ -176,9 +176,10 @@ class EditalService {
     }
   }
 
-  async getCandidato(id: number) {
+  async getCandidato(id: string) {
     try {
-      return await prisma.candidato.findFirst({
+      console.log('id', id);
+      return await prisma.candidato.findUnique({
         where: {
           id,
         },

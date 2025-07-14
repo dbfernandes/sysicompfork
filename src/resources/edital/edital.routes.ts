@@ -15,7 +15,10 @@ router.all(
   '/downloadCandidateDocument/:id',
   editalController.pegarDocumentoCandidato,
 );
-router.all('/getCandidateDocs/:id', editalController.pegarDocumentsDeUmCandidate);
+router.all(
+  '/getCandidateDocs/:id',
+  editalController.pegarDocumentsDeUmCandidate,
+);
 router.all(
   '/getEditalCandidatesDocs/:id',
   editalController.pegarDocumentosDeTodosCandidatos,

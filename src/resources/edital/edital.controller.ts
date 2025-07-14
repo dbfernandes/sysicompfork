@@ -283,7 +283,8 @@ const geraPlanilha = async (req: Request, res: Response) => {
 };
 
 const pegarDocumentoCandidato = async (req: Request, res: Response) => {
-  const candidato = await EditalService.getCandidato(Number(req.params.id));
+  const candidato = await EditalService.getCandidato(req.params.id);
+
   const caminhoDoc = path.join(
     __dirname,
     '..',
@@ -291,10 +292,9 @@ const pegarDocumentoCandidato = async (req: Request, res: Response) => {
     '..',
     'uploads',
     'candidato',
-    candidato.id.toString(),
+    candidato.id,
     `${req.query.documento}`,
   );
-
   res.download(caminhoDoc, (error) => {
     if (error) {
       return res.status(400).json({
@@ -392,9 +392,9 @@ export const pegarDocumentosDeTodosCandidatos = async (
 
 const pegarDocumentsDeUmCandidate = async (req: Request, res: Response) => {
   try {
-    const candidatoId = Number(req.params.id);
+    const candidatoId = req.params.id;
 
-    if (isNaN(candidatoId)) {
+    if (!candidatoId) {
       return res.status(400).json({ error: 'ID do candidato inválido.' });
     }
 
@@ -477,7 +477,7 @@ const pegarDocumentsDeUmCandidate = async (req: Request, res: Response) => {
 
 const exibirDetalhesCandidato = async (req: Request, res: Response) => {
   try {
-    const candidato = await editalService.getCandidato(Number(req.params.id));
+    const candidato = await editalService.getCandidato(req.params.id);
     const edital = await editalService.getById(candidato!.editalId);
     const candidatoDocs = {
       Curriculum: false,

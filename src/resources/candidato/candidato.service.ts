@@ -7,7 +7,7 @@ import path from 'path';
 
 import { Candidato } from '@prisma/client';
 
-import { generateHashPassword } from '../../utils/utils';
+import { generateHashPassword } from '@utils/utils';
 import {
   MudarSenhaDto,
   RecuperarSenhaDto,
@@ -28,60 +28,20 @@ class CandidatoService {
     return prisma.candidato.findMany();
   }
 
-  async create({ email, senha, edital }) {
-    const step = 1;
-
-    const passwordHash = await generateHashPassword(senha);
-    const candidato = await prisma.candidato.create({
-      data: {
-        email,
-        senhaHash: passwordHash,
-        editalId: edital,
-        posicaoEdital: step,
-      },
-    });
-
-    if (candidato && candidato.senhaHash) {
-      delete candidato.senhaHash;
-    }
-    await prisma.edital.update({
-      where: {
-        id: edital,
-      },
-      data: {
-        inscricoesIniciadas: {
-          increment: 1,
+  async listarCandidatosPorEdital2(editalId: string) {
+    return await prisma.candidato
+      .findMany({
+        where: {
+          editalId: editalId,
         },
-      },
-    });
-    return candidato;
+      })
+      .catch((err) => {
+        console.log(`[ERROR] Listar Candidatos: ${err}`);
+        throw new Error('Não foi possivel listar o candidato');
+      });
   }
 
-  async auth({ email, senha, editalId }) {
-    const candidato = await prisma.candidato.findFirst({
-      where: {
-        email,
-        editalId: editalId,
-      },
-    });
-
-    if (!candidato) {
-      return null;
-    }
-    return (await bcrypt.compare(senha, candidato.senhaHash))
-      ? candidato
-      : null;
-  }
-
-  async findById(id: number) {
-    return prisma.candidato.findUnique({
-      where: {
-        id,
-      },
-    });
-  }
-
-  async findByIdComEdital(id: number): Promise<Candidato & { edital: Edital }> {
+  async findByIdComEdital(id: string): Promise<Candidato & { edital: Edital }> {
     return prisma.candidato.findFirst({
       where: {
         id,
@@ -92,7 +52,7 @@ class CandidatoService {
     });
   }
 
-  async update({ id, data }: { id: number; data: Partial<Candidato> }) {
+  async update({ id, data }: { id: string; data: Partial<Candidato> }) {
     return prisma.candidato.update({
       where: {
         id,
@@ -124,7 +84,7 @@ class CandidatoService {
     );
   }
 
-  async listarTodasInformacoesDeCandidato(id: number) {
+  async listarTodasInformacoesDeCandidato(id: string) {
     return prisma.candidato.findFirst({
       where: {
         id,
@@ -309,7 +269,7 @@ class CandidatoService {
     });
   }
 
-  async voltarInicioEdital({ id }: { id: number }): Promise<void> {
+  async voltarInicioEdital({ id }: { id: string }): Promise<void> {
     await prisma.candidato.update({
       where: {
         id,
@@ -320,7 +280,7 @@ class CandidatoService {
     });
   }
 
-  async voltarPassoEdital({ id }: { id: number }): Promise<number> {
+  async voltarPassoEdital({ id }: { id: string }): Promise<number> {
     const candidato = await prisma.candidato.update({
       where: {
         id,
@@ -338,7 +298,7 @@ class CandidatoService {
     return candidato.posicaoEdital;
   }
 
-  async enviarEmailConfirmacao({ id }: { id: number }): Promise<void> {
+  async enviarEmailConfirmacao({ id }: { id: string }): Promise<void> {
     const candidate = await prisma.candidato.findFirst({
       where: {
         id,

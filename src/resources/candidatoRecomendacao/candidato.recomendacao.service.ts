@@ -11,7 +11,7 @@ import { generatePdfRecommendations } from '../pdf/pdf.controller';
 const prisma = new PrismaClient();
 
 class CandidatoRecomendacaoService {
-  async getAllRecomendationsFromCandidate(candidatoId: number) {
+  async getAllRecomendationsFromCandidate(candidatoId: string) {
     return prisma.candidatoRecomendacao.findMany({
       where: {
         candidatoId,
@@ -22,7 +22,7 @@ class CandidatoRecomendacaoService {
     });
   }
 
-  async getRecomendacoesByCandidato(candidatoId: number) {
+  async getRecomendacoesByCandidato(candidatoId: string) {
     return prisma.candidatoRecomendacao.findMany({
       where: {
         candidatoId,
@@ -86,7 +86,7 @@ class CandidatoRecomendacaoService {
       email: string;
       id?: number;
     }[],
-    candidatoId: number,
+    candidatoId: string,
     editalId: string,
     prazo: Date,
   ) {
@@ -141,7 +141,7 @@ class CandidatoRecomendacaoService {
       }));
   }
 
-  async sendEmailForUsersByCandidate({ id, url }: { id: number; url: string }) {
+  async sendEmailForUsersByCandidate({ id, url }: { id: string; url: string }) {
     const recomendacoes = await this.getRecomendacoesByCandidato(id);
     const candidato = await prisma.candidato.findUnique({
       where: {
@@ -264,7 +264,7 @@ class CandidatoRecomendacaoService {
     }
     return `${profissional.join(', ')} e ${last}`;
   }
-  async getRecomendationsForPDF(candidatoId: number) {
+  async getRecomendationsForPDF(candidatoId: string) {
     const recommendations =
       await this.getAllRecomendationsFromCandidate(candidatoId);
     const recommendationsFinish = recommendations.filter((recomendation) =>

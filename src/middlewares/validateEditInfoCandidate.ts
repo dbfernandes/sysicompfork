@@ -18,7 +18,7 @@ export const validateEditInfoCandidate = async (
   next: NextFunction,
 ) => {
   if (req.session.uid) {
-    const id = Number(req.session.uid);
+    const id = req.session.uid;
     const candidate = await candidatoService.findByIdComEdital(id);
 
     const candidateAlreadyFinished = !!candidate.finishedAt;

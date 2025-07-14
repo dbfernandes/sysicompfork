@@ -45,7 +45,7 @@ CREATE TABLE `Avatar` (
 
 -- CreateTable
 CREATE TABLE `Candidato` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `posicaoEdital` SMALLINT NULL,
     `senhaHash` VARCHAR(255) NOT NULL,
     `tokenResetSenha` VARCHAR(255) NULL,
@@ -71,6 +71,7 @@ CREATE TABLE `Candidato` (
     `comoSoube` VARCHAR(100) NULL,
     `cursoDesejado` VARCHAR(191) NULL,
     `regime` VARCHAR(191) NULL,
+    `tae` BOOLEAN NOT NULL DEFAULT false,
     `cotista` BOOLEAN NOT NULL DEFAULT false,
     `cotistaTipo` VARCHAR(100) NULL,
     `condicao` BOOLEAN NOT NULL DEFAULT false,
@@ -97,7 +98,7 @@ CREATE TABLE `Candidato` (
 -- CreateTable
 CREATE TABLE `CandidatoExperienciaAcademica` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `candidatoId` INTEGER NOT NULL,
+    `candidatoId` VARCHAR(191) NOT NULL,
     `instituicao` VARCHAR(60) NULL,
     `atividade` VARCHAR(60) NULL,
     `periodo` VARCHAR(30) NULL,
@@ -109,7 +110,7 @@ CREATE TABLE `CandidatoExperienciaAcademica` (
 -- CreateTable
 CREATE TABLE `CandidatoPublicacao` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `candidatoId` INTEGER NOT NULL,
+    `candidatoId` VARCHAR(191) NOT NULL,
     `titulo` VARCHAR(255) NOT NULL,
     `ano` INTEGER NOT NULL,
     `local` VARCHAR(255) NULL,
@@ -161,7 +162,7 @@ CREATE TABLE `CandidatoRecomendacao` (
     `outrosContatos` SMALLINT NOT NULL DEFAULT 0,
     `outrasFuncoes` VARCHAR(60) NULL,
     `passo` CHAR(1) NOT NULL DEFAULT '1',
-    `candidatoId` INTEGER NOT NULL,
+    `candidatoId` VARCHAR(191) NOT NULL,
     `editalId` VARCHAR(20) NULL,
 
     INDEX `CandidatoRecomendacao_candidatoId_idx`(`candidatoId`),
@@ -174,8 +175,10 @@ CREATE TABLE `Edital` (
     `id` VARCHAR(191) NOT NULL,
     `vagasDoutorado` INTEGER NULL,
     `cotasDoutorado` INTEGER NULL,
+    `taesDoutorado` INTEGER NULL,
     `vagasMestrado` INTEGER NULL,
     `cotasMestrado` INTEGER NULL,
+    `taesMestrado` INTEGER NULL,
     `cartaOrientador` VARCHAR(255) NOT NULL,
     `cartaRecomendacao` VARCHAR(255) NOT NULL,
     `documento` VARCHAR(255) NOT NULL,

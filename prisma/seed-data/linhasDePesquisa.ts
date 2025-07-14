@@ -3,22 +3,22 @@ import { Prisma } from '@prisma/client';
 export const linhasDePesquisa: Prisma.LinhaPesquisaCreateManyInput[] = [
   {
     id: 1,
-    nome: 'Banco de Dados e Recuperacao de Informacao',
-    sigla: 'BD e RI',
+    nome: 'Sistemas Computacionais',
+    sigla: 'SC',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
     id: 2,
-    nome: 'Computacao Aplicada',
-    sigla: 'CA',
+    nome: 'Software, Interação e Aplicações',
+    sigla: 'SF, INT, AP',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
     id: 3,
-    nome: 'Engenharia de Software',
-    sigla: 'ES',
+    nome: 'Inteligência Artificial e Ciência de Dados',
+    sigla: 'IA, CD',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
