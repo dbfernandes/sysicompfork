@@ -8,7 +8,10 @@ import path from 'path';
 import editalService from './edital.service';
 import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
+  AUTODECLARACAO,
+  AUTODECLARACAO_VIDEO,
   CARTA_ACEITE_ORIENTADOR_FILE,
+  COMPROVANTE_COTA,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   PROPOSTA_FILE,
@@ -155,13 +158,25 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
       if (!edital) {
         return res.status(404).json({ error: 'Edital não encontrado' });
       }
+      const candidatos = await editalService.listCandidatos(id);
 
-      return res.render(resolveView('vizualizarEdital'), {
+      const quantidadeInscricaoAndamento = candidatos.filter(
+        (candidato) =>
+          candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
+      ).length;
+
+      const quantidadeInscricaoFinalizada = candidatos.filter(
+        (candidato) =>
+          candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
+      ).length;
+      return res.render(resolveView('visualizarEdital'), {
         csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
         edital,
         tipoUsuario: req.session.tipoUsuario,
+        quantidadeInscricaoAndamento,
+        quantidadeInscricaoFinalizada,
       });
     }
   }
@@ -360,6 +375,9 @@ export const pegarDocumentosDeTodosCandidatos = async (
         'Inscricao.pdf',
         'PropostaTrabalho.pdf',
         'Recomendacoes.pdf',
+        AUTODECLARACAO_VIDEO,
+        AUTODECLARACAO,
+        COMPROVANTE_COTA,
       ];
 
       for (const fileName of pdfFiles) {
@@ -422,6 +440,9 @@ const pegarDocumentsDeUmCandidate = async (req: Request, res: Response) => {
       'Inscricao.pdf',
       'PropostaTrabalho.pdf',
       'Recomendacoes.pdf',
+      AUTODECLARACAO,
+      AUTODECLARACAO_VIDEO,
+      COMPROVANTE_COTA,
     ];
 
     // Sanitiza o nome do candidato para evitar problemas de segurança
@@ -486,6 +507,9 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       ProvaAnteriorSelecao: false,
       ComprovantePagamento: false,
       Recomendacoes: false,
+      AutodeclaracaoVideo: false,
+      Autodeclaracao: false,
+      ComprovanteCota: false,
     };
     const countRecomendations = candidato.recomendacoes.length;
     const countRecomendationsFinished = candidato.recomendacoes.filter(
@@ -530,8 +554,18 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       'Recomendacoes.pdf',
     );
 
-    console.log('candidato', candidato);
-
+    candidatoDocs.ComprovanteCota = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_COTA,
+    );
+    candidatoDocs.Autodeclaracao = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO,
+    );
+    candidatoDocs.AutodeclaracaoVideo = verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO_VIDEO,
+    );
     return res.render(resolveView('detalhesCandidato'), {
       candidato: candidato,
       candidatoDocs: candidatoDocs,

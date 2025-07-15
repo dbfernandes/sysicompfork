@@ -47,14 +47,6 @@
                                     <th class="col-3">Nome Completo</th>
                                     <td>{{candidato.nome}}</td>
                                 </tr>
-                                {{!-- <tr>
-                                    <th class="col-3">Data da Inicialização da Inscrição</th>
-                                    <td>{{candidato.begin}}</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-3">Data da Finalização da Inscrição</th>
-                                    <td>{{candidato.finish}}</td>
-                                </tr> --}}
                                 <tr>
                                     <th class="col-3">Endereço</th>
                                     <td>{{candidato.endereco}}</td>
@@ -108,26 +100,22 @@
                                     <th class="col-3">Telefone Alternativo</th>
                                     <td>{{candidato.telefoneSecundario}}</td>
                                 </tr>
-                                {{!-- <tr>
-                                    <th class="col-3">Curso desejado</th>
-                                    <td>{{candidato.inscricaoposcomp}}</td>
-                                </tr> --}}
                                 <tr>
                                     <th class="col-3">Regime de Dedicação</th>
                                     <td>{{candidato.regime}}</td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Incrição poscomp</th>
+                                    <th class="col-3">Curso desejado</th>
                                     <td>{{candidato.cursoDesejado}}</td>
                                 </tr>
-                                <tr>
-                                    <th class="col-3">Ano poscomp</th>
-                                    <td>{{candidato.anoposcomp}}</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-3">Nota poscomp</th>
-                                    <td>{{candidato.notaposcomp}}</td>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <th class="col-3">Ano poscomp</th>-->
+<!--                                    <td>{{candidato.anoposcomp}}</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th class="col-3">Nota poscomp</th>-->
+<!--                                    <td>{{candidato.notaposcomp}}</td>-->
+<!--                                </tr>-->
                                 <tr>
                                     <th class="col-3">Solicita Bolsa?</th>
                                     {{!-- <td>{{#if (eq candidato.bolsista '1')}} Sim {{else}} Não {{/if}}</td> --}}
@@ -140,15 +128,69 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Cotista?</th>
-                                    <td><span class="{{#if (eq candidato.cotista '1')}} badge bg-success">{{candidato.cotistaTipo}}{{else}}badge bg-danger">Não{{/if}}</span></td>
+                                    <td>
+                                      {{#if (eq candidato.cotista '1')}}
+                                        {{candidato.cotistaTipo}}
+                                      {{else}}
+                                        <span class="badge bg-danger">Não</span>
+                                      {{/if}}
+                                    </td>
                                 </tr>
+                                {{#if  (eq candidato.cotista '1') }}
+                                  {{#if (or (eq candidato.cotistaTipo 'indigena')  (eq candidato.cotistaTipo 'pcd'))}}
+                                    <tr>
+                                      <th class="col-3">Comprovante cota</th>
+                                      <td>
+                                        <span class="{{#if candidatoDocs.ComprovanteCota}}">
+                                          <a  style="margin-right: 3px"
+                                              href="/downloadCandidateDocument/{{candidato.id}}?documento=ComprovanteCota.pdf"
+                                              class='fa fa-solid fa-download'></a>
+                                        {{else}}badge bg-warning">Pendente{{/if}}
+                                        </span>
+                                      </td>
+                                  </tr>
+                                  {{/if}}
+                                  {{#if (or (eq candidato.cotistaTipo 'negro')  (eq candidato.cotistaTipo 'pardo'))}}
+                                    <tr>
+                                      <th class="col-3">Autodeclaração (PDF)</th>
+                                      <td>
+                                        <span class="{{#if candidatoDocs.Autodeclaracao}}">
+                                          <a  style="margin-right: 3px"
+                                              href="/downloadCandidateDocument/{{candidato.id}}?documento=AutodeclaracaoCiencia.pdf"
+                                              class='fa fa-solid fa-download'></a>
+                                        {{else}}badge bg-warning">Pendente{{/if}}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <th class="col-3">Autodeclaração (Vídeo)</th>
+                                      <td>
+                                        <span class="{{#if candidatoDocs.AutodeclaracaoVideo}}">
+                                          <a  style="margin-right: 3px"
+                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=VideoAutodeclaracao.mp4"
+                                            class='fa fa-solid fa-download'></a>
+                                            {{else}}badge bg-warning">Pendente{{/if}}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  {{/if}}
+                                {{/if}}
+
                                 <tr>
                                     <th class="col-3">Possui algum tipo de problema de saúde física ou psiquiátrica?</th>
-                                    <td><span class="{{#if (eq candidato.condicao '1')}} badge bg-success">{{candidato.condicaoTipo}}{{else}}badge bg-danger">Não{{/if}}</span></td>
+                                    <td>
+                                      {{#if (eq candidato.condicao '1')}}
+                                        {{candidato.condicaoTipo}}
+                                      {{else}}
+                                        <span class="badge bg-danger">Não</span>
+                                      {{/if}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Linha de Pesquisa</th>
-                                    <td>{{candidato.linhaPesquisa.nome}}</td>
+                                  <td><span class="{{#if (notEmpty candidato.linhaPesquisa)}}">{{candidato.linhaPesquisa.nome}}
+                                  {{else}}badge bg-danger">Não Registrado{{/if}}
+
+                                  </span></td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Título da Proposta</th>
@@ -331,9 +373,9 @@
     </section>
 </div>
 <script>
-         document.getElementById("voltarBtn").addEventListener("click", function() {
-            window.history.back();
-        });
+  document.getElementById("voltarBtn").addEventListener("click", function() {
+    window.history.back();
+  });
 </script>
 
 {{> footer}}

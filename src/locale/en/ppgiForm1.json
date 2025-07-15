@@ -75,7 +75,10 @@
     },
     "saude": "Do you have any physical or psychiatric health conditions?",
     "condicao": "Which",
-    "bolsa": "Are you applying for a scholarship? (Note: only students without employment ties and who do not already have another scholarship may apply)"
+    "bolsa": "Are you applying for a scholarship? (Note: only students without employment ties and who do not already have another scholarship may apply)",
+    "comprovanteCota": "Proof of quota (PDF)",
+    "autoDeclaracao": "Self-Declaration and Video Science (PDF)",
+    "autoDeclaracaoVideo": "Video Self-Declaration in MP4 (Max: 30MB)"
   },
   "validacao": {
     "nome": {

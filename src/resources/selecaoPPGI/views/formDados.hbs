@@ -1,12 +1,6 @@
 {{ setTitle title="Dados Pessoais" }}
 
 <style>
-
-  .icon-info {
-    margin-left: 10px;
-    cursor: pointer;
-  }
-
 	.toast-container {
 		top: 0;
     	right: 0;
@@ -636,7 +630,6 @@
                       data-on-color="success"
                       data-on-text="{{__ "ppgi.yesOption"}}"
                       data-off-text="{{__ "ppgi.noOption"}}"
-                      wrapperClass="teste"
                     />
 
                 </div>
@@ -663,10 +656,118 @@
                     <option value="pardo">
                       {{__ "ppgiForm1.inscricao.optionCota.pardo"}}
                     </option>
-                    <option>
+                    <option value="pcd">
                       {{__ "ppgiForm1.inscricao.optionCota.pcd"}}
                     </option>
                   </select>
+                </div>
+              </div>
+
+              <!-- COMPROVANTE COTA -->
+              <div class="row" id="row-cota">
+                <label for="comprovante-cota" class="control-label col-12">
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm1.inscricao.comprovanteCota"}}:</b>
+                </label>
+
+                <div id="buttons-cota" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasComprovanteCota)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                  <div class="container-buttons-icon ">
+                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-comprovante-cota" style="word-break: break-word;"><b>ComprovanteCota.pdf</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-cota" href="/download/arquivo/ComprovanteCota.pdf" class="btn btn-primary" download style="flex-grow: 1;">
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                      {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-cota" style="flex-grow: 1;">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-cota" style="flex-grow: 1;">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
+                <div id="input-comprovante-cota" class="custom-file mb-4 col-md-6 form-group" {{#if hasComprovanteCota}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="comprovante-cota"
+                    name="name-cota"
+                    accept="application/pdf"
+                    data-msg-accept="{{__ "ppgi.form.onlyPdf"}}"/>
+                  <label class="custom-file-label" for="comprovante-cota">{{__ "ppgi.form.chooseFile"}}</label>
+                </div>
+              </div>
+
+              <!-- COMPROVANTE CIÊNCIA VÍDEO -->
+              <div class="row" id="row-autodeclaracao">
+                <label for="comprovante-autodeclaracao" class="control-label col-12">
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm1.inscricao.autoDeclaracao"}}:</b>
+                </label>
+
+                <div id="buttons-autodeclaracao" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasAutodeclaracao)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                  <div class="container-buttons-icon ">
+                    <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-autodeclaracao" style="word-break: break-word;"><b>ComprovanteCota.pdf</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-autodeclaracao" href="/download/arquivo/AutodeclaracaoCiencia.pdf" class="btn btn-primary" download style="flex-grow: 1;">
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                      {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-autodeclaracao" style="flex-grow: 1;">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-autodeclaracao" style="flex-grow: 1;">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
+                <div id="input-autodeclaracao" class="custom-file mb-4 col-md-6 form-group" {{#if hasAutodeclaracao}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="comprovante-autodeclaracao"
+                    name="name-autodeclaracao"
+                    accept="application/pdf"
+                    data-msg-accept="{{__ "ppgi.form.onlyPdf"}}"/>
+                  <label class="custom-file-label" for="comprovante-autodeclaracao">{{__ "ppgi.form.chooseFile"}}</label>
+                </div>
+              </div>
+
+              <!-- AUTODECLARAÇÃO VÍDEO -->
+              <div class="row" id="row-autodeclaracao-video">
+                <label for="comprovante-autodeclaracao-video" class="control-label col-12">
+                  <span class="text-danger">*</span>
+                  <b>{{__ "ppgiForm1.inscricao.autoDeclaracaoVideo"}}:</b>
+                </label>
+
+                <div id="buttons-autodeclaracao-video" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasVideoAutodeclaracao)}}none{{else}}flex{{/if}}; gap: 16px"  >
+                  <div class="container-buttons-icon ">
+                    <img src="/public/img/mp4-logo.png" alt="pdf" width="50" height="50" />
+                    <figcaption id="name-autodeclaracao-video" style="word-break: break-word;"><b>ComprovanteCota.pdf</b></figcaption>
+                  </div>
+                  <div class="d-flex flex-row align-items-center flex-wrap" style="gap: 4px">
+                    <a id="url-autodeclaracao-video" href="/download/arquivo/VideoAutodeclaracao.mp4" class="btn btn-primary" download style="flex-grow: 1;">
+                      <i class="fa fa-download mr-2" aria-hidden="true" ></i>
+                      {{__ "ppgi.form.btnDownload"}}</a>
+                    <button type="button" class="btn btn-success" id="btn-change-autodeclaracao-video" style="flex-grow: 1;">
+                      <i class="fa fa-retweet mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnChange"}}</button>
+                    <button type="button" class="btn btn-danger" id="btn-delete-autodeclaracao-video" style="flex-grow: 1;">
+                      <i class="fa fa-trash mr-2" aria-hidden="true"></i>
+                      {{__ "ppgi.form.btnDelete"}}</button>
+                  </div>
+                </div>
+                <div id="input-autodeclaracao-video" class="custom-file mb-4 col-md-6 form-group" {{#if hasVideoAutodeclaracao}}style="display: none;"{{/if}}>
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="comprovante-autodeclaracao-video"
+                    name="name-autodeclaracao-video"
+                    accept="video/mp4"
+                    data-msg-accept="{{__ "ppgi.form.onlyPdf"}}"/>
+                  <label class="custom-file-label" for="comprovante-autodeclaracao-video">{{__ "ppgi.form.chooseFile"}}</label>
                 </div>
               </div>
 
@@ -778,9 +879,96 @@
 
 </main>
 {{> ppgi/_masks }}
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>-->
 <script>
 	$(document).ready(() => {
+
+    const inputFilesConfig = {
+      Cota: {
+        input: "#comprovante-cota",
+        buttons: "#buttons-cota",
+        containerInput: "#input-comprovante-cota",
+        name: "#name-cota",
+        btnChange: "#btn-change-cota",
+        btnDelete: "#btn-delete-cota",
+        aDownload: "#url-cota",
+        hasFileSave: {{hasComprovanteCota}}
+      },
+      Autodeclaracao: {
+        input: "#comprovante-autodeclaracao",
+        buttons: "#buttons-autodeclaracao",
+        containerInput: "#input-autodeclaracao",
+        name: "#name-autodeclaracao",
+        btnChange: "#btn-change-autodeclaracao",
+        btnDelete: "#btn-delete-autodeclaracao",
+        aDownload: "#url-autodeclaracao",
+        hasFileSave: {{hasAutodeclaracao}}
+      },
+      VideoAutodeclaracao: {
+        input: "#comprovante-autodeclaracao-video",
+        buttons: "#buttons-autodeclaracao-video",
+        containerInput: "#input-autodeclaracao-video",
+        name: "#name-autodeclaracao-video",
+        btnChange: "#btn-change-autodeclaracao-video",
+        btnDelete: "#btn-delete-autodeclaracao-video",
+        aDownload: "#url-autodeclaracao-video",
+        hasFileSave: {{hasVideoAutodeclaracao}}
+      }
+    }
+
+    function changeFile(idInput) {
+      $(idInput).click();
+    }
+
+    function actionDeleteFile(idInput, idButtons, idContainerInput){
+      $(idInput).val('');
+      $(idButtons).hide();
+      $(idContainerInput).show();
+      $(idInput).next('label').text('{{__ "ppgi.form.chooseFile"}}');
+    }
+
+    function changeFileInput(event, aLink, idButtons, idContainerInput, idName) {
+      const input = $(event.target);
+      if (!input.valid()) {
+        input.next('label').text('{{__ "ppgi.form.chooseFile"}}');
+        return;
+      }
+      const file = event.target.files[0];
+      const fileName = file.name;
+      const url = URL.createObjectURL(file);
+      $(idContainerInput).hide();
+      $(idButtons).css('display', 'flex');
+      $(idName).html(`<b>${fileName}</b>`);
+
+      $(aLink)
+        .attr('href', url)
+        .attr('download', fileName);
+    }
+
+    Object.keys(inputFilesConfig).forEach(key => {
+      const inputConfig = inputFilesConfig[key];
+      const input = inputConfig.input;
+      const buttons = inputConfig.buttons;
+      const containerInput = inputConfig.containerInput;
+      const name = inputConfig.name;
+      const btnChange = inputConfig.btnChange;
+      const btnDelete = inputConfig.btnDelete;
+      const aDownload = inputConfig.aDownload;
+
+      $(input).change(function (event) {
+        inputFilesConfig[key].hasFileSave = true;
+        changeFileInput(event, aDownload, buttons, containerInput, name);
+      });
+
+      $(btnChange).click(function () {
+        changeFile(input);
+      });
+
+      $(btnDelete).click(function () {
+        inputFilesConfig[key].hasFileSave = false;
+        actionDeleteFile(input, buttons, containerInput);
+      });
+    });
 
     const basePath = "{{basePath}}";
     const comoSoubeValue = document.getElementById("ComoSoubeObj").value;
@@ -829,7 +1017,6 @@
       validationNumberTypes: null
     });*/
 
-    const cotistaValue = document.getElementById('CotistaObj').value;
     const cotistaTipoValue = document.getElementById('CotistaTipoObj').value;
 
     const select = document.getElementById('tipo-cota');
@@ -852,10 +1039,59 @@
     {{#if cotista}} document.getElementById("cotista").checked = true; {{/if}}
     {{#if bolsista}} document.getElementById("candidato-bolsa").checked = true;{{/if}}
     {{#if tae}} document.getElementById("candidato-tae").checked = true;{{/if}}
+    {{#if cotistaTipo}}
+      const cotistaTipo = '{{cotistaTipo}}'
+
+      const shouldBeComprovante =
+        cotistaTipo === 'indigena' ||
+        cotistaTipo === 'pcd';
+      const shouldBeAutodeclaracao =
+        cotistaTipo === 'negro' || cotistaTipo === 'pardo';
+
+      if (shouldBeAutodeclaracao){
+        $("#row-cota").slideUp();
+        $("#row-autodeclaracao").slideDown();
+        $("#row-autodeclaracao-video").slideDown();
+      } else if (shouldBeComprovante){
+        $("#row-cota").slideDown();
+        $("#row-autodeclaracao").slideUp();
+        $("#row-autodeclaracao-video").slideUp();
+      } else {
+        $("#row-cota").slideUp();
+        $("#row-autodeclaracao").slideUp();
+        $("#row-autodeclaracao-video").slideUp();
+      }
+    {{else}}
+      $("#row-cota").slideUp();
+      $("#row-autodeclaracao").slideUp();
+      $("#row-autodeclaracao-video").slideUp();
+    {{/if}}
 
     $('#candidato-datanascimento').datetimepicker({
       format: 'DD/MM/YYYY',
       locale: 'pt-br',
+    });
+
+    $("#tipo-cota").change(function (el) {
+      switch (el.target.value) {
+        case 'indigena':
+        case 'pcd':
+          $("#row-cota").slideDown();
+          $("#row-autodeclaracao").slideUp();
+          $("#row-autodeclaracao-video").slideUp();
+          break;
+        case 'negro':
+        case 'pardo':
+          $("#row-cota").slideUp();
+          $("#row-autodeclaracao").slideDown();
+          $("#row-autodeclaracao-video").slideDown();
+          break;
+        default:
+          $("#row-cota").slideUp();
+          $("#row-autodeclaracao").slideUp();
+          $("#row-autodeclaracao-video").slideUp();
+          break;
+      }
     });
 
     $("input[data-bootstrap-switch-cotista]").each(function () {
@@ -867,7 +1103,11 @@
         if ($(this).is(":checked")) {
           $("#cota").slideDown();
         } else {
+          $("#tipo-cota").val('')
           $("#cota").slideUp();
+          $("#row-cota").slideUp();
+          $("#row-autodeclaracao").slideUp();
+          $("#row-autodeclaracao-video").slideUp();
         }
       });
     });
@@ -889,14 +1129,6 @@
     })
     $("input[data-bootstrap-switch-tae]").each(function () {
       $(this).bootstrapSwitch('state', $(this).prop('checked'));
-      // $(this).bootstrapSwitch('onSwitchChange', () => {
-      //   if ($(this).is(":checked")) {
-      //     $("#Regime1").prop("checked", true);
-      //     $("#Regime2").prop("checked", false).prop("disabled", true);
-      //   } else {
-      //     $("#Regime2").prop("disabled", false);
-      //   }
-      // });
     });
 
     $("input[data-bootstrap-switch-bolsa]").each(function () {
@@ -926,19 +1158,6 @@
         });
     })
 
-    function getSelectedSexo() {
-      const masculinoRadio = document.getElementById("Sexo");
-      const femininoRadio = document.getElementById("Sexo2");
-      let selectedSexo = "";
-
-      if (masculinoRadio.checked) {
-        selectedSexo = "M";
-      } else if (femininoRadio.checked) {
-        selectedSexo = "F";
-      }
-
-      return selectedSexo;
-    }
 
     function getSelectedNacionalidade() {
       let brasileiraRadio = document.getElementById("Nacionalidade1");
@@ -954,8 +1173,7 @@
 
     function getSelectedComoSoube() {
       let selectComoSoube = document.getElementById("como-soube");
-      let selectedComoSoube = selectComoSoube.options[selectComoSoube.selectedIndex].value;
-      return selectedComoSoube;
+      return selectComoSoube.options[selectComoSoube.selectedIndex].value;
     }
 
     function getSelectedCurso() {
@@ -988,8 +1206,7 @@
         return null;
       }
       let selectCota = document.getElementById("tipo-cota");
-      let selectedCota = selectCota.options[selectCota.selectedIndex].value;
-      return selectedCota;
+      return selectCota.options[selectCota.selectedIndex].value;
     }
 
     function getCondicao() {
@@ -997,8 +1214,7 @@
       if (!deficiencia) {
         return null;
       }
-      let condicao = document.getElementById("candidato-condicao").value;
-      return condicao;
+      return document.getElementById("candidato-condicao").value;
     }
 
     // function getBolsa() {
@@ -1029,32 +1245,45 @@
     }
 
     function getValueFromForm() {
-      const form = document.getElementById('candidato-formulario');
-      const data = {}
-      data.nome = document.getElementById('candidato-nome').value;
-      data.dataNascimento = document.getElementById('data-nascimento').value;
-      data.sexo = document.getElementById('candidato-sexo').value;
-      data.nomeSocial = document.getElementById('candidato-nomesocial').value;
-      data.cep = document.getElementById('candidato-cep').value;
-      data.uf = document.getElementById('candidato-uf').value;
-      data.endereco = document.getElementById('candidato-endereco').value;
-      data.cidade = document.getElementById('candidato-cidade').value;
-      data.bairro = document.getElementById('candidato-bairro').value;
-      data.nacionalidade = getSelectedNacionalidade();
-      data.telefone = document.getElementById('candidato-telresidencial').value;
-      data.telefoneSecundario = $(form).find('#candidato-telcelular').val();
-      data.comoSoube = getSelectedComoSoube();
-      data.cursoDesejado = getSelectedCurso();
-      data.regime = getSelectedRegime();
-      data.cotista = checkCotista();
-      data.cotistaTipo = getSelectedCota();
-      data.condicao = checkCondicao()
-      data.condicaoTipo = getCondicao();
+      const data = new FormData()
+      data.append('nome',document.getElementById('candidato-nome').value);
+      data.append('dataNascimento',  document.getElementById('data-nascimento').value);
+      data.append('sexo', document.getElementById('candidato-sexo').value);
+      data.append('nomeSocial', document.getElementById('candidato-nomesocial').value);
+      data.append('cep',  document.getElementById('candidato-cep').value);
+      data.append('uf', document.getElementById('candidato-uf').value);
+      data.append('endereco', document.getElementById('candidato-endereco').value);
+      data.append('cidade',  document.getElementById('candidato-cidade').value);
+      data.append('bairro', document.getElementById('candidato-bairro').value);
+      data.append('nacionalidade', getSelectedNacionalidade());
+      data.append('telefone', document.getElementById('candidato-telresidencial').value);
+      data.append('telefoneSecundario',document.getElementById('candidato-telcelular').value);
+      data.append('comoSoube', getSelectedComoSoube());
+      data.append('cursoDesejado', getSelectedCurso());
+      data.append('regime', getSelectedRegime());
+      data.append('cotista', checkCotista());
+      data.append('cotistaTipo', getSelectedCota());
+      data.append('condicao', checkCondicao());
+      data.append('condicaoTipo', getCondicao());
       // data.bolsista = getBolsa()
-      data.tae = getTae()
-      data.cpf = document.getElementById('cpf').value;
-      data.pais = document.getElementById('pais').value;
-      data.passaporte = document.getElementById('passaporte').value;
+      data.append('tae', getTae());
+      data.append('cpf', document.getElementById('cpf').value);
+      data.append('pais', document.getElementById('pais').value);
+      data.append('passaporte', document.getElementById('passaporte').value);
+      const autodeclaracaoInput =  document.getElementById('comprovante-autodeclaracao');
+      if (autodeclaracaoInput?.files.length) {
+        data.append('AutodeclaracaoCiencia', autodeclaracaoInput.files[0]);
+      }
+      const videoInput = document.getElementById('comprovante-autodeclaracao-video');
+      if (videoInput?.files.length) {
+        data.append('VideoAutodeclaracao', videoInput.files[0]);
+      }
+
+      const comprovanteCotaInput = document.getElementById('comprovante-cota');
+      if (comprovanteCotaInput?.files.length) {
+        data.append('ComprovanteCota', comprovanteCotaInput.files[0]);
+      }
+
       return data;
     }
 
@@ -1077,6 +1306,12 @@
       });
     });
 
+    $.validator.addMethod("fileSize", function(value, element, param) {
+      if (element.files.length === 0) {
+        return true;
+      }
+      return element.files[0].size <= param;
+    }, "O arquivo deve ter no máximo {0} bytes.");
 
     $.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
     $.validator.addMethod("validPhoneNumber", function (value, element) {
@@ -1113,11 +1348,7 @@
       if ((remainder == 10) || (remainder == 11)) {
         remainder = 0;
       }
-      if (remainder != parseInt(value.substring(10, 11))) {
-        return false;
-      }
-
-      return true;
+      return remainder == parseInt(value.substring(10, 11));
     }, "Por favor, insira um CPF válido.");
 
     $("#candidato-formulario").validate({
@@ -1132,7 +1363,24 @@
           required: true,
           dateBR: true
         },
-
+        'name-cota': {
+          required: function(){
+            return !inputFilesConfig.Cota.hasFileSave
+          },
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
+        },
+        'name-autodeclaracao': {
+          required: function(){
+            return !inputFilesConfig.Autodeclaracao.hasFileSave
+          },
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
+        },
+        'name-autodeclaracao-video': {
+          required: function(){
+            return !inputFilesConfig.VideoAutodeclaracao.hasFileSave
+          },
+          fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
+        },
         candidatoCep: {
           required: true
         },
@@ -1164,24 +1412,24 @@
           required: true
         },
         "tipo-cota": {
-          required: function (element) {
+          required: function (params) {
             return $("#cotista:checked").length > 0;
           }
         },
         candidatoCondicao: {
-          required: function (element) {
+          required: function (params) {
             return $("#candidato-deficiencia1:checked").length > 0;
           }
         },
         cpf: {
-          required: (element) => $("#Nacionalidade1:checked").length > 0,
+          required: (params) => $("#Nacionalidade1:checked").length > 0,
           cpf: true
         },
         pais: {
-          required: (element) => $("#Nacionalidade2:checked").length > 0
+          required: (param) => $("#Nacionalidade2:checked").length > 0
         },
         passaporte: {
-          required: (element) => $("#Nacionalidade2:checked").length > 0
+          required: (params) => $("#Nacionalidade2:checked").length > 0
         },
         phone: {
           validPhoneNumber: true,
@@ -1189,6 +1437,18 @@
         }
       },
       messages: {
+        "name-cota": {
+          required: "{{__ "ppgiForm2.validation.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
+        },
+        "name-autodeclaracao": {
+          required: "{{__ "ppgiForm2.validation.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
+        },
+        "name-autodeclaracao-video": {
+          required: "{{__ "ppgiForm2.validation.required"}}",
+          fileSize: "{{__ "ppgi.validation.fileSize"}}"
+        },
         nome: {
           required: "{{__ "ppgiForm1.validacao.nome.required"}}",
           minlength: "{{__ "ppgiForm1.validacao.nome.minlengtg"}}",
@@ -1251,24 +1511,18 @@
         btnSave.prop("disabled", true);
         const data = getValueFromForm();
         const csrfToken = $("#csrfToken").val();
-        const email = $("#email").val();
-        const editalPosicao = $("#editalPosicao").val();
-        const id = $("#id").val();
+
         $.ajax({
-        	url: `${basePath}/formulario/1`,
+        	url: `${basePath}/formulario/1?_csrf=${csrfToken}`,
         	type: "PUT",
-        	data: {
-        		data: data,
-        		_csrf: csrfToken,
-        		email: email,
-        		editalPosicao: editalPosicao,
-        		id: id
-        	},
-        	success: (data) => {
+        	data,
+          contentType: false,
+          processData: false,
+        	success: () => {
         		window.location.href = `${basePath}/formulario`;
-        		window.location.reload(true);
+        		window.location.reload();
         	},
-        	error: (data) => {
+        	error: () => {
         		btnSave.find("span").prop("hidden", true);
         		btnSave.prop("disabled", false);
         	}

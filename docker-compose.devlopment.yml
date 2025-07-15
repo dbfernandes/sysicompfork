@@ -15,6 +15,13 @@ services:
     networks:
       - sysicomp-network-dev
 
+  redis:
+    container_name: redis_sysicomp-dev
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - sysicomp-network-dev
+
   phpmyadmin:
     container_name: phpmyadmin_sysicomp-dev
     image: phpmyadmin/phpmyadmin:latest
@@ -44,10 +51,10 @@ services:
       - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-
     depends_on:
       - db
       - gotenberg
+      - redis
     env_file:
       - .env
     networks:
@@ -68,10 +75,10 @@ services:
       - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-
     depends_on:
       - db
       - gotenberg
+      - redis
     env_file:
       - .env
     networks:

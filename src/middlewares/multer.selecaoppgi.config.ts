@@ -30,12 +30,21 @@ const storage = multer.diskStorage({
   },
   filename: function (req, { mimetype, fieldname }, callback) {
     const name =
-      mimetype === 'text/xml' ? `${fieldname}.xml` : `${fieldname}.pdf`;
+      mimetype === 'text/xml'
+        ? `${fieldname}.xml`
+        : mimetype === 'video/mp4'
+          ? `${fieldname}.mp4`
+          : `${fieldname}.pdf`;
 
     callback(null, name);
   },
 });
 
+const uploadsDados = multer({ storage }).fields([
+  { name: 'AutodeclaracaoCiencia', maxCount: 1 },
+  { name: 'VideoAutodeclaracao', maxCount: 1 },
+  { name: 'ComprovanteCota', maxCount: 1 },
+]);
 const uploads = multer({ storage }).fields([
   { name: 'Curriculum', maxCount: 1 },
   { name: 'ProvaAnterior', maxCount: 1 },
@@ -71,4 +80,4 @@ const uploadsPublicacoes = multer({ storage: storagePublicacoes }).fields([
   { name: 'VitaeXML', maxCount: 1 },
 ]);
 
-export { uploads, uploadsProposta, uploadsPublicacoes };
+export { uploads, uploadsProposta, uploadsPublicacoes, uploadsDados };

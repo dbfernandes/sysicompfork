@@ -21,7 +21,10 @@ import {
 } from '../candidato/candidato.types';
 
 import {
+  AUTODECLARACAO,
+  AUTODECLARACAO_VIDEO,
   CARTA_ACEITE_ORIENTADOR_FILE,
+  COMPROVANTE_COTA,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   Nacionalidade,
@@ -242,12 +245,36 @@ async function renderFormDados(
   req: AuthenticatedRequest,
   res: Response,
 ): Promise<void> {
+  const uid = req.session.uid;
+
   const currentLanguage = getLanguage(req);
+  const caminhoDiretorioUsuario = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'uploads',
+    'candidato',
+    uid.toString(),
+  );
+
   res.status(200).render(resolveView('formDados'), {
     ...locals,
     ...req.candidato,
     csrfToken: req.csrfToken(),
     currentLanguage,
+    hasComprovanteCota: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_COTA,
+    ),
+    hasAutodeclaracao: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO,
+    ),
+    hasVideoAutodeclaracao: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO_VIDEO,
+    ),
   });
 }
 
@@ -382,7 +409,6 @@ async function renderForms(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  console.log(req.session);
   switch (req.method) {
     case 'GET':
       try {
@@ -430,8 +456,66 @@ async function formDados(
   switch (req.method) {
     case 'PUT':
       try {
-        const { data } = req.body;
+        const data = req.body;
         const { uid: id } = req.session;
+
+        const uploadPath = path.join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'uploads',
+          'candidato',
+          id.toString(),
+        );
+
+        const comprovantePath = path.join(uploadPath, COMPROVANTE_COTA);
+        const autodeclaracaoPath = path.join(uploadPath, AUTODECLARACAO);
+        const autodeclaracaoVideoPath = path.join(
+          uploadPath,
+          AUTODECLARACAO_VIDEO,
+        );
+        const propostaPath = path.join(uploadPath, 'CartaAceiteOrientador.pdf');
+
+        // Verifica se req.files está no formato esperado
+        const files = (!Array.isArray(req.files) && req.files) || {};
+
+        // Flags indicando se arquivos foram enviados
+        const hasComprovante = !!files['ComprovanteCota'];
+        const hasAutodeclaracao = !!files['AutodeclaracaoCiencia'];
+        const hasVideo = !!files['VideoAutodeclaracao'];
+
+        // Remove arquivos antigos se um novo **não** foi enviado
+        try {
+          const shouldBeComprovante =
+            data.cotistaTipo === 'indigena' || data.cotistaTipo === 'pcd';
+          const shouldBeAutodeclaracao =
+            data.cotistaTipo === 'negro' || data.cotistaTipo === 'pardo';
+
+          if (
+            !shouldBeComprovante &&
+            !hasComprovante &&
+            fs.existsSync(comprovantePath)
+          ) {
+            fs.unlinkSync(comprovantePath);
+          }
+          if (
+            !shouldBeAutodeclaracao &&
+            !hasAutodeclaracao &&
+            fs.existsSync(autodeclaracaoPath)
+          ) {
+            fs.unlinkSync(autodeclaracaoPath);
+          }
+          if (
+            !shouldBeAutodeclaracao &&
+            !hasVideo &&
+            fs.existsSync(autodeclaracaoVideoPath)
+          ) {
+            fs.unlinkSync(autodeclaracaoVideoPath);
+          }
+        } catch (err) {
+          console.error('Erro ao apagar arquivos antigos:', err);
+        }
 
         const isBrasileira = data.nacionalidade === Nacionalidade.BRASILEIRA;
 
@@ -451,7 +535,6 @@ async function formDados(
           passaporte: isBrasileira ? null : data.passaporte,
           pais: isBrasileira ? null : data.pais,
         };
-        console.log(id, candidato);
         await candidatoService.update({
           id: id,
           data: candidato,
@@ -799,38 +882,6 @@ function downloadFile(req: Request, res: Response): void {
   });
 }
 
-function viewFile(req: Request, res: Response): void {
-  const userId = req.session.uid;
-  const nomeArquivo = req.params.name;
-
-  // Monta o caminho até o arquivo
-  const caminhoDoc = path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    'uploads',
-    'candidato',
-    userId,
-    nomeArquivo,
-  );
-
-  // Ajusta os headers para exibir inline no navegador
-  res.setHeader('Content-Type', 'application/pdf');
-  // Caso queira manter o nome do arquivo correto na aba do navegador:
-  res.setHeader('Content-Disposition', `inline; filename="${nomeArquivo}"`);
-
-  // Envia o arquivo como PDF
-  res.sendFile(caminhoDoc, (error) => {
-    if (error) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: 'Arquivo não encontrado' })
-        .end();
-    }
-  });
-}
-
 async function deleteAllPublications(
   req: Request,
   res: Response,
@@ -879,6 +930,5 @@ export default {
   recuperarSenha,
   trocarSenha,
   downloadFile,
-  viewFile,
   deleteAllPublications,
 };

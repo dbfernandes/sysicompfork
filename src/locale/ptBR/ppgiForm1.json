@@ -68,13 +68,16 @@
     "placeholderTipoCota": "Selecine a cota",
     "optionCota": {
       "indigena": "Indígena",
-      "negro": "Negro",
+      "negro": "Preto",
       "pardo": "Pardo",
       "pcd": "Pessoa com deficiência(PCD)"
     },
     "saude": "Possui algum tipo de problema de saúde física ou psiquiátrica",
     "condicao": "Qual",
-    "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)"
+    "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)",
+    "comprovanteCota": "Comprovante da cota (PDF)",
+    "autoDeclaracao": "Autodeclaração e Ciênca de vídeo (PDF)",
+    "autoDeclaracaoVideo": "Vídeo Autodeclaração em MP4 (Máx: 30MB)"
   },
   "validacao": {
     "nome": {

@@ -15,6 +15,14 @@ services:
     networks:
       - sysicomp-network
 
+  redis:
+    container_name: redis_sysicomp
+    image: redis:alpine
+    restart: unless-stopped
+    mem_limit: 255m
+    networks:
+      - sysicomp-network
+
   sysicomp:
     container_name: sysicomp
     mem_limit: 512m
@@ -28,10 +36,10 @@ services:
       - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-
     depends_on:
       - db
       - gotenberg
+      - redis
     env_file:
       - .env
     networks:
@@ -50,10 +58,10 @@ services:
       - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-
     depends_on:
       - db
       - gotenberg
+      - redis
     env_file:
       - .env
     networks:

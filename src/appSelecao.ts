@@ -17,9 +17,14 @@ import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from '@utils/logger';
 
+const redisClient = require('./redis');
+import { RedisStore } from 'connect-redis'; // ✅ Correto na v6+
+
 dotenv.config({
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 // To-Do: mover para um arquivo session.d.ts
 declare module 'express-session' {
@@ -58,10 +63,15 @@ app.use(cookieParser());
 
 app.use(
   session({
-    genid: () => uuid.v4(), // usamos UUIDs para gerar os SESSID
-    secret: 'eb9ac99d8a53fbfae6cae8e7a48c5b45',
-    resave: true,
-    saveUninitialized: true,
+    store: new RedisStore({ client: redisClient }),
+    secret: 'sua-chave-secreta',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 48 * 60 * 60 * 1000, // 2 horas
+      httpOnly: true,
+      secure: false, // true se usar HTTPS
+    },
   }),
 );
 

@@ -2,6 +2,7 @@ import express from 'express';
 import { languageMiddleware } from '../../middlewares/languageMiddlewarePPGI';
 import {
   uploads,
+  uploadsDados,
   uploadsProposta,
   uploadsPublicacoes,
 } from '../../middlewares/multer.selecaoppgi.config';
@@ -59,6 +60,7 @@ router.get('/formulario', selecaoppgiController.renderForms);
 router.put(
   '/formulario/1',
   validateEditInfoCandidate,
+  uploadsDados,
   selecaoppgiController.formDados,
 );
 router.put(

@@ -17,13 +17,15 @@ import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from './utils/logger';
 
+const redisClient = require('./redis');
+import { RedisStore } from 'connect-redis'; // ✅ Correto na v6+
 /* ───────── env ───────── */
 dotenv.config({
   // __dirname já existe em CJS; não precisamos de import.meta
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
 
-/* ───────── helpers (require síncrono) ───────── */
+const isProduction = process.env.NODE_ENV === 'production';
 
 /* ───────── Express + Handlebars ───────── */
 const app = express();
@@ -46,10 +48,15 @@ app.use(cookieParser());
 
 app.use(
   session({
-    genid: () => uuidv4(), // CORRIGIDO (wrapper)
-    secret: process.env.SESSION_SECRET ?? 'dev-secret',
+    store: new RedisStore({ client: redisClient }),
+    secret: 'sua-chave-secreta',
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 48 * 60 * 60 * 1000, // 2 horas
+      httpOnly: true,
+      secure: false, // true se usar HTTPS
+    },
   }),
 );
 
