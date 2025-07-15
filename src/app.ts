@@ -42,6 +42,7 @@ app.engine(
 
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 /* ───────── middlewares ───────── */
 app.use(cookieParser());
