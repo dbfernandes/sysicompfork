@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { languageMiddleware } from '../../middlewares/languageMiddlewarePPGI';
 import {
   uploads,
@@ -20,23 +20,37 @@ import { validateEditInfoCandidate } from '@/middlewares/validateEditInfoCandida
 
 const router = express.Router();
 
+export const isAlredyAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.session.uid || req.session.tipoUsuario)
+    return res.redirect('/formulario');
+  next();
+};
+
 router.use(languageMiddleware);
 
 //Rotas de recomendação
 router.use('/recomendacoes', routerCandidatoRecomendacao);
 
-router.get('/', selecaoppgiController.inicio);
+router.get('/', isAlredyAuth, selecaoppgiController.inicio);
 
 //Rotas de cadastro
-router.get('/cadastro', selecaoppgiController.signUp);
+router.get('/cadastro', isAlredyAuth, selecaoppgiController.signUp);
 router.post('/cadastro', validate(signUpSchema), selecaoppgiController.signUp);
 
 //Rotas de login
-router.get('/entrar', selecaoppgiController.signIn);
+router.get('/entrar', isAlredyAuth, selecaoppgiController.signIn);
 router.post('/entrar', validate(signInSchema), selecaoppgiController.signIn);
 
 //Rotas de recuperação de senha
-router.get('/recuperarSenha', selecaoppgiController.recuperarSenha);
+router.get(
+  '/recuperarSenha',
+  isAlredyAuth,
+  selecaoppgiController.recuperarSenha,
+);
 router.post(
   '/recuperarSenha',
   validate(recoverPasswordSchema),
@@ -44,7 +58,7 @@ router.post(
 );
 
 //Rotas de troca de senha
-router.get('/trocarSenha', selecaoppgiController.trocarSenha);
+router.get('/trocarSenha', isAlredyAuth, selecaoppgiController.trocarSenha);
 router.put(
   '/trocarSenha',
   validate(changePasswordSchema),

@@ -3,7 +3,7 @@
     "target": "ES2023",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "rootDir": "./src", // ✅ Mantém como src para compilar direto na raiz do build
+    "rootDir": "./src",
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
@@ -17,7 +17,7 @@
     "skipLibCheck": true,
     "noImplicitAny": false,
     "resolveJsonModule": true,
-    "baseUrl": ".", // ✅ Pode ser raiz para os paths funcionarem
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@resources/*": ["src/resources/*"],

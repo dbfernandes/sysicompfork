@@ -33,7 +33,6 @@ services:
     ports:
       - '${PORT:-3000}:${PORT:-3000}'
     volumes:
-      - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
     depends_on:
@@ -55,7 +54,6 @@ services:
     ports:
       - '${PORT_SELECAO:-4000}:${PORT_SELECAO:-4000}'
     volumes:
-      - /app/node_modules
       - ./logs:/app/logs
       - ./uploads:/app/uploads
     depends_on:

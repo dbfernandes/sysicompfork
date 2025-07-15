@@ -1,9 +1,9 @@
 // build/redis.js (ou src/redis.ts antes de compilar)
-const { createClient } = require('redis');
+import { createClient } from 'redis';
 
 const client = createClient({
   socket: {
-    host: process.env.REDIS_HOST || 'localhost',
+    host: process.env.REDIS_HOST || 'redis',
     port: Number(process.env.REDIS_PORT) || 6379,
   },
 });
@@ -18,4 +18,4 @@ client.on('error', (err) => {
 
 client.connect();
 
-module.exports = client;
+export default client;

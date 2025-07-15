@@ -17,7 +17,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from './utils/logger';
 
-const redisClient = require('./redis');
+import redisClient from './redisClient';
 import { RedisStore } from 'connect-redis'; // ✅ Correto na v6+
 /* ───────── env ───────── */
 dotenv.config({
@@ -26,7 +26,7 @@ dotenv.config({
 });
 
 const isProduction = process.env.NODE_ENV === 'production';
-
+const keySession = process.env.SESSION_SECRET || 'ufam98';
 /* ───────── Express + Handlebars ───────── */
 const app = express();
 
@@ -49,13 +49,13 @@ app.use(cookieParser());
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'sua-chave-secreta',
+    secret: keySession,
     resave: false,
     saveUninitialized: false,
     cookie: {
       maxAge: 48 * 60 * 60 * 1000, // 2 horas
       httpOnly: true,
-      secure: false, // true se usar HTTPS
+      secure: isProduction, // true se usar HTTPS
     },
   }),
 );
