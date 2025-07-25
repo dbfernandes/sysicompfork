@@ -49,7 +49,11 @@ app.use(cookieParser());
 
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    name: 'sysicomp_sessao', // 👈 nome diferente por app
+    store: new RedisStore({
+      client: redisClient,
+      prefix: 'sysicomp_sessao:', // prefixo diferente no Redis
+    }),
     secret: keySession,
     resave: false,
     saveUninitialized: false,

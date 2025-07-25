@@ -84,6 +84,7 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
   const deficiency = candidato.condicao
     ? `Sim - ${candidato.condicaoTipo}`
     : 'Não';
+  const isTae = candidato.tae ? 'Sim' : 'Não';
   const hasRecommendations = candidato.edital.cartaRecomendacao === '1';
   const recommendations = candidato.recomendacoes;
 
@@ -95,6 +96,7 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
     socialName,
     address,
     city,
+    isTae,
     // state,
     neighborhood,
     cep,

@@ -1,28 +1,20 @@
-import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
-import fs from 'fs/promises';
 import path from 'path';
+import fs from 'fs/promises';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
-import { AttachmentData } from '@sendgrid/helpers/classes/attachment';
-//
-// import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
-//
-// const mailerSend = new MailerSend({
-//   apiKey:
-//     'mlsn.859070a7681ac18fea3232a7cabad7a28e850d0d0cd3b4d11b36ccda4858d1fd',
-// });
-//
-//
-// const recipients = [new Recipient("recipient@email.com", "Recipient")];
-//
-// const emailParams = new EmailParams()
-//   .setFrom("info@domain.com")
-//   .setFromName("Your Name")
-//   .setRecipients(recipients)
-//   .setSubject("Subject")
-//   .setHtml("Greetings from the team, you got this message through MailerSend.")
-//   .setText("Greetings from the team, you got this message through MailerSend.").se
+import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
+interface Attachment {
+  filename: string;
+  content: string; // em base64
+  content_id?: string; // se quiser usar como imagem inline com <img src="cid:...">
+  type?: string; // tipo MIME, ex: "image/png", "application/pdf"
+  disposition?: string; // "inline" ou "attachment" (padrão)
+}
+dotenv.config();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function dataAtualExtensa() {
   const date = new Date();
@@ -31,51 +23,8 @@ function dataAtualExtensa() {
     timeZoneName: 'long',
   });
 }
-function dataAtualExtensaEng() {
-  const date = new Date();
-  return date.toLocaleString('en-US', {
-    timeZone: 'America/Manaus',
-    timeZoneName: 'long',
-  });
-}
-function formatarDataExtensa(date) {
-  if (!date) return '';
 
-  // Verifique se 'date' é uma instância de Date ou uma string válida
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-
-  if (isNaN(dateObj.getTime())) {
-    return '';
-  }
-
-  return dateObj.toLocaleDateString('pt-BR', {
-    timeZone: 'America/Manaus',
-    timeZoneName: 'long',
-  });
-}
-
-function dataAtualToLocaleString() {
-  return new Date().toLocaleString();
-}
-
-function dataToLocaleString(date) {
-  if (!date) return '';
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  if (isNaN(dateObj.getTime())) {
-    return '';
-  }
-  return dateObj.toLocaleString();
-}
-
-Handlebars.registerHelper('dataAtualExtensaEng', dataAtualExtensaEng);
 Handlebars.registerHelper('dataAtualExtensa', dataAtualExtensa);
-Handlebars.registerHelper('formatarDataExtensa', formatarDataExtensa);
-Handlebars.registerHelper('dataAtualToLocaleString', dataAtualToLocaleString);
-Handlebars.registerHelper('dataToLocaleString', dataToLocaleString);
-
-dotenv.config();
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 interface SendEmailProps {
   to: string;
@@ -83,24 +32,18 @@ interface SendEmailProps {
   name?: string;
   template: string;
   data?: object;
-  attachments?: AttachmentData[];
+  attachments?: Attachment[];
 }
 
-/**
- * Verifica se um arquivo existe de forma assíncrona.
- * @param {string} path - Caminho para o arquivo.
- * @returns {Promise<boolean>} - Retorna true se o arquivo existir, false caso contrário.
- */
 async function fileExists(path: string): Promise<boolean> {
   try {
     await fs.access(path);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
 
-// Função para compilar templates Handlebars
 async function compileTemplate(
   templateName: string,
   data: object,
@@ -108,38 +51,25 @@ async function compileTemplate(
   const templatePath = path.join(__dirname, 'views', `${templateName}.hbs`);
   const layoutPath = path.join(__dirname, 'views', 'layout.hbs');
   const templateSource = await fs.readFile(templatePath, 'utf8');
-
-  // Compilar o template específico do email
   const template = Handlebars.compile(templateSource);
   const body = template({ ...data });
 
-  // Compilar o layout com o corpo do email
   const layoutSource = await fs.readFile(layoutPath, 'utf8');
   const layout = Handlebars.compile(layoutSource);
   const currentYear = new Date().getFullYear();
 
   const finalHtml = layout({ ...data, body, year: currentYear.toString() });
-  // Renderizar com o layout
-  //   const finalHtml = layout({ ...data, body, subject: data['subject'] || '' });
-
-  // Converter HTML para texto puro
-  const finalText = convert(finalHtml, {
-    wordwrap: 130,
-  });
+  const finalText = convert(finalHtml, { wordwrap: 130 });
 
   return { html: finalHtml, text: finalText };
 }
 
-async function getAttachments() {
-  // Caminho para as imagens a serem incorporadas
+async function getAttachments(): Promise<Attachment[]> {
   const imagesFolder = path.resolve(process.cwd(), 'public', 'img');
-
-  // Lista de imagens a serem incorporadas
   const images = [
     { path: path.join(imagesFolder, 'logo-ufam.png'), cid: 'logo_ufam' },
   ];
 
-  // Verificar se todas as imagens existem
   for (const img of images) {
     if (!(await fileExists(img.path))) {
       console.error(`Imagem ${img.path} não encontrada`);
@@ -147,7 +77,6 @@ async function getAttachments() {
     }
   }
 
-  // Configurar os anexos com CID
   return await Promise.all(
     images.map(async (img) => ({
       filename: path.basename(img.path),
@@ -160,18 +89,50 @@ async function getAttachments() {
   );
 }
 
-/**
- *Envia um email com o template especificado
- * @param to Email destinatário
- * @param title Título do email
- * @param name Nome do remetente
- * @param template Nome do arquivo de template
- * @param data Dados para renderizar o template
- * @param attachments Anexos para o email
- * @returns Promise<void>
- * @throws Error se o template não for encontrado ou se houver erro ao enviar o email
- *
- */
+// 🚨 Fallback com Nodemailer
+async function sendEmailFallback({
+  to,
+  name = 'Syscomp IComp UFAM',
+  title,
+  html,
+  text,
+  attachments = [],
+}: {
+  to: string;
+  name: string;
+  title: string;
+  html: string;
+  text: string;
+  attachments: Attachment[];
+}) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST || 'smtp.mailtrap.io',
+    port: Number(process.env.MAIL_PORT) || 587,
+    secure: process.env.MAIL_SECURE === 'true', // se quiser usar porta 465 + SSL
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  const result = await transporter.sendMail({
+    from: `"${name}" <${process.env.MAIL_FROM}>`,
+    to,
+    subject: title,
+    text,
+    html,
+    attachments: attachments.map((att) => ({
+      filename: att.filename,
+      content: Buffer.from(att.content, 'base64'),
+      cid: att.content_id, // para imagens inline
+      contentType: att.type,
+      encoding: 'base64',
+      disposition: att.disposition || 'attachment',
+    })),
+  });
+  console.log('[Nodemailer] Email enviado com sucesso via fallback:', result);
+}
+
 export async function sendEmail({
   to,
   name = 'Syscomp IComp UFAM',
@@ -182,24 +143,37 @@ export async function sendEmail({
 }: SendEmailProps) {
   const { html, text } = await compileTemplate(template, data);
   const attachmentsImgs = await getAttachments();
-  const attachmentsSend = [];
-  attachmentsSend.push(...attachmentsImgs);
-  attachments && attachmentsSend.push(...attachments);
+  const attachmentsSend = [...attachmentsImgs, ...(attachments || [])];
 
-  try {
-    await sgMail.send({
+  console.log('Enviando emails com Resend...');
+  console.log(`Para: ${to}`);
+  console.log(process.env.RESEND_API_KEY);
+  const list = await resend.apiKeys.list();
+  console.log(list.data);
+  // const { data: res, error } = await resend.emails.send({
+  //   from: 'Acme <onboarding@resend.dev>',
+  //   to: [to],
+  //   subject: title,
+  //   html,
+  //   // text,
+  //   // attachments: attachmentsSend.map((att) => ({
+  //   //   filename: att.filename,
+  //   //   content: att.content,
+  //   // })),
+  // });
+  // console.log(res);
+  if (true) {
+    // console.error(
+    //   '[RESEND] Falha ao enviar, usando fallback com Nodemailer...',
+    //   error,
+    // );
+    await sendEmailFallback({
       to,
-      from: {
-        email: process.env.SENDGRID_EMAIL_SEND,
-        name,
-      },
-      subject: title,
-      text,
+      name,
+      title,
       html,
+      text,
       attachments: attachmentsSend,
     });
-  } catch (error) {
-    console.error('Error sending email: ', error);
-    throw error;
   }
 }

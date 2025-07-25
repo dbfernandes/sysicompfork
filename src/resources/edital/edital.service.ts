@@ -1,6 +1,8 @@
-import { Edital, Candidato } from '@prisma/client';
+import { Candidato, Edital } from '@prisma/client';
+import { DateTime } from 'luxon';
 import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
 import prisma from '@/client';
+
 /* eslint-disable camelcase */
 
 class EditalService {
@@ -19,28 +21,35 @@ class EditalService {
 
   async criarEdital(editalDados: CreateEditalDto): Promise<Edital> {
     try {
-      const edital = await prisma.edital.findFirst({
-        where: {
-          id: editalDados.id,
-        },
+      const editalExistente = await prisma.edital.findFirst({
+        where: { id: editalDados.id },
       });
 
-      if (edital) {
-        console.error('edital ja existe');
+      if (editalExistente) {
         throw new Error(`Edital de número ${editalDados.id} já existe`);
       }
 
-      return await prisma.edital.create({ data: editalDados });
+      const zona = 'America/Manaus'; // GMT-4
+      const editalComDatasConvertidas = {
+        ...editalDados,
+        dataInicio: DateTime.fromISO(editalDados.dataInicio, { zone: zona })
+          .startOf('day')
+          .toJSDate(),
+        dataFim: DateTime.fromISO(editalDados.dataFim, { zone: zona })
+          .endOf('day')
+          .toJSDate(),
+      };
+
+      return await prisma.edital.create({ data: editalComDatasConvertidas });
     } catch (error) {
       console.error('Erro ao criar edital:', error);
-      throw new Error(error);
+      throw new Error(error.message || 'Erro inesperado');
     }
   }
 
   async listEdital() {
     try {
-      const editais = await prisma.edital.findMany();
-      return editais;
+      return await prisma.edital.findMany();
     } catch (error) {
       console.error(`[ERROR] Listar Editais: ${error}`);
       throw new Error('Não foi possivel listar o edital');
@@ -48,16 +57,21 @@ class EditalService {
   }
 
   async listEditaisDisponiveis(): Promise<Edital[]> {
-    const dataToday = new Date();
-    const editais = await prisma.edital.findMany();
-    return editais.filter((edital) => {
-      const dateEnd = new Date(edital.dataFim);
-      const dataInicio = new Date(edital.dataInicio);
-      return (
-        dateEnd >= dataToday &&
-        edital.status === StatusEdital.ATIVO &&
-        dataInicio <= dataToday
-      );
+    const hoje = DateTime.now()
+      .setZone('America/Manaus')
+      .startOf('day')
+      .toJSDate();
+
+    return prisma.edital.findMany({
+      where: {
+        status: StatusEdital.ATIVO,
+        dataInicio: {
+          lte: hoje,
+        },
+        dataFim: {
+          gte: hoje,
+        },
+      },
     });
   }
 
@@ -92,12 +106,10 @@ class EditalService {
         throw new Error(`Não existe edital de número ${id}`);
       }
 
-      const updatedEdital = await prisma.edital.update({
+      return await prisma.edital.update({
         where: { id: id },
         data: { status: 0 },
       });
-
-      return updatedEdital;
     } catch (error) {
       console.error('Erro ao arquivar edital:', error);
       throw new Error(error);
@@ -149,13 +161,33 @@ class EditalService {
       if (!edital) {
         throw new Error('Edital não encontrado');
       }
+
+      const zona = 'America/Manaus';
+      const data: Partial<UpdateEditalDto> = { ...dados };
+
+      if (dados.dataInicio) {
+        data.dataInicio = DateTime.fromISO(dados.dataInicio.toString(), {
+          zone: zona,
+        })
+          .startOf('day')
+          .toJSDate();
+      }
+
+      if (dados.dataFim) {
+        data.dataFim = DateTime.fromISO(dados.dataFim.toString(), {
+          zone: zona,
+        })
+          .endOf('day')
+          .toJSDate();
+      }
+
       return await prisma.edital.update({
         where: { id: id_update },
-        data: dados,
+        data,
       });
     } catch (error) {
       console.error('Erro ao atualizar edital:', error);
-      throw new Error(error);
+      throw new Error(error.message || 'Erro inesperado ao atualizar edital');
     }
   }
 

@@ -211,6 +211,8 @@
             divError.text("{{__ 'ppgiRecPass.errorIncomplete'}}");
           } else if (res.status === 404) {
             divError.text("{{__ 'ppgiRecPass.errorNotFound'}}");
+          } else if (res.status === 422) {
+            divError.text("{{__ 'ppgiRecPass.errorIncomplete'}}");
           }
         }
       });

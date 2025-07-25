@@ -150,7 +150,7 @@ model CandidatoRecomendacao {
   id                   Int       @default(autoincrement())
   dataEnvio            DateTime  @default(now())
   dataResposta         DateTime?
-  prazo                DateTime  @db.Date
+  prazo                DateTime
   nome                 String?   @db.VarChar(100)
   email                String    @db.VarChar(100)
   token                String    @db.VarChar(50)
@@ -204,8 +204,8 @@ model Edital {
   cartaOrientador      String   @db.VarChar(255)
   cartaRecomendacao    String   @db.VarChar(255)
   documento            String   @db.VarChar(255)
-  dataInicio           DateTime @db.Date
-  dataFim              DateTime @db.Date
+  dataInicio           DateTime
+  dataFim              DateTime
   status               Int      @default(0) @db.SmallInt
   inscricoesIniciadas  Int      @default(0) @db.SmallInt
   inscricoesEncerradas Int      @default(0) @db.SmallInt

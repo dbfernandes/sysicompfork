@@ -102,8 +102,6 @@
           <input id="UFObj" type="hidden" value="{{uf}}" />
           <input id="CotistaObj" type="hidden" value="{{cotista}}" />
           <input id="CotistaTipoObj" type="hidden" value="{{cotistaTipo}}" />
-          <input id="CondicaoObj" type="hidden" value="{{condicao}}" />
-          <input id="CondicaoTipoObj" type="hidden" value="{{condicaoTipo}}" />
 
           <!-- Card 1: Identificação do Candidato -->
           <div class="card card-primary">
@@ -220,8 +218,7 @@
 
                 <!-- CEP -->
                 <div class="col-md-3 campo-candidato-cep form-group">
-                  <label for="candidato-cep" class="control-label">
-                    <span class="text-danger">*</span>
+                    <label for="candidato-cep" class="control-label">
                     <b>{{__ "ppgiForm1.identificacaoCandidato.cep"}}:</b>
                   </label>
                   <input
@@ -231,7 +228,6 @@
                     name="candidatoCep"
                     data-plugin-inputmask=""
                     value="{{cep}}"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                   />
                   <div class="invalid-feedback"></div>
                 </div>
@@ -239,7 +235,6 @@
                 <!-- UF -->
                 <div class="col-md-3 campo-candidato-uf form-group">
                   <label for="candidato-uf" class="control-label">
-                    <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.identificacaoCandidato.estado"}}:</b>
                   </label>
                   <select
@@ -441,34 +436,57 @@
             <div class="card-body">
               <div class="row">
                 <!-- Telefone Principal -->
+<!--                <div class="form-group col-md-6 col-sm-6">-->
+<!--                  <label for="candidato-telresidencial" class="control-label">-->
+<!--                    <span class="text-danger">*</span>-->
+<!--                    <b>{{__ "ppgiForm1.contato.telefonePrincipal"}}:</b>-->
+<!--                  </label>-->
+<!--                  <input-->
+<!--                    type="text"-->
+<!--                    id="candidato-telresidencial"-->
+<!--                    class="form-control telefone"-->
+<!--                    name="candidatoTelresidencial"-->
+<!--                    value="{{telefone}}"-->
+<!--                  />-->
+<!--                </div>-->
                 <div class="form-group col-md-6 col-sm-6">
-                  <label for="candidato-telresidencial" class="control-label">
+                  <label for="phone" class="control-label">
                     <span class="text-danger">*</span>
                     <b>{{__ "ppgiForm1.contato.telefonePrincipal"}}:</b>
                   </label>
                   <input
-                    type="text"
-                    id="candidato-telresidencial"
-                    class="form-control telefone"
-                    name="candidatoTelresidencial"
+                    type="tel"
+                    id="phone"
+                    class="form-control"
+                    name="phone"
                     value="{{telefone}}"
                   />
                 </div>
-
                 <!-- Telefone Alternativo -->
-                <div class="form-group col-sm-6">
-                  <label for="candidato-telcelular" class="control-label">
+<!--                <div class="form-group col-sm-6">-->
+<!--                  <label for="candidato-telcelular" class="control-label">-->
+<!--                    {{__ "ppgiForm1.contato.telefoneAlternativo"}}:-->
+<!--                  </label>-->
+<!--                  <input-->
+<!--                    type="text"-->
+<!--                    id="candidato-telcelular"-->
+<!--                    class="form-control telefone"-->
+<!--                    name="Candidato[telcelular]"-->
+<!--                    value="{{telefoneSecundario}}"-->
+<!--                  />-->
+<!--                </div>-->
+                <div class="form-group col-md-6 col-sm-6">
+                  <label for="phone2" class="control-label">
                     {{__ "ppgiForm1.contato.telefoneAlternativo"}}:
                   </label>
                   <input
-                    type="text"
-                    id="candidato-telcelular"
-                    class="form-control telefone"
-                    name="Candidato[telcelular]"
+                    type="tel"
+                    id="phone2"
+                    class="form-control"
+                    name="phone2"
                     value="{{telefoneSecundario}}"
                   />
                 </div>
-               
 
               </div><!-- /row -->
             </div>
@@ -829,10 +847,10 @@
 
               <!-- TAEs -->
               <div class="row">
-                <div class="col-md-5 form-group">
+                <div class="col-12 form-group">
                   <label for="candidato-tae">
                     <span class="text-danger">*</span>
-                    <b>Candidata-se para vaga destinadas aos TAEs?</b>
+                    <b>{{__ "ppgiForm1.inscricao.tae"}}:</b>
 
                   </label>
 <!--                  <span data-bs-toggle="tooltip" data-bs-title="Default tooltip" class="icon-info">-->
@@ -879,7 +897,8 @@
 
 </main>
 {{> ppgi/_masks }}
-<!--<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
 <script>
 	$(document).ready(() => {
 
@@ -975,17 +994,6 @@
 
 		$("#como-soube").val(comoSoubeValue);
 
-    const condicaoInicial = $("#candidato-deficiencia1").prop("checked");
-    $("#CondicaoObj").val(condicaoInicial);
-
-    $("#candidato-deficiencia1").change(function () {
-      $("#CondicaoObj").val($(this).prop("checked"));
-    });
-
-    $("#candidato-condicao").change(function () {
-      $("#CondicaoTipoObj").val($(this).val());
-    });
-
     {{#if dataNascimento}}
       const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
       const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
@@ -995,11 +1003,11 @@
       });
     {{/if}}
 
- /*   const input = document.querySelector("#phone");
+    const input = document.querySelector("#phone");
     const inputPhone =  window.intlTelInput(input, {
       initialCountry: "br",
       customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => "e.x. " + selectedCountryPlaceholder,
-      loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"),
+      loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js"),
       i18n: {
         "selectedCountryAriaLabel": "{{__ "intlTel.selectedCountryAriaLabel"}}",
         "noCountrySelected": "{{__ "intlTel.noCountrySelected"}}",
@@ -1015,7 +1023,34 @@
       countryOrder: ["br", "us", "gb"],
       strictMode: true,
       validationNumberTypes: null
-    });*/
+    });
+    input.addEventListener("countrychange", function () {
+      input.value = "";
+    });
+    const input2 = document.querySelector("#phone2");
+    const inputPhone2 =  window.intlTelInput(input2, {
+      initialCountry: "br",
+      customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => "e.x. " + selectedCountryPlaceholder,
+      loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js"),
+      i18n: {
+        "selectedCountryAriaLabel": "{{__ "intlTel.selectedCountryAriaLabel"}}",
+        "noCountrySelected": "{{__ "intlTel.noCountrySelected"}}",
+        "countryListAriaLabel": "{{__ "intlTel.countryListAriaLabel"}}",
+        "searchPlaceholder": "{{__ "intlTel.searchPlaceholder"}}",
+        "zeroSearchResults": "{{__ "intlTel.zeroSearchResults"}}",
+        "oneSearchResult": "{{__ "intlTel.oneSearchResult"}}",
+        "multipleSearchResults": "{{__ "intlTel.multipleSearchResults"}}",
+        "ac": "{{__ "intlTel.ac"}}",
+        "xk": "{{__ "intlTel.xk"}}",
+      },
+      separateDialCode: true,
+      countryOrder: ["br", "us", "gb"],
+      strictMode: true,
+      validationNumberTypes: null
+    });
+    input2.addEventListener("countrychange", function () {
+      input.value = "";
+    });
 
     const cotistaTipoValue = document.getElementById('CotistaTipoObj').value;
 
@@ -1256,8 +1291,8 @@
       data.append('cidade',  document.getElementById('candidato-cidade').value);
       data.append('bairro', document.getElementById('candidato-bairro').value);
       data.append('nacionalidade', getSelectedNacionalidade());
-      data.append('telefone', document.getElementById('candidato-telresidencial').value);
-      data.append('telefoneSecundario',document.getElementById('candidato-telcelular').value);
+      // data.append('telefone', document.getElementById('candidato-telresidencial').value);
+      // data.append('telefoneSecundario',document.getElementById('candidato-telcelular').value);
       data.append('comoSoube', getSelectedComoSoube());
       data.append('cursoDesejado', getSelectedCurso());
       data.append('regime', getSelectedRegime());
@@ -1270,6 +1305,31 @@
       data.append('cpf', document.getElementById('cpf').value);
       data.append('pais', document.getElementById('pais').value);
       data.append('passaporte', document.getElementById('passaporte').value);
+      if (inputPhone && inputPhone.isValidNumber()) {
+        const countryData = inputPhone.getSelectedCountryData();
+
+        let phoneToSave;
+        if (countryData.iso2 === 'br') {
+          phoneToSave = inputPhone.getNumber(2);
+        } else {
+          phoneToSave = inputPhone.getNumber();
+        }
+        data.append('telefone', phoneToSave);
+      }
+      if (inputPhone2 && inputPhone2.isValidNumber()) {
+        const countryData = inputPhone2.getSelectedCountryData();
+
+        let phoneToSave;
+        if (countryData.iso2 === 'br') {
+          phoneToSave = inputPhone2.getNumber(2);
+        } else {
+          phoneToSave = inputPhone2.getNumber();
+        }
+        data.append('telefoneSecundario', phoneToSave);
+      } else {
+        data.append('telefoneSecundario', '');
+      }
+
       const autodeclaracaoInput =  document.getElementById('comprovante-autodeclaracao');
       if (autodeclaracaoInput?.files.length) {
         data.append('AutodeclaracaoCiencia', autodeclaracaoInput.files[0]);
@@ -1288,6 +1348,7 @@
     }
 
     Inputmask("99999-999").mask("#candidato-cep");
+
     $('#candidato-cep').on('blur', pesquisarCep);
 
     $("#btn_logout").click(function () {
@@ -1306,6 +1367,16 @@
       });
     });
 
+    $.validator.addMethod('validPhoneNumber', function (value, element) {
+      console.log("Passou aqui")
+      return inputPhone && inputPhone.isValidNumber();
+    }, 'Número de telefone inválido');
+
+    $.validator.addMethod('validPhoneNumber2', function (value, element) {
+      if (!value) return true; // se estiver vazio, não valida (considera válido)
+      return inputPhone2 && inputPhone2.isValidNumber();
+    }, 'Número de telefone inválido');
+
     $.validator.addMethod("fileSize", function(value, element, param) {
       if (element.files.length === 0) {
         return true;
@@ -1314,9 +1385,7 @@
     }, "O arquivo deve ter no máximo {0} bytes.");
 
     $.validator.addMethod("dateBR", (value, _) => /^(\d{2}\/\d{2}\/\d{4})$/.test(value), "Informe uma data válida no formato DD/MM/YYYY");
-    $.validator.addMethod("validPhoneNumber", function (value, element) {
-      return phoneNumber.isValidNumber();
-    }, "Por favor, insira um número de telefone válido.");
+
     $.validator.addMethod("cpf", (value, element) => {
       value = value.replace(/[.\-]/g, "");
       if (value.length !== 11 || /^(\d)\1+$/.test(value)) {
@@ -1381,12 +1450,7 @@
           },
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
-        candidatoCep: {
-          required: true
-        },
-        candidatoUf: {
-          required: true
-        },
+
         candidatoEndereco: {
           required: true
         },
@@ -1399,9 +1463,9 @@
         candidatoNacionalidade: {
           required: true
         },
-        candidatoTelresidencial: {
-          required: true
-        },
+        // candidatoTelresidencial: {
+        //   required: true
+        // },
         comoSoube: {
           required: true
         },
@@ -1434,6 +1498,9 @@
         phone: {
           validPhoneNumber: true,
           required: true,
+        },
+        phone2: {
+          validPhoneNumber2: true,
         }
       },
       messages: {
@@ -1464,7 +1531,9 @@
         candidatoCidade: "{{__ "ppgiForm1.validacao.candidatoCidade.required"}}",
         candidatoBairro: "{{__ "ppgiForm1.validacao.candidatoBairro.required"}}",
         candidatoNacionalidade: "{{__ "ppgiForm1.validacao.candidatoNacionalidade.required"}}",
-        candidatoTelresidencial: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
+        //candidatoTelresidencial: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
+        phone: "{{__ "ppgiForm1.validacao.candidatoTelresidencial.required"}}",
+
         comoSoube: "{{__ "ppgiForm1.validacao.comoSoube.required"}}",
         candidatoCurso: "{{__ "ppgiForm1.validacao.candidatoCurso.required"}}",
         candidatoRegime: "{{__ "ppgiForm1.validacao.candidatoRegime.required"}}",
@@ -1480,14 +1549,22 @@
       errorElement: 'span',
       errorPlacement: function (error, element) {
         error.addClass('invalid-feedback');
-
         if (element.is(":radio")) {
           error.insertAfter(element.closest('.radio-group'));
+          return
+        }
+        // Verifica se é o campo do telefone internacionalizado
+        if (element.attr("id") === "phone" || element.attr("id") === "phone2") {
+          const container = element.closest('.iti');
+          if (container.length) {
+            container.after(error);
+          } else {
+            element.after(error); // fallback
+          }
+          return;
         }
 
-        else {
-          element.closest('div').append(error);
-        }
+        element.closest('div').append(error);
       },
       highlight: function (element, errorClass, validClass) {
 
@@ -1597,7 +1674,16 @@
       const cepInput = $('#candidato-cep')[0];
       const invalidFeedback = document.querySelector('.campo-candidato-cep .invalid-feedback');
 
+      const enderecoInput = document.getElementById('candidato-endereco');
+      const cidadeInput = document.getElementById('candidato-cidade');
+      const bairroInput = document.getElementById('candidato-bairro');
+      const ufInput = document.getElementById('candidato-uf');
+
       const cepValido = /^[0-9]{5}-[0-9]{3}$/.test(cep);
+
+
+
+      if (cep.length === 0) return;
 
       if (!cepValido) {
         cepInput.classList.add('is-invalid');
@@ -1607,28 +1693,40 @@
 
       cepInput.classList.remove('is-invalid');
 
-      const url = `https://viacep.com.br/ws/${cep}/json/`;
+      // Desabilita campos de endereço durante a requisição
+      enderecoInput.disabled = true;
+      cidadeInput.disabled = true;
+      bairroInput.disabled = true;
+      ufInput.disabled = true;
 
-      fetch(url)
-        .then(response => {
-          if (!response.ok ) {
-            throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.erro) {
-            throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
-          }
-          document.getElementById('candidato-endereco').value = data.logradouro;
-          document.getElementById('candidato-cidade').value = data.localidade;
-          document.getElementById('candidato-bairro').value = data.bairro;
-          document.getElementById('candidato-uf').value = data.uf;
-        })
-        .catch(error => {
-          cepInput.classList.add('is-invalid');
-          invalidFeedback.textContent = error.message;
-        });
+    const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+    fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.erro) {
+        throw new Error("{{__ "ppgiForm1.cepNotFound"}}");
+      }
+      enderecoInput.value = data.logradouro;
+      cidadeInput.value = data.localidade;
+      bairroInput.value = data.bairro;
+      ufInput.value = data.uf;
+
+    })
+    .catch(error => {
+      cepInput.classList.add('is-invalid');
+      invalidFeedback.textContent = error.message;
+    }).finally(()=>{
+      enderecoInput.disabled = false;
+      cidadeInput.disabled = false;
+      bairroInput.disabled = false;
+      ufInput.disabled = false;
+    });
     }
   });
 </script>

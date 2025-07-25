@@ -202,7 +202,7 @@ function logout(req: Request, res: Response): void {
           return;
         }
       });
-      res.redirect('/selecaoppgi/entrar');
+      res.redirect('/entrar');
       break;
     default:
       res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
@@ -414,15 +414,25 @@ async function renderForms(
       try {
         const { uid } = req.session;
         if (!uid) {
-          res.redirect('/selecaoppgi/entrar');
+          res.redirect('/entrar');
           break;
         }
 
         const candidato = await candidatoService.findByIdComEdital(uid);
 
         if (!candidato) {
-          res.redirect('/selecaoppgi/entrar');
-          break;
+          req.session.destroy((err) => {
+            if (err) {
+              console.error('Error ao fazer logout', err);
+              res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .send('Erro ao sair');
+              return;
+            }
+          });
+          res.redirect('/entrar');
+
+          return;
         }
         const renderFunction = posicaoEditalMap[candidato.posicaoEdital];
 
@@ -475,7 +485,6 @@ async function formDados(
           uploadPath,
           AUTODECLARACAO_VIDEO,
         );
-        const propostaPath = path.join(uploadPath, 'CartaAceiteOrientador.pdf');
 
         // Verifica se req.files está no formato esperado
         const files = (!Array.isArray(req.files) && req.files) || {};
@@ -533,7 +542,7 @@ async function formDados(
           tae: data.tae === 'true',
           cpf: isBrasileira ? data.cpf : null,
           passaporte: isBrasileira ? null : data.passaporte,
-          pais: isBrasileira ? null : data.pais,
+          pais: isBrasileira ? 'Brasil' : data.pais,
         };
         await candidatoService.update({
           id: id,

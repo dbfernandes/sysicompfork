@@ -3,7 +3,7 @@
 {{ setTitle title=(concat "Alterar Edital do PPGI " edital.editalCodigo) }}
 
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid ml-2">
@@ -55,7 +55,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <span style="color: #FF0000; ">*</span>
-                                            <label> Número do Edital:</label>
+                                            <label for="num_edital"> Número do Edital:</label>
                                             <input type="text" class="form-control edital" id="num_edital"
                                                 name="num_edital" value={{edital.id}} disabled>
                                             <div class="hint-block">
@@ -69,7 +69,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <span style="color: #FF0000; ">*</span>
-                                            <label for="URL">URL do Edital</label>
+                                            <label for="documento">URL do Edital</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">
@@ -88,8 +88,8 @@
                                     {{!-- Datas de Início e Fim das Inscrições --}}
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <font color="#FF0000">*</font>
-                                            <label>Datas de Início e Fim das Inscrições:</label>
+                                            <span style="color: #FF0000; ">*</span>
+                                            <label for="datas">Datas de Início e Fim das Inscrições:</label>
 
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -108,8 +108,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><b>Configuração da Inscrição e Vagas</b></h3>
@@ -121,7 +119,7 @@
                                         <div class="form-group">
                                             <div class="form-row">
                                                 <label for="carta_recomendacao">
-                                                    <font color="#FF0000">*</font> Carta de Recomendação?
+                                                    <span style="color: #FF0000; ">*</span> Carta de Recomendação?
                                                 </label>
                                             </div>
                                             <input type="checkbox" name="carta_recomendacao" {{#ifEqual
@@ -154,7 +152,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <div class="form-row">
-                                                <label for="mestrado" for="mestrado">
+                                                <label  for="mestrado">
                                                     <span style="color: #FF0000; ">*</span>Mestrado?
                                                 </label>
                                             </div>
@@ -183,8 +181,8 @@
                                     <div class="col-sm-3">
                                       <label for="vaga_taes_mestrado"> <span style="color: #FF0000; ">* </span>Vagas para TAEs:</label>
                                       <input type="number" class="form-control " name="vaga_taes_mestrado"
-                                           placeholder="Vagas Taes para Mestrado" required
-                                           id="vaga_taes_mestrado" value="0" min="0">
+                                           placeholder="Vagas Taes para Mestrado" required value="{{edital.taesMestrado}}"
+                                           id="vaga_taes_mestrado" min="0">
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +224,7 @@
                                      <label for="vaga_taes_doutorado"> <span style="color: #FF0000; ">* </span>Vagas para TAEs:</label>
                                       <input type="number" class="form-control " name="vaga_taes_doutorado"
                                            placeholder="Vagas Taes para Doutorado" required
-                                           id="vaga_taes_doutorado" value="0" min="0">
+                                           id="vaga_taes_doutorado" value="{{edital.taesDoutorado}}" min="0">
                                     </div>
                                 </div>
                             </div>
@@ -241,15 +239,16 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </form>
             </div>
         </div>
-
     </section>
 </div>
 {{> ppgi/_masks }}
+{{> footer}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+
 <script>
 
 
@@ -454,8 +453,13 @@
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
-        const data_inicio = new Date($("#datas").data('daterangepicker').startDate.format('YYYY-MM-DD')).toISOString();
-        const data_fim = new Date($("#datas").data('daterangepicker').endDate.format('YYYY-MM-DD')).toISOString();
+
+        const start = $("#datas").data('daterangepicker').startDate;
+        const end = $("#datas").data('daterangepicker').endDate;
+
+        // Convertemos para GMT-4 (America/Manaus), com hora 00:00
+        const data_inicio = moment.tz(start.format('YYYY-MM-DD') + ' 00:00', 'America/Manaus').toISOString();
+        const data_fim = moment.tz(end.format('YYYY-MM-DD') + ' 23:59', 'America/Manaus').toISOString();
 
         return {
             vaga_regular_mestrado,
@@ -536,4 +540,3 @@
 
 </script>
 
-{{> footer}}

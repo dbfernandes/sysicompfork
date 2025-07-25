@@ -11,15 +11,15 @@
   "condicaoTipo": "Tipo de Condição",
   "bolsista": "Bolsista",
   "identificacaoCandidato": {
-    "title": "Identificação do Candidato",
+    "title": "Identificação do candidato",
     "nome": "Nome",
     "nomePlaceholder": "Insira seu nome",
-    "dataNascimento": "Data de Nascimento",
+    "dataNascimento": "Data de nascimento",
     "sexo": "Gênero",
     "notInform": "Prefiro não informar",
     "masculino": "Masculino",
     "feminino": "Feminino",
-    "nomeSocial": "Nome Social",
+    "nomeSocial": "Nome social",
     "cep": "CEP",
     "endereco": "Endereço",
     "cidade": "Cidade",
@@ -36,12 +36,12 @@
     }
   },
   "contato": {
-    "title": "Telefones para Contato",
-    "telefonePrincipal": "Telefone Principal",
-    "telefoneAlternativo": "Telefone Alternativo"
+    "title": "Telefones para contato",
+    "telefonePrincipal": "Telefone principal",
+    "telefoneAlternativo": "Telefone alternativo"
   },
   "edital": {
-    "title": "Como soube do Edital?",
+    "title": "Como soube do edital?",
     "label": " Como você soube do edital de seleção?",
     "placeholder": "Selecione como soube",
     "options": {
@@ -56,11 +56,11 @@
     }
   },
   "inscricao": {
-    "title": "Dados da Inscrição",
-    "cursoDesejado": "Curso Desejado",
+    "title": "Dados da inscrição",
+    "cursoDesejado": "Curso desejado",
     "mestrado": "Mestrado",
     "doutorado": "Doutorado",
-    "regime": "Regime de Dedicação: (Obs: alunos candidatos a bolsa devem optar pelo regime integral):",
+    "regime": "Regime de dedicação (alunos candidatos a bolsa devem optar pelo regime integral):",
     "integral": "Integral",
     "parcial": "Parcial",
     "cotista": "Cotista",
@@ -75,6 +75,7 @@
     "saude": "Possui algum tipo de problema de saúde física ou psiquiátrica",
     "condicao": "Qual",
     "bolsa": "Solicita Bolsa de Estudo? (Obs: somente poderão solicitar bolsa alunos sem vínculo empregatício e que não possuam outro tipo de bolsa)",
+    "tae": "Candidata-se para vaga destinadas aos TAEs?",
     "comprovanteCota": "Comprovante da cota (PDF)",
     "autoDeclaracao": "Autodeclaração e Ciênca de vídeo (PDF)",
     "autoDeclaracaoVideo": "Vídeo Autodeclaração em MP4 (Máx: 30MB)"

@@ -1,15 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import candidatoService from '@resources/candidato/candidato.service';
 
-function isNoticeExpired(expirationDate: string | Date): boolean {
-  const now = new Date();
-  const deadline = new Date(expirationDate);
+import { DateTime } from 'luxon';
 
-  // Optional: compare only dates, ignoring time
-  now.setHours(0, 0, 0, 0);
-  deadline.setHours(0, 0, 0, 0);
-
-  return now > deadline;
+export function isNoticeExpired(dataFim: Date | string): boolean {
+  const agora = DateTime.now().setZone('America/Manaus');
+  const fim = DateTime.fromJSDate(new Date(dataFim)).setZone('America/Manaus');
+  return agora > fim.endOf('day'); // permite até o fim do dia
 }
 
 export const validateEditInfoCandidate = async (

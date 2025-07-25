@@ -1,10 +1,7 @@
-// public/js/components/countdown.js
 function initializeCountdown(selector) {
   const countdownElements = $(selector);
 
-  if (countdownElements.length === 0) {
-    return; // Não faz nada se não encontrar elementos
-  }
+  if (countdownElements.length === 0) return;
 
   countdownElements.each(function () {
     const countdownElement = $(this);
@@ -12,16 +9,20 @@ function initializeCountdown(selector) {
 
     if (!deadline) {
       countdownElement.text('Data não definida');
-      return; // Pula para o próximo elemento
+      return;
     }
 
     const countdownInterval = setInterval(function () {
       const finalDate = new Date(deadline);
       const now = new Date().getTime();
       const distance = finalDate - now;
+
       if (distance < 0) {
         clearInterval(countdownInterval);
-        countdownElement.text('Prazo Esgotado');
+        countdownElement
+          .removeClass('text-success text-warning')
+          .addClass('text-danger')
+          .text('Prazo Esgotado');
         return;
       }
 
@@ -37,6 +38,17 @@ function initializeCountdown(selector) {
       result += ('0' + hours).slice(-2) + 'h ';
       result += ('0' + minutes).slice(-2) + 'm ';
       result += ('0' + seconds).slice(-2) + 's';
+
+      countdownElement.removeClass('text-success text-warning text-danger');
+
+      if (days > 3) {
+        countdownElement.addClass('text-success');
+      } else if (days > 1) {
+        countdownElement.addClass('text-warning');
+      } else {
+        // Último dia (<= 1) já é vermelho
+        countdownElement.addClass('text-danger');
+      }
 
       countdownElement.text(result.trim());
     }, 1000);
