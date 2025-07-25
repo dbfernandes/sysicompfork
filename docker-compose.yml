@@ -43,6 +43,11 @@ services:
       - .env
     networks:
       - sysicomp-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   selecao_ppgi:
     container_name: selecao_ppgi
@@ -64,6 +69,11 @@ services:
       - .env
     networks:
       - sysicomp-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   gotenberg:
     container_name: gotenberg
