@@ -189,25 +189,29 @@
 
     document.getElementById("curso").innerText = curso;
 
+    /* Fuso horário oficial da UFAM  */
+    const TZ = "America/Manaus";
 
-    const dataInicio = "{{edital.dataInicio}}";
-    const dataFim = "{{edital.dataFim}}";
+    /* Datas do edital (strings vindas do template) → Moment   */
+    const dataInicio = moment.tz("{{edital.dataInicio}}", TZ).startOf("day");
+    const dataFim    = moment.tz("{{edital.dataFim}}",    TZ).endOf("day");
 
-    const dataAtual = moment.tz('America/Manaus').format('YYYY-MM-DD');
+    /* Data de hoje em Manaus                                    */
+    const hoje = moment.tz(TZ).startOf("day");
 
+    /* Cálculo do rótulo */
     let labelStatus;
-    if (status == '1') {
-        if (dataInicio > dataAtual) {
-            labelStatus = 'Não Iniciado';
-        }
-        else if (dataFim < dataAtual) {
-            labelStatus = 'Encerrado';
-        }
-        else {
-            labelStatus = 'Aberto';
-        }
+
+    if (status === "1") {                // 1 = edital ativo
+      if (hoje.isBefore(dataInicio)) {
+        labelStatus = "Não Iniciado";    // inscrições ainda não começaram
+      } else if (hoje.isAfter(dataFim)) {
+        labelStatus = "Encerrado";       // inscrições já terminaram
+      } else {
+        labelStatus = "Aberto";          // dentro do período
+      }
     } else {
-        labelStatus = 'Suspenso';
+      labelStatus = "Suspenso";          // status diferente de 1
     }
 
     document.getElementById("labelStatus").innerText = labelStatus;

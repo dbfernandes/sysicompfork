@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { languageMiddleware } from '../../middlewares/languageMiddlewarePPGI';
+import { languageMiddleware } from '@/middlewares/languageMiddlewarePPGI';
 import {
   uploads,
   uploadsDados,
   uploadsProposta,
   uploadsPublicacoes,
-} from '../../middlewares/multer.selecaoppgi.config';
-import { isAuthSelecao } from '../../middlewares/usuarioAutenticacaoMiddleware';
+} from '@/middlewares/multer.selecaoppgi.config';
+import { isAuthSelecao } from '@/middlewares/usuarioAutenticacaoMiddleware';
 import validate from '../../middlewares/validate';
 import selecaoppgiController from './selecao.ppgi.controller';
 import routerCandidatoRecomendacao from '../candidatoRecomendacao/candidato.recomendacao.routes';
@@ -16,7 +16,10 @@ import {
   signInSchema,
   signUpSchema,
 } from '../candidato/candidato.schema';
-import { validateEditInfoCandidate } from '@/middlewares/validateEditInfoCandidate';
+import {
+  validateCandidateEditInfo,
+  validateCandidateGetInfo,
+} from '@/middlewares/validateEditInfoCandidate';
 
 const router = express.Router();
 
@@ -69,23 +72,27 @@ router.put(
 //Rotas que necessitam de autenticação
 router.use(isAuthSelecao);
 
-router.get('/formulario', selecaoppgiController.renderForms);
+router.get(
+  '/formulario',
+  validateCandidateGetInfo,
+  selecaoppgiController.renderForms,
+);
 
 router.put(
   '/formulario/1',
-  validateEditInfoCandidate,
+  validateCandidateEditInfo,
   uploadsDados,
   selecaoppgiController.formDados,
 );
 router.put(
   '/formulario/2',
-  validateEditInfoCandidate,
+  validateCandidateEditInfo,
   uploads,
   selecaoppgiController.formHistorico,
 );
 router.put(
   '/formulario/3',
-  validateEditInfoCandidate,
+  validateCandidateEditInfo,
   uploadsProposta,
   selecaoppgiController.formProposta,
 );
@@ -97,12 +104,16 @@ router.get(
 );
 router.post(
   '/formulario/publicacoes',
+  validateCandidateEditInfo,
+
   uploads,
   selecaoppgiController.uploadsPublicacoes,
 );
 
 router.delete(
   '/formulario/publicacoes',
+  validateCandidateEditInfo,
+
   selecaoppgiController.deleteAllPublications,
 );
 

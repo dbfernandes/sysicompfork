@@ -53,7 +53,7 @@ const locals = {
 };
 
 const localsBegin = {
-  layout: 'begin',
+  layout: 'beginSelecao',
 };
 
 function getLanguage(req: Request) {
@@ -396,9 +396,22 @@ async function renderFormConfirmacao(
       caminhoDiretorioUsuario,
       PROPOSTA_FILE,
     ),
-    hasComprovante: verificarArquivoDiretorio(
+
+    hasComprovantePagamento: verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       COMPROVANTE_FILE,
+    ),
+    hasAutodeclaracao: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO,
+    ),
+    hasVideoAutodeclaracao: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      AUTODECLARACAO_VIDEO,
+    ),
+    hasComprovanteCota: verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      COMPROVANTE_COTA,
     ),
     currentLanguage,
   });
@@ -456,6 +469,13 @@ async function renderForms(
       res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
       break;
   }
+}
+function parseNullable(value: string): string | null {
+  return !value || value === 'null' || value === 'undefined' ? null : value;
+}
+
+function toBoolean(value: unknown): boolean {
+  return value === 'true' || value === true;
 }
 
 async function formDados(
@@ -534,12 +554,18 @@ async function formDados(
 
         const candidato = {
           ...data,
+          cotistaTipo: parseNullable(data.cotistaTipo),
+          telefoneSecundario: parseNullable(data.telefoneSecundario),
+          nomeSocial: parseNullable(data.nomeSocial),
+          condicaoTipo: parseNullable(data.condicaoTipo),
+          cep: parseNullable(data.cep),
+          uf: parseNullable(data.uf),
           dataNascimento,
           posicaoEdital: 2,
-          condicao: data.condicao === 'true',
-          bolsista: data.bolsista === 'true',
-          cotista: data.cotista === 'true',
-          tae: data.tae === 'true',
+          condicao: toBoolean(data.condicao),
+          bolsista: toBoolean(data.bolsista),
+          cotista: toBoolean(data.cotista),
+          tae: toBoolean(data.tae),
           cpf: isBrasileira ? data.cpf : null,
           passaporte: isBrasileira ? null : data.passaporte,
           pais: isBrasileira ? 'Brasil' : data.pais,
@@ -611,8 +637,8 @@ async function formHistorico(
           cursoPos: body.cursoPos,
           instituicaoPos: body.instituicaoPos,
           anoEgressoPos: body.anoEgressoPos ? Number(body.anoEgressoPos) : null,
+          tipoPos: parseNullable(body.tipoPos),
           posicaoEdital: 3,
-          tipoPos: body.tipoPos,
         };
         const id = uid;
         await candidatoService.update({
@@ -643,31 +669,57 @@ async function formProposta(
       try {
         const { uid } = req.session;
         const { body } = req;
-        const hasProposta =
-          req.files &&
-          !Array.isArray(req.files) &&
-          req.files['CartaAceiteOrientador'] !== undefined;
-        if (!hasProposta) {
+        const uploadPath = path.join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'uploads',
+          'candidato',
+          uid.toString(),
+        );
+
+        const comprovantePath = path.join(uploadPath, COMPROVANTE_FILE);
+        const propostaPath = path.join(uploadPath, PROPOSTA_FILE);
+        const cartaAceitePath = path.join(
+          uploadPath,
+          CARTA_ACEITE_ORIENTADOR_FILE,
+        );
+
+        // Verifica se req.files está no formato esperado
+        const files = (!Array.isArray(req.files) && req.files) || {};
+
+        // Flags indicando se arquivos foram enviados
+        const hasComprovante = !!files['ComprovantePagamento'];
+        const hasCartaAceite = !!files['CartaAceiteOrientador'];
+        const hasProposta = !!files['PropostaTrabalho'];
+        // Remove arquivos antigos se um novo **não** foi enviado
+        try {
           if (
-            fs.existsSync(
-              path.join(
-                'uploads',
-                'candidatos',
-                uid,
-                'CartaAceiteOrientador.pdf',
-              ),
-            )
+            toBoolean(body.isExcludeComprovante) &&
+            !hasComprovante &&
+            fs.existsSync(comprovantePath)
           ) {
-            fs.unlinkSync(
-              path.join(
-                'uploads',
-                'candidatos',
-                uid.toString(),
-                'CartaAceiteOrientador.pdf',
-              ),
-            );
+            fs.unlinkSync(comprovantePath);
           }
+          if (
+            toBoolean(body.isExcludeCartaAceite) &&
+            !hasCartaAceite &&
+            fs.existsSync(cartaAceitePath)
+          ) {
+            fs.unlinkSync(cartaAceitePath);
+          }
+          if (
+            toBoolean(body.isExcludeProposta) &&
+            !hasProposta &&
+            fs.existsSync(propostaPath)
+          ) {
+            fs.unlinkSync(propostaPath);
+          }
+        } catch (err) {
+          console.error('Erro ao apagar arquivos antigos:', err);
         }
+
         if (
           body.recomendacaoNome &&
           body.recomendacaoEmail &&
@@ -749,12 +801,29 @@ async function uploadsPublicacoes(
     case 'POST':
       try {
         const uid = req.session.uid;
+
+        // 1. Converte publicações recebidas (ou usa array vazio)
+        const publicacoesPayload = req.body.publicacoes
+          ? JSON.parse(req.body.publicacoes)
+          : [];
+
+        // 2. Salva (ou atualiza) as publicações do candidato
         await candidatoPublicacaoService.processPublicacoes({
-          publicacoes: JSON.parse(req.body.publicacoes),
+          publicacoes: publicacoesPayload,
           uid,
         });
 
-        res.status(StatusCodes.OK).send('Dados salvos com sucesso.');
+        // 3. Busca listas atualizadas
+        const { periodicos, conferencias } =
+          await candidatoPublicacaoService.getPublicacoes(uid);
+
+        // 4. Renderiza o trecho HTML e retorna
+        res.render('partials/ppgi/publicacoes', {
+          layout: false, // retorna só o fragmento
+          periodicos,
+          conferencias,
+          hasVitaeXML: true, // exibe botões “trocar/deletar” etc.
+        });
       } catch (err) {
         next(err);
       }

@@ -41,10 +41,14 @@
     "atividade": "Activity/Position",
     "periodo": "Period",
     "adicionarExperiencia": "Add Experience",
-    "excluirExperiencia": "Delete Experience"
+    "excluirExperiencia": "Delete Experience",
+    "obs": "Note: fill in all three fields (Institution, Activity, and Period) for the experience to be saved."
+
   },
   "validation": {
     "required": "This field is required.",
-    "conjuntoPreenchido": "Fill the set (Course:, Institution:, Year of Graduation:) and Type: together or leave all blank."
+    "conjuntoPreenchido": "Fill the set (Course:, Institution:, Year of Graduation:) and Type: together or leave all blank.",
+    "conjuntoExperiencia": "Fill the set (Institution:, Activity/Position:, Period:) together or leave all blank."
   }
+
 }

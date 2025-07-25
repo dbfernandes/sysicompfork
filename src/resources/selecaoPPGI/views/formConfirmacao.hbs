@@ -149,6 +149,55 @@
             {{__ "ppgiForm4.button.payment"}}
           </a>
         </div>
+        <!--COMPROVANTE COTA-->
+        {{#if hasComprovanteCota}}
+          <div class="container-button">
+            <img
+                  src="/public/img/autoDeclaracao.png"
+                  alt="{{__ 'ppgiForm4.alt_payment'}}"
+                  width="50"
+            />
+            <a
+                  class="link-file"
+                  href="/download/arquivo/ComprovanteCota.pdf"
+            >
+              {{__ "ppgiForm4.button.quotaReceipt"}}
+            </a>
+          </div>
+        {{/if}}
+
+        <!--COMPROVANTE AUTODECLARAÇÃO-->
+        {{#if hasAutodeclaracao}}
+          <div class="container-button">
+            <img
+              src="/public/img/autoDeclaracao.png"
+              alt="{{__ 'ppgiForm4.alt_payment'}}"
+              width="50"
+            />
+            <a
+                  class="link-file"
+                  href="/download/arquivo/AutodeclaracaoCiencia.pdf"
+                >
+              {{__ "ppgiForm4.button.selfDeclaration"}}
+            </a>
+          </div>
+        {{/if}}
+        <!--COMPROVANTE VIDEO-->
+        {{#if hasVideoAutodeclaracao}}
+          <div class="container-button">
+            <img
+                    src="/public/img/video.png"
+                    alt="{{__ 'ppgiForm4.alt_payment'}}"
+                    width="50"
+            />
+            <a
+                    class="link-file"
+                    href="/download/arquivo/VideoAutodeclaracao.mp4"
+            >
+              {{__ "ppgiForm4.button.videoSelfDeclaration"}}
+            </a>
+          </div>
+        {{/if}}
       </div>
     </main>
 

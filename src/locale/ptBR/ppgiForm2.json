@@ -41,10 +41,12 @@
     "atividade": "Atividade/Cargo",
     "periodo": "Período",
     "adicionarExperiencia": "Adicionar Experiência",
-    "excluirExperiencia": "Excluir Experiência"
+    "excluirExperiencia": "Excluir Experiência",
+    "obs": "Observação: preencha todos os três campos (Instituição, Atividade e Período) para que a experiência seja salva."
   },
   "validation": {
     "required": "Este campo é obrigatório.",
-    "conjuntoPreenchido": "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos em branco."
+    "conjuntoPreenchido": "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos em branco.",
+    "conjuntoExperiencia": "Preencha o conjunto (Instituição:, Atividade/Cargo:, Período:) juntos ou deixe todos em branco."
   }
 }

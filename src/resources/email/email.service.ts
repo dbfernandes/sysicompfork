@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs/promises';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
-import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
 interface Attachment {
   filename: string;
@@ -13,8 +12,6 @@ interface Attachment {
   disposition?: string; // "inline" ou "attachment" (padrão)
 }
 dotenv.config();
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 function dataAtualExtensa() {
   const date = new Date();
@@ -145,11 +142,7 @@ export async function sendEmail({
   const attachmentsImgs = await getAttachments();
   const attachmentsSend = [...attachmentsImgs, ...(attachments || [])];
 
-  console.log('Enviando emails com Resend...');
-  console.log(`Para: ${to}`);
-  console.log(process.env.RESEND_API_KEY);
-  const list = await resend.apiKeys.list();
-  console.log(list.data);
+  // const list = await resend.apiKeys.list();
   // const { data: res, error } = await resend.emails.send({
   //   from: 'Acme <onboarding@resend.dev>',
   //   to: [to],
@@ -161,7 +154,6 @@ export async function sendEmail({
   //   //   content: att.content,
   //   // })),
   // });
-  // console.log(res);
   if (true) {
     // console.error(
     //   '[RESEND] Falha ao enviar, usando fallback com Nodemailer...',

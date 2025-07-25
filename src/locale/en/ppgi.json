@@ -31,7 +31,10 @@
     "btnDelete": "Delete",
     "btnDownload": "Download",
     "btnChange": "Change",
-    "btnDeletePublications": "Delete Publications"
+    "btnDeletePublications": "Delete Publications",
+    "onlyXml": "Only XML",
+    "onlyPdf": "Only PDF",
+    "onlyMp4": "Only MP4"
   },
   "validation": {
     "fileSize": "The file size must be less than 30MB",

@@ -15,6 +15,7 @@
   <!-- Cabeçalho / Header -->
   <header>
     <div class="container d-flex justify-content-between align-items-center px-3">
+
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
@@ -301,121 +302,10 @@
                   </label>
                 </div>
               </div>
-              {{#if (and hasVitaeXML (eq periodicos.length 0) (eq conferencias.length 0))}}
-                <p class="text-gray">
-                  <i class="fa fa-info-circle" aria-hidden="true"></i> {{__ "ppgiForm2.curriculumVittae.emptyPublications"}}
-                </p>
-              {{/if}}
-
-              <!-- Exibição de publicações/Periódicos e Conferências -->
-              {{#if periodicos.length}}
-                <button
-                  class="btn btn-primary mb-2"
-                  type="button"
-                  data-toggle="collapse"
-                  data-target="#multiCollapseExample1"
-                  aria-expanded="false"
-                  aria-controls="multiCollapseExample1">
-                  {{__ "ppgiForm2.curriculumVittae.periodicos"}}
-                  <span class="badge badge-light">{{periodicos.length}}</span>
-                </button>
-
-                <div class="collapse multi-collapse" id="multiCollapseExample1">
-                  {{#each periodicos}}
-                    <div class="card collapsed-card">
-                      <div class="card-header">
-                        <div
-                          style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                          "
-                        >
-                          <a
-                            data-card-widget="collapse"
-                            style="color: #000"
-                            class="card-title"
-                          >
-                            {{ano}}: {{titulo}}
-                          </a>
-                          <div class="card-tools">
-                            <!-- Botão collapse -->
-                            <button
-                              type="button"
-                              class="btn btn-tool"
-                              data-card-widget="collapse"
-                              data-card-toggle="collapse"
-                            >
-                              <i class="fas fa-plus"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <li>
-                          <strong>{{titulo}}. </strong>{{autores}};
-                          <i>{{local}}, {{ano}}. </i>{{natureza}}.
-                        </li>
-                      </div>
-                    </div>
-                  {{/each}}
-                </div>
-                <br/>
-              {{/if}}
-              {{#if conferencias.length}}
-                <button
-                  class="btn btn-primary mb-2"
-                  type="button"
-                  data-toggle="collapse"
-                  data-target="#multiCollapseExample2"
-                  aria-expanded="false"
-                  aria-controls="multiCollapseExample2"
-                >
-                  {{__ "ppgiForm2.curriculumVittae.conferencias"}}
-                  <span class="badge badge-light">{{conferencias.length}}</span>
-                </button>
-
-                <div class="collapse multi-collapse" id="multiCollapseExample2">
-                  {{#each conferencias}}
-                    <div class="card collapsed-card">
-                      <div class="card-header">
-                        <div
-                          style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                          "
-                        >
-                          <a
-                            data-card-widget="collapse"
-                            style="color: #000"
-                            class="card-title"
-                          >
-                            {{ano}}: {{titulo}}
-                          </a>
-                          <div class="card-tools">
-                            <button
-                              type="button"
-                              class="btn btn-tool"
-                              data-card-widget="collapse"
-                              data-card-toggle="collapse"
-                            >
-                              <i class="fas fa-plus"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <li>
-                          <strong>{{titulo}}. </strong>{{autores}};
-                          <i>{{local}}, {{ano}}. </i>{{natureza}}.
-                        </li>
-                      </div>
-                    </div>
-                  {{/each}}
-                </div>
-              {{/if}}
-
+              <div id="publicacoes-container">
+                {{!-- conteúdo inicial gerado pelo servidor (igual ao trecho antigo) --}}
+                {{> ppgi/publicacoes}}
+              </div>
             </div>
           </div><!-- /card Currículo Vitae -->
 
@@ -475,6 +365,9 @@
             </div>
 
             <div class="card-body d-flex flex-column w-100">
+              <div class="col-12 form-group">
+                  <b>{{__ "ppgiForm2.experienciaAcademica.obs"}}</b>
+              </div>
               <div id="experiencia-container">
                 {{#each experienciasAcademicas}}
                 <blockquote class=" experiencia-row quote-secondary m-0 mb-3 pr-0" style="border-radius: 4px;">
@@ -749,22 +642,7 @@
       });
     });
 
-    $('#btn-change-vittae').click(function () {
-      changeFile('#vittaexml');
-    });
 
-    $('#btn-delete-vittae').click(function () {
-      $.ajax({
-        url: `${basePath}/formulario/publicacoes?_csrf={{csrfToken}}`,
-        type: "DELETE",
-        success: function (data) {
-          window.location.href = "/selecaoppgi/formulario";
-        },
-        error: function (data) {
-          console.error(data);
-        }
-      });
-    });
 
     $("#btn_logout").click(function () {
       $.ajax({
@@ -824,6 +702,9 @@
     $("#limparSelecao").on("click", function (e) {
       e.preventDefault()
       $("#candidato-curso-tipo input[type='radio']").prop("checked", false);
+      $('#candidato-curso-pos').val('');
+      $('#candidato-instituicao-pos').val('');
+      $('#candidato-ano-pos').val('');
     });
     $("#candidato-ano-pos").change(changeYear);
     $("#candidato-ano").change(changeYear);
@@ -836,65 +717,48 @@
       $(this).find(".collapse").slideUp(20000);
     });
 
-    function mostrarConferencias() {
-      document.getElementById("periodicos").style.display = "none";
-      document.getElementById("conferencias").style.display = "block";
-    }
+    $('#btn-change-vittae').click(function () {
+      changeFile('#vittaexml');
+    });
 
-    function reqAjax(data) {
-      const btnSubmit = $("#btn-submit");
-      btnSubmit.attr("disabled", true);
-      btnSubmit.find("span").prop("hidden", false);
-
-      const formData = new FormData($('#candidato-formulario2')[0]);
-      formData.append('csrfToken', $("#csrfToken").val());
-      formData.append('email', $("#email").val());
-      formData.append('id', $("#idCandidato").val());
-
-      const csrfToken = $("#csrfToken").val();
+    $('#btn-delete-vittae').click(function () {
       $.ajax({
-        url: `${basePath}/formulario/2?_csrf=${csrfToken}`,
-        type: "PUT",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-          window.location.href = `${basePath}/formulario`;
-          window.location.reload();
+        url: `${basePath}/formulario/publicacoes?_csrf={{csrfToken}}`,
+        type: "DELETE",
+        success: function (data /*, textStatus, jqXHR */) {
+          /* 1. Substitui o bloco de publicações pelo HTML parcial vazio/atualizado */
+          $("#publicacoes-container").html("");
+          $('[data-card-widget="collapse"]').CardWidget();   // reativa ícones (caso venha lista)
+
+          /* 2. Referências fixas ao input, botões e container do currículo */
+          const $fileInput    = $("#vittaexml");     // input[type=file]
+          const $buttonsGroup = $("#buttons-vittae"); // div de botões
+          const $inputGroup   = $("#input-vittae");   // div do custom-file
+
+          /* 3. Limpa e reseta UI */
+          $fileInput.val("");                                      // limpa valor do input
+          $fileInput.next(".custom-file-label")                    // texto do label
+            .text('{{__ "ppgi.form.chooseFile"}}');
+          $buttonsGroup.hide();    // esconde botões (download / trocar / deletar)
+          $inputGroup.show();      // mostra novamente o input para escolher arquivo
+
         },
-        error: function (xhr, status, error) {
-          console.error(xhr);
-          btnSubmit.attr("disabled", false);
-          btnSubmit.find("span").prop("hidden", true);
+        error: function (data) {
+          $(document).Toasts('create', {
+            icon: 'success',
+            class: "bg-danger",
+            autohide: true,
+            delay: 10000,
+            title: 'Ocorreu um problema!',
+            body: 'As informações não foram deletadas.'
+          })
         }
       });
-    }
-
-    function getExperienciasData() {
-      const experiencias = document.getElementsByClassName("experiencia-row");
-      const experienciasData = [];
-
-      for (const experiencia of experiencias) {
-        const instituicao = experiencia.querySelector("#candidato-experiencia-instituicao").value;
-        const atividade = experiencia.querySelector("#candidato-experiencia-atividade").value;
-        const periodo = experiencia.querySelector("#candidato-experiencia-periodo").value;
-
-        const experienciaData = {
-          instituicao: instituicao,
-          atividade: atividade,
-          periodo: periodo
-        };
-        experienciasData.push(experienciaData);
-      }
-
-      return experienciasData;
-    }
-
+    });
 
     $('#vittaexml').change(function(data){
       const file = data.target.files[0];
       if (file && file.type === "text/xml") {
-        const VitaeXML = document.querySelector("VitaeXML")
         const formData = new FormData($('#candidato-formulario2')[0]);
 
         if (data.target.files.length) {
@@ -915,8 +779,41 @@
         url: `${basePath}/formulario/publicacoes?_csrf={{csrfToken}}`,
         type: "POST",
         data: formData,
-        success: function (data) {
-          window.location.href = `${basePath}/formulario`;
+        success: function (htmlParcial /*, textStatus, jqXHR */) {
+          const vitaeInput = document.getElementById("vittaexml");
+          vitaeInput.removeAttribute("disabled");
+          /* 1. Atualiza o bloco de publicações e reativa os cards */
+          $("#publicacoes-container").html(htmlParcial);
+          $('[data-card-widget="collapse"]').CardWidget();   // AdminLTE
+
+          /* 2. Referências fixas dos elementos do currículo XML */
+          const $fileInput        = $("#vittaexml");          // input[type=file]
+          const $inputGroup       = $("#input-vittae");       // div com o custom-file
+          const $buttonsGroup     = $("#buttons-vittae");     // div com download / trocar / deletar
+          const $fileNameDisplay  = $("#name-vittae");        // <figcaption>
+          const $downloadLink     = $("#url-vittae");         // <a download>
+
+          /* 3. Se o arquivo não passou pela validação do jQuery-Validate */
+          if (!$fileInput.valid()) {
+            $fileInput.next(".custom-file-label")
+              .text('{{__ "ppgi.form.chooseFile"}}');
+            return;
+          }
+
+          /* 4. Pega o arquivo selecionado e prepara UI */
+          const file = $fileInput[0].files[0];
+          if (!file) return;     // segurança
+
+          const fileName = file.name;
+          const blobURL  = URL.createObjectURL(file);
+
+          // esconde o input, mostra o grupo de botões
+          $inputGroup.hide();
+          $buttonsGroup.css("display", "flex");
+
+          // atualiza nome e link de download
+          $fileNameDisplay.html(`<b>${fileName}</b>`);
+          $downloadLink.attr({ href: blobURL, download: fileName });
         },
         error: function (err) {
           $(document).Toasts('create', {
@@ -928,14 +825,13 @@
             body: 'As informações não poderam ser salvas.'
           })
           const vitaeInput = document.getElementById("vittaexml");
-          vitaeInput.setAttribute("disabled", false);
+          vitaeInput.removeAttribute("disabled");
         },
         contentType: false,
         processData: false,
       })
-
-
     }
+
 
     $.validator.addMethod("conjuntoPreenchido", function (value, element) {
       const cursoPos = $("#candidato-curso-pos").val();
@@ -952,9 +848,9 @@
       }
 
       const anoAtual = new Date().getFullYear();
-      const anoMinimo = 1850;
+      const anoMinimo = 1900;
       const anoInserido = parseInt(value);
-      return anoInserido <= anoAtual && anoInserido >= anoMinimo;
+      return anoInserido <= anoAtual + 4 && anoInserido >= anoMinimo;
     }, "Ano inválido");
 
     $.validator.addMethod("fileSize", function(value, element, param) {
@@ -1020,8 +916,7 @@
         "anoEgressoPos": {
           conjuntoPreenchido: true,
           anoPosValido: true
-        },
-
+        }
       },
       messages: {
         "cursoGraduacao": {
@@ -1048,18 +943,35 @@
         },
         "ProvaAnterior": {
           fileSize: "{{__ "ppgi.validation.fileSize"}}"
-        }
+        },
       },
 
       submitHandler: (form, e) => {
         e.preventDefault()
-        const VitaeXML = $("#vittaexml").val()
+
+        const btnSubmit = $("#btn-submit");
+        btnSubmit.attr("disabled", true);
+        btnSubmit.find("span").prop("hidden", false);
+
         const formData = new FormData($('#candidato-formulario2')[0]);
-        if (VitaeXML === "" || VitaeXML === null || VitaeXML === undefined) {
-          reqAjax(formData)
-        } else {
-          getCompleteData(formData, reqAjax)
-        }
+        formData.append('csrfToken', $("#csrfToken").val());
+
+        const csrfToken = $("#csrfToken").val();
+        $.ajax({
+          url: `${basePath}/formulario/2?_csrf=${csrfToken}`,
+          type: "PUT",
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            window.location.href = `${basePath}/formulario`;
+            window.location.reload();
+          },
+          error: function (xhr, status, error) {
+            btnSubmit.attr("disabled", false);
+            btnSubmit.find("span").prop("hidden", true);
+          }
+        });
       }
     });
   });
@@ -1118,6 +1030,5 @@
       }
     });
   });
-
 
 </script>

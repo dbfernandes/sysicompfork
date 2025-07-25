@@ -1,131 +1,80 @@
-<html lang='ptBR'>
-  <head>
-    <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <title>{{#if title}}{{title}}{{else}}Formulário de Inscrição no Processo
-        Seletivo para Mestrado/Doutorado - PPGI/UFAM{{/if}}</title>
-    <link href='/public/img/favicon 2.ico' rel='icon' type='image/png' />
-    <link rel="stylesheet" href="/public/css/headerInfoEdital.css">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    {{#if title}}
+      {{title}}
+    {{else}}
+      Formulário de Inscrição no Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM
+    {{/if}}
+  </title>
 
-    <link rel='stylesheet' href='/public/css/stylesPPGI.css' />
-    <link rel='stylesheet' href='/public/css/styles.css' />
+  <!-- Ícone -->
+  <link rel="icon" type="image/png" href="/public/img/favicon 2.ico" />
 
-    <!-- Google Font: Source Sans Pro -->
-    <link
-      rel='stylesheet'
-      href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback'
-    />
-    <!-- Font Awesome Icons -->
-    <link
-      rel='stylesheet'
-      href='/script-adminlte/plugins/fontawesome-free/css/all.min.css'
-    />
-    <!-- IonIcons -->
-    <link
-      rel='stylesheet'
-      href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
-    />
-    <!-- Theme style -->
-    <link rel='stylesheet' href='/script-adminlte/dist/css/adminlte.min.css' />
+  <!-- Estilos principais -->
+  <link rel="stylesheet" href="/public/css/headerInfoEdital.css" />
+  <link rel="stylesheet" href="/public/css/stylesPPGI.css" />
+  <link rel="stylesheet" href="/public/css/styles.css" />
 
-    <link
-      rel='stylesheet'
-      href='/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css'
-    />
+  <!-- Fontes e ícones -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/fontawesome-free/css/all.min.css" />
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 
-    <!-- Plugin do Date Range -->
-    <link
-      rel='stylesheet'
-      href='/script-adminlte/plugins/daterangepicker/daterangepicker.css'
-    />
+  <!-- AdminLTE e plugins -->
+  <link rel="stylesheet" href="/script-adminlte/dist/css/adminlte.min.css" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/select2/css/select2.min.css" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
 
-    <!-- Toasts -->
-    <link
-      rel='stylesheet'
-      type='text/css'
-      href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css'
-    />
-    <script
-      src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'
-    ></script>
+  <!-- Toastr -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+</head>
 
-    <!-- XML2JSON -->
-    <script type='text/javascript' src='/public/js/xml2json.js'></script>
+<body>
 
-    <!-- Lattes Loader -->
-    <script type='text/javascript' src='/public/js/lattesExtractor.js'></script>
-  </head>
+<!-- Scripts base (ordem importa!) -->
+<script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
-  <body>
-    <!-- jQuery -->
-    <script src='/script-adminlte/plugins/jquery/jquery.min.js'></script>
+<!-- Moment.js e localização -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
 
-    <!-- jquery-validation -->
-    <script
-      src='/script-adminlte/plugins/jquery-validation/jquery.validate.min.js'
-    ></script>
-    <script
-      src='/script-adminlte/plugins/jquery-validation/additional-methods.min.js'
-    ></script>
+<!-- Bootstrap e plugins -->
+<script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
+<script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
+<script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script src="/script-adminlte/dist/js/adminlte.min.js"></script>
 
-    <!-- Bootstrap 4 -->
-    <script
-      src='/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js'
-    ></script>
-    <!-- Bootstrap Switch -->
-    <script
-      src='/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js'
-    ></script>
-    <!-- AdminLTE App -->
-    <script src='/script-adminlte/dist/js/adminlte.min.js'></script>
+<!-- Scripts utilitários da aplicação -->
+<script src="/public/js/xml2json.js"></script>
+<script src="/public/js/lattesExtractor.js"></script>
+<script src="/public/js/countdown.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <link
-      rel='stylesheet'
-      href='/script-adminlte/plugins/select2/css/select2.min.css'
-    />
-    <script
-      src='/script-adminlte/plugins/select2/js/select2.full.min.js'
-    ></script>
-    <link
-      rel='stylesheet'
-      href='/script-adminlte//plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css'
-    />
+<!-- Inicialização -->
+<script>
+  $(document).ready(function () {
+    bsCustomFileInput.init();
+    $('.select2').select2();
 
-    <!-- InputMask -->
-    <script src='/script-adminlte/plugins/moment/moment.min.js'></script>
-    <script
-      src='/script-adminlte/plugins/inputmask/jquery.inputmask.min.js'
-    ></script>
+    // Mensagem para desenvolvedores curiosos
+    console.log('%cBem-vindo ao console do Seleção PPGI!', 'color: green; font-size: 16px; font-weight: bold;');
+    console.log('%cAplicação construída com carinho pela equipe do IComp/UFAM ❤️', 'color: #999; font-size: 14px;');
+  });
+</script>
+{{{body}}}
 
-    <script
-      src='/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js'
-    ></script>
-    <script
-      src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.js'
-    ></script>
-    <!-- Fuso horario Data -->
-
-    <script
-      src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'
-    ></script>
-    <script
-      src='https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js'
-    ></script>
-
-    <!-- Plugin do Date Range -->
-    <script
-      src='/script-adminlte/plugins/daterangepicker/daterangepicker.js'
-    ></script>
-    <script
-      src='/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js'
-    ></script>
-
-    <script>
-      $(function () { bsCustomFileInput.init(); });
-    </script>
-
-    {{{body}}}
-    <script src="/public/js/countdown.js"></script>
-
-  </body>
+</body>
 </html>

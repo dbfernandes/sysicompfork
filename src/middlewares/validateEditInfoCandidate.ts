@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import candidatoService from '@resources/candidato/candidato.service';
 
 import { DateTime } from 'luxon';
+import { StatusCodes } from 'http-status-codes';
 
 export function isNoticeExpired(dataFim: Date | string): boolean {
   const agora = DateTime.now().setZone('America/Manaus');
@@ -9,7 +10,7 @@ export function isNoticeExpired(dataFim: Date | string): boolean {
   return agora > fim.endOf('day'); // permite até o fim do dia
 }
 
-export const validateEditInfoCandidate = async (
+export const validateCandidateEditInfo = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -21,9 +22,41 @@ export const validateEditInfoCandidate = async (
     const candidateAlreadyFinished = !!candidate.finishedAt;
     const editaAlreadyFinished = isNoticeExpired(candidate.edital.dataFim);
     if (candidateAlreadyFinished || editaAlreadyFinished) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Error ao fazer logout', err);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Erro ao sair');
+          return;
+        }
+      });
       return res.redirect('/');
     }
     return next();
   }
-  return res.redirect('/');
+  return next();
+};
+
+export const validateCandidateGetInfo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.session.uid) {
+    const id = req.session.uid;
+    const candidate = await candidatoService.findByIdComEdital(id);
+
+    const editaAlreadyFinished = isNoticeExpired(candidate.edital.dataFim);
+    if (editaAlreadyFinished) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Error ao fazer logout', err);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Erro ao sair');
+          return;
+        }
+      });
+      return res.redirect('/');
+    }
+    return next();
+  }
+  return next();
 };

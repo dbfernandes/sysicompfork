@@ -447,10 +447,11 @@
             <div class="row">
               <div class="col-12">
                 <label for="ComprovantePagamento" class="control-label">
-                  <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
+<!--                  <span class="text-danger">*</span>-->
+                  <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
                 </label>
               </div>
-              <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasPropostaTrabalho)}}none{{else}}flex{{/if}}; gap: 16px"  >
+              <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasComprovante)}}none{{else}}flex{{/if}}; gap: 16px"  >
                 <div class="container-buttons-icon ">
                   <img src="/public/img/pdf-logo.png" alt="pdf" width="50" height="50" />
                   <figcaption id="name-pagamento" style="word-break: break-word;"><b>ComprovantePagamento.pdf</b></figcaption>
@@ -467,7 +468,7 @@
                      {{__ "ppgi.form.btnDelete"}}</button>
                 </div>
               </div>
-              <div id="container-pagamento" class="col-md-5 custom-file form-group custom-file-container mb-4" {{#if hasPropostaTrabalho}}style="display: none;"{{/if}}>
+              <div id="container-pagamento" class="col-md-5 custom-file form-group custom-file-container mb-4" {{#if hasComprovante}}style="display: none;"{{/if}}>
                 <input
                   type="file"
                   class="custom-file-input"
@@ -534,6 +535,7 @@
 <script>
   $(document).ready(function () {
     const basePath = "{{basePath}}";
+
 
     const inputFilesConfig = {
       CartaAceiteOrientador: {
@@ -613,6 +615,13 @@
       btnSubmit.attr("disabled", true);
       btnSubmit.find("span").prop("hidden", false);
       formData.append('idLinhaPesquisa', linhaDePesquisaId);
+      const isExcludeProposta = !inputFilesConfig.PropostaTrabalho.hasFileSave;
+      const isExcludeCartaAceite = !inputFilesConfig.CartaAceiteOrientador.hasFileSave;
+      const isExcludeComprovante = !inputFilesConfig.ComprovantePagamento.hasFileSave;
+      formData.append('isExcludeProposta', isExcludeProposta);
+      formData.append('isExcludeCartaAceite', isExcludeCartaAceite);
+      formData.append('isExcludeComprovante', isExcludeComprovante);
+
 
       $.ajax({
         headers: {
@@ -808,14 +817,16 @@
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "ComprovantePagamento": {
-          required: function() {
-            return !inputFilesConfig.ComprovantePagamento.hasFileSave;
-          },
+          required:false,
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "CartaAceiteOrientador": {
           required: function() {
-            {{#if (eq cursoDesejado 'Doutorado')}}return !inputFilesConfig.CartaAceiteOrientador.hasFileSave{{else}}return false{{/if}}
+            {{#if (eq cursoDesejado 'Doutorado')}}
+              return !inputFilesConfig.CartaAceiteOrientador.hasFileSave
+                {{else}}
+              return false
+            {{/if}}
           },
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
@@ -846,7 +857,6 @@
         "CartaAceiteOrientador": {
           required: "{{__ "ppgiForm3.validation.CartaAceiteOrientador.required"}}",
           fileSize: "{{__ "ppgi.validation.fileSize"}}"
-
         },
       },
       submitHandler: (form, e) => {

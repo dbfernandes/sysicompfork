@@ -1,0 +1,114 @@
+{{#if (and hasVitaeXML (eq periodicos.length 0) (eq conferencias.length 0))}}
+  <p class="text-gray">
+    <i class="fa fa-info-circle" aria-hidden="true"></i> {{__ "ppgiForm2.curriculumVittae.emptyPublications"}}
+  </p>
+{{/if}}
+
+<!-- Exibição de publicações/Periódicos e Conferências -->
+{{#if periodicos.length}}
+  <button
+    class="btn btn-primary mb-2"
+    type="button"
+    data-toggle="collapse"
+    data-target="#multiCollapseExample1"
+    aria-expanded="false"
+    aria-controls="multiCollapseExample1">
+    {{__ "ppgiForm2.curriculumVittae.periodicos"}}
+    <span class="badge badge-light">{{periodicos.length}}</span>
+  </button>
+
+  <div class="collapse multi-collapse" id="multiCollapseExample1">
+    {{#each periodicos}}
+      <div class="card collapsed-card">
+        <div class="card-header">
+          <div
+            style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                          "
+          >
+            <a
+              data-card-widget="collapse"
+              style="color: #000"
+              class="card-title"
+            >
+              {{ano}}: {{titulo}}
+            </a>
+            <div class="card-tools">
+              <!-- Botão collapse -->
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                data-card-toggle="collapse"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <li>
+            <strong>{{titulo}}. </strong>{{autores}};
+            <i>{{local}}, {{ano}}. </i>{{natureza}}.
+          </li>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <br/>
+{{/if}}
+{{#if conferencias.length}}
+  <button
+    class="btn btn-primary mb-2"
+    type="button"
+    data-toggle="collapse"
+    data-target="#multiCollapseExample2"
+    aria-expanded="false"
+    aria-controls="multiCollapseExample2"
+  >
+    {{__ "ppgiForm2.curriculumVittae.conferencias"}}
+    <span class="badge badge-light">{{conferencias.length}}</span>
+  </button>
+
+  <div class="collapse multi-collapse" id="multiCollapseExample2">
+    {{#each conferencias}}
+      <div class="card collapsed-card">
+        <div class="card-header">
+          <div
+            style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                          "
+          >
+            <a
+              data-card-widget="collapse"
+              style="color: #000"
+              class="card-title"
+            >
+              {{ano}}: {{titulo}}
+            </a>
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                data-card-toggle="collapse"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <li>
+            <strong>{{titulo}}. </strong>{{autores}};
+            <i>{{local}}, {{ano}}. </i>{{natureza}}.
+          </li>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{/if}}
