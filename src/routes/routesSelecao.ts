@@ -5,8 +5,6 @@ import selecaoppgiRouter from '../resources/selecaoPPGI/selecao.ppgi.routes';
 const router = express.Router();
 
 router.get('/changeLanguage/:lang', (req, res) => {
-  console.log('Teste');
-
   const supportedLanguages = ['en', 'ptBR']; // Exemplo de idiomas suportados
   const lang = req.params.lang;
   if (supportedLanguages.includes(lang)) {

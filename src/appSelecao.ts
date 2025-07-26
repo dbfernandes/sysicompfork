@@ -70,6 +70,8 @@ app.use(
     store: new RedisStore({
       client: redisClient,
       prefix: 'selecao_sysicomp_sessao:', // prefixo diferente no Redis
+      ttl: 60 * 60 * 24 * 3, // 48h
+      disableTouch: true, // Desabilita o touch para não atualizar o TTL automaticamente
     }),
     secret: keySession,
     resave: false,

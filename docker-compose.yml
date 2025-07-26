@@ -19,7 +19,8 @@ services:
     container_name: redis_sysicomp
     image: redis:alpine
     restart: unless-stopped
-    mem_limit: 255m
+    mem_limit: 512m
+    command: redis-server --maxmemory 450mb --maxmemory-policy allkeys-lru
     networks:
       - sysicomp-network
 

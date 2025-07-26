@@ -28,8 +28,8 @@ export const isAlredyAuth = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (req.session.uid || req.session.tipoUsuario)
-    return res.redirect('/formulario');
+  const { session } = req;
+  if (session.uid || session.tipoUsuario) return res.redirect('/formulario');
   next();
 };
 

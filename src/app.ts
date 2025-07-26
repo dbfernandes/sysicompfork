@@ -53,6 +53,7 @@ app.use(
     store: new RedisStore({
       client: redisClient,
       prefix: 'sysicomp_sessao:', // prefixo diferente no Redis
+      ttl: 60 * 60 * 24 * 2, // 48h
     }),
     secret: keySession,
     resave: false,
