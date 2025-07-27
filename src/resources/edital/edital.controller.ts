@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Response, Request } from 'express';
+import { Response, Request, NextFunction } from 'express';
 import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
 import EditalService from './edital.service';
 import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
@@ -279,7 +279,11 @@ const listarCandidatos = async (req: Request, res: Response) => {
   }
 };
 
-const geraPlanilha = async (req: Request, res: Response) => {
+const geraPlanilha = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const planilha = await gerarPlanilha(req.params.id, req.headers.host);
     return res
@@ -292,9 +296,7 @@ const geraPlanilha = async (req: Request, res: Response) => {
       .status(200)
       .send(planilha);
   } catch (error) {
-    return res.status(400).json({
-      error: error.message,
-    });
+    next(error);
   }
 };
 

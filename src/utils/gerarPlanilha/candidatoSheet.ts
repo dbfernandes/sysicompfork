@@ -4,7 +4,6 @@ function insertData(
   filtro: 'Mestrado' | 'Doutorado',
   start: number,
 ) {
-  console.log(dados);
   let currentRow = start || worksheet.rowCount + 1;
   dados.forEach((dado: any) => {
     if (filtro) {

@@ -60,21 +60,37 @@ function getDocument(document: string, host: string, candidateId: string) {
 // Função pegar dados e formatar
 function formatarDados(dados: CandidatoSheet[], host: string) {
   return dados.map((dado) => {
+    // Valores-default (ajuste se quiser algo diferente de '' ou false)
+    const linhaPesquisaNome = dado.linhaPesquisa?.nome ?? '-';
+    const id = dado.id ?? '-'; // pode ser string ou number
+    const email = dado.email ?? '-';
+    const nome = dado.nome ?? '-';
+    const orientador = dado.nomeOrientador ?? '-';
+    const nivel = dado.cursoDesejado ?? '-';
+    const bolsista = dado.bolsista ?? false;
+
+    // Helper: só gera link se houver id
+    const doc = (tipo: string) => (id ? getDocument(tipo, host, id) : null);
+
     return {
-      nome: dado.nome,
-      email: dado.email,
-      inscricao: dado.id,
-      linha: dado.linhaPesquisa.nome,
-      orientador: dado.nomeOrientador,
-      bolsa: dado.bolsista,
-      tipoVaga: getTipoVaga(dado),
-      nivel: dado.cursoDesejado,
-      comprovante: getDocument(COMPROVANTE_FILE, host, dado.id),
-      curriculum: getDocument(CURRICULUM_FILE, host, dado.id),
-      proposto: getDocument(PROPOSTA_FILE, host, dado.id),
-      comprovanteCota: getDocument(COMPROVANTE_COTA, host, dado.id),
-      autodeclaracao: getDocument(AUTODECLARACAO, host, dado.id),
-      videoAutodeclaracao: getDocument(AUTODECLARACAO_VIDEO, host, dado.id),
+      nome,
+      email,
+      inscricao: id,
+      linha: linhaPesquisaNome,
+      orientador,
+      bolsa: bolsista,
+      tipoVaga: getTipoVaga(dado) ?? '', // se getTipoVaga puder retornar null
+      nivel,
+
+      // Arquivos (null se id ausente)
+      comprovante: doc(COMPROVANTE_FILE),
+      curriculum: doc(CURRICULUM_FILE),
+      proposto: doc(PROPOSTA_FILE),
+      comprovanteCota: doc(COMPROVANTE_COTA),
+      autodeclaracao: doc(AUTODECLARACAO),
+      videoAutodeclaracao: doc(AUTODECLARACAO_VIDEO),
+
+      // Fórmulas (mantidas)
       provaInscricao: { formula: '=Candidato!B:B' },
       propostasMediaFinal: { formula: '=SOMA(B2:D2)', result: '0' },
 
@@ -92,18 +108,11 @@ function formatarDados(dados: CandidatoSheet[], host: string) {
     };
   });
 }
+
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(editalId: string, host: string) {
   const candidatos = await candidatoService.listarCandidatosPorEdital(editalId);
-  const candidatosFormatado = formatarDados(candidatos, host);
-  const doutorado = { ...candidatosFormatado[0] };
-  doutorado.nivel = 'Doutorado';
-  return [
-    candidatosFormatado[0],
-    candidatosFormatado[0],
-    candidatosFormatado[0],
-    doutorado,
-  ];
+  return formatarDados(candidatos, host);
 }
 
 // Função que gera a planilha
