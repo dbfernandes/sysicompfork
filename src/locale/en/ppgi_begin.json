@@ -1,16 +1,16 @@
 {
-  "title_header": "Master's/Doctorate Selection Process - PPGI/UFAM",
-  "title": "Application Form for the Master's/Doctorate Selection Process - PPGI/UFAM",
+  "title_header": "Master's and Doctorate Selection Process – PPGI/UFAM",
+  "title": "Application Form – Master's and Doctorate Selection Process (PPGI/UFAM)",
   "candidate": {
-    "title": "Candidate, click on:",
+    "title": "Candidate, please choose:",
     "instructions": {
       "new_inscription": {
         "title": "New Application:",
-        "description": "if you have not started the application yet. Remember that for each PPGI call for applications, a separate application must be submitted."
+        "description": "select this option if you have not yet started your application. (Note that you must submit a separate application for each PPGI call.)"
       },
       "continue_inscription": {
         "title": "Continue Application:",
-        "description": "if you have already started the application but have not yet completed it."
+        "description": "select this option if you have already started your application but have not completed it."
       }
     }
   },

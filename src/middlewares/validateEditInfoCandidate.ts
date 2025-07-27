@@ -44,7 +44,16 @@ export const validateCandidateGetInfo = async (
   if (req.session.uid) {
     const id = req.session.uid;
     const candidate = await candidatoService.findByIdComEdital(id);
-
+    if (!candidate) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Error ao fazer logout', err);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Erro ao sair');
+          return;
+        }
+      });
+      return res.status(StatusCodes.NOT_FOUND).send('Candidato não encontrado');
+    }
     const editaAlreadyFinished = isNoticeExpired(candidate.edital.dataFim);
     if (editaAlreadyFinished) {
       req.session.destroy((err) => {

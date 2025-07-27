@@ -61,16 +61,16 @@ class CandidatoService {
     });
   }
 
-  async listarCandidatosPorEdital(id: string) {
-    const edital = await prisma.edital.findFirst({
+  async listarCandidatosPorEdital(editalId: string) {
+    return prisma.candidato.findMany({
       where: {
-        id,
+        editalId,
       },
       include: {
-        candidatos: true,
+        linhaPesquisa: true,
       },
     });
-    return edital.candidatos;
+    // return edital.candidatos;
   }
 
   async validarTokenTrocarSenha(token: string): Promise<boolean> {

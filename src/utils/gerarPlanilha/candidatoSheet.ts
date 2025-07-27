@@ -38,7 +38,7 @@ export function candidateWorksheet(header: any, dados: any, worksheet: any) {
     },
   };
   // Cabecalho
-  worksheet.mergeCells('A1:N1');
+  worksheet.mergeCells('A1:P1');
   worksheet.getCell('A1').style = cabecalhoStyle;
 
   worksheet.columns = header.map((item: any) => {
@@ -63,8 +63,7 @@ export function candidateWorksheet(header: any, dados: any, worksheet: any) {
 
   // Doutorado
   const comecoDoutorado = worksheet.rowCount + 1;
-  worksheet.mergeCells(`A${comecoDoutorado}:N${comecoDoutorado}`);
-  console.log('worksheet.rowCount', worksheet.rowCount);
+  worksheet.mergeCells(`A${comecoDoutorado}:P${comecoDoutorado}`);
   worksheet.getCell(`A${comecoDoutorado}`).value = 'Doutorados';
   worksheet.getCell(`A${comecoDoutorado}`).style = cabecalhoStyle;
   worksheet.getRow(comecoDoutorado).height = 35;

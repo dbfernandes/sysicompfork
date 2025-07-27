@@ -210,7 +210,6 @@ class EditalService {
 
   async getCandidato(id: string) {
     try {
-      console.log('id', id);
       return await prisma.candidato.findUnique({
         where: {
           id,
@@ -218,6 +217,8 @@ class EditalService {
         include: {
           recomendacoes: true,
           linhaPesquisa: true,
+          publicacoes: true,
+          experienciasAcademicas: true,
         },
       });
     } catch (error) {

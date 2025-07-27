@@ -47,8 +47,8 @@
   },
   "validation": {
     "required": "This field is required.",
-    "conjuntoPreenchido": "Fill the set (Course:, Institution:, Year of Graduation:) and Type: together or leave all blank.",
-    "conjuntoExperiencia": "Fill the set (Institution:, Activity/Position:, Period:) together or leave all blank."
+    "conjuntoPreenchido": "Fill the fields (Course, Institution, Year of Graduation and Type) together or leave all blank.",
+    "conjuntoExperiencia": "Fill the fields (Institution, Activity/Position and Period) together or leave all blank."
   }
 
 }

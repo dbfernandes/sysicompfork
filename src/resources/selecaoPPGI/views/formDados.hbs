@@ -1,47 +1,14 @@
 {{ setTitle title="Dados Pessoais" }}
 
-<style>
-	.toast-container {
-		top: 0;
-    	right: 0;
-    	position: fixed;
-   	 	margin-top: 3.5rem;
-		margin-right: 1rem;
-		z-index: 1050;
-	}
+{{!-- No layout --}}
+{{#section "head"}}
+  <!--  Links Dados-->
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" href="/public/css/ppgiDados.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css">
+  <link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
+{{/section}}
 
-	.alert {
-		display: flex;
-   		gap: 1rem;
-   		align-items: center;
-	}
-
-	.radio-group {
-		margin-bottom: 8px;
-	}
-
-  .iti__tel-input {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-sizing: border-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-  }
-  .iti__tel-input:focus {
-    outline: none;
-    color: #495057;
-    background-color: #fff;
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: inset 0 0 0 transparent;
-  }
-
-  .iti { width: 100%; }
-  .iti__tel-input { width: 100%; }
-</style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css">
-
-<link href="https://cdn.rawgit.com/bantikyan/icheck-bootstrap/master/icheck-bootstrap.min.css" rel="stylesheet">
 <!-- -->
 <!-- Conteúdo principal da página -->
 <main class="forms-page">
@@ -226,7 +193,6 @@
                     class="form-control"
                     type="text"
                     name="candidatoCep"
-                    data-plugin-inputmask=""
                     value="{{cep}}"
                   />
                   <div class="invalid-feedback"></div>
@@ -897,10 +863,10 @@
 
 </main>
 {{> ppgi/_masks }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css">
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
 <script>
-	$(document).ready(() => {
+	$(document).ready(function () {
 
     const inputFilesConfig = {
       Cota: {
@@ -1476,24 +1442,24 @@
           required: true
         },
         "tipo-cota": {
-          required: function (params) {
+          required: function () {
             return $("#cotista:checked").length > 0;
           }
         },
         candidatoCondicao: {
-          required: function (params) {
+          required: function () {
             return $("#candidato-deficiencia1:checked").length > 0;
           }
         },
         cpf: {
-          required: (params) => $("#Nacionalidade1:checked").length > 0,
+          required: () => $("#Nacionalidade1:checked").length > 0,
           cpf: true
         },
         pais: {
-          required: (param) => $("#Nacionalidade2:checked").length > 0
+          required: () => $("#Nacionalidade2:checked").length > 0
         },
         passaporte: {
-          required: (params) => $("#Nacionalidade2:checked").length > 0
+          required: () => $("#Nacionalidade2:checked").length > 0
         },
         phone: {
           validPhoneNumber: true,
@@ -1600,7 +1566,9 @@
         		window.location.reload();
         	},
         	error: () => {
-        		btnSave.find("span").prop("hidden", true);
+            toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
+
+            btnSave.find("span").prop("hidden", true);
         		btnSave.prop("disabled", false);
         	}
         });

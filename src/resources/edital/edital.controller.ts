@@ -6,7 +6,6 @@ import gerarPlanilha from '../../utils/gerarPlanilha/gerarPlanilhaMain';
 import archiver from 'archiver';
 import path from 'path';
 import editalService from './edital.service';
-import { verificarArquivoDiretorio } from '../selecaoPPGI/selecao.ppgi.controller';
 import {
   AUTODECLARACAO,
   AUTODECLARACAO_VIDEO,
@@ -19,6 +18,8 @@ import {
 } from '../selecaoPPGI/selecao.ppgi.types';
 import { Candidato } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
+import { verificarArquivoDiretorio } from '@utils/utils';
+import mime from 'mime-types'; // npm i mime-types
 
 const locals = {
   layout: 'selecaoppgi',
@@ -280,7 +281,7 @@ const listarCandidatos = async (req: Request, res: Response) => {
 
 const geraPlanilha = async (req: Request, res: Response) => {
   try {
-    const planilha = await gerarPlanilha(req.params.id);
+    const planilha = await gerarPlanilha(req.params.id, req.headers.host);
     return res
       .set({
         'Content-Type':
@@ -318,6 +319,61 @@ const pegarDocumentoCandidato = async (req: Request, res: Response) => {
     }
   });
 };
+export const viewDocumentCandidate = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const doc = req.query.documento as string | undefined;
+    if (!doc)
+      return res
+        .status(400)
+        .json({ error: 'Parâmetro "documento" é obrigatório.' });
+
+    const candidato = await EditalService.getCandidato(id);
+    if (!candidato)
+      return res.status(404).json({ error: 'Candidato não encontrado.' });
+
+    // Caminho absoluto protegido contra path-traversal
+    const caminhoDoc = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'uploads',
+      'candidato',
+      candidato.id,
+      path.basename(doc),
+    );
+
+    // Verifica se existe
+    try {
+      await fs.promises.access(caminhoDoc, fs.constants.R_OK);
+    } catch {
+      return res.status(404).json({ error: 'Arquivo não encontrado.' });
+    }
+
+    // Define MIME-type
+    const mimeType = mime.lookup(caminhoDoc) || 'application/octet-stream';
+    res.type(mimeType); // === res.setHeader('Content-Type', mimeType)
+
+    // Só usa inline para PDFs
+    if (mimeType === 'application/pdf') {
+      res.setHeader('Content-Disposition', 'inline');
+    }
+
+    // Envia o arquivo
+    res.sendFile(caminhoDoc, (err) => {
+      if (err && !res.headersSent) {
+        console.error(err);
+        res.status(500).json({ error: 'Falha ao transferir o arquivo.' });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent)
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+};
+// curl -I "http://localhost:3300/edital/viewDocumentCandidate/cmdj76227000i22yc9e7lvuer?documento=VideoAutodeclaracao.mp4"
 
 export const pegarDocumentosDeTodosCandidatos = async (
   req: Request,
@@ -399,7 +455,7 @@ export const pegarDocumentosDeTodosCandidatos = async (
 
     // Finaliza (inicia o fechamento) do arquivo ZIP
     archive.finalize();
-  } catch (err: any) {
+  } catch (err) {
     console.error('Erro ao gerar .zip:', err);
     if (!res.headersSent) {
       // Se ainda não enviamos nada ao cliente, podemos retornar status 500
@@ -522,47 +578,47 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       '..',
       'uploads',
       'candidato',
-      candidato.id.toString(),
+      candidato.id,
     );
 
-    candidatoDocs.Curriculum = verificarArquivoDiretorio(
+    candidatoDocs.Curriculum = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       CURRICULUM_FILE,
     );
 
-    candidatoDocs.CartaDoOrientador = verificarArquivoDiretorio(
+    candidatoDocs.CartaDoOrientador = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       CARTA_ACEITE_ORIENTADOR_FILE,
     );
 
-    candidatoDocs.PropostaDeTrabalho = verificarArquivoDiretorio(
+    candidatoDocs.PropostaDeTrabalho = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       PROPOSTA_FILE,
     );
 
-    candidatoDocs.ProvaAnteriorSelecao = verificarArquivoDiretorio(
+    candidatoDocs.ProvaAnteriorSelecao = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       PROVA_ANTERIOR_FILE,
     );
 
-    candidatoDocs.ComprovantePagamento = verificarArquivoDiretorio(
+    candidatoDocs.ComprovantePagamento = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       COMPROVANTE_FILE,
     );
-    candidatoDocs.Recomendacoes = verificarArquivoDiretorio(
+    candidatoDocs.Recomendacoes = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       'Recomendacoes.pdf',
     );
 
-    candidatoDocs.ComprovanteCota = verificarArquivoDiretorio(
+    candidatoDocs.ComprovanteCota = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       COMPROVANTE_COTA,
     );
-    candidatoDocs.Autodeclaracao = verificarArquivoDiretorio(
+    candidatoDocs.Autodeclaracao = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       AUTODECLARACAO,
     );
-    candidatoDocs.AutodeclaracaoVideo = verificarArquivoDiretorio(
+    candidatoDocs.AutodeclaracaoVideo = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       AUTODECLARACAO_VIDEO,
     );
@@ -597,4 +653,5 @@ export default {
   pegarDocumentoCandidato,
   pegarDocumentosDeTodosCandidatos,
   pegarDocumentsDeUmCandidate,
+  viewDocumentCandidate,
 };

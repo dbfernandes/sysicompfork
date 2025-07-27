@@ -2,6 +2,8 @@
 
 {{> sidebar module="edital"}}
 {{ setTitle title=(concat "Candidato " candidato.id "- Edital " candidato.idEdital) }}
+<!-- No seu layout base -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -15,8 +17,8 @@
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item"><a href="/edital/listEdital">Editais de Seleção do PPGI </a></li>
-                        <li class="breadcrumb-item"><a href="/edital/listEdital/{{candidato.idEdital}}">Detalhes de edital </a></li>
-                        <li class="breadcrumb-item"><a href="/edital/listEditalCandidates/{{candidato.idEdital}}">Lista de candidados</a></li>
+                        <li class="breadcrumb-item"><a href="/edital/listEdital/{{candidato.editalId}}">Detalhes de edital </a></li>
+                        <li class="breadcrumb-item"><a href="/edital/listEditalCandidates/{{candidato.editalId}}">Lista de candidatos</a></li>
                         <li class="breadcrumb-item active">Detalhes do Candidado</li>
                     </ol>
                 </div>
@@ -79,14 +81,25 @@
                                     <th class="col-3">Nacionalidade</th>
                                     <td>{{candidato.nacionalidade}}</td>
                                 </tr>
-                                {{!-- <tr>
+
+                                {{#if (notEmpty candidato.cpf)}}
+                                  <tr>
+                                      <th class="col-3">CPF</th>
+                                      <td>{{candidato.cpf}}</td>
+                                  </tr>
+                                {{/if}}
+                                {{#if (notEmpty candidato.passaporte)}}
+                                  <tr>
+                                    <th class="col-3">Passaporte</th>
+                                    <td>{{candidato.passaporte}}</td>
+                                  </tr>
+                                {{/if}}
+                                {{#if (notEmpty candidato.pais)}}
+                                  <tr>
                                     <th class="col-3">País</th>
-                                    <td>{{candidato.Pais}}</td>
-                                </tr> --}}
-                                {{!-- <tr>
-                                    <th class="col-3">CPF</th>
-                                    <td>{{candidato.CPF}}</td>
-                                </tr> --}}
+                                    <td>{{candidato.pais}}</td>
+                                  </tr>
+                                {{/if}}
                                 <tr>
                                     <th class="col-3">Sexo</th>
                                     <td><span class="{{#if (notEmpty candidato.sexo)}}">{{formataBioSex candidato.sexo}}
@@ -175,7 +188,6 @@
                                     </tr>
                                   {{/if}}
                                 {{/if}}
-
                                 <tr>
                                     <th class="col-3">Possui algum tipo de problema de saúde física ou psiquiátrica?</th>
                                     <td>
@@ -354,7 +366,6 @@
                                 </tr>
                                 <tr>
                                     <th class="col-3">Resultado da Avaliação</th>
-
                                     <td>
                                       {{#if candidato.notaposcomp}}
                                         {{candidato.notaposcomp}}
@@ -365,6 +376,78 @@
                                 </tr>
                                 </tbody>
                             </table>
+                          <hr />
+                          <h4><b>Experiências Acadêmicas</b></h4>
+                          {{#if candidato.experienciasAcademicas.length}}
+                            <div class="table-responsive">
+                              <table class="table table-bordered table-hover mt-2">
+                                <thead>
+                                <tr>
+                                  <th>Instituição</th>
+                                  <th>Atividade</th>
+                                  <th>Período</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{#each candidato.experienciasAcademicas}}
+                                  <tr>
+                                    <td>{{this.instituicao}}</td>
+                                    <td>{{this.atividade}}</td>
+                                    <td>{{this.periodo}}</td>
+                                  </tr>
+                                {{/each}}
+                                </tbody>
+                              </table>
+                            </div>
+                          {{else}}
+                            <p class="badge bg-warning mt-2">Nenhuma experiência acadêmica registrada.</p>
+                          {{/if}}
+                          <hr />
+                          <h4><b>Publicações Acadêmicas</b></h4>
+
+                          {{#if candidato.publicacoes.length}}
+                            {{#each (groupByTipo candidato.publicacoes) as |grupo tipoId|}}
+                              <div id="accordionTipo{{tipoId}}" class="mb-3">
+                                <div class="card">
+                                  <div class="card-header" id="headingTipo{{tipoId}}">
+                                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                                      <button class="btn  collapsed d-flex justify-content-between w-100" data-toggle="collapse" data-target="#collapseTipo{{tipoId}}" aria-expanded="false" aria-controls="collapseTipo{{tipoId}}">
+                                        <span>
+                                          {{#if (eq tipoId 1)}} Periódicos
+                                          {{else if (eq tipoId 2)}} Eventos
+                                          {{else if (eq tipoId 3)}} Livros
+                                          {{else if (eq tipoId 4)}} Capítulos
+                                          {{else if (eq tipoId 5)}} Outras
+                                          {{else if (eq tipoId 6)}} Prefácios
+                                          {{else}} Outros
+                                          {{/if}}
+                                        </span>
+                                        <i class="fa fa-chevron-down transition-icon"></i>
+                                      </button>
+                                    </h5>
+                                  </div>
+                                  <div id="collapseTipo{{tipoId}}" class="collapse" aria-labelledby="headingTipo{{tipoId}}" data-parent="#accordionTipo{{tipoId}}">
+                                    <div class="card-body">
+                                      <ul class="list-group">
+                                        {{#each grupo}}
+                                          <li class="list-group-item">
+                                            <strong>{{this.titulo}}</strong><br />
+                                            <small><b>Autores:</b> {{this.autores}}</small><br />
+                                            <small><b>Local:</b> {{this.local}}</small><br />
+                                            <small><b>Ano:</b> {{this.ano}}</small><br />
+                                            {{#if this.issn}}<small><b>ISSN:</b> {{this.issn}}</small><br />{{/if}}
+                                            <small><b>Natureza:</b> {{this.natureza}}</small>
+                                          </li>
+                                        {{/each}}
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {{/each}}
+                          {{else}}
+                            <p class="badge bg-warning mt-2">Nenhuma publicação registrada.</p>
+                          {{/if}}
                         </div>
                     </div>
                 </div>

@@ -4,13 +4,13 @@
   "greeting": "Ass: Coordenação do PPGI/UFAM",
   "titleButtons": "Clique nos ícones abaixo para visualizar os respectivos documentos.",
   "button": {
-    "registrationForm": "Imprimir Formulário  de Inscrição",
-    "proposol": "Imprimir Proposta  de Trabalho",
+    "registrationForm": "Baixar Formulário  de Inscrição",
+    "proposol": "Baixar Proposta  de Trabalho",
     "letter": "Carta Orientador",
-    "curriculum": "Imprimir Curriculum Lattes",
-    "payment": "Imprimir Comprovante de Pagamento",
-    "quotaReceipt": "Imprimir Comprovante de Cota",
+    "curriculum": "Baixar Curriculum Lattes",
+    "payment": "Baixar Comprovante de Pagamento",
+    "quotaReceipt": "Baixar Comprovante de Cota",
     "videoSelfDeclaration": "Baixar Vídeo de Autodeclaração",
-    "selfDeclaration": "Imprimir Documento de Autodeclaração"
+    "selfDeclaration": "Baixar Documento de Autodeclaração"
   }
 }

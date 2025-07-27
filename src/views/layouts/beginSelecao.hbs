@@ -6,7 +6,7 @@
   <title>{{#if title}}{{title}}{{else}}SysIcomp{{/if}}</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/public/img/favicon 2.ico" />
+  <link rel="icon" type="image/png" href="/public/img/favicon2.ico" />
 
   <!-- Fontes e Ícones -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
@@ -21,39 +21,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
 </head>
+  <body class="login-page">
+  <!-- jQuery -->
+  <script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
 
-<body class="login-page">
-<!-- jQuery -->
-<script src="/script-adminlte/plugins/jquery/jquery.min.js"></script>
+  <!-- Plugins jQuery -->
+  <script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
+  <script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
+  <script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
 
-<!-- Plugins jQuery -->
-<script src="/script-adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
-<script src="/script-adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
-<script src="/script-adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+  <!-- Bootstrap & AdminLTE -->
+  <script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/script-adminlte/dist/js/adminlte.min.js"></script>
 
-<!-- Bootstrap & AdminLTE -->
-<script src="/script-adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/script-adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-<script src="/script-adminlte/dist/js/adminlte.min.js"></script>
+  <!-- Toastr -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- Moment.js -->
-<script src="/script-adminlte/plugins/moment/moment.min.js"></script>
-
-<!-- Custom File Input -->
-<script src="/script-adminlte/plugins/bs-custom-file-input/bs-custom-file-input.js"></script>
-
-<!-- Toastr -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<!-- Inicialização -->
-<script>
-  $(function () {
-    // Mensagem para desenvolvedores curiosos
-    console.log('%cBem-vindo ao console do Seleção PPGI!', 'color: green; font-size: 16px; font-weight: bold;');
-    console.log('%cAplicação construída com carinho pela equipe do IComp/UFAM ❤️', 'color: #999; font-size: 14px;');
-  });
-</script>
-{{{ body }}}
-
+  {{{ body }}}
+  <!-- Inicialização -->
+  <script>
+    $(function () {
+      // Mensagem para desenvolvedores curiosos
+      console.log('%cBem-vindo ao console do Seleção PPGI!', 'color: green; font-size: 16px; font-weight: bold;');
+      console.log('%cAplicação construída com carinho pela equipe do IComp/UFAM ❤️', 'color: #999; font-size: 14px;');
+    });
+  </script>
 </body>
 </html>

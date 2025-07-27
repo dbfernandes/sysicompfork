@@ -10,6 +10,17 @@ header > .container {
 
 .header-title {
   margin: 0;
+  color: #dbdbdb !important;
+  cursor: auto !important;
+}
+.container-buttons-icon {
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  max-width: 50vw;
+  overflow: hidden;
+  flex-basis: 210px;
+  align-items: center;
 }
 
 .icon-language {
@@ -164,4 +175,20 @@ header > .container {
 .container-main {
   height: 100%;
   margin-top: 70px;
+}
+
+#add-btn {
+  margin-top: 10px;
+}
+
+.custom-file-container .custom-file-input {
+  padding: 10px;
+}
+
+.custom-file-container .custom-file-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 5px;
+  margin-right: 5px;
 }

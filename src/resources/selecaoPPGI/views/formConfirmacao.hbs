@@ -1,50 +1,8 @@
 {{ setTitle title="Confirmação" }}
-<style>
-  .container-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    margin-top: 3rem;
-    gap: 2rem;
-  }
-
-  .container-message .message-footer {
-    align-self: flex-end;
-  }
-
-  .container-message .message-buttons {
-    font-weight: bold;
-    color: #222;
-    text-align: center;
-    margin-top: 1rem;
-  }
-
-  .container-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .container-button {
-    display: flex;
-    gap: 0.25rem;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 1rem;
-    max-width: 150px;
-    text-align: center;
-  }
-
-  .link-file {
-    font-weight: bold;
-  }
-
-
-
-</style>
+{{#section "head"}}
+  <!--  Links Dados-->
+  <link rel="stylesheet" href="/public/css/ppgiConfirmacao.css">
+{{/section}}
 
 <main class="forms-page">
   <header>
@@ -60,8 +18,6 @@
 
   <section class="content container px-3">
     <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
-
-
     {{> ppgi/nav indexSelect="5" progress="100"}}
 
     <main class="container-message">
@@ -136,19 +92,22 @@
           </a>
         </div>
 
-        <div class="container-button">
-          <img
-            src="/public/img/pagamento.png"
-            alt="{{__ 'ppgiForm4.alt_payment'}}"
-            width="50"
-          />
-          <a
-            class="link-file"
-            href="/download/arquivo/ComprovantePagamento.pdf"
-          >
-            {{__ "ppgiForm4.button.payment"}}
-          </a>
-        </div>
+        {{#if hasComprovantePagamento}}
+          <div class="container-button">
+            <img
+              src="/public/img/pagamento.png"
+              alt="{{__ 'ppgiForm4.alt_payment'}}"
+              width="50"
+            />
+            <a
+              class="link-file"
+              href="/download/arquivo/ComprovantePagamento.pdf"
+            >
+              {{__ "ppgiForm4.button.payment"}}
+            </a>
+          </div>
+        {{/if}}
+
         <!--COMPROVANTE COTA-->
         {{#if hasComprovanteCota}}
           <div class="container-button">
@@ -257,6 +216,8 @@
         },
         error: function (data) {
           console.error(data);
+          toastr.error('Atualize a página e tente novamente', 'Erro realizar logout.');
+
         }
       });
     });
@@ -281,6 +242,8 @@
         },
         error: function (data) {
           console.error(data);
+          toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
+
         }
       });
     });

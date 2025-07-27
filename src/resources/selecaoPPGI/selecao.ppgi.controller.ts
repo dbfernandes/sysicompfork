@@ -34,6 +34,7 @@ import {
 } from './selecao.ppgi.types';
 import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 import { Edital } from '.prisma/client';
+import { verificarArquivoDiretorio } from '@utils/utils';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato & { edital: Edital }; // Substitua `any` pelo tipo correto do candidato
@@ -68,15 +69,6 @@ function parseDate(dateString: string) {
   const year = parseInt(parts[2], 10);
 
   return new Date(year, month, day);
-}
-
-export function verificarArquivoDiretorio(
-  diretorio: string,
-  nomeArquivo: string,
-) {
-  const caminhoArquivo = path.join(diretorio, nomeArquivo);
-
-  return fs.existsSync(caminhoArquivo);
 }
 
 function inicio(req: Request, res: Response): void {
@@ -257,24 +249,26 @@ async function renderFormDados(
     'candidato',
     uid.toString(),
   );
-
+  const hasComprovanteCota = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_COTA,
+  );
+  const hasAutodeclaracao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO,
+  );
+  const hasVideoAutodeclaracao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO_VIDEO,
+  );
   res.status(200).render(resolveView('formDados'), {
     ...locals,
     ...req.candidato,
     csrfToken: req.csrfToken(),
     currentLanguage,
-    hasComprovanteCota: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      COMPROVANTE_COTA,
-    ),
-    hasAutodeclaracao: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      AUTODECLARACAO,
-    ),
-    hasVideoAutodeclaracao: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      AUTODECLARACAO_VIDEO,
-    ),
+    hasComprovanteCota,
+    hasAutodeclaracao,
+    hasVideoAutodeclaracao,
   });
 }
 
@@ -299,24 +293,27 @@ async function renderFormHistorico(
   const { conferencias, periodicos } =
     await candidatoPublicacaoService.getPublicacoes(uid);
 
+  const hasCurriculum = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    CURRICULUM_FILE,
+  );
+  const hasProvaAnterior = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    PROVA_ANTERIOR_FILE,
+  );
+  const hasVitaeXML = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    'VitaeXML.xml',
+  );
   res.render(resolveView('formHistorico'), {
     ...locals,
     ...req.candidato,
     editalPosicao: req.candidato.posicaoEdital,
     id: uid,
     csrfToken: req.csrfToken(),
-    hasCurriculum: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      CURRICULUM_FILE,
-    ),
-    hasProvaAnterior: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      PROVA_ANTERIOR_FILE,
-    ),
-    hasVitaeXML: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      'VitaeXML.xml',
-    ),
+    hasCurriculum,
+    hasProvaAnterior,
+    hasVitaeXML,
     experienciasAcademicas,
     conferencias,
     periodicos,
@@ -346,6 +343,21 @@ async function renderFormProposta(
     editalService.getById(req.candidato.editalId),
   ]);
 
+  const hasCartaAceiteOrientador = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    CARTA_ACEITE_ORIENTADOR_FILE,
+  );
+
+  const hasPropostaTrabalho = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    PROPOSTA_FILE,
+  );
+
+  const hasComprovante = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_FILE,
+  );
+
   res.render(resolveView('formProposta'), {
     ...locals,
     ...req.candidato,
@@ -355,18 +367,9 @@ async function renderFormProposta(
     id: uid,
     linhasPesquisa: linhas,
     csrfToken: req.csrfToken(),
-    hasCartaAceiteOrientador: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      CARTA_ACEITE_ORIENTADOR_FILE,
-    ),
-    hasPropostaTrabalho: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      PROPOSTA_FILE,
-    ),
-    hasComprovante: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      COMPROVANTE_FILE,
-    ),
+    hasCartaAceiteOrientador,
+    hasPropostaTrabalho,
+    hasComprovante,
     currentLanguage,
   });
 }
@@ -383,36 +386,43 @@ async function renderFormConfirmacao(
     uid.toString(),
   );
 
+  const hasCartaAceiteOrientador = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    CARTA_ACEITE_ORIENTADOR_FILE,
+  );
+  const hasPropostaTrabalho = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    PROPOSTA_FILE,
+  );
+
+  const hasAutodeclaracao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO,
+  );
+  const hasVideoAutodeclaracao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO_VIDEO,
+  );
+  const hasComprovanteCota = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_COTA,
+  );
+  const hasComprovantePagamento = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_FILE,
+  );
+
   res.render(resolveView('formConfirmacao'), {
     ...locals,
     editalPosicao: req.session.editalPosition,
     id: uid,
     csrfToken: req.csrfToken(),
-    hasCartaAceiteOrientador: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      CARTA_ACEITE_ORIENTADOR_FILE,
-    ),
-    hasPropostaTrabalho: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      PROPOSTA_FILE,
-    ),
-
-    hasComprovantePagamento: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      COMPROVANTE_FILE,
-    ),
-    hasAutodeclaracao: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      AUTODECLARACAO,
-    ),
-    hasVideoAutodeclaracao: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      AUTODECLARACAO_VIDEO,
-    ),
-    hasComprovanteCota: verificarArquivoDiretorio(
-      caminhoDiretorioUsuario,
-      COMPROVANTE_COTA,
-    ),
+    hasCartaAceiteOrientador,
+    hasPropostaTrabalho,
+    hasComprovantePagamento,
+    hasAutodeclaracao,
+    hasVideoAutodeclaracao,
+    hasComprovanteCota,
     currentLanguage,
   });
 }

@@ -46,7 +46,7 @@
   },
   "validation": {
     "required": "Este campo é obrigatório.",
-    "conjuntoPreenchido": "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos em branco.",
-    "conjuntoExperiencia": "Preencha o conjunto (Instituição:, Atividade/Cargo:, Período:) juntos ou deixe todos em branco."
+    "conjuntoPreenchido": "Preencha os campos (Curso, Instituição, Ano de Egresso e Tipo) juntos ou deixe todos em branco.",
+    "conjuntoExperiencia": "Preencha os campos (Instituição, Atividade/Cargo, Período) juntos ou deixe todos em branco."
   }
 }

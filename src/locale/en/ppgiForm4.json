@@ -1,16 +1,16 @@
 {
-  "title": "Registration completed successfully!",
-  "message": "Your data has been successfully registered. Your proposal will be reviewed, and soon we will announce the selected candidates for the PPGI selection process.<br>Click on the \"Print Registration Form\" link and print the page containing your registration details for your records. When requested, sign and submit this form to the PPGI/UFAM office located in the Department of Computer Science, at Gen. Rodrigo Octávio Jordão Ramos Street, 3000 NORTH SECTOR of the Manaus University Campus - AM - ZIP Code 69.077-00.",
-  "greeting": "Sincerely: PPGI/UFAM Coordination",
-  "titleButtons": "Click the icons below to view the respective documents.",
+  "title": "Registration Completed Successfully!",
+  "message": "Your information has been recorded successfully. Your proposal will now be reviewed, and the list of approved candidates in the PPGI selection process will be published shortly.<br>Click the \"Download Registration Form\" button to save a copy of your registration details for your records. When requested, sign the form and submit it to the PPGI/UFAM office located in the Department of Computer Science, Gen. Rodrigo Octávio Jordão Ramos, 3000 – North Sector, Manaus Campus – AM – ZIP 69077-000.",
+  "greeting": "Sincerely, PPGI/UFAM Coordination",
+  "titleButtons": "Click the icons below to view or download the corresponding documents.",
   "button": {
-    "registrationForm": "Print Registration Form",
-    "proposol": "Print Work Proposal",
+    "registrationForm": "Download Registration Form",
+    "proposol": "Download Research Proposal",
     "letter": "Advisor Letter",
-    "curriculum": "Print Lattes Curriculum",
-    "payment": "Print Payment Receipt",
-    "quotaReceipt": "Print Quota Receipt",
-    "videoSelfDeclaration": "Download Video Self-Declaration",
-    "selfDeclaration": "Print Self-Declaration Document"
+    "curriculum": "Download Lattes CV",
+    "payment": "Download Payment Receipt",
+    "quotaReceipt": "Download Quota Receipt",
+    "videoSelfDeclaration": "Download Self-Declaration Video",
+    "selfDeclaration": "Download Self-Declaration Document"
   }
 }

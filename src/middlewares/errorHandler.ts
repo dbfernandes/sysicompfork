@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { BaseError } from '../utils/baseError';
+import { BaseError } from '@utils/baseError';
 import { StatusCodes } from 'http-status-codes';
 
 export const errorHandler = (
@@ -10,6 +10,7 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   if (err instanceof BaseError) {
+    console.error('Erro operacional:', err);
     // Erros operacionais conhecidos
     return res.status(err.statusCode).json({
       status: 'error',

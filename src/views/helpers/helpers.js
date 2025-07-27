@@ -18,6 +18,22 @@ const whichCourse = (course, lng) => {
   }
 };
 
+function section(name, options) {
+  if (!this._sections) this._sections = {};
+  this._sections[name] = options.fn(this);
+  return null; // não renderiza nada aqui
+}
+function groupByTipo(items) {
+  const grouped = {};
+  items.forEach((item) => {
+    if (!grouped[item.tipoId]) {
+      grouped[item.tipoId] = [];
+    }
+    grouped[item.tipoId].push(item);
+  });
+  return grouped;
+}
+
 const getYearActual = () => new Date().getFullYear();
 
 const isEnLng = (lng) => lng === 'en';
@@ -218,4 +234,6 @@ export default {
   dataAtualToLocaleString,
   dataToLocaleString,
   getYearActual,
+  groupByTipo,
+  section,
 };

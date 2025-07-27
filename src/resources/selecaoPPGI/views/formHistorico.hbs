@@ -1,16 +1,10 @@
 {{ setTitle title="Histórico" }}
-<style>
-  .container-buttons-icon {
-    display: flex;
-    gap: 4px;
-    flex-direction: column;
-    max-width: 50vw;
-    overflow: hidden;
-    flex-basis: 210px;
-    align-items: center;
-  }
-</style>
+
+{{#section "head"}}
+<!--  Links Histórico-->
 <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+{{/section}}
+
 <main class="forms-page">
   <!-- Cabeçalho / Header -->
   <header>
@@ -32,7 +26,7 @@
     {{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
     <div class="container-fluid p-0">
-      <!-- Formulário de histórico (em um <article> semântico, se desejar) -->
+      <!-- Formulário de histórico  -->
       <article>
         <form id="candidato-formulario2" novalidate>
           <!-- Inputs escondidos de controle -->
@@ -140,6 +134,7 @@
                     role="radiogroup"
                     aria-label="Tipo de Curso Pós-Graduação"
                     style="display: flex; align-content:center; gap: 20px; flex-wrap: wrap;"
+                    class="radio-group"
                   >
                     <div class="icheck-primary d-inline" style="margin-right: 20px;">
                       <input
@@ -181,6 +176,7 @@
                     </div>
 
                     <button
+                      type="button"
                       id="limparSelecao"
                       class="btn btn-block btn-primary"
                       style="width:50%;"
@@ -549,6 +545,9 @@
   </section>
   {{> ppgi/footer}}
 </main>
+<!-- Scripts utilitários da aplicação -->
+<script src="/public/js/xml2json.js"></script>
+<script src="/public/js/lattesExtractor.js"></script>
 <script>
   $(document).ready(function () {
     const basePath = "{{basePath}}";
@@ -705,7 +704,14 @@
       $('#candidato-curso-pos').val('');
       $('#candidato-instituicao-pos').val('');
       $('#candidato-ano-pos').val('');
+      const validator = $('#candidato-formulario2').validate();
+
+      ['#candidato-curso-pos', '#candidato-instituicao-pos', '#candidato-ano-pos'].forEach(sel => {
+        validator.element(sel); // força revalidação; agora estão vazios mas válidos
+      });
+      validator.element("#Tipo1"); // o plugin trata o grupo de radios pelo primeiro id
     });
+
     $("#candidato-ano-pos").change(changeYear);
     $("#candidato-ano").change(changeYear);
 
@@ -832,15 +838,34 @@
       })
     }
 
+    $.validator.addMethod(
+      "conjuntoPreenchido",
+      function (value, element) {
+        // IDs dos três inputs de texto do grupo Pós
+        const grupoTextos = [
+          "#candidato-curso-pos",
+          "#candidato-instituicao-pos",
+          "#candidato-ano-pos"
+        ];
 
-    $.validator.addMethod("conjuntoPreenchido", function (value, element) {
-      const cursoPos = $("#candidato-curso-pos").val();
-      const instituicaoPos = $("#candidato-instituicao-pos").val();
-      const anoEgressoPos = $("#candidato-ano-pos").val();
-      const cursoTipoChecked = $("#Tipo1").is(":checked") || $("#Tipo2").is(":checked") || $("#Tipo3").is(":checked");
+        // Radios do tipo de curso
+        const grupoRadios = ["#Tipo1", "#Tipo2", "#Tipo3"];
 
-      return (!cursoPos && !instituicaoPos && !anoEgressoPos && !cursoTipoChecked) || (cursoPos && instituicaoPos && anoEgressoPos && cursoTipoChecked);
-    }, "Preencha o conjunto (Curso:, Instituição:, Ano de Egresso:) e Tipo: juntos ou deixe todos vazios.");
+        // 1. Há algum campo (texto ou radio) já preenchido?
+        const algumOutroPreenchido = grupoTextos
+            .filter(sel => sel !== "#" + element.id)          // exclui o campo que está sendo testado
+            .some(sel => ($(sel).val() || "").trim() !== "")  // texto não vazio
+          ||
+          grupoRadios.some(sel => $(sel).is(":checked"));   // radio marcado
+
+        // 2. Campo atual está vazio?
+        const campoAtualVazio = (value || "").trim() === "";
+
+        // 3. Regra: erro somente se campo atual vazio *e* outro já preenchido
+        return !(campoAtualVazio && algumOutroPreenchido);
+      },
+      "Preencha Curso, Instituição, Ano de Egresso e Tipo juntos ou deixe todos vazios."
+    );
 
     $.validator.addMethod("anoValido", function (value, element) {
       if (!/^\d{4}$/.test(value)) {
@@ -878,13 +903,25 @@
       errorElement: 'span',
       errorPlacement: function (error, element) {
         error.addClass('invalid-feedback');
+        if (element.is(":radio")) {
+          error.insertAfter(element.closest('.radio-group'));
+          return
+        }
         element.closest('div').append(error);
       },
       highlight: function (element, errorClass, validClass) {
-        $(element).addClass('is-invalid');
+        if ($(element).is(":radio")) {
+          $(element).closest('.radio-group').find('label').addClass('text-danger');
+        } else {
+          $(element).addClass('is-invalid');
+        }
       },
       unhighlight: function (element, errorClass, validClass) {
-        $(element).removeClass('is-invalid');
+        if ($(element).is(":radio")) {
+          $(element).closest('.radio-group').find('label').removeClass('text-danger');
+        } else {
+          $(element).removeClass('is-invalid');
+        }
       },
       rules: {
         "cursoGraduacao": {
@@ -916,6 +953,9 @@
         "anoEgressoPos": {
           conjuntoPreenchido: true,
           anoPosValido: true
+        },
+        "tipoPos": {
+          conjuntoPreenchido: true,
         }
       },
       messages: {
@@ -928,6 +968,7 @@
         "anoEgressoGraduacao": {
           required: "{{__ "ppgiForm2.validation.required"}}"
         },
+
         "cursoPos": {
           conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
         },
@@ -935,6 +976,9 @@
           conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
         },
         "anoEgressoPos": {
+          conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
+        },
+        "tipoPos": {
           conjuntoPreenchido: "{{__ "ppgiForm2.validation.conjuntoPreenchido"}}"
         },
         "Curriculum": {
@@ -968,67 +1012,80 @@
             window.location.reload();
           },
           error: function (xhr, status, error) {
+            toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações.');
+
             btnSubmit.attr("disabled", false);
             btnSubmit.find("span").prop("hidden", true);
           }
         });
+      },
+
+      onfocusout: function (element) {
+      // Campos que fazem parte do conjunto "cursoPos / instituiçãoPos / anoPos / Tipo"
+      const grupoPos = '#candidato-curso-pos, #candidato-instituicao-pos, #candidato-ano-pos, #Tipo1, #Tipo2, #Tipo3';
+
+      // Se o elemento fizer parte do grupo, não valida agora (só no submit)
+      if ($(element).is(grupoPos)) {
+        return;
       }
+      // Caso contrário, mantém o comportamento padrão
+      this.element(element);
+    }
     });
-  });
 
-  function mostrarPeriodicos() {
-    const accordion = $('#accordion');
-    if (accordion.hasClass("show")) {
-      accordion.collapse("hide");
-    } else {
-      accordion.collapse("show");
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const addButton = document.getElementById("add-experiencia-button");
-    const experienciaContainer = document.getElementById("experiencia-container");
-    const exemploRow = document.querySelector(".experiencia-row");
-
-    const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
-    if (experiencias.length >= 1) {
-      for (const experiencia of experiencias) {
-        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-
-        deleteButton.addEventListener("click", function () {
-          experienciaContainer.removeChild(experiencia);
-        });
+    function mostrarPeriodicos() {
+      const accordion = $('#accordion');
+      if (accordion.hasClass("show")) {
+        accordion.collapse("hide");
+      } else {
+        accordion.collapse("show");
       }
     }
-    addButton.addEventListener("click", function (e) {
-      e.preventDefault();
-      const newExperienciaRow = exemploRow.cloneNode(true);
 
-      const inputs = newExperienciaRow.querySelectorAll("input");
-      inputs.forEach(input => input.value = "");
-
-      experienciaContainer.appendChild(newExperienciaRow);
+    document.addEventListener("DOMContentLoaded", function () {
+      const addButton = document.getElementById("add-experiencia-button");
+      const experienciaContainer = document.getElementById("experiencia-container");
+      const exemploRow = document.querySelector(".experiencia-row");
 
       const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
-      if (experiencias.length > 1) {
+      if (experiencias.length >= 1) {
         for (const experiencia of experiencias) {
           const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-          deleteButton.style.display = "inline-block";
+
           deleteButton.addEventListener("click", function () {
             experienciaContainer.removeChild(experiencia);
-            if (experiencias.length === 1) {
-              const experiencia = experiencias[0];
-              const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-              deleteButton.style.display = "none";
-            }
           });
         }
-      } else {
-        const experiencia = experiencias[0];
-        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-        deleteButton.style.display = "none";
       }
+      addButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const newExperienciaRow = exemploRow.cloneNode(true);
+
+        const inputs = newExperienciaRow.querySelectorAll("input");
+        inputs.forEach(input => input.value = "");
+
+        experienciaContainer.appendChild(newExperienciaRow);
+
+        const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
+        if (experiencias.length > 1) {
+          for (const experiencia of experiencias) {
+            const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+            deleteButton.style.display = "inline-block";
+            deleteButton.addEventListener("click", function () {
+              experienciaContainer.removeChild(experiencia);
+              if (experiencias.length === 1) {
+                const experiencia = experiencias[0];
+                const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+                deleteButton.style.display = "none";
+              }
+            });
+          }
+        } else {
+          const experiencia = experiencias[0];
+          const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+          deleteButton.style.display = "none";
+        }
+      });
     });
   });
-
 </script>

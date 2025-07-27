@@ -1,33 +1,4 @@
 {{ setTitle title="Proposta de Projeto" }}
-
-<style>
-  #add-btn {
-    margin-top: 10px;
-  }
-
-  .custom-file-container .custom-file-input {
-    padding: 10px;
-  }
-
-  .custom-file-container .custom-file-label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  .container-buttons-icon {
-    display: flex;
-    gap: 4px;
-    flex-direction: column;
-    max-width: 50vw;
-    overflow: hidden;
-    flex-basis: 210px;
-    align-items: center;
-  }
-</style>
-<link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 <!-- Modal de Confirmação -->
 <div
   class="modal fade mt-5"
@@ -492,7 +463,7 @@
             <div class="col d-flex flex-row-reverse p-0" style="gap: 6px;">
               <!-- Botão Finalizar (Save and Continue) -->
               <button class="btn btn-success custom-button">
-                {{__ "ppgi.form.saveAndContinue"}}
+                {{__ "ppgi.form.finish"}}
                 <span
                   class="spinner-border spinner-border-sm"
                   hidden="hidden"
@@ -535,7 +506,6 @@
 <script>
   $(document).ready(function () {
     const basePath = "{{basePath}}";
-
 
     const inputFilesConfig = {
       CartaAceiteOrientador: {
@@ -639,6 +609,8 @@
           console.error(data);
           btnSubmit.attr("disabled", false);
           btnSubmit.find("span").prop("hidden", true);
+          toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
+
         }
       });
     });
@@ -681,7 +653,9 @@
 				},
 				error: function (data) {
 					console.error(data);
-				}
+          toastr.error('Atualize a página e tente novamente', 'Erro ao realizar logout');
+
+        }
 			});
 		});
 
@@ -724,6 +698,8 @@
             console.error(data)
             btnVoltar.prop("disabled", false);
             btnVoltar.find("span").prop("hidden", true);
+            toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
+
           }
         });
       });
@@ -891,6 +867,8 @@
         console.error(data);
         btnSubmit.attr("disabled", false);
         btnSubmit.find("span").prop("hidden", true);
+        toastr.error('Atualize a página e tente novamente', 'Erro ao finalizar inscrição.');
+
       }
     });
   }
