@@ -3,6 +3,7 @@ import candidatoService from '@resources/candidato/candidato.service';
 
 import { DateTime } from 'luxon';
 import { StatusCodes } from 'http-status-codes';
+import { StatusEdital } from '@resources/edital/edital.types';
 
 export function isNoticeExpired(dataFim: Date | string): boolean {
   const agora = DateTime.now().setZone('America/Manaus');
@@ -20,8 +21,11 @@ export const validateCandidateEditInfo = async (
     const candidate = await candidatoService.findByIdComEdital(id);
 
     const candidateAlreadyFinished = !!candidate.finishedAt;
-    const editaAlreadyFinished = isNoticeExpired(candidate.edital.dataFim);
-    if (candidateAlreadyFinished || editaAlreadyFinished) {
+    const { edital } = candidate;
+    const editalAlreadyFinished =
+      isNoticeExpired(edital.dataFim) || edital.status !== StatusEdital.ATIVO;
+
+    if (candidateAlreadyFinished || editalAlreadyFinished) {
       req.session.destroy((err) => {
         if (err) {
           console.error('Error ao fazer logout', err);
@@ -52,10 +56,12 @@ export const validateCandidateGetInfo = async (
           return;
         }
       });
-      return res.status(StatusCodes.NOT_FOUND).send('Candidato não encontrado');
+      return res.redirect('/');
     }
-    const editaAlreadyFinished = isNoticeExpired(candidate.edital.dataFim);
-    if (editaAlreadyFinished) {
+    const { edital } = candidate;
+    const editalAlreadyFinished =
+      isNoticeExpired(edital.dataFim) || edital.status !== StatusEdital.ATIVO;
+    if (editalAlreadyFinished) {
       req.session.destroy((err) => {
         if (err) {
           console.error('Error ao fazer logout', err);

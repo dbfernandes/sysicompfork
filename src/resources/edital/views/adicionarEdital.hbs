@@ -1,7 +1,10 @@
 {{> header}}
 {{> sidebar module='selecaoppgi' page='edital-adicionar'}}
 {{ setTitle title="Criar Novo Edital de Seleção para o PPGI" }}
-
+{{#section "head"}}
+  <!--  Links Dados-->
+  <link rel="stylesheet" href="/script-adminlte/plugins/daterangepicker/daterangepicker.css" />
+{{/section}}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -222,6 +225,8 @@
 {{> ppgi/_masks }}
 {{> footer}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+<script src="/script-adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+
 
 <script>
     document.getElementById("voltarBtn").addEventListener("click", function() {
