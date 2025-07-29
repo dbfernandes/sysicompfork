@@ -155,7 +155,13 @@
                                       <th class="col-3">Comprovante cota</th>
                                       <td>
                                         <span class="{{#if candidatoDocs.ComprovanteCota}}">
+                                          <a style="margin-right: 16px"
+                                             title="Visualizar"
+                                             target="_blank"
+                                             href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=ComprovanteCota.pdf"
+                                             class='fa fa-solid fa-eye'></a>
                                           <a  style="margin-right: 3px"
+                                              title="Baixar"
                                               href="/downloadCandidateDocument/{{candidato.id}}?documento=ComprovanteCota.pdf"
                                               class='fa fa-solid fa-download'></a>
                                         {{else}}badge bg-warning">Pendente{{/if}}
@@ -168,7 +174,13 @@
                                       <th class="col-3">Autodeclaração (PDF)</th>
                                       <td>
                                         <span class="{{#if candidatoDocs.Autodeclaracao}}">
+                                          <a style="margin-right: 16px"
+                                             title="Visualizar"
+                                             target="_blank"
+                                             href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=AutodeclaracaoCiencia.pdf"
+                                             class='fa fa-solid fa-eye'></a>
                                           <a  style="margin-right: 3px"
+                                              title="Baixar"
                                               href="/downloadCandidateDocument/{{candidato.id}}?documento=AutodeclaracaoCiencia.pdf"
                                               class='fa fa-solid fa-download'></a>
                                         {{else}}badge bg-warning">Pendente{{/if}}
@@ -179,7 +191,13 @@
                                       <th class="col-3">Autodeclaração (Vídeo)</th>
                                       <td>
                                         <span class="{{#if candidatoDocs.AutodeclaracaoVideo}}">
+                                          <a style="margin-right: 16px"
+                                             title="Visualizar"
+                                             target="_blank"
+                                             href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=VideoAutodeclaracao.mp4"
+                                             class='fa fa-solid fa-eye'></a>
                                           <a  style="margin-right: 3px"
+                                              title="Baixar"
                                             href="/downloadCandidateDocument/{{candidato.id}}?documento=VideoAutodeclaracao.mp4"
                                             class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
@@ -205,11 +223,16 @@
                                   </span></td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Título da Proposta</th>
+                                    <th class="col-3">Título da proposta</th>
                                     <td><span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
                                         {{else}}badge bg-danger">Não Registrado{{/if}}
 
                                     </span></td>
+                                </tr>
+                                <tr>
+                                  <th class="col-3">Professor orientador</th>
+                                  <td>{{#if (notEmpty candidato.nomeOrientador)}}{{candidato.nomeOrientador}}
+                                  {{else}}-{{/if}}</td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Motivos</th>
@@ -221,32 +244,56 @@
                                 {{#if (eq edital.cartaOrientador 1)}}
                                 <tr>
                                     <th class="col-3">Carta do Orientador (PDF)</th>
-                                    <td><span class="{{#if candidatoDocs.CartaDoOrientador}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=CartaAceiteOrientador.pdf"
-                                                class='fa fa-solid fa-download'></a>
-                                            {{else}}badge bg-warning">Pendente{{/if}}
-                                    </span></td>
+                                    <td>
+                                      <span class="{{#if candidatoDocs.CartaDoOrientador}}">
+                                        <a style="margin-right: 16px"
+                                           title="Visualizar"
+                                           target="_blank"
+                                           href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=CartaAceiteOrientador.pdf"
+                                           class='fa fa-solid fa-eye'></a>
+                                        <a  style="margin-right: 3px"
+                                            title="Baixar"
+                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=CartaAceiteOrientador.pdf"
+                                            class='fa fa-solid fa-download'></a>
+                                        {{else}}badge bg-warning">Pendente{{/if}}
+                                      </span>
+                                    </td>
                                 </tr>
                                 {{/if}}
                                
                                 <tr>
                                     <th class="col-3">Proposta de Trabalho (PDF)</th>
-                                    <td><span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=PropostaTrabalho.pdf"
-                                                class='fa fa-solid fa-download'></a>
-                                            {{else}}badge bg-warning">Pendente{{/if}}
-                                    </span></td>
+                                    <td>
+                                      <span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
+                                        <a style="margin-right: 16px"
+                                           title="Visualizar"
+                                           target="_blank"
+                                           href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=PropostaTrabalho.pdf"
+                                           class='fa fa-solid fa-eye'></a>
+                                        <a  style="margin-right: 3px"
+                                            title="Baixar"
+                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=PropostaTrabalho.pdf"
+                                            class='fa fa-solid fa-download'></a>
+                                      {{else}}badge bg-warning">Pendente{{/if}}
+                                      </span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="col-3">Curriculum (PDF)</th>
-                                    <td><span class="{{#if candidatoDocs.Curriculum}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=Curriculum.pdf"
-                                                class='fa fa-solid fa-download'></a>
+                                    <td>
+                                      <span class="{{#if candidatoDocs.Curriculum}}">
+                                        <a style="margin-right: 16px"
+                                           title="Visualizar"
+                                           target="_blank"
+                                           href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=Curriculum.pdf"
+                                           class='fa fa-solid fa-eye'></a>
+                                        <a  style="margin-right: 3px"
+                                            title="Baixar"
+                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=Curriculum.pdf"
+                                            class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
-                                    </span></td>
+                                      </span>
+                                    </td>
                                 </tr>
 <!--                                <tr>-->
 <!--                                    <th class="col-3">Prova de seleção anterior para aproveitamento de nota (PDF)</th>-->
@@ -259,20 +306,35 @@
 <!--                                </tr>-->
                                 <tr>
                                     <th class="col-3">Comprovante de Pagamento (PDF)</th>
-                                    <td><span class="{{#if candidatoDocs.ComprovantePagamento}}">
-                                            <a  style="margin-right: 3px"
-                                                href="/downloadCandidateDocument/{{candidato.id}}?documento=ComprovantePagamento.pdf"
-                                                class='fa fa-solid fa-download'></a>
+                                    <td>
+                                      <span class="{{#if candidatoDocs.ComprovantePagamento}}">
+                                        <a style="margin-right: 16px"
+                                           title="Visualizar"
+                                           target="_blank"
+                                           href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=ComprovantePagamento.pdf"
+                                           class='fa fa-solid fa-eye'></a>
+                                        <a  style="margin-right: 3px"
+                                            title="Baixar"
+                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=ComprovantePagamento.pdf"
+                                            class='fa fa-solid fa-download'></a>
                                             {{else}}badge bg-warning">Pendente{{/if}}
-                                    </span></td>
+                                      </span>
+                                    </td>
                                 </tr>
+
                                 {{#if (eq edital.cartaRecomendacao 1)}}
                                 <tr>
                                     <th class="col-3">Cartas de Recomendação (PDF)</th>
                                     <td>
                                       {{#if candidatoDocs.Recomendacoes}}
                                         <span>
+                                          <a style="margin-right: 16px"
+                                             title="Visualizar"
+                                             target="_blank"
+                                             href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=Recomendacoes.pdf"
+                                             class='fa fa-solid fa-eye'></a>
                                           <a  style="margin-right: 3px"
+                                              title="Baixar"
                                               href="/downloadCandidateDocument/{{candidato.id}}?documento=Recomendacoes.pdf"
                                               class='fa fa-solid fa-download'></a>
                                         </span>
@@ -290,7 +352,23 @@
                                     <td>{{countRecomendationsFinished}}</td>
                                 </tr>
                                 {{/if}}
-
+                                <tr>
+                                  <th class="col-3">Ficha inscrição (PDF)</th>
+                                  <td>
+                                    <span class="{{#if candidatoDocs.Fichainscricao}}">
+                                    <a style="margin-right: 16px"
+                                       title="Visualizar"
+                                       target="_blank"
+                                       href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=Inscricao.pdf"
+                                       class='fa fa-solid fa-eye'></a>
+                                    <a  style="margin-right: 3px"
+                                        title="Baixar"
+                                        href="/downloadCandidateDocument/{{candidato.id}}?documento=Inscricao.pdf"
+                                        class='fa fa-solid fa-download'></a>
+                                  {{else}}badge bg-warning">Pendente{{/if}}
+                                  </span>
+                                  </td>
+                                </tr>
                              
                                 <tr>
                                     <th class="col-3">Curso de graduação</th>

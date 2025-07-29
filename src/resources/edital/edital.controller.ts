@@ -13,6 +13,7 @@ import {
   COMPROVANTE_COTA,
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
+  FICHA_INSCRICAO,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from '../selecaoPPGI/selecao.ppgi.types';
@@ -568,6 +569,7 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
       AutodeclaracaoVideo: false,
       Autodeclaracao: false,
       ComprovanteCota: false,
+      Fichainscricao: false,
     };
     const countRecomendations = candidato.recomendacoes.length;
     const countRecomendationsFinished = candidato.recomendacoes.filter(
@@ -623,6 +625,10 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
     candidatoDocs.AutodeclaracaoVideo = await verificarArquivoDiretorio(
       caminhoDiretorioUsuario,
       AUTODECLARACAO_VIDEO,
+    );
+    candidatoDocs.Fichainscricao = await verificarArquivoDiretorio(
+      caminhoDiretorioUsuario,
+      FICHA_INSCRICAO,
     );
     return res.render(resolveView('detalhesCandidato'), {
       candidato: candidato,

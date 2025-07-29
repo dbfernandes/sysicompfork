@@ -6,7 +6,7 @@ export const CARTA_ACEITE_ORIENTADOR_FILE = 'CartaAceiteOrientador.pdf';
 export const AUTODECLARACAO = 'AutodeclaracaoCiencia.pdf';
 export const AUTODECLARACAO_VIDEO = 'VideoAutodeclaracao.mp4';
 export const COMPROVANTE_COTA = 'ComprovanteCota.pdf';
-
+export const FICHA_INSCRICAO = 'Inscricao.pdf';
 export enum Nacionalidade {
   BRASILEIRA = 'Brasileira',
   ESTRANGEIRA = 'Estrangeira',

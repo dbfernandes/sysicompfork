@@ -72,6 +72,17 @@ class CandidatoService {
     });
     // return edital.candidatos;
   }
+  async listCandidatesByEditalFinished(editalId: string) {
+    return prisma.candidato.findMany({
+      where: {
+        editalId,
+        finishedAt: { not: null },
+      },
+      include: {
+        linhaPesquisa: true,
+      },
+    });
+  }
 
   async validarTokenTrocarSenha(token: string): Promise<boolean> {
     const candidato = await prisma.candidato.findFirst({

@@ -68,6 +68,11 @@ function formatarDados(dados: CandidatoSheet[], host: string) {
     const orientador = dado.nomeOrientador ?? '-';
     const nivel = dado.cursoDesejado ?? '-';
     const bolsista = dado.bolsista ?? false;
+    const dados = {
+      text: 'Acessar dados', // texto que aparece
+      hyperlink: `http://${host}/edital/candidateDetails/${id}`, // URL
+      tooltip: 'Navegue até os dados', // opcional
+    };
 
     // Helper: só gera link se houver id
     const doc = (tipo: string) => (id ? getDocument(tipo, host, id) : null);
@@ -78,6 +83,7 @@ function formatarDados(dados: CandidatoSheet[], host: string) {
       inscricao: id,
       linha: linhaPesquisaNome,
       orientador,
+      dados,
       bolsa: bolsista,
       tipoVaga: getTipoVaga(dado) ?? '', // se getTipoVaga puder retornar null
       nivel,
@@ -111,7 +117,8 @@ function formatarDados(dados: CandidatoSheet[], host: string) {
 
 // Pegar o canditatos pelo editalId do banco de dados
 async function getCandidatos(editalId: string, host: string) {
-  const candidatos = await candidatoService.listarCandidatosPorEdital(editalId);
+  const candidatos =
+    await candidatoService.listCandidatesByEditalFinished(editalId);
   return formatarDados(candidatos, host);
 }
 
@@ -130,9 +137,11 @@ export default async function gerarPlanilha(editalId: string, host: string) {
       { header: 'Nome', key: 'nome', width: 40 },
       { header: 'Email', key: 'email', width: 40 },
       { header: 'Inscrição', key: 'inscricao', width: 30 },
+      { header: 'Dados', key: 'dados', width: 30 },
+
       { header: 'Linha', key: 'linha', width: 30 },
       { header: 'Orientador', key: 'orientador', width: 40 },
-      { header: 'Bolsa', key: 'bolsa', width: 15 },
+      // { header: 'Bolsa', key: 'bolsa', width: 15 },
       { header: 'Tipo de vaga', key: 'tipoVaga', width: 15 },
 
       { header: 'Nível', key: 'nivel', width: 15 },
@@ -216,7 +225,5 @@ export default async function gerarPlanilha(editalId: string, host: string) {
       console.log(error.message);
     });
 
-  const arquivo = fs.readFileSync('public/files/planilha.xlsx');
-
-  return arquivo;
+  return fs.readFileSync('public/files/planilha.xlsx');
 }
