@@ -110,7 +110,7 @@ async function signUp(
       const currentLanguage = getLanguage(req);
 
       res.render(resolveView('signUp'), {
-        csrfToken: req.csrfToken(),
+        // csrfToken: req.csrfToken(),
         editais: listEditais.map((edital) => {
           return {
             ...edital,
@@ -154,12 +154,15 @@ async function signIn(
         const listEditais = await editalService.listEditaisDisponiveis();
         const currentLanguage = getLanguage(req);
         const email = (req.query.email as string) || '';
+        const expired = req.query.expired === 'true'; // 👈 flag da query
+
         res.render(resolveView('signIn'), {
           ...localsBegin,
-          csrfToken: req.csrfToken(),
+          // csrfToken: req.csrfToken(),
           editais: listEditais,
           currentLanguage,
           email,
+          expired, // 👈 passando para o template
         });
       } catch (err) {
         console.error(err);
@@ -194,11 +197,11 @@ function logout(req: Request, res: Response): void {
           return;
         }
       });
-      res.redirect('/entrar');
-      break;
+      res.status(StatusCodes.OK).send('Logout realizado com sucesso');
+      return;
     default:
       res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
-      break;
+      return;
   }
 }
 
@@ -264,7 +267,7 @@ async function renderFormDados(
   res.status(200).render(resolveView('formDados'), {
     ...locals,
     ...req.candidato,
-    csrfToken: req.csrfToken(),
+    // csrfToken: req.csrfToken(),
     currentLanguage,
     hasComprovanteCota,
     hasAutodeclaracao,
@@ -310,7 +313,7 @@ async function renderFormHistorico(
     ...req.candidato,
     editalPosicao: req.candidato.posicaoEdital,
     id: uid,
-    csrfToken: req.csrfToken(),
+    // csrfToken: req.csrfToken(),
     hasCurriculum,
     hasProvaAnterior,
     hasVitaeXML,
@@ -366,7 +369,7 @@ async function renderFormProposta(
     editalPosicao: req.session.editalPosition,
     id: uid,
     linhasPesquisa: linhas,
-    csrfToken: req.csrfToken(),
+    // csrfToken: req.csrfToken(),
     hasCartaAceiteOrientador,
     hasPropostaTrabalho,
     hasComprovante,
@@ -416,7 +419,7 @@ async function renderFormConfirmacao(
     ...locals,
     editalPosicao: req.session.editalPosition,
     id: uid,
-    csrfToken: req.csrfToken(),
+    // csrfToken: req.csrfToken(),
     hasCartaAceiteOrientador,
     hasPropostaTrabalho,
     hasComprovantePagamento,
@@ -802,7 +805,7 @@ async function uploadsPublicacoes(
       return res.render(resolveView('formHistorico'), {
         message: 'Dados salvos com sucesso',
         id: req.session.uid,
-        csrfToken: req.csrfToken(),
+        // csrfToken: req.csrfToken(),
         periodicos,
         conferencias,
       });
@@ -879,7 +882,7 @@ async function recuperarSenha(
       const listEditais = await editalService.listEditaisDisponiveis();
       res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
-        csrfToken: req.csrfToken(),
+        // csrfToken: req.csrfToken(),
         currentLanguage,
         ...localsBegin,
       });
@@ -923,7 +926,7 @@ async function trocarSenha(
         error,
         currentLanguage,
         token,
-        csrfToken: req.csrfToken(),
+        // csrfToken: req.csrfToken(),
         ...localsBegin,
       });
       break;

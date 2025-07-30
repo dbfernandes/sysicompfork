@@ -29,7 +29,8 @@ export const isAlredyAuth = async (
   next: NextFunction,
 ) => {
   const { session } = req;
-  if (session.uid || session.tipoUsuario) return res.redirect('/formulario');
+
+  if (Boolean(session.uid)) return res.redirect('/formulario');
   next();
 };
 

@@ -653,8 +653,11 @@
         success: function (data) {
           window.location.href = `${basePath}`;
         },
-        error: function (data) {
-          console.error(data);
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar`;
+            return
+          }
         }
       });
     });
@@ -665,11 +668,14 @@
         data: {
           _csrf: $("#csrfToken").val()
         },
-        success: function (data) {
+        success: function () {
           window.location.href = `${basePath}/formulario`;
         },
-        error: function (data) {
-          console.error(data);
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
         }
       });
     });
@@ -690,10 +696,13 @@
           window.location.href = `${basePath}/formulario`;
           window.location.reload(true);
         },
-        error: function (data) {
+        error: function (xhr) {
           btnVoltar.attr("disabled", false);
           btnVoltar.find("span").prop("hidden", true);
-          console.error(data)
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
         }
       });
     });
@@ -749,7 +758,11 @@
           $inputGroup.show();      // mostra novamente o input para escolher arquivo
 
         },
-        error: function (data) {
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
           $(document).Toasts('create', {
             icon: 'success',
             class: "bg-danger",
@@ -821,7 +834,11 @@
           $fileNameDisplay.html(`<b>${fileName}</b>`);
           $downloadLink.attr({ href: blobURL, download: fileName });
         },
-        error: function (err) {
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
           $(document).Toasts('create', {
             icon: 'success',
             class: "bg-danger",
@@ -1012,8 +1029,11 @@
             window.location.reload();
           },
           error: function (xhr, status, error) {
+            if (xhr.status === 401){
+              document.location.href = `${basePath}/entrar?expired=true`;
+              return
+            }
             toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações.');
-
             btnSubmit.attr("disabled", false);
             btnSubmit.find("span").prop("hidden", true);
           }

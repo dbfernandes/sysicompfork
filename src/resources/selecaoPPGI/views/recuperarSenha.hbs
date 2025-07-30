@@ -124,11 +124,7 @@
   const basePath = "{{basePath}}";
 
   $("#voltar").click(() => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = `${basePath}/`;
-    }
+      window.location.href = `${basePath}/entrar`;
   });
 
   // Esconde a mensagem de erro ao digitar

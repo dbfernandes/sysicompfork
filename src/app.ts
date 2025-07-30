@@ -1,7 +1,5 @@
 /* app.ts — CommonJS-friendly (TypeScript) */
-import csurf from 'csurf'; // com “s” no final
 import path from 'node:path';
-import { v4 as uuidv4 } from 'uuid';
 import helpers from './views/helpers/helpers'; // se o export for `export default`
 
 import cookieParser from 'cookie-parser';
@@ -54,13 +52,13 @@ app.use(
     store: new RedisStore({
       client: redisClient,
       prefix: 'sysicomp_sessao:', // prefixo diferente no Redis
-      ttl: 60 * 60 * 24 * 2, // 48h
+      ttl: 60 * 60 * 24 * 7, // 48h
     }),
     secret: keySession,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 48 * 60 * 60 * 1000, // 2 horas
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 2 horas
       httpOnly: true,
       secure: isProduction, // true se usar HTTPS
     },
@@ -72,8 +70,6 @@ app.use(express.json({ limit: '50mb' }));
 app.use(
   express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
 );
-// @ts-ignore
-app.use(csurf());
 
 app.use(
   morgan('combined', {

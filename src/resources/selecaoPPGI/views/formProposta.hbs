@@ -605,12 +605,14 @@
         success: function (data) {
           window.location.href = `${basePath}/formulario`;
         },
-        error: function (data) {
-          console.error(data);
+        error: function (xhr) {
           btnSubmit.attr("disabled", false);
           btnSubmit.find("span").prop("hidden", true);
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
           toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
-
         }
       });
     });
@@ -651,10 +653,12 @@
 				success: function (data) {
 					window.location.href = `${basePath}`;
 				},
-				error: function (data) {
-					console.error(data);
+				error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar`;
+            return
+          }
           toastr.error('Atualize a página e tente novamente', 'Erro ao realizar logout');
-
         }
 			});
 		});
@@ -669,8 +673,11 @@
 				success: function (data) {
 					window.location.href = `${basePath}/formulario`;
 				},
-				error: function (data) {
-					console.error(data);
+				error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
 				}
 			});
 		});
@@ -694,12 +701,14 @@
             window.location.href = `${basePath}/formulario`;
             window.location.reload(true);
           },
-          error: function (data) {
-            console.error(data)
+          error: function (xhr) {
             btnVoltar.prop("disabled", false);
             btnVoltar.find("span").prop("hidden", true);
+            if (xhr.status === 401){
+              document.location.href = `${basePath}/entrar?expired=true`;
+              return
+            }
             toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
-
           }
         });
       });
@@ -863,12 +872,14 @@
       success: function (data) {
         window.location.href = `{{basePath}}/formulario`;
       },
-      error: function (data) {
-        console.error(data);
+      error: function (xhr) {
         btnSubmit.attr("disabled", false);
         btnSubmit.find("span").prop("hidden", true);
+        if (xhr.status === 401){
+          document.location.href = `{{basePath}}/entrar?expired=true`;
+          return
+        }
         toastr.error('Atualize a página e tente novamente', 'Erro ao finalizar inscrição.');
-
       }
     });
   }

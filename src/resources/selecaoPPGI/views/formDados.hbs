@@ -1327,9 +1327,11 @@
         success: function (data) {
           window.location.href = `${basePath}`;
         },
-        error: function (data) {
-          console.error(data);
-        }
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}`;
+            return
+          }        }
       });
     });
 
@@ -1565,12 +1567,15 @@
         		window.location.href = `${basePath}/formulario`;
         		window.location.reload();
         	},
-        	error: () => {
-            toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
-
+        	error: (xhr) => {
             btnSave.find("span").prop("hidden", true);
-        		btnSave.prop("disabled", false);
-        	}
+            btnSave.prop("disabled", false);
+            if (xhr.status === 401){
+              document.location.href = `${basePath}/entrar?expired=true`;
+              return
+            }
+            toastr.error('Atualize a página e tente novamente', 'Erro ao salvar informações');
+          }
         });
       }
     });

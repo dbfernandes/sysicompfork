@@ -174,14 +174,12 @@
 </main>
 
 <script>
-  const basePath = "{{basePath}}";
+  $(document).ready(function () {
+
+    const basePath = "{{basePath}}";
 
   $("#voltar").click(() => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
       window.location.href = `${basePath}/`;
-    }
   });
 
   // Exibir/ocultar senha
@@ -290,4 +288,13 @@
       });
     }
   });
+  });
+
 </script>
+{{#if expired}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      toastr.warning('Faça o login novamente', 'Sessão expirada');
+    });
+  </script>
+{{/if}}
