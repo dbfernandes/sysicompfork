@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as uuid from 'uuid';
 
 import helpers from './views/helpers/helpers'; // se o export for `export default`
 
@@ -18,7 +17,8 @@ import morgan from 'morgan';
 import logger from '@utils/logger';
 
 import redisClient from './redisClient';
-import { RedisStore } from 'connect-redis'; // ✅ Correto na v6+
+import { RedisStore } from 'connect-redis';
+import { logRequestResponse } from '@utils/loggerResponse';
 
 dotenv.config({
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
@@ -107,6 +107,7 @@ app.use(
     },
   }),
 );
+app.use(logRequestResponse);
 
 app.use((req, res, next) => {
   res.locals.basePath = req.baseUrl || ''; // Se usar Router

@@ -18,7 +18,8 @@ import morgan from 'morgan';
 import logger from './utils/logger';
 
 import redisClient from './redisClient';
-import { RedisStore } from 'connect-redis'; // ✅ Correto na v6+
+import { RedisStore } from 'connect-redis';
+import { logRequestResponse } from '@utils/loggerResponse'; // ✅ Correto na v6+
 /* ───────── env ───────── */
 dotenv.config({
   // __dirname já existe em CJS; não precisamos de import.meta
@@ -81,6 +82,7 @@ app.use(
     },
   }),
 );
+app.use(logRequestResponse);
 
 /* ───────── assets estáticos ───────── */
 app.use(
