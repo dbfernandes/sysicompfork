@@ -32,17 +32,29 @@ const fileFormat = combine(
 const logger = createLogger({
   level: 'info',
   transports: [
-    // Logs no console (com cor)
+    // Console (colorido)
     new transports.Console({
       format: consoleFormat,
     }),
-    // Logs em arquivo (sem cor)
+
+    // Arquivo geral (todos os logs de nível info ou superior)
     new DailyRotateFile({
       filename: path.join(logDir, 'app-%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
       maxSize: '20m',
       maxFiles: '14d',
       format: fileFormat,
+      level: 'info', // logs de info, warn, error...
+    }),
+
+    // Arquivo separado só para erros
+    new DailyRotateFile({
+      filename: path.join(logDir, 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      maxSize: '10m',
+      maxFiles: '30d',
+      format: fileFormat,
+      level: 'error', // apenas logs de erro
     }),
   ],
   exitOnError: false,

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { BaseError } from '@utils/baseError';
 import { StatusCodes } from 'http-status-codes';
+import logger from '@utils/logger';
 
 export const errorHandler = (
   err: Error,
@@ -10,7 +11,11 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   if (err instanceof BaseError) {
-    console.error('Erro operacional:', err);
+    logger.error(`Erro operacional: ${err.message}`, {
+      statusCode: err.statusCode,
+      stack: err.stack,
+    });
+    // console.error('Erro operacional:', err);
     // Erros operacionais conhecidos
     return res.status(err.statusCode).json({
       status: 'error',
@@ -19,7 +24,10 @@ export const errorHandler = (
   }
 
   // Erros desconhecidos (programação)
-  console.error('Erro não operacional:', err);
+  logger.error(`Erro não operacional: ${err.message}`, {
+    stack: err.stack,
+  });
+  // console.error('Erro não operacional:', err);
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: 'error',
     message: 'Algo deu errado. Por favor, tente novamente mais tarde.',
