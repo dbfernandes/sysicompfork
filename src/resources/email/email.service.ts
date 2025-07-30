@@ -3,10 +3,6 @@ import path from 'path';
 import fs from 'fs/promises';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 import nodemailer from 'nodemailer';
 interface Attachment {
   filename: string;
@@ -147,23 +143,22 @@ export async function sendEmail({
   const attachmentsSend = [...attachmentsImgs, ...(attachments || [])];
 
   // const list = await resend.apiKeys.list();
-  const { data: dataResend, error } = await resend.emails.send({
-    from: 'Acme <no-reply@archiwise.online>',
-    to: [to],
-    subject: title,
-    html,
-    // text,
-    // attachments: attachmentsSend.map((att) => ({
-    //   filename: att.filename,
-    //   content: att.content,
-    // })),
-  });
-  console.log('[RESEND] Email enviado com sucesso:', dataResend);
-  if (error) {
-    console.error(
-      '[RESEND] Falha ao enviar, usando fallback com Nodemailer...',
-      error,
-    );
+  // const { data: res, error } = await resend.emails.send({
+  //   from: 'Acme <onboarding@resend.dev>',
+  //   to: [to],
+  //   subject: title,
+  //   html,
+  //   // text,
+  //   // attachments: attachmentsSend.map((att) => ({
+  //   //   filename: att.filename,
+  //   //   content: att.content,
+  //   // })),
+  // });
+  if (true) {
+    // console.error(
+    //   '[RESEND] Falha ao enviar, usando fallback com Nodemailer...',
+    //   error,
+    // );
     await sendEmailFallback({
       to,
       name,
