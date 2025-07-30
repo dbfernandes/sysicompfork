@@ -1325,11 +1325,11 @@
           _csrf: $("#csrfToken").val()
         },
         success: function (data) {
-          window.location.href = `${basePath}`;
+          window.location.replace(`${basePath}/entrar`);
         },
         error: function (xhr) {
           if (xhr.status === 401){
-            document.location.href = `${basePath}`;
+            window.location.replace(`${basePath}/entrar`);
             return
           }        }
       });

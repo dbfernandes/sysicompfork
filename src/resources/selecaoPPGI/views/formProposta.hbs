@@ -650,12 +650,12 @@
 				data: {
 					_csrf: $("#csrfToken").val()
 				},
-				success: function (data) {
-					window.location.href = `${basePath}`;
+				success: function () {
+          window.location.replace(`${basePath}/entrar`);
 				},
 				error: function (xhr) {
           if (xhr.status === 401){
-            document.location.href = `${basePath}/entrar`;
+            window.location.replace(`${basePath}/entrar`);
             return
           }
           toastr.error('Atualize a página e tente novamente', 'Erro ao realizar logout');
