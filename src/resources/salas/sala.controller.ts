@@ -15,7 +15,6 @@ const criarSala = async (req: Request, res: Response): Promise<void> => {
 
     res.render(resolveView('salasAdicionar'), {
       nome: req.session.nome,
-      csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
     });
   } else if (req.method === 'POST') {
@@ -87,7 +86,6 @@ const listarSalas = async (req: Request, res: Response): Promise<void> => {
   const salas = await SalaService.listarTodos();
   res.render(resolveView('salasGerenciar'), {
     salas,
-    csrfToken: req.csrfToken(),
     nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
   });
@@ -110,7 +108,6 @@ const editarSala = async (req: Request, res: Response): Promise<void> => {
 
       res.render(resolveView('salasEditar'), {
         sala: sala,
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
       });

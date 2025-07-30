@@ -14,7 +14,6 @@ const exibirDetalhes = async (req: Request, res: Response) => {
     const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
     return res.render(resolveView('perfilDados'), {
       usuario,
-      csrfToken: req.csrfToken(),
       nome: req.session.nome,
       message,
       type,
@@ -43,7 +42,6 @@ const editar = async (req: Request, res: Response) => {
       const usuario = await usuarioService.listarUmUsuario(parseInt(id!));
       return res.render(resolveView('perfilEditar'), {
         usuario,
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         message,
         type,
@@ -92,7 +90,6 @@ const editar = async (req: Request, res: Response) => {
       dados.id = id;
       return res.status(500).render(resolveView('perfilEditar'), {
         usuario: dados,
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         message:
           'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',

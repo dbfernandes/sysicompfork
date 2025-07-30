@@ -35,7 +35,6 @@ async function begin(req: Request, res: Response) {
         currentLanguage,
       });
     }
-    const csrfToken = req.csrfToken();
     switch (recomendacao.passo) {
       case RecomendacaoStatus.PENDENTE: {
         const graduacaoCandidato = `${recomendacao.candidato.cursoGraduacao} - ${recomendacao.candidato.instituicaoGraduacao}`;
@@ -46,7 +45,6 @@ async function begin(req: Request, res: Response) {
             graduado: graduacaoCandidato,
           },
           recomendacao,
-          csrfToken,
           token,
           currentLanguage,
         });

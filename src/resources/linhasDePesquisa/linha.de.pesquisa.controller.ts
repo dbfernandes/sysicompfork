@@ -25,7 +25,6 @@ const listarPesquisas = async (req: Request, res: Response) => {
       .render(resolveView('linhasDePesquisaListar'), {
         linhaDePesquisa: linhasDePesquisa,
         pageTitle,
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session?.tipoUsuario,
       });
@@ -41,7 +40,6 @@ const listarPesquisas = async (req: Request, res: Response) => {
           erro instanceof Error
             ? erro.message
             : 'Não foi possível listar as linhas de pesquisa!',
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         tipoUsuario: req.session?.tipoUsuario,
       });
@@ -49,7 +47,6 @@ const listarPesquisas = async (req: Request, res: Response) => {
 };
 
 const detalhar = async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
     const { id } = req.params;
     const linhaPesquisa = await linhasDePesquisaService.buscarPorId(
@@ -85,12 +82,13 @@ const detalhar = async (req: Request, res: Response) => {
 
 const criarPesquisa = async (req: Request, res: Response) => {
   if (req.method === 'GET') {
-    return res.status(StatusCodes.OK).render(resolveView('linhasDePesquisaCriar'), {
-      pageTitle,
-      csrfToken: req.csrfToken(),
-      tipoUsuario: req.session?.tipoUsuario,
-      nome: req.session.nome,
-    });
+    return res
+      .status(StatusCodes.OK)
+      .render(resolveView('linhasDePesquisaCriar'), {
+        pageTitle,
+        tipoUsuario: req.session?.tipoUsuario,
+        nome: req.session.nome,
+      });
   } else if (req.method === 'POST') {
     try {
       const novaLinhaPesquisa: CreateLinhaDePesquisaDto = {
@@ -126,7 +124,6 @@ const criarPesquisa = async (req: Request, res: Response) => {
         .render(resolveView('linhasDePesquisaCriar'), {
           pageTitle,
           nome: req.session.nome,
-          csrfToken: req.csrfToken(),
           tipoUsuario: req.session?.tipoUsuario,
           erro:
             erro instanceof Error
@@ -153,7 +150,6 @@ const removerPesquisa = async (req: Request, res: Response) => {
             ? erro.message
             : 'Não foi possível remover a linha de pesquisa!',
         nome: req.session.nome,
-        csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
       });
     }
@@ -176,7 +172,6 @@ const editarPesquisa = async (req: Request, res: Response) => {
           pageTitle,
           erro: 'Linha de pesquisa não encontrada!',
           nome: req.session.nome,
-          csrfToken: req.csrfToken(),
           tipoUsuario: req.session?.tipoUsuario,
         });
     }
@@ -187,7 +182,6 @@ const editarPesquisa = async (req: Request, res: Response) => {
         .render(resolveView('linhasDePesquisaEditar'), {
           linhaPesquisa,
           pageTitle,
-          csrfToken: req.csrfToken(),
           nome: req.session.nome,
           tipoUsuario: req.session?.tipoUsuario,
         });
@@ -228,7 +222,6 @@ const editarPesquisa = async (req: Request, res: Response) => {
         pageTitle,
         linhaPesquisa, // Agora está definido no escopo
         nome: req.session.nome,
-        csrfToken: req.csrfToken(),
         tipoUsuario: req.session?.tipoUsuario,
         erro:
           erro instanceof Error
@@ -238,4 +231,10 @@ const editarPesquisa = async (req: Request, res: Response) => {
   }
 };
 
-export default { listarPesquisas, detalhar, criarPesquisa, removerPesquisa, editarPesquisa };
+export default {
+  listarPesquisas,
+  detalhar,
+  criarPesquisa,
+  removerPesquisa,
+  editarPesquisa,
+};

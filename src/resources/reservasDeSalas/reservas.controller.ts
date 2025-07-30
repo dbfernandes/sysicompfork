@@ -32,7 +32,6 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
         salas,
         nome: req.session.nome,
         usuarioId: req.session.uid, // Mudado de UsuarioId para usuarioId
-        csrf: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error) {
@@ -116,7 +115,6 @@ const listarReservasFormatadas = async (
     res.render(resolveView('reservasGerenciar'), {
       reservas: reservasFormatadas,
       nome: req.session.nome,
-      csrfToken: req.csrfToken(),
       tipoUsuario: req.session.tipoUsuario,
     });
   } catch (error) {
@@ -142,7 +140,6 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
         salas,
         nome: req.session.nome,
         reserva,
-        csrf: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error) {

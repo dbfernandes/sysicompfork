@@ -20,11 +20,12 @@ const adicionarUsuario = async (
 ): Promise<void | Response> => {
   switch (req.method) {
     case 'GET':
-      return res.status(StatusCodes.OK).render(resolveView('usuariosAdicionar'), {
-        nome: req.session.nome,
-        csrfToken: req.csrfToken(),
-        tipoUsuario: req.session.tipoUsuario,
-      });
+      return res
+        .status(StatusCodes.OK)
+        .render(resolveView('usuariosAdicionar'), {
+          nome: req.session.nome,
+          tipoUsuario: req.session.tipoUsuario,
+        });
 
     case 'POST':
       try {
@@ -48,15 +49,15 @@ const adicionarUsuario = async (
 
         const cpfExiste = await usuarioService.verificaCpf(cpf);
         if (cpfExiste) {
-          return res.status(StatusCodes.BAD_REQUEST).render(resolveView('usuariosAdicionar'), {
-            nome: req.session.nome,
-            csrfToken: req.csrfToken(),
-            message:
-              'Este CPF já está cadastrado no sistema.',
-            type: 'danger',
-            messageTitle: 'Criação de usuário indisponível!',
-            tipoUsuario: req.session.tipoUsuario,
-          })
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .render(resolveView('usuariosAdicionar'), {
+              nome: req.session.nome,
+              message: 'Este CPF já está cadastrado no sistema.',
+              type: 'danger',
+              messageTitle: 'Criação de usuário indisponível!',
+              tipoUsuario: req.session.tipoUsuario,
+            });
         }
 
         const novoUsuario: CreateUsuarioDto = {
@@ -100,17 +101,18 @@ const adicionarUsuario = async (
         );
       } catch (error: unknown) {
         console.log(error);
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuariosAdicionar'), {
-          nome: req.session.nome,
-          csrfToken: req.csrfToken(),
-          errors: (error as { errors: Record<string, { message: string }> })
-            .errors,
-          message:
-            'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
-          type: 'danger',
-          messageTitle: 'Criação de usuário indisponível!',
-          tipoUsuario: req.session.tipoUsuario,
-        });
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .render(resolveView('usuariosAdicionar'), {
+            nome: req.session.nome,
+            errors: (error as { errors: Record<string, { message: string }> })
+              .errors,
+            message:
+              'Não foi possível criar este usuário. Verifique os erros abaixo e tente novamente.',
+            type: 'danger',
+            messageTitle: 'Criação de usuário indisponível!',
+            tipoUsuario: req.session.tipoUsuario,
+          });
       }
 
     default:
@@ -232,15 +234,16 @@ const listarUsuario = async (
             usuario.perfil += ' professor';
           }
         });
-        return res.status(StatusCodes.OK).render(resolveView('usuariosListar'), {
-          usuarios,
-          csrfToken: req.csrfToken(),
-          nome: req.session.nome,
-          message,
-          type,
-          messageTitle,
-          tipoUsuario: req.session.tipoUsuario,
-        });
+        return res
+          .status(StatusCodes.OK)
+          .render(resolveView('usuariosListar'), {
+            usuarios,
+            nome: req.session.nome,
+            message,
+            type,
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario,
+          });
       } catch (error: unknown) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).redirect(
           criarURL('/inicio', {
@@ -270,15 +273,16 @@ const exibirDetalhesUsuario = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(StatusCodes.OK).render(resolveView('usuarioVisualizar'), {
-          usuario,
-          csrfToken: req.csrfToken(),
-          nome: req.session.nome,
-          message,
-          type,
-          messageTitle,
-          tipoUsuario: req.session.tipoUsuario,
-        });
+        return res
+          .status(StatusCodes.OK)
+          .render(resolveView('usuarioVisualizar'), {
+            usuario,
+            nome: req.session.nome,
+            message,
+            type,
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario,
+          });
       } catch (error: unknown) {
         console.log(error);
         return res.status(StatusCodes.SERVICE_UNAVAILABLE).redirect(
@@ -308,15 +312,16 @@ const editarUsuario = async (
         const usuario = await usuarioService.listarUmUsuario(
           Number(req.params.id),
         );
-        return res.status(StatusCodes.OK).render(resolveView('usuariosEditar'), {
-          usuario,
-          csrfToken: req.csrfToken(),
-          nome: req.session.nome,
-          message,
-          type,
-          messageTitle,
-          tipoUsuario: req.session.tipoUsuario,
-        });
+        return res
+          .status(StatusCodes.OK)
+          .render(resolveView('usuariosEditar'), {
+            usuario,
+            nome: req.session.nome,
+            message,
+            type,
+            messageTitle,
+            tipoUsuario: req.session.tipoUsuario,
+          });
       } catch (error: unknown) {
         console.log(error);
         const errorParams = {
@@ -393,17 +398,18 @@ const editarUsuario = async (
           id: req.params.id,
         };
 
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render(resolveView('usuariosEditar'), {
-          usuario: formData,
-          csrfToken: req.csrfToken(),
-          nome: req.session.nome,
-          message:
-            'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
-          type: 'danger',
-          messageTitle: 'Edição de usuário indisponível!',
-          errors: error,
-          tipoUsuario: req.session.tipoUsuario,
-        });
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .render(resolveView('usuariosEditar'), {
+            usuario: formData,
+            nome: req.session.nome,
+            message:
+              'Não foi possível editar este usuário. Verifique os erros abaixo e tente novamente.',
+            type: 'danger',
+            messageTitle: 'Edição de usuário indisponível!',
+            errors: error,
+            tipoUsuario: req.session.tipoUsuario,
+          });
       }
     }
 
@@ -424,7 +430,9 @@ const verificarUsuarioDiretor = async (
         return res.status(StatusCodes.OK).json({ diretor: !!diretor });
       } catch (error: unknown) {
         console.log(error);
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ diretor: false });
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ diretor: false });
       }
     default:
       return res

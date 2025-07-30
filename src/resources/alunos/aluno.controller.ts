@@ -23,7 +23,6 @@ class AlunoController {
 
       // Renderizar página de gerenciamento
       return res.render(resolveView('alunosGerenciar'), {
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         usuarioId: req.session.uid,
         message,

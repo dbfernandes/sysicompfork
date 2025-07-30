@@ -110,7 +110,6 @@ async function signUp(
       const currentLanguage = getLanguage(req);
 
       res.render(resolveView('signUp'), {
-        // csrfToken: req.csrfToken(),
         editais: listEditais.map((edital) => {
           return {
             ...edital,
@@ -158,7 +157,6 @@ async function signIn(
 
         res.render(resolveView('signIn'), {
           ...localsBegin,
-          // csrfToken: req.csrfToken(),
           editais: listEditais,
           currentLanguage,
           email,
@@ -267,7 +265,6 @@ async function renderFormDados(
   res.status(200).render(resolveView('formDados'), {
     ...locals,
     ...req.candidato,
-    // csrfToken: req.csrfToken(),
     currentLanguage,
     hasComprovanteCota,
     hasAutodeclaracao,
@@ -313,7 +310,6 @@ async function renderFormHistorico(
     ...req.candidato,
     editalPosicao: req.candidato.posicaoEdital,
     id: uid,
-    // csrfToken: req.csrfToken(),
     hasCurriculum,
     hasProvaAnterior,
     hasVitaeXML,
@@ -369,7 +365,6 @@ async function renderFormProposta(
     editalPosicao: req.session.editalPosition,
     id: uid,
     linhasPesquisa: linhas,
-    // csrfToken: req.csrfToken(),
     hasCartaAceiteOrientador,
     hasPropostaTrabalho,
     hasComprovante,
@@ -419,7 +414,6 @@ async function renderFormConfirmacao(
     ...locals,
     editalPosicao: req.session.editalPosition,
     id: uid,
-    // csrfToken: req.csrfToken(),
     hasCartaAceiteOrientador,
     hasPropostaTrabalho,
     hasComprovantePagamento,
@@ -805,7 +799,6 @@ async function uploadsPublicacoes(
       return res.render(resolveView('formHistorico'), {
         message: 'Dados salvos com sucesso',
         id: req.session.uid,
-        // csrfToken: req.csrfToken(),
         periodicos,
         conferencias,
       });
@@ -882,7 +875,6 @@ async function recuperarSenha(
       const listEditais = await editalService.listEditaisDisponiveis();
       res.render(resolveView('recuperarSenha'), {
         editais: listEditais,
-        // csrfToken: req.csrfToken(),
         currentLanguage,
         ...localsBegin,
       });
@@ -926,7 +918,6 @@ async function trocarSenha(
         error,
         currentLanguage,
         token,
-        // csrfToken: req.csrfToken(),
         ...localsBegin,
       });
       break;

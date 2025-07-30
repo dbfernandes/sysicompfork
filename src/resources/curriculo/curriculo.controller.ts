@@ -33,7 +33,6 @@ const visualizarCurriculo = async (req: Request, res: Response) => {
         });
         return res.render(resolveView('curriculoAdicionar'), {
           professores,
-          csrfToken: req.csrfToken(),
           nome: req.session.nome,
           usuarioId: req.session.uid,
           message,

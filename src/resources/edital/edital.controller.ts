@@ -34,7 +34,6 @@ const adicionarEditalSelecao = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.render(resolveView('adicionarEdital'), {
-        csrfToken: req.csrfToken(),
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
         ...locals,
@@ -63,7 +62,6 @@ const adicionarEditalSelecao = async (req: Request, res: Response) => {
         return res.redirect('/edital/listEdital');
       } catch (error) {
         return res.status(500).json({
-          csrfToken: req.csrfToken(),
           error: error.message,
           req: req.body,
         });
@@ -84,7 +82,6 @@ const listarEditalSelecao = async (req: Request, res: Response) => {
     case 'GET':
       const editais = await editalService.listEditalComQtdeCandidatos();
       return res.render(resolveView('listarEditais'), {
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         editais,
         tipoUsuario: req.session.tipoUsuario,
@@ -116,7 +113,6 @@ const deletarEdital = async (req: Request, res: Response) => {
         await editalService.delete(id);
       } catch (error) {
         return res.status(400).json({
-          csrfToken: req.csrfToken(),
           error: error.message,
         });
       }
@@ -172,7 +168,6 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
           candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
       ).length;
       return res.render(resolveView('visualizarEdital'), {
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
         edital,
@@ -194,7 +189,6 @@ const updateEdital = async (req: Request, res: Response) => {
         });
       });
       return res.render(resolveView('editarEdital'), {
-        csrfToken: req.csrfToken(),
         nome: req.session.nome,
         ...locals,
         edital,
@@ -260,7 +254,6 @@ const listarCandidatos = async (req: Request, res: Response) => {
         ).length;
 
         return res.render(resolveView('listarCandidatosPorEdital'), {
-          csrfToken: req.csrfToken(),
           nome: req.session.nome,
           ...locals,
           candidatos,
@@ -633,7 +626,6 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
     return res.render(resolveView('detalhesCandidato'), {
       candidato: candidato,
       candidatoDocs: candidatoDocs,
-      csrfToken: req.csrfToken(),
       nome: req.session.nome,
       ...locals,
       tipoUsuario: req.session.tipoUsuario,

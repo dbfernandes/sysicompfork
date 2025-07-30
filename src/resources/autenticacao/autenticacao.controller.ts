@@ -58,7 +58,6 @@ const login = async (req: Request, res: Response) => {
       if (req.session.uid) return res.redirect('/');
       return res.status(StatusCodes.OK).render(resolveView('login'), {
         ...optionsLogin,
-        csrfToken: req.csrfToken(),
       });
     } catch (err) {
       console.error(err);
@@ -66,7 +65,6 @@ const login = async (req: Request, res: Response) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .render(resolveView('login'), {
           ...optionsLogin,
-          csrfToken: req.csrfToken(),
           message: 'Erro interno',
           type: 'danger',
         });
@@ -79,15 +77,12 @@ const login = async (req: Request, res: Response) => {
         return res.status(StatusCodes.NOT_FOUND).render(resolveView('login'), {
           ...optionsLogin,
 
-          csrfToken: req.csrfToken(),
           message: 'Usuário não cadastrado',
           type: 'danger',
         });
       } else if (usuario.status === 0) {
         return res.status(StatusCodes.FORBIDDEN).render(resolveView('login'), {
           ...optionsLogin,
-
-          csrfToken: req.csrfToken(),
           message: 'Usuário bloqueado. Contate a administração.',
           type: 'danger',
         });
@@ -99,7 +94,6 @@ const login = async (req: Request, res: Response) => {
           .status(StatusCodes.UNAUTHORIZED)
           .render(resolveView('login'), {
             ...optionsLogin,
-            csrfToken: req.csrfToken(),
             message: 'Senha inválida',
             type: 'danger',
           });
@@ -129,7 +123,6 @@ const login = async (req: Request, res: Response) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .render(resolveView('login'), {
           ...optionsLogin,
-          csrfToken: req.csrfToken(),
           message: 'Erro interno',
           type: 'danger',
         });
@@ -142,7 +135,6 @@ const recuperarSenha = async (req: Request, res: Response) => {
     case 'GET': {
       return res.render(resolveView('recuperarSenha'), {
         ...optionsLogin,
-        csrfToken: req.csrfToken(),
       });
     }
     case 'POST': {
@@ -160,7 +152,6 @@ const recuperarSenha = async (req: Request, res: Response) => {
         console.error(err);
         return res.render(resolveView('recuperarSenha'), {
           ...optionsLogin,
-          csrfToken: req.csrfToken(),
           message: 'Erro durante a recuperação de senha, tente novamente.',
           type: 'danger',
         });
@@ -183,7 +174,6 @@ const trocaSenha = async (req: Request, res: Response) => {
         return res
           .status(StatusCodes.FORBIDDEN)
           .render(resolveView('trocarSenha'), {
-            csrfToken: req.csrfToken(),
             error: 'Token invalido',
             ...optionsLogin,
           });
@@ -194,14 +184,12 @@ const trocaSenha = async (req: Request, res: Response) => {
         return res
           .status(StatusCodes.FAILED_DEPENDENCY)
           .render(resolveView('trocarSenha'), {
-            csrfToken: req.csrfToken(),
             error: 'Token expirado',
             ...optionsLogin,
           });
       }
 
       return res.status(StatusCodes.OK).render(resolveView('trocarSenha'), {
-        csrfToken: req.csrfToken(),
         nome: user.nomeCompleto,
         token: req.query.token,
         ...optionsLogin,
