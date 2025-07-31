@@ -1,10 +1,13 @@
 import { Usuario } from '@prisma/client';
 
-export type CreateUsuarioDto = Omit<Usuario, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateUsuarioDto = Omit<
+  Usuario,
+  'id' | 'createdAt' | 'updatedAt' | 'status'
+>;
 
 export type UpdateUsuarioDto = Partial<
   Omit<Usuario, 'id' | 'createdAt' | 'updatedAt'>
->;
+> & { senha?: string };
 
 export interface UpdateUsuarioWithPassword extends UpdateUsuarioDto {
   senha?: string;

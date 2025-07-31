@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import prisma from '../../client';
 import bcrypt from 'bcrypt';
 import { Usuario } from '@prisma/client';
-import { generateHashPassword } from '../../utils/utils';
-import { UpdateUsuarioWithPassword } from './usuario.types';
+import { generateHashPassword } from '@utils/utils';
+import { CreateUsuarioDto, UpdateUsuarioWithPassword } from './usuario.types';
 import { sendEmail } from '../email/email.service';
 import { UsuarioNotFoundError } from './usuario.errors';
 
@@ -15,7 +15,7 @@ class UsuarioService {
     return !!usuario;
   }
 
-  async adicionar(usuario: any): Promise<Usuario> {
+  async adicionar(usuario: CreateUsuarioDto): Promise<Usuario> {
     const salt = await bcrypt.genSalt(12);
     const senhaHash = await bcrypt.hash(usuario.senhaHash, salt);
     const cpfExiste = await this.verificaCpf(usuario.cpf);
@@ -52,6 +52,7 @@ class UsuarioService {
     try {
       if ('senha' in user && user.senha !== '') {
         user.senhaHash = await generateHashPassword(user.senha);
+        delete user.senha;
       }
 
       if (user.diretor === 1) {
