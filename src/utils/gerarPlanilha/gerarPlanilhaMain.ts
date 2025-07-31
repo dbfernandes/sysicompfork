@@ -136,7 +136,7 @@ export default async function gerarPlanilha(editalId: string, host: string) {
     [
       { header: 'Nome', key: 'nome', width: 40 },
       { header: 'Email', key: 'email', width: 40 },
-      { header: 'Inscrição', key: 'inscricao', width: 30 },
+      // { header: 'Inscrição', key: 'inscricao', width: 30 },
       { header: 'Dados', key: 'dados', width: 30 },
 
       { header: 'Linha', key: 'linha', width: 30 },

@@ -11,7 +11,7 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between flex-wrap gap-1 ">
                 <div>
-                    <h1>Candidato {{candidato.id}} - Edital {{candidato.editalId}} </h1>
+                    <h1>Candidato {{#if (notEmpty candidato.nome)}} {{formatarNome candidato.nome}} {{else}}{{candidato.email}}{{/if}}  - Edital {{candidato.editalId}} </h1>
                 </div>
                 <div>
                     <ol class="breadcrumb float-sm-right">
@@ -45,6 +45,10 @@
                         <div class="card-body" style="overflow-x:auto;">
                             <table id="example2" class="table table-bordered table-hover">
                                 <tbody>
+                                <tr>
+                                  <th class="col-3">Id</th>
+                                  <td>{{candidato.id}}</td>
+                                </tr>
                                 <tr>
                                     <th class="col-3">Nome Completo</th>
                                     <td>{{candidato.nome}}</td>

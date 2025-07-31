@@ -350,6 +350,8 @@ const editarUsuario = async (
           coordenador: requestBody.coordenador === 'on' ? 1 : 0,
           secretaria: requestBody.secretaria === 'on' ? 1 : 0,
           professor: requestBody.professor === 'on' ? 1 : 0,
+          diretor: requestBody.diretor === 'on' ? 1 : 0, // Adicionando o campo diretor que faltava
+
           endereco: requestBody.endereco,
           telResidencial: requestBody.telefoneResidencial,
           telCelular: requestBody.telefoneCelular,

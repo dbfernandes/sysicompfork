@@ -56,7 +56,6 @@
                             <table id="tableCandidatesFinalizados" class="table table-hover w-100">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Nome</th>
                                         <th>Email</th>
                                         <th>Curso Desejado</th>
@@ -69,7 +68,6 @@
                                     {{#each candidatos}}
                                     {{#if (eq posicaoEdital 4) }}
                                     <tr>
-                                        <td>{{id}}</td>
                                         <td>{{nome}}</td>
                                         <td>{{email}}</td>
                                         <td>{{cursoDesejado}}</td>
@@ -108,8 +106,6 @@
                             <table id="tableCandidatesAndamento" class="table table-hover w-100">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>N° de Inscrição</th>
                                         <th>Nome</th>
                                         <th>E-mail</th>
                                         <th>Curso Desejado</th>
@@ -122,8 +118,6 @@
                                     {{#each candidatos}}
                                       {{#if (ne posicaoEdital 4) }}
                                         <tr>
-                                            <td>{{id}}</td>
-                                            <td>{{idEdital}}</td>
                                             <td>{{nome}}</td>
                                             <td>{{email}}</td>
                                             <td>{{cursoDesejado}}</td>

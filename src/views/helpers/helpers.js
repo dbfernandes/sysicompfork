@@ -18,6 +18,19 @@ const whichCourse = (course, lng) => {
   }
 };
 
+function formatarNome(nome) {
+  if (!nome) return '';
+  const partes = nome.split(' ');
+  if (partes.length <= 2) return nome; // Retorna o nome completo se tiver apenas duas partes
+  const primeiroNome = partes[0];
+  const ultimoNome = partes[partes.length - 1];
+  const nomeMeio = partes
+    .slice(1, -1)
+    .map((p) => p.charAt(0).toUpperCase() + '.')
+    .join(' ');
+  return `${primeiroNome} ${nomeMeio} ${ultimoNome}`;
+}
+
 function section(name, options) {
   if (!this._sections) this._sections = {};
   this._sections[name] = options.fn(this);
@@ -211,6 +224,7 @@ export default {
   ifEqual,
   checked,
   add,
+  formatarNome,
   showError,
   checkedIn,
   checkedUnica,
