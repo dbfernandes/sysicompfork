@@ -49,38 +49,34 @@ class UsuarioService {
   }
 
   async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {
-    try {
-      if ('senha' in user && user.senha !== '') {
-        user.senhaHash = await generateHashPassword(user.senha);
-        delete user.senha;
-      }
+    if ('senha' in user && Boolean(user.senha)) {
+      user.senhaHash = await generateHashPassword(user.senha);
+      delete user.senha;
+    }
 
-      if (user.diretor === 1) {
-        const usuarioAtual = await prisma.usuario.findFirst({
+    if (user.diretor === 1) {
+      const usuarioAtual = await prisma.usuario.findFirst({
+        where: {
+          diretor: 1,
+        },
+      });
+
+      if (usuarioAtual && usuarioAtual.id !== id) {
+        await prisma.usuario.update({
           where: {
-            diretor: 1,
+            id: usuarioAtual.id,
+          },
+          data: {
+            diretor: 0,
           },
         });
-
-        if (usuarioAtual && usuarioAtual.id !== id) {
-          await prisma.usuario.update({
-            where: {
-              id: usuarioAtual.id,
-            },
-            data: {
-              diretor: 0,
-            },
-          });
-        }
       }
-
-      await prisma.usuario.update({
-        where: { id },
-        data: user,
-      });
-    } catch (error) {
-      throw new Error('Erro ao alterar usuário');
     }
+
+    await prisma.usuario.update({
+      where: { id },
+      data: user,
+    });
   }
 
   async alterarInfo(id: number, user: any) {
