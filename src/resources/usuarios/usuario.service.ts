@@ -197,31 +197,43 @@ class UsuarioService {
   }
 
   async recuperarSenha(data: { email: string; host: string }) {
+    // Busca o usuário pelo e-mail, com case-insensitive
     const usuario = await prisma.usuario.findFirst({
       where: {
-        email: data.email,
+        email: data.email.toLowerCase(),
       },
     });
 
     if (!usuario) {
       throw new UsuarioNotFoundError(data.email);
     }
-    const token = crypto.randomBytes(20).toString('hex');
-    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
-    const timeExpires = new Date();
-    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
 
+    // Gera token e calcula tempo de expiração
+    const token = crypto.randomBytes(20).toString('hex');
+
+    const DEFAULT_EXPIRE_MS = 3600000; // 1 hora
+    const envTime = Number(process.env.TIME_MILLIS_EXPIRE_EMAIL);
+
+    const timeMillis = isNaN(envTime) ? DEFAULT_EXPIRE_MS : envTime;
+    const validade = new Date(Date.now() + timeMillis);
+
+    // Atualiza o usuário com o token e a validade
     await prisma.usuario.update({
-      where: {
-        id: usuario.id,
-      },
+      where: { id: usuario.id },
       data: {
         tokenResetSenha: token,
-        validadeTokenResetSenha: timeExpires,
+        validadeTokenResetSenha: validade,
       },
     });
 
-    const url = `http://${data.host}/alterarSenha?token=${token}`;
+    // Monta URL de alteração de senha
+    const protocol =
+      data.host.includes('localhost') || data.host.includes('127.0.0.1')
+        ? 'http'
+        : 'https';
+    const url = `${protocol}://${data.host}/alterarSenha?token=${token}`;
+
+    // Envia e-mail
     sendEmail({
       title: '[Syscomp] Troca de senha',
       to: usuario.email,

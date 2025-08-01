@@ -1,14 +1,7 @@
-<style>
-  .input-eye {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .button-eye {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-</style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+
+{{#section "head"}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+{{/section}}
 
 <div class="login-box"> 
   <div class="login-logo container-cards">
@@ -32,7 +25,7 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="form-group">
           <label for="cpfInput">CPF</label>
-          <input id="cpfInput" name="cpf" type="text" autocomplete="on" class="form-control cpf" placeholder="___.___.___-__">
+          <input id="cpfInput" name="cpf" type="text" autocomplete="off" class="form-control cpf" placeholder="___.___.___-__">
         </div>
 
         <!--SENHA-->
@@ -64,11 +57,11 @@
 
           <div class="row mt-4">
             <div class="col-md-8">
-              <div class="checkbox icheck">
-                <label>
-                  <input id="remember" name="remember" type="checkbox"> Lembrar Usuário
-                </label>
-              </div>
+<!--              <div class="checkbox icheck">-->
+<!--                <label>-->
+<!--                  <input id="remember" name="remember" type="checkbox"> Lembrar Usuário-->
+<!--                </label>-->
+<!--              </div>-->
             </div>
             <!-- /.col -->
             <div class="col-md-4">
@@ -86,7 +79,9 @@
 <!-- /.login-box -->
 
 <script>
-  function loginPage() {
+  $(document).ready(function () {
+    $('.cpf').inputmask('999.999.999-99', { placeholder: '___.___.___-__' });
+
     $("#togglePassword").click(function() {
 		  const typeActual = $("#senhaInput").attr("type");
       if (typeActual === "password") {
@@ -142,5 +137,7 @@
         $(element).removeClass('is-invalid');
       }
     });
-  }
+
+  });
+
 </script>

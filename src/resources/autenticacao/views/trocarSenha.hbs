@@ -1,120 +1,159 @@
-<style>
-  .error {
-    color: red
-  }
-  .success {
-    color: green;
-  }
+{{#section "head"}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+  <style>
+    .input-eye {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .button-eye {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  </style>
+{{/section}}
 
-</style> 
 <div class="login-box">
-	<div class="login-logo container-cards">
-		<img src="/public/img//logo-icomp.png" alt="">
-    	<img src="/public/img//logo-ufam.png" alt="">
-	</div>
-	<div class="card">
-    	<div class="card-body login-card-body"> 
-    		<div class="login-logo">
-        		<a href="#"><b>Mudar Senha</b></a>
-			</div> 
-    		<div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
-				{{#if error}}
-					{{{error}}}
-				{{/if}}
-			</div>
-			<div id="success-msg" class="alert alert-success" hidden></div>
-    		<p class="login-box-msg">Olá {{nome}}, preencha os campos abaixo para alterar sua senha.</p>
-   
-    	<form id="form-recuperar-senha" >
-    	      <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    	      	<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="password" id="password" aria-describedby="senha" placeholder="Senha">
-					<div class="help-block"></div>
-				</div> 
-				<div class="form-group">	
-					<input {{#if error}} disabled {{/if}} type="password" class="form-control" name="confirmPassword" id="confirmPassword" aria-describedby="confirma senha" placeholder="Confirmar Senha">
-					<div class="help-block"></div>
-				</div>
-    	      <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">Trocar senha<span class="spinner-border spinner-border-sm " hidden="true" role="status" aria-hidden="true"></span></button>
-    	      <button type="button" name="voltar" id="btn-voltar" onclick="back()" class="btn btn-block btn-default" role="button">Voltar</button>
-    	</form>
-	</div>
+  <div class="login-logo container-cards">
+    <img src="/public/img/logo-icomp.png" alt="">
+    <img src="/public/img/logo-ufam.png" alt="">
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <div class="login-logo">
+        <a href="#"><b>Mudar Senha</b></a>
+      </div>
+      <div id="error-msg" class="alert alert-danger" {{#if error}}{{else}}hidden{{/if}}>
+        {{#if error}}
+          {{{error}}}
+        {{/if}}
+      </div>
+      <div id="success-msg" class="alert alert-success" hidden></div>
+      <p class="login-box-msg">Olá {{nome}}, preencha os campos abaixo para alterar sua senha.</p>
+
+      <form id="form-recuperar-senha">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+        <!-- Campo: Nova Senha -->
+        <div class="form-group">
+          <label for="password">Nova Senha</label>
+          <div style="display: grid; grid-template-columns: 1fr auto; margin-bottom: 16px;">
+            <input {{#if error}}disabled{{/if}} type="password" class="form-control input-eye" name="password" id="password" placeholder="Nova Senha" autocomplete="new-password" />
+            <button type="button" class="btn btn-light button-eye" id="togglePassword1" aria-label="Mostrar/Ocultar senha">
+              <i class="bi bi-eye-slash" id="togglePasswordIcon1"></i>
+            </button>
+          </div>
+          <div class="help-block"></div>
+        </div>
+
+        <!-- Campo: Confirmar Senha -->
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar Senha</label>
+          <div style="display: grid; grid-template-columns: 1fr auto;">
+            <input {{#if error}}disabled{{/if}} type="password" class="form-control input-eye" name="confirmPassword" id="confirmPassword" placeholder="Confirmar Senha" autocomplete="new-password" />
+            <button type="button" class="btn btn-light button-eye" id="togglePassword2" aria-label="Mostrar/Ocultar senha">
+              <i class="bi bi-eye-slash" id="togglePasswordIcon2"></i>
+            </button>
+          </div>
+          <div class="help-block"></div>
+        </div>
+
+        <!-- Botões -->
+        <button {{#if error}} disabled {{/if}} id="btn-form-submit" type="submit" class="btn btn-primary btn-block">
+          Trocar senha
+          <span class="spinner-border spinner-border-sm" hidden role="status" aria-hidden="true"></span>
+        </button>
+
+        <button type="button" id="btn-voltar" onclick="back()" class="btn btn-block btn-default">Voltar</button>
+      </form>
+    </div>
+  </div>
 </div>
-</div>
+
 <script>
-  function back(){
+  function back() {
     window.location.href = "/";
   }
 
-  $("#form-recuperar-senha input").on("input", function() {
-        const divError = $("#error-msg");
-        if (!divError.prop("hidden")) {
-            divError.prop("hidden", true);
+  // Alterna visibilidade dos campos de senha
+  function togglePasswordField(buttonId, inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    const isPassword = input.type === "password";
+    input.type = isPassword ? "text" : "password";
+    icon.classList.toggle("bi-eye");
+    icon.classList.toggle("bi-eye-slash");
+  }
+
+  $("#togglePassword1").on("click", () => togglePasswordField("togglePassword1", "password", "togglePasswordIcon1"));
+  $("#togglePassword2").on("click", () => togglePasswordField("togglePassword2", "confirmPassword", "togglePasswordIcon2"));
+
+  $("#form-recuperar-senha input").on("input", function () {
+    const divError = $("#error-msg");
+    if (!divError.prop("hidden")) {
+      divError.prop("hidden", true);
+    }
+  });
+
+  $("#form-recuperar-senha").validate({
+    ignore: ':hidden',
+    rules: {
+      password: {
+        required: true,
+        minlength: 6
+      },
+      confirmPassword: {
+        required: true,
+        equalTo: "#password"
+      }
+    },
+    messages: {
+      password: {
+        required: "Campo obrigatório",
+        minlength: "A senha deve ter pelo menos 6 caracteres"
+      },
+      confirmPassword: {
+        required: "Campo obrigatório",
+        equalTo: "As senhas não coincidem"
+      }
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('div').append(error);
+    },
+    highlight: function (element) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element) {
+      $(element).removeClass('is-invalid');
+    },
+    submitHandler: function (form, e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const password = formData.get("password");
+      $.ajax({
+        url: "{{url}}/alterarSenha?_csrf={{csrfToken}}",
+        type: "PUT",
+        data: {
+          password,
+          token: "{{token}}"
+        },
+        success: function () {
+          window.location.href = "/";
+        },
+        error: function (res) {
+          const buttonLogin = $("#btn-form-submit");
+          buttonLogin.attr("disabled", false);
+          buttonLogin.find("span").prop("hidden", true);
+          const divError = $("#error-msg");
+          divError.prop("hidden", false);
+          if (res.responseJSON?.message) {
+            divError.text(res.responseJSON.message);
+          } else {
+            divError.text("Erro ao alterar senha");
+          }
         }
-
-    });
-
-	$("#form-recuperar-senha").validate({
-		ignore: ':hidden',
-		rules: {
-			password: {
-				required: true,
-				minlength: 6
-			},
-			confirmPassword: {
-           		required: true,
-           		equalTo: "#password"
-        	}
-		},
-		messages: {
-			password: {
-				required: "Campo obrigatório",
-				minlength: "A senha deve ter pelo menos 6 caracteres"
-			},
-			confirmPassword: {
-				required: "Campo obrigatório",
-				equalTo: "As senhas não coincidem"
-			}
-		},
-		errorElement: 'span',
-		errorPlacement: function (error, element) {
-			error.addClass('invalid-feedback');
-			element.closest('div').append(error);
-		},
-
-		highlight: function (element, errorClass, validClass) {
-			$(element).addClass('is-invalid');
-		},
-		unhighlight: function (element, errorClass, validClass) {
-			$(element).removeClass('is-invalid');
-		},
-		submitHandler: function (form, e) {
-			e.preventDefault();
-			const formData = new FormData(form);
-			const password = formData.get("password");
-			$.ajax({ 
-				url: "{{url}}/alterarSenha?_csrf={{csrfToken}}",
-				type: "PUT",
-				data: {
-					password,
-					token: "{{token}}"
-				},
-				success: function (data) { 
-					window.location.href = "/";
-				},
-				error: function (res, status, error) {
-          			const buttonLogin = $("#btn-form-submit");
-					buttonLogin.attr("disabled", false);
-					buttonLogin.find("span").prop("hidden", true);
-					const divError = $("#error-msg");
-					divError.prop("hidden", false);
-					if(res.responseJSON.message) {
-						divError.text(res.responseJSON.message);
-					} else {
-						divError.text("Erro ao alterar senha");
-					}
-				}
-			})	
-		}
-	})
+      });
+    }
+  });
 </script>
