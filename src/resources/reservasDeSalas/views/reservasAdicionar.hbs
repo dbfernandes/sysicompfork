@@ -6,11 +6,11 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-3">
-                <div class="col-sm-9">
+            <div class="d-flex flex-row justify-content-between mb-2">
+                <div >
                     <h1>Adicionar Reserva</h1>
                 </div>
-                <div class="col-sm-3">
+                <div >
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
                         <li class="breadcrumb-item"><a href="/reservas/gerenciar">Listagem de reservas</a></li>
@@ -46,7 +46,7 @@
                     <div class="container-fluid">
                         <form id="formAdicionarSala" method="POST" action="/reservas/adicionar">
                             <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
-                            <input type="hidden" id="usuarioId" name="usuarioId" value="{{UsuarioId}}" />
+                            <input type="hidden" id="usuarioId" name="usuarioId" value="{{usuarioId}}" />
                             <div class="card-body ">
 
                                 <div class="row">
@@ -148,7 +148,7 @@
                                     <div class="input-group date " data-target-input="nearest">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     <input type="date" class="form-control datetimepicker-input "
-                                        placeholder="Data de Início" id="dataInicio" name="dataInicio"
+                                           id="dataInicio" name="dataInicio" id="dataInicio"
                                         data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy"
                                         required>
                                     <div class="invalid-feedback" id="dataInicioError">Data inválida. Por favor,
@@ -157,17 +157,17 @@
                                 </div>
                                 <div class="form-group col-md-6" id="conditionalInput2">
                                     <label for="dataFim">
-                                    <font color="#FF0000">*</font> Data Término:
+                                      <span style="color: #FF0000; ">*</span> Data Término:
                                     </label>
                                     <div class="input-group date" data-target-input="nearest">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    <input type="date" class="form-control datetimepicker-input"
-                                        placeholder="Data de Término" id="dataFim" name="dataFim"
-                                        data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy">
-                                    <div class="invalid-feedback" id="dataFimError">Data inválida. Por favor,
-                                        insira datas válidas.</div>
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                      <input type="date" class="form-control datetimepicker-input" name="dataFim"  id="dataFim"
+                                          data-inputmask-inputformat="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                      <div class="invalid-feedback" id="dataFimError">
+                                        Data inválida. Por favor, insira datas válidas.
+                                      </div>
                                     </div>
-                                </div>
+                                  </div>
                                 </div>
 
                                 <div class="row">
@@ -176,7 +176,7 @@
                                             <font color="#FF0000">*</font> Hora Inicial:
                                         </label>
                                         <div class="input-group date" data-target-input="nearest">
-                                            <div class="input-group-append" data-target="#horaTermino"
+                                            <div class="input-group-append" data-target="#horaFim"
                                                 data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-clock"></i></div>
                                             </div>
@@ -187,18 +187,18 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-6 ">
-                                        <label for="horaTermino">
+                                        <label for="horaFim">
                                             <font color="#FF0000">*</font> Hora Término:
                                         </label>
                                         <div class="input-group date" data-target-input="nearest">
-                                            <div class="input-group-append" data-target="#horaTermino"
+                                            <div class="input-group-append" data-target="#horaFim"
                                                 data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-clock"></i></div>
                                             </div>
                                             <input type="time" class="form-control  datetimepicker-input"
-                                                data-target="#horaTermino" id="horaTermino" name="horaTermino"
+                                                data-target="#horaFim" id="horaFim" name="horaFim"
                                                 placeholder='HH:mm'>
-                                            <div class="invalid-feedback" id="horaTerminoError">Hora inválida. Por
+                                            <div class="invalid-feedback" id="horaFimError">Hora inválida. Por
                                                 favor,
                                                 insira horas válidas.</div>
                                         </div>
@@ -216,12 +216,11 @@
                                 </div>
                             </div>
                         </form>
-
-
                     </div>
                 </div>
             </div>
             <!-- /.card -->
+        </div>
     </section>
 </div>
 
@@ -290,9 +289,9 @@
         const unica = $("#unica").prop("checked"); ''
         const SalaId = $("#unica").val();
         const dataInicio = $("#dataInicio").val();
-        const dataTermino = unica ? dataInicio : $("#dataTermino").val();
+        const dataFim = unica ? dataInicio : $("#dataFim").val();
         const horaInicio = $("#horaInicio").val() + ":00";
-        const horaTermino = $("#horaTermino").val() + ":00";
+        const horaFim = $("#horaFim").val() + ":00";
         let dias = diasSemana()
 
         //verificacao do caso data unica
@@ -307,9 +306,9 @@
             unica,
             SalaId,
             dataInicio,
-            dataTermino,
+            dataFim,
             horaInicio,
-            horaTermino,
+            horaFim,
             dias
         };
     }
@@ -340,10 +339,10 @@
         for (const reserva of reservasExistente) {
             console.log(reserva)
             // Verifica se a nova reserva está dentro do período de alguma reserva existente
-            if (novaReserva.dataInicio <= reserva.dataTermino && novaReserva.dataTermino >= reserva.dataInicio) {
+            if (novaReserva.dataInicio <= reserva.dataFim && novaReserva.dataFim >= reserva.dataInicio) {
 
                 //verificacao do caso data unica
-                if (reserva.dataInicio == reserva.dataTermino) {
+                if (reserva.dataInicio == reserva.dataFim) {
                     const data = new Date(reserva.dataInicio);
                     const diaDaSemana = data.getDay(); // Obtém o dia da semana (0 a 6)
 
@@ -355,7 +354,7 @@
                 const diasEmComum = reserva.dias.split(', ').some(dia => novaReserva.dias.includes(dia));
 
                 // Verifica se há sobreposição nas horas
-                if (diasEmComum && novaReserva.horaInicio < reserva.horaTermino && novaReserva.horaTermino > reserva.horaInicio) {
+                if (diasEmComum && novaReserva.horaInicio < reserva.horaFim && novaReserva.horaFim > reserva.horaInicio) {
 
                     return true; // Conflito encontrado
                 }
@@ -387,9 +386,9 @@
         dataInicio.setHours(0, 0, 0, 0);
 
 
-        let dataFim = new Date(document.getElementById("dataTermino").value);
+        let dataFim = new Date(document.getElementById("dataFim").value);
         const horaInicio = document.getElementById("horaInicio").value
-        const horaTermino = document.getElementById("horaTermino").value
+        const horaFim = document.getElementById("horaFim").value
         const unica = $("#unica").prop("checked");
         const dias = diasSemana()
         const agora = new Date();
@@ -404,13 +403,13 @@
                 dataFim = dataInicio
             } else {
                 toastr.error("Por favor, insira uma data.");
-                document.getElementById("dataTerminoError").textContent = "Por favor, insira uma data.";
-                document.getElementById("dataTermino").classList.add("is-invalid");
+                document.getElementById("dataFimError").textContent = "Por favor, insira uma data.";
+                document.getElementById("dataFim").classList.add("is-invalid");
                 return;
             }
 
-            document.getElementById("dataTerminoError").textContent = "";
-            document.getElementById("dataTermino").classList.remove("is-invalid");
+            document.getElementById("dataFimError").textContent = "";
+            document.getElementById("dataFim").classList.remove("is-invalid");
         }
 
         // Verifica se a data de início é anterior à dataatuall
@@ -431,25 +430,25 @@
             console.log('2')
             toastr.error("A data de termino deve ser posterior à data de inicio.");
 
-            document.getElementById("dataTerminoError").textContent = "A data de termino deve ser posterior à data de inicio.";
-            document.getElementById("dataTermino").classList.add("is-invalid");
+            document.getElementById("dataFimError").textContent = "A data de termino deve ser posterior à data de inicio.";
+            document.getElementById("dataFim").classList.add("is-invalid");
             return;
         } else {
-            document.getElementById("dataTerminoError").textContent = "";
-            document.getElementById("dataTermino").classList.remove("is-invalid");
+            document.getElementById("dataFimError").textContent = "";
+            document.getElementById("dataFim").classList.remove("is-invalid");
         }
 
         // Verifica se a hora de início é anterior à hora de fim
-        if (horaInicio >= horaTermino) {
+        if (horaInicio >= horaFim) {
             console.log('3')
             toastr.error("A hora de termino deve ser posterior à hora de inicio.");
 
-            document.getElementById("horaTerminoError").textContent = "A hora de termino deve ser posterior à hora de inicio.";
-            document.getElementById("horaTermino").classList.add("is-invalid");
+            document.getElementById("horaFimError").textContent = "A hora de termino deve ser posterior à hora de inicio.";
+            document.getElementById("horaFim").classList.add("is-invalid");
             return;
         } else {
-            document.getElementById("horaTerminoError").textContent = "";
-            document.getElementById("horaTermino").classList.remove("is-invalid");
+            document.getElementById("horaFimError").textContent = "";
+            document.getElementById("horaFim").classList.remove("is-invalid");
         }
 
         // Verifica se dias da semana está selecionado
@@ -481,9 +480,9 @@
             toastr.error('Existe um conflito com as reservas existente nesse horário!');
             document.getElementById("dataInicioError").textContent = "Existe um conflito com as reservas existente nesse horário";
             document.getElementById("dataInicio").classList.add("is-invalid");
-            document.getElementById("dataTermino").classList.add("is-invalid");
+            document.getElementById("dataFim").classList.add("is-invalid");
             document.getElementById("horaInicio").classList.add("is-invalid");
-            document.getElementById("horaTermino").classList.add("is-invalid")
+            document.getElementById("horaFim").classList.add("is-invalid")
 
             return;
 
@@ -493,9 +492,9 @@
 
             document.getElementById("dataInicioError").textContent = "";
             document.getElementById("dataInicio").classList.remove("is-invalid");
-            document.getElementById("dataTermino").classList.remove("is-invalid");
+            document.getElementById("dataFim").classList.remove("is-invalid");
             document.getElementById("horaInicio").classList.remove("is-invalid");
-            document.getElementById("horaTermino").classList.remove("is-invalid");
+            document.getElementById("horaFim").classList.remove("is-invalid");
         }
 
         const form = document.getElementById("formAdicionarSala");

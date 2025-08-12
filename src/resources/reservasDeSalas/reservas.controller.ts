@@ -5,6 +5,7 @@ import salasService from '../salas/sala.service';
 import path from 'path';
 import { Prisma } from '@prisma/client';
 import { ReservaFormularioDto } from './reservas.types';
+import logger from '@utils/logger';
 
 // Interfaces para tipagem dos dados
 
@@ -28,10 +29,11 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listarTodos();
+
       res.status(StatusCodes.OK).render(resolveView('reservasAdicionar'), {
         salas,
         nome: req.session.nome,
-        usuarioId: req.session.uid, // Mudado de UsuarioId para usuarioId
+        usuarioId: req.session.uid,
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error) {
@@ -67,6 +69,7 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
         horaInicio,
         horaFim: horaFim || horaInicio,
       };
+      console.log('novaReserva:', novaReserva);
 
       await reservasService.criar(novaReserva);
       res.redirect('/reservas/gerenciar');
@@ -135,11 +138,27 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
         res.redirect('/reservas/gerenciar');
         return;
       }
+      const date = new Date(reserva.dataInicio);
+
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+      const dd = String(date.getDate()).padStart(2, '0');
+
+      const dataInicio = `${yyyy}-${mm}-${dd}`;
+      const date2 = new Date(reserva.dataFim || reserva.dataInicio);
+      const yyyy2 = date2.getFullYear();
+      const mm2 = String(date2.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+      const dd2 = String(date2.getDate()).padStart(2, '0');
+      const dataFim = `${yyyy2}-${mm2}-${dd2}`;
 
       res.render(resolveView('reservasEditar'), {
         salas,
         nome: req.session.nome,
-        reserva,
+        reserva: {
+          ...reserva,
+          dataInicio,
+          dataFim,
+        },
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error) {
@@ -148,10 +167,10 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
     }
   } else if (req.method === 'POST') {
     try {
+      const usuarioId = req.session.uid;
       const reservaId = parseInt(req.params.id);
       const {
         salaId,
-        usuarioId,
         atividade,
         tipo,
         dia,
@@ -176,6 +195,7 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
         horaFim: horaFim || horaInicio,
       };
 
+      console.log(dadosAtualizados);
       await reservasService.atualizar(reservaId, dadosAtualizados);
       res.redirect('/reservas/gerenciar');
     } catch (error) {

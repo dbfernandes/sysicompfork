@@ -71,45 +71,30 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
         tipoUsuario: req.session.tipoUsuario,
       });
   } else {
-    try {
-      const { uid, nome } = req.session;
-      const {
-        dataSaida,
-        dataRetorno,
-        tipoViagem,
-        localViagem,
-        justificativa,
-        planoReposicao,
-      } = req.body;
+    const { uid, nome } = req.session;
+    const {
+      dataSaida,
+      dataRetorno,
+      tipoViagem,
+      localViagem,
+      justificativa,
+      planoReposicao,
+    } = req.body;
 
-      const novoAfastamento: CreateAfastamentoDTO = {
-        usuarioId: Number(uid),
-        nomeCompleto: nome!,
-        dataInicio: new Date(dataSaida),
-        dataFim: new Date(dataRetorno),
-        tipoViagem: String(tipoViagem),
-        localViagem: String(localViagem),
-        justificativa: String(justificativa),
-        planoReposicao: String(planoReposicao),
-      };
+    const novoAfastamento: CreateAfastamentoDTO = {
+      usuarioId: Number(uid),
+      nomeCompleto: nome!,
+      dataInicio: new Date(dataSaida),
+      dataFim: new Date(dataRetorno),
+      tipoViagem: String(tipoViagem),
+      localViagem: String(localViagem),
+      justificativa: String(justificativa),
+      planoReposicao: String(planoReposicao),
+    };
 
-      await afastamentoService.criar(novoAfastamento);
+    await afastamentoService.criar(novoAfastamento);
 
-      return res
-        .status(StatusCodes.OK)
-        .redirect('/afastamentoTemporario/listar');
-    } catch (error: unknown) {
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .render(resolveView('solicitarAfastamento'), {
-          pageTitle,
-          tipoUsuario: req.session.tipoUsuario,
-          error:
-            error instanceof Error
-              ? error.message
-              : 'Não foi possível criar o pedido de afastamento!',
-        });
-    }
+    return res.status(StatusCodes.OK).redirect('/afastamentoTemporario/listar');
   }
 };
 

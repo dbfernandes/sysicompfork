@@ -3,7 +3,7 @@ import { Prisma, ReservaSala } from '@prisma/client';
 
 export default new (class ReservaService {
   async listarTodos(): Promise<ReservaSala[]> {
-    return await prisma.reservaSala.findMany();
+    return prisma.reservaSala.findMany();
   }
 
   async listarReservasSalas(): Promise<ReservaSala[]> {
