@@ -1,0 +1,74 @@
+<!-- templates/email.hbs -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Icomp/UFAM</title>
+  <style>
+    /* Estilos gerais */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    img {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<table width="100%" bgcolor="#f4f4f4" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <!-- Container principal -->
+      <table align="center" width="600" bgcolor="#ffffff" cellpadding="0" cellspacing="0" style="margin: 20px auto; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <!-- Cabeçalho -->
+        <tr>
+          <td bgcolor="#08691B" style="padding: 20px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <!-- Logo esquerda -->
+                <td align="left" style="vertical-align: middle; width: 90px;">
+                  <img src="cid:logo_ufam" alt="Logo da UFAM" width="60" style="display: block;">
+                </td>
+
+                <!-- Texto central -->
+                <td align="left" style="font-family: Arial, sans-serif; color: #ffffff; font-size: 24px; line-height: 28px; vertical-align: middle; font-weight: bold;">
+                  ICOMP/UFAM
+                </td>
+
+                <!-- Logo direita -->
+<!--                <td align="right" style="vertical-align: middle; width: 90px;">-->
+<!--                  <img src="cid:logo_ufam" alt="Logo da UFAM" width="60" style="display: block;">-->
+<!--                </td>-->
+              </tr>
+            </table>
+          </td>
+
+        </tr>
+
+        <!-- Cabeçalho -->
+        {{{body}}}
+
+        <!-- Rodapé -->
+        <tr>
+          <td bgcolor="#f4f4f4" style="padding: 20px; text-align: center; font-family: Arial, sans-serif; color: #777777; font-size: 12px;">
+            <p style="margin: 0;">
+              ©{{year}} ICOMP/UFAM. Todos os direitos reservados.<br>
+              Instituto de Ciência da Computação, Rua Gen. Rodrigo Octávio Jordão Ramos, 3000, SETOR NORTE, Campus Universitário Manaus - AM - CEP 69.077-00<br>
+              <a href="https://www.google.com/maps/place/Instituto+de+Computa%C3%A7%C3%A3o+-+IComp/@-3.0883599,-59.9672651,17z/data=!3m1!4b1!4m6!3m5!1s0x926c05202d6fcb1b:0x5bf3a6b7c3755c88!8m2!3d-3.0883653!4d-59.9646902!16s%2Fg%2F1ptwt_851?authuser=0&entry=ttu&g_ep=EgoyMDI1MDEyNi4wIKXMDSoASAFQAw%3D%3D"
+                 style="color: #08691B; text-decoration: none; font-size: 12px;">Veja no Mapa</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+      <!-- Fim do Container principal -->
+    </td>
+  </tr>
+</table>
+</body>
+</html>

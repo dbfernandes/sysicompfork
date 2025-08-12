@@ -23,8 +23,8 @@ interface DataAfastamentoPDF {
 // 1. Pegar dados do afastamento (Pegar o usario, afastamento, email) e formatar tudo em uma constante
 export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
   const afastamento = await afastamentoService.buscarPorId(id);
-  const usuario = await usuarioService.listarUmUsuario(id);
-  const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
+  const usuario = await usuarioService.listarUmUsuario(afastamento.usuarioId);
+  const diretor = await usuarioService.getDiretor();
   const email = usuario.email;
 
   if (!afastamento) return null;
@@ -48,8 +48,8 @@ export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
     justificativa,
     planoReposicao,
     diretorNome: diretor!.nomeCompleto,
-    data: moment(createdAt).format('DD/MM/YYYY'),
-    hora: moment(createdAt).format('HH:mm'),
+    data: moment(createdAt).utcOffset(-4).format('DD/MM/YYYY'),
+    hora: moment(createdAt).utcOffset(-4).format('HH:mm'),
     email,
   };
   return afastamentoDoc;
@@ -65,7 +65,7 @@ export async function criarAfastamentoPDF(req: Request, res: Response) {
       __dirname,
       '..',
       '..',
-      `public/afastamentos/${id}.pdf`,
+      `tmp/afastamentos/${id}.pdf`,
     );
 
     const dados = await getAfastamento(Number(id));

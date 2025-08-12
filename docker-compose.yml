@@ -52,7 +52,7 @@ services:
 
   selecao_ppgi:
     container_name: selecao_ppgi
-    mem_limit: 1024m
+    mem_limit: 4096m
     build:
       context: .
     command: 'node build/serverSelecao.js'
@@ -80,7 +80,8 @@ services:
     container_name: gotenberg
     image: gotenberg/gotenberg:8
     restart: unless-stopped
-    mem_limit: 256m
+    mem_limit: 2055m
+    memswap_limit: 3079m
     ports:
       - '${PORT_GOTENBERG:-3002}:3000'
     networks:

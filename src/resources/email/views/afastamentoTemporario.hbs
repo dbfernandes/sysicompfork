@@ -1,0 +1,46 @@
+<tr>
+  <td style="padding: 20px; font-family: Arial, sans-serif; color: #333333;">
+
+    <p style="font-size: 18px; font-weight: bold; line-height: 1.5;">
+      SOLICITAÇÃO DE AFASTAMENTO TEMPORÁRIO
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      Hora: {{formatHoraManaus createdAt}}<br>
+      Data: {{formatDataManaus createdAt}}
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      O(a) professor(a) <strong>{{usuario.nomeCompleto}}</strong> estará afastado(a) de suas atividades presenciais na UFAM no período de
+      <strong>{{formatData dataInicio}}</strong> a <strong>{{formatData dataFim}}</strong>.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      O motivo deste afastamento: <em>{{justificativa}}</em>.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      Para reposição de suas aulas, o(a) professor(a) fez o seguinte planejamento:<br>
+      {{planoReposicao}}
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      <strong>Dados do(a) funcionário(a):</strong><br>
+      Funcionário: {{usuario.nomeCompleto}}<br>
+      E-mail: <a href="mailto:{{usuario.email}}">{{usuario.email}}</a>
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      Local: {{localViagem}}<br>
+      Tipo de Viagem: {{tipoViagem}}
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5;">
+      Data de Saída: {{formatData dataInicio}}<br>
+      Data de Retorno: {{formatData dataFim}}
+    </p>
+    <p style="font-size: 16px; line-height: 1.5;">
+      Segue em anexo o documento de solicitação de afastamento temporário.
+    </p>
+  </td>
+</tr>

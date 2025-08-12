@@ -1,16 +1,17 @@
 import prisma from '../../client';
 import { AfastamentoTemporario } from '@prisma/client';
-import { formatarData } from '../../utils/formatadores';
+import { formatarData } from '@utils/formatadores';
 import {
   AfastamentoTemporarioExtendido,
   CreateAfastamentoDTO,
 } from './afastamento.temporario.types';
+import { sendEmail } from '@resources/email/email.service';
+import usuarioService from '@resources/usuarios/usuario.service';
+import { generatePdfLeave } from '@resources/pdf/pdf.controller';
+import path from 'path';
+import fs from 'fs';
 
 class AfastamentoService {
-  // Lista todos os afastamentos de um usuário específico
-  // @param id ID do usuário
-  // @returns Lista de afastamentos
-
   async listarPorUsuario(
     id: number,
   ): Promise<AfastamentoTemporarioExtendido[]> {
@@ -37,9 +38,6 @@ class AfastamentoService {
     }
   }
 
-  // Lista todos os afastamentos temporários
-  // @returns Lista de afastamentos
-
   async listarTodos(): Promise<AfastamentoTemporarioExtendido[]> {
     try {
       const afastamentos = await prisma.afastamentoTemporario.findMany();
@@ -60,25 +58,58 @@ class AfastamentoService {
     }
   }
 
-  // Cria um novo afastamento temporário
-  // @param novoAfastamento Dados do novo afastamento
-  // @returns Afastamento criado
+  async sendEmailAfastamento(novoAfastamento: any): Promise<void> {
+    const id = novoAfastamento.id.toString();
 
-  async criar(
-    novoAfastamento: CreateAfastamentoDTO,
-  ): Promise<AfastamentoTemporario> {
-    try {
-      return await prisma.afastamentoTemporario.create({
-        data: novoAfastamento,
-      });
-    } catch (erro) {
-      console.error(
-        `[ERRO] Criar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
-      );
-      throw new Error(
-        `Falha ao criar afastamento: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
-      );
-    }
+    await generatePdfLeave(id, id);
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      `tmp/afastamentos/${id}.pdf`,
+    );
+    // Garante que o arquivo existe
+    await fs.promises.access(filePath, fs.constants.F_OK);
+
+    // Lê em memória para anexar e depois poder excluir o arquivo
+    const pdfBuffer = await fs.promises.readFile(filePath);
+    const { email: emailDiretor } = await usuarioService.getDiretor();
+    const { email: emailCoordenador } = await usuarioService.getCoordenador();
+    const emailsSend = [emailDiretor, emailCoordenador].filter(Boolean); // Filtra emails falsy
+    // Envia email para o usuário e coordenador
+    await sendEmail({
+      to: emailsSend,
+      name: 'SysICOMP UFAM',
+      title: 'Novo afastamento temporário',
+      template: 'afastamentoTemporario',
+      data: {
+        ...novoAfastamento,
+      },
+      layout: 'layoutSyscomp',
+      attachments: [
+        {
+          filename: `Afastamento-${novoAfastamento.usuario.nomeCompleto}.pdf`,
+          content: pdfBuffer, // Nodemailer/Resend aceitam Buffer aqui
+          contentType: 'application/pdf',
+        },
+      ],
+    });
+
+    fs.promises
+      .unlink(filePath)
+      .catch((err) => console.error('Erro ao deletar PDF temporário:', err));
+  }
+
+  async criar(data: CreateAfastamentoDTO) {
+    const novoAfastamento = await prisma.afastamentoTemporario.create({
+      data,
+      include: {
+        usuario: true,
+      },
+    });
+    this.sendEmailAfastamento(novoAfastamento);
+    return novoAfastamento;
   }
 
   //Busca um afastamento pelo ID

@@ -4,12 +4,15 @@ import fs from 'fs/promises';
 import Handlebars from 'handlebars';
 import { convert } from 'html-to-text';
 import nodemailer from 'nodemailer';
+import { DateTime } from 'luxon';
+
 interface Attachment {
   filename: string;
-  content: string; // em base64
+  content: string | Buffer; // pode ser base64 ou Buffer
   content_id?: string; // se quiser usar como imagem inline com <img src="cid:...">
   type?: string; // tipo MIME, ex: "image/png", "application/pdf"
   disposition?: string; // "inline" ou "attachment" (padrão)
+  contentType?: string; // tipo MIME, ex: "image/png", "application/pdf"
 }
 dotenv.config();
 
@@ -22,14 +25,90 @@ function dataAtualExtensa() {
 }
 
 Handlebars.registerHelper('dataAtualExtensa', dataAtualExtensa);
+// Utilitário: tenta montar um DateTime a partir de vários tipos de entrada
+function toManausDateTime(input) {
+  if (!input && input !== 0) return null;
+
+  let dt = null;
+
+  if (input instanceof Date) {
+    dt = DateTime.fromJSDate(input, { zone: 'utc' });
+  } else if (typeof input === 'number') {
+    // timestamp em ms
+    dt = DateTime.fromMillis(input, { zone: 'utc' });
+  } else if (typeof input === 'string') {
+    // ISO ex: "2025-08-13T00:00:00.000Z"
+    dt = DateTime.fromISO(input, { zone: 'utc' });
+    if (!dt.isValid) {
+      // fallback: Date.parse
+      const ms = Date.parse(input);
+      if (!Number.isNaN(ms)) {
+        dt = DateTime.fromMillis(ms, { zone: 'utc' });
+      }
+    }
+  }
+
+  if (!dt || !dt.isValid) return null;
+  return dt.setZone('America/Manaus'); // GMT-4 (sem DST)
+}
+// Formata hora no formato HH:mm
+Handlebars.registerHelper('formatHora', function (date) {
+  if (!date) return '';
+  try {
+    const d = new Date(date);
+    const horas = String(d.getHours()).padStart(2, '0');
+    const minutos = String(d.getMinutes()).padStart(2, '0');
+    return `${horas}:${minutos}`;
+  } catch {
+    return '';
+  }
+});
+
+// Formata data no formato dd/MM/yyyy
+Handlebars.registerHelper('formatData', function (date) {
+  if (!date) return '';
+  try {
+    const d = new Date(date);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const ano = d.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  } catch {
+    return '';
+  }
+});
+// dd/MM/yyyy
+Handlebars.registerHelper('formatDataManaus', function (date) {
+  const dt = toManausDateTime(date);
+  return dt ? dt.toFormat('dd/MM/yyyy') : '';
+});
+
+// HH:mm
+Handlebars.registerHelper('formatHoraManaus', function (date) {
+  const dt = toManausDateTime(date);
+  return dt ? dt.toFormat('HH:mm') : '';
+});
+
+// "d de mês de yyyy" (ex: "13 de agosto de 2025")
+Handlebars.registerHelper('formatarDataExtensa', function (date) {
+  const dt = toManausDateTime(date);
+  return dt ? dt.setLocale('pt-BR').toFormat("d 'de' LLLL 'de' yyyy") : '';
+});
+
+// Data atual por extenso em Manaus
+Handlebars.registerHelper('dataAtualExtensa', function () {
+  const dt = DateTime.now().setZone('America/Manaus').setLocale('pt-BR');
+  return dt.toFormat("d 'de' LLLL 'de' yyyy");
+});
 
 interface SendEmailProps {
-  to: string;
+  to: string | string[]; // pode ser um único email ou uma lista de emails
   title: string;
   name?: string;
   template: string;
   data?: object;
   attachments?: Attachment[];
+  layout?: 'layout' | 'layoutSyscomp';
 }
 
 async function fileExists(path: string): Promise<boolean> {
@@ -43,10 +122,11 @@ async function fileExists(path: string): Promise<boolean> {
 
 async function compileTemplate(
   templateName: string,
+  layoutName: string = 'layout',
   data: object,
 ): Promise<{ html: string; text: string }> {
   const templatePath = path.join(__dirname, 'views', `${templateName}.hbs`);
-  const layoutPath = path.join(__dirname, 'views', 'layout.hbs');
+  const layoutPath = path.join(__dirname, 'views', `${layoutName}.hbs`);
   const templateSource = await fs.readFile(templatePath, 'utf8');
   const template = Handlebars.compile(templateSource);
   const body = template({ ...data });
@@ -86,7 +166,6 @@ async function getAttachments(): Promise<Attachment[]> {
   );
 }
 
-// 🚨 Fallback com Nodemailer
 async function sendEmailFallback({
   to,
   name = 'Syscomp IComp UFAM',
@@ -95,7 +174,7 @@ async function sendEmailFallback({
   text,
   attachments = [],
 }: {
-  to: string;
+  to: string | string[];
   name: string;
   title: string;
   html: string;
@@ -118,14 +197,30 @@ async function sendEmailFallback({
     subject: title,
     text,
     html,
-    attachments: attachments.map((att) => ({
-      filename: att.filename,
-      content: Buffer.from(att.content, 'base64'),
-      cid: att.content_id, // para imagens inline
-      contentType: att.type,
-      encoding: 'base64',
-      disposition: att.disposition || 'attachment',
-    })),
+    attachments: attachments.map((att) => {
+      let content: Buffer;
+
+      if (Buffer.isBuffer(att.content)) {
+        // Já é Buffer, usa direto
+        content = att.content;
+      } else if (typeof att.content === 'string') {
+        // Se for string, assume que está em base64
+        content = Buffer.from(att.content, 'base64');
+      } else {
+        throw new Error(
+          `Tipo de content inválido em attachment: ${typeof att.content}`,
+        );
+      }
+
+      return {
+        filename: att.filename,
+        content,
+        cid: att.content_id, // para imagens inline
+        contentType: att.type,
+        encoding: 'base64',
+        disposition: att.disposition || 'attachment',
+      };
+    }),
   });
   console.log('[Nodemailer] Email enviado com sucesso via fallback:', result);
 }
@@ -137,35 +232,18 @@ export async function sendEmail({
   template,
   data = {},
   attachments,
+  layout = 'layout',
 }: SendEmailProps) {
-  const { html, text } = await compileTemplate(template, data);
+  const { html, text } = await compileTemplate(template, layout, data);
   const attachmentsImgs = await getAttachments();
   const attachmentsSend = [...attachmentsImgs, ...(attachments || [])];
 
-  // const list = await resend.apiKeys.list();
-  // const { data: res, error } = await resend.emails.send({
-  //   from: 'Acme <onboarding@resend.dev>',
-  //   to: [to],
-  //   subject: title,
-  //   html,
-  //   // text,
-  //   // attachments: attachmentsSend.map((att) => ({
-  //   //   filename: att.filename,
-  //   //   content: att.content,
-  //   // })),
-  // });
-  if (true) {
-    // console.error(
-    //   '[RESEND] Falha ao enviar, usando fallback com Nodemailer...',
-    //   error,
-    // );
-    await sendEmailFallback({
-      to,
-      name,
-      title,
-      html,
-      text,
-      attachments: attachmentsSend,
-    });
-  }
+  await sendEmailFallback({
+    to,
+    name,
+    title,
+    html,
+    text,
+    attachments: attachmentsSend,
+  });
 }

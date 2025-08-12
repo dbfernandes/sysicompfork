@@ -48,6 +48,21 @@ class UsuarioService {
     }
   }
 
+  async getDiretor(): Promise<Usuario | null> {
+    return prisma.usuario.findFirst({
+      where: {
+        diretor: 1,
+      },
+    });
+  }
+  async getCoordenador(): Promise<Usuario | null> {
+    return prisma.usuario.findFirst({
+      where: {
+        coordenador: 1,
+      },
+    });
+  }
+
   async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {
     if ('senha' in user && Boolean(user.senha)) {
       user.senhaHash = await generateHashPassword(user.senha);

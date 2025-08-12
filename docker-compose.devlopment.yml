@@ -88,6 +88,7 @@ services:
     container_name: gotenberg-dev
     image: gotenberg/gotenberg:8
     restart: no
+    mem_limit: 256m
     ports:
       - '${PORT_GOTENBERG:-3002}:3000'  # Expondo porta padrão 3000 do Gotenberg para localhost na 3001
     networks:

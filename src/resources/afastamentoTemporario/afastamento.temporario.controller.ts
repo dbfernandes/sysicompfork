@@ -3,6 +3,7 @@ import afastamentoService from './afastamento.temporario.service';
 import path from 'path';
 import { StatusCodes } from 'http-status-codes';
 import { CreateAfastamentoDTO } from './afastamento.temporario.types';
+import usuarioService from '@resources/usuarios/usuario.service';
 const pageTitle = 'Afastamento Temporário';
 
 function resolveView(viewName: string): string {
@@ -20,7 +21,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
         throw new Error('Nenhum pedido de afastamento encontrado');
       return res
         .status(StatusCodes.OK)
-        .render(resolveView('pedidosAfastamento'), {
+        .render(resolveView('listarAfastamento'), {
           afastamentos,
           pageTitle,
           nome: req.session.nome,
@@ -36,21 +37,19 @@ const listarAfastamentos = async (req: Request, res: Response) => {
       throw new Error('Nenhum pedido de afastamento encontrado');
     }
 
-    return res
-      .status(StatusCodes.OK)
-      .render(resolveView('pedidosAfastamento'), {
-        afastamentos,
-        pageTitle,
-        nome: req.session.nome,
-        tipoUsuario: req.session.tipoUsuario,
-      });
+    return res.status(StatusCodes.OK).render(resolveView('listarAfastamento'), {
+      afastamentos,
+      pageTitle,
+      nome: req.session.nome,
+      tipoUsuario: req.session.tipoUsuario,
+    });
   } catch (erro) {
     console.error(
       `[ERRO] Listar afastamentos: ${erro instanceof Error ? erro.message : 'Erro desconhecido'}`,
     );
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .render(resolveView('pedidosAfastamento'), {
+      .render(resolveView('listarAfastamento'), {
         pageTitle,
         tipoUsuario: req.session.tipoUsuario,
         nome: req.session.nome,
@@ -95,6 +94,7 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
       };
 
       await afastamentoService.criar(novoAfastamento);
+
       return res
         .status(StatusCodes.OK)
         .redirect('/afastamentoTemporario/listar');
@@ -124,7 +124,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
         .json({ message: 'Pedido de afastamento não encontrado' });
     return res
       .status(StatusCodes.OK)
-      .render(resolveView('vizualizarAfastamento'), {
+      .render(resolveView('visualizarAfastamento'), {
         afastamento,
         pageTitle,
         nome: req.session.nome,
@@ -133,7 +133,7 @@ const exibirDetalhes = async (req: Request, res: Response) => {
   } catch (error: unknown) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .render(resolveView('pedidosAfastamento'), {
+      .render(resolveView('listarAfastamento'), {
         pageTitle,
         nome: req.session.nome,
         tipoUsuario: req.session.tipoUsuario,
@@ -153,7 +153,7 @@ const removerAfastamento = async (req: Request, res: Response) => {
     } catch (error: unknown) {
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .render(resolveView('pedidosAfastamento'), {
+        .render(resolveView('listarAfastamento'), {
           pageTitle,
           nome: req.session.nome,
           tipoUsuario: req.session.tipoUsuario,

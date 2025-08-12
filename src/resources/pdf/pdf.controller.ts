@@ -139,7 +139,7 @@ export async function generatePdfLeave(id: string, name: string) {
     '..',
     '..',
     '..',
-    'public',
+    'tmp',
     'afastamentos',
     `${name}.pdf`,
   );
