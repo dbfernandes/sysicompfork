@@ -5,10 +5,18 @@ import path from 'path';
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
+function canAccess(req: Request): boolean {
+  return Boolean(
+    req.session &&
+      req.session.tipoUsuario &&
+      (!!req.session.tipoUsuario.professor ||
+        !!req.session.tipoUsuario.administrador ||
+        !!req.session.tipoUsuario.secretaria),
+  );
+}
 const criarSala = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
-    if (!req.session.tipoUsuario?.professor) {
+    if (!canAccess(req)) {
       res.status(401).send('Não autorizado');
       return;
     }
@@ -19,7 +27,7 @@ const criarSala = async (req: Request, res: Response): Promise<void> => {
     });
   } else if (req.method === 'POST') {
     try {
-      if (!req.session.tipoUsuario?.professor) {
+      if (!canAccess(req)) {
         res.status(401).send('Não autorizado');
         return;
       }
@@ -47,7 +55,7 @@ const criarSala = async (req: Request, res: Response): Promise<void> => {
       await SalaService.criar(sala);
       res.redirect('/salas/gerenciar');
     } catch (e) {
-      console.log(e);
+      console.error(e);
       res.status(400).json({ error: e });
     }
   }
@@ -72,7 +80,7 @@ const excluirSala = async (req: Request, res: Response): Promise<void> => {
     await SalaService.excluir(salaId);
     res.redirect('/salas/gerenciar');
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(404).json({ error: e });
   }
 };
