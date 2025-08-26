@@ -86,6 +86,7 @@ const excluirSala = async (req: Request, res: Response): Promise<void> => {
 };
 
 const listarSalas = async (req: Request, res: Response): Promise<void> => {
+  console.log(req.session);
   if (!canAccess(req)) {
     res.status(401).send('Não autorizado');
     return;
