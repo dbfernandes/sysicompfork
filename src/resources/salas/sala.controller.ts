@@ -62,7 +62,7 @@ const criarSala = async (req: Request, res: Response): Promise<void> => {
 };
 
 const excluirSala = async (req: Request, res: Response): Promise<void> => {
-  if (!req.session.tipoUsuario?.professor) {
+  if (!canAccess(req)) {
     res.status(401).send('não encontrada');
     return;
   }
@@ -86,7 +86,7 @@ const excluirSala = async (req: Request, res: Response): Promise<void> => {
 };
 
 const listarSalas = async (req: Request, res: Response): Promise<void> => {
-  if (!req.session.tipoUsuario?.professor) {
+  if (!canAccess(req)) {
     res.status(401).send('Não autorizado');
     return;
   }
@@ -100,7 +100,7 @@ const listarSalas = async (req: Request, res: Response): Promise<void> => {
 };
 
 const editarSala = async (req: Request, res: Response): Promise<void> => {
-  if (!req.session.tipoUsuario?.professor) {
+  if (!canAccess(req)) {
     res.status(401).send('Não autorizado');
     return;
   }
