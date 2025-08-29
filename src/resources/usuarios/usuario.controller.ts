@@ -10,6 +10,7 @@ import {
   usuarioBodyDTO,
 } from './usuario.types';
 import { formatNameSession } from '@utils/formatadores';
+import { formatDateBR, parsePtBrDate } from '@utils/date';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -74,7 +75,7 @@ const adicionarUsuario = async (
           endereco,
           telCelular: telefoneCelular,
           siape,
-          dataIngresso: dateDeIngresso ? new Date(dateDeIngresso) : null,
+          dataIngresso: dateDeIngresso ? parsePtBrDate(dateDeIngresso) : null,
           unidade,
           turno,
           tokenResetSenha: null,
@@ -276,7 +277,10 @@ const exibirDetalhesUsuario = async (
         return res
           .status(StatusCodes.OK)
           .render(resolveView('usuarioVisualizar'), {
-            usuario,
+            usuario: {
+              ...usuario,
+              dataIngresso: formatDateBR(usuario.dataIngresso),
+            },
             nome: req.session.nome,
             message,
             type,
@@ -315,7 +319,10 @@ const editarUsuario = async (
         return res
           .status(StatusCodes.OK)
           .render(resolveView('usuariosEditar'), {
-            usuario,
+            usuario: {
+              ...usuario,
+              dataIngresso: formatDateBR(usuario.dataIngresso),
+            },
             nome: req.session.nome,
             message,
             type,
@@ -341,7 +348,6 @@ const editarUsuario = async (
     case 'POST': {
       try {
         const requestBody = req.body as usuarioBodyDTO;
-
         const updateData: UpdateUsuarioDto = {
           nomeCompleto: requestBody.nomeCompleto,
           cpf: requestBody.cpf,
@@ -358,7 +364,7 @@ const editarUsuario = async (
           telCelular: requestBody.telefoneCelular,
           siape: requestBody.siape,
           dataIngresso: requestBody.dateDeIngresso
-            ? new Date(requestBody.dateDeIngresso)
+            ? parsePtBrDate(requestBody.dateDeIngresso)
             : null,
           unidade: requestBody.unidade,
           turno: requestBody.turno,

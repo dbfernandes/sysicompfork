@@ -248,6 +248,27 @@
 <script>
 
     function usuariosAdicionarPage() {
+        $.validator.addMethod("dateBr", function (value, element) {
+          if (!value) return true; // se estiver vazio, é válido
+
+          // regex dd/mm/yyyy
+          const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+          const match = regex.exec(value);
+          if (!match) return false;
+
+          const day = parseInt(match[1], 10);
+          const month = parseInt(match[2], 10);
+          const year = parseInt(match[3], 10);
+
+          // valida mês
+          if (month < 1 || month > 12) return false;
+
+          // valida dia considerando meses
+          const diasNoMes = new Date(year, month, 0).getDate();
+          return !(day < 1 || day > diasNoMes);
+
+        }, 'Insira uma data válida no formato dd/mm/yyyy');
+
         $.validator.addMethod("repetirSenha", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
         })
@@ -301,6 +322,9 @@
                 },
                 siape: {
                     maxlength: 10,
+                },
+                dateDeIngresso: {
+                  dateBr: true
                 }
             },
             messages: {
@@ -329,6 +353,9 @@
                 siape: {
                     maxlength: '"Siape" deve conter no máximo 10 caracteres',
                 },
+                dateDeIngresso: {
+                  dateBr: '"Data de Ingresso" deve estar vazia ou no formato dd/mm/yyyy válido.'
+                }
             },
             errorElement: 'span',
             errorPlacement: function (error, element) {

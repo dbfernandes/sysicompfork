@@ -42,17 +42,15 @@
             </div>
         </div><!-- /.container-fluid -->
         <form name="postDeleteOnEdit" id="postDeleteOnEdit" method="POST">
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
         </form>
     </section>
 
     <section class="content">
         <div class="container-fluid">
             <div style="text-align:left">
-                <font color="#FF0000">*</font> Campos Obrigatórios
+                <span style="color: #FF0000; ">*</span> Campos Obrigatórios
             </div>
             <form action="/usuarios/editar/{{usuario.id}}" method="post" id="editarUsuarioForm">
-                <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Dados da Conta</h3>
@@ -300,6 +298,27 @@
         $("input[data-bootstrap-switch]").bootstrapSwitch();
     });
     function usuariosAdicionarPage() {
+        $.validator.addMethod("dateBr", function (value, element) {
+          if (!value) return true; // se estiver vazio, é válido
+
+          // regex dd/mm/yyyy
+          const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+          const match = regex.exec(value);
+          if (!match) return false;
+
+          const day = parseInt(match[1], 10);
+          const month = parseInt(match[2], 10);
+          const year = parseInt(match[3], 10);
+
+          // valida mês
+          if (month < 1 || month > 12) return false;
+
+          // valida dia considerando meses
+          const diasNoMes = new Date(year, month, 0).getDate();
+          return !(day < 1 || day > diasNoMes);
+
+        }, 'Insira uma data válida no formato dd/mm/yyyy');
+
         $.validator.addMethod("repetirSenha", function (el) {
             return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
         })
@@ -349,6 +368,9 @@
                     repetirSenha: true,
                     minlength: 6,
                 },
+                dateDeIngresso: {
+                  dateBr: true
+                }
             },
             messages: {
                 nomeCompleto: {
@@ -372,6 +394,9 @@
                     required: '"Senha" não pode ficar em branco',
                     repetirSenha: '"Repetir senha" deve ser igual ao campo "Senha"',
                     minlength: '"Senha" deve conter pelo menos 6 caracteres',
+                },
+                dateDeIngresso: {
+                  dateBr: '"Data de Ingresso" deve estar vazia ou no formato dd/mm/yyyy válido.'
                 }
             },
             errorElement: 'span',
