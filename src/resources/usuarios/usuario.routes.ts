@@ -10,9 +10,6 @@ router.post('/restaurar/:id', usuarioController.restaurarUsuario);
 router.get('/dados/:id', usuarioController.exibirDetalhesUsuario);
 router.get('/editar/:id', usuarioController.editarUsuario);
 router.post('/editar/:id', usuarioController.editarUsuario);
-router.get(
-  '/verificarDiretor',
-  usuarioController.verificarUsuarioDiretor,
-);
+router.get('/verificarDiretor', usuarioController.verificarUsuarioDiretor);
 
 export default router;

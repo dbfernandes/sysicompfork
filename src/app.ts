@@ -17,7 +17,8 @@ import logger from './utils/logger';
 
 import redisClient from './redisClient';
 import { RedisStore } from 'connect-redis';
-import { logRequestResponse } from '@utils/loggerResponse'; // ✅ Correto na v6+
+import { logRequestResponse } from '@utils/loggerResponse';
+import { STATIC_SKIP } from '@utils/constantes'; // ✅ Correto na v6+
 /* ───────── env ───────── */
 dotenv.config({
   // __dirname já existe em CJS; não precisamos de import.meta
@@ -70,13 +71,26 @@ app.use(express.json({ limit: '50mb' }));
 app.use(
   express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
 );
+// cria token para body
+morgan.token('body', (req: any) => {
+  if (req.body && Object.keys(req.body).length > 0) {
+    return JSON.stringify(req.body);
+  }
+  return '';
+});
 
 app.use(
-  morgan('combined', {
-    stream: {
-      write: (message: string) => logger.info(message.trim()),
+  morgan(
+    ':method :url :status :res[content-length] - :response-time ms :body',
+    {
+      stream: {
+        write: (message: string) => logger.info(message.trim()),
+      },
+      skip: (req, _) => {
+        return STATIC_SKIP.test(req.originalUrl) || req.path === '/favicon.ico';
+      },
     },
-  }),
+  ),
 );
 app.use(logRequestResponse);
 

@@ -63,7 +63,7 @@ class UsuarioService {
     });
   }
 
-  async alterar(id: number, user: UpdateUsuarioWithPassword): Promise<void> {
+  async alterar(id: number, user: UpdateUsuarioWithPassword) {
     if ('senha' in user && Boolean(user.senha)) {
       user.senhaHash = await generateHashPassword(user.senha);
       delete user.senha;
@@ -88,7 +88,7 @@ class UsuarioService {
       }
     }
 
-    await prisma.usuario.update({
+    return prisma.usuario.update({
       where: { id },
       data: user,
     });
@@ -107,10 +107,10 @@ class UsuarioService {
     return await prisma.usuario.findMany();
   }
 
-  async listarUmUsuario(id: number): Promise<any> {
+  async listarUmUsuario(id: number) {
     const usuario = await prisma.usuario.findUnique({
       where: {
-        id: Number(id),
+        id,
       },
       select: {
         id: true,
@@ -145,7 +145,7 @@ class UsuarioService {
       if (usuarioDict.secretaria === 1) usuarioDict.perfil += ' Secretaria |';
       if (usuario.secretaria === 1) usuario.perfil += ' Secretaria |';
       if (usuario.diretor === 1) usuario.perfil += ' Secretaria |';
-      if (usuarioDict.perfil!.endsWith(' |')) {
+      if (usuarioDict.perfil && usuarioDict.perfil!.endsWith(' |')) {
         usuarioDict.perfil = usuarioDict.perfil!.substring(
           0,
           usuarioDict.perfil!.length - 2,
@@ -155,7 +155,7 @@ class UsuarioService {
     // usuarioDict.DateFormatada = new Date(usuarioDict.createdAt).toLocaleString('pt-BR', {
     //   timeZone: 'America/Manaus'
     // }).slice(0, 10)
-    const usuarioComDataFormatada = {
+    return {
       ...usuarioDict,
       DateFormatada: new Date(usuarioDict.createdAt)
         .toLocaleString('pt-BR', {
@@ -163,8 +163,6 @@ class UsuarioService {
         })
         .slice(0, 10),
     };
-
-    return usuarioComDataFormatada;
   }
 
   async listarTodosPorCondicao(data: any): Promise<any[]> {

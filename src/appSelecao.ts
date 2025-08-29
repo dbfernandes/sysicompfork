@@ -18,6 +18,7 @@ import logger from '@utils/logger';
 import redisClient from './redisClient';
 import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
+import { STATIC_SKIP } from '@utils/constantes';
 
 dotenv.config({
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
@@ -96,10 +97,15 @@ app.use(
 app.use('/public', express.static(path.resolve(process.cwd(), 'public')));
 app.use('/img', express.static(path.resolve(process.cwd(), 'public/img')));
 // Colocar o logger depois
+
 app.use(
   morgan('combined', {
     stream: {
       write: (message: string) => logger.info(message.trim()),
+    },
+    skip: (req, _) => {
+      // ignora qualquer rota que comece com /script-adminlte
+      return STATIC_SKIP.test(req.path) || req.path === '/favicon.ico';
     },
   }),
 );

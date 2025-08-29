@@ -9,6 +9,7 @@ import {
   UpdateUsuarioDto,
   usuarioBodyDTO,
 } from './usuario.types';
+import { formatNameSession } from '@utils/formatadores';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -373,7 +374,19 @@ const editarUsuario = async (
         };
 
         const userId = Number(req.params.id);
-        await usuarioService.alterar(userId, updateData);
+        const user = await usuarioService.alterar(userId, updateData);
+
+        const uid = req.session.uid;
+        if (user.id === Number(uid)) {
+          req.session.nome = formatNameSession(user.nomeCompleto);
+          req.session.tipoUsuario = {
+            administrador: user.administrador,
+            coordenador: user.coordenador,
+            secretaria: user.secretaria,
+            professor: user.professor,
+            diretor: user.diretor,
+          };
+        }
 
         const successParams = {
           message: 'Dados alterados com sucesso!',

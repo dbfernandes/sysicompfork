@@ -69,7 +69,6 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
         horaInicio,
         horaFim: horaFim || horaInicio,
       };
-      console.log('novaReserva:', novaReserva);
 
       await reservasService.criar(novaReserva);
       res.redirect('/reservas/gerenciar');
@@ -195,7 +194,6 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
         horaFim: horaFim || horaInicio,
       };
 
-      console.log(dadosAtualizados);
       await reservasService.atualizar(reservaId, dadosAtualizados);
       res.redirect('/reservas/gerenciar');
     } catch (error) {

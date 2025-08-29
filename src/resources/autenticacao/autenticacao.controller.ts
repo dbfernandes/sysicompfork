@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import path from 'path';
 import UsuarioService from '../usuarios/usuario.service';
+import { formatNameSession } from '@utils/formatadores';
 
 const optionsLogin = {
   layout: 'begin',
@@ -100,14 +101,7 @@ const login = async (req: Request, res: Response) => {
       }
 
       req.session.uid = String(usuario.id);
-      req.session.nome = `${usuario.nomeCompleto.split(' ')[0]}${
-        usuario.nomeCompleto.split(' ').length > 1
-          ? ' ' +
-            usuario.nomeCompleto.split(' ')[
-              usuario.nomeCompleto.split(' ').length - 1
-            ]
-          : ' '
-      }`;
+      req.session.nome = formatNameSession(usuario.nomeCompleto);
       req.session.tipoUsuario = {
         administrador: usuario.administrador,
         coordenador: usuario.coordenador,
