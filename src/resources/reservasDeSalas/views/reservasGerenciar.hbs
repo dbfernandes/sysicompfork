@@ -58,7 +58,13 @@
                                         <td> {{usuario.nomeCompleto}} </td>
                                         <td> {{atividade}} </td>
                                         <td> {{tipo}} </td>
-                                        <td> {{dataInicio}} - {{dataFim}} </td>
+                                        <td> {{dataInicio}}
+                                          {{#if (eq dataInicio dataFim)}}
+
+                                          {{else}}
+                                            - {{dataFim}}
+                                          {{/if}}
+                                          </td>
                                         <td> {{horaInicio}} - {{horaFim}} </td>
                                         {{#if dias}}
 

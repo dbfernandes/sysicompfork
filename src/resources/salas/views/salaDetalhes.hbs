@@ -96,8 +96,7 @@
 
 <!-- FullCalendar -->
 <script src="
-https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js
-"></script>
+https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
 
 <script>
   // ========= Helpers =========
@@ -141,42 +140,69 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js
     {{/if}}
   ];
 
+  function pad2(n){ return String(n).padStart(2, '0'); }
+
+  function dateOnlyLocal(isoOrDate) {
+    // Converte "2025-08-26T17:36:37.393Z" => (local) "YYYY-MM-DD"
+    return moment(isoOrDate).local().format('YYYY-MM-DD');
+  }
+  function hhmm(s) {
+    if (!s) return '00:00';
+    const m = moment(s, ['HH:mm', 'HH:mm:ss'], true);
+    return m.isValid() ? m.format('HH:mm') : '00:00';
+  }
+  function dateOnlyUTC(isoString) {
+    // cria em UTC e formata só a parte da data
+    return moment.utc(isoString).format('YYYY-MM-DD');
+  }
   function buildFcEvents(reservas, sala) {
     if (!reservas || !reservas.length) return [];
     const events = [];
 
     reservas.forEach(r => {
-      const title = r.atividade;
-      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${r.horaInicio} - ${r.horaFim}`;
+      const title = r.atividade || 'Reserva';
+      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${hhmm(r.horaInicio)} - ${hhmm(r.horaFim)}`;
+
+      // normaliza datas vindas como ISO Z do banco
 
       const daysOfWeek = parseDiasToDaysOfWeek(r.dias);
-      if (daysOfWeek && daysOfWeek.length) {
-        // recorrente por dias da semana, entre dataInicio e dataFim
+      const inicioDia = dateOnlyUTC(r.dataInicio);
+      const fimDia    = dateOnlyUTC(r.dataFim || r.dataInicio);
+      const isRange   = inicioDia !== fimDia;
+
+      const hIni = hhmm(r.horaInicio);
+      const hFim = hhmm(r.horaFim || r.horaInicio);
+      if (daysOfWeek && daysOfWeek.length && isRange) {
+
         events.push({
           id: r.id,
           title,
           daysOfWeek,
-          startTime: r.horaInicio,
-          endTime: r.horaFim,
-          startRecur: r.dataInicio || null,
-          endRecur: r.dataFim ? (new Date(new Date(r.dataFim).getTime() + 86400000)).toISOString().slice(0,10) : null, // end exclusivo (+1 dia)
+          startTime: hhmm(r.horaInicio),
+          endTime: hhmm(r.horaFim),
+          startRecur: inicioDia,                       // <<< sem hora/UTC
+          endRecur:   moment(fimDia).add(1,'day').format('YYYY-MM-DD'), // exclusivo (+1)
+          allDay: false,
           display: 'block',
           extendedProps: { tooltip }
         });
       } else {
-        // pontual
-        const start = toLocalISO(r.dataInicio, r.horaInicio);
-        const end   = toLocalISO(r.dataFim || r.dataInicio, r.horaFim);
+        // PONTUAL: instância única com start/end
+
+        const start = moment(`${inicioDia} ${hIni}`, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DDTHH:mm');
+        const end   = moment(`${fimDia} ${hFim}`,   'YYYY-MM-DD HH:mm').format('YYYY-MM-DDTHH:mm');
         events.push({
           id: r.id,
           title,
           start,
           end,
+          allDay: false,
           display: 'block',
           extendedProps: { tooltip }
         });
       }
     });
+
 
     return events;
   }

@@ -99,22 +99,53 @@ const deletarReserva = async (req: Request, res: Response): Promise<void> => {
     res.redirect('/reservas/gerenciar');
   }
 };
+// utils/time.ts
+export function toHHmm(input?: string | null): string | null {
+  if (!input) return null;
 
+  // remove espaços
+  const s = String(input).trim();
+
+  // Casos comuns:
+  //  - "14:45:00" -> "14:45"
+  //  - "14:45"    -> "14:45"
+  const hhmmMatch = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (hhmmMatch) {
+    const h = hhmmMatch[1].padStart(2, '0');
+    const m = hhmmMatch[2];
+    return `${h}:${m}`;
+  }
+
+  // fallback: tenta pegar HH e mm de algo como "9:5", "0945", "9-05", etc.
+  const digits = s.replace(/[^\d]/g, ''); // só dígitos
+  if (digits.length >= 3) {
+    const h = digits.slice(0, digits.length - 2).padStart(2, '0');
+    const m = digits.slice(-2);
+    return `${h}:${m}`;
+  }
+
+  // se não deu pra entender, retorna null (ou o original, se preferir)
+  return null;
+}
 const listarReservasFormatadas = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
     const reservas = await reservasService.listarReservasSalas();
+    console.log(reservas);
+
     const reservasFormatadas = reservas.map((reserva) => ({
       ...reserva,
+      horaInicio: toHHmm(reserva.horaInicio) ?? reserva.horaInicio, // garante "HH:mm"
+      horaFim: toHHmm(reserva.horaFim) ?? reserva.horaFim,
       dataInicio: reserva.dataInicio?.toLocaleDateString('pt-BR'),
       dataFim: reserva.dataFim?.toLocaleDateString('pt-BR'),
       terminou: reserva.dataFim
         ? new Date(reserva.dataFim) < new Date()
         : false,
     }));
-    console.log(reservas);
+    console.log(reservasFormatadas);
 
     res.render(resolveView('reservasGerenciar'), {
       reservas: reservasFormatadas,
