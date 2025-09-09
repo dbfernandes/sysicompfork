@@ -57,30 +57,7 @@
           </ul>
         </li>
         <li class="nav-header">Coordenação PPGI</li>
-        <!--<li class="nav-item {{#ifEqual module 'projetos'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
-          <a href="#" class="nav-link {{#ifEqual module 'projetos'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-list-ul"></i>
-            <p>
-              Projetos
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/projetos/adicionar"
-                class="nav-link {{#ifEqual page 'projetos-adicionar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-search-plus nav-icon"></i>
-                <p>Adicionar Projeto</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/projetos/listar" class="nav-link {{#ifEqual page 'projetos-listar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Listar Projetos</p>
-              </a>
-            </li>
-          </ul>
-        </li>-->
+
 
         <li class="nav-item {{#ifEqual module 'selecaoppgi'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'selecaoppgi'}}active{{/ifEqual}}">
@@ -249,12 +226,21 @@
             </p>
           </a>
         </li>
+
         {{/if}}
+<!--        <li class="nav-item">-->
+<!--          <a href="/defesas/listar" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">-->
+<!--            <i class="nav-icon fas fa-graduation-cap"></i>-->
+<!--            <p>-->
+<!--              Defesas-->
+<!--            </p>-->
+<!--          </a>-->
+<!--        </li>-->
         {{#if (autorizarUsuario tipoUsuario "secretaria")}}
         <li class="nav-header">Secretaria</li>
         <li class="nav-item">
           <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-graduation-cap"></i>
+            <i class="nav-icon fa fa-users"></i>
             <p>
               Gerenciar Alunos
             </p>

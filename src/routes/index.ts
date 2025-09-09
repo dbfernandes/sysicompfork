@@ -1,6 +1,7 @@
 /* Import routes */
 import express from 'express';
 import inicioRoutes from '../resources/inicio/inicio.routes';
+import defesasRoutes from '../resources/defesas/defesa.routes';
 import usuariosRoutes from '../resources/usuarios/usuario.routes';
 import editalRouter from '../resources/edital/edital.routes';
 import selecaoppgiRouter from '../resources/selecaoPPGI/selecao.ppgi.routes';
@@ -17,6 +18,7 @@ import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/aluno.routes';
 import { isAuth } from '@/middlewares/usuarioAutenticacaoMiddleware';
+
 const router = express.Router();
 
 // ROTAS DE OUTROS PROJETOS
@@ -78,7 +80,10 @@ router.use(
   // autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
+router.use('/defesas', defesasRoutes);
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
+
+////////////////////////////////////
 router.use(
   '/downloadCandidateDocument/:id',
   editalController.pegarDocumentoCandidato,

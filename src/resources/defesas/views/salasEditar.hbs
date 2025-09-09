@@ -1,0 +1,156 @@
+{{> header}}
+{{> sidebar module='salas' page='salas-editar'}}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+          <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between"  style="gap: 8px; white-space: nowrap;">
+            <div>
+              <h1>Editar Sala</h1>
+            </div>
+            <div>
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+                <li class="breadcrumb-item"><a href="/salas/gerenciar">Listagem de salas</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+              </ol>
+            </div>
+          </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+                    <a type="button" class="btn btn-warning color-white" href="/salas/gerenciar">
+                        <i class="fa fa-arrow-left color-white"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+
+    <section class="content">
+        <div class="row">
+            <div class="col">
+                <div class="card card-primary" style="width: 50%;">
+                    <div class="card-header">
+                        <h3 class="card-title"><b>Dados da Sala</b></h3>
+                        <button class="expand-btn"
+                            style="color:white; position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
+                            <i class="fas fa-expand" style="color:white"></i>
+                        </button>
+                    </div>
+                    <div class="container-fluid">
+                        <form method="POST" action="/salas/editar/{{sala.id}}" id="editSalaForm">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="nome">
+                                            <font color="#FF0000">*</font> Nome:
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                            placeholder="Ex. Auditório 1" value="{{sala.nome}}" required>
+                                    </div>
+
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="numero">
+                                            Número:
+                                        </label>
+                                        <input type="number" class="form-control" id="numero" name="numero" min="0"
+                                            max='100' value="{{sala.numero}}" placeholder="Ex. 12">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                        <label for="andar">
+                                            <font color="#FF0000">*</font> Andar:
+                                        </label>
+                                        <input type="number" class="form-control" id="andar" name="andar" min="1"
+                                            max='3' value="{{sala.andar}}" value="1">
+
+                                    </div>
+
+                                    <div class="form-group c  ol-sm-12 col-md-6 col-lg-6">
+                                        <label for="capacidade">
+                                            <font color="#FF0000"></font> Capacidade:
+                                        </label>
+                                        <input type="number" class="form-control" id="capacidade" name="capacidade"
+                                            min="0" max='100' value="{{sala.capacidade}}" placeholder="Ex. 30">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-6 col-lg-12">
+                                        <label for="bloco">
+                                            <font color="#FF0000">*</font> Bloco:
+                                        </label>
+                                        <select class="form-control" id="bloco" name="bloco" required>
+                                            <option {{checked sala.bloco 'Icomp Tech' }} value="Icomp Tech">Icomp Tech
+                                            </option>
+                                            <option {{checked sala.bloco 'Icomp 1' }} value="Icomp 1">Icomp 1</option>
+                                            <option {{checked sala.bloco 'Icomp 2' }} value="Icomp 2">Icomp 2</option>
+                                            <option {{checked sala.bloco 'CPD' }} value="CPD">CPD</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer pr-0">
+                                <div style="margin-right: auto;" class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success float-right">
+                                        Salvar Sala
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card -->
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+       
+        const card = document.querySelector('.card');
+        const expandBtn = document.querySelector('.expand-btn');
+        const formAdicionarSala = document.getElementById('editSalaForm');
+
+        // Adicione este listener para o evento 'submit' do formulário
+        formAdicionarSala.addEventListener('submit', function (event) {
+            console.log('in')
+            event.preventDefault(); // Previna o comportamento padrão do formulário
+
+            // Mostre a notificação
+            localStorage.setItem('toastMessage', 'Sala Editada com sucesso!');
+            localStorage.setItem('toastType', 'success');
+            // Aguarde um pouco antes de realmente enviar o formulário para que a notificação seja vista pelo usuário
+
+            formAdicionarSala.submit();  // Envie o formulário depois de um delay
+            // 2 segundos de delay
+        });
+
+        expandBtn.addEventListener('click', function () {
+            console.log('in')
+
+            if (card.style.width === '100%') {
+                card.style.width = '50%';
+                //expandBtn.innerText = '<bExpandir';
+            } else {
+                card.style.width = '100%';
+                // expandBtn.innerText = 'Reduzir';
+            }
+        });
+    });
+</script>
+
+
+{{> footer}}

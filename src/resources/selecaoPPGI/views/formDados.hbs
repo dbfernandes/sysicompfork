@@ -865,6 +865,7 @@
 {{> ppgi/_masks }}
 <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
+
 <script>
 	$(document).ready(function () {
 
@@ -1336,7 +1337,6 @@
     });
 
     $.validator.addMethod('validPhoneNumber', function (value, element) {
-      console.log("Passou aqui")
       return inputPhone && inputPhone.isValidNumber();
     }, 'Número de telefone inválido');
 

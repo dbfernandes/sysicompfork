@@ -1,13 +1,10 @@
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { NextFunction, Request, Response } from 'express';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import reservasService from './reservas.service';
 import salasService from '../salas/sala.service';
 import path from 'path';
 import { Prisma } from '@prisma/client';
 import { ReservaFormularioDto } from './reservas.types';
-import logger from '@utils/logger';
-
-// Interfaces para tipagem dos dados
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -15,7 +12,7 @@ function resolveView(viewName: string): string {
 
 const listarReservas = async (req: Request, res: Response): Promise<void> => {
   try {
-    const reservas = await reservasService.listarTodos();
+    const reservas = await reservasService.listAll();
     res.status(StatusCodes.OK).json({ reservas });
   } catch (error) {
     console.error('Erro ao listar reservas:', error);
@@ -25,13 +22,18 @@ const listarReservas = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const criarReserva = async (req: Request, res: Response): Promise<void> => {
+const criarReserva = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   if (req.method === 'GET') {
     try {
-      const salas = await salasService.listarTodos();
-
+      const salas = await salasService.listAll();
+      const salaId = req.query.salaId;
       res.status(StatusCodes.OK).render(resolveView('reservasAdicionar'), {
         salas,
+        salaId,
         nome: req.session.nome,
         usuarioId: req.session.uid,
         tipoUsuario: req.session.tipoUsuario,
@@ -53,7 +55,7 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
         horaInicio,
         horaFim, // Mudado de horaTermino para horaFim
       } = req.body as ReservaFormularioDto;
-
+      console.log(req.body);
       // Processamento dos dias da semana
       const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
 
@@ -71,10 +73,9 @@ const criarReserva = async (req: Request, res: Response): Promise<void> => {
       };
 
       await reservasService.criar(novaReserva);
-      res.redirect('/reservas/gerenciar');
+      res.status(StatusCodes.CREATED).json(ReasonPhrases.CREATED);
     } catch (error) {
-      console.error('Erro ao criar reserva:', error);
-      res.redirect('/reservas/gerenciar');
+      next(error);
     }
   }
 };
@@ -113,6 +114,7 @@ const listarReservasFormatadas = async (
         ? new Date(reserva.dataFim) < new Date()
         : false,
     }));
+    console.log(reservas);
 
     res.render(resolveView('reservasGerenciar'), {
       reservas: reservasFormatadas,
@@ -128,7 +130,7 @@ const listarReservasFormatadas = async (
 const editarReserva = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     try {
-      const salas = await salasService.listarTodos();
+      const salas = await salasService.listAll();
       const reserva = await reservasService.buscarReserva(
         parseInt(req.params.id),
       );

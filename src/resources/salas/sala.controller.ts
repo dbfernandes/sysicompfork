@@ -70,7 +70,7 @@ const excluirSala = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const salaId = parseInt(id);
-    const sala = await SalaService.listarUmaSala(salaId);
+    const sala = await SalaService.getById(salaId);
 
     if (!sala) {
       res.status(404).json({ error: 'Sala não encontrada!' });
@@ -91,8 +91,8 @@ const listarSalas = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const salas = await SalaService.listarTodos();
-  res.render(resolveView('salasGerenciar'), {
+  const salas = await SalaService.listAll();
+  res.render(resolveView('salasListar'), {
     salas,
     nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
@@ -107,7 +107,7 @@ const editarSala = async (req: Request, res: Response): Promise<void> => {
 
   if (req.method === 'GET') {
     try {
-      const sala = await SalaService.listarUmaSala(parseInt(req.params.id));
+      const sala = await SalaService.getById(parseInt(req.params.id));
 
       if (!sala) {
         res.status(404).send({ message: 'Sala não encontrada' });
@@ -132,7 +132,7 @@ const editarSala = async (req: Request, res: Response): Promise<void> => {
         res.status(400).json({ error: 'Nome é obrigatório' });
         return;
       }
-      const salaFind = await SalaService.listarUmaSala(parseInt(req.params.id));
+      const salaFind = await SalaService.getById(parseInt(req.params.id));
       if (!salaFind) {
         res.status(404).json({ error: 'Sala não encontrada' });
         return;
@@ -154,4 +154,17 @@ const editarSala = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { criarSala, excluirSala, listarSalas, editarSala };
+const details = async (req: Request, res: Response): Promise<void> => {
+  if (!canAccess(req)) {
+    res.status(401).send('Não autorizado');
+    return;
+  }
+  const salaId = Number(req.params.id);
+  const sala = await SalaService.getByIdWithReservas(salaId);
+  res.render(resolveView('salaDetalhes'), {
+    sala,
+    nome: req.session.nome,
+    tipoUsuario: req.session.tipoUsuario,
+  });
+};
+export default { criarSala, excluirSala, listarSalas, editarSala, details };

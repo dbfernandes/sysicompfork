@@ -109,6 +109,7 @@ model Candidato {
   recomendacoes          CandidatoRecomendacao[]
   experienciasAcademicas CandidatoExperienciaAcademica[]
   publicacoes            CandidatoPublicacao[]
+  Defesa                 Defesa[]
 
   @@index([editalId])
   @@index([linhaPesquisaId])
@@ -224,6 +225,7 @@ model LinhaPesquisa {
   updatedAt DateTime @updatedAt
 
   candidatos Candidato[]
+  Defesa     Defesa[]
 }
 
 model Orientacao {
@@ -361,29 +363,33 @@ model Usuario {
   senhaHash               String    @db.VarChar(255)
   tokenResetSenha         String?   @unique @db.VarChar(255)
   validadeTokenResetSenha DateTime? @db.DateTime(0)
-  status                  Int       @default(1) @db.SmallInt
-  administrador           Int       @default(0) @db.SmallInt
-  coordenador             Int       @default(0) @db.SmallInt
-  secretaria              Int       @default(0) @db.SmallInt
-  diretor                 Int       @default(0) @db.SmallInt
-  professor               Int       @default(0) @db.SmallInt
-  perfil                  String?   @db.VarChar(255)
-  siape                   String?   @db.VarChar(10)
-  dataIngresso            DateTime? @db.Date
-  endereco                String?   @db.VarChar(255)
-  telCelular              String?   @db.VarChar(20)
-  telResidencial          String?   @db.VarChar(20)
-  unidade                 String?   @db.VarChar(60)
-  turno                   String?   @db.VarChar(32)
-  lattesId                BigInt?
-  formacao                String?   @db.VarChar(255)
-  formacaoIngles          String?   @db.VarChar(255)
-  resumo                  String?   @db.VarChar(5000)
-  resumoIngles            String?   @db.VarChar(5000)
-  ultimaAtualizacao       DateTime? @db.DateTime(0)
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
 
+  status Int @default(1) @db.SmallInt // mantém seu status numérico
+
+  administrador Int @default(0) @db.SmallInt
+  coordenador   Int @default(0) @db.SmallInt
+  secretaria    Int @default(0) @db.SmallInt
+  diretor       Int @default(0) @db.SmallInt
+  professor     Int @default(0) @db.SmallInt
+
+  perfil            String?   @db.VarChar(255)
+  siape             String?   @db.VarChar(10)
+  dataIngresso      DateTime? @db.Date
+  endereco          String?   @db.VarChar(255)
+  telCelular        String?   @db.VarChar(20)
+  telResidencial    String?   @db.VarChar(20)
+  unidade           String?   @db.VarChar(60)
+  turno             String?   @db.VarChar(32)
+  lattesId          BigInt?
+  formacao          String?   @db.VarChar(255)
+  formacaoIngles    String?   @db.VarChar(255)
+  resumo            String?   @db.VarChar(5000)
+  resumoIngles      String?   @db.VarChar(5000)
+  ultimaAtualizacao DateTime? @db.DateTime(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relacionamentos existentes do seu projeto
   avatares      Avatar[]
   orientacoes   Orientacao[]
   premios       Premio[]
@@ -391,4 +397,212 @@ model Usuario {
   publicacoes   UsuarioPublicacao[]
   reservasSalas ReservaSala[]
   afastamentos  AfastamentoTemporario[]
+
+  // ===== Inversos para Defesa (conforme schema que desenhamos) =====
+  defesasComoOrientador   Defesa[] @relation("OrientadorDefesa")
+  defesasComoCoorientador Defesa[] @relation("CoorientadorDefesa")
+  defesasCriadas          Defesa[] @relation("CriadorDefesa")
+
+  Defesa Defesa[]
+}
+
+enum DefesaTipo {
+  QUALIFICACAO
+  DEFESA_FINAL
+}
+
+enum DefesaNivel {
+  MESTRADO
+  DOUTORADO
+}
+
+enum DefesaModalidade {
+  PRESENCIAL
+  ONLINE
+}
+
+enum DefesaStatus {
+  RASCUNHO
+  AGUARDANDO_VALIDACAO
+  VALIDADO
+  DIVULGADO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum PapelBanca {
+  PRESIDENTE
+  MEMBRO
+}
+
+enum VinculoMembro {
+  INTERNO
+  EXTERNO
+}
+
+enum UploadTipo {
+  PROPOSTA_PDF // Qualificação: proposta
+  TESE_PDF // Defesa Final: tese/dissertação
+  ARTIGO_COMPROVANTE_PDF // Comprovante (submetido/aceito)
+  OUTRO
+}
+
+enum PresidenteOrigem {
+  ORIENTADOR
+  COORIENTADOR
+}
+
+model Defesa {
+  id String @id @default(cuid())
+
+  // criação mínima
+  tipo  DefesaTipo
+  nivel DefesaNivel
+
+  // agora opcionais para permitir criação parcial
+  candidatoId String?
+  candidato   Candidato? @relation(fields: [candidatoId], references: [id])
+
+  orientadorId Int?
+  orientador   Usuario? @relation("OrientadorDefesa", fields: [orientadorId], references: [id])
+
+  coorientadorId Int?
+  coorientador   Usuario? @relation("CoorientadorDefesa", fields: [coorientadorId], references: [id])
+
+  tituloTrabalho String?
+  dataHora       DateTime?
+  modalidade     DefesaModalidade?
+  localOuLink    String?
+
+  // final: opcional até o passo 1 desse formulário
+  linhaPesquisaId Int?
+  linhaPesquisa   LinhaPesquisa? @relation(fields: [linhaPesquisaId], references: [id])
+
+  status DefesaStatus @default(RASCUNHO)
+
+  // rastreabilidade de quem iniciou
+  criadoPorId Int
+  criadoPor   Usuario @relation("CriadorDefesa", fields: [criadoPorId], references: [id])
+
+  membros MembroBanca[]
+  uploads DefesaUpload[]
+
+  quali QualificacaoExtra?
+  final DefesaFinalExtra?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+  usuarioId Int?
+
+  @@index([tipo, nivel])
+  @@index([status, dataHora])
+}
+
+model QualificacaoExtra {
+  // 1–1 com Defesa (tipo = QUALIFICACAO)
+  defesaId String @id
+  defesa   Defesa @relation(fields: [defesaId], references: [id])
+
+  // Passo 3 – Dados do trabalho
+  // “Resumo ou abstract” e “Palavras-chaves (pt ou en)”
+  resumoOuAbstract String
+  palavrasChaves   String // separadas por ";"
+
+  // Créditos mínimos (12 M / 16 D) – validação de negócio na aplicação
+  creditosMinimosOk Boolean
+
+  // Passo 4 – Banca: presidente é orientador OU coorientador
+  presidenteOrigem PresidenteOrigem
+
+  // Passo 7 – Proposta e (se DOUTORADO) artigo
+  // Proposta -> Upload em DefesaUpload(PROPOSTA_PDF)
+  doutoradoArtigoComprovado Boolean? // apenas se nivel = DOUTORADO
+  artigoTitulo              String?
+  artigoVeiculoOuDoi        String?
+
+  // Autoavaliação (ano vigente do programa)
+  autoavaliacaoPreenchida Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DefesaFinalExtra {
+  // 1–1 com Defesa (tipo = DEFESA_FINAL)
+  defesaId String @id
+  defesa   Defesa @relation(fields: [defesaId], references: [id])
+
+  // Passo 3 – Dados do trabalho
+  resumoPt        String
+  palavrasChavePt String // separadas por ";"
+  abstractEn      String
+  keywordsEn      String // separated by ";"
+  idiomaTese      String // “Idioma da Tese”
+
+  // Créditos – regra: D=16, M=36 (validação de negócio)
+  creditosOk       Boolean
+  creditosExigidos Int? // 16 (D) ou 36 (M), útil para auditoria/relatório
+
+  // Passo 4 – Banca (regra negócio: externos >= internos; 4º membro obrigatório p/ Mestrado)
+  // -> modelado via MembroBanca (abaixo)
+
+  // Passo 6 – Tese, artigos e proficiência
+  // Tese -> Upload em DefesaUpload(TESE_PDF)
+  artigoEstratoSuperiorOk Boolean // Dr: aceito OU submetido; Ms: aceito (validar no serviço)
+  artigoTitulo            String
+  artigoVeiculoOuDoi      String
+
+  // Agradecimentos CAPES/FAPEAM
+  incluiuAgradecimentosObrigatorios Boolean
+  textoAgradecimentos               String? // opcional armazenar o texto efetivo utilizado
+
+  // Autoavaliação (ano vigente do programa)
+  autoavaliacaoPreenchida Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MembroBanca {
+  id       String @id @default(cuid())
+  defesaId String
+  defesa   Defesa @relation(fields: [defesaId], references: [id])
+
+  nome        String
+  email       String?
+  instituicao String? // texto livre: “ICOMP/UFAM”, “Outra instituição”, etc.
+
+  papel    PapelBanca // PRESIDENTE ou MEMBRO
+  suplente Boolean    @default(false)
+
+  // Para regras de composição (“Interno/Externo”)
+  vinculo VinculoMembro // INTERNO ou EXTERNO
+
+  // Metadados opcionais (convite/RSVP)
+  rsvpToken         String?   @unique
+  confirmouPresenca Boolean   @default(false)
+  confirmadoEm      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([defesaId, suplente])
+  @@index([vinculo, suplente])
+}
+
+model DefesaUpload {
+  id       String @id @default(cuid())
+  defesaId String
+  defesa   Defesa @relation(fields: [defesaId], references: [id])
+
+  tipo         UploadTipo
+  path         String
+  originalName String
+  mimeType     String
+  size         Int // bytes
+
+  createdAt DateTime @default(now())
+
+  @@index([defesaId, tipo])
 }

@@ -45,7 +45,7 @@
                                         <th style="text-align: center;">Bloco</th>
                                         <th style="text-align: center;">Andar</th>
                                         <th style="text-align: center;">Capacidade</th>
-                                        <th style="text-align: center;"> </th>
+                                        <th style="text-align: center;">Ações </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,19 +57,10 @@
                                         <td> {{andar}} </td>
                                         <td> {{capacidade}} </td>
                                         <td style="text-align: center;">
-
-
-                                            <a class='fa fa-solid fa-pen' style="color: blue;"
-                                                href="/salas/editar/{{id}}">
-
-                                            </a> &nbsp
-                                            <a class="fa fa-solid fa-trash" id="{{id}}" data-name = "{{nome}}"data-toggle="modal"
-                                                style="color: red;" data-target="#removerUsuario"
-                                                onclick="addLink(event)" href="#">
-
-                                            </a>
-
-
+                                          <a title="Visualizar" class='fa  fa-calendar' style="color: blue;" href="/salas/detalhes/{{id}}"></a> &nbsp
+                                          <a title="Editar" class='fa fa-solid fa-pen' style="color: blue;" href="/salas/editar/{{id}}"></a> &nbsp
+                                          <a title="Remover" class="fa fa-solid fa-trash" id="{{id}}" data-name = "{{nome}}"data-toggle="modal" style="color: red;" data-target="#removerUsuario"
+                                                onclick="addLink(event)" href="#"></a>
                                     </tr>
 
                                     {{/each}}

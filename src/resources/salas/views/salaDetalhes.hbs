@@ -1,0 +1,246 @@
+{{> header}}
+{{> sidebar module='salas' page='salas-detalhes'}}
+
+<div class="content-wrapper">
+  <!-- Título & breadcrumbs -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
+        <div><h1>Sala: {{sala.nome}}</h1></div>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item"><a href="/salas">Salas</a></li>
+            <li class="breadcrumb-item active">{{sala.nome}}</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conteúdo -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+
+        <!-- Sidebar esquerda -->
+        <div class="col-12 col-md-4 col-lg-2">
+          <div class="card card-outline card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Sala {{sala.nome}}</h3>
+            </div>
+            <div class="card-body">
+              <dl class="row mb-0">
+                <dt class="col-6">Nome</dt>
+                <dd class="col-6 text-right">{{sala.nome}}</dd>
+
+                <dt class="col-6">Bloco</dt>
+                <dd class="col-6 text-right">{{sala.bloco}}</dd>
+
+                <dt class="col-6">Andar</dt>
+                <dd class="col-6 text-right">{{sala.andar}}</dd>
+
+                <dt class="col-6">Número</dt>
+                <dd class="col-6 text-right">{{sala.numero}}</dd>
+
+                <dt class="col-6">Capacidade</dt>
+                <dd class="col-6 text-right">{{sala.capacidade}}</dd>
+              </dl>
+            </div>
+            <div class="card-footer d-flex flex-column" style="gap: 8px;">
+              <a class="btn btn-primary btn-block" href="/salas/editar/{{sala.id}}">
+                <i class="fas fa-edit"></i> Editar Sala
+              </a>
+              <a class="btn btn-success btn-block" href="/reservas/adicionar?salaId={{sala.id}}">
+              <i class="fas fa-plus"></i> Nova Reserva
+              </a>
+            </div>
+          </div>
+
+          <!-- (Opcional) Resumo rápido -->
+          <div class="small-box bg-gradient-info">
+            <div class="inner">
+              <h3>{{#if sala.reservas}}{{sala.reservas.length}}{{else}}0{{/if}}</h3>
+              <p>Reservas cadastradas</p>
+            </div>
+            <div class="icon"><i class="far fa-calendar-check"></i></div>
+            <a href="/reservas/gerenciar" class="small-box-footer">
+            Ver listagem <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Conteúdo principal: Calendário -->
+        <div class="col-12 col-md-8 col-lg-10">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Calendário de Reservas — {{sala.nome}}</h3>
+              <div class="card-tools">
+                <a class="btn btn-sm btn-outline-primary" href="/reservas/adicionar?salaId={{sala.id}}">
+                <i class="fas fa-plus"></i> Nova Reserva
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="calendar" style="min-height: 720px;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /.row -->
+    </div> <!-- /.container-fluid -->
+  </section>
+</div>
+
+{{> footer}}
+
+<!-- FullCalendar -->
+<script src="
+https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js
+"></script>
+
+<script>
+  // ========= Helpers =========
+  function toLocalISO(dateStr, timeStr) {
+    const t = (timeStr || '00:00').padStart(5, '0');
+    return `${dateStr}T${t}`;
+  }
+
+  function parseDiasToDaysOfWeek(diasStr) {
+    if (!diasStr) return null;
+    const map = {
+      'dom':0,'domingo':0,
+      'seg':1,'segunda':1,'segunda-feira':1,
+      'ter':2,'terça':2,'terca':2,'terça-feira':2,'terca-feira':2,
+      'qua':3,'quarta':3,'quarta-feira':3,
+      'qui':4,'quinta':4,'quinta-feira':4,
+      'sex':5,'sexta':5,'sexta-feira':5,
+      'sab':6,'sáb':6,'sábado':6,'sabado':6
+    };
+    return diasStr
+      .split(/[,\|]/)
+      .map(s => s.trim().toLowerCase())
+      .map(s => map[s])
+      .filter(n => Number.isInteger(n));
+  }
+
+  const reservasRaw = [
+    {{#if sala.reservas}}
+      {{#each sala.reservas}}
+        {
+          id: "{{id}}",
+          atividade: "{{atividade}}",
+          tipo: "{{tipo}}",
+          dias: {{#if dias}}"{{dias}}"{{else}}null{{/if}},
+          dataInicio: "{{dataInicio}}",
+          dataFim: "{{dataFim}}",
+          horaInicio: "{{horaInicio}}",
+          horaFim: "{{horaFim}}"
+        }{{#unless @last}},{{/unless}}
+      {{/each}}
+    {{/if}}
+  ];
+
+  function buildFcEvents(reservas, sala) {
+    if (!reservas || !reservas.length) return [];
+    const events = [];
+
+    reservas.forEach(r => {
+      const title = r.atividade;
+      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${r.horaInicio} - ${r.horaFim}`;
+
+      const daysOfWeek = parseDiasToDaysOfWeek(r.dias);
+      if (daysOfWeek && daysOfWeek.length) {
+        // recorrente por dias da semana, entre dataInicio e dataFim
+        events.push({
+          id: r.id,
+          title,
+          daysOfWeek,
+          startTime: r.horaInicio,
+          endTime: r.horaFim,
+          startRecur: r.dataInicio || null,
+          endRecur: r.dataFim ? (new Date(new Date(r.dataFim).getTime() + 86400000)).toISOString().slice(0,10) : null, // end exclusivo (+1 dia)
+          display: 'block',
+          extendedProps: { tooltip }
+        });
+      } else {
+        // pontual
+        const start = toLocalISO(r.dataInicio, r.horaInicio);
+        const end   = toLocalISO(r.dataFim || r.dataInicio, r.horaFim);
+        events.push({
+          id: r.id,
+          title,
+          start,
+          end,
+          display: 'block',
+          extendedProps: { tooltip }
+        });
+      }
+    });
+
+    return events;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const sala = {
+      id: {{sala.id}},
+      nome: "{{sala.nome}}",
+      bloco: "{{sala.bloco}}",
+      andar: "{{sala.andar}}",
+      numero: "{{sala.numero}}",
+    };
+
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      locale: 'pt-br',
+      initialView: 'timeGridWeek',
+      timeZone: 'local',
+      slotMinTime: '07:00:00',
+      slotMaxTime: '22:30:00',
+      nowIndicator: true,
+      selectable: false,
+      selectMirror: true,
+      businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '08:00', endTime: '18:00' },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: buildFcEvents(reservasRaw, sala),
+      // events: 'https://fullcalendar.io/api/demo-feeds/events.json?overload-day',
+      dayMaxEvents: true, // allow "more" link when too many events
+
+      eventDidMount(info) {
+        if (info.event.extendedProps?.tooltip) {
+          info.el.setAttribute('title', info.event.extendedProps.tooltip);
+        }
+        // Link direto para edição da reserva ao dar double-click (opcional)
+        info.el.addEventListener('dblclick', () => {
+          window.location.href = `/reservas/editar/${info.event.id}`;
+        });
+      },
+
+      eventClick(info) {
+        // clique simples: abre a edição
+        window.location.href = `/reservas/editar/${info.event.id}`;
+      },
+
+      select(selection) {
+        // cria nova reserva já com salaId e período sugerido
+        const q = new URLSearchParams({
+          salaId: String(sala.id),
+          start: selection.startStr,
+          end: selection.endStr
+        });
+        window.location.href = `/reservas/adicionar?${q.toString()}`;
+      },
+
+      expandRows: true,
+      stickyHeaderDates: true,
+      slotEventOverlap: false
+    });
+
+
+    calendar.render();
+  });
+</script>

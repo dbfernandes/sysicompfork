@@ -350,7 +350,6 @@
     async function buscarReservas() {
         try {
             const response = await fetch('/reservas/listar'); // Rota para buscar reservas
-            console.log(response,'oioioioioio')
             if (!response.ok) {
                 throw new Error('Erro ao buscar reservas');
             }
@@ -381,12 +380,10 @@
                     const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
                     dias = nomesDosDias[diaDaSemana];
                 }
-                console.log(novaReserva)
                 const diasEmComum = reserva.dias.split(', ').some(dia => novaReserva.dias.includes(dia));
 
                 // Verifica se há sobreposição nas horas
                 if (diasEmComum && novaReserva.horaInicio < reserva.horaFim && novaReserva.horaFim > reserva.horaInicio) {
-                    console.log(reserva)
                     return true; // Conflito encontrado
                 }
             } else {
