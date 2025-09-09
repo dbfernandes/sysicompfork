@@ -1,7 +1,6 @@
 /* Import routes */
 import express from 'express';
 import inicioRoutes from '../resources/inicio/inicio.routes';
-import defesasRoutes from '../resources/defesas/defesa.routes';
 import usuariosRoutes from '../resources/usuarios/usuario.routes';
 import editalRouter from '../resources/edital/edital.routes';
 import selecaoppgiRouter from '../resources/selecaoPPGI/selecao.ppgi.routes';
@@ -80,7 +79,6 @@ router.use(
   // autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use('/defesas', defesasRoutes);
 router.use('/gerarPDF/:id', criarAfastamentoPDF);
 
 ////////////////////////////////////
