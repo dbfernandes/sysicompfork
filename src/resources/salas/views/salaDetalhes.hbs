@@ -64,7 +64,7 @@
               <p>Reservas cadastradas</p>
             </div>
             <div class="icon"><i class="far fa-calendar-check"></i></div>
-            <a href="/reservas/gerenciar" class="small-box-footer">
+            <a href="/reservas/gerenciar?salaId={{sala.id}}" class="small-box-footer">
             Ver listagem <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -159,7 +159,7 @@
 {{> footer}}
 
 <!-- FullCalendar -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.19/index.global.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
@@ -295,6 +295,7 @@
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
+      schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
       locale: 'pt-br',
       initialView: 'timeGridWeek',
       timeZone: 'local',

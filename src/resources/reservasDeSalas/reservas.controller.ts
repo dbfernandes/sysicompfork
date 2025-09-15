@@ -13,6 +13,7 @@ function resolveView(viewName: string): string {
 const listarReservas = async (req: Request, res: Response): Promise<void> => {
   try {
     const reservas = await reservasService.listAll();
+
     res.status(StatusCodes.OK).json({ reservas });
   } catch (error) {
     console.error('Erro ao listar reservas:', error);
@@ -135,7 +136,12 @@ const listarReservasFormatadas = async (
 ): Promise<void> => {
   try {
     const reservas = await reservasService.listarReservasSalas();
-
+    const salas = await salasService.listAll();
+    const salasGrouped = {};
+    salas.forEach((sala) => {
+      if (!salasGrouped[sala.bloco]) salasGrouped[sala.bloco] = [sala];
+      else salasGrouped[sala.bloco].push(sala);
+    });
     const reservasFormatadas = reservas.map((reserva) => ({
       ...reserva,
       horaInicio: toHHmm(reserva.horaInicio) ?? reserva.horaInicio, // garante "HH:mm"
@@ -146,11 +152,12 @@ const listarReservasFormatadas = async (
         ? new Date(reserva.dataFim) < new Date()
         : false,
     }));
-
     res.render(resolveView('reservasGerenciar'), {
       reservas: reservasFormatadas,
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
+      salaId: req.query.salaId,
+      salasGrouped,
     });
   } catch (error) {
     console.error('Erro ao gerenciar reservas:', error);

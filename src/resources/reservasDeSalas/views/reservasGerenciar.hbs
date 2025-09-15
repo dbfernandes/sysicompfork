@@ -34,6 +34,29 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
+                      <div class="card-header">
+                        <div class="form-row align-items-end" style="gap: 8px;">
+                          <div class="col-12 col-md-6 col-lg-4">
+                            <label for="filtroSalas" class="mb-1">Filtrar por Sala(s)</label>
+                            <select id="filtroSalas" class="form-control" multiple>
+                              {{#each salasGrouped}}
+                                <optgroup label="{{@key}}">
+                                  {{#each this}}
+                                    <option value="{{id}}" {{#if (eq ../../salaId id)}}selected{{/if}}>{{nome}} - {{bloco}} - {{andar}}º andar</option>
+                                  {{/each}}
+                                </optgroup>
+                              {{/each}}
+                            </select>
+                            <small class="text-muted">Selecione uma ou mais salas para filtrar</small>
+                          </div>
+
+                          <div class="col-auto">
+                            <button id="btnLimparFiltros" type="button" class="btn btn-outline-secondary">
+                              Limpar filtros
+                            </button>
+                          </div>
+                        </div>
+                      </div>
 
                         <!-- /.card-header -->
                         <div class="card-body" style="overflow-x:auto;">
@@ -53,7 +76,7 @@
                                 </thead>
                                 <tbody>
                                     {{#each reservas}}
-                                    <tr style="text-align: center;">
+                                      <tr style="text-align: center;" data-sala-id="{{sala.id}}">
                                         <td> {{sala.nome}} - {{sala.bloco}} - {{sala.andar}} andar </td>
                                         <td> {{usuario.nomeCompleto}} </td>
                                         <td> {{atividade}} </td>
@@ -133,91 +156,130 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+
+<!-- Select2 -->
+    <link rel="stylesheet" href="/script-adminlte/plugins/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="/script-adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
+
+    <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
+
+
 <script>
-    toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "1000",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+  toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": true,
+    "showDuration": "1000",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
 
-    document.addEventListener("DOMContentLoaded", function (event) {
-        var datatable = $("#example2").DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-            },
-            responsive: true,
-            columns: [
-                { responsivePriority: 1, orderable: false },
-                { responsivePriority: 6, orderable: false },
-                { responsivePriority: 3, orderable: false },
-                { responsivePriority: 4, orderable: false },
-                { responsivePriority: 5, orderable: true },
-                { responsivePriority: 7, orderable: true },
-                { responsivePriority: 2, orderable: false },
-                { responsivePriority: 8, orderable: false },
-                { responsivePriority: 9, orderable: false },
-            ],
-            order: [[7, 'desc']]
-        });
+  let datatable = null;
+  let filtroSalaIdsSelecionadas = [];
 
-    });
+  // define o filtro, mas só registra quando DataTables estiver disponível
+  function filtroPorSala(settings, data, dataIndex) {
+    if (settings.nTable.id !== 'example2') return true;   // só nessa tabela
+    if (!filtroSalaIdsSelecionadas.length) return true;   // sem filtro => tudo
 
-    document.addEventListener("DOMContentLoaded", function () {
-        let toastMessage = localStorage.getItem('toastMessage');
-        let toastType = localStorage.getItem('toastType');
-        console.log("in")
-        if (toastMessage && toastType) {
-            if (toastType === 'success') {
-                toastr.success(toastMessage);
-            } else if (toastType === 'error') {
-                toastr.error(toastMessage);
-            }
+    const rowNode = settings.aoData[dataIndex].nTr;       // TR real
+    const salaId = rowNode.getAttribute('data-sala-id');
+    return filtroSalaIdsSelecionadas.includes(String(salaId));
+  }
 
-            // Limpe a mensagem e o tipo de toast do localStorage
-            localStorage.removeItem('toastMessage');
-            localStorage.removeItem('toastType');
-        }
-    });
-    let reservaIdParaExcluir = null;
-
-    // quando abrir o modal de exclusão
-    function addLink(event) {
-      reservaIdParaExcluir = event.target.id;
-      document.getElementById("tituloModal").innerHTML =
-        "Deseja realmente excluir a Reserva da Sala?";
-      $("#removerUsuario").modal("show");
-    }
-
-    // quando confirmar exclusão
-    async function deleteUserAjax() {
-      if (!reservaIdParaExcluir) return;
-
-      $.ajax({
-        url: `/reservas/excluir/${reservaIdParaExcluir}`,
-        method: "POST",
-        success: function () {
-          window.location.reload();
-        },
-        error: function () {
-          $("#removerUsuario").modal("hide");
-          toastr.error(
-            "Ocorreu um erro ao excluir a reserva."
-          );
+  document.addEventListener('DOMContentLoaded', function () {
+    // <<< GARDA: só registra se DataTables estiver carregado
+    if ($.fn && $.fn.dataTable && $.fn.dataTable.ext && $.fn.dataTable.ext.search) {
+      $.fn.dataTable.ext.search.push(filtroPorSala);
+    } else {
+      console.warn('DataTables ainda não disponível. Registrando filtro após init.');
+      // fallback: registra no primeiro init (ainda funciona, pois você inicializa a tabela logo abaixo)
+      $(document).one('init.dt', function () {
+        if ($.fn.dataTable.ext && $.fn.dataTable.ext.search) {
+          $.fn.dataTable.ext.search.push(filtroPorSala);
         }
       });
     }
+
+    // Agora sim, inicializa a tabela
+    datatable = $('#example2').DataTable({
+      language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
+      responsive: true,
+      columns: [
+        { responsivePriority: 1, orderable: false },
+        { responsivePriority: 6, orderable: false },
+        { responsivePriority: 3, orderable: false },
+        { responsivePriority: 4, orderable: false },
+        { responsivePriority: 5, orderable: true  },
+        { responsivePriority: 7, orderable: true  },
+        { responsivePriority: 2, orderable: false },
+        { responsivePriority: 8, orderable: false },
+        { responsivePriority: 9, orderable: false },
+      ],
+      order: [[7, 'desc']]
+    });
+
+    // Select2 (mantém seu código)
+    $('#filtroSalas').select2({
+      theme: 'bootstrap4',
+      placeholder: 'Selecione uma ou mais salas',
+      width: '100%',
+      allowClear: true,
+    });
+
+    $('#filtroSalas').on('change', function () {
+      filtroSalaIdsSelecionadas = ($(this).val() || []).map(String);
+      datatable.draw();
+    });
+    // Se veio uma salaId do
+    // backend, aplica no filtro
+    const salaIdInicial = "{{salaId}}"; // Handlebars injeta string ou vazio
+    if (salaIdInicial) {
+      $('#filtroSalas').val([salaIdInicial]).trigger('change');
+      filtroSalaIdsSelecionadas = [String(salaIdInicial)];
+      datatable.draw();
+    }
+
+    $('#btnLimparFiltros').on('click', function () {
+      $('#filtroSalas').val(null).trigger('change');
+      filtroSalaIdsSelecionadas = [];
+      datatable.search('').columns().search('').draw();
+    });
+  });
+
+  // Exclusão via AJAX (mantida)
+  let reservaIdParaExcluir = null;
+  function addLink(event) {
+    reservaIdParaExcluir = event.target.id;
+    document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Reserva da Sala?";
+    $("#removerUsuario").modal("show");
+  }
+  async function deleteUserAjax() {
+    if (!reservaIdParaExcluir) return;
+    $.ajax({
+      url: `/reservas/excluir/${reservaIdParaExcluir}`,
+      method: "POST",
+      success: function () {
+        $("#removerUsuario").modal("hide");
+        toastr.success("Reserva excluída com sucesso!");
+        const $row = $(`a.fa-trash#${reservaIdParaExcluir}`).closest('tr');
+        datatable.row($row).remove().draw(false);
+      },
+      error: function () {
+        $("#removerUsuario").modal("hide");
+        toastr.error("Ocorreu um erro ao excluir a reserva.");
+      }
+    });
+  }
 </script>
+
 
 {{> footer}}
