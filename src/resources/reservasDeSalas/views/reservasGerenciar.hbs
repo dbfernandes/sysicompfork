@@ -81,8 +81,6 @@
                                         </td> <!-- Nova célula -->
 
                                         <td style="text-align: center;">
-
-
                                             <a class='fa fa-solid fa-pen' style="color: blue;"
                                                 href="/reservas/editar/{{id}}">
 
@@ -126,11 +124,8 @@
                 <div class="modal-footer">
                     <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
                     <a id="deleteButton" type="button" class="btn btn-warning color-white"
-                        onclick="deleteUser()">Sim</a>
+                        onclick="deleteUserAjax()">Sim</a>
                 </div>
-                <form name="postDelete" id="postDelete" method="POST">
-                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                </form>
             </div>
         </div>
     </div>
@@ -156,29 +151,6 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     };
-
-    function showSuccessMessage(message) {
-        localStorage.setItem('toastMessage', 'Reserva excluida com sucesso!');
-        localStorage.setItem('toastType', 'success');
-    }
-
-    function showErrorMessage(message) {
-        toastr.error(message);
-    }
-
-    function deleteUser() {
-
-        var success = true;  // Esta é apenas uma suposição para demonstração.
-
-        if (success) {
-            showSuccessMessage("Reserva excluída com sucesso!");
-        } else {
-            showErrorMessage("Ocorreu um erro ao excluir a reserva.");
-        }
-
-        document.postDelete.submit();
-    }
-
 
     document.addEventListener("DOMContentLoaded", function (event) {
         var datatable = $("#example2").DataTable({
@@ -218,15 +190,34 @@
             localStorage.removeItem('toastType');
         }
     });
+    let reservaIdParaExcluir = null;
+
+    // quando abrir o modal de exclusão
     function addLink(event) {
-        const id = event.target.id
-        console.log(id)
-        document.getElementById("tituloModal").innerHTML = "Deseja realmente excluir a Reserva da Sala";
-        const formDelete = document.getElementById("postDelete")
-        formDelete.setAttribute('action', `/reservas/excluir/${id}`);
+      reservaIdParaExcluir = event.target.id;
+      document.getElementById("tituloModal").innerHTML =
+        "Deseja realmente excluir a Reserva da Sala?";
+      $("#removerUsuario").modal("show");
     }
 
+    // quando confirmar exclusão
+    async function deleteUserAjax() {
+      if (!reservaIdParaExcluir) return;
 
+      $.ajax({
+        url: `/reservas/excluir/${reservaIdParaExcluir}`,
+        method: "POST",
+        success: function () {
+          window.location.reload();
+        },
+        error: function () {
+          $("#removerUsuario").modal("hide");
+          toastr.error(
+            "Ocorreu um erro ao excluir a reserva."
+          );
+        }
+      });
+    }
 </script>
 
 {{> footer}}

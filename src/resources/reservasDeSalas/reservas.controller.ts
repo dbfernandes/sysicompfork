@@ -55,7 +55,6 @@ const criarReserva = async (
         horaInicio,
         horaFim, // Mudado de horaTermino para horaFim
       } = req.body as ReservaFormularioDto;
-      console.log(req.body);
       // Processamento dos dias da semana
       const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
 
@@ -80,11 +79,14 @@ const criarReserva = async (
   }
 };
 
-const deletarReserva = async (req: Request, res: Response): Promise<void> => {
+const deletarReserva = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const reservaId = parseInt(req.params.id);
     const reserva = await reservasService.buscarReserva(reservaId);
-
     if (!reserva) {
       res
         .status(StatusCodes.NOT_FOUND)
@@ -93,12 +95,12 @@ const deletarReserva = async (req: Request, res: Response): Promise<void> => {
     }
 
     await reservasService.remover(reservaId);
-    res.redirect('/reservas/gerenciar');
+    res.status(StatusCodes.OK).json(ReasonPhrases.OK);
   } catch (error) {
-    console.error('Erro ao excluir reserva:', error);
-    res.redirect('/reservas/gerenciar');
+    next(error);
   }
 };
+
 // utils/time.ts
 export function toHHmm(input?: string | null): string | null {
   if (!input) return null;
@@ -133,7 +135,6 @@ const listarReservasFormatadas = async (
 ): Promise<void> => {
   try {
     const reservas = await reservasService.listarReservasSalas();
-    console.log(reservas);
 
     const reservasFormatadas = reservas.map((reserva) => ({
       ...reserva,
@@ -145,7 +146,6 @@ const listarReservasFormatadas = async (
         ? new Date(reserva.dataFim) < new Date()
         : false,
     }));
-    console.log(reservasFormatadas);
 
     res.render(resolveView('reservasGerenciar'), {
       reservas: reservasFormatadas,
@@ -170,27 +170,22 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
         res.redirect('/reservas/gerenciar');
         return;
       }
-      const date = new Date(reserva.dataInicio);
-
-      const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, '0'); // mês começa em 0
-      const dd = String(date.getDate()).padStart(2, '0');
-
-      const dataInicio = `${yyyy}-${mm}-${dd}`;
-      const date2 = new Date(reserva.dataFim || reserva.dataInicio);
-      const yyyy2 = date2.getFullYear();
-      const mm2 = String(date2.getMonth() + 1).padStart(2, '0'); // mês começa em 0
-      const dd2 = String(date2.getDate()).padStart(2, '0');
-      const dataFim = `${yyyy2}-${mm2}-${dd2}`;
+      let detailsId = req.query.detailsId;
+      if (detailsId) {
+        detailsId = String(detailsId);
+      } else {
+        detailsId = undefined;
+      }
+      const isMultiple =
+        new Date(reserva.dataInicio).toString() !==
+        new Date(reserva.dataFim).toString();
 
       res.render(resolveView('reservasEditar'), {
         salas,
         nome: req.session.nome,
-        reserva: {
-          ...reserva,
-          dataInicio,
-          dataFim,
-        },
+        reserva,
+        isMultiple,
+        detailsId,
         tipoUsuario: req.session.tipoUsuario,
       });
     } catch (error) {
@@ -228,10 +223,12 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
       };
 
       await reservasService.atualizar(reservaId, dadosAtualizados);
-      res.redirect('/reservas/gerenciar');
+      res.status(StatusCodes.OK).json(ReasonPhrases.OK);
     } catch (error) {
       console.error('Erro ao atualizar reserva:', error);
-      res.redirect('/reservas/gerenciar');
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(ReasonPhrases.INTERNAL_SERVER_ERROR);
     }
   }
 };

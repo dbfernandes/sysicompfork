@@ -182,7 +182,7 @@ export default new (class ReservaService {
   }
 
   async buscarReserva(id: number): Promise<ReservaSala | null> {
-    return await prisma.reservaSala.findUnique({ where: { id } });
+    return prisma.reservaSala.findUnique({ where: { id } });
   }
 
   async criar(dados: Prisma.ReservaSalaUncheckedCreateInput) {

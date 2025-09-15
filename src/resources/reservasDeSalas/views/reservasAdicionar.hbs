@@ -2,6 +2,9 @@
 {{> sidebar module='reservas' page='reservas-adicionar'}}
 {{#section "head"}}
   <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" rel="stylesheet">
+
 {{/section}}
 
 <!-- Content Wrapper. Contains page content -->
@@ -99,50 +102,60 @@
                       <span style="color: #FF0000; "> &nbsp&nbsp</span>
                       <b>Dias da semana:</b>
                     </label>
-                    <label class="checkbox-inline ml-2 ">
-                      <input type="checkbox" id="segunda" name="dia" value="Segunda">
-                      Segunda
-                    </label>
-                    <label class="checkbox-inline ml-4 ">
-                      <input type="checkbox" id="terca" name="dia" value="Terça">
-                      Terça
-                    </label>
-                    <label class="checkbox-inline ml-4">
-                      <input type="checkbox" id="quarta" name="dia" value="Quarta">
-                      Quarta
-                    </label>
-                    <label class="checkbox-inline ml-4">
-                      <input type="checkbox" id="quinta" name="dia" value="Quinta">
-                      Quinta
-                    </label>
-                    <label class="checkbox-inline ml-4">
-                      <input type="checkbox" id="sexta" name="dia" value="Sexta">
-                      Sexta
-                    </label>
-                    <label class="checkbox-inline ml-4">
-                      <input type="checkbox" id="sabado" name="dia" value="Sábado">
-                      Sábado
-                    </label>
-                    <div class="invalid-feedback" id="diaErro">Escolha os dias da semana. Por
-                      favor,</div>
+                    <div class="d-flex flex-row flex-wrap align-items-start">
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="segunda" name="dia" value="Segunda">
+                        <label class="checkbox-inline ml-2" for="segunda">
+                          Segunda
+                        </label>
+                      </div>
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="terca" name="dia" value="Terça">
+                        <label class="checkbox-inline ml-4" for="terca">
+                          Terça
+                        </label>
+                      </div>
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="quarta" name="dia" value="Quarta">
+                        <label class="checkbox-inline ml-4" for="quarta">
+                          Quarta
+                        </label>
+                      </div>
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="quinta" name="dia" value="Quinta">
+                        <label class="checkbox-inline ml-4" for="quinta">
+                          Quinta
+                        </label>
+                      </div>
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="sexta" name="dia" value="Sexta">
+                        <label class="checkbox-inline ml-4" for="sexta">
+                          Sexta
+                        </label>
+                      </div>
+                      <div class="icheck-primary">
+                        <input type="checkbox" id="sabado" name="dia" value="Sábado">
+                        <label class="checkbox-inline ml-4" for="sabado">
+                          Sábado
+                        </label>
+                      </div>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="form-group col-md-6">
                       <label for="dataInicio" id="dataInicioLabel">
                         <span style="color: #FF0000; ">*</span> Data Inicial:
                       </label>
-                      <div class="input-group date " data-target-input="nearest">
+                      <div class="input-group date" data-target-input="nearest">
                         <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                          <input type="text"
-                                 name="dataInicio" id="dataInicio" placeholder="dd/mm/YYYY"
+                          <input type="text" name="dataInicio" id="dataInicio" placeholder="dd/mm/YYYY"
                                  data-target="#datetimepicker2" required class="form-control datetimepicker-input">
                           <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
                         </div>
 
-                        <div class="invalid-feedback" id="dataInicioError">Data inválida. Por favor,
-                          insira datas válidas.</div>
+                        <div class="invalid-feedback" id="dataInicioError">Data inválida. Por favor, insira datas válidas.</div>
                       </div>
                     </div>
 
@@ -157,9 +170,6 @@
                           <div class="input-group-append" data-target="#datepickerfim" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                        </div>
-                        <div class="invalid-feedback" id="dataFimError">
-                          Data inválida. Por favor, insira datas válidas.
                         </div>
                       </div>
                     </div>
@@ -191,9 +201,6 @@
                             <div class="input-group-text"><i class="fa fa-clock"></i></div>
                           </div>
                         </div>
-                        <div class="invalid-feedback" id="horaFimError">
-                          Hora inválida. Por favor, insira horas válidas.
-                        </div>
                       </div>
                     </div>
 
@@ -215,11 +222,9 @@
       </div>
     </section>
 </div>
+
 <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
@@ -417,10 +422,8 @@
             // // redirecione (ajuste a rota se quiser voltar para a sala específica)
             if(salaId === dados.salaId){
               window.location.href = `/salas/detalhes/${salaId}`;
-
-            }else {
+            } else {
               window.location.href = "/reservas/gerenciar";
-
             }
           } catch (err) {
             if(err.status === 409) {
@@ -453,9 +456,8 @@
     }
 
     function pegaDados() {
-
-        const multiple = $("#multiple").prop("checked"); 
-        const salaId = $("#salaId").val();
+      const multiple = $("#multiple").prop("checked");
+      const salaId = $("#salaId").val();
 
       const pickerInicio = $('#datetimepicker2').data("datetimepicker");
       const pickerFim    = $('#datepickerfim').data("datetimepicker");
@@ -469,51 +471,50 @@
       // Se não repete, dataFim = dataInicio
       const dataFim    = multiple ? (mFim ? mFim.format("YYYY-MM-DD") : null) : dataInicio;
 
-        const horaInicio = $("#horaInicio").val() + ":00";
-        const horaFim = $("#horaFim").val() + ":00";
-        const tipo = $("#tipo").val()
-        const atividade = $("#atividade").val();
-        const usuarioId = $("#usuarioId").val()
-        let dia = diasSemana()
+      const horaInicio = $("#horaInicio").val() + ":00";
+      const horaFim = $("#horaFim").val() + ":00";
+      const tipo = $("#tipo").val()
+      const atividade = $("#atividade").val();
+      const usuarioId = $("#usuarioId").val()
+      let dia = diasSemana()
 
-        //verificacao do caso data multiple
-        if (!multiple) {
-          const valor = document.getElementById("dataInicio").value; // ex: "27/09/2025"
-          const [diaStr, mesStr, anoStr] = valor.split("/");
+      //verificacao do caso data multiple
+      if (!multiple) {
+        const valor = document.getElementById("dataInicio").value; // ex: "27/09/2025"
+        const [diaStr, mesStr, anoStr] = valor.split("/");
+        const diaNum = parseInt(diaStr, 10);
+        const mesNum = parseInt(mesStr, 10) - 1; // mês começa em 0 no JS
+        const anoNum = parseInt(anoStr, 10);
 
-          const diaNum = parseInt(diaStr, 10);
-          const mesNum = parseInt(mesStr, 10) - 1; // mês começa em 0 no JS
-          const anoNum = parseInt(anoStr, 10);
+        const data = new Date(anoNum, mesNum, diaNum);
+        const diaDaSemana = data.getDay();
 
-          const data = new Date(anoNum, mesNum, diaNum);
-          const diaDaSemana = data.getDay();
+        const nomesDosDias = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+        dia = nomesDosDias[diaDaSemana];
+      }
 
-          const nomesDosDias = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
-          dia = nomesDosDias[diaDaSemana];
-        }
-
-        return {
-            salaId,
-            dataInicio,
-            atividade,
-            dataFim,
-            horaInicio,
-            horaFim,
-            dia,
-            tipo,
-            usuarioId
-        };
+      return {
+        salaId,
+        dataInicio,
+        atividade,
+        dataFim,
+        horaInicio,
+        horaFim,
+        dia,
+        tipo,
+        usuarioId
+      };
     }
+
     document.querySelector('.expand-btn').addEventListener('click', function () {
-        const card = document.querySelector('.card');
+      const card = document.querySelector('.card');
 
-        if (card.style.width !== "100%") {
-            card.style.width = "100%";
-        } else {
-            card.style.width = "50%"; // ou qualquer tamanho padrão que você deseja
-        }
+      if (card.style.width !== "100%") {
+        card.style.width = "100%";
+      } else {
+        card.style.width = "50%"; // ou qualquer tamanho padrão que você deseja
+      }
     });
-
 </script>
 
 {{> footer}}

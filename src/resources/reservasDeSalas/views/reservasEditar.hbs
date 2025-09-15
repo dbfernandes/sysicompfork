@@ -1,244 +1,219 @@
 {{> header}}
 {{> sidebar module='reservas' page='reservas-editar'}}
+{{#section "head"}}
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" rel="stylesheet">
+{{/section}}
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-          <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between"  style="gap: 8px; white-space: nowrap;">
-            <div>
-              <h1>Editar Reserva</h1>
-            </div>
-            <div>
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
-                <li class="breadcrumb-item"><a href="/reservas/gerenciar">Listagem de reservas</a></li>
-                <li class="breadcrumb-item active">Editar</li>
-              </ol>
-            </div>
-          </div>
-            <div class="row mb-2">
-                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
-                    <a type="button" class="btn btn-warning color-white" href="/reservas/gerenciar">
-                        <i class="fa fa-arrow-left color-white"></i>
-                        Voltar
-                    </a>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col">
-                <div class="card card-primary" style="width: 50%;">
-                    <div class="card-header">
-                        <h3 class="card-title"><b>Dados da Reserva</b></h3>
-
-                        <!-- Ícone de expandir -->
-                        <button class="expand-btn"
-                            style="position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
-                            <i class="fas fa-expand" style="color:white"></i>
-                        </button>
-                    </div>
-
-                    <div class="container-fluid">
-                        <form id="formAdicionarSala" method="POST" action="/reservas/editar/{{reserva.id}}">
-                            <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
-                            <input type="hidden" id="id" name="id" value="{{reserva.id}}" />
-                            <input type="hidden" id="usuarioId" name="usuarioId" value="{{usuarioId}}" />
-                            <div class="card-body ">
-
-                                <div class="row">
-                                    <div class="form-group col-md-6 ">
-                                        <label for="atividade">
-                                            <font color="#FF0000">*</font> Atividade:
-                                        </label>
-                                        <input type="text" class="form-control" id="atividade" name="atividade"
-                                            value="{{reserva.atividade}}" placeholder="Ex: Seminários " required
-                                        >
-                                    </div>
-
-                                    <div class="form-group col-md-6 ">
-                                        <label for="bloco">
-                                            <font color="#FF0000">*</font> Tipo:
-                                        </label>
-                                        <select class="form-control" id="tipo" name="tipo" required>
-                                            <option {{checked reserva.tipo 'Aula' }} value="Aula">Aula</option>
-                                            <option {{checked reserva.tipo 'Defesa' }} value="Defesa">Defesa</option>
-                                            <option {{checked reserva.tipo 'Exame' }} value="Exame">Exame</option>
-                                            <option {{checked reserva.tipo 'Reunião' }} value="Reunião">Reunião</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group ">
-                                    <label for="SalaId">
-                                        <font color="#FF0000">*</font> Sala:
-                                    </label>
-                                    <select class="form-control" id="salaId" name="salaId" required>
-                                        {{#each salas}}
-                                        <option {{checked reserva.salas.id id }} value="{{id}}">{{nome}} - {{bloco}} -
-                                            {{andar}}° andar</option>
-                                        {{/each}}
-                                    </select>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="form-group ">
-                                        <label for="carta_recomendacao">
-                                            <font color="#FF0000"></font> &nbsp&nbsp &nbspEssa Reserva se repete?
-                                            &nbsp&nbsp
-                                        </label>
-                                    </div>
-                                    <div class="form-group ">
-                                        <input type="checkbox" name="unica" data-bootstrap-switch
-                                            data-off-color="danger" {{checkedUnica reserva.dias}}
-                                            data-on-color="success" data-on-text="Sim" data-off-text="Não" value="1"
-                                            id="unica">
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="form-group " id="conditionalInput">
-
-                                    <label class="control-label" id="dia" for="candidato-nome">
-                                        <font color="#FF0000"> &nbsp&nbsp</font>
-                                        <b>Dias da semana:</b>
-                                    </label>
-
-                                    <label class="checkbox-inline ml-2 ">
-                                        <input {{checkedIn reserva.dias 'Segunda' }} type="checkbox" id="segunda"
-                                            name="dia" value="Segunda">
-                                        Segunda
-                                    </label>
-
-                                    <label class="checkbox-inline ml-4 ">
-                                        <input {{checkedIn reserva.dias 'Terça' }} type="checkbox" id="terca"
-                                            name="dia" value="Terça">
-                                        Terça
-                                    </label>
-
-                                    <label class="checkbox-inline ml-4">
-                                        <input {{checkedIn reserva.dias 'Quarta' }} type="checkbox" id="quarta"
-                                            name="dia" value="Quarta">
-                                        Quarta
-                                    </label>
-                                    <label class="checkbox-inline ml-4">
-                                        <input {{checkedIn reserva.dias 'Quinta' }} type="checkbox" id="quinta"
-                                            name="dia" value="Quinta">
-                                        Quinta
-                                    </label>
-                                    <label class="checkbox-inline ml-4">
-                                        <input {{checkedIn reserva.dias 'Sexta' }} type="checkbox" id="sexta"
-                                            name="dia" value="Sexta">
-                                        Sexta
-                                    </label>
-                                    <label class="checkbox-inline ml-4">
-                                        <input {{checkedIn reserva.dias 'Sábado' }} type="checkbox" id="sabado"
-                                            name="dia" value="Sábado">
-                                        Sábado
-                                    </label>
-                                    <div class="invalid-feedback" id="diaErro">Escolha os dias da semana. Por
-                                        favo,</div>
-
-                                </div>
-
-
-                                <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label for="dataInicio" id="dataInicioLabel">
-                                    <font color="#FF0000">*</font> Data Inicial:
-                                    </label>
-                                    <div class="input-group date " data-target-input="nearest">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    <input type="date" class="form-control datetimepicker-input "
-                                        placeholder="Data de Início" value="{{reserva.dataInicio}}"
-                                        id="dataInicio" name="dataInicio"
-                                        data-inputmask-inputformat="dd/mm/yyyy" required>
-                                    <div class="invalid-feedback" id="dataInicioError">Data inválida. Por favor,
-                                        insira datas válidas.</div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-6" id="conditionalInput2">
-                                    <label for="dataFim">
-                                    <font color="#FF0000">*</font> Data Término:
-                                    </label>
-                                    <div class="input-group date" data-target-input="nearest">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    <input type="date" class="form-control datetimepicker-input"
-                                        placeholder="Data de Término" value="{{reserva.dataFim}}"
-                                        id="dataFim" name="dataFim"
-                                        data-inputmask-inputformat="dd/mm/yyyy">
-                                    <div class="invalid-feedback" id="dataFimError">Data inválida. Por favor,
-                                        insira datas válidas.</div>
-                                    </div>
-                                </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group  col-md-6 ">
-                                        <label for="horaInicio">
-                                            <font color="#FF0000">*</font> Hora Inicial:
-                                        </label>
-                                        <div class="input-group date" data-target-input="nearest">
-                                            <div class="input-group-append" data-target="#horaFim"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
-                                            </div>
-                                            <input type="time" class="form-control datetimepicker-input"
-                                                data-target="#horaInicio" value={{reserva.horaInicio}} id="horaInicio"
-                                                name="horaInicio" placeholder='HH:mm'>
-
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6 ">
-                                        <label for="horaFim">
-                                            <font color="#FF0000">*</font> Hora Término:
-                                        </label>
-                                        <div class="input-group date" data-target-input="nearest">
-                                            <div class="input-group-append" data-target="#horaFim"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
-                                            </div>
-                                            <input type="time" class="form-control  datetimepicker-input"
-                                                data-target="#horaFim" value="{{reserva.horaFim}}"
-                                                id="horaFim" name="horaFim" placeholder='HH:mm'>
-                                            <div class="invalid-feedback" id="horaFimError">Hora inválida. Por
-                                                favor,
-                                                insira horas válidas.</div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="card-footer pr-0">
-                                <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-success float-right">
-                                        Editar Reserva
-                                    </button>
-
-                                </div>
-                            </div>
-                        </form>
-
-
-                    </div>
-                </div>
-            </div>
-            <!-- /.card -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between"  style="gap: 8px; white-space: nowrap;">
+        <div>
+          <h1>Editar Reserva</h1>
         </div>
-    </section>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item"><a href="/reservas/gerenciar">Listagem de reservas</a></li>
+            <li class="breadcrumb-item active">Editar</li>
+          </ol>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+          <a type="button" class="btn btn-warning color-white" href="/reservas/gerenciar">
+            <i class="fa fa-arrow-left color-white"></i>
+            Voltar
+          </a>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+    <div class="row">
+      <div class="col">
+        <div class="card card-primary" style="width: 50%;">
+          <div class="card-header">
+            <h3 class="card-title"><b>Dados da Reserva</b></h3>
+            <!-- Ícone de expandir -->
+            <button class="expand-btn"
+                    style="position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
+              <i class="fas fa-expand" style="color:white"></i>
+            </button>
+          </div>
+          <div class="container-fluid">
+            <form id="formAdicionarSala" method="POST" action="/reservas/editar/{{reserva.id}}">
+              <input type="hidden" id="_csrf" name="_csrf" value="{{csrf}}" />
+              <input type="hidden" id="id" name="id" value="{{reserva.id}}" />
+              <input type="hidden" id="usuarioId" name="usuarioId" value="{{usuarioId}}" />
+              <div class="card-body ">
+                <div class="row">
+                  <div class="form-group col-md-6 ">
+                    <label for="atividade">
+                      <span style="color: #FF0000; ">*</span> Atividade:
+                    </label>
+                    <input type="text" class="form-control" id="atividade" name="atividade"
+                           value="{{reserva.atividade}}" placeholder="Ex: Seminários " required>
+                  </div>
+                  <div class="form-group col-md-6 ">
+                    <label for="tipo">
+                      <span style="color: #FF0000; ">*</span> Tipo:
+                    </label>
+                    <select class="form-control" id="tipo" name="tipo" required>
+                      <option {{checked reserva.tipo 'Aula' }} value="Aula">Aula</option>
+                      <option {{checked reserva.tipo 'Defesa' }} value="Defesa">Defesa</option>
+                      <option {{checked reserva.tipo 'Exame' }} value="Exame">Exame</option>
+                      <option {{checked reserva.tipo 'Reunião' }} value="Reunião">Reunião</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group ">
+                  <label for="salaId">
+                    <span style="color: #FF0000; ">*</span> Sala:
+                  </label>
+                  <select class="form-control" id="salaId" name="salaId" required>
+                    {{#each salas}}
+                      <option {{checked ../reserva.salaId id }} value="{{id}}">{{nome}} - {{bloco}} - {{andar}}° andar</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="row">
+                  <div class="form-group ">
+                    <label for="carta_recomendacao">
+                      <span style="color: #FF0000; "></span> &nbsp&nbsp &nbspEssa Reserva se repete?
+                      &nbsp&nbsp
+                    </label>
+                  </div>
+                  <div class="form-group ">
+                    <input type="checkbox" name="multiple" data-bootstrap-switch
+                           data-off-color="danger" {{#if isMultiple}}checked{{/if}}
+                           data-on-color="success" data-on-text="Sim" data-off-text="Não" value="1" id="multiple">
+                  </div>
+                </div>
+                <div class="form-group" id="conditionalInput" {{#if isMultiple}}{{else}}style="display: none" {{/if}}>
+                  <label class="control-label" id="dia" for="candidato-nome">
+                    <span style="color: #FF0000; "> &nbsp&nbsp</span>
+                    <b>Dias da semana:</b>
+                  </label>
+                  <div class="d-flex flex-row flex-wrap align-items-start">
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Segunda' }} type="checkbox" id="segunda" name="dia" value="Segunda">
+                      <label class="checkbox-inline ml-2" for="segunda">
+                        Segunda
+                      </label>
+                    </div>
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Terça' }} type="checkbox" id="terca" name="dia" value="Terça">
+                      <label class="checkbox-inline ml-4" for="terca">
+                        Terça
+                      </label>
+                    </div>
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Quarta' }} type="checkbox" id="quarta" name="dia" value="Quarta">
+                      <label class="checkbox-inline ml-4" for="quarta">
+                        Quarta
+                      </label>
+                    </div>
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Quinta' }} type="checkbox" id="quinta" name="dia" value="Quinta">
+                      <label class="checkbox-inline ml-4" for="quinta">
+                        Quinta
+                      </label>
+                    </div>
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Sexta' }} type="checkbox" id="sexta" name="dia" value="Sexta">
+                      <label class="checkbox-inline ml-4" for="sexta">
+                        Sexta
+                      </label>
+                    </div>
+                    <div class="icheck-primary">
+                      <input {{checkedIn reserva.dias 'Sábado' }} type="checkbox" id="sabado" name="dia" value="Sábado">
+                      <label class="checkbox-inline ml-4" for="sabado">
+                        Sábado
+                      </label>
+                    </div>
+
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="dataInicio" id="dataInicioLabel">
+                      <span style="color: #FF0000; ">*</span> Data Inicial:
+                    </label>
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                      <input type="text" name="dataInicio" id="dataInicio" placeholder="dd/mm/YYYY"
+                             data-target="#datetimepicker2" required class="form-control datetimepicker-input">
+                      <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="form-group col-md-6" id="conditionalInput2" {{#if isMultiple}}{{else}}style="display: none" {{/if}}>
+                    <label for="dataFim">
+                      <span style="color: #FF0000; ">*</span> Data Término:
+                    </label>
+                    <div class="input-group date" id="datepickerfim" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" name="dataFim"  id="dataFim"
+                             data-target="#datepickerfim" placeholder="dd/mm/yyyy">
+                      <div class="input-group-append" data-target="#datepickerfim" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group  col-md-6 ">
+                    <label for="horaInicio">
+                      <span style="color: #FF0000; ">*</span> Hora Inicial:
+                    </label>
+                    <div class="input-group date" id="timepickerinicio" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" id="horaInicio" name="horaInicio"
+                             data-target="#timepickerinicio" placeholder='HH:mm'>
+                      <div class="input-group-append" data-target="#timepickerinicio" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-6 ">
+                    <label for="horaFim">
+                      <span style="color: #FF0000; ">*</span> Hora Término:
+                    </label>
+                    <div class="input-group date" id="timepickerfim" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input"  id="horaFim" name="horaFim"
+                             data-target="#timepickerfim" placeholder='HH:mm'>
+                      <div class="input-group-append" data-target="#timepickerfim" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                      </div>
+                    </div>
+                  </div>
+                 </div>
+              </div>
+
+              <div class="card-footer pr-0">
+                <div style="margin-right: auto;" class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-success float-right">
+                    Editar Reserva
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+  </section>
 </div>
 
-
-
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
@@ -260,84 +235,247 @@
     }
 
     $(document).ready(function () {
-        const dataInicioLabel = document.querySelector('#dataInicioLabel');
-        const conditionalInput = document.getElementById('conditionalInput');
-        const conditionalInput2 = document.getElementById('conditionalInput2');
-        const unicaCheckBox = $("#unica");
+      const dataInicioLabel = document.querySelector('#dataInicioLabel');
+      const conditionalInput = document.getElementById('conditionalInput');
+      const conditionalInput2 = document.getElementById('conditionalInput2');
 
-        // Initialize the switch
-        $("input[data-bootstrap-switch]").each(function () {
-            $(this).bootstrapSwitch('state', $(this).is(':checked'));
-        });
+      // Se já tinha instância criada antes, destrua para evitar conflito
+      $('#datetimepicker2').datetimepicker({
+        locale: 'pt-br',
+        format: 'L',
+        useCurrent: false,
+        allowInputToggle: true,
+      });
 
-        // Function to toggle the display based on the checkbox state
-        function toggleConditionalInput(state) {
-            if (state) {
-                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data Inicial:';
-                conditionalInput.style.display = 'block';
-                conditionalInput2.style.display = 'block';
-            } else {
-                dataInicioLabel.innerHTML = '<font color="#FF0000">*</font> Data:';
-                conditionalInput.style.display = 'none';
-                conditionalInput2.style.display = 'none';
-            }
+      $('#datepickerfim').datetimepicker({
+        locale: 'pt-br',
+        format: 'L',
+        useCurrent: false,
+        allowInputToggle: true,
+      });
+
+      $('#timepickerinicio').datetimepicker({
+        locale: 'pt-br',
+        format: 'LT',
+        stepping: 5,
+        useCurrent: false,
+        allowInputToggle: true,
+      });
+
+      $('#timepickerfim').datetimepicker({
+        locale: 'pt-br',
+        format: 'LT',
+        stepping: 5,
+        useCurrent: false,
+        allowInputToggle: true,
+      });
+
+      $('#datetimepicker2').datetimepicker('date', moment.utc('{{reserva.dataInicio}}'));
+      $('#datepickerfim').datetimepicker('date', moment.utc('{{reserva.dataFim}}'));
+      $('#timepickerinicio').datetimepicker('date', moment('{{reserva.horaInicio}}', "HH:mm"));
+      $('#timepickerfim').datetimepicker('date', moment("{{reserva.horaFim}}", "HH:mm"));
+
+      // Inicialize o switch
+      $("input[data-bootstrap-switch]").each(function () {
+        $(this).bootstrapSwitch('state', $(this).is(':checked'));
+      });
+
+      // lógica do switch
+      $("#multiple").on('switchChange.bootstrapSwitch', function (event, state) {
+        const multiple = $("#multiple").prop('checked');
+        if (multiple) {
+          dataInicioLabel.innerHTML = '<span style="color: #FF0000; ">*</span> Data Inicial:'
+          conditionalInput.style.display = 'block';
+          conditionalInput2.style.display = 'block';
+        } else {
+          dataInicioLabel.innerHTML = '<span style="color: #FF0000; ">*</span> Data:';
+          conditionalInput.style.display = 'none';
+          conditionalInput2.style.display = 'none';
         }
+      });
 
-        // Set the initial state of the conditional input based on the checkbox state
-        toggleConditionalInput(unicaCheckBox.is(':checked'));
+      // Métodos custom:
+      $.validator.addMethod("dateBR", function (value, element) {
+        if (!value) return false;
+        return moment(value, 'L', true).isValid();
+      }, "Data inválida.");
 
-        // Switch change logic
-        unicaCheckBox.on('switchChange.bootstrapSwitch', function (event, state) {
-            toggleConditionalInput(state);
-        });
+
+      $.validator.addMethod("timeHHmm", function (value, element) {
+        if (!value) return false;
+        return moment(value, 'HH:mm', true).isValid();
+      }, "Hora inválida.");
+
+      $.validator.addMethod("greaterThanTime", function (value, element, selector) {
+        const start = $(selector).val();
+        if (!value || !start) return true; // outra regra marca required
+        const mStart = moment(start, 'HH:mm', true);
+        const mEnd   = moment(value, 'HH:mm', true);
+        if (!mStart.isValid() || !mEnd.isValid()) return true;
+        return mEnd.isAfter(mStart);
+      }, "A hora de término deve ser posterior à de início.");
+
+      $.validator.addMethod("diasRequiredWhenRepeat", function (_value, element) {
+        const repete = $("#multiple").prop("checked");
+        if (!repete) return true;
+        const qtd = ['#segunda','#terca','#quarta','#quinta','#sexta','#sabado']
+          .filter(id => $(id).prop("checked")).length;
+        return qtd > 0;
+      }, "Escolha ao menos um dia da semana.");
+
+      // Aplique uma classe nas checkboxes para validar em grupo
+      $('#segunda,#terca,#quarta,#quinta,#sexta,#sabado').addClass('dia-semana');
+      $("#formAdicionarSala").validate({
+        ignore: [], // valida inputs escondidos (dataFim quando mostrar)
+        rules: {
+          atividade: { required: true },
+          tipo:      { required: true },
+          salaId:    { required: true },
+          dataInicio:{ required: true, dateBR: true },
+          dataFim:   {
+            required: {
+              depends: function () { return $("#multiple").prop("checked"); } // repete?
+            },
+          },
+          horaInicio:{ required: true, timeHHmm: true },
+          horaFim:   { required: true, timeHHmm: true, greaterThanTime: "#horaInicio" },
+          // truque: valide o grupo de dias com um input “fantasma” (o próprio label id="dia")
+          dia: { diasRequiredWhenRepeat: true }
+        },
+        messages: {
+          atividade: "Informe a atividade.",
+          tipo: "Informe o tipo.",
+          salaId: "Escolha a sala.",
+          dataInicio: { required: "Informe a data inicial." },
+          dataFim:    { required: "Informe a data de término." },
+          horaInicio: { required: "Informe a hora inicial." },
+          horaFim:    { required: "Informe a hora término." }
+        },
+        errorElement: "div",
+        errorClass: "invalid-feedback",
+        highlight: function (el) {
+          $(el).addClass("is-invalid");
+        },
+        unhighlight: function (el) {
+          $(el).removeClass("is-invalid");
+        },
+        errorPlacement: function (error, element) {
+          if (element.closest(".form-group").length) {
+            element.closest(".form-group").append(error);
+          } else {
+            error.insertAfter(element);
+          }
+        },
+
+        // === SUBMIT AJAX com checagem de conflito ===
+        submitHandler: async function (form, e) {
+          e.preventDefault();
+          const btnSave = $("#btn-create");
+          btnSave.find("span").prop("hidden", false);
+          btnSave.prop("disabled", true);
+          const salaId = '{{detailsId}}'
+          try {
+            const dados = pegaDados();
+            // tudo ok → envia via AJAX
+            await $.ajax({
+              url: $(form).attr("action"),
+              method: "POST",
+              data: dados,
+              dataType: "json" // ajuste conforme seu backend (pode ser html)
+            });
+
+            // // redirecione (ajuste a rota se quiser voltar para a sala específica)
+            if(salaId === dados.salaId){
+              window.location.href = `/salas/detalhes/${salaId}`;
+            }else {
+              // sucesso: toast + redireciona
+              localStorage.setItem("toastMessage", "Reserva adicionada com sucesso!");
+              localStorage.setItem("toastType", "success");
+              window.location.href = "/reservas/gerenciar";
+            }
+          } catch (err) {
+            if(err.status === 409) {
+              toastr.error("Existe um conflito com as reservas existentes nesse horário!");
+              $("#dataInicio, #dataFim, #horaInicio, #horaFim").addClass("is-invalid");
+              $("#dataInicioError").text("Existe um conflito com as reservas existentes nesse horário.");
+            } else {
+              toastr.error("Não foi possível salvar a reserva. Tente novamente.");
+            }
+          } finally {
+            btnSave.find("span").prop("hidden", true);
+            btnSave.prop("disabled", false);
+          }
+          return false;
+        }
+      });
     });
 
-
-
-
     function diasSemana() {
-        let dias = ""
-        dias += $("#segunda").prop("checked") ? "Segunda" : ""
-        dias += $("#terca").prop("checked") ? "Terça" : ""
-        dias += $("#quarta").prop("checked") ? "Quarta" : ""
-        dias += $("#quinta").prop("checked") ? "Quinta" : ""
-        dias += $("#sexta").prop("checked") ? "Sexta" : ""
-        dias += $("#sabado").prop("checked") ? "Sábado" : ""
+      const dias = [];
 
-        return dias
+      if ($("#segunda").prop("checked")) dias.push("Segunda");
+      if ($("#terca").prop("checked"))   dias.push("Terça");
+      if ($("#quarta").prop("checked"))  dias.push("Quarta");
+      if ($("#quinta").prop("checked"))  dias.push("Quinta");
+      if ($("#sexta").prop("checked"))   dias.push("Sexta");
+      if ($("#sabado").prop("checked"))  dias.push("Sábado");
+
+      return dias;
     }
 
     function pegaDados() {
 
-        const unica = $("#unica").prop("checked"); ''
-        const SalaId = $("#unica").val();
-        const dataInicio = $("#dataInicio").val();
-        const dataFim = unica ? dataInicio : $("#dataFim").val();
-        const horaInicio = $("#horaInicio").val() + ":00";
-        const horaFim = $("#horaFim").val() + ":00";
-        const id = $("#id").val();
+      const multiple = $("#multiple").prop("checked");
+      const salaId = $("#salaId").val();
 
-        let dias = diasSemana()
+      const pickerInicio = $('#datetimepicker2').data("datetimepicker");
+      const pickerFim    = $('#datepickerfim').data("datetimepicker");
 
-        //verificacao do caso data unica
-        if (!unica) {
-            const data = new Date(document.getElementById("dataInicio").value);
-            const diaDaSemana = data.getDay();
-            const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-            dias = nomesDosDias[diaDaSemana];
-        }
+      // Usa o moment interno do picker
+      const mInicio = pickerInicio && pickerInicio.date();
+      const mFim    = pickerFim && pickerFim.date();
 
-        return {
-            unica,
-            SalaId,
-            dataInicio,
-            dataFim,
-            horaInicio,
-            horaFim,
-            dias,
-            id
-        };
+      // Converte para YYYY-MM-DD (ou null se vazio)
+      const dataInicio = mInicio ? mInicio.format("YYYY-MM-DD") : null;
+      // Se não repete, dataFim = dataInicio
+      const dataFim    = multiple ? (mFim ? mFim.format("YYYY-MM-DD") : null) : dataInicio;
+
+      const horaInicio = $("#horaInicio").val() + ":00";
+      const horaFim = $("#horaFim").val() + ":00";
+      const tipo = $("#tipo").val()
+      const atividade = $("#atividade").val();
+      const usuarioId = $("#usuarioId").val()
+      let dia = diasSemana()
+
+      //verificacao do caso data multiple
+      if (!multiple) {
+        const valor = document.getElementById("dataInicio").value; // ex: "27/09/2025"
+        const [diaStr, mesStr, anoStr] = valor.split("/");
+
+        const diaNum = parseInt(diaStr, 10);
+        const mesNum = parseInt(mesStr, 10) - 1; // mês começa em 0 no JS
+        const anoNum = parseInt(anoStr, 10);
+
+        const data = new Date(anoNum, mesNum, diaNum);
+        const diaDaSemana = data.getDay();
+
+        const nomesDosDias = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+        dia = nomesDosDias[diaDaSemana];
+      }
+
+      return {
+        salaId,
+        dataInicio,
+        atividade,
+        dataFim,
+        horaInicio,
+        horaFim,
+        dia,
+        tipo,
+        usuarioId
+      };
     }
+
     document.querySelector('.expand-btn').addEventListener('click', function () {
         const card = document.querySelector('.card');
 
@@ -347,185 +485,6 @@
             card.style.width = "50%"; // ou qualquer tamanho padrão que você deseja
         }
     });
-    async function buscarReservas() {
-        try {
-            const response = await fetch('/reservas/listar'); // Rota para buscar reservas
-            if (!response.ok) {
-                throw new Error('Erro ao buscar reservas');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
-    }
-
-    function verificaConflitoComReservas(novaReserva, reservasExistente) {
-        for (const reserva of reservasExistente) {
-
-
-            if (reserva.id == novaReserva.id) {
-                continue
-            }
-            // Verifica se a nova reserva está dentro do período de alguma reserva existente
-            if (novaReserva.dataInicio <= reserva.dataFim && novaReserva.dataFim >= reserva.dataInicio) {
-
-                //verificacao do caso data unica
-                if (reserva.dataInicio == reserva.dataFim) {
-                    const data = new Date(reserva.dataInicio);
-                    const diaDaSemana = data.getDay(); // Obtém o dia da semana (0 a 6)
-
-                    // Mapeia o número do dia da semana para o nome do dia
-                    const nomesDosDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-                    dias = nomesDosDias[diaDaSemana];
-                }
-                const diasEmComum = reserva.dias.split(', ').some(dia => novaReserva.dias.includes(dia));
-
-                // Verifica se há sobreposição nas horas
-                if (diasEmComum && novaReserva.horaInicio < reserva.horaFim && novaReserva.horaFim > reserva.horaInicio) {
-                    return true; // Conflito encontrado
-                }
-            } else {
-
-            }
-        }
-
-        // Não há conflito
-        return false;
-    }
-
-    document.getElementById("formAdicionarSala").addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const dataInputElement = document.getElementById("dataInicio");
-        const dataInputValue = dataInputElement.value;
-        console.log(dataInputValue)
-
-        // Cria a data assumindo que a entrada é uma data local sem horário.
-        // Isso vai evitar a interpretação da string como uma data UTC.
-        const partesData = dataInputValue.split('-'); // Assume o formato AAAA-MM-DD
-        const ano = parseInt(partesData[0], 10);
-        const mes = parseInt(partesData[1], 10) - 1; // Mês é indexado em 0
-        const dia = parseInt(partesData[2], 10);
-
-        const dataInicio = new Date(ano, mes, dia);
-
-        // Se você quiser também eliminar a questão do horário, pode definir explicitamente para zero.
-        dataInicio.setHours(0, 0, 0, 0);
-        let dataFim = new Date(document.getElementById("dataFim").value);
-        const horaInicio = document.getElementById("horaInicio").value
-        const horaFim = document.getElementById("horaFim").value
-        const unica = $("#unica").prop("checked");
-        const dias = diasSemana()
-
-        const agora = new Date();
-        agora.setHours(0, 0, 0, 0);
-
-        // Verifica se as datas termino
-        if (isNaN(dataFim.getTime())) {
-            console.log('1')
-            if (!unica) {
-                dataFim = dataInicio
-            } else {
-                toastr.error("Por favor, insira uma data.");
-                document.getElementById("dataFimError").textContent = "Por favor, insira uma data.";
-                document.getElementById("dataFim").classList.add("is-invalid");
-                return;
-            }
-
-            document.getElementById("dataFimError").textContent = "";
-            document.getElementById("dataFim").classList.remove("is-invalid");
-        }
-        // Verifica se a data de início é anterior à dataatuall
-        if (dataInicio < agora) {
-            console.log('1.5')
-            toastr.error("A data de Inicio deve ser posterior à data de hoje.");
-
-            document.getElementById("dataInicioError").textContent = "A data de Inicio deve ser posterior à data de hoje.";
-            document.getElementById("dataInicio").classList.add("is-invalid");
-            return;
-        } else {
-            document.getElementById("dataInicioError").textContent = "";
-            document.getElementById("dataInicio").classList.remove("is-invalid");
-        }
-        // Verifica se a data de início é anterior à data de fim
-        if (dataInicio > dataFim) {
-            console.log('2')
-            toastr.error("A data de termino deve ser posterior à data de inicio.");
-
-            document.getElementById("dataFimError").textContent = "A data de termino deve ser posterior à data de inicio.";
-            document.getElementById("dataFim").classList.add("is-invalid");
-            return;
-        } else {
-            document.getElementById("dataFimError").textContent = "";
-            document.getElementById("dataFim").classList.remove("is-invalid");
-        }
-
-        // Verifica se a hora de início é anterior à hora de fim
-        if (horaInicio >= horaFim) {
-            console.log('3')
-            toastr.error("A hora de termino deve ser posterior à hora de inicio.");
-
-            document.getElementById("horaFimError").textContent = "A hora de termino deve ser posterior à hora de inicio.";
-            document.getElementById("horaFim").classList.add("is-invalid");
-            return;
-        } else {
-            document.getElementById("horaFimError").textContent = "";
-            document.getElementById("horaFim").classList.remove("is-invalid");
-        }
-
-        // Verifica se dias da semana está selecionado
-
-        if (unica & dias == "") {
-            console.log('4')
-            toastr.error("Escolha os dias da semana. Por favor.");
-
-            document.getElementById("diaErro").textContent = "Escolha os dias da semana. Por favor.";
-            document.getElementById("dia").classList.add("is-invalid");
-            return;
-        } else {
-            document.getElementById("diaErro").textContent = "";
-            document.getElementById("dia").classList.remove("is-invalid");
-        }
-
-
-        const reservas = await buscarReservas();
-        reserva = pegaDados()
-
-        console.log(reservas.reservas)
-        console.log(reserva)
-
-        // Verificar se a nova reserva entra em conflito com as reservas existentes
-        const conflito = verificaConflitoComReservas(reserva, reservas.reservas);
-
-        if (conflito) {
-            console.log('5')
-            toastr.error('Existe um conflito com as reservas existente nesse horário!');
-            document.getElementById("dataInicioError").textContent = "Existe um conflito com as reservas existente nesse horário";
-            document.getElementById("dataInicio").classList.add("is-invalid");
-            document.getElementById("dataFim").classList.add("is-invalid");
-            document.getElementById("horaInicio").classList.add("is-invalid");
-            document.getElementById("horaFim").classList.add("is-invalid")
-
-            return;
-
-        } else {
-            localStorage.setItem('toastMessage', 'Reserva adicionada com sucesso!');
-            localStorage.setItem('toastType', 'success');
-
-            document.getElementById("dataInicioError").textContent = "";
-            document.getElementById("dataInicio").classList.remove("is-invalid");
-            document.getElementById("dataFim").classList.remove("is-invalid");
-            document.getElementById("horaInicio").classList.remove("is-invalid");
-            document.getElementById("horaFim").classList.remove("is-invalid");
-        }
-
-        const form = document.getElementById("formAdicionarSala");
-        form.submit();
-
-    });
-
 </script>
 
 {{> footer}}

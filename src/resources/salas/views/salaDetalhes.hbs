@@ -92,11 +92,75 @@
   </section>
 </div>
 
+<!-- Modal Detalhes da Reserva -->
+<div class="modal fade" id="reservaModal" tabindex="-1" role="dialog" aria-labelledby="reservaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title" id="reservaModalLabel">Detalhes da reserva</h5>
+        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="color-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <dl class="row mb-0">
+          <dt class="col-5">Atividade</dt>
+          <dd class="col-7 text-right" id="mAtividade">-</dd>
+
+          <dt class="col-5">Tipo</dt>
+          <dd class="col-7 text-right" id="mTipo">-</dd>
+
+          <dt class="col-5">Sala</dt>
+          <dd class="col-7 text-right" id="mSala">-</dd>
+
+          <dt class="col-5">Período</dt>
+          <dd class="col-7 text-right" id="mPeriodo">-</dd>
+
+          <dt class="col-5">Dias</dt>
+          <dd class="col-7 text-right" id="mDias">-</dd>
+
+          <dt class="col-5">Horário</dt>
+          <dd class="col-7 text-right" id="mHorario">-</dd>
+        </dl>
+      </div>
+      <div class="modal-footer">
+        <a id="btnEditarReserva" class="btn btn-primary">
+          <i class="fas fa-edit"></i> Editar
+        </a>
+        <button type="button" class="btn btn-danger" id="btnAbrirExcluir">
+          <i class="fas fa-trash"></i> Excluir
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal confirmação de exclusão -->
+<div class="modal fade" id="excluirReservaModal" tabindex="-1" role="dialog" aria-labelledby="excluirReservaLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title" id="excluirReservaLabel">Excluir reserva</h5>
+        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="color-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Tem certeza que deseja excluir esta reserva?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarExcluir">Sim, excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
 {{> footer}}
 
 <!-- FullCalendar -->
-<script src="
-https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
   // ========= Helpers =========
@@ -154,43 +218,47 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
   function dateOnlyUTC(isoString) {
     // cria em UTC e formata só a parte da data
     return moment.utc(isoString).format('YYYY-MM-DD');
-  }
-  function buildFcEvents(reservas, sala) {
+  }function buildFcEvents(reservas, sala) {
     if (!reservas || !reservas.length) return [];
     const events = [];
 
     reservas.forEach(r => {
       const title = r.atividade || 'Reserva';
-      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${hhmm(r.horaInicio)} - ${hhmm(r.horaFim)}`;
-
-      // normaliza datas vindas como ISO Z do banco
-
-      const daysOfWeek = parseDiasToDaysOfWeek(r.dias);
-      const inicioDia = dateOnlyUTC(r.dataInicio);
-      const fimDia    = dateOnlyUTC(r.dataFim || r.dataInicio);
+      const inicioDia = moment.utc(r.dataInicio).format('YYYY-MM-DD');
+      const fimDia    = moment.utc(r.dataFim || r.dataInicio).format('YYYY-MM-DD');
       const isRange   = inicioDia !== fimDia;
+      const hIni = moment(r.horaInicio, ['HH:mm','HH:mm:ss'], true).format('HH:mm');
+      const hFim = moment(r.horaFim || r.horaInicio, ['HH:mm','HH:mm:ss'], true).format('HH:mm');
 
-      const hIni = hhmm(r.horaInicio);
-      const hFim = hhmm(r.horaFim || r.horaInicio);
-      if (daysOfWeek && daysOfWeek.length && isRange) {
+      const diasOfWeek = parseDiasToDaysOfWeek(r.dias);
+      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${hIni} - ${hFim}`;
 
+      if (diasOfWeek && diasOfWeek.length && isRange) {
         events.push({
           id: r.id,
           title,
-          daysOfWeek,
-          startTime: hhmm(r.horaInicio),
-          endTime: hhmm(r.horaFim),
-          startRecur: inicioDia,                       // <<< sem hora/UTC
-          endRecur:   moment(fimDia).add(1,'day').format('YYYY-MM-DD'), // exclusivo (+1)
+          daysOfWeek: diasOfWeek,
+          startTime: hIni,
+          endTime:   hFim,
+          startRecur: inicioDia,
+          endRecur:   moment(fimDia).add(1,'day').format('YYYY-MM-DD'),
           allDay: false,
           display: 'block',
-          extendedProps: { tooltip }
+          extendedProps: {
+            tooltip,
+            raw: {
+              ...r,
+              dataInicio: inicioDia,
+              dataFim: fimDia,
+              horaInicio: hIni,
+              horaFim: hFim
+            },
+            sala
+          }
         });
       } else {
-        // PONTUAL: instância única com start/end
-
-        const start = moment(`${inicioDia} ${hIni}`, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DDTHH:mm');
-        const end   = moment(`${fimDia} ${hFim}`,   'YYYY-MM-DD HH:mm').format('YYYY-MM-DDTHH:mm');
+        const start = `${inicioDia}T${hIni}`;
+        const end   = `${fimDia}T${hFim}`;
         events.push({
           id: r.id,
           title,
@@ -198,11 +266,20 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
           end,
           allDay: false,
           display: 'block',
-          extendedProps: { tooltip }
+          extendedProps: {
+            tooltip,
+            raw: {
+              ...r,
+              dataInicio: inicioDia,
+              dataFim: fimDia,
+              horaInicio: hIni,
+              horaFim: hFim
+            },
+            sala
+          }
         });
       }
     });
-
 
     return events;
   }
@@ -242,13 +319,84 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
         }
         // Link direto para edição da reserva ao dar double-click (opcional)
         info.el.addEventListener('dblclick', () => {
-          window.location.href = `/reservas/editar/${info.event.id}`;
+          window.location.href = `/reservas/editar/${info.event.id}?detailsId={{sala.id}}`;
         });
       },
 
       eventClick(info) {
-        // clique simples: abre a edição
-        window.location.href = `/reservas/editar/${info.event.id}`;
+        const ev = info.event;
+        const raw = ev.extendedProps?.raw || {};
+        const salaInfo = ev.extendedProps?.sala || {};
+
+        // Título do modal
+        document.getElementById('reservaModalLabel').textContent =
+          `Reserva #${ev.id} — ${raw.atividade || ev.title || 'Reserva'}`;
+
+        // Sala
+        const salaTexto = salaInfo?.nome
+          ? `${salaInfo.nome} — ${salaInfo.bloco || ''} ${salaInfo.andar ? `— ${salaInfo.andar}º andar` : ''}`.trim()
+          : `Sala ${sala?.nome || ''}`.trim();
+
+        // Período
+        // eventos recorrentes usam startRecur/endRecur (end exclusivo -1 dia)
+        let periodo = '-';
+        if (ev.startRecur || ev.endRecur) {
+          const ini = ev.startRecur || raw.dataInicio;
+          const fimExc = ev.endRecur || moment(raw.dataFim).add(1,'day').format('YYYY-MM-DD');
+          const fimInc = moment(fimExc, 'YYYY-MM-DD').subtract(1, 'day').format('YYYY-MM-DD');
+          periodo = `${moment(ini, 'YYYY-MM-DD').format('DD/MM/YYYY')} a ${moment(fimInc, 'YYYY-MM-DD').format('DD/MM/YYYY')}`;
+        } else {
+          const ini = raw.dataInicio;
+          const fim = raw.dataFim;
+          periodo = (ini === fim)
+            ? moment(ini, 'YYYY-MM-DD').format('DD/MM/YYYY')
+            : `${moment(ini, 'YYYY-MM-DD').format('DD/MM/YYYY')} a ${moment(fim, 'YYYY-MM-DD').format('DD/MM/YYYY')}`;
+        }
+
+        // Dias
+        const diasStr = Array.isArray(raw.dias) ? raw.dias.join(', ') : (raw.dias || '-');
+
+        // Horário
+        const horario = `${raw.horaInicio || '-'} - ${raw.horaFim || '-'}`;
+
+        // Preenche campos
+        document.getElementById('mAtividade').textContent = raw.atividade || '-';
+        document.getElementById('mTipo').textContent = raw.tipo || '-';
+        document.getElementById('mSala').textContent = salaTexto || '-';
+        document.getElementById('mPeriodo').textContent = periodo;
+        document.getElementById('mDias').textContent = diasStr;
+        document.getElementById('mHorario').textContent = horario;
+
+        // Botão editar → link direto
+        const editarHref = `/reservas/editar/${ev.id}?detailsId={{sala.id}}`;
+        document.getElementById('btnEditarReserva').setAttribute('href', editarHref);
+
+        // Botão excluir → abre modal de confirmação e prepara form
+        const excluirAction = `/reservas/excluir/${ev.id}`;
+        document.getElementById('btnAbrirExcluir').onclick = () => {
+          $('#excluirReservaModal').modal('show');
+        };
+
+        // Confirmar exclusão → submit form
+        document.getElementById('btnConfirmarExcluir').onclick = () => {
+          $.ajax({
+            url: excluirAction,
+            method: "POST",
+            success: function () {
+              window.location.reload();
+            },
+            error: function () {
+              $("#excluirReservaModal").modal("hide");
+
+              toastr.error(
+                "Ocorreu um erro ao excluir a reserva."
+              );
+            }
+          });
+        };
+
+        // Abre modal de detalhes
+        $('#reservaModal').modal('show');
       },
 
       select(selection) {
