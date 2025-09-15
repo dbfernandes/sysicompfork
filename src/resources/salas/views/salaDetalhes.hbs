@@ -187,22 +187,8 @@
       .filter(n => Number.isInteger(n));
   }
 
-  const reservasRaw = [
-    {{#if sala.reservas}}
-      {{#each sala.reservas}}
-        {
-          id: "{{id}}",
-          atividade: "{{atividade}}",
-          tipo: "{{tipo}}",
-          dias: {{#if dias}}"{{dias}}"{{else}}null{{/if}},
-          dataInicio: "{{dataInicio}}",
-          dataFim: "{{dataFim}}",
-          horaInicio: "{{horaInicio}}",
-          horaFim: "{{horaFim}}"
-        }{{#unless @last}},{{/unless}}
-      {{/each}}
-    {{/if}}
-  ];
+  const sala = {{{ safeJson sala }}};
+  const reservasRaw = sala?.reservas || [];
 
   function pad2(n){ return String(n).padStart(2, '0'); }
 

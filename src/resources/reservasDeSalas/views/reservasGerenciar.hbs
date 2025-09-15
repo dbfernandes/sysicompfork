@@ -1,6 +1,12 @@
 {{> header}}
 {{> sidebar module='reservas' page='reservas-gerenciar'}}
 
+{{#section "head"}}
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/script-adminlte/plugins/select2/css/select2.min.css" />
+  <link rel="stylesheet" href="/script-adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
+{{/section}}
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -155,14 +161,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
-<!-- Select2 -->
-    <link rel="stylesheet" href="/script-adminlte/plugins/select2/css/select2.min.css" />
-    <link rel="stylesheet" href="/script-adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
-
-    <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
-
+<script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
 
 <script>
   toastr.options = {
