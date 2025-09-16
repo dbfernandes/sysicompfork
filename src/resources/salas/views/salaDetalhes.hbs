@@ -421,16 +421,28 @@
       slotEventOverlap: false
     });
 
-  if (reservaId) {
-      const ev = calendar.getEventById(String(reservaId));
-      if (ev) {
-        // Vai para a semana do evento destacado
-        const start = ev.start;
-        if (start) {
-          calendar.gotoDate(start);
-        }
-      }
-  }
+
     calendar.render();
+    if (reservaId) {
+      const id = reservaId
+      const ev = calendar.getEventById(id);
+      const reserva = reservasRaw.find(e => e.id === id);
+
+      if (!ev || !reserva) return;
+
+      if(ev.start){
+        console.log("Não entrou aqui")
+        calendar.gotoDate(ev.startRecur);
+        const hh = ev.start.getHours().toString().padStart(2, '0');
+        const mm = ev.start.getMinutes().toString().padStart(2, '0');
+        calendar.scrollToTime(`${hh}:${mm}:00`);
+      }
+      else if (reserva.dataInicio) {
+        calendar.gotoDate(reserva.dataInicio);
+        const time = reserva.horaInicio || '08:00';
+        const [hh, mm] = time.split(':').map(s => s.padStart(2, '0'));
+        calendar.scrollToTime(`${hh}:${mm}:00`);
+      }
+    }
   });
 </script>
