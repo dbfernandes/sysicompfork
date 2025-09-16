@@ -427,12 +427,10 @@
       const id = reservaId
       const ev = calendar.getEventById(id);
       const reserva = reservasRaw.find(e => e.id === id);
-
       if (!ev || !reserva) return;
 
       if(ev.start){
-        console.log("Não entrou aqui")
-        calendar.gotoDate(ev.startRecur);
+        calendar.gotoDate(ev.start);
         const hh = ev.start.getHours().toString().padStart(2, '0');
         const mm = ev.start.getMinutes().toString().padStart(2, '0');
         calendar.scrollToTime(`${hh}:${mm}:00`);
