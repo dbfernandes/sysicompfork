@@ -170,7 +170,7 @@
             </p>
           </a>
         </li>-->
-        <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
+        <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'timeline'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}{{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
           <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
             <i class="nav-icon far fa-clipboard "></i>
             <p>
@@ -190,6 +190,12 @@
               <a href="/reservas/gerenciar" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
                 <i class="fas fa-table nav-icon"></i>
                 <p>Gerenciar Reservas</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/reservas/timeline" class="nav-link {{#ifEqual module 'timeline'}}active{{/ifEqual}}  text-sm">
+                <i class="fas fa-calendar nav-icon"></i>
+                <p>Timeline Reservas</p>
               </a>
             </li>
           </ul>

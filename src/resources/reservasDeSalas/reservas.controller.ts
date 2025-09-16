@@ -165,6 +165,33 @@ const listarReservasFormatadas = async (
   }
 };
 
+const viewTimeline = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const reservas = await reservasService.listarReservasSalas();
+    const salas = await salasService.listAll();
+
+    const reservasFormatadas = reservas.map((reserva) => ({
+      ...reserva,
+      horaInicio: toHHmm(reserva.horaInicio) ?? reserva.horaInicio, // garante "HH:mm"
+      horaFim: toHHmm(reserva.horaFim) ?? reserva.horaFim,
+      dataInicio: reserva.dataInicio?.toLocaleDateString('pt-BR'),
+      dataFim: reserva.dataFim?.toLocaleDateString('pt-BR'),
+      terminou: reserva.dataFim
+        ? new Date(reserva.dataFim) < new Date()
+        : false,
+    }));
+    res.render(resolveView('reservasTimeline'), {
+      reservas: reservasFormatadas,
+      nome: req.session.nome,
+      tipoUsuario: req.session.tipoUsuario,
+      salaId: req.query.salaId,
+      salas,
+    });
+  } catch (error) {
+    console.error('Erro ao gerenciar reservas:', error);
+    res.redirect('/inicio');
+  }
+};
 const editarReserva = async (req: Request, res: Response): Promise<void> => {
   if (req.method === 'GET') {
     try {
@@ -246,4 +273,5 @@ export default {
   listarReservasFormatadas,
   editarReserva,
   listarReservas,
+  viewTimeline,
 };

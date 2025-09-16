@@ -110,19 +110,19 @@
                                         </td> <!-- Nova célula -->
 
                                         <td style="text-align: center;">
-                                            <a class='fa fa-solid fa-pen' style="color: blue;"
-                                                href="/reservas/editar/{{id}}">
 
-                                            </a> &nbsp
-                                            <a class="fa fa-solid fa-trash" id="{{id}}" data-toggle="modal"
-                                                style="color: red;" data-target="#removerUsuario"
-                                                onclick="addLink(event)" href="#">
-
-                                            </a>
-
-
+                                          <a class='fa fa-calendar' style="color: blue;" title="Visualizar"
+                                             href="/salas/detalhes/{{sala.id}}?reservaId={{id}}">
+                                          </a> &nbsp
+                                          <a class='fa fa-solid fa-pen' style="color: blue;" title="Editar"
+                                             href="/reservas/editar/{{id}}">
+                                          </a> &nbsp
+                                          <a class="fa fa-solid fa-trash" id="{{id}}" data-toggle="modal" title="Remover"
+                                             style="color: red;" data-target="#removerUsuario"
+                                             onclick="addLink(event)" href="#">
+                                          </a>
+                                        </td>
                                     </tr>
-
                                     {{/each}}
                                 </tbody>
                             </table>

@@ -161,8 +161,10 @@ const details = async (req: Request, res: Response): Promise<void> => {
   }
   const salaId = Number(req.params.id);
   const sala = await SalaService.getByIdWithReservas(salaId);
+  const reservaId = req.query.reservaId || null;
   res.render(resolveView('salaDetalhes'), {
     sala,
+    reservaId,
     nome: req.session.nome,
     tipoUsuario: req.session.tipoUsuario,
   });

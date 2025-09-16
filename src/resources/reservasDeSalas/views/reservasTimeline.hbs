@@ -1,0 +1,360 @@
+{{> header}}
+{{> sidebar module='timeline' page='reservas-gerenciar'}}
+{{#section "head"}}
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <style>
+    .bootstrap-datetimepicker-widget {
+      box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+  </style>
+{{/section}}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
+        <div><h1>Reservas — Timeline</h1></div>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item active">Timeline de Reservas</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-2 col-md-3 col-lg-2 min-width-button">
+          <a type="button" class="btn btn-block btn-primary" href="/reservas/adicionar">
+            <i class="fas fa-user-plus color-white"></i> Reservar Sala
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Timeline</h3>
+        </div>
+        <div class="card-body p-2">
+          <div class="row">
+            <!-- Coluna esquerda: Mini calendário -->
+            <div class="col-12 col-md-3 col-lg-2 mb-">
+              <div class="input-group date" id="datePicker" data-target-input="nearest">
+              </div>
+            </div>
+
+            <!-- Coluna direita: Timeline -->
+            <div class="col-12 col-md-9 col-lg-10">
+              <div id="calendar" style="min-height: 720px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+<!-- Modal Detalhes -->
+<div class="modal fade" id="reservaModal" tabindex="-1" role="dialog" aria-labelledby="reservaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title" id="reservaModalLabel">Detalhes da reserva</h5>
+        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="color-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <dl class="row mb-0">
+          <dt class="col-5">Atividade</dt><dd class="col-7 text-right" id="mAtividade">-</dd>
+          <dt class="col-5">Tipo</dt><dd class="col-7 text-right" id="mTipo">-</dd>
+          <dt class="col-5">Sala</dt><dd class="col-7 text-right" id="mSala">-</dd>
+          <dt class="col-5">Período</dt><dd class="col-7 text-right" id="mPeriodo">-</dd>
+          <dt class="col-5">Dias</dt><dd class="col-7 text-right" id="mDias">-</dd>
+          <dt class="col-5">Horário</dt><dd class="col-7 text-right" id="mHorario">-</dd>
+        </dl>
+      </div>
+      <div class="modal-footer">
+        <a id="btnEditarReserva" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
+        <button type="button" class="btn btn-danger" id="btnAbrirExcluir"><i class="fas fa-trash"></i> Excluir</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+      <form id="formExcluirReserva" method="POST" style="display:none;">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Exclusão -->
+<div class="modal fade" id="excluirReservaModal" tabindex="-1" role="dialog" aria-labelledby="excluirReservaLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title" id="excluirReservaLabel">Excluir reserva</h5>
+        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="color-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">Tem certeza que deseja excluir esta reserva?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarExcluir">Sim, excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- deps -->
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.19/index.global.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+  // ---------- Utils ----------
+  function hhmm(s) {
+    if (!s) return '00:00';
+    const m = moment(s, ['HH:mm','HH:mm:ss'], true);
+    return m.isValid() ? m.format('HH:mm') : '00:00';
+  }
+  function dateOnlyUTC(iso) { return moment.utc(iso).format('YYYY-MM-DD'); }
+  function parseDiasToDaysOfWeek(dias) {
+    const str = Array.isArray(dias) ? (dias.length === 1 ? dias[0] : dias.join(',')) : (dias || '');
+    if (!str) return null;
+    const map = {'dom':0,'domingo':0,'seg':1,'segunda':1,'segunda-feira':1,'ter':2,'terça':2,'terca':2,'terça-feira':2,'terca-feira':2,'qua':3,'quarta':3,'quarta-feira':3,'qui':4,'quinta':4,'quinta-feira':4,'sex':5,'sexta':5,'sexta-feira':5,'sab':6,'sáb':6,'sábado':6,'sabado':6};
+    return str.split(/[,\|]/).map(s => s.trim().toLowerCase()).map(s => map[s]).filter(Number.isInteger);
+  }
+
+  // ---------- Dados vindos do servidor ----------
+  const reservasRaw = Array.from({{{ safeJson reservas }}}); // raw do servidor
+  // ---------- Monta resources (linhas por sala) ----------
+  function buildResources(reservas) {
+    const map = new Map();
+    reservas.forEach(r => {
+      const s = r.sala || {};
+      if (!map.has(s.id)) {
+        map.set(s.id, {
+          id: String(s.id),
+          title: `${s.nome || 'Sala'} — ${s.bloco || ''} ${s.andar ? `(${s.andar}º)` : ''}`.trim()
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }
+
+  function pad2(n){ return String(n).padStart(2, '0'); }
+
+  function dateOnlyLocal(isoOrDate) {
+    // Converte "2025-08-26T17:36:37.393Z" => (local) "YYYY-MM-DD"
+    return moment(isoOrDate).local().format('YYYY-MM-DD');
+  }
+  function hhmm(s) {
+    if (!s) return '00:00';
+    const m = moment(s, ['HH:mm', 'HH:mm:ss'], true);
+    return m.isValid() ? m.format('HH:mm') : '00:00';
+  }
+  function dateOnlyUTC(isoString) {
+    // cria em UTC e formata só a parte da data
+    return moment.utc(isoString).format('YYYY-MM-DD');
+  }
+  function buildFcEvents(reservas, sala) {
+    if (!reservas || !reservas.length) return [];
+    const events = [];
+
+    reservas.forEach(r => {
+      const title = r.atividade || 'Reserva';
+
+      const inicioDia = moment.utc(r.dataInicio, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
+      const fimDia    = moment.utc(r.dataFim || r.dataInicio, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
+      const isRange   = inicioDia !== fimDia;
+      const hIni = moment(r.horaInicio, ['HH:mm','HH:mm:ss'], true).format('HH:mm');
+      const hFim = moment(r.horaFim || r.horaInicio, ['HH:mm','HH:mm:ss'], true).format('HH:mm');
+
+      const diasOfWeek = parseDiasToDaysOfWeek(r.dias);
+      const tooltip = `Atividade: ${r.atividade || '-'}\nTipo: ${r.tipo || '-'}\nHorário: ${hIni} - ${hFim}`;
+
+      if (diasOfWeek && diasOfWeek.length && isRange) {
+        events.push({
+          id: r.id,
+          title,
+          daysOfWeek: diasOfWeek,
+          startTime: hIni,
+          endTime:   hFim,
+          startRecur: inicioDia,
+          endRecur:   moment(fimDia).add(1,'day').format('YYYY-MM-DD'),
+          allDay: false,
+          display: 'block',
+          resourceId: r.sala ? String(r.sala.id) : undefined,
+          extendedProps: {
+            tooltip,
+            raw: {
+              ...r,
+              dataInicio: inicioDia,
+              dataFim: fimDia,
+              horaInicio: hIni,
+              horaFim: hFim
+            },
+            sala
+          }
+        });
+      } else {
+        const start = `${inicioDia}T${hIni}`;
+        const end   = `${fimDia}T${hFim}`;
+        events.push({
+          id: r.id,
+          title,
+          start,
+          end,
+          allDay: false,
+          display: 'block',
+          extendedProps: {
+            tooltip,
+            raw: {
+              ...r,
+              dataInicio: inicioDia,
+              dataFim: fimDia,
+              horaInicio: hIni,
+              horaFim: hFim
+            },
+            sala
+          }
+        });
+      }
+    });
+
+    return events;
+  }
+
+
+  // ---------- Toast ----------
+  toastr.options = {
+    closeButton: true, progressBar: true, positionClass: "toast-top-right",
+    showDuration: "300", hideDuration: "1000", timeOut: "4000",
+    extendedTimeOut: "1000"
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+
+    const resources = Array.from({{{ safeJson salas }}}).map((ev)=>({...ev, title: ev.nome}));
+    const events = buildFcEvents(reservasRaw);
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+      locale: 'pt-br',
+      timeZone: 'local',
+      initialView: 'resourceTimelineWeek',
+      resourceAreaHeaderContent: 'Salas',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth,listWeek'
+      },
+      slotMinTime: '07:00:00',
+      slotMaxTime: '22:30:00',
+      nowIndicator: true,
+      resourceGroupField: 'bloco',
+      themeSystem: 'bootstrap',
+      resources,
+      events,
+      dayMinWidth: 80,
+      slotEventOverlap: false,
+      stickyHeaderDates: true,
+      center: 'nome',
+      height: 'auto',             // ou: 600, ou: 'parent'
+      width: '100%',
+      eventDidMount(info) {
+        if (info.event.extendedProps?.tooltip) {
+          info.el.setAttribute('title', info.event.extendedProps.tooltip);
+        }
+      },
+      eventClick(info) {
+        const ev  = info.event;
+        const raw = ev.extendedProps?.raw || {};
+        const salaTxt = raw.sala
+          ? `${raw.sala.nome} — ${raw.sala.bloco || ''} ${raw.sala.andar ? '('+raw.sala.andar+'º)' : ''}`.trim()
+          : '-';
+
+        // período
+        let periodo = '-';
+        if (ev.startRecur || ev.endRecur) {
+          const ini = ev.startRecur || dateOnlyUTC(raw.dataInicio);
+          const fimInc = moment(ev.endRecur || moment(raw.dataFim).add(1,'day').format('YYYY-MM-DD'))
+            .subtract(1,'day').format('YYYY-MM-DD');
+          periodo = `${moment(ini,'YYYY-MM-DD').format('DD/MM/YYYY')} a ${moment(fimInc,'YYYY-MM-DD').format('DD/MM/YYYY')}`;
+        } else {
+          const di = dateOnlyUTC(raw.dataInicio);
+          const df = dateOnlyUTC(raw.dataFim || raw.dataInicio);
+          periodo = (di === df) ? moment(di,'YYYY-MM-DD').format('DD/MM/YYYY')
+            : `${moment(di,'YYYY-MM-DD').format('DD/MM/YYYY')} a ${moment(df,'YYYY-MM-DD').format('DD/MM/YYYY')}`;
+        }
+
+        // dias
+        const diasStr = Array.isArray(raw.dias) ? raw.dias.join(', ') : (raw.dias || '-');
+
+        // horário
+        const hIni = hhmm(raw.horaInicio);
+        const hFim = hhmm(raw.horaFim || raw.horaInicio);
+
+        // Preenche modal
+        document.getElementById('reservaModalLabel').textContent = `Reserva #${ev.id} — ${raw.atividade || ev.title}`;
+        document.getElementById('mAtividade').textContent = raw.atividade || '-';
+        document.getElementById('mTipo').textContent = raw.tipo || '-';
+        document.getElementById('mSala').textContent = salaTxt;
+        document.getElementById('mPeriodo').textContent = periodo;
+        document.getElementById('mDias').textContent = diasStr;
+        document.getElementById('mHorario').textContent = `${hIni} - ${hFim}`;
+
+        const editarHref = `/reservas/editar/${ev.id}`;
+        document.getElementById('btnEditarReserva').setAttribute('href', editarHref);
+
+        document.getElementById('btnAbrirExcluir').onclick = () => {
+          $('#excluirReservaModal').modal('show');
+          document.getElementById('btnConfirmarExcluir').onclick = async () => {
+            try {
+              await $.ajax({ url: `/reservas/excluir/${ev.id}`, method: 'POST' });
+              window.location.reload();
+
+            } catch (e) {
+              $('#excluirReservaModal').modal('hide');
+              toastr.error('Erro ao excluir a reserva.');
+            }
+          };
+        };
+
+        $('#reservaModal').modal('show');
+      }
+    });
+
+    calendar.render();
+
+// --- Tempus Dominus (calendário inline) ---// hoje
+    const today = moment().startOf('day');
+
+// inicializa o datepicker
+    $('#datePicker').datetimepicker({
+      locale: 'pt-br',
+      format: 'L',          // só data (DD/MM/YYYY)
+      useCurrent: false,
+      allowInputToggle: true,
+      minDate: today,        // opcional: não permitir dias passados
+      inline: true,
+      sideBySide: true
+
+    });
+
+// quando o usuário escolher um dia -> navegar a timeline
+    $('#datePicker').on('change.datetimepicker', function(e) {
+      if (e.date) {
+        calendar.gotoDate(e.date.toDate()); // sincroniza a timeline
+      }
+    });
+
+
+  });
+</script>

@@ -1,5 +1,14 @@
 {{> header}}
 {{> sidebar module='salas' page='salas-detalhes'}}
+{{#section "head"}}
+  <style>
+    .highlight-event {
+      background-color: #0048fe !important;
+      border: 2px solid #cc0000 !important;
+      font-weight: bold;
+    }
+  </style>
+{{/section}}
 
 <div class="content-wrapper">
   <!-- Título & breadcrumbs -->
@@ -189,22 +198,26 @@
 
   const sala = {{{ safeJson sala }}};
   const reservasRaw = sala?.reservas || [];
-
+  const reservaId = {{#if reservaId}}{{reservaId}}{{else}}null{{/if}};
   function pad2(n){ return String(n).padStart(2, '0'); }
 
   function dateOnlyLocal(isoOrDate) {
     // Converte "2025-08-26T17:36:37.393Z" => (local) "YYYY-MM-DD"
     return moment(isoOrDate).local().format('YYYY-MM-DD');
   }
+
   function hhmm(s) {
     if (!s) return '00:00';
     const m = moment(s, ['HH:mm', 'HH:mm:ss'], true);
     return m.isValid() ? m.format('HH:mm') : '00:00';
   }
+
   function dateOnlyUTC(isoString) {
     // cria em UTC e formata só a parte da data
     return moment.utc(isoString).format('YYYY-MM-DD');
-  }function buildFcEvents(reservas, sala) {
+  }
+
+  function buildFcEvents(reservas, sala) {
     if (!reservas || !reservas.length) return [];
     const events = [];
 
@@ -230,6 +243,9 @@
           endRecur:   moment(fimDia).add(1,'day').format('YYYY-MM-DD'),
           allDay: false,
           display: 'block',
+          classNames: [
+            reservaId && String(reservaId) === String(r.id) ? "highlight-event" : ""
+          ],
           extendedProps: {
             tooltip,
             raw: {
@@ -252,6 +268,9 @@
           end,
           allDay: false,
           display: 'block',
+          classNames: [
+            reservaId && String(reservaId) === String(r.id) ? "highlight-event" : ""
+          ],
           extendedProps: {
             tooltip,
             raw: {
@@ -281,6 +300,7 @@
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
+      themeSystem: 'bootstrap',
       schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
       locale: 'pt-br',
       initialView: 'timeGridWeek',
@@ -401,7 +421,16 @@
       slotEventOverlap: false
     });
 
-
+  if (reservaId) {
+      const ev = calendar.getEventById(String(reservaId));
+      if (ev) {
+        // Vai para a semana do evento destacado
+        const start = ev.start;
+        if (start) {
+          calendar.gotoDate(start);
+        }
+      }
+  }
     calendar.render();
   });
 </script>
