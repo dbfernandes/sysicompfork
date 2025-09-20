@@ -106,7 +106,7 @@
             <div class="form-row" style="gap: 8px;">
               <!-- Data inicial -->
               <div class="col-12 col-sm-6 col-md-3 col-lg-2">
-                <label class="mb-1" for="filtroDataIniInput">Data inicial</label>
+                <label class="mb-1" for="filtroDataIniInput">A partir de</label>
                 <div class="input-group date" id="filtroDataIni" data-target-input="nearest">
                   <input type="text" class="form-control datetimepicker-input" data-target="#filtroDataIni"  id="filtroDataIniInput"/>
                   <div class="input-group-append" data-target="#filtroDataIni" data-toggle="datetimepicker">
@@ -117,7 +117,7 @@
 
               <!-- Data final -->
               <div class="col-12 col-sm-6 col-md-3 col-lg-2">
-                <label class="mb-1" for="filtroDataFimInput">Data final</label>
+                <label class="mb-1" for="filtroDataFimInput">Até</label>
                 <div class="input-group date" id="filtroDataFim" data-target-input="nearest">
                   <input type="text" class="form-control datetimepicker-input" data-target="#filtroDataFim" id="filtroDataFimInput" />
                   <div class="input-group-append" data-target="#filtroDataFim" data-toggle="datetimepicker">
@@ -296,58 +296,89 @@
   };
 
 
-  // Filtro DataTables combinando Sala + intervalo Data + intervalo Hora
+  // Carregue o moment antes:
+
+
+  const FMT_COM_HORA = "DD/MM/YYYYTHH:mm";
+  const FMT_SEM_HORA = "DD/MM/YYYY";
+
+  function temHora(str) {
+  return /T\d{2}:\d{2}$/.test(String(str || ""));
+  }
+
+  // Filtro DataTables combinando Sala + intervalo Data + intervalo Hora (robusto com moment)
   function filtroCombinado(settings, data, dataIndex) {
     if (settings.nTable.id !== 'example2') return true;
-    const rowNode = settings.aoData[dataIndex].nTr;
-    const salaId = rowNode.getAttribute('data-sala-id');
-    const inicioISO = rowNode.getAttribute('data-inicio-iso');
-    const fimISO = rowNode.getAttribute('data-fim-iso');
-    // 1) Filtro de Sala
+
+    const rowNode  = settings.aoData[dataIndex].nTr;
+    const salaId   = rowNode.getAttribute('data-sala-id');
+    const inicioISO = rowNode.getAttribute('data-inicio-iso'); // ex: 14/09/2025T10:00 ou 14/09/2025
+    const fimISO    = rowNode.getAttribute('data-fim-iso');    // ex: 14/09/2025T12:00 ou 14/09/2025
+
+    // 1) Filtro por Sala
     if (filtros.salaIds.length && !filtros.salaIds.includes(String(salaId))) {
       return false;
     }
 
-    // 2) Filtro de Data
-    const dtIniRow = parseISO(inicioISO);
-    const dtFimRow = parseISO(fimISO);
+    // 2) Parse das datas da linha (aceita com/sem hora)
+    const mIniRaw = inicioISO ? moment(inicioISO, [FMT_COM_HORA, FMT_SEM_HORA], true) : null;
+    const mFimRaw = fimISO    ? moment(fimISO,    [FMT_COM_HORA, FMT_SEM_HORA], true) : null;
 
-
-    if (!dtIniRow || !dtFimRow) return true;
-
-    // 0) Filtro "Somente futuras/atuais" (fim >= agora)
-    if (filtros.somenteFuturas) {
-      const agora = new Date();
-      if (dtFimRow < agora) return false;
+    // Se ambos inválidos, não bloqueia a linha
+    if ((!mIniRaw || !mIniRaw.isValid()) && (!mFimRaw || !mFimRaw.isValid())) {
+      return true;
     }
 
+    // Se só um lado existe, espelha para o outro
+    const mIni = (mIniRaw && mIniRaw.isValid())
+      ? mIniRaw
+      : (mFimRaw && mFimRaw.isValid() ? mFimRaw.clone() : null);
+
+    const mFim = (mFimRaw && mFimRaw.isValid())
+      ? mFimRaw
+      : (mIniRaw && mIniRaw.isValid() ? mIniRaw.clone() : null);
+    if (!mIni || !mFim) return true; // segurança
+
+    // 0) “Somente futuras/atuais”: fim >= agora
+    if (filtros.somenteFuturas) {
+      if (mFim.isBefore(moment())) return false;
+    }
+
+    // 3) Filtro de Data (ignora horas — compara por dia)
     if (filtros.dataIni || filtros.dataFim) {
-      // normalizamos para apenas data (ignorar hora)
-      const startRow = new Date(dtIniRow.getFullYear(), dtIniRow.getMonth(), dtIniRow.getDate());
-      const endRow   = new Date(dtFimRow.getFullYear(), dtFimRow.getMonth(), dtFimRow.getDate());
+      const rowStart = mIni.clone().startOf('day');
+      const rowEnd   = mFim.clone().endOf('day');
 
-      const startFilter = filtros.dataIni ? new Date(filtros.dataIni.getFullYear(), filtros.dataIni.getMonth(), filtros.dataIni.getDate()) : null;
-      const endFilter   = filtros.dataFim ? new Date(filtros.dataFim.getFullYear(), filtros.dataFim.getMonth(), filtros.dataFim.getDate()) : null;
 
-      // Intersecção de intervalos [rowStart,rowEnd] x [filterStart,filterEnd]
-      if (startFilter && endFilter) {
-        if (endRow < startFilter || startRow > endFilter) return false;
-      } else if (startFilter) {
-        if (endRow < startFilter) return false;
-      } else if (endFilter) {
-        if (startRow > endFilter) return false;
+      // filtros.dataIni/Fim são Date nativos → convertemos para moment
+      const filterStart = filtros.dataIni ? moment(filtros.dataIni).startOf('day') : null;
+      const filterEnd   = filtros.dataFim ? moment(filtros.dataFim).endOf('day')   : null;
+
+      // Intersecção de intervalos:
+      // - só início: pega tudo a partir de filterStart
+      // - só fim:    pega tudo até filterEnd
+      // - ambos:     interseção entre [rowStart,rowEnd] e [filterStart,filterEnd]
+      if (filterStart && filterEnd) {
+        if (rowEnd.isBefore(filterStart) || rowStart.isAfter(filterEnd)) return false;
+      } else if (filterStart) {
+        if (rowStart.isBefore(filterStart)) return false;
+      } else if (filterEnd) {
+        if (rowStart.isAfter(filterEnd)) return false;
       }
     }
 
-    // 3) Filtro de Hora (compara somente horário em minutos)
+    // 4) Filtro de Hora (compara apenas HH:mm em minutos)
     if (filtros.horaIniMin !== null || filtros.horaFimMin !== null) {
-      const [hIniStr, hFimStr] = [inicioISO.split('T')[1] || '', fimISO.split('T')[1] || ''];
-      const rowIniMin = onlyTimeToMinutes(hIniStr.slice(0,5));
-      const rowFimMin = onlyTimeToMinutes(hFimStr.slice(0,5));
-      if (rowIniMin == null || rowFimMin == null) return true;
+      const hasIniTime = temHora(inicioISO);
+      const hasFimTime = temHora(fimISO);
 
+      // Se a linha não tiver hora, considera 00:00 para início e 23:59 para fim
+      const rowIniMin = hasIniTime ? (mIni.hours() * 60 + mIni.minutes()) : 0;
+      const rowFimMin = hasFimTime ? (mFim.hours() * 60 + mFim.minutes()) : (24 * 60 - 1);
+
+      // Filtros: só início => a partir de fIni; só fim => até fFim
       const fIni = (filtros.horaIniMin != null) ? filtros.horaIniMin : 0;
-      const fFim = (filtros.horaFimMin != null) ? filtros.horaFimMin : 24*60 - 1;
+      const fFim = (filtros.horaFimMin != null) ? filtros.horaFimMin : (24 * 60 - 1);
 
       // Intersecção [rowIni,rowFim] x [fIni,fFim]
       if (rowFimMin < fIni || rowIniMin > fFim) return false;
@@ -355,7 +386,6 @@
 
     return true;
   }
-
   document.addEventListener('DOMContentLoaded', function () {
     // Registra filtro global do DataTables
 
@@ -408,7 +438,6 @@
 
     // Pesquisa global (DataTables)
     const onSearchGlobal = debounce(function (value) {
-      console.log(value, datatable)
       datatable.search(value || '').draw();
     }, 250);
 
@@ -420,7 +449,6 @@
     $('#inputPesquisaGeral').on('keypress', function (e) {
       if (e.which === 13) {
         e.preventDefault();
-        console.log("paasou aqui")
         datatable.search(this.value || '').draw();
       }
     });
@@ -428,7 +456,6 @@
     // NOVO: checkbox "Somente futuras/atuais"
     $('#chkSomenteFuturas').on('change', function () {
       filtros.somenteFuturas = $(this).is(':checked');
-      console.log(filtros.somenteFuturas)
       datatable.draw();
     });
 
