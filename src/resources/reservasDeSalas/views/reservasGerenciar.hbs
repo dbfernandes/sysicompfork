@@ -172,7 +172,6 @@
                   <th style="text-align: center;">Data</th>
                   <th style="text-align: center;">Horário</th>
                   <th style="text-align: center;">Dias da semana</th>
-                  <th style="text-align: center;">Ativa?</th>
                   <th style="text-align: center;"></th>
                 </tr>
                 <!-- REMOVIDO: linha de filtros por coluna -->
@@ -200,10 +199,7 @@
                     {{else}}
                       <td> - </td>
                     {{/if}}
-                    <td>
-                      {{#if terminou}}Sim{{else}}Não{{/if}}
-                    </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center; white-space: nowrap">
                       <a class='fa fa-calendar' style="color: blue;" title="Visualizar" href="/salas/detalhes/{{sala.id}}?reservaId={{id}}"></a> &nbsp
                       <a class='fa fa-solid fa-pen' style="color: blue;" title="Editar"
                          href="/reservas/editar/{{id}}"></a> &nbsp
@@ -242,11 +238,9 @@
     </div>
   </div>
 </div>
-
-<!-- Scripts -->
 <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
+<script src="/script-adminlte/plugins/toastr/toastr.min.js"></script>
 <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
 
 <script>
@@ -414,7 +408,6 @@
         { responsivePriority: 7, orderable: true  },
         { responsivePriority: 2, orderable: false },
         { responsivePriority: 8, orderable: false },
-        { responsivePriority: 9, orderable: false },
       ],
       order: [[4, 'asc']],
       // 🔽 NOVO: chave de ordenação baseada na primeira data do texto
