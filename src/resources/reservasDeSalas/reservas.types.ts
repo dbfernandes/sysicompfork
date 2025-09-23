@@ -27,4 +27,4 @@ export interface ReservaFormularioDto {
   unica?: string; // Campo do switch no formulário
 }
 
-export type UpdateReservaDto = Partial<CreateReservaDto>;
+export type UpdateReservaDto = CreateReservaDto;

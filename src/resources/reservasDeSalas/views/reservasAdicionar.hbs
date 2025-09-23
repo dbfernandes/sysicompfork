@@ -2,11 +2,9 @@
 {{> sidebar module='reservas' page='reservas-adicionar'}}
 {{#section "head"}}
   <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
-  <link href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" rel="stylesheet">
-
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/toastr/toastr.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 {{/section}}
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -224,8 +222,8 @@
 </div>
 
 <script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
+<script src="/script-adminlte/plugins/toastr/toastr.min.js"></script>
 
 <script>
     toastr.options = {
@@ -427,10 +425,15 @@
             }
           } catch (err) {
             if(err.status === 409) {
-              toastr.error("Existe um conflito com as reservas existentes nesse horário!");
+              if(err.responseJSON && err.responseJSON.message) {
+                toastr.error(err.responseJSON.message);
+              } else {
+                toastr.error("Existe um conflito com as reservas existentes nesse horário!");
+              }
               $("#dataInicio, #dataFim, #horaInicio, #horaFim").addClass("is-invalid");
               $("#dataInicioError").text("Existe um conflito com as reservas existentes nesse horário.");
             } else {
+
               toastr.error("Não foi possível salvar a reserva. Tente novamente.");
             }
           } finally {

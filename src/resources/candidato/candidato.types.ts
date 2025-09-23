@@ -12,9 +12,6 @@ export type RecuperarSenhaDto = NonNullable<
   Pick<Candidato, 'email' | 'editalId'>
 >;
 
-export type FormPassoDadosDto = {
-  teste: string;
-};
 export type MudarSenhaDto = {
   token: string;
   senha: string;

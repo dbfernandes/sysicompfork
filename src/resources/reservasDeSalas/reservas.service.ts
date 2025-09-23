@@ -1,7 +1,10 @@
 import prisma from '../../client';
-import { Prisma, ReservaSala } from '@prisma/client';
+import { ReservaSala } from '@prisma/client';
 import { SalaAlreahyReservedError } from '@resources/reservasDeSalas/reservas.erro';
-type CreateInput = Prisma.ReservaSalaUncheckedCreateInput;
+import {
+  CreateReservaDto,
+  UpdateReservaDto,
+} from '@resources/reservasDeSalas/reservas.types';
 
 const PT_WEEKDAYS = [
   'Domingo',
@@ -55,16 +58,6 @@ function getWeekdayNamePT(date: Date): string {
   return PT_WEEKDAYS[date.getDay()];
 }
 
-function intervalosDeDatasSeSobrepoem(
-  aIni: Date,
-  aFim: Date,
-  bIni: Date,
-  bFim: Date,
-): boolean {
-  // inclusivo: [aIni, aFim] x [bIni, bFim]
-  return aIni <= bFim && bIni <= aFim;
-}
-
 function isUnica(diasArr: string[], dataInicio: Date, dataFim: Date): boolean {
   // Consideramos "única" quando não há dias marcados e dataInicio == dataFim
   return diasArr.length === 0 && dataInicio.getTime() === dataFim.getTime();
@@ -74,7 +67,20 @@ function isUnica(diasArr: string[], dataInicio: Date, dataFim: Date): boolean {
  * Verifica conflito contra reservas já existentes no banco.
  * Lança ConflitoReservaError em caso de choque.
  */
-async function verificarConflito(dados: CreateInput): Promise<void> {
+interface VerificarConflitoParams {
+  id?: number | null; // id da reserva sendo editada, se for o caso
+  salaId: number;
+  dataInicio: Date | string;
+  dataFim: Date | string;
+  horaInicio?: string | null;
+  horaFim?: string | null;
+  dias?: string | string[] | null;
+  reservaId?: number | null;
+}
+
+async function verificarConflito(
+  dados: VerificarConflitoParams,
+): Promise<void> {
   // Normalizações
   const salaId = Number(dados.salaId);
   const dataInicio =
@@ -87,12 +93,14 @@ async function verificarConflito(dados: CreateInput): Promise<void> {
       : new Date((dados.dataFim as string) || (dados.dataInicio as string));
   const horaInicio = (dados.horaInicio || '').slice(0, 5); // "HH:mm"
   const horaFim = (dados.horaFim || '').slice(0, 5); // "HH:mm"
-  const diasNovo = normDiasToArray(dados.dias as any);
+  const diasNovo = normDiasToArray(dados.dias);
+  const reservaId = dados.reservaId;
 
   // 1) Busque apenas reservas com datas sobrepostas na mesma sala
   const candidatos = await prisma.reservaSala.findMany({
     where: {
       salaId,
+      id: reservaId ? { not: reservaId } : undefined, // exclui ela mesma, se for edição
       // [exist.dataInicio, exist.dataFim] sobrepõe [novo.dataInicio, novo.dataFim]
       AND: [{ dataInicio: { lte: dataFim } }, { dataFim: { gte: dataInicio } }],
     },
@@ -103,6 +111,7 @@ async function verificarConflito(dados: CreateInput): Promise<void> {
       horaInicio: true,
       horaFim: true,
       dias: true,
+      atividade: true,
     },
   });
 
@@ -111,7 +120,7 @@ async function verificarConflito(dados: CreateInput): Promise<void> {
   for (const r of candidatos) {
     const existInicio = new Date(r.dataInicio);
     const existFim = new Date(r.dataFim);
-    const existDias = normDiasToArray(r.dias as any);
+    const existDias = normDiasToArray(r.dias);
     const existEhUnica = isUnica(existDias, existInicio, existFim);
 
     // 2) Checagem de dias
@@ -146,7 +155,14 @@ async function verificarConflito(dados: CreateInput): Promise<void> {
 
     if (choqueHorario) {
       // conflito detectado
-      throw new SalaAlreahyReservedError();
+      const msg = `Conflito com reserva "${r.atividade}" (${r.dataInicio.toLocaleDateString(
+        'pt-BR',
+      )} a ${r.dataFim.toLocaleDateString(
+        'pt-BR',
+      )}, ${r.horaInicio} - ${r.horaFim || r.horaInicio}, dias: ${
+        r.dias || 'única'
+      })`;
+      throw new SalaAlreahyReservedError(msg);
     }
   }
 }
@@ -185,7 +201,7 @@ export default new (class ReservaService {
     return prisma.reservaSala.findUnique({ where: { id } });
   }
 
-  async criar(dados: Prisma.ReservaSalaUncheckedCreateInput) {
+  async criar(dados: CreateReservaDto) {
     const dataInicio =
       dados.dataInicio instanceof Date
         ? dados.dataInicio
@@ -194,7 +210,7 @@ export default new (class ReservaService {
     const dataFim =
       dados.dataFim instanceof Date
         ? dados.dataFim
-        : new Date((dados.dataFim as string) || (dados.dataInicio as string));
+        : new Date((dados.dataFim as string) || dados.dataInicio);
     await verificarConflito({ ...dados, dataInicio, dataFim });
 
     return prisma.reservaSala.create({
@@ -209,11 +225,23 @@ export default new (class ReservaService {
   }
 
   async atualizar(
-    id: number,
-    data: Prisma.ReservaSalaUncheckedUpdateInput,
+    reservaId: number,
+    data: UpdateReservaDto,
   ): Promise<ReservaSala> {
+    const dataInicio =
+      data.dataInicio instanceof Date
+        ? data.dataInicio
+        : new Date(data.dataInicio as string);
+
+    const dataFim =
+      data.dataFim instanceof Date
+        ? data.dataFim
+        : new Date((data.dataFim as string) || data.dataInicio);
+
+    await verificarConflito({ ...data, dataInicio, dataFim, reservaId });
+
     return prisma.reservaSala.update({
-      where: { id },
+      where: { id: reservaId },
       data,
     });
   }

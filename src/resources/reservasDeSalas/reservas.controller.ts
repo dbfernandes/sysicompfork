@@ -3,8 +3,11 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import reservasService from './reservas.service';
 import salasService from '../salas/sala.service';
 import path from 'path';
-import { Prisma } from '@prisma/client';
-import { ReservaFormularioDto } from './reservas.types';
+import {
+  CreateReservaDto,
+  ReservaFormularioDto,
+  UpdateReservaDto,
+} from './reservas.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -60,14 +63,14 @@ const criarReserva = async (
       const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
 
       // Conversão para o formato esperado pelo service
-      const novaReserva: Prisma.ReservaSalaUncheckedCreateInput = {
+      const novaReserva: CreateReservaDto = {
         salaId: Number(salaId),
         usuarioId: Number(usuarioId),
         atividade,
         tipo,
         dias, // Campo dias para armazenar os dias da semana
-        dataInicio,
-        dataFim: dataFim || dataInicio,
+        dataInicio: new Date(dataInicio),
+        dataFim: dataFim ? new Date(dataFim) : new Date(dataInicio),
         horaInicio,
         horaFim: horaFim || horaInicio,
       };
@@ -130,6 +133,7 @@ export function toHHmm(input?: string | null): string | null {
   // se não deu pra entender, retorna null (ou o original, se preferir)
   return null;
 }
+
 const listarReservasFormatadas = async (
   req: Request,
   res: Response,
@@ -192,7 +196,11 @@ const viewTimeline = async (req: Request, res: Response): Promise<void> => {
     res.redirect('/inicio');
   }
 };
-const editarReserva = async (req: Request, res: Response): Promise<void> => {
+const editarReserva = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   if (req.method === 'GET') {
     try {
       const salas = await salasService.listAll();
@@ -244,7 +252,7 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
       // Processamento dos dias da semana
       const dias = Array.isArray(dia) ? dia.join(', ') : dia || '';
 
-      const dadosAtualizados: Prisma.ReservaSalaUncheckedUpdateInput = {
+      const dadosAtualizados: UpdateReservaDto = {
         salaId: Number(salaId),
         usuarioId: Number(usuarioId),
         atividade,
@@ -258,11 +266,8 @@ const editarReserva = async (req: Request, res: Response): Promise<void> => {
 
       await reservasService.atualizar(reservaId, dadosAtualizados);
       res.status(StatusCodes.OK).json(ReasonPhrases.OK);
-    } catch (error) {
-      console.error('Erro ao atualizar reserva:', error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    } catch (err) {
+      next(err);
     }
   }
 };
