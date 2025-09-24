@@ -9,7 +9,8 @@
   "scripts": {
     "start:prod": "NODE_ENV=production docker compose build --no-cache && NODE_ENV=production docker compose up --force-recreate",
     "start:prod-syscomp": "npm run prisma:init:dev && NODE_ENV=production node build/server.js",
-    "start:dev": "NODE_ENV=production docker compose -f docker-compose.devlopment.yml up --build",
+    "start:dev": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build",
+    "start:dev:dbs": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build redis phpmyadmin db",
     "start:syscomp": "NODE_ENV=development tsx watch --watch src/server.ts ",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
     "build": "tsc && tsc-alias && npm run copy-static",

@@ -14,11 +14,15 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
   - [NodeJs](https://nodejs.org/pt-br/) - Javascript no backend
 
+  - [TypeScript](https://www.typescriptlang.org/) - Superset do Javascript que adiciona tipagem estática e outros recursos
+
   - [Npm](https://www.npmjs.com/) - Gerenciador de dependencias, baixar bibliotecas e gerenciar suas versões
 
   - [Express](https://expressjs.com/pt-br/) - Framework de aplicação para facilitar a criação de um sistema e não reinventar a roda
 
   - [Handlebars](https://handlebarsjs.com/) - Uma linguagem de template para faiclitar a criação da UI
+
+  - [Joi](https://joi.dev/) - Validação de dados
 
   - [Docker](https://docs.docker.com/) - Containers para "empacotar" as aplicações, facilitar o desenvolvimento em equipe e torná-la mais robusta
 
@@ -26,7 +30,7 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
   - [MySQL](https://www.mysql.com/) - Banco de Dados (OBS: O mysql fica num container docker, não se preocupe em instalá-lo)
 
-  <!-- -  [Sequelize](https://sequelize.org/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) para facilitar a conexão e gerenciamento do banco de dados -->
+  - [Redis](https://redis.io/) - Banco de dados em memória, utilizado para cache e gerenciamento de sessões (OBS: O redis fica num container docker, não se preocupe em instalá-lo)
 
   - [Prisma](https://www.prisma.io/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) é a ferramenta mais moderna para atividades de conexão e gerenciamento do banco de dados, oferecendo uma API (Aplication Programming Interface) intuitiva e recursos como migrações de banco de dados, consultas tipadas e um modelo de dados declarativo.
 
@@ -51,22 +55,13 @@ Tenha o NodeJs instalado preferencialmente na versão 14.15.3 para frente. Recom
 git clone https://github.com/dbfernandes/sysicomp
 ```
 
-### Configurar
-
-Basta copiar o arquivo **_database-sample.js_** e **_mail-sample.json_** e alterá-los para **_database.js_** e **_mail.json_**. O comando abaixo pode fazer isso para você.
-
-```
-cd sysicomp
-cat src/config/database-sample.js > src/config/database.js
-cat src/config/mail-sample.json > src/config/mail.json
-```
 
 ### Rodar a aplicação
 
 #### Para rodar somente através dos containers
 
 ```
-docker-compose up -d sysicomp
+npm run start:dev
 ```
 
 Esse comando roda também o container do banco de dados automaticamente por estar definida como dependência do sysicomp no **_docker-compose.yml_**.
@@ -76,19 +71,11 @@ Se seu docker e docker-compose estiverem configurados corretamente, o comando de
 #### Para rodar somente o container do banco de dados e rodar a aplicação diretamente pelo Node
 
 ```
-docker-compose up -d db
-npm install
-<!-- npm run start:dev -->
-npm start
+npm run start:dev:dbs
+npm run start:selecao
 ```
 
 **Acesse a aplicação na url http://localhost:3000/**
-
-#### Para criar um novo módulo (Trabalho em progresso, mas já podem usar)
-
-```
-npm run criar-modulo nome-modulo
-```
 
 ### Rodando as Migrations e Seeds
 
