@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import bcrypt from 'bcrypt';
 import { Usuario } from '@prisma/client';
 import { generateHashPassword } from '@utils/utils';

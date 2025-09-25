@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { ReservaSala } from '@prisma/client';
 import { SalaAlreahyReservedError } from '@resources/reservasDeSalas/reservas.erro';
 import {

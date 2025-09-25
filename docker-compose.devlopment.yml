@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     networks:
       - sysicomp-network-dev
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
 
   phpmyadmin:
     container_name: phpmyadmin_sysicomp-dev

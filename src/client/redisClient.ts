@@ -1,10 +1,11 @@
-// build/redis.js (ou src/redis.ts antes de compilar)
 import { createClient } from 'redis';
 
+const host = process.env.REDIS_HOST || 'redis';
+const port = Number(process.env.REDIS_PORT) || 6379;
 const client = createClient({
   socket: {
-    host: process.env.REDIS_HOST || 'redis',
-    port: Number(process.env.REDIS_PORT) || 6379,
+    host,
+    port,
   },
 });
 

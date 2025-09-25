@@ -1,6 +1,5 @@
-/* app.ts — CommonJS-friendly (TypeScript) */
 import path from 'node:path';
-import helpers from './views/helpers/helpers'; // se o export for `export default`
+import helpers from './views/helpers/helpers';
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -15,11 +14,11 @@ import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from './utils/logger';
 
-import redisClient from './redisClient';
+import redisClient from '@/client/redisClient';
 import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes'; // ✅ Correto na v6+
-/* ───────── env ───────── */
+
 dotenv.config({
   // __dirname já existe em CJS; não precisamos de import.meta
   path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),

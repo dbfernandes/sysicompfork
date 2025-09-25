@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { Sala } from '@prisma/client';
 
 export default new (class SalaService {

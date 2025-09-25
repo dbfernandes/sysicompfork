@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@resources/*": ["src/resources/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@client/*": ["src/client/*"],
     }
   },
   "include": [

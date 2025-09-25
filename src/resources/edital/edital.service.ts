@@ -1,7 +1,7 @@
 import { Candidato, Edital } from '@prisma/client';
 import { DateTime } from 'luxon';
 import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
-import prisma from '@/client';
+import prisma from '@client/prismaClient';
 
 /* eslint-disable camelcase */
 

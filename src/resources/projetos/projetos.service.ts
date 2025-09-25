@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { Projeto } from '@prisma/client';
 import { ProjetoData } from './projetos.types';
 

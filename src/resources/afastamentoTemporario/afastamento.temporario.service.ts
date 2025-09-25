@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { AfastamentoTemporario } from '@prisma/client';
 import { formatarData } from '@utils/formatadores';
 import {

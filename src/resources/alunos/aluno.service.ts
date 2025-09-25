@@ -1,5 +1,5 @@
 // aluno.service.ts
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { Aluno } from '@prisma/client';
 import { CreateAlunoDto } from './aluno.types';
 

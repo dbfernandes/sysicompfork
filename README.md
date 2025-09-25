@@ -1,6 +1,6 @@
 # SYSICOMP
 
-## Overview
+## 📌 Visão Geral
 
 Esse projeto é a migração do SYSICOMP para a nova stack (nodejs com express e handlebars).
 
@@ -10,7 +10,7 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
 - Template UI: [AdminLTE 3](https://adminlte.io/themes/v3/)
 
-- Tecnologias:
+- 🚀 Tecnologias Utilizadas
 
   - [NodeJs](https://nodejs.org/pt-br/) - Javascript no backend
 
@@ -34,7 +34,7 @@ O comportamento do sistema é praticamente o mesmo do [anterior](sys.icomp.ufam.
 
   - [Prisma](https://www.prisma.io/) - ORM (Object Relational Mapper / Mapeamento Objeto Relacional) é a ferramenta mais moderna para atividades de conexão e gerenciamento do banco de dados, oferecendo uma API (Aplication Programming Interface) intuitiva e recursos como migrações de banco de dados, consultas tipadas e um modelo de dados declarativo.
 
-## Desenvolvimento
+## 🛠️ Desenvolvimento
 
 ### Requisitos
 
@@ -55,10 +55,16 @@ Tenha o NodeJs instalado preferencialmente na versão 14.15.3 para frente. Recom
 git clone https://github.com/dbfernandes/sysicomp
 ```
 
+#### Arquivo .env
+Crie um arquivo `.env` na raiz do projeto, você pode copiar o arquivo `.env.example` e renomeá-lo para `.env`.
+Lembre-se de configurar as variáveis de ambiente conforme sua necessidade.
+```
+cp .env.example .env
+```
 
-### Rodar a aplicação
+### ▶️ Como Rodar a Aplicação
 
-#### Para rodar somente através dos containers
+### Executando apenas via containers
 
 ```
 npm run start:dev
@@ -66,27 +72,61 @@ npm run start:dev
 
 Esse comando roda também o container do banco de dados automaticamente por estar definida como dependência do sysicomp no **_docker-compose.yml_**.
 Se seu docker e docker-compose estiverem configurados corretamente, o comando deve rodar normalmente, irá demorar um pouco na primeira vez por estar baixando as imagens dos containers.
-**Acesse a aplicação na url http://localhost:3001/**
+**Acesse a aplicação na url http://localhost:3301/**
 
-#### Para rodar somente o container do banco de dados e rodar a aplicação diretamente pelo Node
+##### Configurando o banco de dados
+Se for a primeira vez que está rodando o sistema, é necessário criar o banco de dados e popular as tabelas.
+Para isso entre no container do banco de dados com o comando abaixo:
 
+```
+docker exec -it sysicomp-dev sh
+```
+
+E então rode o comando de migration e seed:
+
+```
+npm run prisma:init:dev
+```
+
+### Executando localmente (DB em containers)
+Primeiro suba os containers do banco de dados com o comando abaixo:
 ```
 npm run start:dev:dbs
-npm run start:selecao
+```
+Agora rode a aplicação localmente com o comando abaixo:
+```
+npm run start:syscomp
 ```
 
-**Acesse a aplicação na url http://localhost:3000/**
 
-### Rodando as Migrations e Seeds
+**Acesse a aplicação na url http://localhost:3300/**
 
-Para atualizar as tabelas e popular o banco, utilize os seguintes comandos:
+##### Configurando o banco de dados
+
+Para isso basta rodar o comando de migration e seed:
 
 ```
-<!-- npx sequelize db:migrate && sequelize db:seed:all -->
-npm prisma:init:dev
+npm run prisma:init:dev
 ```
 
-### Rodando os testes
+### ⛃ Acessando o banco de dados
+Você pode usar qualquer cliente MySQL, como:
+
+MySQL Workbench: https://www.mysql.com/products/workbench/
+
+DBeaver: https://dbeaver.io/
+
+Ou usar o phpMyAdmin, já incluído no docker:
+Acesse em: http://localhost:8080
+
+### Configurando o prettier e o eslint no VSCode
+Recomendo instalar as extensões do prettier e do eslint no VSCode, e configurar o prettier como formatador padrão.
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Configuração do Prettier no VSCode](https://prettier.io/docs/en/editors.html#visual-studio-code)
+- [Configuração do ESLint no VSCode](https://eslint.org/docs/latest/user-guide/integrations/editor/vscode)
+
+### 🧪 Rodando os testes
 
 #### Rodando os testes unitários
 
@@ -113,3 +153,4 @@ npm run test:integration
 ```
 
 Eles utilizam o [jest](https://jestjs.io/pt-BR/) e o [supertest](https://www.npmjs.com/package/supertest) para fazer as requisições HTTP.
+

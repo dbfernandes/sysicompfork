@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';

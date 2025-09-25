@@ -1,4 +1,4 @@
-import prisma from '../../client';
+import prisma from '@client/prismaClient';
 import { Prisma, Publicacao } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
 import getPublicationsArr from '../../utils/listaPublicacoes';

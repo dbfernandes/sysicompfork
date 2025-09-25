@@ -15,7 +15,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from '@utils/logger';
 
-import redisClient from './redisClient';
+import redisClient from '@/client/redisClient';
 import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes';
