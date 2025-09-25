@@ -16,6 +16,8 @@ import { criarAfastamentoPDF } from '@utils/criarAfastamentoPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/aluno.routes';
+import defesasRoutes from '../resources/defesas/defesa.routes';
+
 import { isAuth } from '@/middlewares/usuarioAutenticacaoMiddleware';
 
 const router = express.Router();
@@ -89,5 +91,5 @@ router.use(
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
 // Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
-
+router.use('/defesas', defesasRoutes)
 export default router;

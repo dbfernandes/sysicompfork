@@ -1,0 +1,298 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-gerenciar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
+        <div><h1>Lista de defesas</h1></div>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item active">Listagem de defesas</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Botão Nova Defesa abre modal -->
+      <div class="row mb-2">
+        <div class="col-sm-12 d-flex justify-content-end">
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <a type="button" class="btn btn-block btn-primary" href="#"
+               data-toggle="modal" data-target="#modalNovaDefesa">
+              <i class="fa fa-plus"></i> Nova defesa
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chips de filtros -->
+      <div class="row mb-2">
+        <div class="col-sm-12 d-flex align-items-center flex-wrap" style="gap: 8px;">
+          <!-- Status -->
+          {{#each chips}}
+            <button type="button"
+                    class="btn btn-sm rounded-pill chip-status {{#if this.active}}btn-primary{{else}}btn-outline-primary{{/if}}"
+                    data-filter="status" data-value="{{this.key}}">
+              {{this.label}}
+              <span class="badge badge-light ml-1">{{this.count}}</span>
+            </button>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-12 d-flex align-items-center flex-wrap" style="gap: 8px;">
+          <!-- Tipo -->
+          <span class="mr-2 font-weight-bold">Tipo:</span>
+          <button type="button" class="btn btn-sm rounded-pill chip-tipo btn-outline-info"
+                  data-filter="tipo" data-value="__ALL__">Todos</button>
+          <button type="button" class="btn btn-sm rounded-pill chip-tipo btn-outline-info"
+                  data-filter="tipo" data-value="QUALIFICACAO">Qualificações</button>
+          <button type="button" class="btn btn-sm rounded-pill chip-tipo btn-outline-info"
+                  data-filter="tipo" data-value="DEFESA_FINAL">Defesas finais</button>
+
+          <!-- Nível -->
+          <span class="ml-3 mr-2 font-weight-bold">Nível:</span>
+          <button type="button" class="btn btn-sm rounded-pill chip-nivel btn-outline-success"
+                  data-filter="nivel" data-value="__ALL__">Todos</button>
+          <button type="button" class="btn btn-sm rounded-pill chip-nivel btn-outline-success"
+                  data-filter="nivel" data-value="MESTRADO">Mestrado</button>
+          <button type="button" class="btn btn-sm rounded-pill chip-nivel btn-outline-success"
+                  data-filter="nivel" data-value="DOUTORADO">Doutorado</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row"><div class="col-12">
+        <div class="card">
+          <div class="card-body" style="overflow-x:auto;">
+            <table id="tabela-defesas" class="table table-striped table-bordered table-hover w-100">
+              <thead>
+              <tr style="text-align:center;">
+                <th style="text-align:center;">Candidato</th>
+                <th style="text-align:center;">Título</th>
+                <th style="text-align:center;">Tipo / Nível</th>
+                <th style="text-align:center;">Data e hora</th>
+                <th style="text-align:center;">Modalidade</th>
+                <th style="text-align:center;">Local/Link</th>
+                <th style="text-align:center;">Status</th>
+                <th style="text-align:center;">Ações</th>
+              </tr>
+              </thead>
+              <tbody>
+              {{#each defesas}}
+                <tr style="text-align:center;">
+                  <td>{{candidatoNome}}</td>
+                  <td class="text-left">{{titulo}}</td>
+                  <td>{{tipo}} / {{nivel}}</td>
+                  <td>
+                    <div>{{dataHoraInicioFmt}}</div>
+                    <small class="text-muted">até {{dataHoraFimFmt}}</small>
+                  </td>
+                  <td>{{modalidade}}</td>
+                  <td class="text-left">
+                    {{#if localOuLink}}
+                      {{localOuLink}}
+                    {{else}}
+                      <span class="text-muted">—</span>
+                    {{/if}}
+                  </td>
+                  <td>
+                    <span class="badge {{statusClass}}">{{statusLabel}}</span>
+                  </td>
+                  <td>
+                    <a class="fa fa-solid fa-pen" style="color: blue;" title="Editar" href="{{editUrl}}"></a>&nbsp;
+                    <a class="fa fa-solid fa-trash" id="{{id}}" data-name="{{candidatoNome}}"
+                       data-toggle="modal" style="color: red;" data-target="#modalExcluir"
+                       onclick="addLink(event)" href="#" title="Excluir"></a>
+                  </td>
+                </tr>
+              {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- Modal de exclusão -->
+  <div class="modal fade" id="modalExcluir" tabindex="-1" role="dialog" aria-labelledby="labelExcluir" aria-hidden="true">
+    <div class="modal-dialog" role="document"><div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloModal"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteDefesa()">Sim</a>
+      </div>
+      <form name="postDelete" id="postDelete" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+      </form>
+    </div></div>
+  </div>
+
+  <!-- Modal Nova Defesa -->
+  <div class="modal fade" id="modalNovaDefesa" tabindex="-1" role="dialog" aria-labelledby="labelNovaDefesa" aria-hidden="true">
+    <div class="modal-dialog" role="document"><div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova defesa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="d-block font-weight-bold">Tipo de defesa</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tipoDefesa" id="tipoQuali" value="QUALIFICACAO" checked>
+            <label class="form-check-label" for="tipoQuali">Qualificação</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tipoDefesa" id="tipoFinal" value="DEFESA_FINAL">
+            <label class="form-check-label" for="tipoFinal">Defesa final</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="d-block font-weight-bold">Nível</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="nivelDefesa" id="nivelMestrado" value="MESTRADO" checked>
+            <label class="form-check-label" for="nivelMestrado">Mestrado</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="nivelDefesa" id="nivelDoutorado" value="DOUTORADO">
+            <label class="form-check-label" for="nivelDoutorado">Doutorado</label>
+          </div>
+        </div>
+
+        <small class="text-muted d-block">
+          Após confirmar, você será direcionado(a) ao formulário inicial com o tipo e o nível selecionados.
+        </small>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button id="btnCriarDefesa" type="button" class="btn btn-primary">Continuar</button>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+  toastr.options = {
+    closeButton: true, progressBar: true, positionClass: "toast-top-right",
+    showDuration: "200", hideDuration: "200", timeOut: "4000", extendedTimeOut: "1000",
+  };
+
+  function showSuccessMessage(message) {
+    localStorage.setItem('toastMessage', message || 'Defesa excluída com sucesso!');
+    localStorage.setItem('toastType', 'success');
+  }
+  function showErrorMessage(message) {
+    toastr.error(message);
+  }
+
+  function deleteDefesa() {
+    var success = true;
+    if (success) showSuccessMessage("Defesa excluída com sucesso!");
+    document.postDelete.submit();
+  }
+
+  function addLink(event) {
+    const id = event.target.id;
+    const nome = event.target.dataset.name;
+    document.getElementById("tituloModal").innerHTML =
+      `Deseja realmente excluir a defesa do(a) candidato(a) ${nome}?`;
+    const formDelete = document.getElementById("postDelete");
+    formDelete.setAttribute('action', `/defesas/excluir/${id}`);
+  }
+
+  // ======== Filtros (status, tipo, nivel) ========
+  function applyFilter(param, value) {
+    const url = new URL(window.location.href);
+    if (!value || value === '__ALL__' || (param === 'status' && value === 'TODOS')) {
+      url.searchParams.delete(param);
+    } else {
+      url.searchParams.set(param, value);
+    }
+    url.pathname = '/defesas/listar';
+    window.location.href = url.toString();
+  }
+
+  function updateGroup(selector, activeValue, onClass, offClass) {
+    document.querySelectorAll(selector).forEach(btn => {
+      const val = btn.dataset.value;
+      const isAll = (val === '__ALL__');
+      const active = activeValue ? (val === activeValue) : isAll;
+      btn.classList.remove(onClass, offClass);
+      btn.classList.add(active ? onClass : offClass);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    $("#tabela-defesas").DataTable({
+      language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
+      responsive: true,
+      columns: [
+        { responsivePriority: 1 }, // Candidato
+        { responsivePriority: 3 }, // Título
+        { responsivePriority: 5 }, // Tipo/Nível
+        { responsivePriority: 4 }, // Datas
+        { responsivePriority: 6 }, // Modalidade
+        { responsivePriority: 8 }, // Local/Link
+        { responsivePriority: 2 }, // Status
+        { responsivePriority: 7 }, // Ações
+      ],
+    });
+
+    let toastMessage = localStorage.getItem('toastMessage');
+    let toastType = localStorage.getItem('toastType');
+    if (toastMessage && toastType) {
+      if (toastType === 'success') toastr.success(toastMessage);
+      else if (toastType === 'error') toastr.error(toastMessage);
+      localStorage.removeItem('toastMessage');
+      localStorage.removeItem('toastType');
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get('tipo');
+    const nivel = params.get('nivel');
+    const status = params.get('status');
+
+    updateGroup('.chip-tipo',  tipo,  'btn-info',     'btn-outline-info');
+    updateGroup('.chip-nivel', nivel, 'btn-success',  'btn-outline-success');
+    if (status) updateGroup('.chip-status', status, 'btn-primary', 'btn-outline-primary');
+
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', function () {
+        applyFilter(this.dataset.filter, this.dataset.value);
+      });
+    });
+
+    // Nova defesa → construir URL com tipo & nivel
+    document.getElementById('btnCriarDefesa').addEventListener('click', function () {
+      const tipo = document.querySelector('input[name="tipoDefesa"]:checked')?.value;
+      const nivel = document.querySelector('input[name="nivelDefesa"]:checked')?.value;
+      if (!tipo || !nivel) {
+        toastr.error('Selecione o tipo e o nível da defesa.');
+        return;
+      }
+      const url = new URL('/defesas/adicionar', window.location.origin);
+      url.searchParams.set('tipo', tipo);
+      url.searchParams.set('nivel', nivel);
+      window.location.href = url.toString();
+    });
+  });
+</script>
+
+{{> footer}}

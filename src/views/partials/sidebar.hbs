@@ -42,7 +42,7 @@
             {{#if (autorizarUsuario tipoUsuario "administrador")}}
               <li class="nav-item">
                 <a href="/usuarios/adicionar"
-                  class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
+                   class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
                   <i class="fas fa-user-plus nav-icon"></i>
                   <p>Adicionar Usuário</p>
                 </a>
@@ -71,7 +71,7 @@
             {{#if (autorizarUsuario tipoUsuario "coordenador")}}
               <li class="nav-item">
                 <a href="/edital/addEdital"
-                  class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
+                   class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
                   <i class="fas fa-search-plus nav-icon "></i>
                   <p>Criar Edital de Seleção</p>
                 </a>
@@ -96,12 +96,12 @@
           </a>
           <ul class="nav nav-treeview">
             {{#if (autorizarUsuario tipoUsuario "coordenador")}}
-            <li class="nav-item">
-              <a href="/linhasdepesquisa/criar" class="nav-link {{#ifEqual page 'linhasDePesquisa-criar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-search-plus nav-icon"></i>
-                <p>Adicionar Linha de Pesquisa</p>
-              </a>
-            </li>
+              <li class="nav-item">
+                <a href="/linhasdepesquisa/criar" class="nav-link {{#ifEqual page 'linhasDePesquisa-criar'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-search-plus nav-icon"></i>
+                  <p>Adicionar Linha de Pesquisa</p>
+                </a>
+              </li>
             {{/if}}
             <li class="nav-item">
               <a href="/linhasdepesquisa/listar" class="nav-link {{#ifEqual page 'linhasDePesquisa-listar'}}active{{/ifEqual}} text-sm">
@@ -111,147 +111,141 @@
             </li>
           </ul>
         </li>
-         {{#if (autorizarUsuario tipoUsuario "professor")}}
-        <li class="nav-header">Professor</li>
-        <li class="nav-item {{#ifEqual module 'afastamentoTemporario'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
-          <a href="#" class="nav-link {{#ifEqual module 'afastamentoTemporario'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-list-ul"></i>
-            <p>
-              Afastamento Temporário
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/afastamentoTemporario/criar"
-                class="nav-link {{#ifEqual page 'solicitar-afastamento'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-regular fa-plus nav-icon"></i>
-                <p>Solicitar Afastamento</p>
+        {{#if (autorizarUsuario tipoUsuario "professor")}}
+          <li class="nav-header">Professor</li>
+          <li class="nav-item {{#ifEqual module 'afastamentoTemporario'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+            <a href="#" class="nav-link {{#ifEqual module 'afastamentoTemporario'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-list-ul"></i>
+              <p>
+                Afastamento Temporário
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/afastamentoTemporario/criar"
+                   class="nav-link {{#ifEqual page 'solicitar-afastamento'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-regular fa-plus nav-icon"></i>
+                  <p>Solicitar Afastamento</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/afastamentoTemporario/listar" class="nav-link {{#ifEqual page 'pedidos-afastamento'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-table nav-icon"></i>
+                  <p>Listar Afastamentos</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <!--<li class="nav-item">
+              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+                <i class="nav-icon fas fa-file-alt"></i>
+                <p>
+                  Gerar Relatório Bancas
+                </p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="/afastamentoTemporario/listar" class="nav-link {{#ifEqual page 'pedidos-afastamento'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Listar Afastamentos</p>
+              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+                <i class="nav-icon fas fa-cog"></i>
+                <p>
+                  Gerenciar Equipamentos
+                </p>
               </a>
             </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-        <!--<li class="nav-item">
-          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-            <i class="nav-icon fas fa-file-alt"></i>
-            <p>
-              Gerar Relatório Bancas
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-            <i class="nav-icon fas fa-cog"></i>
-            <p>
-              Gerenciar Equipamentos
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-            <i class="nav-icon fas fa-file-alt"></i>
-            <p>
-              Gerar Cautela
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-            <i class="nav-icon fas fa-file-alt"></i>
-            <p>
-              Gerar Cautela Avulsa
-            </p>
-          </a>
-        </li>-->
-        <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'timeline'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}{{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
-          <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
-            <i class="nav-icon far fa-clipboard "></i>
-            <p>
-              Reserva de Sala
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
+            <li class="nav-item">
+              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+                <i class="nav-icon fas fa-file-alt"></i>
+                <p>
+                  Gerar Cautela
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+                <i class="nav-icon fas fa-file-alt"></i>
+                <p>
+                  Gerar Cautela Avulsa
+                </p>
+              </a>
+            </li>-->
+          <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
+            <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
+              <i class="nav-icon far fa-clipboard "></i>
+              <p>
+                Reserva de Sala
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
 
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/salas/gerenciar" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}}  text-sm">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Gerenciar Salas</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/reservas/gerenciar" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Gerenciar Reservas</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/reservas/timeline" class="nav-link {{#ifEqual module 'timeline'}}active{{/ifEqual}}  text-sm">
-                <i class="fas fa-calendar nav-icon"></i>
-                <p>Timeline Reservas</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        {{!-- <li class="nav-item {{#ifEqual module 'horasComplementares'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
-          <a href="#" class="nav-link {{#ifEqual module 'horasComplementares'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-list-ul"></i>
-            <p>
-              Horas Complementares
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/horasComplementares/adicionar"
-                class="nav-link {{#ifEqual page 'adicionar-atividade'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-regular fa-plus nav-icon"></i>
-                <p>Adicionar Atividade</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/horasComplementares/listar" class="nav-link {{#ifEqual page 'main'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-table nav-icon"></i>
-                <p>Listar Atividades</p>
-              </a>
-            </li>
-          </ul>
-        </li> --}}
-        <li class="nav-item">
-          <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-file"></i>
-            <p>
-              Upload Lattes
-            </p>
-          </a>
-        </li>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/salas/gerenciar" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}}  text-sm">
+                  <i class="fas fa-table nav-icon"></i>
+                  <p>Gerenciar Salas</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/reservas/gerenciar" class="nav-link {{#ifEqual module 'reservas'}}active{{/ifEqual}}  text-sm">
+                  <i class="fas fa-table nav-icon"></i>
+                  <p>Gerenciar Reservas</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {{!-- <li class="nav-item {{#ifEqual module 'horasComplementares'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+            <a href="#" class="nav-link {{#ifEqual module 'horasComplementares'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-list-ul"></i>
+              <p>
+                Horas Complementares
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/horasComplementares/adicionar"
+                  class="nav-link {{#ifEqual page 'adicionar-atividade'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-regular fa-plus nav-icon"></i>
+                  <p>Adicionar Atividade</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/horasComplementares/listar" class="nav-link {{#ifEqual page 'main'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-table nav-icon"></i>
+                  <p>Listar Atividades</p>
+                </a>
+              </li>
+            </ul>
+          </li> --}}
+          <li class="nav-item">
+            <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-file"></i>
+              <p>
+                Upload Lattes
+              </p>
+            </a>
+          </li>
 
         {{/if}}
-<!--        <li class="nav-item">-->
-<!--          <a href="/defesas/listar" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">-->
-<!--            <i class="nav-icon fas fa-graduation-cap"></i>-->
-<!--            <p>-->
-<!--              Defesas-->
-<!--            </p>-->
-<!--          </a>-->
-<!--        </li>-->
-        {{#if (autorizarUsuario tipoUsuario "secretaria")}}
-        <li class="nav-header">Secretaria</li>
         <li class="nav-item">
-          <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
-            <i class="nav-icon fa fa-users"></i>
+          <a href="/defesas/listar" class="nav-link {{#ifEqual module 'defesas'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-graduation-cap"></i>
             <p>
-              Gerenciar Alunos
+              Defesas
             </p>
           </a>
         </li>
+        {{#if (autorizarUsuario tipoUsuario "secretaria")}}
+          <li class="nav-header">Secretaria</li>
+          <li class="nav-item">
+            <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
+              <i class="nav-icon fa fa-users"></i>
+              <p>
+                Gerenciar Alunos
+              </p>
+            </a>
+          </li>
         {{/if}}
       </ul>
     </nav>
