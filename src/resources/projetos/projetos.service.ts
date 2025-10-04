@@ -12,13 +12,12 @@ class ProjetoService {
         professorId,
         titulo: p.titulo,
         descricao: p.descricao,
-        dataInicio: p.inicio,
-        dataFim: p.fim,
+        dataInicio: Number(p.inicio),
+        dataFim: p.fim ? Number(p.fim) : null,
         papel: p.papel,
         financiadores: p.financiadores,
         integrantes: p.integrantes,
       }));
-
       await prisma.$transaction([
         prisma.projeto.deleteMany({
           where: { professorId },
@@ -35,7 +34,10 @@ class ProjetoService {
   > {
     const projetos = await prisma.projeto.findMany({
       where: {
-        dataFim: 0,
+        OR: [
+          { dataFim: null }, // registros sem data de fim
+          { dataFim: 0 }, // registros com data "1970-01-01" (equivalente a 0 em JS)
+        ],
       },
       select: {
         id: true,

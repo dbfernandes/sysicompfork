@@ -13,7 +13,6 @@
     "start:dev:dbs": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build redis phpmyadmin db gotenberg",
     "start:syscomp": "NODE_ENV=development tsx watch  src/server.ts ",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
-
     "build": "tsc && tsc-alias && npm run copy-static",
     "copy-static": "node scripts/copy-static.js",
     "docker:start": "docker compose up -d",
@@ -77,6 +76,7 @@
     "http-status-codes": "^2.3.0",
     "joi": "^17.13.3",
     "luxon": "^3.7.1",
+    "mime-types": "^3.0.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^7.0.5",

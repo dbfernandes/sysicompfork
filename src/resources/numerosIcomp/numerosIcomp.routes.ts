@@ -5,7 +5,7 @@ import numerosICompProfessoresController from './numerosIcompProfessores.control
 import numerosICompProjetosController from './numerosIcompProjetos.controller';
 import numerosICompAlunosController from './numerosIcompAlunos.controller';
 import numerosICompPublicacoesController from './numerosIcompPublicacoes.controller';
-import { languageMiddleware } from '../../middlewares/languageMiddleware';
+import { languageMiddleware } from '@/middlewares/languageMiddleware';
 
 const router = express.Router();
 router.use(languageMiddleware);

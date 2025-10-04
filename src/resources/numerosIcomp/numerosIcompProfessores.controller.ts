@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import UsuarioService from '../usuarios/usuario.service';
 import DocenteService from '../docente/docente.service';
 import path from 'path';
@@ -24,7 +24,7 @@ const professores = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const professores = await UsuarioService.listarTodosPorCondicao({
-          professor: 1
+          professor: 1,
         });
         return res.status(200).render(resolveView('docentes'), {
           lng,
@@ -51,7 +51,7 @@ const perfil = async (req: Request, res: Response) => {
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const userId = Number(id)
+        const userId = Number(id);
         const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
@@ -73,13 +73,13 @@ const perfil = async (req: Request, res: Response) => {
   }
 };
 
-const publicacoes = async (req: Request, res: Response) => {
+const publicacoes = async (req: Request, res: Response, next: NextFunction) => {
   switch (req.method) {
     case 'GET':
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const userId = Number(id)
+        const userId = Number(id);
         const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
@@ -90,7 +90,7 @@ const publicacoes = async (req: Request, res: Response) => {
         const anos = [...Array(11).keys()].map((i) => i + currentYear - 10);
         const graficoArtigosConferencias = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const graficoArtigosPeriodicos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        publicacoes.artigosConferencias.forEach((artigo: any) => {
+        publicacoes.artigosConferencias.forEach((artigo) => {
           const idx = anos.findIndex((e) => e === artigo.ano);
           if (idx === -1) {
             graficoArtigosConferencias[0] = graficoArtigosConferencias[0] + 1;
@@ -100,7 +100,7 @@ const publicacoes = async (req: Request, res: Response) => {
           }
         });
 
-        publicacoes.artigosPeriodicos.forEach((artigo: any) => {
+        publicacoes.artigosPeriodicos.forEach((artigo) => {
           const idx = anos.findIndex((e) => e === artigo.ano);
           if (idx === -1) {
             graficoArtigosPeriodicos[0] = graficoArtigosPeriodicos[0] + 1;
@@ -123,10 +123,9 @@ const publicacoes = async (req: Request, res: Response) => {
           graficoArtigosPeriodicos,
         });
       } catch (error) {
-        return res
-          .status(502)
-          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        next(error);
       }
+      break;
     default:
       return res
         .status(400)
@@ -134,35 +133,38 @@ const publicacoes = async (req: Request, res: Response) => {
   }
 };
 
-const pesquisa = async (req: Request, res: Response) => {
+const pesquisa = async (req: Request, res: Response, next: NextFunction) => {
   switch (req.method) {
     case 'GET':
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const userId = Number(id)
+        const userId = Number(id);
         const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
         const projetos = await DocenteService.listarPesquisas(userId);
-        if (!projetos){
-          return res.status(404).send('Não encontrou as pesquisas')
+        if (!projetos) {
+          return res.status(404).send('Não encontrou as pesquisas');
         }
-
         const currentYear = new Date().getFullYear();
         const anos = [...Array(10).keys()].map((i) => i + currentYear - 9);
 
         const graficoProjetos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        projetos.forEach((projeto: any) => {
+        projetos.forEach((projeto) => {
           const anosProjeto =
-            projeto.fim === 0
-              ? [...Array(currentYear - projeto.inicio).keys()].map(
-                  (i) => i + currentYear - (currentYear - projeto.inicio - 1),
+            projeto.dataFim === 0 || projeto.dataFim === null
+              ? [...Array(currentYear - projeto.dataInicio).keys()].map(
+                  (i) =>
+                    i + currentYear - (currentYear - projeto.dataInicio - 1),
                 )
-              : [...Array(projeto.fim - projeto.inicio).keys()].map(
-                  (i) => i + projeto.fim - (projeto.fim - projeto.inicio - 1),
+              : [...Array(projeto.dataFim - projeto.dataInicio).keys()].map(
+                  (i) =>
+                    i +
+                    projeto.dataFim -
+                    (projeto.dataFim - projeto.dataInicio - 1),
                 );
           anosProjeto.forEach((ano) => {
             const idx = anos.findIndex((e) => e === ano);
@@ -171,7 +173,7 @@ const pesquisa = async (req: Request, res: Response) => {
             }
           });
         });
-        return res.render(resolveView('/perfil/perfil-projeto'), {
+        return res.render(resolveView('perfil/perfil-projeto'), {
           lng,
           professor,
           projetos,
@@ -181,11 +183,9 @@ const pesquisa = async (req: Request, res: Response) => {
           graficoProjetos,
         });
       } catch (error) {
-        return res
-          .status(502)
-          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        next(error);
       }
-
+      break;
     default:
       return res
         .status(400)
@@ -193,7 +193,7 @@ const pesquisa = async (req: Request, res: Response) => {
   }
 };
 
-const orientacao = async (req: Request, res: Response) => {
+const orientacao = async (req: Request, res: Response, next: NextFunction) => {
   switch (req.method) {
     case 'GET':
       try {
@@ -217,7 +217,7 @@ const orientacao = async (req: Request, res: Response) => {
         const graficoOrientacoesConcluidas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const graficoOrientacoesAndamento = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        orientacoes.concluidas.forEach((orientacao: any) => {
+        orientacoes.concluidas.forEach((orientacao) => {
           const idx = anos.findIndex((e) => e === orientacao.ano);
           if (idx === -1) {
             graficoOrientacoesConcluidas[0] =
@@ -228,7 +228,7 @@ const orientacao = async (req: Request, res: Response) => {
           }
         });
 
-        orientacoes.andamento.forEach((orientacao: any) => {
+        orientacoes.andamento.forEach((orientacao) => {
           const idx = anos.findIndex((e) => e === orientacao.ano);
           if (idx === -1) {
             graficoOrientacoesAndamento[0] = graficoOrientacoesAndamento[0] + 1;
@@ -237,8 +237,7 @@ const orientacao = async (req: Request, res: Response) => {
               graficoOrientacoesAndamento[idx] + 1;
           }
         });
-
-        return res.render(resolveView('/perfil/perfil-orientacao'), {
+        return res.render(resolveView('perfil/perfil-orientacao'), {
           lng,
           professor,
           orientacoes,
@@ -254,10 +253,9 @@ const orientacao = async (req: Request, res: Response) => {
           graficoOrientacoesConcluidas,
         });
       } catch (error) {
-        return res
-          .status(502)
-          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        next(error);
       }
+      break;
     default:
       return res
         .status(400)
@@ -265,23 +263,23 @@ const orientacao = async (req: Request, res: Response) => {
   }
 };
 
-const premios = async (req: Request, res: Response) => {
+const premios = async (req: Request, res: Response, next: NextFunction) => {
   switch (req.method) {
     case 'GET':
       try {
         const { lng } = req.query;
         const { id } = req.params;
-        const userId = Number(id)
+        const userId = Number(id);
         const professor = await DocenteService.listarPerfil(userId);
         if (!professor) {
           return res.redirect('/numerosIcomp/docentes?lng=' + lng);
         }
         const premios = await DocenteService.listarPremios(userId);
-        if (!premios){
-          return res.status(404).send('Não encontrou premios')
+        if (!premios) {
+          return res.status(404).send('Não encontrou premios');
         }
 
-        return res.render(resolveView('/perfil/perfil-premio'), {
+        return res.render(resolveView('perfil/perfil-premio'), {
           lng,
           premios,
           professor,
@@ -289,10 +287,9 @@ const premios = async (req: Request, res: Response) => {
           ...layoutDashboard,
         });
       } catch (error) {
-        return res
-          .status(502)
-          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        next(error);
       }
+      break;
     default:
       return res
         .status(400)

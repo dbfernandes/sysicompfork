@@ -64,7 +64,7 @@ function get_publicDict(dados) {
   return pub;
 }
 
-function get_projectDict(dados, nome, idLattes) {
+function get_projectDict(dados, nome, lattesId) {
   const titulo = dados['_NOME-DO-PROJETO'];
   const descricao = dados['_DESCRICAO-DO-PROJETO'];
   const inicio = dados['_ANO-INICIO'];
@@ -81,7 +81,7 @@ function get_projectDict(dados, nome, idLattes) {
     for (var i in integrantesArr) {
       integrantes.push(integrantesArr[i]['_NOME-COMPLETO']);
       if (
-        integrantesArr[i]['_NRO-ID-CNPQ'] == idLattes ||
+        integrantesArr[i]['_NRO-ID-CNPQ'] == lattesId ||
         integrantesArr[i]['_NOME-COMPLETO'] == nome
       ) {
         papel =
@@ -222,7 +222,7 @@ function getCompleteFormData(data, publicCallback) {
       const nomeCompleto =
         xmlText['CURRICULO-VITAE']['DADOS-GERAIS']['NOME-COMPLETO'];
       const userDict = {};
-      userDict['idLattes'] =
+      userDict['lattesId'] =
         xmlText['CURRICULO-VITAE']['_NUMERO-IDENTIFICADOR'];
       userDict['resumo'] = xmlText['CURRICULO-VITAE']['DADOS-GERAIS'][
         'RESUMO-CV'
@@ -379,7 +379,7 @@ function getCompleteFormData(data, publicCallback) {
                 const project = get_projectDict(
                   sub_val[p]['PROJETO-DE-PESQUISA'][o],
                   nomeCompleto,
-                  userDict['idLattes'],
+                  userDict['lattesId'],
                 );
                 projectDict['projetos'].push(project);
               }
@@ -387,7 +387,7 @@ function getCompleteFormData(data, publicCallback) {
               const project = get_projectDict(
                 sub_val[p]['PROJETO-DE-PESQUISA'],
                 nomeCompleto,
-                userDict['idLattes'],
+                userDict['lattesId'],
               );
               projectDict['projetos'].push(project);
             }
@@ -396,7 +396,7 @@ function getCompleteFormData(data, publicCallback) {
           const project = get_projectDict(
             sub_val['PROJETO-DE-PESQUISA'],
             nomeCompleto,
-            userDict['idLattes'],
+            userDict['lattesId'],
           );
           projectDict['projetos'].push(project);
         }

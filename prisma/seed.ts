@@ -3,6 +3,7 @@ import { candidatos } from './seed-data/candidatos.ts';
 import { editais } from './seed-data/editais.ts';
 import { linhasDePesquisa } from './seed-data/linhasDePesquisa.ts';
 import { usuarios } from './seed-data/usuarios.ts';
+import { tiposPublicacoes } from './seed-data/tiposPublicacao.ts';
 
 const prisma = new PrismaClient();
 
@@ -21,9 +22,12 @@ async function main() {
     await prisma.edital.createMany({
       data: editais,
     });
-    console.log('candidatos criados');
     await prisma.candidato.createMany({
       data: candidatos,
+      skipDuplicates: true,
+    });
+    await prisma.tipoPublicacao.createMany({
+      data: tiposPublicacoes,
       skipDuplicates: true,
     });
   });

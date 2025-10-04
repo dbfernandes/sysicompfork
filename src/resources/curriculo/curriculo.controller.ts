@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import AvatarService from '../avatar/avatar.service';
 import PublicacaoService from '../publicacao/publicacao.service';
 import PremioService from '../premio/premio.service';
@@ -29,7 +29,6 @@ const visualizarCurriculo = async (req: Request, res: Response) => {
         const { message, type, messageTitle } = req.query;
         const professores = await UsuarioService.listarTodosPorCondicao({
           professor: 1,
-          status: 1,
         });
         return res.render(resolveView('curriculoAdicionar'), {
           professores,
@@ -42,7 +41,7 @@ const visualizarCurriculo = async (req: Request, res: Response) => {
           avatar: null,
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(503).redirect(
           criarURL('/inicio', {
             message: 'Não foi possível abrir o envio de currículo.',
@@ -59,18 +58,21 @@ const visualizarCurriculo = async (req: Request, res: Response) => {
   }
 };
 
-const verificarAvatar = async (req: Request, res: Response) => {
+const verificarAvatar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const avatar = await AvatarService.listarUmAvatar(parseInt(id));
     return res.status(200).send(avatar);
   } catch (err) {
-    console.log(err);
-    return res.status(500).send();
+    next(err);
   }
 };
 
-const carregar = (req: UploadRequest, res: Response) => {
+const carregar = (req: UploadRequest, res: Response, next: NextFunction) => {
   upload(req, res, async (err) => {
     if (err) {
       console.error('Erro no upload:', err);
@@ -82,13 +84,14 @@ const carregar = (req: UploadRequest, res: Response) => {
     try {
       const { publicacoes, professorId, premios, info, projetos, orientacoes } =
         req.body;
-
+      const professorIdParsed = Number(professorId);
       // Parse dos dados com tipos específicos
       const publicacoesParsed = JSON.parse(publicacoes) as PublicacaoParsed[];
-      const premiosParsed = JSON.parse(premios) as PremioParsed[];
+      const premiosParsed = JSON.parse(premios).premios as PremioParsed[];
       const infoParsed = JSON.parse(info) as InfoParsed;
-      const projetosParsed = JSON.parse(projetos) as ProjetoParsed[];
-      const orientacoesParsed = JSON.parse(orientacoes) as OrientacaoParsed[];
+      const projetosParsed = JSON.parse(projetos).projetos as ProjetoParsed[];
+      const orientacoesParsed = JSON.parse(orientacoes)
+        .orientacoes as OrientacaoParsed[];
 
       // Transformação dos projetos para o formato esperado pelo service
       const projetosTransformed: ProjetoTransformed = {
@@ -105,18 +108,17 @@ const carregar = (req: UploadRequest, res: Response) => {
 
       // Chamadas aos services com validação de tipos
       await Promise.all([
-        OrientacaoService.adicionarVarios(professorId, orientacoesParsed),
-        ProjetoService.adicionarVarios(professorId, projetosTransformed),
-        UsuarioService.alterarInfo(professorId, infoParsed),
-        PremioService.adicionarVarios(professorId, premiosParsed),
-        PublicacaoService.adicionarVarios(professorId, publicacoesParsed),
+        OrientacaoService.adicionarVarios(professorIdParsed, orientacoesParsed),
+        ProjetoService.adicionarVarios(professorIdParsed, projetosTransformed),
+        UsuarioService.alterarInfo(professorIdParsed, infoParsed),
+        PremioService.adicionarVarios(professorIdParsed, premiosParsed),
+        PublicacaoService.adicionarVarios(professorIdParsed, publicacoesParsed),
       ]);
 
-      // Upload do avatar se existir
       if (req.file) {
         await AvatarService.adicionarAvatar(
-          professorId,
-          req.file.filename,
+          professorIdParsed,
+          req.file.originalname,
           req.file.path,
         );
       }
@@ -125,10 +127,7 @@ const carregar = (req: UploadRequest, res: Response) => {
         message: 'Currículo atualizado com sucesso',
       });
     } catch (error) {
-      console.error('Erro ao processar currículo:', error);
-      return res.status(500).json({
-        error: 'Erro interno ao processar currículo',
-      });
+      next(error);
     }
   });
 };

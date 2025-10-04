@@ -1,4 +1,10 @@
-async function getPublicationsArr(publicacoes: any, id: number, tipos: any[]) {
+import { Publicacao, TipoPublicacao } from '@prisma/client';
+
+async function getPublicationsArr(
+  publicacoes: any,
+  id: number,
+  tipos: TipoPublicacao[],
+) {
   const publicArr: any = [];
   tipos.forEach((tipo) => {
     const { chave } = tipo;
@@ -6,22 +12,19 @@ async function getPublicationsArr(publicacoes: any, id: number, tipos: any[]) {
     if (publicacoesChave !== undefined) {
       for (const k in publicacoesChave) {
         publicArr.push({
-          professorId: id,
-          candidatoId: id,
           titulo: publicacoesChave[k].titulo,
           ano:
             publicacoesChave[k].ano !== '' && parseInt(publicacoesChave[k].ano)
               ? parseInt(publicacoesChave[k].ano)
               : 0,
           local: publicacoesChave[k].local,
-          tipo: tipo.id,
+          tipoId: tipo.id,
           natureza: publicacoesChave[k].natureza,
           autores: publicacoesChave[k].autores.nomeCompleto.join('; '),
           issn:
-            publicacoesChave[k].issn !== '' &&
-            parseInt(publicacoesChave[k].issn)
-              ? parseInt(publicacoesChave[k].issn)
-              : 0,
+            publicacoesChave[k].issn !== '' && publicacoesChave[k].issn
+              ? publicacoesChave[k].issn
+              : '0',
         });
       }
     }
