@@ -30,6 +30,7 @@ export type usuarioBodyDTO = {
   dateDeIngresso: string;
   unidade: string;
   turno: string;
+  professorPPGI: string;
 };
 export interface UsuarioWithDate extends Omit<UsuarioSelect, 'perfil'> {
   perfil: string;

@@ -2,165 +2,162 @@
 {{> sidebar module='usuarios' page='usuarios-listar' }}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-9">
-                    <h1>Lista de Usuários (Professores e Técnicos Administrativos)</h1>
-                </div>
-                <div class="col-sm-3">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
-                        <li class="breadcrumb-item active">Usuários</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
-                    <a class="btn btn-warning color-white" href="/inicio">
-                        <i class="fa fa-arrow-left"></i>
-                        Voltar
-                    </a>
-                    <a class="btn btn-primary color-white" href="/usuarios/adicionar">
-                        <i class="fas fa-plus"></i>
-                        Adicionar
-                    </a>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card card-primary">
-                        <!-- /.card-header -->
-                        <div class="card-body" style="overflow-x:auto;">
-                            <div class="text-center" id="loading">
-                                <div class="spinner-border my-5 text-center" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                            <div id="datatable-wrapper">
-                                <table id="example2" class="table table-hover w-100">
-                                    <thead>
-                                        <tr>
-                                            <th>Nome</th>
-                                            <th>CPF</th>
-                                            <th class=''>Email</th>
-                                            <th>Telefones</th>
-                                            <th>Perfil(s)</th>
-                                            <th>Status</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{#each usuarios}}
-                                        <tr>
-                                            <td> {{nomeCompleto}} </td>
-                                            <td> {{cpf}} </td>
-                                            <td> {{email}} </td>
-                                            <td>
-                                                <div class="d-flex justify-content-center">
-                                                    {{#if telCelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular"
-                                                        title="{{telCelular}}"></i>{{/if}}
-                                                    {{#if telResidencial}} <i id="{{id}}f"
-                                                        class="fa fa-phone fa-lg fixo"
-                                                        title="{{telResidencial}}"></i>{{/if}}
-
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {{#if administrador}}
-                                                <span class="badge bg-primary">Administrador</span>
-                                                {{/if}}
-                                                {{#if professor}}
-                                                <span class="badge bg-success">Professor(a)</span>
-                                                {{/if}}
-                                                {{#if coordenador}}
-                                                <span class="badge bg-info">Coordenador(a)</span>
-                                                {{/if}}
-                                                {{#if secretaria}}
-                                                <span class="badge bg-warning">Secretaria</span>
-                                                {{/if}}
-                                                {{#if diretor}}
-                                                <span class="badge bg-secondary">Diretor(a)</span>
-                                                {{/if}}
-                                                {{#if administrador}} {{else}} {{#if professor}} {{else}} {{#if
-                                                coordenador}} {{else}} {{#if secretaria}} {{else}}
-                                                <span class="badge bg-danger">Sem
-                                                    perfil</span> {{/if}} {{/if}}
-                                                {{/if}}{{/if}}
-
-                                            </td>
-                                            <td>
-                                                <span class="{{#if status}}badge bg-success">Ativo{{else}}badge
-                                                    bg-danger">Bloqueado{{/if}}</span>
-                                            </td>
-                                            <td class='links-container'>
-                                                <div class="d-flex justify-content-between">
-                                                    <a style="margin-right: 2px" href='/usuarios/dados/{{id}}'
-                                                        class='fa fa-solid fa-eye' title="Visualizar"></a>
-                                                    {{#if status}}
-                                                    <a class="fa fa-solid fa-user-lock"
-                                                        id="removerUser_{{nomeCompleto}}_{{id}}"
-                                                        style="margin-right: 2px" data-toggle="modal"
-                                                        data-target="#removerUsuario" title="Bloquear"
-                                                        onclick="addLink(event)" href="#">
-                                                    </a>
-                                                    {{else}}
-                                                    <a class="fa fa-solid fa-unlock"
-                                                        id="desbloquearUser_{{nomeCompleto}}_{{id}}"
-                                                        style="margin-right: 2px" data-toggle="modal"
-                                                        data-target="#removerUsuario" title="Desbloquear"
-                                                        onclick="addLink(event)" href="#">
-                                                    </a>
-                                                    {{/if}}
-                                                    <a style="margin-right: 2px" href='/usuarios/editar/{{id}}'
-                                                        class='fa fa-solid fa-pen' title="Editar" ></a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {{/each}}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-9">
+          <h1>Lista de Usuários (Professores e Técnicos Administrativos)</h1>
         </div>
-        <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+        <div class="col-sm-3">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
+            <li class="breadcrumb-item active">Usuários</li>
+          </ol>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="text-nowrap col-sm-3 col-md-2 col-lg-2 mt-4">
+          <a class="btn btn-warning color-white" href="/inicio">
+            <i class="fa fa-arrow-left"></i>
+            Voltar
+          </a>
+          <a class="btn btn-primary color-white" href="/usuarios/adicionar">
+            <i class="fas fa-plus"></i>
+            Adicionar
+          </a>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary">
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow-x:auto;">
+              <div class="text-center" id="loading">
+                <div class="spinner-border my-5 text-center" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+              <div id="datatable-wrapper">
+                <table id="example2" class="table table-hover w-100">
+                  <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th class=''>Email</th>
+                    <th>Telefones</th>
+                    <th>Perfil(s)</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {{#each usuarios}}
+                    <tr>
+                      <td> {{nomeCompleto}} </td>
+                      <td> {{cpf}} </td>
+                      <td> {{email}} </td>
+                      <td>
+                        <div class="d-flex justify-content-center">
+                          {{#if telCelular}}<i id="{{id}}c" class="fa fa-mobile fa-lg celular"
+                                               title="{{telCelular}}"></i>{{/if}}
+                          {{#if telResidencial}} <i id="{{id}}f"
+                                                    class="fa fa-phone fa-lg fixo"
+                                                    title="{{telResidencial}}"></i>{{/if}}
+                        </div>
+                      </td>
+                      <td>
+                        {{#if administrador}}
+                          <span class="badge bg-primary">Administrador</span>
+                        {{/if}}
+                        {{#if professor}}
+                          <span class="badge bg-success">Professor(a)</span>
+                        {{/if}}
+                        {{#if professorPPGI}}
+                            <span class="badge bg-success">Professor(a) PPGI</span>
+                        {{/if}}
+                        {{#if coordenador}}
+                          <span class="badge bg-info">Coordenador(a)</span>
+                        {{/if}}
+                        {{#if secretaria}}
+                          <span class="badge bg-warning">Secretaria</span>
+                        {{/if}}
+                        {{#if diretor}}
+                          <span class="badge bg-secondary">Diretor(a)</span>
+                        {{/if}}
+                        {{#if empty}}
+                          <span class="badge bg-danger">Sem perfil</span>
+                        {{/if}}
+                      </td>
+                      <td>
+                        <span class="{{#if status}}badge bg-success">Ativo{{else}}badge
+                          bg-danger">Bloqueado{{/if}}</span>
+                      </td>
+                      <td class='links-container'>
+                        <div class="d-flex justify-content-between">
+                          <a style="margin-right: 2px" href='/usuarios/dados/{{id}}'
+                             class='fa fa-solid fa-eye' title="Visualizar"></a>
+                          {{#if status}}
+                            <a class="fa fa-solid fa-user-lock"
+                               id="removerUser_{{nomeCompleto}}_{{id}}"
+                               style="margin-right: 2px" data-toggle="modal"
+                               data-target="#removerUsuario" title="Bloquear"
+                               onclick="addLink(event)" href="#">
+                            </a>
+                          {{else}}
+                            <a class="fa fa-solid fa-unlock"
+                               id="desbloquearUser_{{nomeCompleto}}_{{id}}"
+                               style="margin-right: 2px" data-toggle="modal"
+                               data-target="#removerUsuario" title="Desbloquear"
+                               onclick="addLink(event)" href="#">
+                            </a>
+                          {{/if}}
+                          <a style="margin-right: 2px" href='/usuarios/editar/{{id}}'
+                             class='fa fa-solid fa-pen' title="Editar" ></a>
+                        </div>
+                      </td>
+                    </tr>
+                  {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
 </div>
 <div class="modal fade" id="removerUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="tituloModal"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-footer">
-                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
-            </div>
-            <form name="postDelete" id="postDelete" method="POST">
-                <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            </form>
-        </div>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloModal"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+        <a id="deleteButton" type="button" class="btn btn-warning color-white" onclick="deleteUser()">Sim</a>
+      </div>
+      <form name="postDelete" id="postDelete" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+      </form>
     </div>
+  </div>
 </div>
 <script>
     // Adiciona margem entre os icones de telefone caso haja 2 números de contato

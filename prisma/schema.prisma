@@ -371,6 +371,7 @@ model Usuario {
   secretaria    Int @default(0) @db.SmallInt
   diretor       Int @default(0) @db.SmallInt
   professor     Int @default(0) @db.SmallInt
+  professorPPGI Int @default(0) @db.SmallInt
 
   perfil            String?   @db.VarChar(255)
   siape             String?   @db.VarChar(10)

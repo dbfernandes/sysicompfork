@@ -37,6 +37,7 @@ declare module 'express-session' {
           coordenador: number;
           diretor: number;
           professor: number;
+          professorPPGI: number;
         }
       | undefined;
     uid: string;
