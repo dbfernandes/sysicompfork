@@ -123,6 +123,7 @@ class UsuarioService {
         administrador: true,
         secretaria: true,
         professor: true,
+        professorPPGI: true,
         coordenador: true,
         dataIngresso: true,
         endereco: true,
