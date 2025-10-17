@@ -79,6 +79,33 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  numeros_icomp:
+    container_name: numeros_icomp
+    mem_limit: 4096m
+    build:
+      context: .
+    command: 'node build/app/serverNumerosIcomp.js'
+    restart: unless-stopped
+    ports:
+      - '${PORT_NUMEROS_ICOMP:-4001}:${PORT_NUMEROS_ICOMP:-4001}'
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./temp:/app/temp
+    depends_on:
+      - db
+      - gotenberg
+      - redis
+    env_file:
+      - .env
+    networks:
+      - sysicomp-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   gotenberg:
     container_name: gotenberg
     image: gotenberg/gotenberg:8

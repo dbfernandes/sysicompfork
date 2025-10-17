@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import alunoService from '../alunos/aluno.service';
 import publicacaoService from '../publicacao/publicacao.service';
 import path from 'path';
+
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }

@@ -1,6 +1,6 @@
-    {{> numerosIcomp/navbar page="docentes"}}
+{{> numerosIcomp/navbar page="docentes"}}
 <div class="flex-wrapper bg-primary">
-    <section class="success"  id="docentes">
+    <section class="success" id="docentes">
         <div class="container pb-4" >
             <div class="row ">
                 <div class="col-md-12 text-center">
@@ -29,14 +29,14 @@
                         <tbody>
                             {{#each professores}}
                             <tr data-key={{id}}>
-                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="docentes/{{id}}?lng={{../lng}}">{{nomeCompleto}}</a></td>
+                                <td class="ps-4" style="word-break: break-word; white-space: normal;"><a href="/docentes/{{id}}?lng={{../lng}}">{{nomeCompleto}}</a></td>
                                 <td class="ps-4" style="word-break: break-word; white-space: normal;">
                                 {{#if formacao}}
-                                {{#if (isEnLng ../lng)}}
-                                    {{formataFormacao formacaoIngles ../lng}}
-                                {{else}}
-                                    {{formataFormacao formacao ../lng}}
-                                {{/if}}
+                                  {{#if (isEnLng ../lng)}}
+                                      {{formataFormacao formacaoIngles ../lng}}
+                                  {{else}}
+                                      {{formataFormacao formacao ../lng}}
+                                  {{/if}}
                                 {{/if}}
                                 </td>
                                 <td class="ps-4">{{#if ultimaAtualizacao}}{{formataDataLng ultimaAtualizacao ../lng}}{{/if}}</td>

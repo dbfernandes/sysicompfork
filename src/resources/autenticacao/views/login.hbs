@@ -22,7 +22,6 @@
       {{/if}} 
 
       <form action="/login" method="post" id="loginForm">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <div class="form-group">
           <label for="cpfInput">CPF</label>
           <input id="cpfInput" name="cpf" type="text" autocomplete="off" class="form-control cpf" placeholder="___.___.___-__">
@@ -57,17 +56,10 @@
 
           <div class="row mt-4">
             <div class="col-md-8">
-<!--              <div class="checkbox icheck">-->
-<!--                <label>-->
-<!--                  <input id="remember" name="remember" type="checkbox"> Lembrar Usuário-->
-<!--                </label>-->
-<!--              </div>-->
             </div>
-            <!-- /.col -->
             <div class="col-md-4">
               <button type="submit" class="btn btn-primary btn-block">Entrar</button>
             </div>
-            <!-- /.col -->
           </div>
         </div>
       </form>

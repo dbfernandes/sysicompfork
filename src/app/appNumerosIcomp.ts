@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import helpers from './views/helpers/helpers';
+import helpers from '@/views/helpers/helpers';
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -10,8 +10,6 @@ import session from 'express-session';
 
 import { engine } from 'express-handlebars';
 
-import router from './routes/routesSelecao';
-import { errorHandler } from './middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from '@utils/logger';
 
@@ -19,9 +17,11 @@ import redisClient from '@/client/redisClient';
 import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes';
+import { errorHandler } from '@/middlewares/errorHandler';
+import router from '@/routes/routesNumerosIcomp';
 
 dotenv.config({
-  path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
+  path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`),
 });
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -53,24 +53,24 @@ app.engine(
   engine({
     defaultLayout: 'main',
     extname: '.hbs',
-    partialsDir: path.join(__dirname, 'views', 'partials'),
+    partialsDir: path.join(__dirname, '..', 'views', 'partials'),
     helpers: helpers,
   }),
 );
 
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, '..', '/views'));
 app.set('trust proxy', 1);
 
 app.use(cookieParser());
 
 app.use(
   session({
-    name: 'selecao_sysicomp_sessao', // 👈 nome diferente por app
+    name: 'numeros_icomp_sessao', // 👈 nome diferente por app
 
     store: new RedisStore({
       client: redisClient,
-      prefix: 'selecao_sysicomp_sessao:', // prefixo diferente no Redis
+      prefix: 'numeros_icomp_sessao:', // prefixo diferente no Redis
       ttl: 60 * 60 * 24 * 7, // 48h
       disableTouch: true, // Desabilita o touch para não atualizar o TTL automaticamente
     }),

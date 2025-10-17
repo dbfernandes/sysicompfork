@@ -13,6 +13,8 @@
     "start:dev:dbs": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build redis phpmyadmin db gotenberg",
     "start:syscomp": "NODE_ENV=development tsx watch  src/server.ts ",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
+    "start:numeros": "NODE_ENV=development tsx watch  src/app/serverNumerosIcomp.ts",
+
     "build": "tsc && tsc-alias && npm run copy-static",
     "copy-static": "node scripts/copy-static.js",
     "docker:start": "docker compose up -d",

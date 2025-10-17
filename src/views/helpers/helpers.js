@@ -154,6 +154,7 @@ const formataDataLng = (data, lng) => {
 };
 
 const formataFormacao = (formacao, lng) => {
+  if (!formacao) return '-';
   const arr = formacao.split(';');
   const prep = lng === 'en' ? ' in ' : ' em ';
   return arr[0] + prep + arr[1] + '. ' + arr[2] + ', ' + arr[3] + '.';

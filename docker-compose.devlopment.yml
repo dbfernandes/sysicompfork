@@ -86,6 +86,30 @@ services:
     networks:
       - sysicomp-network-dev
 
+  numeros_icomp:
+    container_name: numeros_icomp-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.devlopment
+    command: 'npm run start:numeros'
+    restart: no
+    ports:
+      - '${PORT_NUMEROS_ICOMP:-3003}:${PORT_NUMEROS_ICOMP:-3003}'
+    working_dir: /app
+    volumes:
+      - .:/app:delegated
+      - /app/node_modules
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+      - gotenberg
+      - redis
+    env_file:
+      - .env
+    networks:
+      - sysicomp-network-dev
+
   gotenberg:
     container_name: gotenberg-dev
     image: gotenberg/gotenberg:8
