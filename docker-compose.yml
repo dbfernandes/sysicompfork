@@ -37,6 +37,7 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./temp:/app/temp
+      - ./public:/app/public
     depends_on:
       - db
       - gotenberg
@@ -64,6 +65,7 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./temp:/app/temp
+      - ./public:/app/public
 
     depends_on:
       - db
@@ -92,6 +94,7 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./temp:/app/temp
+      - ./public:/app/public
     depends_on:
       - db
       - gotenberg
