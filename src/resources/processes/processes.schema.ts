@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const createByTemplateSchema = Joi.object({
-  titulo: Joi.string().min(3).max(255).required(),
+  titulo: Joi.string().min(1).max(255).required(),
   descricao: Joi.string().allow('', null),
   usarIA: Joi.boolean().default(false),
   templateKey: Joi.string()

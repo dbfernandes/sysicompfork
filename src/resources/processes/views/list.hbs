@@ -163,11 +163,11 @@
       </div>
 
       <!-- Paginação -->
-      <div class="row">
-        <div class="col-12">
-          {{> pagination pagination=pagination baseUrl="/processos" q=q tag=tag }}
-        </div>
-      </div>
+<!--      <div class="row">-->
+<!--        <div class="col-12">-->
+<!--          {{> pagination pagination=pagination baseUrl="/processos" q=q tag=tag }}-->
+<!--        </div>-->
+<!--      </div>-->
 
     </div>
   </section>
@@ -417,20 +417,19 @@
       // Deixa o POST seguir normalmente (full page). Em caso de erro (ex.: resposta 4xx/5xx renderizada),
       // o navegador vai trocar de página mesmo assim. Se quiser reabilitar nesta mesma página quando
       // o navegador bloquear a navegação, use um setTimeout (fallback) opcional:
-      setTimeout(() => {
-        // Fallback (ex.: se a navegação não acontecer por algum motivo)
-        if (document.visibilityState === 'visible') {
-          submitting = false;
-          if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = btnSubmit.dataset.original || '<i class="fas fa-check"></i> Criar';
-          }
-          Array.from(form.elements).forEach((el) => {
-            try { el.readOnly = false; } catch (_) {}
-          });
-          if (usarIA && iaAlert) iaAlert.classList.add('d-none');
-        }
-      }, 30000); // 30s de fallback
+      // setTimeout(() => {
+      //   if (document.visibilityState === 'visible') {
+      //     submitting = false;
+      //     if (btnSubmit) {
+      //       btnSubmit.disabled = false;
+      //       btnSubmit.innerHTML = btnSubmit.dataset.original || '<i class="fas fa-check"></i> Criar';
+      //     }
+      //     Array.from(form.elements).forEach((el) => {
+      //       try { el.readOnly = false; } catch (_) {}
+      //     });
+      //     if (usarIA && iaAlert) iaAlert.classList.add('d-none');
+      //   }
+      // }, 30000);
     });
 
     // Atualiza label do custom-file (já existia)

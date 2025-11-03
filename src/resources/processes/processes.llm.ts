@@ -28,7 +28,6 @@ export async function generateBpmnFromDescription(
     .replace(/>/g, '&gt;');
 
   const prompt = buildPrompt({ description, title, lang });
-  console.log(prompt);
   // Importante: peça somente o XML, sem comentários ou markdown
   const result = await model.generateContent({
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -39,7 +38,6 @@ export async function generateBpmnFromDescription(
   });
 
   const text = result.response.text().trim();
-  console.log(text);
   // Pós-processo básico: retirar cercas de código e validar o root
   const xml = text
     .replace(/^```xml\s*/i, '')

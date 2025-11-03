@@ -281,11 +281,11 @@ const createByTemplate = async (req: Request, res: Response) => {
 
   try {
     if (usarIA) {
-      if (!descricao || descricao.trim().length < 10) {
-        return res
-          .status(400)
-          .send('Para geração por IA, informe uma descrição mais detalhada.');
-      }
+      // if (!descricao || descricao.trim().length < 10) {
+      //   return res
+      //     .status(400)
+      //     .send('Para geração por IA, informe uma descrição mais detalhada.');
+      // }
       await processosService.createFromAI({
         titulo,
         descricao: descricao.trim(),
