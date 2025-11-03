@@ -249,15 +249,23 @@
 <!--          </a>-->
 <!--        </li>-->
         {{#if (autorizarUsuario tipoUsuario "secretaria")}}
-        <li class="nav-header">Secretaria</li>
-        <li class="nav-item">
-          <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
-            <i class="nav-icon fa fa-users"></i>
-            <p>
-              Gerenciar Alunos
-            </p>
-          </a>
-        </li>
+          <li class="nav-header">Secretaria</li>
+          <li class="nav-item">
+            <a href="/alunos" class="nav-link {{#ifEqual module 'alunos'}}active{{/ifEqual}}">
+              <i class="nav-icon fa fa-users"></i>
+              <p>
+                Gerenciar Alunos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/processos" class="nav-link {{#ifEqual module 'processos'}}active{{/ifEqual}}">
+              <i class="nav-icon fa fa-sitemap"></i>
+              <p>
+                Gerenciar Processos
+              </p>
+            </a>
+          </li>
           {{#if (autorizarUsuario tipoUsuario "professor")}}
           {{else}}
             <li class="nav-item">

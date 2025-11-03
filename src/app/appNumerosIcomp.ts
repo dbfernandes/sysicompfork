@@ -6,15 +6,11 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import session from 'express-session';
 
 import { engine } from 'express-handlebars';
 
 import morgan from 'morgan';
 import logger from '@utils/logger';
-
-import redisClient from '@/client/redisClient';
-import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes';
 import { errorHandler } from '@/middlewares/errorHandler';
@@ -23,28 +19,6 @@ import router from '@/routes/routesNumerosIcomp';
 dotenv.config({
   path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`),
 });
-
-const isProduction = process.env.NODE_ENV === 'production';
-const keySession = process.env.SESSION_SECRET || 'ufam98';
-
-// To-Do: mover para um arquivo session.d.ts
-declare module 'express-session' {
-  export interface SessionData {
-    tipoUsuario?:
-      | {
-          administrador: number;
-          secretaria: number;
-          coordenador: number;
-          diretor: number;
-          professor: number;
-          professorPPGI: number;
-        }
-      | undefined;
-    uid: string;
-    nome: string;
-    editalPosition?: number; // Posição no formulário de inscrição de um candidato
-  }
-}
 
 const app = express();
 
@@ -63,27 +37,6 @@ app.set('views', path.join(__dirname, '..', '/views'));
 app.set('trust proxy', 1);
 
 app.use(cookieParser());
-
-app.use(
-  session({
-    name: 'numeros_icomp_sessao', // 👈 nome diferente por app
-
-    store: new RedisStore({
-      client: redisClient,
-      prefix: 'numeros_icomp_sessao:', // prefixo diferente no Redis
-      ttl: 60 * 60 * 24 * 7, // 48h
-      disableTouch: true, // Desabilita o touch para não atualizar o TTL automaticamente
-    }),
-    secret: keySession,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 2 horas
-      httpOnly: true,
-      secure: isProduction, // true se usar HTTPS
-    },
-  }),
-);
 
 app.use(cors());
 app.use(express.json({ limit: '70mb' }));

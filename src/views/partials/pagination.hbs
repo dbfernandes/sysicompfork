@@ -1,0 +1,26 @@
+{{!-- resource/partials/pagination.hbs --}}
+{{#if pagination}}
+  <nav aria-label="Paginação">
+    <ul class="pagination justify-content-center">
+      <li class="page-item {{#if pagination.isFirst}}disabled{{/if}}">
+        <a class="page-link" href="{{pagination.firstUrl}}">«</a>
+      </li>
+      <li class="page-item {{#if pagination.isFirst}}disabled{{/if}}">
+        <a class="page-link" href="{{pagination.prevUrl}}">‹</a>
+      </li>
+
+      {{#each pagination.pages}}
+        <li class="page-item {{#if this.active}}active{{/if}}">
+          <a class="page-link" href="{{this.url}}">{{this.number}}</a>
+        </li>
+      {{/each}}
+
+      <li class="page-item {{#if pagination.isLast}}disabled{{/if}}">
+        <a class="page-link" href="{{pagination.nextUrl}}">›</a>
+      </li>
+      <li class="page-item {{#if pagination.isLast}}disabled{{/if}}">
+        <a class="page-link" href="{{pagination.lastUrl}}">»</a>
+      </li>
+    </ul>
+  </nav>
+{{/if}}

@@ -60,7 +60,7 @@
             <!--Avatar-->
             <div>
               <div class="form-group">
-                <label class="form-label"> <font color="#FF0000">*</font> Escolha uma imagem de perfil: </label>
+                <label class="form-label"> <span id="span-image-required" style="color: #FF0000; display: none">*</span> Escolha uma imagem de perfil: </label>
                 <div class="custom-file">
                   <input type="file" name="Image" class="custom-file-input" accept="image/*" id="avatarImage" onchange="displaySelectedImage(event, 'selectedAvatar')">
                   <label id="avatarInputLabel" class="custom-file-label" for="exampleInputFile">Selecione o arquivo</label>
@@ -75,7 +75,7 @@
           </div>
           <div class="card-footer">
             <div style="margin-right: auto;" class="d-flex justify-content-end">
-              <button class="btn btn-success float-right">
+              <button class="btn btn-success float-right" id="submitButton" type="submit">
                 Enviar
               </button>
             </div>
@@ -92,6 +92,8 @@
 <script src="/script-adminlte/plugins/select2/js/select2.min.js"></script>
 
 <script>
+  let hasAvatar = false;
+
   $(document).ready(function() {
     const selectProfessor = $('#professor').select2({
       theme: 'bootstrap4',
@@ -137,11 +139,18 @@
   function changeAvatarPreview(avatar){
     const selectedImage = document.getElementById("selectedAvatar");
     const sel = document.querySelector(`[id="avatarImage"]`)
-    const avatarLabel = document.querySelector("[id='avatarInputLabel']")
-    selectedImage.src = avatar == "" ? "/public/img/user-profile-generic.png" : avatar.caminho
-    // avatar == "" ? sel.removeAttribute("disabled") : sel.setAttribute("disabled", "")
+    const spanImageRequired = document.querySelector("[id='span-image-required']")
+
+    hasAvatar = !!(avatar && avatar.caminho);
+    selectedImage.src = hasAvatar ? avatar.caminho : "/public/img/user-profile-generic.png"
     sel.value = null
-    avatarLabel.textContent = avatar == "" ? "Selecione o arquivo" : avatar.nome
+    // avatarLabel.textContent = hasAvatar ? avatar.nome : "Selecione o arquivo"
+
+    spanImageRequired.style.display = hasAvatar ? "none" : "inline"
+    // Revalida o campo, pois a obrigatoriedade pode ter mudado
+    if (typeof formValidation !== 'undefined' && hasAvatar) {
+      formValidation.element('#avatarImage')
+    }
   }
 
   function getAvatar(id){
@@ -152,6 +161,10 @@
         changeAvatarPreview(data)
       },
       error: function(err) {
+        hasAvatar = false; // se falhar, trate como se não tivesse avatar
+        if (typeof formValidation !== 'undefined') {
+          formValidation.element('#avatarImage')
+        }
         $(document).Toasts('create', {
           icon: 'success',
           class: "bg-danger",
@@ -164,16 +177,33 @@
     });
   }
 
-  $.validator.addMethod("verificarArquivo", function (el) {
-    return (document.querySelector("input[type=file]").files.length > 0)
+  // Quando trocar o professor, revalide a regra de imagem
+  $(document).ready(function() {
+    const selectProfessor = $('#professor').select2({
+      theme: 'bootstrap4',
+      width: '100%',
+    });
+    selectProfessor.on('change', function (ev) {
+      getAvatar(ev.target.value)
+    });
   })
 
-  $.validator.addMethod("verificarImagem", function (el) {
-    return (document.querySelector("#avatarImage").files.length > 0)
+  $.validator.addMethod("verificarArquivo", function () {
+    return (document.querySelector("input[type=file][name='XML']").files.length > 0)
   })
-    
-  $.validator.addMethod("verificarTamanho", function (el) {
-    return (document.querySelector("#avatarImage").files[0].size < 5 * 1024 * 1024) // Aceita imagens de até 5MB
+
+  // Atualiza "verificarImagem" para respeitar a flag hasAvatar
+  // Se já tem avatar e nenhum arquivo foi escolhido, está tudo bem (não é obrigatório).
+  $.validator.addMethod("verificarImagem", function (value, element) {
+    const filesLen = element.files ? element.files.length : 0;
+    if (hasAvatar && filesLen === 0) return true;   // não é obrigatório neste caso
+    return filesLen > 0;                             // obrigatório quando não tem avatar
+  })
+
+  // Tamanho só valida se houver arquivo selecionado
+  $.validator.addMethod("verificarTamanho", function (value, element) {
+    if (!element.files || element.files.length === 0) return true;
+    return element.files[0].size < 5 * 1024 * 1024; // 5MB
   })
 
   $.validator.setDefaults({
@@ -191,6 +221,8 @@
       contentType: false,
       processData: false,
       success: function(data) {
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = false; // reabilita o botão
         $(document).Toasts('create', {
           icon: 'success',
           class: "bg-success",
@@ -201,6 +233,8 @@
         })
       },
       error: function(err) {
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = false; // reabilita o botão
         $(document).Toasts('create', {
           icon: 'success',
           class: "bg-danger",
@@ -213,16 +247,7 @@
     });
   }
 
-  function FormSubmit(){
-    const professorId = $("#professor").val();
-    const [image] = $('#avatarImage').prop('files');
-    const data = new FormData()
-    data.append("professorId", professorId)
-    data.append("file", image)
-
-    getCompleteFormData(data, reqAjax)
-  }
-
+  // Instância das regras com "required" dinâmico
   const formValidation = $('#formAdicionarLattes').validate({
     rules: {
       professor: {
@@ -233,6 +258,8 @@
         accept: "text/xml",
       },
       Image: {
+        // <=== obrigatório apenas se NÃO tiver avatar
+        required: function(){ return !hasAvatar },
         verificarImagem: true,
         verificarTamanho: true,
         accept: "image/*",
@@ -246,6 +273,7 @@
         verificarArquivo: 'É necessário submeter um arquivo XML.',
       },
       Image: {
+        required: 'É necessário enviar uma imagem quando o professor não possui avatar.',
         verificarImagem: 'É necessário submeter uma imagem.',
         verificarTamanho: 'Tamanho máximo de arquivo excedido. Envie uma imagem de até 5MB.',
       },
@@ -255,17 +283,42 @@
       error.addClass('invalid-feedback');
       element.closest('div').append(error);
     },
-    highlight: function (element, errorClass, validClass) {
+    highlight: function (element) {
       $(element).addClass('is-invalid');
     },
-    unhighlight: function (element, errorClass, validClass) {
+    unhighlight: function (element) {
       $(element).removeClass('is-invalid');
     },
   });
 
-  $('#avatarImage').on('change', function(evt){
+  // Revalida quando o usuário seleciona/limpa a imagem
+  $('#avatarImage').on('change', function(){
     formValidation.element('#avatarImage')
   })
+
+  // === 3) No submit, só envia o arquivo se existir ===
+  function FormSubmit(){
+    const submitButton = document.getElementById("submitButton");
+    submitButton.disabled = true; // desabilita para evitar múltiplos cliques
+    const professorId = $("#professor").val();
+    const [image] = $('#avatarImage').prop('files') || [];
+    const data = new FormData()
+    data.append("professorId", professorId)
+    if (image) data.append("file", image) // só anexa se o usuário escolheu
+    try {
+      getCompleteFormData(data, reqAjax)
+    } catch (error) {
+      console.error("Erro ao processar o arquivo XML:", error);
+      $(document).Toasts('create', {
+        icon: 'success',
+        class: "bg-danger",
+        autohide: true,
+        delay: 10000,
+        title: 'Ocorreu um problema ao processar o arquivo XML!',
+        body: 'Verifique se o arquivo está correto e tente novamente.'
+      })
+    }
+  }
 </script>
 
 {{> footer}}

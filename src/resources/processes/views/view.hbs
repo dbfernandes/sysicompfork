@@ -1,0 +1,238 @@
+{{> header}}
+{{> sidebar module='processos' page='processos-ver'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-8">
+          <h1>{{processo.titulo}}</h1>
+          <p class="text-muted mb-0">{{processo.descricao}}</p>
+        </div>
+        <div class="col-sm-4">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/processos">Processos</a></li>
+            <li class="breadcrumb-item active">Visualizar</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-12 d-flex flex-wrap align-items-center">
+          <a href="/processos" class="btn btn-default mr-2 mb-2"><i class="fa fa-arrow-left"></i> Voltar</a>
+          <a href="/processos/{{processo.id}}/editar" class="btn btn-primary mr-2 mb-2"><i class="fas fa-edit"></i> Editar</a>
+          <a href="/processos/{{processo.id}}/download" class="btn btn-outline-info mr-2 mb-2"><i class="fas fa-file-download"></i> Baixar XML</a>
+
+          <button id="btnExportSvg" class="btn btn-outline-secondary mr-2 mb-2">
+            <i class="far fa-file-image"></i> Exportar SVG
+          </button>
+
+          <!-- Salvar XML -->
+          <button id="btnSalvar" class="btn btn-success mr-3 mb-2">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+
+          <!-- Zoom -->
+          <div class="btn-group mb-2 mr-3" role="group" aria-label="Zoom">
+            <button id="btnZoomIn" class="btn btn-outline-dark" title="Mais zoom"><i class="fas fa-search-plus"></i></button>
+            <button id="btnZoomOut" class="btn btn-outline-dark" title="Menos zoom"><i class="fas fa-search-minus"></i></button>
+            <button id="btnFit" class="btn btn-outline-dark" title="Ajustar à tela"><i class="fas fa-expand"></i></button>
+          </div>
+
+          <!-- Status salvamento -->
+          <div class="text-muted small mb-2">
+            <span id="saveStatusDot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6c757d;vertical-align:middle;margin-right:6px;"></span>
+            Salvo em: <span id="lastSave">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body p-0">
+          <div id="canvas" style="height: 70vh;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@18.8.0/dist/assets/bpmn-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@18.8.0/dist/assets/diagram-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@18.8.0/dist/assets/bpmn-font/css/bpmn.css">
+<link rel="stylesheet" href="/public/bpmn/colors/color-picker.css">
+
+<script src="https://unpkg.com/bpmn-js@18.8.0/dist/bpmn-modeler.development.js"></script>
+
+<script type="module">
+  import customTranslate from '/public/bpmn/customTranslate.js';
+  import gridModule from '/public/bpmn/diagram-js-grid/dist/index.js';
+  import gridSnapping from '/public/bpmn/diagram-js/lib/features/grid-snapping/GridSnapping.js';
+  import colorModule from '/public/bpmn/colors/index.js';
+
+  (function () {
+    const processoId = "{{processo.id}}";
+
+    // ---- UI refs
+    const btnSalvar = document.getElementById('btnSalvar');
+    const lastSaveEl = document.getElementById('lastSave');
+    const saveDot = document.getElementById('saveStatusDot');
+
+    // ---- Modeler
+    const customTranslateModule = { translate: ['value', customTranslate] };
+    const modeler = new BpmnJS({
+      container: '#canvas',
+      additionalModules: [ customTranslateModule, gridModule, gridSnapping, colorModule ],
+      gridSnapping: { enabled: true }
+    });
+
+    // ---- State + helpers
+    let isDirty = false;
+    let autosaveTimer = null;
+    const AUTOSAVE_MS = 10_000;
+    let countdownTimer = null;
+    let countdownLeft = 10;
+    const fmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+    function setSavingState(saving) {
+      if (saving) {
+        btnSalvar.disabled = true;
+        btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+        saveDot.style.background = '#ffc107';
+      } else {
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar';
+      }
+    }
+    function setDirty(dirty) { isDirty = dirty; saveDot.style.background = dirty ? '#dc3545' : '#28a745'; }
+    function updateLastSave(ts) { lastSaveEl.textContent = fmt.format(ts); }
+    function clearAutosaveUI() {
+      if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    }
+    function startAutosaveCountdown() {
+      countdownLeft = AUTOSAVE_MS / 1000;
+      if (countdownTimer) clearInterval(countdownTimer);
+      countdownTimer = setInterval(() => {
+        countdownLeft -= 1;
+        if (countdownLeft <= 0) { clearInterval(countdownTimer); countdownTimer = null; }
+      }, 1000);
+    }
+    function scheduleAutosave() {
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      startAutosaveCountdown();
+      autosaveTimer = setTimeout(async () => {
+        autosaveTimer = null;
+        clearAutosaveUI();
+        if (isDirty) await saveDiagram(false);
+      }, AUTOSAVE_MS);
+    }
+
+    async function saveDiagram(manual = true) {
+      try {
+        setSavingState(true);
+        const { xml } = await modeler.saveXML({ format: true });
+        gerarPreview('svg');
+        const resp = await fetch(`/processos/${processoId}/salvar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ xml })
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+        setDirty(false);
+        updateLastSave(new Date());
+        if (manual) {
+          const original = btnSalvar.innerHTML;
+          btnSalvar.innerHTML = '<i class="fas fa-check"></i> Salvo!';
+          setTimeout(() => (btnSalvar.innerHTML = original), 1200);
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Falha ao salvar o diagrama.');
+      } finally {
+        setSavingState(false);
+      }
+    }
+
+    function svgStringToDataUrl(svgText) {
+      // base64 seguro para UTF-8
+      const base64 = btoa(unescape(encodeURIComponent(svgText)));
+      return 'data:image/svg+xml;base64,' + base64;
+    }
+
+    async function gerarPreview(tipo /* 'png' | 'svg' */) {
+      try {
+        const { svg } = await modeler.saveSVG();
+        const dataUrl =  svgStringToDataUrl(svg);
+
+        const resp = await fetch(`/processos/${processoId}/preview`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataUrl })
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+      } catch (e) {
+        console.error(e);
+        alert('Não foi possível gerar o preview.');
+      }
+    }
+
+
+    // ------- Carregar XML
+    fetch(`/processos/${processoId}/xml`)
+      .then(r => r.text())
+      .then(xml => modeler.importXML(xml))
+      .then(() => {
+        modeler.get('canvas').zoom('fit-viewport', 'auto');
+        setDirty(false);
+        updateLastSave(new Date());
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Falha ao carregar o diagrama.');
+      });
+
+    // ------- Eventos para autosave
+    modeler.get('eventBus').on('commandStack.changed', () => {
+      setDirty(true);
+      scheduleAutosave();
+    });
+
+    // Zoom
+    document.getElementById('btnZoomIn').onclick  = () => modeler.get('zoomScroll').stepZoom(1);
+    document.getElementById('btnZoomOut').onclick = () => modeler.get('zoomScroll').stepZoom(-1);
+    document.getElementById('btnFit').onclick     = () => modeler.get('canvas').zoom('fit-viewport', 'auto');
+
+    // Exportar SVG (download local)
+    document.getElementById('btnExportSvg').onclick = async () => {
+      try {
+        const { svg } = await modeler.saveSVG();
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `processo-{{processo.id}}.svg`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (e) {
+        alert('Não foi possível exportar o SVG');
+      }
+    };
+
+    // Salvar manual
+    btnSalvar.addEventListener('click', () => {
+      if (autosaveTimer) { clearTimeout(autosaveTimer); autosaveTimer = null; clearAutosaveUI(); }
+      saveDiagram(true);
+    });
+
+    // Aviso ao sair (opcional)
+    window.addEventListener('beforeunload', (e) => {
+      if (!isDirty) return;
+      e.preventDefault();
+      e.returnValue = '';
+    });
+  })();
+</script>

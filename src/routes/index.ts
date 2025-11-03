@@ -2,6 +2,8 @@
 import express from 'express';
 import inicioRoutes from '../resources/inicio/inicio.routes';
 import usuariosRoutes from '../resources/usuarios/usuario.routes';
+import processosRoutes from '../resources/processes/processes.routes';
+
 import editalRouter from '../resources/edital/edital.routes';
 import selecaoppgiRouter from '../resources/selecaoPPGI/selecao.ppgi.routes';
 import numerosIcompRouter from '../resources/numerosIcomp/numerosIcomp.routes';
@@ -60,6 +62,9 @@ router.use('/usuarios', usuariosRoutes);
 // Rotas Exclusivas Coordenador
 // router.use('/edital', autenticacaoController.autorizarCoord, editalRouter);
 router.use('/edital', editalRouter);
+
+router.use('/processos', processosRoutes);
+
 // router.use(
 //   '/linhasdepesquisa',
 //   autenticacaoController.autorizarCoord,

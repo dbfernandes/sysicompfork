@@ -14,7 +14,6 @@
     "start:syscomp": "NODE_ENV=development tsx watch  src/server.ts ",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
     "start:numeros": "NODE_ENV=development tsx watch  src/app/serverNumerosIcomp.ts",
-
     "build": "tsc && tsc-alias && npm run copy-static",
     "copy-static": "node scripts/copy-static.js",
     "docker:start": "docker compose up -d",
@@ -55,6 +54,7 @@
   },
   "homepage": "https://github.com/dbfernandes/sysicomp#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "admin-lte": "^3.2.0",
     "archiver": "^7.0.1",
