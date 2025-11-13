@@ -4,7 +4,7 @@ import moment from 'moment';
 import usuarioService from '../resources/usuarios/usuario.service';
 import afastamentoService from '../resources/afastamentoTemporario/afastamento.temporario.service';
 import { Request, Response } from 'express';
-import { generatePdfLeave } from '../resources/pdf/pdf.controller';
+import { generatePdfLeave } from '@resources/pdf/pdf.controller';
 
 interface DataAfastamentoPDF {
   nomeCompleto: string;
@@ -56,7 +56,6 @@ export async function getAfastamento(id: number): Promise<DataAfastamentoPDF> {
 }
 
 // 3. Gerar o PDF
-
 export async function criarAfastamentoPDF(req: Request, res: Response) {
   try {
     const id = req.params.id;
@@ -67,12 +66,10 @@ export async function criarAfastamentoPDF(req: Request, res: Response) {
       '..',
       `tmp/afastamentos/${id}.pdf`,
     );
-
     const dados = await getAfastamento(Number(id));
     if (!dados) {
       return res.status(404).json({ error: 'Afastamento não encontrado' });
     }
-
     await generatePdfLeave(id, id.toString());
 
     try {

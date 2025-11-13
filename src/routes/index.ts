@@ -14,7 +14,6 @@ import autenticacaoController from '../resources/autenticacao/autenticacao.contr
 import reservasRoutes from '../resources/reservasDeSalas/reservas.routes';
 import horasComplementaresRoutes from '../resources/horasComplementares/horas.complementares.routes';
 import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afastamento.temporario.routes';
-import { criarAfastamentoPDF } from '@utils/criarAfastamentoPDF';
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/aluno.routes';
@@ -84,7 +83,6 @@ router.use(
   // autenticacaoController.autorizarProf,
   afastamentoTemporarioRoutes,
 );
-router.use('/gerarPDF/:id', criarAfastamentoPDF);
 
 ////////////////////////////////////
 router.use(

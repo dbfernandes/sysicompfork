@@ -1,8 +1,11 @@
 {{> header}}
 {{> sidebar module='afastamentoTemporario' page='solicitar-afastamento'}}
-
+{{#section "head"}}
+  <link rel="stylesheet" href="/script-adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/toastr/toastr.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+{{/section}}
 <div class="content-wrapper">
-
     <section class="content-header">
         <div class="container-fluid">
             <div class="d-flex mb-2 flex-row justify-content-between">
@@ -41,7 +44,6 @@
 					</div>
           <form action="/afastamentoTemporario/criar" method="POST" id="afastamentoTemporarioForm">
             <div class="card card-primary">
-              <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
               <div class="card-header">
                 <h3 class="card-title">Informações sobre o Pedido de Afastamento</h3>
               </div>
@@ -58,38 +60,30 @@
                   <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-6">
                       <label for="dataSaida">
-                        <span style="color: #FF0000; ">*</span> Data de Saída:
+                        <span style="color: #FF0000; ">*</span> Data de saída:
                       </label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                          </span>
+                      <div class="input-group date" data-target-input="nearest">
+                        <div class="input-group date" id="data_picker_saida" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" name="dataSaida"  id="dataSaida"
+                                 data-target="#data_picker_saida" placeholder="dd/mm/yyyy">
+                          <div class="input-group-append" data-target="#data_picker_saida" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
                         </div>
-                        <input id="dataSaida" name="dataSaida"
-                               type="date"
-                               class="form-control datemask"
-                               data-inputmask-inputformat="dd/mm/yyyy"
-                               required
-                        >
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-6">
-                      <label for="dataRetorno" style="margin-right: 40px;">
+                      <label for="dataRetorno">
                         <span style="color: #FF0000; ">*</span> Data de Retorno:
                       </label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                          </span>
+                      <div class="input-group date" data-target-input="nearest">
+                        <div class="input-group date" id="data_picker_retorno" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" name="dataRetorno"  id="dataRetorno"
+                                 data-target="#data_picker_retorno" placeholder="dd/mm/yyyy">
+                          <div class="input-group-append" data-target="#data_picker_retorno" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
                         </div>
-                        <input id="dataRetorno" name="dataRetorno"
-                               type="date"
-                               class="form-control datemask"
-                               data-inputmask-inputformat="dd/mm/yyyy"
-                               required
-                        >
                       </div>
                     </div>
                   </div>
@@ -117,11 +111,11 @@
                         <span style="color: #FF0000; ">*</span> Tipo de Viagem:
                       </label>
                       <div style="padding-top: 5px;">
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline icheck-primary">
                           <input class="form-check-input" type="radio" name="tipoViagem" id="tipoViagemNacional" value="Nacional" required>
                           <label class="form-check-label" for="tipoViagemNacional">Nacional</label>
                         </div>
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline icheck-primary">
                           <input class="form-check-input" type="radio" name="tipoViagem" id="tipoViagemInternacional" value="Internacional" required>
                           <label class="form-check-label" for="tipoViagemInternacional">Internacional</label>
                         </div>
@@ -143,9 +137,45 @@
     </div>
 	</section>
 </div>
+
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
+<script src="/script-adminlte/plugins/toastr/toastr.min.js"></script>
+
 <script>
-    function voltarPagina() {
-        window.history.back();
-    }
+  function voltarPagina() {
+    window.history.back();
+  }
+  $(document).ready(function () {
+
+    const today = moment().startOf('day');
+
+    // Se já tinha instância criada antes, destrua para evitar conflito
+    $('#data_picker_saida').data('datetimepicker')?.destroy();
+    $('#data_picker_retorno').data('datetimepicker')?.destroy();
+
+    $('#data_picker_saida').datetimepicker({
+      locale: 'pt-br',
+      format: 'L',
+      useCurrent: false,
+      allowInputToggle: true,
+      minDate: today
+
+    });
+    $('#data_picker_retorno').datetimepicker({
+      locale: 'pt-br',
+      format: 'L',
+      useCurrent: false,
+      allowInputToggle: true,
+      minDate: today
+
+    });
+    $('#data_picker_saida').on('change.datetimepicker', function (e) {
+      $('#data_picker_retorno').datetimepicker('minDate', e.date);
+    });
+    $('#data_picker_retorno').on('change.datetimepicker', function (e) {
+      $('#data_picker_saida').datetimepicker('maxDate', e.date);
+    });
+  });
 </script>
 {{> footer}}
