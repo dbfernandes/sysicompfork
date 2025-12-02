@@ -33,7 +33,6 @@
                     <font color="#FF0000">*</font> Campos Obrigatórios
             </div>
             <form id="formAdicionarLattes">
-                <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
                 <div class="card card-primary w-50">
                     <div class="card-header">
                         <h3 class="card-title"><b>Lista de Alunos</b></h3>
@@ -112,10 +111,7 @@
     }
 
     function FormSubmit(){
-        const csrfToken = $("#csrfToken").val();
-        const data = {
-            _csrf: csrfToken
-        }
+        const data = {}
 
         getCSVData(data, reqAjax)     
     }

@@ -7,7 +7,14 @@ class AlunoService {
   async adicionarVarios(alunos: CreateAlunoDto[]): Promise<void> {
     if (alunos !== undefined && alunos.length > 0) {
       await prisma.aluno.deleteMany(); // Remove todos os registros existentes
-      await prisma.aluno.createMany({ data: alunos }); // Cria os novos registros
+      await prisma.aluno.createMany({
+        data: alunos.map((aluno) => {
+          return {
+            ...aluno,
+            formado: Number(aluno.formado),
+          };
+        }),
+      });
     }
   }
 
