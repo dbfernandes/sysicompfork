@@ -1,0 +1,88 @@
+{{> header}}
+{{> sidebar module='defesas' page='divulgar-defesa'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Divulgar Defesa</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/defesas/gerenciar">Gerenciar Defesas</a></li>
+            <li class="breadcrumb-item active">Divulgar</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}
+          {{#if success}}
+            <div class="alert alert-success">{{success}}</div>
+          {{/if}}
+
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title">Novo E-mail de Divulgação</h3>
+            </div>
+            <form action="/defesas/divulgar/{{defesa.id}}" method="POST" enctype="multipart/form-data">
+            <div class="card-body">
+              
+              <div class="form-group">
+                <label>Para:</label>
+                <input class="form-control" name="to" value="professores@icomp.ufam.edu.br, taes@icomp.ufam.edu.br, icomp.geral@icomp.ufam.edu.br" placeholder="Para:">
+                <small class="text-muted">Separe múltiplos e-mails com vírgula.</small>
+              </div>
+              
+              <div class="form-group">
+                <label>Assunto:</label>
+                <input class="form-control" name="subject" placeholder="Assunto:" value="{{defaultSubject}}">
+              </div>
+              
+              <div class="form-group">
+                <label>Corpo do E-mail:</label>
+                <textarea id="emailBody" name="emailBody" class="form-control" style="height: 600px; font-family: monospace;">{{defaultBody}}</textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="portariaFile">Anexar Portaria (PDF):</label>
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="portariaFile" name="portariaFile" accept=".pdf">
+                    <label class="custom-file-label" for="portariaFile">Escolher arquivo</label>
+                  </div>
+                </div>
+                <small class="text-muted">Opcional. Máximo 25MB.</small>
+              </div>
+
+            </div>
+            <div class="card-footer">
+              <div class="float-right">
+                <a href="/defesas/gerenciar" class="btn btn-default"><i class="fas fa-times"></i> Cancelar</a>
+                <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i> Enviar E-mail</button>
+              </div>
+            </div>
+            </form>
+          </div>
+          </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+<script>
+  $(function () {
+    bsCustomFileInput.init();
+  });
+</script>

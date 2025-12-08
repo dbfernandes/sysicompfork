@@ -10,8 +10,8 @@ import {
 
 /** Criação mínima (wizard inicia só com isso) */
 export interface DefesaInitDto {
-  tipo: DefesaTipo; // QUALIFICACAO | DEFESA_FINAL
-  nivel: DefesaNivel; // MESTRADO | DOUTORADO
+  tipo: DefesaTipo;
+  nivel: DefesaNivel;
 }
 
 /** Filtros da listagem */
@@ -28,8 +28,8 @@ export interface DefesaListItem {
   titulo: string;
   tipo: DefesaTipo;
   nivel: DefesaNivel;
-  modalidade: DefesaModalidade | null; // pode estar null enquanto rascunho
-  dataHora: string; // ISO ou '' enquanto não definido
+  modalidade: DefesaModalidade | null; 
+  dataHora: string;
   localOuLink?: string;
   status: DefesaStatus;
 }
@@ -39,7 +39,7 @@ export interface MembroInput {
   nome: string;
   email?: string;
   instituicao?: string;
-  vinculo?: VinculoMembro; // INTERNO | EXTERNO
+  vinculo?: VinculoMembro;
 }
 
 /* =========================
@@ -48,31 +48,35 @@ export interface MembroInput {
 
 export interface QualiStep1Dto {
   tituloTrabalho?: string;
+  candidatoId?: string | null;
+  orientadorId?: number | null;
   coorientadorId?: number | null;
-  dataHora?: string; // ISO
+  coorientadorExternoNome?: string | null;
+  coorientadorExternoInstituicao?: string | null;
+  dataHora?: string;
   modalidade?: DefesaModalidade;
 }
 
 export interface QualiStep2Dto {
-  localOuLink?: string; // texto (presencial) ou URL (online)
+  localOuLink?: string;
 }
 
 export interface QualiStep3Dto {
   resumoOuAbstract?: string;
-  palavrasChaves?: string; // separadas por ";"
+  palavrasChaves?: string;
   creditosMinimosOk?: boolean;
 }
 
 export interface QualiStep4Dto {
-  presidenteOrigem?: PresidenteOrigem; // ORIENTADOR | COORIENTADOR
+  presidenteOrigem?: PresidenteOrigem;
 }
 
 export interface QualiStep5Dto {
-  membrosTitulares?: MembroInput[]; // até 3 além do presidente
+  membrosTitulares?: MembroInput[];
 }
 
 export interface QualiStep6Dto {
-  suplentes?: MembroInput[]; // até 2
+  suplentes?: MembroInput[];
 }
 
 export interface QualiStep7Dto {
@@ -88,39 +92,39 @@ export interface QualiStep7Dto {
 
 export interface FinalStep1Dto {
   tituloTrabalho?: string;
-  coorientadorId?: number | null;
-  linhaPesquisaId?: string;
-  dataHora?: string; // ISO
+  linhaPesquisaId?: string | null;
+  candidatoId?: string | null;
+  orientadorId?: number | null;
+  dataHora?: string;
   modalidade?: DefesaModalidade;
 }
 
 export interface FinalStep2Dto {
-  localOuLink?: string; // texto (presencial) ou URL (online)
+  localOuLink?: string;
 }
 
 export interface FinalStep3Dto {
   resumoPt?: string;
-  palavrasChavePt?: string; // separadas por ";"
+  palavrasChavePt?: string;
   abstractEn?: string;
-  keywordsEn?: string; // separated by ";"
+  keywordsEn?: string;
   idiomaTese?: string;
   creditosOk?: boolean;
-  creditosExigidos?: number; // 36 (M) | 16 (D)
+  creditosExigidos?: number;
 }
 
 export interface FinalStep4Dto {
-  membrosTitulares?: MembroInput[]; // M: >=4 ; D: >=3 (checado na submissão)
+  membrosTitulares?: MembroInput[];
 }
 
 export interface FinalStep5Dto {
-  suplentes?: MembroInput[]; // regra checada na submissão
+  suplentes?: MembroInput[];
 }
 
 export interface FinalStep6Dto {
-  artigoEstratoSuperiorOk?: boolean; // deve ser true na submissão
+  artigoEstratoSuperiorOk?: boolean;
   artigoTitulo?: string;
   artigoVeiculoOuDoi?: string;
-  incluiuAgradecimentosObrigatorios?: boolean; // true na submissão
-  textoAgradecimentos?: string;
+  incluiuAgradecimentosObrigatorios?: boolean;
   autoavaliacaoPreenchida?: boolean;
 }

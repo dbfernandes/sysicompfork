@@ -1,5 +1,5 @@
 {{> header}}
-{{> sidebar module='defesas' page='defesas-gerenciar'}}
+{{> sidebar module='defesas' page='defesas-listar'}}
 
 <div class="content-wrapper">
   <!-- Cabeçalho -->
@@ -19,7 +19,6 @@
         </div>
       </div>
 
-      <!-- Stepper simples -->
       <div class="row mt-2">
         <div class="col-12">
           <div class="progress" style="height: 8px;">
@@ -57,6 +56,14 @@
           </ul>
         </div>
       {{/if}}
+      {{#if defesa.correcaoSolicitada}}
+        <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
 
       <div class="row">
         <div class="col-md-8">
@@ -87,10 +94,9 @@
 
                   <div class="form-group col-md-6">
                     <label for="dataHora">Data e hora da qualificação <span class="text-danger">*</span></label>
-                    <!-- Usamos datetime-local para UX; converteremos para ISO no submit -->
                     <input type="datetime-local" class="form-control"
                            id="dataHoraLocal" data-iso="{{defesa.dataHora}}">
-                    <input type="hidden" name="dataHora" id="dataHora"> <!-- receberá o ISO -->
+                    <input type="hidden" name="dataHora" id="dataHora">
                     <small class="form-text text-muted">Ajuste a data/hora no fuso local.</small>
                   </div>
                 </div>
@@ -111,25 +117,67 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label>Nome do(a) candidato(a)</label>
-                    <input type="text" class="form-control" value="{{candidatoNome}}">
+                      <label for="candidatoId">Candidato(a) <span class="text-danger">*</span></label>
+                      <select class="form-control" id="candidatoId" name="candidatoId" style="width: 100%;">
+                        {{#if defesa.candidato}}
+                          <option value="{{defesa.candidatoId}}" selected="selected">{{defesa.candidato.nome}}</option>
+                        {{/if}}
+                      </select>
+                      </div>
+                    <div class="form-group col-md-6">
+                      <label for="orientadorId">Orientador(a) <span class="text-danger">*</span></label>
+                      <select class="form-control" id="orientadorId" name="orientadorId">
+                        <option value="">Selecione...</option>
+                        {{#each docentes}}
+                          <option value="{{this.id}}" {{#ifEqual this.id ../defesa.orientadorId}}selected{{/ifEqual}}>
+                            {{this.nomeCompleto}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </div>
                   </div>
-                  <div class="form-group col-md-6">
-                    <label>Nome do(a) orientador(a)</label>
-                    <input type="text" class="form-control" value="{{orientadorNome}}" >
+
+                  <div class="form-group">
+                    <label class="d-block">Coorientador(a) (se houver)</label>
+                    
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorNenhum" value="NENHUM" {{#unless defesa.coorientadorId}}{{#unless defesa.coorientadorExternoNome}}checked{{/unless}}{{/unless}}>
+                      <label class="form-check-label" for="coorientadorNenhum">Nenhum</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorInterno" value="INTERNO" {{#if defesa.coorientadorId}}checked{{/if}}>
+                      <label class="form-check-label" for="coorientadorInterno">Interno (UFAM)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorExterno" value="EXTERNO" {{#if defesa.coorientadorExternoNome}}checked{{/if}}>
+                      <label class="form-check-label" for="coorientadorExterno">Externo</label>
+                    </div>
                   </div>
-                </div>
 
-                <div class="form-group">
-                  <div class="form-group col-md-6">
-                    <label>Nome do(a) coorientador(a) (se houver)</label>
-                    <input type="text" class="form-control" value="{{orientadorNome}}" >
+                  <div id="coorientadorInternoDiv" class="form-group" style="display: none;">
+                    <label for="coorientadorId">Selecione o professor da UFAM</label>
+                    <select class="form-control" name="coorientadorId">
+                      <option value="">Selecione...</option>
+                      {{#each docentes}}
+                        <option value="{{this.id}}" {{#ifEqual this.id ../defesa.coorientadorId}}selected{{/ifEqual}}>
+                          {{this.nomeCompleto}}
+                        </option>
+                      {{/each}}
+                    </select>
                   </div>
 
-                  <small class="form-text text-muted">Opcional.</small>
-                </div>
+                  <div id="coorientadorExternoDiv" style="display: none;">
+                    <div class="form-group">
+                      <label for="coorientadorExternoNome">Nome do Coorientador Externo</label>
+                      <input type="text" class="form-control" name="coorientadorExternoNome" placeholder="Nome completo" value="{{defesa.coorientadorExternoNome}}">
+                    </div>
+                    <div class="form-group">
+                      <label for="coorientadorExternoInstituicao">Instituição do Coorientador Externo</label>
+                      <input type="text" class="form-control" name="coorientadorExternoInstituicao" placeholder="Nome da instituição de origem" value="{{defesa.coorientadorExternoInstituicao}}">
+                    </div>
+                  </div>
 
-              </div><!-- ./card-body -->
+              </div>
 
               <div class="card-footer d-flex justify-content-between">
                 <a href="/defesas/listar" class="btn btn-default">
@@ -139,7 +187,7 @@
                   <button type="submit" class="btn btn-secondary mr-2" name="action" value="save">
                     <i class="fas fa-save"></i> Salvar rascunho
                   </button>
-                  <button type="submit" class="btn btn-primary" name="action" value="next">
+                  <button type="submit" class="btn btn-primary" name="action" value="next" id="btnContinuar" disabled> {{!-- Adicionado id e disabled --}}
                     Continuar <i class="fas fa-chevron-right"></i>
                   </button>
                 </div>
@@ -148,7 +196,6 @@
           </div>
         </div>
 
-        <!-- Lateral: dicas -->
         <div class="col-md-4">
           <div class="card card-outline card-info">
             <div class="card-header">
@@ -168,23 +215,21 @@
             </div>
           </div>
         </div>
-      </div><!-- ./row -->
-    </div><!-- ./container-fluid -->
+      </div>
+    </div>
   </section>
 </div>
 
 <script>
-  // Helper: converte ISO -> valor aceitável por datetime-local
   function isoToLocalInputValue(iso) {
     if (!iso) return '';
     const d = new Date(iso);
     if (isNaN(d.getTime())) return '';
     const off = d.getTimezoneOffset();
     const local = new Date(d.getTime() - off * 60000);
-    return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+    return local.toISOString().slice(0, 16);
   }
 
-  // Preenche datetime-local a partir do ISO da defesa, se houver
   (function initDateInput() {
     const inputLocal = document.getElementById('dataHoraLocal');
     const hiddenIso  = document.getElementById('dataHora');
@@ -192,12 +237,10 @@
     const val = isoToLocalInputValue(iso);
     if (val) inputLocal.value = val;
 
-    // Ao submeter, converte de volta para ISO UTC
     document.getElementById('formStep1').addEventListener('submit', function(e) {
-      const v = inputLocal.value; // "YYYY-MM-DDTHH:mm"
+      const v = inputLocal.value;
       if (v) {
         const d = new Date(v);
-        // Normaliza para ISO em UTC (o backend espera ISO)
         hiddenIso.value = d.toISOString();
       } else {
         hiddenIso.value = '';
@@ -207,3 +250,99 @@
 </script>
 
 {{> footer}}
+
+<script>
+  $(document).ready(function() {
+    $('#candidatoId').select2({
+      theme: 'bootstrap4',
+      placeholder: "Digite para buscar um candidato...",
+      minimumInputLength: 2,
+      language: {
+        inputTooShort: function () {
+          return "Digite 2 ou mais caracteres para buscar";
+        },
+        noResults: function () {
+          return "Nenhum resultado encontrado";
+        },
+        searching: function () {
+          return "Buscando...";
+        }
+      },
+      ajax: {
+        url: '/api/candidatos/search',
+        dataType: 'json',
+        delay: 250, // 
+        data: function (params) {
+          return {
+            q: params.term
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.results
+          };
+        },
+        cache: true
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    function toggleCoorientadorFields() {
+      const selection = $('input[name="coorientadorTipo"]:checked').val();
+      
+      if (selection === 'INTERNO') {
+        $('#coorientadorInternoDiv').show();
+        $('#coorientadorExternoDiv').hide();
+      } else if (selection === 'EXTERNO') {
+        $('#coorientadorInternoDiv').hide();
+        $('#coorientadorExternoDiv').show();
+      } else {
+        $('#coorientadorInternoDiv').hide();
+        $('#coorientadorExternoDiv').hide();
+      }
+    }
+
+    toggleCoorientadorFields();
+
+    $('input[name="coorientadorTipo"]').on('change', toggleCoorientadorFields);
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    const tituloInput = $('#tituloTrabalho');
+    const dataHoraInput = $('#dataHoraLocal'); 
+    const modalidadeRadios = $('input[name="modalidade"]');
+    const candidatoSelect = $('#candidatoId'); 
+    const orientadorSelect = $('#orientadorId');
+    const btnContinuar = $('#btnContinuar');
+
+    function checkFormValidity() {
+      const tituloVal = tituloInput.val()?.trim() ?? ''; 
+      const dataHoraVal = dataHoraInput.val() ?? '';
+      const modalidadeVal = $('input[name="modalidade"]:checked').val(); 
+      const candidatoVal = candidatoSelect.val() ?? ''; 
+      const orientadorVal = orientadorSelect.val() ?? ''; 
+
+      return tituloVal !== '' && 
+             dataHoraVal !== '' && 
+             modalidadeVal && 
+             candidatoVal !== '' && 
+             orientadorVal !== '';
+    }
+
+    function updateButtonState() {
+      const isValid = checkFormValidity();
+      btnContinuar.prop('disabled', !isValid); 
+    }
+
+    tituloInput.on('input keyup', updateButtonState); 
+    dataHoraInput.on('change input', updateButtonState); 
+    modalidadeRadios.on('change', updateButtonState);
+    candidatoSelect.on('change', updateButtonState); 
+    orientadorSelect.on('change', updateButtonState);
+
+    updateButtonState(); 
+  });
+</script>

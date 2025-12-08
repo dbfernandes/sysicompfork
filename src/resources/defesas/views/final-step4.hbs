@@ -1,0 +1,198 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap">
+        <div><h1>Defesa Final — Etapa 4</h1><small class="text-muted">Banca Examinadora (Membros Titulares)</small></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li><li class="breadcrumb-item active">Defesa Final — Etapa 4</li></ol></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="d-flex justify-content-between mt-1 small text-muted"><span>1. Dados iniciais</span><span>2. Local</span><span>3. Trabalho</span><span><strong>4. Membros</strong></span><span>5. Suplentes</span><span>6. Documentos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      {{#if defesa.correcaoSolicitada}}
+        <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">Banca Examinadora (Membros Titulares)</h3></div>
+
+            <form id="formFinalStep4" method="POST" action="/defesas/editar/{{defesa.id}}/final/step4">
+              <div class="card-body">
+                <p class="text-muted">
+                  Informe os membros titulares. 
+                  {{#ifEqual defesa.nivel 'MESTRADO'}}
+                    Os 2 primeiros são obrigatórios.
+                  {{else}}
+                    Os 4 primeiros são obrigatórios.
+                  {{/ifEqual}}
+                  Lembre-se: nº externos ≥ nº internos.
+                </p>
+
+                {{!-- Membro 1 --}}
+                <div class="card card-primary">
+                  <div class="card-header"><h3 class="card-title">1º Membro <span class="text-danger">*</span></h3></div>
+                  <div class="card-body">
+                    <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[0][nome]" class="form-control" placeholder="Prof(a). Dr(a) Nome completo" value="{{membrosTitulares.[0].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[0][email]" class="form-control" placeholder="E-mail" value="{{membrosTitulares.[0].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[0][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[0].instituicao}}"></div>
+                      <div class="form-group col-md-12"><label class="d-block">Interno ou externo?<span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[0][vinculo]" id="membro0Interno" value="INTERNO" {{#ifEqual membrosTitulares.[0].vinculo 'INTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro0Interno">Interno</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[0][vinculo]" id="membro0Externo" value="EXTERNO" {{#ifEqual membrosTitulares.[0].vinculo 'EXTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro0Externo">Externo</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- Membro 2 --}}
+                <div class="card card-primary">
+                  <div class="card-header"><h3 class="card-title">2º Membro <span class="text-danger">*</span></h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[1][nome]" class="form-control" placeholder="Prof.(a) Dr.(a) Nome Completo" value="{{membrosTitulares.[1].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[1][email]" class="form-control" placeholder="E-mail" value="{{membrosTitulares.[1].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[1][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[1].instituicao}}"></div>
+                       <div class="form-group col-md-12"><label class="d-block">Interno ou externo?<span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[1][vinculo]" id="membro1Interno" value="INTERNO" {{#ifEqual membrosTitulares.[1].vinculo 'INTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro1Interno">Interno</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[1][vinculo]" id="membro1Externo" value="EXTERNO" {{#ifEqual membrosTitulares.[1].vinculo 'EXTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro1Externo">Externo</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {{!-- Membro 3 --}}
+                {{assign 'isMestrado' (eq defesa.nivel 'MESTRADO')}} {{!-- Helper 'eq' do seu 'ops' --}}
+                <div class="card card-primary {{#if isMestrado}}card-outline{{/if}}"> {{!-- Outline se for opcional (Mestrado) --}}
+                  <div class="card-header"><h3 class="card-title">3º Membro {{#unless isMestrado}}<span class="text-danger">*</span>{{else}}(Opcional){{/unless}}</h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[2][nome]" class="form-control" placeholder="Prof.(a) Dr.(a) Nome Completo" value="{{membrosTitulares.[2].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[2][email]" class="form-control" placeholder="E-mail" value="{{membrosTitulares.[2].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[2][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[2].instituicao}}"></div>
+                       <div class="form-group col-md-12"><label class="d-block">Interno ou externo?{{#unless isMestrado}}<span class="text-danger">*</span>{{/unless}}</label>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[2][vinculo]" id="membro2Interno" value="INTERNO" {{#ifEqual membrosTitulares.[2].vinculo 'INTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro2Interno">Interno</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[2][vinculo]" id="membro2Externo" value="EXTERNO" {{#ifEqual membrosTitulares.[2].vinculo 'EXTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro2Externo">Externo</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- Membro 4 --}}
+                <div class="card card-primary {{#if isMestrado}}card-outline{{/if}}">
+                  <div class="card-header"><h3 class="card-title">4º Membro {{#unless isMestrado}}<span class="text-danger">*</span>{{else}}(Opcional){{/unless}}</h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[3][nome]" class="form-control" placeholder="Prof.(a) Dr.(a) Nome Completo" value="{{membrosTitulares.[3].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[3][email]" class="form-control" placeholder="E-mail" value="{{membrosTitulares.[3].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[3][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[3].instituicao}}"></div>
+                       <div class="form-group col-md-12"><label class="d-block">Interno ou externo?{{#unless isMestrado}}<span class="text-danger">*</span>{{/unless}}</label>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[3][vinculo]" id="membro3Interno" value="INTERNO" {{#ifEqual membrosTitulares.[3].vinculo 'INTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro3Interno">Interno</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[3][vinculo]" id="membro3Externo" value="EXTERNO" {{#ifEqual membrosTitulares.[3].vinculo 'EXTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro3Externo">Externo</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- Membro 5 (Sempre Opcional) --}}
+                <div class="card card-primary card-outline">
+                  <div class="card-header"><h3 class="card-title">5º Membro (Opcional)</h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[4][nome]" class="form-control" placeholder="Prof.(a) Dr.(a) Nome Completo" value="{{membrosTitulares.[4].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[4][email]" class="form-control" placeholder="E-mail" value="{{membrosTitulares.[4].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[4][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[4].instituicao}}"></div>
+                       <div class="form-group col-md-12"><label class="d-block">Interno ou externo?</label>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[4][vinculo]" id="membro4Interno" value="INTERNO" {{#ifEqual membrosTitulares.[4].vinculo 'INTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro4Interno">Interno</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="membrosTitulares[4][vinculo]" id="membro4Externo" value="EXTERNO" {{#ifEqual membrosTitulares.[4].vinculo 'EXTERNO'}}checked{{/ifEqual}}><label class="form-check-label" for="membro4Externo">Externo</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/final/step3" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
+                <div>
+                  <button type="submit" class="btn btn-secondary mr-2" name="action" value="save">Salvar rascunho</button>
+                  <button type="submit" class="btn btn-primary" name="action" value="next" id="btnContinuarFinalStep4" disabled>
+                    Continuar <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {{!-- Coluna Lateral --}}
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Regras Banca Final</h3></div>
+            <div class="card-body">
+              {{#ifEqual defesa.nivel 'MESTRADO'}}
+                <p>Banca <strong>Mestrado</strong>: Presidente e 2 ou mais membros (sendo necessário pelo menos 1 membro interno e um membro externo).</p>
+              {{else}}
+                 <p>Banca <strong>Doutorado</strong>: Presidente e 4 ou mais membros (sendo necessários pelo menos 1 membro interno e 2 externos).</p>
+              {{/ifEqual}}
+              <p>Regra geral: <strong>o Número de membros externos é maior ou igual aos dos memnbos internos</strong>.</p>
+              <hr>
+              <p class="text-muted">Link p/ externos: <a href="https://forms.gle/SCrwhfM8rVoVH6ks8" target="_blank" rel="noopener noreferrer">Formulário Membros Externos</a>.</p>
+              <p class="text-muted mb-0">Sugestão: 1 ou mais membros internos, para garantir a lisura do processo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+
+<script>
+  $(document).ready(function() {
+    const isMestrado = {{#eq defesa.nivel 'MESTRADO'}}true{{else}}false{{/eq}};
+    const requiredCount = isMestrado ? 2 : 4; 
+    const btnContinuar = $('#btnContinuarFinalStep4');
+    let requiredFields = []; 
+    for (let i = 0; i < requiredCount; i++) {
+      requiredFields.push(`input[name="membrosTitulares[${i}][nome]"]`);
+      requiredFields.push(`input[name="membrosTitulares[${i}][email]"]`);
+      requiredFields.push(`input[name="membrosTitulares[${i}][instituicao]"]`);
+      requiredFields.push(`input[name="membrosTitulares[${i}][vinculo]"]`);
+    }
+    const allRequiredSelectors = requiredFields.join(', '); 
+
+    function checkFormValidity() {
+      let isValid = true;
+      $(allRequiredSelectors).each(function() {
+        if ($(this).is(':radio')) { 
+           const groupName = $(this).attr('name');
+           if ($(`input[name="${groupName}"]:checked`).length === 0) { isValid = false; return false; }
+        } else { 
+          if (($(this).val()?.trim() ?? '') === '') { isValid = false; return false; }
+        }
+      });
+      return isValid;
+    }
+    function updateButtonState() { btnContinuar.prop('disabled', !checkFormValidity()); }
+    $(document).on('input keyup change', allRequiredSelectors, updateButtonState);
+    updateButtonState(); 
+  });
+</script>

@@ -1,0 +1,194 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-gerenciar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap">
+        <div><h1>Revisar Defesa ({{defesa.tipo}} / {{defesa.nivel}})</h1></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/gerenciar">Gerenciar Defesas</a></li><li class="breadcrumb-item active">Revisão</li></ol></div>
+      </div>
+      <p class="text-muted">Revise os dados submetidos pelo usuário e aprove ou rejeite a solicitação.</p>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        {{!-- Coluna Principal de Dados --}}
+        <div class="col-md-8">
+          {{!-- Card de Dados Iniciais --}}
+          <div class="card card-outline card-primary">
+            <div class="card-header"><h3 class="card-title">Etapa 1: Dados Iniciais</h3></div>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-4">Título do Trabalho:</dt>
+                <dd class="col-sm-8">{{defesa.tituloTrabalho}}</dd>
+
+                <dt class="col-sm-4">Candidato:</dt>
+                <dd class="col-sm-8">{{defesa.candidato.nome}}</dd>
+                
+                <dt class="col-sm-4">Orientador(a):</dt>
+                <dd class="col-sm-8">{{defesa.orientador.nomeCompleto}}</dd>
+
+                <dt class="col-sm-4">Coorientador(a):</dt>
+                <dd class="col-sm-8">{{coorientadorDisplay.nome}}</dd>
+
+                <dt class="col-sm-4">Filiação Coorientador:</dt>
+                <dd class="col-sm-8">{{coorientadorDisplay.instituicao}}</dd>
+
+                <dt class="col-sm-4">Data e Hora:</dt>
+                <dd class="col-sm-8">{{dataHoraFormatada}}</dd>
+                
+                <dt class="col-sm-4">Modalidade:</dt>
+                <dd class="col-sm-8">{{defesa.modalidade}}</dd>
+                
+                {{#if (eq defesa.tipo 'DEFESA_FINAL')}}
+                  <dt class="col-sm-4">Linha de Pesquisa:</dt>
+                  <dd class="col-sm-8">{{defesa.linhaPesquisa.nome}}</dd>
+                {{/if}}
+              </dl>
+            </div>
+          </div>
+
+          {{!-- Card de Local --}}
+          <div class="card card-outline card-primary">
+            <div class="card-header"><h3 class="card-title">Etapa 2: Local</h3></div>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-4">Local / Link:</dt>
+                <dd class="col-sm-8">{{defesa.localOuLink}}</dd>
+              </dl>
+            </div>
+          </div>
+          
+          {{!-- Card de Dados do Trabalho (Resumo, etc.) --}}
+          {{#if (eq defesa.tipo 'QUALIFICACAO')}}
+            {{> defesas/revisao-bloco-trabalho-quali defesa=defesa}}
+          {{else}}
+            {{> defesas/revisao-bloco-trabalho-final defesa=defesa}}
+          {{/if}}
+
+          {{!-- Card da Banca (Membros e Suplentes) --}}
+          <div class="card card-outline card-primary">
+            <div class="card-header"><h3 class="card-title">Etapas 4/5/6: Banca Examinadora</h3></div>
+            <div class="card-body">
+              <h5>Membros Titulares</h5>
+              <table class="table table-sm table-bordered">
+                <tbody>
+                  {{#each defesa.membros}}
+                    {{#unless this.suplente}}
+                      <tr>
+                        <td>{{this.nome}}</td>
+                        <td>{{this.instituicao}}</td>
+                        <td>{{this.vinculo}}</td>
+                      </tr>
+                    {{/unless}}
+                  {{/each}}
+                </tbody>
+              </table>
+              <h5 class="mt-3">Membros Suplentes</h5>
+              <table class="table table-sm table-bordered">
+                <tbody>
+                  {{#each defesa.membros}}
+                    {{#if this.suplente}}
+                      <tr>
+                        <td>{{this.nome}}</td>
+                        <td>{{this.instituicao}}</td>
+                        <td>{{this.vinculo}}</td>
+                      </tr>
+                    {{/if}}
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {{!-- Card de Documentos --}}
+          {{> defesas/revisao-bloco-documentos defesa=defesa uploads=uploads}}
+          
+        </div>
+
+        {{!-- Coluna Lateral de Ações --}}
+        <div class="col-md-4">
+          <div class="card card-success card-outline">
+            <div class="card-header"><h3 class="card-title">Ação Requerida</h3></div>
+            <div class="card-body text-center">
+              <p>Após revisar todos os dados, aprove ou rejeite a solicitação.</p>
+              
+              {{!-- Botão Aprovar (submete form oculto) --}}
+              <button class="btn btn-lg btn-success btn-block mb-2 btn-aprovar" data-id="{{defesa.id}}" data-nome="{{defesa.candidato.nome}}">
+                <i class="fa fa-check"></i> Aprovar e Validar
+              </button>
+              
+              {{!-- Botão Rejeitar (Abre Modal) --}}
+              <button class="btn btn-lg btn-danger btn-block btn-rejeitar" 
+                      data-id="{{defesa.id}}" 
+                      data-orientador="{{orientadorNome}}"
+                      data-toggle="modal" 
+                      data-target="#modalRejeitar">
+                <i class="fa fa-times"></i> Rejeitar (Pedir Correção)
+              </button>
+            </div>
+          </div>
+          {{#if defesa.correcaoSolicitada}}
+          <div class="card card-warning card-outline">
+            <div class="card-header"><h3 class="card-title">Correção Anterior</h3></div>
+            <div class="card-body">
+              <p class="text-muted">Esta defesa foi rejeitada anteriormente pelo seguinte motivo:</p>
+              <p><em>"{{defesa.correcaoSolicitada}}"</em></p>
+            </div>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal fade" id="modalRejeitar" tabindex="-1" role="dialog" aria-labelledby="labelRejeitar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="formRejeitar" method="POST" action="/defesas/processar-aprovacao/{{defesa.id}}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="tituloModalRejeitar">Rejeitar Defesa</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <p>Você está rejeitando a defesa orientada por <strong id="nomeOrientadorRejeitar"></strong>. A defesa retornará ao estado "Em Correção" para o professor corrigir.</p>.
+            <div class="form-group">
+              <label for="motivoCorrecao">Indique os campos que necessitam de correção (obrigatório):</label>
+              <textarea class="form-control" id="motivoCorrecao" name="motivoCorrecao" rows="4" required placeholder="Ex: Etapa 5, 2º membro titular está com a instituição incorreta."></textarea>
+            </div>
+            <input type="hidden" name="action" value="REJEITAR">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Confirmar Rejeição</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <form id="formAprovar" method="POST" action="/defesas/processar-aprovacao/{{defesa.id}}" style="display: none;">
+    <input type="hidden" name="action" value="APROVAR">
+  </form>
+</div>
+
+{{> footer}}
+
+<script>
+  $(document).ready(function () {
+    $('.btn-aprovar').on('click', function() {
+      const nome = $(this).data('nome');
+      if (confirm(`Tem certeza que deseja APROVAR a defesa de ${nome}?`)) {
+        $('#formAprovar').submit();
+      }
+    });
+
+    $('.btn-rejeitar').on('click', function() {
+      const orientador = $(this).data('orientador');
+      $('#nomeOrientadorRejeitar').text(orientador);
+    });
+  });
+</script>

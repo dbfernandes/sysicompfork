@@ -1,0 +1,170 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap">
+        <div><h1>Qualificação — Etapa 7</h1><small class="text-muted">Proposta e Artigos</small></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li><li class="breadcrumb-item active">Qualificação — Etapa 7</li></ol></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="d-flex justify-content-between mt-1 small text-muted"><span>1. Dados iniciais</span><span>2. Local</span><span>3. Trabalho</span><span>4. Presidente</span><span>5. Membros</span><span>6. Suplentes</span><span><strong>7. Proposta/Artigos</strong></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      {{#if defesa.correcaoSolicitada}}
+      <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">Proposta e Documentação Final</h3></div>
+            <form id="formStep7" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step7" enctype="multipart/form-data"> {{!-- NECESSÁRIO para upload --}}
+              <div class="card-body">
+
+                <div class="form-group">
+                  <label for="propostaPdf">Anexar o arquivo da proposta em .pdf (tamanho máximo 100MB) <span class="text-danger">*</span></label>
+                  <input type="file" class="form-control-file" id="propostaPdf" name="propostaPdf" accept=".pdf">
+                  {{#if propostaAnexada}}
+                    <small class="form-text text-success">
+                      Arquivo atual: {{propostaAnexada.originalName}} ({{formatBytes propostaAnexada.size}})
+                      <span class="text-muted ml-2">(Enviar um novo arquivo substituirá o atual)</span>
+                    </small>
+                  {{else}}
+                    <small class="form-text text-muted">Faça upload de 1 arquivo aceito: PDF. O tamanho máximo é de 100 MB.</small>
+                  {{/if}}
+                </div>
+                <hr>
+
+                {{#ifEqual defesa.nivel 'DOUTORADO'}}
+                  <h4>Documentação de Doutorado</h4>
+                  <div class="custom-control custom-checkbox mb-2">
+                    <input type="checkbox" class="custom-control-input" id="doutoradoArtigoComprovado" name="doutoradoArtigoComprovado" value="true" {{#if defesa.quali.doutoradoArtigoComprovado}}checked{{/if}}>
+                    <label class="custom-control-label" for="doutoradoArtigoComprovado">Declaro que o aluno tem pelo menos um journal de estrato superior submetido ou aceito (A1, A2, A3, A4) como primeiro autor.</label>
+                    <small class="form-text text-muted">Consulte as regras em <a href="https://drive.google.com/file/d/1Mn4R5cyw1v1DWKIHAFwh7v2yhpQKeqqn/view?usp=sharing" target="_blank" rel="noopener noreferrer">Qualis 2017-2020</a>.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="artigoTitulo">Título do artigo</label>
+                    <input type="text" class="form-control" id="artigoTitulo" name="artigoTitulo" value="{{defesa.quali.artigoTitulo}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="artigoVeiculoOuDoi">Veículo de publicação (link) ou DOI</label>
+                    <input type="text" class="form-control" id="artigoVeiculoOuDoi" name="artigoVeiculoOuDoi" value="{{defesa.quali.artigoVeiculoOuDoi}}">
+                  </div>
+                  <hr>
+                {{/ifEqual}}
+
+                <h4>Declaração de Autoavaliação <span class="text-danger">*</span></h4>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="autoavaliacaoPreenchida" name="autoavaliacaoPreenchida" value="true" {{#if defesa.quali.autoavaliacaoPreenchida}}checked{{/if}}>
+                  <label class="custom-control-label" for="autoavaliacaoPreenchida">Declaro que o(a) orientador(a) e o(a) discente preenchemos o formulário de autoavaliação do programa do ano 2024.</label>
+                </div>
+                <div class="mt-2">
+                  <p class="mb-1 small text-muted">Se ainda não preencheu, utilize sua conta @icomp nos links abaixo:</p>
+                  <ul class="list-unstyled small">
+                    <li><a href="https://forms.gle/ZrzyWhkP4Piq7sr3A" target="_blank" rel="noopener noreferrer">Link para Discentes</a></li>
+                    <li><a href="https://forms.gle/z2SQ399HK1iKUSRf8" target="_blank" rel="noopener noreferrer">Link para Docentes</a></li>
+                  </ul>
+                </div>
+
+              </div>
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/qualificacao/step6" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
+                <div>
+                  <button type="submit" class="btn btn-primary" name="action" value="submit" id="btnSubmitFinal" disabled>
+                    <i class="fas fa-check"></i> Finalizar e Submeter para Validação
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        {{!-- Caixa de informações lateral --}}
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Requisitos desta etapa</h3></div>
+            <div class="card-body">
+              <ul class="mb-0">
+                <li>Anexar o arquivo da proposta em PDF.</li>
+                {{#ifEqual defesa.nivel 'DOUTORADO'}}
+                <li>Declarar o artigo submetido/aceito (Doutorado).</li>
+                <li>Preencher os dados do artigo (Doutorado).</li>
+                {{/ifEqual}}
+                <li>Confirmar o preenchimento da autoavaliação.</li>
+              </ul>
+              <hr/>
+              <p class="text-muted mb-0">Esta é a última etapa. Ao clicar em "Finalizar", a defesa será enviada para validação da coordenação.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{{> footer}}
+
+<script>
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+  
+  $(document).ready(function() {
+    const propostaInput = $('#propostaPdf');
+    const autoavaliacaoCheck = $('#autoavaliacaoPreenchida');
+    const btnSubmit = $('#btnSubmitFinal');
+    
+    const isDoutorado = {{#ifEqual defesa.nivel 'DOUTOROADO'}}true{{else}}false{{/ifEqual}};
+    const artigoCheck = $('#doutoradoArtigoComprovado');
+    const artigoTituloInput = $('#artigoTitulo');
+    const artigoVeiculoInput = $('#artigoVeiculoOuDoi');
+
+    const hasExistingFile = {{#if propostaAnexada}}true{{else}}false{{/if}};
+
+    function checkFormValidity() {
+      const fileSelected = (propostaInput[0].files && propostaInput[0].files.length > 0) || hasExistingFile;
+      const autoavaliacaoChecked = autoavaliacaoCheck.is(':checked');
+      
+      let doutoradoFieldsOk = true;
+      if (isDoutorado) {
+        doutoradoFieldsOk = artigoCheck.is(':checked') && 
+                            (artigoTituloInput.val()?.trim() ?? '') !== '' &&
+                            (artigoVeiculoInput.val()?.trim() ?? '') !== '';
+      }
+      
+      return fileSelected && autoavaliacaoChecked && doutoradoFieldsOk;
+    }
+
+    function updateButtonState() {
+      btnSubmit.prop('disabled', !checkFormValidity());
+    }
+
+    propostaInput.on('change', updateButtonState);
+    autoavaliacaoCheck.on('change', updateButtonState);
+    if (isDoutorado) {
+      artigoCheck.on('change', updateButtonState);
+      artigoTituloInput.on('input keyup', updateButtonState);
+      artigoVeiculoInput.on('input keyup', updateButtonState);
+    }
+    
+    updateButtonState(); 
+  });
+</script>

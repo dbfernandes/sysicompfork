@@ -247,3 +247,53 @@ export async function sendEmail({
     attachments: attachmentsSend,
   });
 }
+
+interface SendEmailWithFileProps {
+  to: string | string[];
+  subject: string;
+  text: string;
+  html?: string;
+  attachments?: {
+    filename: string;
+    path: string;
+    contentType?: string;
+  }[];
+}
+
+export async function sendEmailWithFile({
+  to,
+  subject,
+  text,
+  html,
+  attachments = [],
+}: SendEmailWithFileProps) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST || 'smtp.mailtrap.io',
+    port: Number(process.env.MAIL_PORT) || 587,
+    secure: process.env.MAIL_SECURE === 'true',
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  // Prepara os anexos usando 'path' para stream direto do disco (alta performance)
+  const formattedAttachments = attachments.map(att => ({
+    filename: att.filename,
+    path: att.path, 
+    contentType: att.contentType || 'application/pdf'
+  }));
+
+
+  const result = await transporter.sendMail({
+    from: `"${process.env.MAIL_FROM_NAME || 'PPGI UFAM'}" <${process.env.MAIL_FROM}>`,
+    to,
+    subject,
+    text,
+    html: html || text.replace(/\n/g, '<br>'),
+    attachments: formattedAttachments,
+  });
+
+  console.log('[Nodemailer] Email de divulgação enviado:', result.messageId);
+  return result;
+}

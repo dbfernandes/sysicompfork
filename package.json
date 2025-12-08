@@ -4,16 +4,15 @@
   "description": "Sistema da Secretaria do Icomp",
   "main": "src/app.ts",
   "prisma": {
-    "seed": "ts-node --esm prisma/seed.ts"
+    "seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "scripts": {
     "start:prod": "NODE_ENV=production docker compose build --no-cache && NODE_ENV=production docker compose up --force-recreate",
     "start:prod-syscomp": "npm run prisma:init:dev && NODE_ENV=production node build/server.js",
     "start:dev": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up",
     "start:dev:dbs": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build redis phpmyadmin db gotenberg",
-    "start:syscomp": "NODE_ENV=development tsx watch  src/server.ts ",
+    "start:syscomp": "cross-env NODE_ENV=development tsx watch src/server.ts",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
-
     "build": "tsc && tsc-alias && npm run copy-static",
     "copy-static": "node scripts/copy-static.js",
     "docker:start": "docker compose up -d",
@@ -82,7 +81,6 @@
     "nodemailer": "^7.0.5",
     "redis": "^5.6.0",
     "resend": "^4.7.0",
-    "ts-node": "^10.9.2",
     "uuid": "^8.3.2",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
@@ -105,7 +103,7 @@
     "@types/jest": "^29.5.14",
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.19.19",
     "@types/nodemailer": "^6.4.17",
     "@types/nodemailer-express-handlebars": "^4.0.5",
     "@types/supertest": "^6.0.2",
@@ -135,11 +133,12 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.9.3"
   }
 }

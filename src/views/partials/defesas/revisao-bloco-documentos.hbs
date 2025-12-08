@@ -1,0 +1,87 @@
+<div class="card card-outline card-primary">
+  <div class="card-header"><h3 class="card-title">Etapa Final: Documentos e Declarações</h3></div>
+  <div class="card-body">
+    <dl class="row">
+      
+      {{!-- ================= SEÇÃO DE QUALIFICAÇÃO ================= --}}
+      {{#if (eq defesa.tipo 'QUALIFICACAO')}}
+        <dt class="col-sm-4">Arquivo (Proposta):</dt>
+        <dd class="col-sm-8">
+          {{#if uploads.proposta}}
+            <a href="/defesas/download/{{uploads.proposta.id}}" class="btn btn-sm btn-outline-primary" target="_blank">
+              <i class="fas fa-download"></i> {{uploads.proposta.originalName}}
+            </a>
+          {{else}}
+            <span class="text-danger"><i class="fas fa-times-circle"></i> Não enviado</span>
+          {{/if}}
+        </dd>
+
+        <dt class="col-sm-4">Artigo Doutorado?</dt>
+        <dd class="col-sm-8">
+          {{#if defesa.quali.doutoradoArtigoComprovado}}
+            <span class="badge badge-success">Sim</span>
+          {{else}}
+            <span class="text-muted">N/A ou Não</span>
+          {{/if}}
+        </dd>
+
+        {{#if defesa.quali.doutoradoArtigoComprovado}}
+          <dt class="col-sm-4">Título Artigo:</dt><dd class="col-sm-8">{{defesa.quali.artigoTitulo}}</dd>
+          <dt class="col-sm-4">Veículo/DOI:</dt><dd class="col-sm-8">{{defesa.quali.artigoVeiculoOuDoi}}</dd>
+        {{/if}}
+
+        <dt class="col-sm-4">Autoavaliação OK?</dt>
+        <dd class="col-sm-8">
+          {{#if defesa.quali.autoavaliacaoPreenchida}}
+            <span class="badge badge-success">Sim</span>
+          {{else}}
+            <span class="badge badge-danger">Não</span>
+          {{/if}}
+        </dd>
+
+      {{!-- ================= SEÇÃO DE DEFESA FINAL ================= --}}
+      {{else}} 
+        <dt class="col-sm-4">Arquivo (Tese):</dt>
+        <dd class="col-sm-8">
+          {{#if uploads.tese}}
+            <a href="/defesas/download/{{uploads.tese.id}}" class="btn btn-sm btn-outline-primary" target="_blank">
+              <i class="fas fa-download"></i> {{uploads.tese.originalName}}
+            </a>
+          {{else}}
+            <span class="text-danger"><i class="fas fa-times-circle"></i> Não enviado</span>
+          {{/if}}
+        </dd>
+
+        <dt class="col-sm-4">Declaração Artigo:</dt>
+        <dd class="col-sm-8">
+          {{#if defesa.final.artigoEstratoSuperiorOk}}
+             <span class="badge badge-success">Sim</span>
+          {{else}}
+             <span class="badge badge-danger">Não</span>
+          {{/if}}
+        </dd>
+
+        <dt class="col-sm-4">Título Artigo:</dt><dd class="col-sm-8">{{defesa.final.artigoTitulo}}</dd>
+        <dt class="col-sm-4">Veículo/DOI:</dt><dd class="col-sm-8">{{defesa.final.artigoVeiculoOuDoi}}</dd>
+
+        <dt class="col-sm-4">Agradecimentos OK?</dt>
+        <dd class="col-sm-8">
+          {{#if defesa.final.incluiuAgradecimentosObrigatorios}}
+            <span class="badge badge-success">Sim</span>
+          {{else}}
+            <span class="badge badge-danger">Não</span>
+          {{/if}}
+        </dd>
+
+        <dt class="col-sm-4">Autoavaliação OK?</dt>
+        <dd class="col-sm-8">
+          {{#if defesa.final.autoavaliacaoPreenchida}}
+            <span class="badge badge-success">Sim</span>
+          {{else}}
+            <span class="badge badge-danger">Não</span>
+          {{/if}}
+        </dd>
+      {{/if}}
+    </dl>
+  </div>
+</div>

@@ -1,0 +1,144 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap" style="gap:8px; white-space:nowrap;">
+        <div><h1>Qualificação — Etapa 5</h1><small class="text-muted">Membros da banca (titulares)</small></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li><li class="breadcrumb-item active">Qualificação — Etapa 5</li></ol></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 71%;" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="d-flex justify-content-between mt-1 small text-muted"><span>1. Dados iniciais</span><span>2. Local</span><span>3. Trabalho</span><span>4. Presidente</span><span><strong>5. Membros</strong></span><span>6. Suplentes</span><span>7. Proposta/Artigos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      {{#if defesa.correcaoSolicitada}}
+        <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+      <div class="row">
+        
+        {{!-- Coluna Principal (Formulário) --}}
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Membros da Banca (Titulares)</h3>
+            </div>
+
+            <form id="formStep5" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step5">
+              <div class="card-body">
+                <p class="text-muted">Informe os dados para os membros titulares da banca. Os 2 primeiros são obrigatórios.</p>
+                
+                {{!-- Membro 1 (Obrigatório) --}}
+                <div class="card card-primary">
+                  <div class="card-header"><h3 class="card-title">1º Membro Titular <span class="text-danger">*</span></h3></div>
+                  <div class="card-body">
+                    <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[0][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[0].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[0][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[0].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[0][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[0].instituicao}}"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- Membro 2 (Obrigatório) --}}
+                <div class="card card-primary">
+                  <div class="card-header"><h3 class="card-title">2º Membro Titular <span class="text-danger">*</span></h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[1][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[1].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[1][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[1].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[1][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[1].instituicao}}"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- Membro 3 (Opcional) --}}
+                <div class="card card-primary">
+                  <div class="card-header"><h3 class="card-title">3º Membro Titular (Opcional)</h3></div>
+                  <div class="card-body">
+                     <div class="form-row">
+                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[2][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[2].nome}}"></div>
+                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[2][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[2].email}}"></div>
+                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[2][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[2].instituicao}}"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/qualificacao/step4" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
+                <div>
+                  <button type="submit" class="btn btn-secondary mr-2" name="action" value="save">Salvar rascunho</button>
+                  <button type="submit" class="btn btn-primary" name="action" value="next" id="btnContinuarStep5" disabled>
+                    Continuar <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div> 
+        </div> 
+
+        {{!-- Coluna Lateral (Informações) --}}
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header">
+              <h3 class="card-title">Regras para Formação da Banca</h3>
+            </div>
+            <div class="card-body">
+              <p>A banca mínima de qualificação deve ser composta por <strong>três pessoas</strong>: o presidente da banca e dois membros.</p>
+              <ul>
+                <li>O <strong>presidente</strong> pode ser o orientador(a) principal ou o coorientador(a).</li>
+                <li>Os <strong>membros</strong> adicionais podem ser todos internos ao PPGI, ou um membro interno e os restantes externos.</li>
+              </ul>
+              <hr>
+              <p class="text-muted">
+                Para convidados externos, por favor envie o link a seguir para que preencham seus dados:
+                <a href="https://forms.gle/SCrwhfM8rVoVH6ks8" target="_blank" rel="noopener noreferrer">Formulário para Membros Externos</a>.
+              </p>
+              <p class="text-muted mb-0">
+                A coordenação do PPGI sugere que haja pelo menos um membro interno do PPGI na banca para garantir a transparência do processo.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div> 
+  </section>
+</div>
+
+<script>
+  $(document).ready(function() {
+    const membro1Nome = $('input[name="membrosTitulares[0][nome]"]');
+    const membro2Nome = $('input[name="membrosTitulares[1][nome]"]');
+    const btnContinuar = $('#btnContinuarStep5');
+
+    function checkFormValidity() {
+      const nome1Val = membro1Nome.val()?.trim() ?? '';
+      const nome2Val = membro2Nome.val()?.trim() ?? '';
+      return nome1Val !== '' && nome2Val !== '';
+    }
+
+    function updateButtonState() {
+      btnContinuar.prop('disabled', !checkFormValidity());
+    }
+
+    $('input[name^="membrosTitulares[0]"], input[name^="membrosTitulares[1]"]').on('input keyup change', updateButtonState);
+    updateButtonState(); 
+  });
+</script>
+{{> footer}}

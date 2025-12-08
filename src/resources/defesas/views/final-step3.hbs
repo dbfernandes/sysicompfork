@@ -1,0 +1,202 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap" style="gap:8px; white-space:nowrap;">
+        <div><h1>Defesa Final — Etapa 3</h1><small class="text-muted">Dados do Trabalho</small></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li><li class="breadcrumb-item active">Defesa Final — Etapa 3</li></ol></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="d-flex justify-content-between mt-1 small text-muted"><span>1. Dados iniciais</span><span>2. Local</span><span><strong>3. Trabalho</strong></span><span>4. Membros</span><span>5. Suplentes</span><span>6. Documentos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      {{#if defesa.correcaoSolicitada}}
+        <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">Dados do Trabalho</h3></div>
+            <form id="formFinalStep3" method="POST" action="/defesas/editar/{{defesa.id}}/final/step3">
+              <div class="card-body">
+
+                {{!-- Resumo --}}
+                <div class="form-group">
+                  <label for="resumoPt">Resumo <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="resumoPt" name="resumoPt" rows="5" placeholder="Resumo em português.">{{defesa.final.resumoPt}}</textarea>
+                </div>
+
+                {{!-- Palavras-chave PT --}}
+                <div class="form-group">
+                  <label for="palavrasChavePt">Palavras-chave em português <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="palavrasChavePt" name="palavrasChavePt" placeholder="Separadas por ponto e vírgula (;)" value="{{defesa.final.palavrasChavePt}}">
+                  <small class="form-text text-muted">Separe as palavras-chave por ponto e vírgula (;).</small>
+                </div>
+                <hr>
+
+                {{!-- Abstract --}}
+                <div class="form-group">
+                  <label for="abstractEn">Abstract <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="abstractEn" name="abstractEn" rows="5" placeholder="Abstract in English.">{{defesa.final.abstractEn}}</textarea>
+                </div>
+
+                {{!-- Keywords EN --}}
+                <div class="form-group">
+                  <label for="keywordsEn">Keywords <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="keywordsEn" name="keywordsEn" placeholder="Separated by semicolon (;)" value="{{defesa.final.keywordsEn}}">
+                   <small class="form-text text-muted">Separate keywords with semicolon (;).</small>
+                </div>
+                <hr>
+
+                {{!-- Idioma da Tese --}}
+                <div class="form-group">
+                  <label class="d-block">Idioma da Tese <span class="text-danger">*</span></label>
+                  <div class="form-check"><input class="form-check-input idioma-radio" type="radio" name="idiomaTeseOpcao" id="idiomaPt" value="Portugues" {{#ifEqual defesa.final.idiomaTese 'Portugues'}}checked{{/ifEqual}}><label class="form-check-label" for="idiomaPt">Português</label></div>
+                  <div class="form-check"><input class="form-check-input idioma-radio" type="radio" name="idiomaTeseOpcao" id="idiomaEn" value="Ingles" {{#ifEqual defesa.final.idiomaTese 'Ingles'}}checked{{/ifEqual}}><label class="form-check-label" for="idiomaEn">Inglês</label></div>
+                  <div class="form-check"><input class="form-check-input idioma-radio" type="radio" name="idiomaTeseOpcao" id="idiomaOutroRadio" value="Outro" {{#unlessEquals defesa.final.idiomaTese 'Portugues'}}{{#unlessEquals defesa.final.idiomaTese 'Ingles'}}{{#if defesa.final.idiomaTese}}checked{{/if}}{{/unlessEquals}}{{/unlessEquals}}><label class="form-check-label" for="idiomaOutroRadio">Outro:</label></div>
+                  <input type="text" class="form-control mt-2" id="idiomaTeseOutroTexto" name="idiomaTeseOutroTexto" placeholder="Especifique o idioma" style="display: none;" value="{{#unlessEquals defesa.final.idiomaTese 'Portugues'}}{{#unlessEquals defesa.final.idiomaTese 'Ingles'}}{{defesa.final.idiomaTese}}{{/unlessEquals}}{{/unlessEquals}}">
+                  <input type="hidden" name="idiomaTese" id="idiomaTeseFinal" value="{{defesa.final.idiomaTese}}">
+                </div>
+                <hr>
+
+                {{!-- Créditos --}}
+                <div class="form-group">
+                  <label class="d-block">O candidato cumpriu os créditos exigidos? <span class="text-danger">*</span></label>
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="creditosSim" name="creditosOk" value="true" {{#ifEqual defesa.final.creditosOk true}}checked{{/ifEqual}}>
+                    <label for="creditosSim" class="custom-control-label">Sim</label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="creditosNao" name="creditosOk" value="false" {{#ifEqual defesa.final.creditosOk false}}checked{{/ifEqual}}>
+                    <label for="creditosNao" class="custom-control-label">Não</label>
+                  </div>
+                  <small class="form-text text-muted">
+                    Créditos exigidos: {{#ifEqual defesa.nivel 'MESTRADO'}}16 para Mestrado{{else}}36 para Doutorado{{/ifEqual}}, incluindo disciplinas obrigatórias.
+                    <input type="hidden" name="creditosExigidos" value="{{#ifEqual defesa.nivel 'MESTRADO'}}16{{else}}36{{/ifEqual}}">
+                  </small>
+                </div>
+
+              </div>
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/final/step2" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
+                <div>
+                  <button type="submit" class="btn btn-secondary mr-2" name="action" value="save">Salvar rascunho</button>
+                  <button type="submit" class="btn btn-primary" name="action" value="next" id="btnContinuarFinalStep3" disabled>
+                    Continuar <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Requisitos desta etapa</h3></div>
+            <div class="card-body">
+              <ul class="mb-0">
+                <li>Resumo em português.</li>
+                <li>Palavras-chave em português.</li>
+                <li>Abstract em inglês.</li>
+                <li>Keywords em inglês.</li>
+                <li>Idioma da Tese/Dissertação.</li>
+                <li>Confirmação do cumprimento de créditos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+
+<script>
+  $(document).ready(function() {
+    const idiomaRadios = $('.idioma-radio');
+    const outroRadio = $('#idiomaOutroRadio');
+    const outroTextoInput = $('#idiomaTeseOutroTexto');
+    const finalInput = $('#idiomaTeseFinal');
+
+    function toggleOutroIdioma() {
+      if (outroRadio.is(':checked')) {
+        outroTextoInput.show();
+        finalInput.val(outroTextoInput.val().trim());
+      } else {
+        outroTextoInput.hide();
+        finalInput.val($('.idioma-radio:checked').val());
+      }
+    }
+    idiomaRadios.on('change', toggleOutroIdioma);
+    outroTextoInput.on('input keyup', function() {
+       if (outroRadio.is(':checked')) {
+         finalInput.val($(this).val().trim());
+       }
+    });
+    toggleOutroIdioma();
+  });
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    const resumoInput = $('#resumoPt');
+    const palavrasInput = $('#palavrasChavePt');
+    const abstractInput = $('#abstractEn');
+    const keywordsInput = $('#keywordsEn');
+    const idiomaRadios = $('input[name="idiomaTeseOpcao"]');
+    const idiomaOutroTexto = $('#idiomaTeseOutroTexto');
+    const creditosRadios = $('input[name="creditosOk"]');
+    const btnContinuar = $('#btnContinuarFinalStep3');
+
+    function checkFormValidity() {
+      const resumoVal = resumoInput.val()?.trim() ?? '';
+      const palavrasVal = palavrasInput.val()?.trim() ?? '';
+      const abstractVal = abstractInput.val()?.trim() ?? '';
+      const keywordsVal = keywordsInput.val()?.trim() ?? '';
+      const idiomaSelecionado = $('input[name="idiomaTeseOpcao"]:checked').val();
+      const idiomaOutroVal = idiomaOutroTexto.val()?.trim() ?? '';
+      const creditosVal = $('input[name="creditosOk"]:checked').val();
+
+      let idiomaOk = false;
+      if (idiomaSelecionado === 'Portugues' || idiomaSelecionado === 'Ingles') {
+        idiomaOk = true;
+      } else if (idiomaSelecionado === 'Outro' && idiomaOutroVal !== '') {
+        idiomaOk = true;
+      }
+      
+      return resumoVal !== '' && palavrasVal !== '' && abstractVal !== '' && keywordsVal !== '' && idiomaOk && creditosVal;
+    }
+
+    function updateButtonState() {
+      btnContinuar.prop('disabled', !checkFormValidity());
+    }
+
+    resumoInput.on('input keyup', updateButtonState);
+    palavrasInput.on('input keyup', updateButtonState);
+    abstractInput.on('input keyup', updateButtonState);
+    keywordsInput.on('input keyup', updateButtonState);
+    idiomaRadios.on('change', updateButtonState);
+    idiomaOutroTexto.on('input keyup', updateButtonState); 
+    creditosRadios.on('change', updateButtonState);
+
+    updateButtonState(); 
+  });
+</script>

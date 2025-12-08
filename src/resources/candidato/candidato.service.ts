@@ -27,6 +27,24 @@ class CandidatoService {
   async list() {
     return prisma.candidato.findMany();
   }
+  async searchByName(nameQuery: string) {
+    if (!nameQuery || nameQuery.length < 2) {
+      return [];
+    }
+    const candidatos = await prisma.candidato.findMany({
+      where: {
+        nome: {
+          contains: nameQuery,
+        },
+      },
+      take: 10,
+    });
+
+    return candidatos.map((candidato) => ({
+      id: candidato.id,
+      text: candidato.nome,
+    }));
+  }
 
   async listarCandidatosPorEdital2(editalId: string) {
     return await prisma.candidato

@@ -1,10 +1,11 @@
 {{> header}}
-{{> sidebar module='defesas' page='defesas-gerenciar'}}
+{{> sidebar}}
 
 <div class="content-wrapper">
   <section class="content-header">
     <div class="container-fluid">
-      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
+
+      <div class="d-flex flex-row w-100 mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
         <div><h1>Lista de defesas</h1></div>
         <div>
           <ol class="breadcrumb">
@@ -14,9 +15,21 @@
         </div>
       </div>
 
-      <!-- Botão Nova Defesa abre modal -->
       <div class="row mb-2">
-        <div class="col-sm-12 d-flex justify-content-end">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap" style="gap: 8px;">
+          
+          {{!-- Filtros de Status --}}
+          <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+            {{#each chips}}
+              <button type="button"
+                      class="btn btn-sm rounded-pill chip-status {{#if this.active}}btn-primary{{else}}btn-outline-primary{{/if}}"
+                      data-filter="status" data-value="{{this.key}}">
+                {{this.label}}
+                <span class="badge badge-light ml-1">{{this.count}}</span>
+              </button>
+            {{/each}}
+          </div>
+      
           <div class="col-sm-6 col-md-4 col-lg-3">
             <a type="button" class="btn btn-block btn-primary" href="#"
                data-toggle="modal" data-target="#modalNovaDefesa">
@@ -26,24 +39,8 @@
         </div>
       </div>
 
-      <!-- Chips de filtros -->
       <div class="row mb-2">
         <div class="col-sm-12 d-flex align-items-center flex-wrap" style="gap: 8px;">
-          <!-- Status -->
-          {{#each chips}}
-            <button type="button"
-                    class="btn btn-sm rounded-pill chip-status {{#if this.active}}btn-primary{{else}}btn-outline-primary{{/if}}"
-                    data-filter="status" data-value="{{this.key}}">
-              {{this.label}}
-              <span class="badge badge-light ml-1">{{this.count}}</span>
-            </button>
-          {{/each}}
-        </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-sm-12 d-flex align-items-center flex-wrap" style="gap: 8px;">
-          <!-- Tipo -->
           <span class="mr-2 font-weight-bold">Tipo:</span>
           <button type="button" class="btn btn-sm rounded-pill chip-tipo btn-outline-info"
                   data-filter="tipo" data-value="__ALL__">Todos</button>
@@ -52,7 +49,6 @@
           <button type="button" class="btn btn-sm rounded-pill chip-tipo btn-outline-info"
                   data-filter="tipo" data-value="DEFESA_FINAL">Defesas finais</button>
 
-          <!-- Nível -->
           <span class="ml-3 mr-2 font-weight-bold">Nível:</span>
           <button type="button" class="btn btn-sm rounded-pill chip-nivel btn-outline-success"
                   data-filter="nivel" data-value="__ALL__">Todos</button>
@@ -91,7 +87,6 @@
                   <td>{{tipo}} / {{nivel}}</td>
                   <td>
                     <div>{{dataHoraInicioFmt}}</div>
-                    <small class="text-muted">até {{dataHoraFimFmt}}</small>
                   </td>
                   <td>{{modalidade}}</td>
                   <td class="text-left">
@@ -120,7 +115,6 @@
     </div>
   </section>
 
-  <!-- Modal de exclusão -->
   <div class="modal fade" id="modalExcluir" tabindex="-1" role="dialog" aria-labelledby="labelExcluir" aria-hidden="true">
     <div class="modal-dialog" role="document"><div class="modal-content">
       <div class="modal-header">
@@ -139,7 +133,6 @@
     </div></div>
   </div>
 
-  <!-- Modal Nova Defesa -->
   <div class="modal fade" id="modalNovaDefesa" tabindex="-1" role="dialog" aria-labelledby="labelNovaDefesa" aria-hidden="true">
     <div class="modal-dialog" role="document"><div class="modal-content">
       <div class="modal-header">
@@ -269,8 +262,8 @@
     const nivel = params.get('nivel');
     const status = params.get('status');
 
-    updateGroup('.chip-tipo',  tipo,  'btn-info',     'btn-outline-info');
-    updateGroup('.chip-nivel', nivel, 'btn-success',  'btn-outline-success');
+    updateGroup('.chip-tipo',  tipo,  'btn-info',      'btn-outline-info');
+    updateGroup('.chip-nivel', nivel, 'btn-success',   'btn-outline-success');
     if (status) updateGroup('.chip-status', status, 'btn-primary', 'btn-outline-primary');
 
     document.querySelectorAll('[data-filter]').forEach(btn => {

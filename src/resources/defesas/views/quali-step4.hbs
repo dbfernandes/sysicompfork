@@ -1,0 +1,151 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap" style="gap:8px; white-space:nowrap;">
+        <div>
+          <h1>Qualificação — Etapa 4</h1>
+          <small class="text-muted">Presidente da banca</small>
+        </div>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li>
+            <li class="breadcrumb-item active">Qualificação — Etapa 4</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 57%;" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="d-flex justify-content-between mt-1 small text-muted">
+            <span>1. Dados iniciais</span>
+            <span>2. Local</span>
+            <span>3. Trabalho</span>
+            <span><strong>4. Presidente</strong></span>
+            <span>5. Membros</span>
+            <span>6. Suplentes</span>
+            <span>7. Proposta/Artigos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}
+        <div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>
+      {{/if}}
+      {{#if defesa.correcaoSolicitada}}
+      <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Definição do Presidente da Banca</h3>
+            </div>
+
+            <form id="formStep4" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step4">
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Selecione o presidente da banca <span class="text-danger">*</span></label>
+                  
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="presidenteOrientador" name="presidenteOrigem" value="ORIENTADOR"
+                           {{#ifEqual defesa.quali.presidenteOrigem 'ORIENTADOR'}}checked{{/ifEqual}}>
+                    <label for="presidenteOrientador" class="custom-control-label">
+                      Orientador(a): {{orientadorNome}}
+                    </label>
+                  </div>
+
+                  {{#if coorientadorNome}}
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="presidenteCoorientador" name="presidenteOrigem" value="COORIENTADOR"
+                           {{#ifEqual defesa.quali.presidenteOrigem 'COORIENTADOR'}}checked{{/ifEqual}}>
+                    <label for="presidenteCoorientador" class="custom-control-label">
+                      Coorientador(a): {{coorientadorNome}}
+                    </label>
+                  </div>
+                  {{else}}
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="presidenteCoorientador" disabled>
+                    <label for="presidenteCoorientador" class="custom-control-label text-muted">
+                      Coorientador(a): Não há coorientador definido nesta defesa.
+                    </label>
+                  </div>
+                  {{/if}}
+                </div>
+              </div><div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/qualificacao/step3" class="btn btn-default">
+                  <i class="fas fa-chevron-left"></i> Voltar
+                </a>
+                <div>
+                  <button type="submit" class="btn btn-secondary mr-2" name="action" value="save">
+                    <i class="fas fa-save"></i> Salvar rascunho
+                  </button>
+                  <button type="submit" class="btn btn-primary" name="action" value="next" id="btnContinuarStep4" disabled>
+                    Continuar <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header">
+              <h3 class="card-title">Regras para Formação da Banca</h3>
+            </div>
+            <div class="card-body">
+              <p>A banca mínima de qualificação deve ser composta por <strong>três pessoas</strong>: o presidente da banca e dois membros.</p>
+              <ul>
+                <li>O <strong>presidente</strong> pode ser o orientador(a) principal ou o coorientador(a), mas nunca os dois.</li>
+                <li>Os <strong>membros</strong> adicionais podem ser todos internos ao PPGI, ou um membro interno e os restantes externos.</li>
+              </ul>
+              <hr>
+              <p class="text-muted">
+                Para convidados externos, por favor envie o link a seguir para que preencham seus dados e a documentação possa ser gerada:
+                <a href="https://forms.gle/SCrwhfM8rVoVH6ks8" target="_blank" rel="noopener noreferrer">Formulário para Membros Externos</a>.
+              </p>
+              <p class="text-muted mb-0">
+                A coordenação do PPGI sugere que haja pelo menos um membro interno do PPGI na banca para garantir a transparência do processo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div></div></section>
+</div>
+
+<script>
+  $(document).ready(function() {
+    const presidenteRadios = $('input[name="presidenteOrigem"]');
+    const btnContinuar = $('#btnContinuarStep4');
+
+    function checkFormValidity() {
+      const presidenteVal = $('input[name="presidenteOrigem"]:checked').val();
+      return presidenteVal; // Só precisa que um esteja marcado
+    }
+
+    function updateButtonState() {
+      btnContinuar.prop('disabled', !checkFormValidity());
+    }
+
+    presidenteRadios.on('change', updateButtonState);
+    updateButtonState(); 
+  });
+</script>
+{{> footer}}

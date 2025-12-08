@@ -1,0 +1,177 @@
+{{> header}}
+{{> sidebar module='defesas' page='defesas-listar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 align-items-center justify-content-between flex-wrap" style="gap:8px; white-space:nowrap;">
+        <div><h1>Defesa Final — Etapa 6</h1><small class="text-muted">Dissertação/Tese e Documentos</small></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item"><a href="/defesas/listar">Defesas</a></li><li class="breadcrumb-item active">Defesa Final — Etapa 6</li></ol></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px;"><div class="progress-bar bg-primary" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="d-flex justify-content-between mt-1 small text-muted"><span>1. Dados iniciais</span><span>2. Local</span><span>3. Trabalho</span><span>4. Membros</span><span>5. Suplentes</span><span><strong>6. Documentos</strong></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      {{#if defesa.correcaoSolicitada}}
+        <div class="alert alert-warning" role="alert">
+          <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
+          <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
+          <hr>
+          <p class="mb-0" style="white-space: pre-wrap;">{{defesa.correcaoSolicitada}}</p>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">Dissertação/Tese e Documentação Final</h3></div>
+            <form id="formFinalStep6" method="POST" action="/defesas/editar/{{defesa.id}}/final/step6" enctype="multipart/form-data">
+              <div class="card-body">
+
+                <div class="form-group">
+                  <label for="tesePdf">Anexar o arquivo da tese/dissertação em .pdf (tamanho máximo 100MB) <span class="text-danger">*</span></label>
+                  <input type="file" class="form-control-file" id="tesePdf" name="tesePdf" accept=".pdf">
+                  {{#if teseAnexada}}
+                    <small class="form-text text-success">
+                      Arquivo atual: {{teseAnexada.originalName}} ({{formatBytes teseAnexada.size}})
+                      <span class="text-muted ml-2">(Enviar um novo arquivo substituirá o atual)</span>
+                    </small>
+                  {{else}}
+                    <small class="form-text text-muted">Faça upload de 1 arquivo aceito: PDF. O tamanho máximo é de 100 MB.</small>
+                  {{/if}}
+                </div>
+                <hr>
+
+                <h4>Declaração de Artigo <span class="text-danger">*</span></h4>
+                <div class="custom-control custom-checkbox mb-2">
+                  <input type="checkbox" class="custom-control-input" id="artigoEstratoSuperiorOk" name="artigoEstratoSuperiorOk" value="true" {{#if defesa.final.artigoEstratoSuperiorOk}}checked{{/if}}>
+                  {{#ifEqual defesa.nivel 'MESTRADO'}}
+                    <label class="custom-control-label" for="artigoEstratoSuperiorOk">Declaro que o aluno tem pelo menos um artigo de estrato superior **aceito ou submetido** (A1, A2, A3, A4).</label>
+                  {{else}}
+                    <label class="custom-control-label" for="artigoEstratoSuperiorOk">Declaro que o aluno tem pelo menos um journal de estrato superior **aceito** (A1, A2, A3, A4).</label>
+                  {{/ifEqual}}
+                  <small class="form-text text-muted">Consulte as regras em <a href="https://drive.google.com/file/d/1Mn4R5cyw1v1DWKIHAFwh7v2yhpQKeqqn/view?usp=sharing" target="_blank" rel="noopener noreferrer">Qualis 2017-2020</a>.</small>
+                </div>
+                <div class="form-group">
+                  <label for="artigoTitulo">Título do artigo <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="artigoTitulo" name="artigoTitulo" placeholder="Título completo do artigo" value="{{defesa.final.artigoTitulo}}">
+                </div>
+                <div class="form-group">
+                  <label for="artigoVeiculoOuDoi">Veículo de publicação, link ou DOI <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="artigoVeiculoOuDoi" name="artigoVeiculoOuDoi" placeholder="Nome do journal, link ou DOI" value="{{defesa.final.artigoVeiculoOuDoi}}">
+                </div>
+                <hr>
+
+                <h4>Agradecimentos Obrigatórios <span class="text-danger">*</span></h4>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="incluiuAgradecimentosObrigatorios" name="incluiuAgradecimentosObrigatorios" value="true" {{#if defesa.final.incluiuAgradecimentosObrigatorios}}checked{{/if}}>
+                  <label class="custom-control-label" for="incluiuAgradecimentosObrigatorios">Declaro que incluí os agradecimentos obrigatórios à CAPES e FAPEAM na tese/dissertação.</label>
+                </div>
+                <div class="p-3 bg-light border rounded mt-2 small text-muted">
+                  <p class="mb-1">Os agradecimentos são obrigatórios, inclusive para os não bolsistas.</p>
+                  <p class="mb-1"><strong>Em português:</strong> "O presente trabalho foi realizado com apoio da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Código de Financiamento 001. Este trabalho foi parcialmente financiado pela Fundação de Amparo à Pesquisa do Estado do Amazonas – FAPEAM – por meio do projeto POSGRAD."</p>
+                  <p class="mb-0"><strong>Em inglês:</strong> "This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001. This work was partially supported by Amazonas State Research Support Foundation - FAPEAM -  through the POSGRAD project."</p>
+                </div>
+                <hr>
+
+                <h4>Declaração de Autoavaliação <span class="text-danger">*</span></h4>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="autoavaliacaoPreenchida" name="autoavaliacaoPreenchida" value="true" {{#if defesa.final.autoavaliacaoPreenchida}}checked{{/if}}>
+                  <label class="custom-control-label" for="autoavaliacaoPreenchida">Declaro que o(a) orientador(a) e o(a) discente preenchemos o formulário de autoavaliação do programa do ano 2024.</label>
+                </div>
+                <div class="mt-2">
+                  <p class="mb-1 small text-muted">Se ainda não preencheu, utilize sua conta @icomp nos links abaixo:</p>
+                  <ul class="list-unstyled small">
+                    <li><a href="https://forms.gle/ZrzyWhkP4Piq7sr3A" target="_blank" rel="noopener noreferrer">Link para Discentes</a></li>
+                    <li><a href="https://forms.gle/z2SQ399HK1iKUSRf8" target="_blank" rel="noopener noreferrer">Link para Docentes</a></li>
+                  </ul>
+                </div>
+
+              </div>
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/defesas/editar/{{defesa.id}}/final/step5" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
+                <div>
+                  <button type="submit" class="btn btn-primary" name="action" value="submit" id="btnSubmitFinal" disabled>
+                    <i class="fas fa-check"></i> Finalizar e Submeter para Validação
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Requisitos da Etapa Final</h3></div>
+            <div class="card-body">
+              <ul class="mb-0">
+                <li>Anexar a Tese/Dissertação em PDF.</li>
+                <li>Declarar e informar os dados do artigo.</li>
+                <li>Confirmar os agradecimentos à CAPES/FAPEAM.</li>
+                <li>Confirmar o preenchimento da autoavaliação.</li>
+              </ul>
+              <hr>
+              <p class="text-muted mb-0">Esta é a última etapa. Ao clicar em "Finalizar", a defesa será enviada para validação da coordenação.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+<script>
+  function formatBytes(bytes, decimals = 2) {
+    if (!+bytes) return '0 Bytes';
+    const k = 1024; const dm = decimals < 0 ? 0 : decimals; const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  }
+
+  $(document).ready(function() {
+    const teseInput = $('#tesePdf');
+    const artigoCheck = $('#artigoEstratoSuperiorOk');
+    const artigoTituloInput = $('#artigoTitulo');
+    const artigoVeiculoInput = $('#artigoVeiculoOuDoi');
+    const agradecimentosCheck = $('#incluiuAgradecimentosObrigatorios');
+    const autoavaliacaoCheck = $('#autoavaliacaoPreenchida');
+    const btnSubmit = $('#btnSubmitFinal');
+
+    const hasExistingFile = {{#if teseAnexada}}true{{else}}false{{/if}};
+
+    function checkFormValidity() {
+      const fileSelected = (teseInput[0].files && teseInput[0].files.length > 0) || hasExistingFile;
+      const artigoChecked = artigoCheck.is(':checked');
+      const artigoTituloVal = artigoTituloInput.val()?.trim() ?? '';
+      const artigoVeiculoVal = artigoVeiculoInput.val()?.trim() ?? '';
+      const agradecimentosChecked = agradecimentosCheck.is(':checked');
+      const autoavaliacaoChecked = autoavaliacaoCheck.is(':checked');
+      
+      return fileSelected && 
+             artigoChecked && 
+             artigoTituloVal !== '' && 
+             artigoVeiculoVal !== '' && 
+             agradecimentosChecked && 
+             autoavaliacaoChecked;
+    }
+
+    function updateButtonState() {
+      btnSubmit.prop('disabled', !checkFormValidity());
+    }
+
+    [teseInput, artigoCheck, artigoTituloInput, artigoVeiculoInput, agradecimentosCheck, autoavaliacaoCheck].forEach(el => {
+      el.on('input keyup change', updateButtonState);
+    });
+    
+    updateButtonState(); 
+  });
+</script>

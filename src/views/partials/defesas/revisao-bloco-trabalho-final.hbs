@@ -1,0 +1,19 @@
+<div class="card card-outline card-primary">
+  <div class="card-header"><h3 class="card-title">Etapa 3: Trabalho (Final)</h3></div>
+  <div class="card-body">
+    <dl class="row">
+      <dt class="col-sm-4">Resumo (PT):</dt>
+      <dd class="col-sm-8" style="white-space: pre-wrap;">{{defesa.final.resumoPt}}</dd>
+      <dt class="col-sm-4">Palavras-chave (PT):</dt>
+      <dd class="col-sm-8">{{defesa.final.palavrasChavePt}}</dd>
+      <dt class="col-sm-4">Abstract (EN):</dt>
+      <dd class="col-sm-8" style="white-space: pre-wrap;">{{defesa.final.abstractEn}}</dd>
+      <dt class="col-sm-4">Keywords (EN):</dt>
+      <dd class="col-sm-8">{{defesa.final.keywordsEn}}</dd>
+      <dt class="col-sm-4">Idioma da Tese:</dt>
+      <dd class="col-sm-8">{{defesa.final.idiomaTese}}</dd>
+      <dt class="col-sm-4">Cumpriu Créditos?</dt>
+      <dd class="col-sm-8">{{#if defesa.final.creditosOk}}Sim ({{defesa.final.creditosExigidos}}){{else}}Não{{/if}}</dd>
+    </dl>
+  </div>
+</div>
