@@ -21,7 +21,7 @@ const whichCourse = (course, lng) => {
 function formatarNome(nome) {
   if (!nome) return '';
   const partes = nome.split(' ');
-  if (partes.length <= 2) return nome; // Retorna o nome completo se tiver apenas duas partes
+  if (partes.length <= 2) return nome;
   const primeiroNome = partes[0];
   const ultimoNome = partes[partes.length - 1];
   const nomeMeio = partes
@@ -118,6 +118,36 @@ const ifEqual = function (a, b, options) {
     return options.fn(this);
   }
   return options.inverse(this);
+};
+
+const unlessEquals = function (a, b, options) {
+  if (a !== b) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+};
+
+const range = function(start, end) {
+  const list = [];
+  for (let i = start; i <= end; i++) {
+    list.push(i);
+  }
+  return list;
+};
+
+const lookup = function(obj, field) {
+  return obj && obj[field];
+};
+
+const assign = function(varName, varValue, options) { 
+  if (!options.data.root) {
+    options.data.root = {};
+  }
+  options.data.root[varName] = varValue;
+};
+
+const isLessThan = function(a, b) { 
+  return a < b;
 };
 
 const checked = (a, b) => (a == b ? 'selected' : '');
@@ -262,4 +292,9 @@ export default {
   getYearActual,
   groupByTipo,
   section,
+  unlessEquals,
+  range,
+  lookup,
+  assign,
+  isLessThan,
 };

@@ -17,6 +17,9 @@ import afastamentoTemporarioRoutes from '../resources/afastamentoTemporario/afas
 import editalController from '../resources/edital/edital.controller';
 import curriculoRoutes from '../resources/curriculo/curriculo.routes';
 import alunosRoutes from '../resources/alunos/aluno.routes';
+import defesasRoutes from '../resources/defesas/defesa.routes';
+import candidatoApiRoutes from '../resources/candidato/candidato.routes';
+
 import { isAuth } from '@/middlewares/usuarioAutenticacaoMiddleware';
 
 const router = express.Router();
@@ -90,7 +93,7 @@ router.use(
   editalController.pegarDocumentoCandidato,
 );
 router.use('/lattes', autenticacaoController.autorizarProf, curriculoRoutes);
-// Rotas Exclusivas Secretaria
 router.use('/alunos', autenticacaoController.autorizarAdmin, alunosRoutes);
-
+router.use('/api/candidatos', candidatoApiRoutes);
+router.use('/defesas', defesasRoutes)
 export default router;

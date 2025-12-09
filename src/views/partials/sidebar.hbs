@@ -70,7 +70,7 @@
             {{#if (autorizarUsuario tipoUsuario "coordenador")}}
               <li class="nav-item">
                 <a href="/edital/addEdital"
-                  class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
+                   class="nav-link {{#ifEqual page 'edital-adicionar'}}active{{/ifEqual}} text-sm">
                   <i class="fas fa-search-plus nav-icon "></i>
                   <p>Criar Edital de Seleção</p>
                 </a>
@@ -95,12 +95,12 @@
           </a>
           <ul class="nav nav-treeview">
             {{#if (autorizarUsuario tipoUsuario "coordenador")}}
-            <li class="nav-item">
-              <a href="/linhasdepesquisa/criar" class="nav-link {{#ifEqual page 'linhasDePesquisa-criar'}}active{{/ifEqual}} text-sm">
-                <i class="fas fa-search-plus nav-icon"></i>
-                <p>Adicionar Linha de Pesquisa</p>
-              </a>
-            </li>
+              <li class="nav-item">
+                <a href="/linhasdepesquisa/criar" class="nav-link {{#ifEqual page 'linhasDePesquisa-criar'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-search-plus nav-icon"></i>
+                  <p>Adicionar Linha de Pesquisa</p>
+                </a>
+              </li>
             {{/if}}
             <li class="nav-item">
               <a href="/linhasdepesquisa/listar" class="nav-link {{#ifEqual page 'linhasDePesquisa-listar'}}active{{/ifEqual}} text-sm">
@@ -224,6 +224,14 @@
           </ul>
         </li> --}}
           <li class="nav-item">
+            <a href="/defesas/listar" class="nav-link {{#ifEqual page 'defesas-listar'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Minhas Defesas
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
               <i class="nav-icon fas fa-file"></i>
               <p>
@@ -240,14 +248,7 @@
             </a>
           </li>
         {{/if}}
-<!--        <li class="nav-item">-->
-<!--          <a href="/defesas/listar" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">-->
-<!--            <i class="nav-icon fas fa-graduation-cap"></i>-->
-<!--            <p>-->
-<!--              Defesas-->
-<!--            </p>-->
-<!--          </a>-->
-<!--        </li>-->
+
         {{#if (autorizarUsuario tipoUsuario "secretaria")}}
           <li class="nav-header">Secretaria</li>
           <li class="nav-item">
@@ -255,6 +256,14 @@
               <i class="nav-icon fa fa-users"></i>
               <p>
                 Gerenciar Alunos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/defesas/gerenciar" class="nav-link {{#ifEqual page 'defesas-gerenciar'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-check-double"></i>
+              <p>
+                Gerenciar Defesas
               </p>
             </a>
           </li>
@@ -269,15 +278,14 @@
           {{#if (autorizarUsuario tipoUsuario "professor")}}
           {{else}}
             <li class="nav-item">
-            <a href="https://numeros.icomp.ufam.edu.br" class="nav-link {{#ifEqual module 'icompNumeros'}}active{{/ifEqual}}">
-              <i class="nav-icon fas fa-th-large"></i>
-              <p>
-                Icomp Números
-              </p>
-            </a>
-          </li>
+              <a href="https://numeros.icomp.ufam.edu.br" class="nav-link {{#ifEqual module 'icompNumeros'}}active{{/ifEqual}}">
+                <i class="nav-icon fas fa-th-large"></i>
+                <p>
+                  Icomp Números
+                </p>
+              </a>
+            </li>
           {{/if}}
-
         {{/if}}
       </ul>
     </nav>

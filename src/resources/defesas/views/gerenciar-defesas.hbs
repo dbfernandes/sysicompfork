@@ -1,0 +1,88 @@
+{{> header}}
+{{> sidebar }}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-100 mb-3 align-items-center flex-wrap justify-content-between">
+        <div><h1>Gerenciar Defesas</h1></div>
+        <div><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Página inicial</a></li><li class="breadcrumb-item active">Gerenciar Defesas</li></ol></div>
+      </div>
+      <p class="text-muted">Lista de defesas e qualificações aguardando validação.</p>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
+      
+      <div class="row"><div class="col-12">
+        <div class="card">
+          <div class="card-body" style="overflow-x:auto;">
+            <table id="tabela-gerenciar" class="table table-striped table-bordered table-hover w-100">
+              <thead>
+                <tr style="text-align:center;">
+                  <th>Candidato</th>
+                  <th>Orientador</th>
+                  <th>Tipo / Nível</th>
+                  <th>Data da Defesa</th>
+                  <th>Status</th>
+                  <th>Revisar</th> {{!-- Coluna dedicada para abrir a revisão --}}
+                  <th>Divulgar</th> {{!-- Nova coluna focada apenas na divulgação --}}
+                </tr>
+              </thead>
+              <tbody>
+                {{#each defesas}}
+                  <tr style="text-align:center;">
+                    <td>{{candidatoNome}}</td>
+                    <td class="text-left">{{orientadorNome}}</td>
+                    <td>{{tipo}} / {{nivel}}</td>
+                    <td>{{dataDefesaFmt}}</td>
+                    <td>
+                      {{#if isAguardando}}
+                        <span class="badge badge-warning">Aguardando Validação</span>
+                      {{else}}
+                        <span class="badge badge-success">Validado</span>
+                      {{/if}}
+                    </td>
+                    <td>
+                      <a class="btn btn-sm btn-info" href="/defesas/revisar/{{id}}" title="Revisar e Aprovar/Rejeitar">
+                        <i class="fa fa-eye"></i> Revisar
+                      </a>
+                    </td>
+                    <td>
+                      {{#if isValidado}}
+                        {{!-- Botão Ativo: Leva para a tela de envio de e-mail --}}
+                        <a class="btn btn-sm btn-warning" href="/defesas/divulgar/{{id}}" title="Enviar E-mail de Divulgação">
+                          <i class="fas fa-bullhorn"></i> Divulgar
+                        </a>
+                      {{else}}
+                        {{!-- Botão Inativo: Apenas visual, desabilitado --}}
+                        <button class="btn btn-sm btn-secondary" disabled title="Necessário validar antes de divulgar">
+                          <i class="fas fa-bullhorn"></i> Divulgar
+                        </button>
+                      {{/if}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+
+<script>
+  $(document).ready(function () {
+    $("#tabela-gerenciar").DataTable({
+      language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
+      responsive: true,
+      order: [[ 3, "asc" ]]
+    });
+  });
+</script>

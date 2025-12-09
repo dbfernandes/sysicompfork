@@ -426,6 +426,7 @@ enum DefesaModalidade {
 enum DefesaStatus {
   RASCUNHO
   AGUARDANDO_VALIDACAO
+  EM_CORRECAO
   VALIDADO
   DIVULGADO
   CONCLUIDO
@@ -446,6 +447,7 @@ enum UploadTipo {
   PROPOSTA_PDF // Qualificação: proposta
   TESE_PDF // Defesa Final: tese/dissertação
   ARTIGO_COMPROVANTE_PDF // Comprovante (submetido/aceito)
+  PORTARIA_PDF
   OUTRO
 }
 
@@ -470,6 +472,9 @@ model Defesa {
 
   coorientadorId Int?
   coorientador   Usuario? @relation("CoorientadorDefesa", fields: [coorientadorId], references: [id])
+  coorientadorExternoNome       String?
+  coorientadorExternoInstituicao String?
+
 
   tituloTrabalho String?
   dataHora       DateTime?
@@ -481,6 +486,7 @@ model Defesa {
   linhaPesquisa   LinhaPesquisa? @relation(fields: [linhaPesquisaId], references: [id])
 
   status DefesaStatus @default(RASCUNHO)
+  correcaoSolicitada String? @db.Text
 
   // rastreabilidade de quem iniciou
   criadoPorId Int
@@ -504,7 +510,7 @@ model Defesa {
 model QualificacaoExtra {
   // 1–1 com Defesa (tipo = QUALIFICACAO)
   defesaId String @id
-  defesa   Defesa @relation(fields: [defesaId], references: [id])
+  defesa   Defesa @relation(fields: [defesaId], references: [id], onDelete: Cascade)
 
   // Passo 3 – Dados do trabalho
   // “Resumo ou abstract” e “Palavras-chaves (pt ou en)”
@@ -533,7 +539,7 @@ model QualificacaoExtra {
 model DefesaFinalExtra {
   // 1–1 com Defesa (tipo = DEFESA_FINAL)
   defesaId String @id
-  defesa   Defesa @relation(fields: [defesaId], references: [id])
+  defesa   Defesa @relation(fields: [defesaId], references: [id], onDelete: Cascade)
 
   // Passo 3 – Dados do trabalho
   resumoPt        String
@@ -569,7 +575,7 @@ model DefesaFinalExtra {
 model MembroBanca {
   id       String @id @default(cuid())
   defesaId String
-  defesa   Defesa @relation(fields: [defesaId], references: [id])
+  defesa   Defesa @relation(fields: [defesaId], references: [id], onDelete: Cascade)
 
   nome        String
   email       String?
@@ -596,7 +602,7 @@ model MembroBanca {
 model DefesaUpload {
   id       String @id @default(cuid())
   defesaId String
-  defesa   Defesa @relation(fields: [defesaId], references: [id])
+  defesa   Defesa @relation(fields: [defesaId], references: [id], onDelete: Cascade)
 
   tipo         UploadTipo
   path         String
