@@ -66,7 +66,7 @@ export const qualiStep5Schema = Joi.object<QualiStep5Dto>({
   membrosTitulares: Joi.array()
     .items(membroPartial)
     .custom((value, helpers) => {
-      if (!value) return value; 
+      if (!value) return value;
 
       const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
@@ -106,10 +106,6 @@ export const qualiStep7Schema = Joi.object<QualiStep7Dto>({
 });
 
 // ===== FINAL (parciais) =====
-import Joi from 'joi';
-import { DefesaModalidade } from '@prisma/client';
-import type { FinalStep1Dto } from './defesa.types';
-
 export const finalStep1Schema = Joi.object<FinalStep1Dto>({
   tituloTrabalho: Joi.string()
     .max(500)
@@ -137,24 +133,38 @@ export const finalStep2Schema = Joi.object<FinalStep2Dto>({
   localOuLink: Joi.string().max(1000).optional(),
 });
 export const finalStep3Schema = Joi.object<FinalStep3Dto>({
-  resumoPt: Joi.string().required().messages({'any.required': 'Resumo obrigatório.'}),
-  palavrasChavePt: Joi.string().required().messages({'any.required': 'Palavras-chave PT obrigatórias.'}),
-  abstractEn: Joi.string().required().messages({'any.required': 'Abstract obrigatório.'}),
-  keywordsEn: Joi.string().required().messages({'any.required': 'Keywords EN obrigatórias.'}),
-  idiomaTese: Joi.string().required().messages({'any.required': 'Idioma da tese obrigatório.'}),
-  creditosOk: Joi.boolean().required().messages({'any.required': 'Confirmação de créditos obrigatória.'}),
-  creditosExigidos: Joi.number().valid(16, 36).optional(), 
+  resumoPt: Joi.string()
+    .required()
+    .messages({ 'any.required': 'Resumo obrigatório.' }),
+  palavrasChavePt: Joi.string()
+    .required()
+    .messages({ 'any.required': 'Palavras-chave PT obrigatórias.' }),
+  abstractEn: Joi.string()
+    .required()
+    .messages({ 'any.required': 'Abstract obrigatório.' }),
+  keywordsEn: Joi.string()
+    .required()
+    .messages({ 'any.required': 'Keywords EN obrigatórias.' }),
+  idiomaTese: Joi.string()
+    .required()
+    .messages({ 'any.required': 'Idioma da tese obrigatório.' }),
+  creditosOk: Joi.boolean()
+    .required()
+    .messages({ 'any.required': 'Confirmação de créditos obrigatória.' }),
+  creditosExigidos: Joi.number().valid(16, 36).optional(),
 }).prefs({ abortEarly: false });
 export const finalStep4Schema = Joi.object<FinalStep4Dto>({
   membrosTitulares: Joi.array()
     .items(membroPartial)
     .custom((value, helpers) => {
       if (!value) return value;
-      const filledMembers = value.filter(m => m.nome && m.nome.trim() !== '');
-      if (filledMembers.length < 2) { 
-        return helpers.message('É necessário preencher os dados dos 2 primeiros membros titulares.');
+      const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
+      if (filledMembers.length < 2) {
+        return helpers.message(
+          'É necessário preencher os dados dos 2 primeiros membros titulares.',
+        );
       }
-      return value; 
+      return value;
     })
     .optional(),
 });
@@ -164,9 +174,11 @@ export const finalStep5Schema = Joi.object<FinalStep5Dto>({
     .items(membroPartial)
     .custom((value, helpers) => {
       if (!value) return value;
-      const filledMembers = value.filter(m => m.nome && m.nome.trim() !== '');
+      const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
-        return helpers.message('É necessário preencher os dados dos 2 membros suplentes.');
+        return helpers.message(
+          'É necessário preencher os dados dos 2 membros suplentes.',
+        );
       }
       return value;
     })
@@ -175,22 +187,25 @@ export const finalStep5Schema = Joi.object<FinalStep5Dto>({
 export const finalStep6Schema = Joi.object<FinalStep6Dto>({
   artigoEstratoSuperiorOk: Joi.boolean().required().valid(true).messages({
     'any.required': 'Você deve declarar o artigo.',
-    'any.only': 'Você deve declarar o artigo.'
+    'any.only': 'Você deve declarar o artigo.',
   }),
   artigoTitulo: Joi.string().required().messages({
     'any.required': 'O título do artigo é obrigatório.',
-    'string.empty': 'O título do artigo é obrigatório.'
+    'string.empty': 'O título do artigo é obrigatório.',
   }),
   artigoVeiculoOuDoi: Joi.string().required().messages({
     'any.required': 'O veículo/DOI do artigo é obrigatório.',
-    'string.empty': 'O veículo/DOI do artigo é obrigatório.'
+    'string.empty': 'O veículo/DOI do artigo é obrigatório.',
   }),
-  incluiuAgradecimentosObrigatorios: Joi.boolean().required().valid(true).messages({
-    'any.required': 'Você deve declarar os agradecimentos.',
-    'any.only': 'Você deve declarar os agradecimentos.'
-  }),
+  incluiuAgradecimentosObrigatorios: Joi.boolean()
+    .required()
+    .valid(true)
+    .messages({
+      'any.required': 'Você deve declarar os agradecimentos.',
+      'any.only': 'Você deve declarar os agradecimentos.',
+    }),
   autoavaliacaoPreenchida: Joi.boolean().required().valid(true).messages({
     'any.required': 'Você deve declarar a autoavaliação.',
-    'any.only': 'Você deve declarar a autoavaliação.'
+    'any.only': 'Você deve declarar a autoavaliação.',
   }),
 }).prefs({ abortEarly: false });

@@ -17,7 +17,7 @@ i18next.init({
       ...ptBrTranslation,
     },
   },
-  compatibilityJSON: 'v2',
+  compatibilityJSON: 'v4',
   detection: {
     order: ['cookie', 'header'], // Ordem de detecção do idioma
     caches: ['cookie'], // Onde armazenar a informação do idioma

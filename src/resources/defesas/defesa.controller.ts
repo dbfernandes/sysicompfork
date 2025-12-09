@@ -6,6 +6,13 @@ import { sendEmailWithFile } from '../email/email.service';
 import { DefesaStatus, DefesaTipo, DefesaNivel } from '@prisma/client';
 import path from 'path';
 import fs from 'fs';
+import {
+  FinalStep1Dto,
+  FinalStep3Dto,
+  FinalStep6Dto,
+  MembroInput,
+  QualiStep1Dto,
+} from '@resources/defesas/defesa.types';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -13,19 +20,25 @@ function resolveView(viewName: string): string {
 function canAccess(req: Request): boolean {
   return Boolean(
     req.session &&
-      req.session.tipoUsuario &&
-      (!!req.session.tipoUsuario.professor ||
-        !!req.session.tipoUsuario.administrador ||
-        !!req.session.tipoUsuario.secretaria),
+    req.session.tipoUsuario &&
+    (!!req.session.tipoUsuario.professor ||
+      !!req.session.tipoUsuario.administrador ||
+      !!req.session.tipoUsuario.secretaria),
   );
 }
 
 function dataPorExtenso(date: Date) {
-  return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+  return date.toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 }
 
 function horarioFormatado(date: Date) {
-  return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+  return date
+    .toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    .replace(':', 'h');
 }
 
 function isEnumValue<T extends string>(
@@ -42,7 +55,7 @@ function statusBadgeClass(s: DefesaStatus) {
       return 'badge-secondary';
     case 'AGUARDANDO_VALIDACAO':
       return 'badge-warning';
-    case 'EM_CORRECAO': 
+    case 'EM_CORRECAO':
       return 'badge-danger';
     case 'VALIDADO':
       return 'badge-info';
@@ -77,7 +90,7 @@ function formatPtBR(
 ) {
   if (!dateIso) return '';
   const d = typeof dateIso === 'string' ? new Date(dateIso) : dateIso;
-  if (isNaN(d.getTime())) return ''; 
+  if (isNaN(d.getTime())) return '';
   try {
     return new Intl.DateTimeFormat('pt-BR', options).format(d);
   } catch {
@@ -97,14 +110,16 @@ const viewList = async (
     }
 
     if (!req.session?.tipoUsuario?.professor) {
-      res.status(StatusCodes.FORBIDDEN).render('error', { 
+      res.status(StatusCodes.FORBIDDEN).render('error', {
         message:
           'Acesso restrito: Apenas professores podem acessar "Minhas Defesas".',
       });
       return;
     }
 
-    const filtroOrientadorId = Number((req.session as any).uid ?? (req.session as any).userId);
+    const filtroOrientadorId = Number(
+      (req.session as any).uid ?? (req.session as any).userId,
+    );
 
     await DefesaService.autoConcluirDefesasPassadas();
 
@@ -227,7 +242,6 @@ const excluirDefesa = async (
     next(err);
   }
 };
-
 
 const criarDefesa = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -715,7 +729,6 @@ const saveQualiStep7 = async (
     }
     const { id } = req.params;
 
-
     await DefesaService.updateQualiStep7(id, {
       doutoradoArtigoComprovado: req.body.doutoradoArtigoComprovado === 'true',
       artigoTitulo: req.body.artigoTitulo,
@@ -786,17 +799,14 @@ const viewFinalStep1 = async (
 };
 
 /** DEFESA FINAL — STEP 1 (POST) */
-const saveFinalStep1 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const saveFinalStep1 = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
     if (!canAccess(req)) {
       res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
       return;
     }
-    const { id } = req.params;
     const { body } = req;
 
     const payload: FinalStep1Dto = {
@@ -834,7 +844,7 @@ const viewFinalStep2 = async (
       return;
     }
     const { id } = req.params;
-    
+
     const defesa = await DefesaService.buscarPorId(id);
 
     res.render('../resources/defesas/views/final-step2', {
@@ -848,29 +858,28 @@ const viewFinalStep2 = async (
 };
 
 /** DEFESA FINAL — STEP 2 (POST) */
-const saveFinalStep2 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const saveFinalStep2 = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
     if (!canAccess(req)) {
       res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
       return;
     }
-    const { id } = req.params;
     await DefesaService.updateFinalStep2(id, {
       localOuLink: req.body.local,
     });
 
     if (req.body.action === 'next') {
-      return res.redirect(`/defesas/editar/${id}/final/step3`); 
+      return res.redirect(`/defesas/editar/${id}/final/step3`);
     }
-    
-    res.redirect(`/defesas/editar/${id}/final/step2`); 
+
+    res.redirect(`/defesas/editar/${id}/final/step2`);
   } catch (err: any) {
-     console.error("Erro ao salvar Etapa 2 (Final):", err);
-     res.redirect(`/defesas/editar/${id}/final/step2?error=${encodeURIComponent(err.message)}`);
+    console.error('Erro ao salvar Etapa 2 (Final):', err);
+    res.redirect(
+      `/defesas/editar/${id}/final/step2?error=${encodeURIComponent(err.message)}`,
+    );
   }
 };
 
@@ -886,7 +895,7 @@ const viewFinalStep3 = async (
       return;
     }
     const { id } = req.params;
-    
+
     const defesa = await DefesaService.buscarPorId(id);
 
     res.render('../resources/defesas/views/final-step3', {
@@ -900,17 +909,14 @@ const viewFinalStep3 = async (
 };
 
 /** DEFESA FINAL — STEP 3 (POST) */
-const saveFinalStep3 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const saveFinalStep3 = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
     if (!canAccess(req)) {
       res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
       return;
     }
-    const { id } = req.params;
     const { body } = req;
 
     const payload: FinalStep3Dto = {
@@ -920,9 +926,11 @@ const saveFinalStep3 = async (
       keywordsEn: body.keywordsEn,
       idiomaTese: body.idiomaTese,
       creditosOk: body.creditosOk === 'true',
-      creditosExigidos: body.creditosExigidos ? parseInt(body.creditosExigidos) : undefined,
+      creditosExigidos: body.creditosExigidos
+        ? parseInt(body.creditosExigidos)
+        : undefined,
     };
-    
+
     await DefesaService.updateFinalStep3(id, payload);
 
     if (req.body.action === 'next') {
@@ -930,8 +938,10 @@ const saveFinalStep3 = async (
     }
     res.redirect(`/defesas/editar/${id}/final/step3`);
   } catch (err: any) {
-     console.error("Erro ao salvar Etapa 3 (Final):", err);
-     res.redirect(`/defesas/editar/${id}/final/step3?error=${encodeURIComponent(err.message)}`);
+    console.error('Erro ao salvar Etapa 3 (Final):', err);
+    res.redirect(
+      `/defesas/editar/${id}/final/step3?error=${encodeURIComponent(err.message)}`,
+    );
   }
 };
 
@@ -942,37 +952,42 @@ const viewFinalStep4 = async (
   next: NextFunction,
 ) => {
   try {
-    if (!canAccess(req)) { }
+    if (!canAccess(req)) {
+    }
     const { id } = req.params;
     const defesa = await DefesaService.buscarPorId(id);
 
     let coorientadorNome = null;
-    if (defesa.coorientador) coorientadorNome = defesa.coorientador.nomeCompleto;
-    else if (defesa.coorientadorExternoNome) coorientadorNome = defesa.coorientadorExternoNome;
+    if (defesa.coorientador)
+      coorientadorNome = defesa.coorientador.nomeCompleto;
+    else if (defesa.coorientadorExternoNome)
+      coorientadorNome = defesa.coorientadorExternoNome;
 
-    const membrosTitulares = defesa.membros.filter(m => !m.suplente); 
+    const membrosTitulares = defesa.membros.filter((m) => !m.suplente);
 
     res.render('../resources/defesas/views/final-step4', {
       defesa,
       coorientadorNome,
-      membrosTitulares, 
+      membrosTitulares,
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
     });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
 /** DEFESA FINAL — STEP 4 (POST) - Membros Titulares */
-const saveFinalStep4 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const saveFinalStep4 = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
-    if (!canAccess(req)) {}
-    const { id } = req.params;
+    if (!canAccess(req)) {
+    }
     let membrosTitulares = (req.body.membrosTitulares || []) as MembroInput[];
-    membrosTitulares = membrosTitulares.filter(m => m.nome && m.nome.trim() !== ''); 
+    membrosTitulares = membrosTitulares.filter(
+      (m) => m.nome && m.nome.trim() !== '',
+    );
 
     await DefesaService.updateFinalStep4(id, { membrosTitulares });
 
@@ -981,8 +996,10 @@ const saveFinalStep4 = async (
     }
     res.redirect(`/defesas/editar/${id}/final/step4`);
   } catch (err: any) {
-     console.error("Erro ao salvar Etapa 4 (Final):", err);
-     res.redirect(`/defesas/editar/${id}/final/step4?error=${encodeURIComponent(err.message)}`);
+    console.error('Erro ao salvar Etapa 4 (Final):', err);
+    res.redirect(
+      `/defesas/editar/${id}/final/step4?error=${encodeURIComponent(err.message)}`,
+    );
   }
 };
 
@@ -992,34 +1009,34 @@ const viewFinalStep5 = async (
   res: Response,
   next: NextFunction,
 ) => {
-   try {
-    if (!canAccess(req)) { }
+  try {
+    if (!canAccess(req)) {
+    }
     const { id } = req.params;
     const defesa = await DefesaService.buscarPorId(id);
-    const suplentes = defesa.membros.filter(m => m.suplente);
+    const suplentes = defesa.membros.filter((m) => m.suplente);
 
     res.render('../resources/defesas/views/final-step5', {
       defesa,
       suplentes,
       nome: req.session.nome,
       tipoUsuario: req.session.tipoUsuario,
-      helpers: { }
+      helpers: {},
     });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
 /** DEFESA FINAL — STEP 5 (POST) - Suplentes */
-const saveFinalStep5 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    if (!canAccess(req)) {}
-    const { id } = req.params;
-    let suplentes = (req.body.suplentes || []) as MembroInput[];
-    suplentes = suplentes.filter(s => s.nome && s.nome.trim() !== '');
+const saveFinalStep5 = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
+  try {
+    if (!canAccess(req)) {
+    }
+    let suplentes = (req.body.suplentes || []) as MembroInput[];
+    suplentes = suplentes.filter((s) => s.nome && s.nome.trim() !== '');
 
     await DefesaService.updateFinalStep5(id, { suplentes });
 
@@ -1028,8 +1045,10 @@ const saveFinalStep5 = async (
     }
     res.redirect(`/defesas/editar/${id}/final/step5`);
   } catch (err: any) {
-     console.error("Erro ao salvar Etapa 5 (Final):", err);
-     res.redirect(`/defesas/editar/${id}/final/step5?error=${encodeURIComponent(err.message)}`);
+    console.error('Erro ao salvar Etapa 5 (Final):', err);
+    res.redirect(
+      `/defesas/editar/${id}/final/step5?error=${encodeURIComponent(err.message)}`,
+    );
   }
 };
 
@@ -1040,12 +1059,13 @@ const viewFinalStep6 = async (
   next: NextFunction,
 ) => {
   try {
-    if (!canAccess(req)) {}
+    if (!canAccess(req)) {
+    }
     const { id } = req.params;
-    
+
     const defesa = await DefesaService.buscarPorId(id);
 
-    const teseAnexada = defesa.uploads.find(up => up.tipo === 'TESE_PDF');
+    const teseAnexada = defesa.uploads.find((up) => up.tipo === 'TESE_PDF');
 
     res.render('../resources/defesas/views/final-step6', {
       defesa,
@@ -1054,11 +1074,18 @@ const viewFinalStep6 = async (
       tipoUsuario: req.session.tipoUsuario,
       helpers: {
         formatBytes: (bytes: number, decimals = 2) => {
-          if (!+bytes) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals; const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-        }
-      }
+          if (!+bytes) return '0 Bytes';
+          const k = 1024;
+          const dm = decimals < 0 ? 0 : decimals;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        },
+      },
     });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
 /** DEFESA FINAL — STEP 6 (POST) - Final Submission */
@@ -1069,14 +1096,16 @@ const saveFinalStep6 = async (
 ) => {
   const { id } = req.params;
   try {
-    if (!canAccess(req)) { }
+    if (!canAccess(req)) {
+    }
     const { body } = req;
 
     const payload: FinalStep6Dto = {
       artigoEstratoSuperiorOk: body.artigoEstratoSuperiorOk === 'true',
       artigoTitulo: body.artigoTitulo,
       artigoVeiculoOuDoi: body.artigoVeiculoOuDoi,
-      incluiuAgradecimentosObrigatorios: body.incluiuAgradecimentosObrigatorios === 'true',
+      incluiuAgradecimentosObrigatorios:
+        body.incluiuAgradecimentosObrigatorios === 'true',
       autoavaliacaoPreenchida: body.autoavaliacaoPreenchida === 'true',
     };
     await DefesaService.updateFinalStep6(id, payload);
@@ -1085,23 +1114,23 @@ const saveFinalStep6 = async (
       await DefesaService.saveUploadTese(id, req.file);
     } else {
       const existingUpload = await prisma.defesaUpload.findFirst({
-        where: { defesaId: id, tipo: 'TESE_PDF' }
+        where: { defesaId: id, tipo: 'TESE_PDF' },
       });
       if (!existingUpload) {
         throw new Error('O arquivo da tese/dissertação é obrigatório.');
       }
     }
-    
+
     await DefesaService.validateAndSubmit(id);
-    
+
     req.session.save(() => {
-      res.locals.toastMessage = 'Defesa Final submetida para validação com sucesso!';
+      res.locals.toastMessage =
+        'Defesa Final submetida para validação com sucesso!';
       res.locals.toastType = 'success';
       res.redirect(`/defesas/listar?status=AGUARDANDO_VALIDACAO`);
     });
-    
   } catch (err: any) {
-    console.error("Erro na submissão da Etapa 6 (Final):", err);
+    console.error('Erro na submissão da Etapa 6 (Final):', err);
     req.session.save(() => {
       res.locals.errors = [err.message || 'Erro ao submeter a defesa.'];
       res.redirect(`/defesas/editar/${id}/final/step6`);
@@ -1110,33 +1139,44 @@ const saveFinalStep6 = async (
 };
 
 //** SECRETARIA: Ver lista de defesas para gerenciar */
-const viewManagementList = async (req: Request, res: Response, next: NextFunction) => {
+const viewManagementList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const tipoUsuario = req.session?.tipoUsuario;
-    if (!tipoUsuario || (!tipoUsuario.secretaria && !tipoUsuario.administrador)) {
+    if (
+      !tipoUsuario ||
+      (!tipoUsuario.secretaria && !tipoUsuario.administrador)
+    ) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
     }
 
     await DefesaService.autoConcluirDefesasPassadas();
 
     const defesasRaw = await DefesaService.listarParaGerenciamento();
-    
+
     const defesas = defesasRaw.map((d) => {
-      const editUrl = d.tipo === 'QUALIFICACAO'
-        ? `/defesas/editar/${d.id}/qualificacao/step1`
-        : `/defesas/editar/${d.id}/final/step1`;
-      
+      const editUrl =
+        d.tipo === 'QUALIFICACAO'
+          ? `/defesas/editar/${d.id}/qualificacao/step1`
+          : `/defesas/editar/${d.id}/final/step1`;
+
       return {
         id: d.id,
         candidatoNome: d.candidato?.nome ?? 'Não vinculado',
-        orientadorNome: d.orientador?.nomeCompleto ?? '—', 
+        orientadorNome: d.orientador?.nomeCompleto ?? '—',
         tipo: d.tipo,
         nivel: d.nivel,
-        dataDefesaFmt: formatPtBR(d.dataHora, { dateStyle: 'short', timeStyle: 'short' }),
+        dataDefesaFmt: formatPtBR(d.dataHora, {
+          dateStyle: 'short',
+          timeStyle: 'short',
+        }),
         status: d.status,
         editUrl: editUrl,
         isAguardando: d.status === 'AGUARDANDO_VALIDACAO',
-        isValidado: d.status === 'VALIDADO'
+        isValidado: d.status === 'VALIDADO',
       };
     });
     res.render(resolveView('gerenciar-defesas'), {
@@ -1150,28 +1190,39 @@ const viewManagementList = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-const viewReviewPage = async (req: Request, res: Response, next: NextFunction) => {
+const viewReviewPage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    if (!req.session?.tipoUsuario?.secretaria && !req.session?.tipoUsuario?.administrador) {
+    if (
+      !req.session?.tipoUsuario?.secretaria &&
+      !req.session?.tipoUsuario?.administrador
+    ) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
     }
     const { id } = req.params;
     const defesa = await DefesaService.buscarPorId(id);
 
-    let coorientadorDisplay = { nome: "Nenhum", instituicao: "N/A" };
+    let coorientadorDisplay = { nome: 'Nenhum', instituicao: 'N/A' };
     if (defesa.coorientador) {
       coorientadorDisplay.nome = defesa.coorientador.nomeCompleto;
-      coorientadorDisplay.instituicao = "ICOMP/UFAM (Interno)";
+      coorientadorDisplay.instituicao = 'ICOMP/UFAM (Interno)';
     } else if (defesa.coorientadorExternoNome) {
       coorientadorDisplay.nome = defesa.coorientadorExternoNome;
-      coorientadorDisplay.instituicao = defesa.coorientadorExternoInstituicao || "Externa";
+      coorientadorDisplay.instituicao =
+        defesa.coorientadorExternoInstituicao || 'Externa';
     }
 
-    const dataHoraFormatada = formatPtBR(defesa.dataHora, { dateStyle: 'long', timeStyle: 'short' });
+    const dataHoraFormatada = formatPtBR(defesa.dataHora, {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    });
 
     const uploads = {
-      proposta: defesa.uploads.find(up => up.tipo === 'PROPOSTA_PDF'),
-      tese: defesa.uploads.find(up => up.tipo === 'TESE_PDF'),
+      proposta: defesa.uploads.find((up) => up.tipo === 'PROPOSTA_PDF'),
+      tese: defesa.uploads.find((up) => up.tipo === 'TESE_PDF'),
     };
 
     res.render(resolveView('revisar-defesas'), {
@@ -1190,11 +1241,18 @@ const viewReviewPage = async (req: Request, res: Response, next: NextFunction) =
 };
 
 /** SECRETARIA: Processar Aprovação (Aprovar / Rejeitar) */
-const processApproval = async (req: Request, res: Response, next: NextFunction) => {
+const processApproval = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id } = req.params;
   try {
     const tipoUsuario = req.session?.tipoUsuario;
-    if (!tipoUsuario || (!tipoUsuario.secretaria && !tipoUsuario.administrador)) {
+    if (
+      !tipoUsuario ||
+      (!tipoUsuario.secretaria && !tipoUsuario.administrador)
+    ) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
     }
 
@@ -1208,10 +1266,10 @@ const processApproval = async (req: Request, res: Response, next: NextFunction) 
       }
       await DefesaService.processarAprovacao(id, 'REJEITAR', motivoCorrecao);
     }
-    
+
     res.redirect('/defesas/gerenciar');
   } catch (err: any) {
-    console.error("Erro ao processar aprovação:", err);
+    console.error('Erro ao processar aprovação:', err);
     req.session.save(() => {
       res.locals.errors = [err.message || 'Erro ao processar aprovação.'];
       res.redirect(`/defesas/gerenciar`);
@@ -1220,46 +1278,80 @@ const processApproval = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /** GERAR TEXTO DO EMAIL E MOSTRAR TELA */
-const viewDivulgarDefesa = async (req: Request, res: Response, next: NextFunction) => {
+const viewDivulgarDefesa = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    if (!req.session?.tipoUsuario?.secretaria && !req.session?.tipoUsuario?.administrador) {
+    if (
+      !req.session?.tipoUsuario?.secretaria &&
+      !req.session?.tipoUsuario?.administrador
+    ) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
     }
     const { id } = req.params;
     const defesa = await DefesaService.buscarPorId(id);
 
     const nivelLabel = defesa.nivel === 'MESTRADO' ? 'Mestrado' : 'Doutorado';
-    const tipoLabel = defesa.tipo === 'QUALIFICACAO' ? 'Qualificação' : 'Defesa';
-    const nivelExtenso = defesa.nivel === 'MESTRADO' ? `Dissertação de ${nivelLabel}` : `Tese de ${nivelLabel}`;
-    const tipoEvento = defesa.tipo === 'QUALIFICACAO' ? 'Exame de Qualificação' : 'Defesa Pública';
+    const tipoLabel =
+      defesa.tipo === 'QUALIFICACAO' ? 'Qualificação' : 'Defesa';
+    const nivelExtenso =
+      defesa.nivel === 'MESTRADO'
+        ? `Dissertação de ${nivelLabel}`
+        : `Tese de ${nivelLabel}`;
+    const tipoEvento =
+      defesa.tipo === 'QUALIFICACAO'
+        ? 'Exame de Qualificação'
+        : 'Defesa Pública';
 
-    const membroPresidente = defesa.membros.find(m => m.papel === 'PRESIDENTE');
-    const nomePresidente = membroPresidente?.nome || defesa.orientador?.nomeCompleto || 'N/A';
+    const membroPresidente = defesa.membros.find(
+      (m) => m.papel === 'PRESIDENTE',
+    );
+    const nomePresidente =
+      membroPresidente?.nome || defesa.orientador?.nomeCompleto || 'N/A';
     const instituicaoPresidente = membroPresidente?.instituicao || 'PPGI/UFAM';
 
-    const titulares = defesa.membros.filter(m => m.papel === 'MEMBRO' && !m.suplente);
-    const suplentes = defesa.membros.filter(m => m.suplente);
+    const titulares = defesa.membros.filter(
+      (m) => m.papel === 'MEMBRO' && !m.suplente,
+    );
+    const suplentes = defesa.membros.filter((m) => m.suplente);
 
     let textoBanca = `PRESIDENTE:\n${nomePresidente} - ${instituicaoPresidente}\n\n`;
-    
+
     textoBanca += `MEMBROS TITULARES:\n`;
-    titulares.forEach(m => { textoBanca += `${m.nome} - ${m.instituicao}\n`; });
+    titulares.forEach((m) => {
+      textoBanca += `${m.nome} - ${m.instituicao}\n`;
+    });
 
     if (suplentes.length > 0) {
       textoBanca += `\nMEMBROS SUPLENTES:\n`;
-      suplentes.forEach(m => { textoBanca += `${m.nome} - ${m.instituicao}\n`; });
+      suplentes.forEach((m) => {
+        textoBanca += `${m.nome} - ${m.instituicao}\n`;
+      });
     }
 
     // 4. Formatação de Dados
-    const resumo = defesa.tipo === 'QUALIFICACAO' ? defesa.quali?.resumoOuAbstract : defesa.final?.resumoPt;
-    const resumoLimpo = resumo ? resumo.replace(/(\r\n|\n|\r)/gm, " ") : "Resumo não informado.";
-    
-    const dataExtenso = defesa.dataHora 
-      ? new Date(defesa.dataHora).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+    const resumo =
+      defesa.tipo === 'QUALIFICACAO'
+        ? defesa.quali?.resumoOuAbstract
+        : defesa.final?.resumoPt;
+    const resumoLimpo = resumo
+      ? resumo.replace(/(\r\n|\n|\r)/gm, ' ')
+      : 'Resumo não informado.';
+
+    const dataExtenso = defesa.dataHora
+      ? new Date(defesa.dataHora).toLocaleDateString('pt-BR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        })
       : 'Data não definida';
-      
+
     const horaFormatada = defesa.dataHora
-      ? new Date(defesa.dataHora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')
+      ? new Date(defesa.dataHora)
+          .toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          .replace(':', 'h')
       : '--h--';
 
     const assinatura = `Respeitosamente,
@@ -1310,12 +1402,19 @@ ${assinatura}`;
 };
 
 /** ENVIAR EMAIL COM ANEXO */
-const sendDivulgacaoEmail = async (req: Request, res: Response, next: NextFunction) => {
+const sendDivulgacaoEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id } = req.params;
   const file = req.file;
 
   try {
-    if (!req.session?.tipoUsuario?.secretaria && !req.session?.tipoUsuario?.administrador) {
+    if (
+      !req.session?.tipoUsuario?.secretaria &&
+      !req.session?.tipoUsuario?.administrador
+    ) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Não autorizado');
     }
 
@@ -1323,7 +1422,7 @@ const sendDivulgacaoEmail = async (req: Request, res: Response, next: NextFuncti
 
     // 1. Salva a portaria no banco
     if (file) {
-       await DefesaService.saveUploadPortaria(id, file); 
+      await DefesaService.saveUploadPortaria(id, file);
     }
 
     // 2. Prepara anexo
@@ -1339,18 +1438,32 @@ const sendDivulgacaoEmail = async (req: Request, res: Response, next: NextFuncti
     let htmlContent = emailBody.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
 
     const titulosParaNegrito = [
-      'TÍTULO:', 'CANDIDATO:', 'BANCA EXAMINADORA:', 'PRESIDENTE:', 
-      'MEMBROS TITULARES:', 'MEMBROS SUPLENTES:', 'DATA:', 'HORÁRIO:', 'LOCAL:', 'RESUMO:'
+      'TÍTULO:',
+      'CANDIDATO:',
+      'BANCA EXAMINADORA:',
+      'PRESIDENTE:',
+      'MEMBROS TITULARES:',
+      'MEMBROS SUPLENTES:',
+      'DATA:',
+      'HORÁRIO:',
+      'LOCAL:',
+      'RESUMO:',
     ];
-    titulosParaNegrito.forEach(titulo => {
+    titulosParaNegrito.forEach((titulo) => {
       const regex = new RegExp(titulo, 'g');
       htmlContent = htmlContent.replace(regex, `<strong>${titulo}</strong>`);
     });
 
-    htmlContent = htmlContent.replace(/Bruno Freitas Gadelha/g, '<strong>Bruno Freitas Gadelha</strong>');
+    htmlContent = htmlContent.replace(
+      /Bruno Freitas Gadelha/g,
+      '<strong>Bruno Freitas Gadelha</strong>',
+    );
 
-    htmlContent = htmlContent.replace(/(sessão pública.*? de )(.+?)(:)/gi, '$1<strong>$2</strong>$3');
-    
+    htmlContent = htmlContent.replace(
+      /(sessão pública.*? de )(.+?)(:)/gi,
+      '$1<strong>$2</strong>$3',
+    );
+
     // -------------------------------------------
 
     // 3. Envia E-mail
@@ -1359,19 +1472,18 @@ const sendDivulgacaoEmail = async (req: Request, res: Response, next: NextFuncti
       subject,
       text: emailBody,
       html: htmlContent,
-      attachments: attachments 
+      attachments: attachments,
     });
 
-    await DefesaService.updateStatus(id, 'DIVULGADO'); 
+    await DefesaService.updateStatus(id, 'DIVULGADO');
 
     req.session.save(() => {
       res.locals.toastMessage = 'E-mail de divulgação enviado com sucesso!';
       res.locals.toastType = 'success';
       res.redirect(`/defesas/gerenciar`);
     });
-
   } catch (err: any) {
-    console.error("Erro ao enviar e-mail:", err);
+    console.error('Erro ao enviar e-mail:', err);
     req.session.save(() => {
       res.locals.errors = ['Erro ao enviar e-mail: ' + err.message];
       res.redirect(`/defesas/divulgar/${id}`);
@@ -1379,7 +1491,11 @@ const sendDivulgacaoEmail = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-const downloadAnexo = async (req: Request, res: Response, next: NextFunction) => {
+const downloadAnexo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     if (!req.session.uid) {
       return res.status(StatusCodes.UNAUTHORIZED).send('Acesso negado.');
@@ -1392,31 +1508,40 @@ const downloadAnexo = async (req: Request, res: Response, next: NextFunction) =>
     });
 
     if (!anexo) {
-      return res.status(StatusCodes.NOT_FOUND).send('Arquivo não encontrado no sistema.');
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send('Arquivo não encontrado no sistema.');
     }
 
-    const folderPath = path.join(process.cwd(), 'uploads', 'defesas', anexo.defesaId);
-    
+    const folderPath = path.join(
+      process.cwd(),
+      'uploads',
+      'defesas',
+      anexo.defesaId,
+    );
+
     const filePath = path.join(folderPath, anexo.path);
 
     if (!fs.existsSync(filePath)) {
-      return res.status(StatusCodes.NOT_FOUND).send('O arquivo físico não foi encontrado no servidor.');
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send('O arquivo físico não foi encontrado no servidor.');
     }
 
     res.download(filePath, anexo.originalName, (err) => {
       if (err) {
         console.error('Erro ao baixar arquivo:', err);
         if (!res.headersSent) {
-          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Erro ao realizar download.');
+          res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .send('Erro ao realizar download.');
         }
       }
     });
-
   } catch (err) {
     next(err);
   }
 };
-
 
 export default {
   viewList,
@@ -1456,5 +1581,5 @@ export default {
   viewReviewPage,
   viewDivulgarDefesa,
   sendDivulgacaoEmail,
-  downloadAnexo
+  downloadAnexo,
 };
