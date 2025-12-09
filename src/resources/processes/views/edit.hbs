@@ -1,0 +1,196 @@
+{{> header}}
+{{> sidebar module='processos' page='processos-editar'}}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-8">
+          <h1>Editar Processo</h1>
+          <p class="text-muted mb-0">{{processo.titulo}}</p>
+        </div>
+        <div class="col-sm-4">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/processos">Processos</a></li>
+            <li class="breadcrumb-item"><a href="/processos/{{processo.id}}">Visualizar</a></li>
+            <li class="breadcrumb-item active">Editar</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-12 d-flex flex-wrap">
+          <a href="/processos/{{processo.id}}" class="btn btn-default mr-2 mb-2"><i class="fa fa-arrow-left"></i> Voltar</a>
+          <button id="btnSalvar" class="btn btn-primary mr-2 mb-2"><i class="fas fa-save"></i> Salvar</button>
+          <button id="btnExportSvg" class="btn btn-outline-secondary mr-2 mb-2"><i class="far fa-file-image"></i> Exportar SVG</button>
+          <button id="btnExportPng" class="btn btn-outline-secondary mr-2 mb-2"><i class="far fa-file-image"></i> Exportar PNG</button>
+          <button id="btnGerarPreview" class="btn btn-outline-info mr-2 mb-2"><i class="fas fa-camera"></i> Gerar Preview</button>
+          <div class="btn-group mb-2" role="group" aria-label="Zoom">
+            <button id="btnZoomIn" class="btn btn-outline-dark"><i class="fas fa-search-plus"></i></button>
+            <button id="btnZoomOut" class="btn btn-outline-dark"><i class="fas fa-search-minus"></i></button>
+            <button id="btnFit" class="btn btn-outline-dark"><i class="fas fa-expand"></i></button>
+          </div>
+
+          <div class="ml-auto mb-2">
+            <div class="custom-file" style="width: 260px;">
+              <input type="file" class="custom-file-input" id="fileImport" accept=".bpmn,.xml">
+              <label class="custom-file-label" for="fileImport">Importar arquivo…</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{#if processo.previewPath}}
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-light border">
+              <strong>Preview atual:</strong><br>
+              <img src="{{processo.previewPath}}" style="max-width: 320px;" class="mt-2"/>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body p-0">
+          <div id="canvas" style="height: 72vh;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{{> footer}}
+
+<!-- bpmn-js modeler -->
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@11.5.0/dist/assets/diagram-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@11.5.0/dist/assets/bpmn-font/css/bpmn.css">
+<script src="https://unpkg.com/bpmn-js@11.5.0/dist/bpmn-modeler.development.js"></script>
+
+<script>
+  (function () {
+    const processoId = "{{processo.id}}";
+    const modeler = new BpmnJS({ container: '#canvas' });
+
+    // Carregar XML inicial
+    fetch(`/processos/${processoId}/xml`)
+      .then(r => r.text())
+      .then(xml => modeler.importXML(xml))
+      .then(() => modeler.get('canvas').zoom('fit-viewport', 'auto'))
+      .catch(err => {
+        console.error(err);
+        alert('Falha ao carregar o diagrama.');
+      });
+
+    // Zoom
+    document.getElementById('btnZoomIn').onclick  = () => modeler.get('zoomScroll').stepZoom(1);
+    document.getElementById('btnZoomOut').onclick = () => modeler.get('zoomScroll').stepZoom(-1);
+    document.getElementById('btnFit').onclick     = () => modeler.get('canvas').zoom('fit-viewport', 'auto');
+
+    // Importar arquivo
+    const fileInput = document.getElementById('fileImport');
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      const label = fileInput.nextElementSibling;
+      if (label) label.textContent = file ? file.name : 'Importar arquivo…';
+      if (!file) return;
+      const text = await file.text();
+      try {
+        await modeler.importXML(text);
+        modeler.get('canvas').zoom('fit-viewport', 'auto');
+      } catch (err) {
+        alert('Arquivo inválido.');
+      }
+    });
+
+    // Salvar
+    document.getElementById('btnSalvar').onclick = async () => {
+      try {
+        const { xml } = await modeler.saveXML({ format: true });
+        const resp = await fetch(`/processos/${processoId}/salvar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ xml })
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+        alert('Salvo com sucesso!');
+      } catch (e) {
+        console.error(e);
+        alert('Falha ao salvar o diagrama.');
+      }
+    };
+
+    // Exportar SVG
+    document.getElementById('btnExportSvg').onclick = async () => {
+      try {
+        const { svg } = await modeler.saveSVG();
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `processo-{{processo.id}}.svg`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (e) {
+        alert('Não foi possível exportar o SVG');
+      }
+    };
+
+    // Exportar PNG (via SVG -> canvas)
+    async function svgToPngDataUrl(svgText) {
+      const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+      const loaded = new Promise((resolve, reject) => {
+        img.onload = () => resolve(true);
+        img.onerror = reject;
+      });
+      img.src = url;
+      await loaded;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(img.width, 1200);
+      canvas.height = Math.max(img.height, 800);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      return canvas.toDataURL('image/png');
+    }
+
+    document.getElementById('btnExportPng').onclick = async () => {
+      try {
+        const { svg } = await modeler.saveSVG();
+        const pngDataUrl = await svgToPngDataUrl(svg);
+        const a = document.createElement('a');
+        a.href = pngDataUrl;
+        a.download = `processo-{{processo.id}}.png`;
+        a.click();
+      } catch (e) {
+        alert('Falha ao exportar PNG');
+      }
+    };
+
+    // Gerar Preview (envia PNG para o backend e atualiza previewPath no banco)
+    document.getElementById('btnGerarPreview').onclick = async () => {
+      try {
+        const { svg } = await modeler.saveSVG();
+        const pngDataUrl = await svgToPngDataUrl(svg);
+        const resp = await fetch(`/processos/${processoId}/preview`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataUrl: pngDataUrl })
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+        alert('Preview gerado e salvo!');
+        // opcional: location.reload();
+      } catch (e) {
+        console.error(e);
+        alert('Não foi possível gerar o preview.');
+      }
+    };
+  })();
+</script>

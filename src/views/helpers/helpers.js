@@ -1,8 +1,8 @@
 import moment from 'moment-timezone';
-import { i18next } from '../../utils/i18n';
+import language from '../../utils/i18n';
 
 const whichCourse = (course, lng) => {
-  const i18n = i18next;
+  const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Processamento de Dados':
@@ -52,7 +52,7 @@ const getYearActual = () => new Date().getFullYear();
 const isEnLng = (lng) => lng === 'en';
 
 const guidencesOnGoing = (course, lng) => {
-  const i18n = i18next;
+  const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -65,7 +65,7 @@ const guidencesOnGoing = (course, lng) => {
 };
 
 const guidencesEnded = (course, lng) => {
-  const i18n = i18next;
+  const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
     case 'Graduação':
@@ -184,6 +184,7 @@ const formataDataLng = (data, lng) => {
 };
 
 const formataFormacao = (formacao, lng) => {
+  if (!formacao) return '-';
   const arr = formacao.split(';');
   const prep = lng === 'en' ? ' in ' : ' em ';
   return arr[0] + prep + arr[1] + '. ' + arr[2] + ', ' + arr[3] + '.';

@@ -2,247 +2,243 @@
 {{> sidebar module='usuarios' page='usuarios-adicionar' }}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-9">
-                    <h1>Adicionar Usuário (Professor ou Técnico Administrativo)</h1>
-                </div>
-                <div class="col-sm-3">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
-                        <li class="breadcrumb-item"><a href="/usuarios/listar">Usuários</a></li>
-                        <li class="breadcrumb-item active">Adicionar</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
-                    <a class="btn btn-warning color-white" onclick="history.go(-1);">
-                        <i class="fa fa-arrow-left"></i>
-                        Voltar
-                    </a>
-                    <a class="btn btn-primary color-white" href="/usuarios/listar">
-                        <i class="fa fa-list"></i>
-                        Listar Usuários
-                    </a>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
-    <section class="content">
-        <div class="container-fluid">
-            <div style="text-align:left">
-                <font color="#FF0000">*</font> Campos Obrigatórios
-            </div>
-            <form action="/usuarios/adicionar" method="post" id="adicionarUsuarioForm">
-                <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Dados da Conta</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="nomeCompletoInput">
-                                <font color="#FF0000">*</font> Nome Completo:
-                            </label>
-                            <input type="text" name="nomeCompleto" class="form-control" id="nomeCompletoInput"
-                                placeholder="Nome Completo...">
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6 col-lg-6">
-                                    <label for="cpfInput">
-                                        <font color="#FF0000">*</font> CPF:
-                                    </label>
-                                    <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
-                                        placeholder="000.000.000-00">
-                                    <div class="text-danger"><small>{{showError errors 'cpf'}}</small></div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-6 col-lg-6">
-                                    <label for="emailInput">
-                                        <font color="#FF0000">*</font> E-mail:
-                                    </label>
-                                    <input type="email" name="email" class="form-control" id="emailInput"
-                                        placeholder="E-mail">
-                                    <div class="text-danger"><small>{{showError errors 'email'}}</small></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6 col-lg-6">
-                                    <label for="senhaInput">
-                                        <font color="#FF0000">*</font> Senha:
-                                    </label>
-                                    <input type="password" name="senha" class="form-control" id="senhaInput"
-                                        placeholder="Senha...">
-                                </div>
-
-                                <div class="col-sm-12 col-md-6 col-lg-6">
-                                    <label for="repetirSenhaInput">
-                                        <font color="#FF0000">*</font> Repetir senha:
-                                    </label>
-                                    <input type="password" name="repetirSenha" class="form-control"
-                                        id="repetirSenhaInput" placeholder="Repetir senha">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div style="margin-bottom: 20px;">
-                                <label for="">
-                                    <font color="#FF0000">*</font> Escolha o(s) perfil(s) correspondente(s) a este
-                                    usuário:
-                                </label>
-                            </div>
-                            <div class="row space-between" style="padding-left: 10px; padding-right: 9px">
-
-                                <div>
-                                    <label for="diretor">Diretor(a) academico</label>
-                                    <input type="checkbox" name="diretor" id="diretorCurso" data-bootstrap-switch {{#if
-                                        usuario.diretor}} checked {{else}} unchecked {{/if}} data-off-color="danger"
-                                        data-on-color="success" data-on-text="Sim" data-off-text="Não">
-                                </div>
-
-                                <div>
-                                    <label for="administrador">Administrador do site </label>
-                                    <input type="checkbox" name="administrador" unchecked data-bootstrap-switch
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
-                                </div>
-
-                                <div>
-                                    <label for="coordenador">Coordenador(a) do PPGI </label>
-                                    <input type="checkbox" name="coordenador" unchecked data-bootstrap-switch
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
-                                </div>
-                                <div>
-                                    <label for="secretaria"> Secretaria </label>
-                                    <input type="checkbox" name="secretaria" unchecked data-bootstrap-switch
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
-                                </div>
-                                <div>
-                                    <label for="professor"> Professor(a) </label>
-                                    <input type="checkbox" name="professor" unchecked data-bootstrap-switch
-                                        data-off-color="danger" data-on-color="success" data-on-text="Sim"
-                                        data-off-text="Não">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Dados Pessoais</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="enderecoInput">Endereço:</label>
-                            <input type="text" name="endereco" class="form-control" id="enderecoInput"
-                                placeholder="Rua, Avenida...">
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="telefoneResidencialInput">Telefone Residencial:</label>
-                                    <input type="text" name="telefoneResidencial" class="form-control telefone"
-                                        id="telefoneResidencialInput" placeholder="(99)9999-9999">
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="telefoneCelularInput">Telefone Celular:</label>
-                                    <input type="text" name="telefoneCelular" class="form-control telefone"
-                                        id="telefoneCelularInput" placeholder="(99)99999-99909">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Dados Profissionais</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="siapeInput">SIAPE:</label>
-                                    <input type="text" name="siape" class="form-control" id="siapeInput">
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="dateDeIngressoInput">Data de Ingresso:</label>
-                                    <input type="text" name="dateDeIngresso" class="form-control datemask"
-                                        id="dateDeIngressoInput" data-inputmask-alias="datetime"
-                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="unidadeInput">Unidade:</label>
-                                    <input type="text" name="unidade" class="form-control" id="unidadeInput">
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    <label for="turnoInput">Turno:</label>
-                                    <select name="turno" class="form-control" id="turnoInput">
-                                        <option value="Sem turno selecionado">Selecione o turno</option>
-                                        <option>Matutino e Vespertino</option>
-                                        <option>Matutino e Noturno</option>
-                                        <option>Vespertino e Noturno</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="card-footer">
-                        <div style="margin-right: auto;" class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success float-right">
-                                Adicionar Usuário
-                            </button>
-
-                        </div>
-                    </div>
-
-                </div>
-            </form>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-9">
+          <h1>Adicionar Usuário (Professor ou Técnico Administrativo)</h1>
         </div>
-        <!-- /.card -->
-    </section>
+        <div class="col-sm-3">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/"> Página Inicial</a></li>
+            <li class="breadcrumb-item"><a href="/usuarios/listar">Usuários</a></li>
+            <li class="breadcrumb-item active">Adicionar</li>
+          </ol>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+          <a class="btn btn-warning color-white" onclick="history.go(-1);">
+            <i class="fa fa-arrow-left"></i>
+            Voltar
+          </a>
+          <a class="btn btn-primary color-white" href="/usuarios/listar">
+            <i class="fa fa-list"></i>
+            Listar Usuários
+          </a>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div style="text-align:left">
+        <span style="color: #FF0000; ">*</span> Campos Obrigatórios
+      </div>
+      <form action="/usuarios/adicionar" method="post" id="adicionarUsuarioForm">
+        <input type="hidden" name="_csrf" id="_csrf" value="{{csrfToken}}">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Dados da Conta</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="form-group">
+              <label for="nomeCompletoInput">
+                <span style="color: #FF0000; ">*</span> Nome Completo:
+              </label>
+              <input type="text" name="nomeCompleto" class="form-control" id="nomeCompletoInput"
+                     placeholder="Nome Completo...">
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="cpfInput">
+                    <span style="color: #FF0000; ">*</span> CPF:
+                  </label>
+                  <input type="text" name="cpf" class="form-control cpf" id="cpfInput"
+                         placeholder="000.000.000-00">
+                  <div class="text-danger"><small>{{showError errors 'cpf'}}</small></div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="emailInput">
+                    <span style="color: #FF0000; ">*</span> E-mail:
+                  </label>
+                  <input type="email" name="email" class="form-control" id="emailInput"
+                         placeholder="E-mail" autocomplete="off">
+                  <div class="text-danger"><small>{{showError errors 'email'}}</small></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="senhaInput">
+                    <span style="color: #FF0000; ">*</span> Senha:
+                  </label>
+                  <input type="password" name="senha" class="form-control" id="senhaInput" autocomplete="off"
+                         placeholder="Senha...">
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="repetirSenhaInput">
+                    <span style="color: #FF0000; ">*</span> Repetir senha:
+                  </label>
+                  <input type="password" name="repetirSenha" class="form-control"
+                         id="repetirSenhaInput" placeholder="Repetir senha">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div style="margin-bottom: 20px;">
+                <label for="">
+                  <span style="color: #FF0000; ">*</span> Escolha o(s) perfil(s) correspondente(s) a este
+                  usuário:
+                </label>
+              </div>
+              <div class="d-flex justify-content-start" style="flex-wrap: wrap;padding-left: 10px; padding-right: 9px; row-gap: 1rem; column-gap: 2rem;">
+                <div>
+                  <label for="diretorCurso">Diretor(a) academico:</label>
+                  <input type="checkbox" name="diretor" id="diretorCurso" data-bootstrap-switch unchecked  data-off-color="danger"
+                         data-on-color="success" data-on-text="Sim" data-off-text="Não">
+                </div>
+
+                <div>
+                  <label for="administrador">Administrador do site: </label>
+                  <input id="administrador" type="checkbox" name="administrador" unchecked data-bootstrap-switch
+                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                         data-off-text="Não">
+                </div>
+                <div>
+                  <label for="coordenador">Coordenador(a) do PPGI: </label>
+                  <input type="checkbox" id="coordenador" name="coordenador" unchecked data-bootstrap-switch
+                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                         data-off-text="Não">
+                </div>
+                <div>
+                  <label for="secretaria"> Secretaria: </label>
+                  <input id="secretaria" type="checkbox" name="secretaria" unchecked data-bootstrap-switch
+                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                         data-off-text="Não">
+                </div>
+                <div>
+                  <label for="professor"> Professor(a): </label>
+                  <input id="professor" type="checkbox" name="professor" unchecked data-bootstrap-switch
+                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                         data-off-text="Não">
+                </div>
+                <div>
+                  <label for="professorPPGI"> Professor(a) PPGI:</label>
+                  <input id="professorPPGI" type="checkbox" name="professorPPGI" unchecked data-bootstrap-switch
+                         data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                         data-off-text="Não">
+                </div>
+              </div>
+            </div>
+          </div>
+                    <!-- /.card-body -->
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Dados Pessoais</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="enderecoInput">Endereço:</label>
+              <input type="text" name="endereco" class="form-control" id="enderecoInput"
+                     placeholder="Rua, Avenida...">
+            </div>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="telefoneResidencialInput">Telefone Residencial:</label>
+                  <input type="text" name="telefoneResidencial" class="form-control telefone"
+                         id="telefoneResidencialInput" placeholder="(99)9999-9999">
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="telefoneCelularInput">Telefone Celular:</label>
+                  <input type="text" name="telefoneCelular" class="form-control telefone"
+                         id="telefoneCelularInput" placeholder="(99)99999-99909">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Dados Profissionais</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="siapeInput">SIAPE:</label>
+                  <input type="text" name="siape" class="form-control" id="siapeInput">
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="dateDeIngressoInput">Data de Ingresso:</label>
+                  <input type="text" name="dateDeIngresso" class="form-control datemask"
+                         id="dateDeIngressoInput" data-inputmask-alias="datetime"
+                         data-inputmask-inputformat="dd/mm/yyyy" data-mask placeholder="dd/mm/yyyy">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="unidadeInput">Unidade:</label>
+                  <input type="text" name="unidade" class="form-control" id="unidadeInput">
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6">
+                  <label for="turnoInput">Turno:</label>
+                  <select name="turno" class="form-control" id="turnoInput">
+                    <option value="Sem turno selecionado">Selecione o turno</option>
+                    <option>Matutino e Vespertino</option>
+                    <option>Matutino e Noturno</option>
+                    <option>Vespertino e Noturno</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div style="margin-right: auto;" class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-success float-right">
+                Adicionar Usuário
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- /.card -->
+  </section>
 </div>
 
 <div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Alteração</h5>
-            </div>
-            <div class="modal-body">
-                Já existe um diretor cadastrado. Deseja substituir o diretor atual por este usuário?
-            </div>
-            <div class="modal-footer">
-                {{!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button> --}}
-                <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
-                {{!-- <button type="button" class="btn btn-primary" id="confirmarSim">Sim</button> --}}
-                <a id="confirmarSim" type="button" class="btn btn-primary color-white" onclick="mudarDiretor()">Sim</a>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Alteração</h5>
+      </div>
+      <div class="modal-body">
+        Já existe um diretor cadastrado. Deseja substituir o diretor atual por este usuário?
+      </div>
+      <div class="modal-footer">
+        {{!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button> --}}
+        <a type="button" class="btn btn-secondary color-white" data-dismiss="modal">Não</a>
+        {{!-- <button type="button" class="btn btn-primary" id="confirmarSim">Sim</button> --}}
+        <a id="confirmarSim" type="button" class="btn btn-primary color-white" onclick="mudarDiretor()">Sim</a>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>

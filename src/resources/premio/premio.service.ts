@@ -13,10 +13,10 @@ class PremioService {
         professorId: professorId,
       },
     });
-    const premio: any = {
+    const premio = {
       professorId,
       titulo,
-      ano,
+      ano: Number(ano),
       entidade,
     };
     await prisma.premio.create({
@@ -26,12 +26,12 @@ class PremioService {
 
   async adicionarVarios(professorId: number, premio: any[]): Promise<void> {
     if (premio !== undefined) {
-      const premioArr = premio.map((p: any) => {
+      const premioArr = premio.map((p) => {
         return {
           professorId,
           entidade: p.entidade,
           titulo: p.titulo,
-          ano: p.ano,
+          ano: Number(p.ano),
         };
       });
       await prisma.premio

@@ -2,12 +2,38 @@
 import prisma from '@client/prismaClient';
 import { Aluno } from '@prisma/client';
 import { CreateAlunoDto } from './aluno.types';
+import alunosProcessamentoFixo from './processamento_formados.json';
 
 class AlunoService {
   async adicionarVarios(alunos: CreateAlunoDto[]): Promise<void> {
     if (alunos !== undefined && alunos.length > 0) {
       await prisma.aluno.deleteMany(); // Remove todos os registros existentes
-      await prisma.aluno.createMany({ data: alunos }); // Cria os novos registros
+
+      const alunosFormados = alunos.map((aluno) => {
+        return {
+          ...aluno,
+          formado: Number(aluno.formado),
+        };
+      });
+
+      const alunosProcessamento = alunosFormados.filter(
+        (aluno) => aluno.curso === 'Processamento de Dados',
+      );
+      alunosProcessamentoFixo.forEach((aluno) => {
+        if (
+          alunosProcessamento.findIndex(
+            (a) => a.nomeCompleto === aluno.nomeCompleto,
+          ) === -1
+        ) {
+          alunosFormados.push({
+            ...aluno,
+            formado: Number(aluno.formado),
+          });
+        }
+      });
+      await prisma.aluno.createMany({
+        data: alunosFormados,
+      });
     }
   }
 
@@ -37,7 +63,7 @@ class AlunoService {
         M: 0,
       },
       egressos: {
-        PD: 254,
+        PD: 0,
         CC: 0,
         SI: 0,
         ES: 0,
@@ -48,11 +74,6 @@ class AlunoService {
     };
 
     const alunos = await prisma.aluno.findMany({
-      where: {
-        curso: {
-          not: 'Processamento de Dados',
-        },
-      },
       select: {
         formado: true,
         curso: true,
@@ -91,6 +112,9 @@ class AlunoService {
               break;
             case 'Mestrado':
               contagem.egressos.M += 1;
+              break;
+            case 'Processamento de Dados':
+              contagem.egressos.PD += 1;
               break;
             default:
               contagem.egressos.D += 1;

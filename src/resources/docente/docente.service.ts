@@ -24,7 +24,7 @@ class DocenteService {
     });
 
     if (usuario) {
-      const usuarioDict = {
+      return {
         ...usuario,
         Avatar: usuario.avatares,
         perfil: this.perfis(usuario),
@@ -34,7 +34,6 @@ class DocenteService {
           })
           .slice(0, 10),
       };
-      return usuarioDict;
     }
     return null;
   }

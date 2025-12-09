@@ -1,115 +1,109 @@
-    {{> numerosIcomp/navbar page="docentes"}}
+{{> numerosIcomp/navbar page="docentes"}}
 <div class="flex-wrapper bg-primary">
-
-    <section class="mb-3 text-dark">
-        <div class="container">
-                <div class="card card-body mx-3 mx-md-4 mt-n6">
-                    <div class="row gx-4 mb-4">
-                        <div class="nav-wrapper position-relative end-0">
-                        <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                            <li class="nav-item">
-                                <a id="profile-tab" class="nav-link mb-0 px-0 active" href="/numerosIcomp/docentes/{{professor.id}}?lng={{lng}}" aria-controls="profile" role="tab" aria-selected="true">
-                                <i class="material-icons position-relative">person</i>
-                                
-                                <span class="ms-1">{{__ "profile.perfil"}}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/publicacoes?lng={{lng}}" aria-controls="public" role="tab" aria-selected="false">
-                                <i class="material-icons position-relative">description</i>
-                                
-                                <span class="ms-1">{{__ "profile.publicacoes"}}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 " href="/numerosIcomp/docentes/{{professor.id}}/projetos?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
-                                <i class="material-icons text-lg position-relative">search</i>
-                                <span class="ms-1">{{__ "profile.projetosDePesquisa"}}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle mb-0 px-0 " data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <i class="material-icons text-lg position-relative">account_circle</i>
-                                <span class="ms-1">{{__ "profile.orientacoes"}}</span>
-                                </a>
-                                <div class="dropdown-menu w-100 text-center">
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ "profile.graduacao"}}</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ "profile.mestrado"}}</a>
-                                    <a class="dropdown-item" href="/numerosIcomp/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ "profile.doutorado"}}</a>
-                                  </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0" href="/numerosIcomp/docentes/{{professor.id}}/premios?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
-                                <i class="material-icons text-lg position-relative">military_tech</i>
-                                <span class="ms-1">{{__ "profile.premios"}}</span>
-                                </a>
-                            </li>
-                            </ul>
-                        </div>
-                    </div>
-
-            
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <div class="row gx-4 mb-2">
-    
-                        <div class="col-auto">
-                        <div class="avatar avatar-xxl position-relative ms-3">
-                            <img src="{{#if professor.Avatar}}/uploads/{{professor.Avatar.nome}}{{else}}/public/img/user-profile-generic.png{{/if}}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
-                        </div>
-                        </div>
-                        <div class="col-auto my-auto">
-                        <div class="h-100">
-                            <h3 class="mb-1">
-                            {{professor.nomeCompleto}}
-                            </h3>
-                        </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mt-3">
-    
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="row">
-                            <div class="card card-plain h-100">
-                            <div class="card-body p-3">
-                                <p class="text-justify">
-                                    {{#if (isEnLng lng)}} 
-                                    {{professor.resumoIngles}}
-                                    {{else}} 
-                                    {{professor.resumo}}
-                                    {{/if}}
-                                </p>
-                                <hr class="horizontal gray-light my-4">
-                                <ul class="list-group">
-                                <li class="list-group-item border-0 ps-0 pt-0">
-                                    <strong class="text-dark">{{__ "profile.formacao"}}:</strong> &nbsp; 
-                                    {{#if professor.formacao}}{{#if (isEnLng lng)}}{{formataFormacaoTitulo professor.formacaoIngles lng}}{{else}}{{formataFormacaoTitulo professor.formacao lng}}{{/if}}{{/if}}</li>
-                                <li class="list-group-item border-0 ps-0">
-                                    <strong class="text-dark">{{__ "profile.local"}}:</strong> &nbsp;  
-                                    {{#if professor.formacao}}{{formataFormacaoLocal professor.formacao}}{{/if}}</li>
-                                <li class="list-group-item border-0 ps-0">
-                                    <strong class="text-dark">{{__ "profile.ano"}}:</strong> &nbsp; 
-                                    {{#if professor.formacao}}{{formataFormacaoAno professor.formacao}}{{/if}}</li>
-                                <li class="list-group-item border-0 ps-0">
-                                    <strong class="text-dark">Lattes:</strong> &nbsp; 
-                                    <a target="_blank" href="http://lattes.cnpq.br/{{professor.idLattes}}"> http://lattes.cnpq.br/{{professor.idLattes}}</a></li>
-                                <li class="list-group-item border-0 ps-0">
-                                    <strong class="text-dark">E-mail:</strong> &nbsp; 
-                                    {{professor.email}}</li>
-                                </ul>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
+  <section class="mb-3 text-dark">
+    <div class="container">
+      <div class="card card-body mx-3 mx-md-4 mt-n6">
+        <div class="row gx-4 mb-4">
+          <div class="nav-wrapper position-relative end-0">
+            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+              <li class="nav-item">
+                <a id="profile-tab" class="nav-link mb-0 px-0 active" href="/docentes/{{professor.id}}?lng={{lng}}" aria-controls="profile" role="tab" aria-selected="true">
+                  <i class="material-icons position-relative">person</i>
+                  <span class="ms-1">{{__ "profile.perfil"}}</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link mb-0 px-0 " href="/docentes/{{professor.id}}/publicacoes?lng={{lng}}" aria-controls="public" role="tab" aria-selected="false">
+                  <i class="material-icons position-relative">description</i>
+                  <span class="ms-1">{{__ "profile.publicacoes"}}</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link mb-0 px-0 " href="/docentes/{{professor.id}}/projetos?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
+                <i class="material-icons text-lg position-relative">search</i>
+                <span class="ms-1">{{__ "profile.projetosDePesquisa"}}</span>
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle mb-0 px-0 " data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons text-lg position-relative">account_circle</i>
+                  <span class="ms-1">{{__ "profile.orientacoes"}}</span>
+                </a>
+                <div class="dropdown-menu w-100 text-center">
+                  <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ "profile.graduacao"}}</a>
+                  <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ "profile.mestrado"}}</a>
+                  <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ "profile.doutorado"}}</a>
                 </div>
-            </div>        
-            
+              </li>
+              <li class="nav-item">
+                <a class="nav-link mb-0 px-0" href="/docentes/{{professor.id}}/premios?lng={{lng}}" role="tab" aria-controls="code" aria-selected="false">
+                <i class="material-icons text-lg position-relative">military_tech</i>
+                <span class="ms-1">{{__ "profile.premios"}}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="row gx-4 mb-2">
+              <div class="col-auto">
+                <div class="avatar avatar-xxl position-relative ms-3">
+                  <img
+                    src="{{#if professor.Avatar.[0]}}{{professor.Avatar.[0].caminho}}{{else}}/public/img/user-profile-generic.png{{/if}}"
+                    alt="Imagem do professor"
+                    class="w-100 border-radius-lg shadow-sm">
                 </div>
+              </div>
+              <div class="col-auto my-auto">
+                <div class="h-100">
+                  <h3 class="mb-1">
+                    {{professor.nomeCompleto}}
+                  </h3>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mt-3">
+              </div>
             </div>
-    </section>
-        
 
+            <div class="row">
+              <div class="row">
+                <div class="card card-plain h-100">
+                  <div class="card-body p-3">
+                    <p class="text-justify">
+                      {{#if (isEnLng lng)}}
+                        {{professor.resumoIngles}}
+                      {{else}}
+                        {{professor.resumo}}
+                      {{/if}}
+                    </p>
+                    <hr class="horizontal gray-light my-4">
+                    <ul class="list-group">
+                      <li class="list-group-item border-0 ps-0 pt-0">
+                        <strong class="text-dark">{{__ "profile.formacao"}}:</strong> &nbsp;
+                        {{#if professor.formacao}}{{#if (isEnLng lng)}}{{formataFormacaoTitulo professor.formacaoIngles lng}}{{else}}{{formataFormacaoTitulo professor.formacao lng}}{{/if}}{{/if}}</li>
+                      <li class="list-group-item border-0 ps-0">
+                        <strong class="text-dark">{{__ "profile.local"}}:</strong> &nbsp;
+                        {{#if professor.formacao}}{{formataFormacaoLocal professor.formacao}}{{/if}}</li>
+                      <li class="list-group-item border-0 ps-0">
+                        <strong class="text-dark">{{__ "profile.ano"}}:</strong> &nbsp;
+                        {{#if professor.formacao}}{{formataFormacaoAno professor.formacao}}{{/if}}</li>
+                      <li class="list-group-item border-0 ps-0">
+                        <strong class="text-dark">Lattes:</strong> &nbsp;
+                        <a target="_blank" href="https://lattes.cnpq.br/{{professor.lattesId}}"> http://lattes.cnpq.br/{{professor.lattesId}}</a></li>
+                      <li class="list-group-item border-0 ps-0">
+                        <strong class="text-dark">E-mail:</strong> &nbsp;
+                        {{professor.email}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 {{> numerosIcomp/footer}}
 </div>

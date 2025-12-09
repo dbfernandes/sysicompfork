@@ -40,6 +40,7 @@ const adicionarUsuario = async (
           secretaria,
           professor,
           diretor,
+          professorPPGI,
           senha,
           endereco,
           telefoneCelular,
@@ -70,7 +71,8 @@ const adicionarUsuario = async (
           coordenador: coordenador === 'on' ? 1 : 0,
           secretaria: secretaria === 'on' ? 1 : 0,
           professor: professor === 'on' ? 1 : 0,
-          diretor: diretor === 'on' ? 1 : 0, // Adicionando o campo diretor que faltava
+          diretor: diretor === 'on' ? 1 : 0,
+          professorPPGI: professorPPGI === 'on' ? 1 : 0,
           senhaHash: senha,
           endereco,
           telCelular: telefoneCelular,
@@ -221,18 +223,18 @@ const listarUsuario = async (
       try {
         const { message, type, messageTitle } = req.query;
         const usuarios = await usuarioService.listarTodos();
-        usuarios.forEach((usuario) => {
-          if (usuario.administrador === 1) {
-            usuario.perfil += ' administrador';
-          }
-          if (usuario.coordenador === 1) {
-            usuario.perfil += ' coordenador';
-          }
-          if (usuario.secretaria === 1) {
-            usuario.perfil += ' secretaria';
-          }
-          if (usuario.professor === 1) {
-            usuario.perfil += ' professor';
+        usuarios.forEach((usuario: any) => {
+          if (
+            usuario.administrador ||
+            usuario.coordenador ||
+            usuario.secretaria ||
+            usuario.professor ||
+            usuario.diretor ||
+            usuario.professorPPGI
+          ) {
+            usuario.empty = false;
+          } else {
+            usuario.empty = true;
           }
         });
         return res
@@ -330,7 +332,7 @@ const editarUsuario = async (
             tipoUsuario: req.session.tipoUsuario,
           });
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
         const errorParams = {
           message:
             'Não foi possível abrir formulário de edição para este usuário.',
@@ -357,6 +359,8 @@ const editarUsuario = async (
           coordenador: requestBody.coordenador === 'on' ? 1 : 0,
           secretaria: requestBody.secretaria === 'on' ? 1 : 0,
           professor: requestBody.professor === 'on' ? 1 : 0,
+          professorPPGI: requestBody.professorPPGI === 'on' ? 1 : 0,
+
           diretor: requestBody.diretor === 'on' ? 1 : 0, // Adicionando o campo diretor que faltava
 
           endereco: requestBody.endereco,
@@ -391,6 +395,7 @@ const editarUsuario = async (
             secretaria: user.secretaria,
             professor: user.professor,
             diretor: user.diretor,
+            professorPPGI: user.professorPPGI,
           };
         }
 
@@ -438,10 +443,7 @@ const editarUsuario = async (
         .send('A requisição enviada ao servidor é inválida. Bad Request (400)');
   }
 };
-const verificarUsuarioDiretor = async (
-  req: Request,
-  res: Response,
-): Promise<any> => {
+const verificarUsuarioDiretor = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       try {

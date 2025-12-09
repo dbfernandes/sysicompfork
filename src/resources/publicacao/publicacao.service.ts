@@ -85,7 +85,6 @@ class PublicacaoService {
             data: publicacao,
           });
         }
-
         await prisma.usuarioPublicacao.create({
           data: {
             usuarioId: professorId,
@@ -118,42 +117,41 @@ class PublicacaoService {
     }
   }
   async contarTodos(): Promise<ContagemResult> {
-    try {
-      const currentYear = new Date().getFullYear();
-      const anos = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i);
+    const currentYear = new Date().getFullYear();
+    const startYear = currentYear - 14;
+    const anos = Array.from({ length: 15 }, (_, i) => startYear + i);
 
-      const counts = await prisma.$queryRaw<PublicacaoCount[]>`
-        SELECT 
-          ano,
-          tipo,
-          COUNT(*) as total
-        FROM Publicacao
-        WHERE 
-          tipo IN (1, 2)
-          AND ano >= ${currentYear - 14}
-        GROUP BY ano, tipo
-        ORDER BY ano, tipo
-      `;
+    // IDs dos tipos (evite números mágicos; pegue pelos 'chave' se preferir)
+    const TIPO_CONFERENCIA = 1; // TRABALHO-EM-EVENTOS
+    const TIPO_PERIODICO = 2; // ARTIGO-PUBLICADO
 
-      const contagemTotal = {
-        Conferencia: anos.map(
-          (ano) =>
-            counts.find((c) => c.ano === ano && c.tipo === 1)?._count._all ?? 0,
-        ),
-        Periodico: anos.map(
-          (ano) =>
-            counts.find((c) => c.ano === ano && c.tipo === 2)?._count._all ?? 0,
-        ),
-      };
+    const grouped = await prisma.publicacao.groupBy({
+      by: ['ano', 'tipoId'],
+      where: {
+        tipoId: { in: [TIPO_CONFERENCIA, TIPO_PERIODICO] },
+        ano: { gte: startYear },
+      },
+      _count: { _all: true },
+      orderBy: [{ ano: 'asc' }, { tipoId: 'asc' }],
+    });
 
-      return {
-        contagemTotal,
-        anos,
-      };
-    } catch (error) {
-      console.error('Erro ao contar publicações:', error);
-      throw new Error('Falha ao contar publicações');
+    // Indexa por "ano:tipoId" para preencher zeros nos anos sem registros
+    const idx = new Map<string, number>();
+    for (const row of grouped) {
+      idx.set(`${row.ano}:${row.tipoId}`, row._count._all);
     }
+
+    const Conferencia = anos.map(
+      (ano) => idx.get(`${ano}:${TIPO_CONFERENCIA}`) ?? 0,
+    );
+    const Periodico = anos.map(
+      (ano) => idx.get(`${ano}:${TIPO_PERIODICO}`) ?? 0,
+    );
+
+    return {
+      contagemTotal: { Conferencia, Periodico },
+      anos,
+    };
   }
 }
 

@@ -371,6 +371,7 @@ model Usuario {
   secretaria    Int @default(0) @db.SmallInt
   diretor       Int @default(0) @db.SmallInt
   professor     Int @default(0) @db.SmallInt
+  professorPPGI Int @default(0) @db.SmallInt
 
   perfil            String?   @db.VarChar(255)
   siape             String?   @db.VarChar(10)
@@ -403,7 +404,8 @@ model Usuario {
   defesasComoCoorientador Defesa[] @relation("CoorientadorDefesa")
   defesasCriadas          Defesa[] @relation("CriadorDefesa")
 
-  Defesa Defesa[]
+  Defesa   Defesa[]
+  Processo Processo[]
 }
 
 enum DefesaTipo {
@@ -611,4 +613,73 @@ model DefesaUpload {
   createdAt DateTime @default(now())
 
   @@index([defesaId, tipo])
+}
+
+enum ProcessoOrigem {
+  MANUAL
+  IA
+  IMPORTADO
+}
+
+// ===== Processo (diagrama BPMN) =====
+model Processo {
+  id        String  @id @default(cuid())
+  titulo    String  @db.VarChar(255)
+  slug      String  @unique @db.VarChar(280) // p/ URLs estáveis e busca
+  descricao String? @db.Text
+
+  xmlPath     String  @db.VarChar(1024) // caminho do arquivo .bpmn (XML)
+  previewPath String? @db.VarChar(1024) // caminho da imagem (png/svg) do diagrama
+
+  origem ProcessoOrigem @default(MANUAL)
+
+  bpmnVersion  String?  @db.VarChar(32) // ex.: "2.0"
+  isExecutable Boolean? // útil se alguns processos forem executáveis
+
+  criadoPorId Int
+  criadoPor   Usuario @relation(fields: [criadoPorId], references: [id])
+
+  // Colab em tempo real (opcional: sala do Yjs / roomId)
+  collabRoomId String? @unique @db.VarChar(255)
+
+  // Controle simples de revisão
+  revisao         Int       @default(1)
+  ultimaGeracaoAt DateTime? // quando a IA gerou/atualizou
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação N..N com Tag via tabela de junção
+  tags ProcessoTag[]
+
+  @@index([criadoPorId])
+  @@index([slug])
+  @@index([titulo])
+}
+
+// ===== Tag (catalogo de etiquetas) =====
+model Tag {
+  id        Int      @id @default(autoincrement())
+  nome      String   @unique @db.VarChar(80)
+  slug      String   @unique @db.VarChar(120)
+  corHex    String?  @db.VarChar(9) // ex.: "#AABBCC" ou "#AABBCCDD"
+  descricao String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  processos ProcessoTag[]
+}
+
+// ===== Junção N..N entre Processo e Tag =====
+model ProcessoTag {
+  processoId String
+  tagId      Int
+
+  processo Processo @relation(fields: [processoId], references: [id])
+  tag      Tag      @relation(fields: [tagId], references: [id])
+
+  // Evita duplicidade de tag no mesmo processo
+  @@id([processoId, tagId])
+  @@index([tagId])
+  @@index([processoId])
 }

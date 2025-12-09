@@ -37,6 +37,7 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./temp:/app/temp
+      - ./public:/app/public
     depends_on:
       - db
       - gotenberg
@@ -64,7 +65,56 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./temp:/app/temp
+      - ./public:/app/public
 
+    depends_on:
+      - db
+      - gotenberg
+      - redis
+    env_file:
+      - .env
+    networks:
+      - sysicomp-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # =========================================================
+  # phpMyAdmin — acesso SEGURO via túnel SSH (recomendado)
+  # =========================================================
+  phpmyadmin:
+    image: phpmyadmin:5.2-apache
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 0     # impede conectar em hosts arbitrários
+      UPLOAD_LIMIT: 128M
+    ports:
+      - '8080:80'
+    depends_on:
+      - db
+    networks:
+      - sysicomp-network
+
+
+  numeros_icomp:
+    container_name: numeros_icomp
+    mem_limit: 4096m
+    build:
+      context: .
+    command: 'node build/app/serverNumerosIcomp.js'
+    restart: unless-stopped
+    ports:
+      - '${PORT_NUMEROS_ICOMP:-4001}:${PORT_NUMEROS_ICOMP:-4001}'
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./temp:/app/temp
+      - ./public:/app/public
     depends_on:
       - db
       - gotenberg

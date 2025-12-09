@@ -3,11 +3,24 @@ import afastamentoService from './afastamento.temporario.service';
 import path from 'path';
 import { StatusCodes } from 'http-status-codes';
 import { CreateAfastamentoDTO } from './afastamento.temporario.types';
-import usuarioService from '@resources/usuarios/usuario.service';
+
 const pageTitle = 'Afastamento Temporário';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
+}
+function parseDateBR(dateStr: string) {
+  if (typeof dateStr !== 'string') return null;
+
+  const [dd, mm, yyyy] = dateStr.split('/').map(Number);
+
+  // Validação básica
+  if (!dd || !mm || !yyyy) return null;
+  if (mm < 1 || mm > 12) return null;
+  if (dd < 1 || dd > 31) return null; // aqui dá pra melhorar se quiser validar meses de 30 dias, fevereiro etc.
+
+  // new Date(ano, mesIndex, dia)  -> mesIndex começa em 0 (0 = janeiro)
+  return new Date(Date.UTC(yyyy, mm - 1, dd));
 }
 
 const listarAfastamentos = async (req: Request, res: Response) => {
@@ -34,7 +47,7 @@ const listarAfastamentos = async (req: Request, res: Response) => {
     }
 
     if (!afastamentos || afastamentos.length === 0) {
-      throw new Error('Nenhum pedido de afastamento encontrado');
+      new Error('Nenhum pedido de afastamento encontrado');
     }
 
     return res.status(StatusCodes.OK).render(resolveView('listarAfastamento'), {
@@ -80,12 +93,11 @@ export const adicionarAfastamento = async (req: Request, res: Response) => {
       justificativa,
       planoReposicao,
     } = req.body;
-
     const novoAfastamento: CreateAfastamentoDTO = {
       usuarioId: Number(uid),
       nomeCompleto: nome!,
-      dataInicio: new Date(dataSaida),
-      dataFim: new Date(dataRetorno),
+      dataInicio: parseDateBR(dataSaida),
+      dataFim: parseDateBR(dataRetorno),
       tipoViagem: String(tipoViagem),
       localViagem: String(localViagem),
       justificativa: String(justificativa),

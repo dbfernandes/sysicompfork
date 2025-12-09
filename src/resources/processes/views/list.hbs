@@ -1,0 +1,526 @@
+{{> header}}
+{{> sidebar module='processos' page='processos-listar'}}
+
+<div class="content-wrapper">
+  <!-- Page header -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-9">
+          <h1>Lista de Processos</h1>
+        </div>
+        <div class="col-sm-3">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Processos</a></li>
+            <li class="breadcrumb-item active">Listar</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <!-- Botões de ação -->
+        <div class="col-sm-8 col-md-6 col-lg-4 d-flex">
+          <button
+            type="button"
+            class="btn btn-primary mr-2"
+            data-toggle="modal"
+            data-target="#modalCriarPorTemplate"
+          >
+            <i class="fas fa-magic"></i>
+            Criar processo
+          </button>
+
+<!--          <button-->
+<!--            type="button"-->
+<!--            class="btn btn-outline-primary"-->
+<!--            data-toggle="modal"-->
+<!--            data-target="#modalImportarXml"-->
+<!--          >-->
+<!--            <i class="fas fa-file-upload"></i>-->
+<!--            Importar XML/BPMN-->
+<!--          </button>-->
+        </div>
+
+        <!-- Filtros -->
+        <div class="col-sm-12 col-md-6 col-lg-8 mt-2 mt-md-0">
+<!--          <form class="form" method="GET" action="/processos">-->
+<!--            <div class="form-row">-->
+<!--              <div class="col-sm-12 col-md-6 mb-2">-->
+<!--                <input-->
+<!--                  type="text"-->
+<!--                  name="q"-->
+<!--                  value="{{q}}"-->
+<!--                  class="form-control"-->
+<!--                  placeholder="Buscar por título ou descrição..."-->
+<!--                />-->
+<!--              </div>-->
+
+<!--              <div class="col-sm-7 col-md-4 mb-2">-->
+<!--                <select class="form-control" name="tag">-->
+<!--                  <option value="">Todas as tags</option>-->
+<!--                  {{#each allTags}}-->
+<!--                    <option value="{{this.slug}}" {{#ifEq ../tag this.slug}}selected{{/ifEq}}>{{this.nome}}</option>-->
+<!--                  {{/each}}-->
+<!--                </select>-->
+<!--              </div>-->
+
+<!--              <div class="col-sm-5 col-md-2">-->
+<!--                <button class="btn btn-default btn-block" type="submit">-->
+<!--                  <i class="fas fa-search"></i>-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </form>-->
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+
+      <!-- Cards -->
+      <div class="row">
+        {{#if processos.length}}
+          {{#each processos}}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+              <div class="card card-outline m-1 w-100" data-processo-id="{{id}}">
+                <div class="card-header">
+                  <h3 class="card-title text-truncate" title="{{titulo}}">{{titulo}}</h3>
+                </div>
+
+                <div class="card-body p-2">
+                  <div class="mb-2" style="height: 140px; overflow: hidden; border-radius: 6px; background: #f8f9fa;">
+                    {{#if previewPath}}
+                      <img src="/processos/{{id}}/preview" alt="preview" class="img-fluid" style="width:100%; height: 100%;object-fit: contain;"/>
+                    {{else}}
+                      <div class="d-flex h-100 w-100 align-items-center justify-content-center text-muted">
+                        <i class="far fa-image mr-1"></i> sem preview
+                      </div>
+                    {{/if}}
+                  </div>
+
+                  <p class="text-muted small mb-2" style="min-height: 40px;">
+                    {{descricao }}
+                  </p>
+
+                  <!-- Tags -->
+                  <div class="mb-2">
+                    {{#if tags.length}}
+                      {{#each tags}}
+                        <span class="badge badge-info mr-1" title="{{this.nome}}">{{this.nome}}</span>
+                      {{/each}}
+                    {{else}}
+                      <span class="text-muted small">Sem tags</span>
+                    {{/if}}
+                  </div>
+
+                  <dl class="row mb-0 small">
+                    <dt class="col-5">Criado por:</dt>
+                    <dd class="col-7 text-truncate" title="{{criadoPor.nomeCompleto}}">{{criadoPor.nomeCompleto}}</dd>
+
+                    <dt class="col-5">Atualizado:</dt>
+                    <dd class="col-7">{{dataToLocaleString updatedAt}}</dd>
+                  </dl>
+                </div>
+
+                <div class="card-footer w-full d-flex justify-content-between">
+                  <a href="/processos/{{id}}" class="btn  btn-outline-primary">
+                    <i class="fas fa-eye"></i> Abrir
+                  </a>
+                  <div>
+<!--                    <a href="/processos/{{id}}/editar" class="btn  btn-outline-secondary" title="Editar">-->
+<!--                      <i class="fas fa-edit"></i>-->
+<!--                    </a>-->
+                    <a href="/processos/{{id}}/xml" download class="btn btn-outline-info" title="Baixar XML">
+                      <i class="fas fa-file-download"></i>
+                    </a>
+                    <a href="/processos/{{id}}/preview" download class="btn btn-outline-primary" title="Baixar SVG">
+                      <i class="fas fa-file-image"></i>
+                    </a>
+                    <button
+                      data-id="{{id}}"
+                      data-title="{{titulo}}"
+                      class="btn btn-outline-danger js-delete"
+                      title="Excluir"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{else}}
+          <div class="col-12">
+            <div class="alert alert-light border">
+              Nenhum processo encontrado.
+            </div>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Paginação -->
+<!--      <div class="row">-->
+<!--        <div class="col-12">-->
+<!--          {{> pagination pagination=pagination baseUrl="/processos" q=q tag=tag }}-->
+<!--        </div>-->
+<!--      </div>-->
+
+    </div>
+  </section>
+</div>
+
+{{!-- =============== MODAL: CRIAR POR TEMPLATE =============== --}}
+<div class="modal fade" id="modalCriarPorTemplate" tabindex="-1" role="dialog" aria-labelledby="modalCriarPorTemplateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form class="modal-content" method="POST" action="/processos/criar-por-template">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCriarPorTemplateLabel">
+          Criar processo
+          <span id="iaBadge" class="badge badge-warning ml-2 d-none">
+           <i class="fas fa-robot"></i> IA ativada
+          </span>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Título</label>
+            <input type="text" name="titulo" class="form-control" placeholder="Ex.: Fluxo de Inscrição PPGI" required />
+          </div>
+
+          <div class="form-group col-md-6">
+            <div class="custom-control custom-switch mt-4">
+              <input type="checkbox" class="custom-control-input" id="usarIA" name="usarIA" value="true" checked>
+              <label class="custom-control-label" for="usarIA">Gerar automaticamente com IA</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição do processo</label>
+          <textarea name="descricao" class="form-control" rows="4" placeholder="Descreva o objetivo, atores (se houver), principais etapas e decisões."></textarea>
+          <small class="text-muted">Dica: quanto mais clara a descrição, melhor o diagrama inicial.</small>
+        </div>
+
+        <div id="bloco-template" class="form-group">
+          <label>Template (se não usar IA)</label>
+          <select name="templateKey" class="form-control">
+            <option value="padrao">Padrão</option>
+            <option value="vazio">Vazio</option>
+            <option value="inscricao">Inscrição (exemplo)</option>
+            <option value="homologacao">Homologação (exemplo)</option>
+          </select>
+        </div>
+
+<!--        <div class="form-group">-->
+<!--          <label>Tags</label>-->
+<!--          <div class="d-flex flex-wrap">-->
+<!--            {{#each allTags}}-->
+<!--              <div class="custom-control custom-checkbox mr-3 mb-2">-->
+<!--                <input type="checkbox" class="custom-control-input" id="t-{{this.id}}" name="tags[]" value="{{this.id}}">-->
+<!--                <label class="custom-control-label" for="t-{{this.id}}">{{this.nome}}</label>-->
+<!--              </div>-->
+<!--            {{/each}}-->
+<!--          </div>-->
+<!--        </div>-->
+
+        <div class="alert alert-info mb-0">
+          Se “Gerar com IA” estiver ativo, o diagrama inicial será criado a partir da descrição acima.
+        </div>
+      </div>
+      <div id="iaAlert" class="alert alert-warning d-none">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-robot mr-2"></i>
+          <div>
+            <strong>Gerando diagrama com IA…</strong><br/>
+            Isso pode levar alguns segundos. Não feche esta janela nem recarregue a página.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="btnCriarProcesso" type="submit" class="btn btn-primary">
+          <i class="fas fa-check"></i> Criar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{!-- =============== MODAL: IMPORTAR XML/BPMN =============== --}}
+<div class="modal fade" id="modalImportarXml" tabindex="-1" role="dialog" aria-labelledby="modalImportarXmlLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content" method="POST" action="/processos/upload-xml" enctype="multipart/form-data">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalImportarXmlLabel">Importar XML/BPMN</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" name="titulo" class="form-control" placeholder="Ex.: Fluxo de Defesa Mestrado" required />
+        </div>
+
+        <div class="form-group">
+          <label>Arquivo XML/BPMN</label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="xmlFile" name="xmlFile" accept=".xml,.bpmn" required>
+            <label class="custom-file-label" for="xmlFile">Escolher arquivo...</label>
+          </div>
+          <small class="form-text text-muted">Formatos aceitos: .xml, .bpmn</small>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição (opcional)</label>
+          <textarea name="descricao" class="form-control" rows="3" placeholder="Descrição do processo importado..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tags</label>
+          <div class="d-flex flex-wrap">
+            {{#each allTags}}
+              <div class="custom-control custom-checkbox mr-3 mb-2">
+                <input type="checkbox" class="custom-control-input" id="u-{{this.id}}" name="tags[]" value="{{this.id}}">
+                <label class="custom-control-label" for="u-{{this.id}}">{{this.nome}}</label>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+
+        <div class="alert alert-light border mb-0">
+          O arquivo será validado e salvo. Você poderá visualizar/editar após a importação.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-upload"></i> Importar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{!-- MODAL: Confirmar deleção --}}
+<div
+  class="modal fade"
+  id="modalConfirmDelete"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="modalConfirmDeleteLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content border-0">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="modalConfirmDeleteLabel">
+          <i class="fas fa-exclamation-triangle mr-2"></i>
+          Confirmar exclusão
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="mb-1">Tem certeza que deseja excluir o processo abaixo?</p>
+        <p class="mb-3">
+          <strong id="delProcTitle">—</strong>
+        </p>
+
+        <div id="delFeedback" class="alert alert-danger d-none mb-0">
+          Ocorreu um erro ao excluir. Tente novamente.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="btnConfirmDelete" type="button" class="btn btn-danger">
+          <i class="fas fa-trash"></i> Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // IA: toggle do bloco de template + badge no título
+    const chkIA = document.getElementById('usarIA');
+    const blocoTemplate = document.getElementById('bloco-template');
+    const iaBadge = document.getElementById('iaBadge');
+    const iaAlert = document.getElementById('iaAlert');
+
+    function applyIAToggle() {
+      const on = !!chkIA?.checked;
+      if (blocoTemplate) blocoTemplate.style.display = on ? 'none' : 'block';
+      if (iaBadge) iaBadge.classList.toggle('d-none', !on);
+      // alerta só aparece quando enviar; aqui deixamos escondido
+    }
+
+    if (chkIA) {
+      applyIAToggle();
+      chkIA.addEventListener('change', applyIAToggle);
+    }
+
+    // Form de criação
+    const modalCriar = document.getElementById('modalCriarPorTemplate');
+    if (!modalCriar) return;
+
+    const form = modalCriar.querySelector('form');
+    const btnSubmit = document.getElementById('btnCriarProcesso');
+
+    // Evita submit duplo
+    let submitting = false;
+
+    form.addEventListener('submit', function (e) {
+      if (submitting) {
+        e.preventDefault();
+        return;
+      }
+      submitting = true;
+
+      const usarIA = !!chkIA?.checked;
+
+      // Desabilita o botão e os campos (evita alterações enquanto envia)
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.dataset.original = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = usarIA
+          ? '<i class="fas fa-spinner fa-spin"></i> Gerando com IA…'
+          : '<i class="fas fa-spinner fa-spin"></i> Criando…';
+      }
+
+      // Mostra aviso/badge se IA
+      if (usarIA && iaAlert) iaAlert.classList.remove('d-none');
+      if (usarIA && iaBadge) iaBadge.classList.remove('d-none');
+
+      // Desabilita inputs para evitar mudanças enquanto envia
+      Array.from(form.elements).forEach((el) => {
+        try {
+          el.readOnly = true;
+          el.disabled = el === btnSubmit ? true : el.disabled; // preserva buttons/checkboxes; submit já desabilitado
+        } catch (_) {}
+      });
+
+      // Deixa o POST seguir normalmente (full page). Em caso de erro (ex.: resposta 4xx/5xx renderizada),
+      // o navegador vai trocar de página mesmo assim. Se quiser reabilitar nesta mesma página quando
+      // o navegador bloquear a navegação, use um setTimeout (fallback) opcional:
+      // setTimeout(() => {
+      //   if (document.visibilityState === 'visible') {
+      //     submitting = false;
+      //     if (btnSubmit) {
+      //       btnSubmit.disabled = false;
+      //       btnSubmit.innerHTML = btnSubmit.dataset.original || '<i class="fas fa-check"></i> Criar';
+      //     }
+      //     Array.from(form.elements).forEach((el) => {
+      //       try { el.readOnly = false; } catch (_) {}
+      //     });
+      //     if (usarIA && iaAlert) iaAlert.classList.add('d-none');
+      //   }
+      // }, 30000);
+    });
+
+    // Atualiza label do custom-file (já existia)
+    document.addEventListener('change', function(e) {
+      const input = e.target.closest('.custom-file-input');
+      if (!input) return;
+      const label = input.parentElement.querySelector('.custom-file-label');
+      if (label) label.textContent = input.files && input.files[0] ? input.files[0].name : 'Escolher arquivo...';
+    });
+
+    // Remoção (já existia)
+    const modal = document.getElementById('modalConfirmDelete');
+    const titleEl = document.getElementById('delProcTitle');
+    const btnConfirm = document.getElementById('btnConfirmDelete');
+    const feedback = document.getElementById('delFeedback');
+
+    let currentId = null;   // id selecionado para deleção
+    let currentTitle = '';  // título (para exibir no modal)
+
+    // Abrir modal ao clicar no botão de deletar
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.js-delete');
+      if (!btn) return;
+
+      e.preventDefault();
+      currentId = btn.getAttribute('data-id');
+      currentTitle = btn.getAttribute('data-title') || 'Processo';
+
+      titleEl.textContent = currentTitle;
+      feedback.classList.add('d-none');
+
+      // Abre o modal (Bootstrap 4)
+      $('#modalConfirmDelete').modal('show');
+    });
+
+    // Confirmar deleção
+    btnConfirm.addEventListener('click', async function () {
+      if (!currentId) return;
+
+      // bloqueia o botão com spinner
+      const original = btnConfirm.innerHTML;
+      btnConfirm.disabled = true;
+      btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+
+      try {
+        const resp = await fetch(`/processos/${currentId}`, {
+          method: 'DELETE',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!resp.ok) {
+          throw new Error(await resp.text());
+        }
+
+        // Fecha modal
+        $('#modalConfirmDelete').modal('hide');
+
+        // Remove o card do DOM com animação suave (se marcou data-processo-id no card)
+        const card = document.querySelector(`[data-processo-id="${currentId}"]`);
+        if (card) {
+          card.style.transition = 'opacity .2s ease, transform .2s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.98)';
+          setTimeout(() => {
+            // container do grid é a .col-...; removemos o pai de nível mais alto
+            const col = card.closest('.col-12, .col-sm-6, .col-md-4, .col-lg-3') || card.parentElement;
+            (col || card).remove();
+          }, 200);
+        } else {
+          // fallback: recarrega
+          location.reload();
+        }
+      } catch (err) {
+        console.error('[delete processo]', err);
+        feedback.classList.remove('d-none');
+      } finally {
+        btnConfirm.disabled = false;
+        btnConfirm.innerHTML = original;
+        currentId = null;
+        currentTitle = '';
+      }
+    });
+
+    // Limpa estado ao fechar o modal
+    $('#modalConfirmDelete').on('hidden.bs.modal', function () {
+      currentId = null;
+      currentTitle = '';
+      feedback.classList.add('d-none');
+      btnConfirm.disabled = false;
+      btnConfirm.innerHTML = '<i class="fas fa-trash"></i> Excluir';
+    });
+  })();
+</script>
+{{> footer}}

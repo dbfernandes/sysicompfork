@@ -5,92 +5,85 @@
     }
 </style>
 
-
-
 <nav class="navbar navbar-expand-lg fixed-top navbar-collapse navbar-fixed-top" style="background-color: #2c3e50;">
-        <div class="container">
-            <a class="navbar-brand d-flex text-center" href="/numerosIcomp?lng={{lng}}">
-                <span class="ms-1"><b>{{__ "navbar.titulo"}}</b></span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon material-icons ">menu</span>
-            </button>
-            <div class="collapse navbar-collapse" id="navigation">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item me-3">
-                    <a href="/numerosIcomp?lng={{lng}}#alunos" class="nav-link fs-6 {{#ifEqual page 'alunos'}}active{{/ifEqual}}" >
-                    <b>{{__ "navbar.alunos"}}</b>
-                        
-                    </a>
-                    </li>
-                    <li class="nav-item me-3" >
-                    <a href="/numerosIcomp/docentes?lng={{lng}}" class="nav-link fs-6 {{#ifEqual page 'docentes'}}active{{/ifEqual}}" >
-                        <b>{{__ "navbar.docentes"}}</b>
-                    </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fs-6 {{#ifEqual page 'publicacoes'}}active{{/ifEqual}}" 
-                        href="" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b>{{__ "navbar.publicacoes"}}</b>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="/numerosIcomp?lng={{lng}}#publicacoes">{{__ "navbar.historicoDePublicacoes"}}</a></li>
-                            <li><a class="dropdown-item" href="/numerosIcomp/publicacoes?lng={{lng}}">{{__ "navbar.todasAsPublicacoes"}}</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item me-3">
-                    <a href="/numerosIcomp/projetos?lng={{lng}}" class="nav-link fs-6 {{#ifEqual page 'projetos'}}active{{/ifEqual}}" >
-                        <b>{{__ "navbar.projetos"}}</b>
-                    </a>
-                    </li>
-                    
-                </ul>
-            </div>
-            
-        </div>
-        <div class="me-5 ps-3">
-            <div class="dropdown">
-                <a class="dropdown-toggle nav-link" href="#" id="Dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img id="languageSelected" height="25px" width="25px" ></img>
-                </a>
-
-                <ul class="navbar-dropdown dropdown-menu text-center" aria-labelledby="Dropdown">
-                    <li>
-                        <a id="pt-select" class="dropdown-item" href="?lng=ptBR">
-                            <img class="me-1" height="25px" width="25px" src="/public/img/icons/brazil.png" ></img>
-                            PT-BR
-                            <i id="ptLanguageSelected" class="fa fa-check text-success ms-2"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="en-select" class="dropdown-item" href="?lng=en">
-                            <img class="me-1" height="25px" width="25px" src="/public/img/icons/united-states.png" ></img>
-                            EN-US
-                            <i id="enLanguageSelected" class="fa fa-check text-success ms-2 opacity-0"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="toast align-items-center text-white bg-danger border-0 me-2" style="width: 280px;" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Não foi possível traduzir a página.
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>                             
+  <div class="container">
+    <a class="navbar-brand d-flex text-center" href="/?lng={{lng}}">
+      <span class="ms-1"><b>{{__ "navbar.titulo"}}</b></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon material-icons ">menu</span>
+    </button>
+    <div class="collapse navbar-collapse" id="navigation">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item me-3">
+          <a href="/?lng={{lng}}#alunos" class="nav-link fs-6 {{#ifEqual page 'alunos'}}active{{/ifEqual}}" >
+            <b>{{__ "navbar.alunos"}}</b>
+          </a>
+        </li>
+        <li class="nav-item me-3" >
+          <a href="/docentes?lng={{lng}}" class="nav-link fs-6 {{#ifEqual page 'docentes'}}active{{/ifEqual}}" >
+            <b>{{__ "navbar.docentes"}}</b>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle fs-6 {{#ifEqual page 'publicacoes'}}active{{/ifEqual}}"
+             href="/" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <b>{{__ "navbar.publicacoes"}}</b>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="/?lng={{lng}}#publicacoes">{{__ "navbar.historicoDePublicacoes"}}</a></li>
+            <li><a class="dropdown-item" href="/publicacoes?lng={{lng}}">{{__ "navbar.todasAsPublicacoes"}}</a></li>
+          </ul>
+        </li>
+        <li class="nav-item me-3">
+          <a href="/projetos?lng={{lng}}" class="nav-link fs-6 {{#ifEqual page 'projetos'}}active{{/ifEqual}}" >
+            <b>{{__ "navbar.projetos"}}</b>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="me-5 ps-3">
+    <div class="dropdown">
+      <a class="dropdown-toggle nav-link" href="#" id="Dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img id="languageSelected" height="25px" width="25px" ></img>
+      </a>
+      <ul class="navbar-dropdown dropdown-menu text-center" aria-labelledby="Dropdown">
+        <li>
+          <a id="pt-select" class="dropdown-item" href="/?lng=ptBR">
+            <img class="me-1" height="25px" width="25px" src="/public/img/icons/brazil.png" ></img>
+            PT-BR
+            <i id="ptLanguageSelected" class="fa fa-check text-success ms-2"></i>
+          </a>
+        </li>
+        <li>
+          <a id="en-select" class="dropdown-item" href="/?lng=en">
+            <img class="me-1" height="25px" width="25px" src="/public/img/icons/united-states.png" ></img>
+            EN-US
+            <i id="enLanguageSelected" class="fa fa-check text-success ms-2 opacity-0"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="toast align-items-center text-white bg-danger border-0 me-2" style="width: 280px;" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        Não foi possível traduzir a página.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
 </nav>
 
 <script>
-        if('{{lng}}' == 'en'){
-            $('#ptLanguageSelected').addClass('opacity-0')
-            $('#enLanguageSelected').removeClass('opacity-0')
-            $('#languageSelected').attr("src", "/public/img/icons/united-states.png")
-        }else if('{{lng}}' == 'ptBR'){
-            $('#enLanguageSelected').addClass('opacity-0')
-            $('#ptLanguageSelected').removeClass('opacity-0')
-            $('#languageSelected').attr("src", "/public/img/icons/brazil.png")
-        }
-
+  if('{{lng}}' == 'en'){
+    $('#ptLanguageSelected').addClass('opacity-0')
+    $('#enLanguageSelected').removeClass('opacity-0')
+    $('#languageSelected').attr("src", "/public/img/icons/united-states.png")
+  }else if('{{lng}}' == 'ptBR'){
+    $('#enLanguageSelected').addClass('opacity-0')
+    $('#ptLanguageSelected').removeClass('opacity-0')
+    $('#languageSelected').attr("src", "/public/img/icons/brazil.png")
+  }
 </script>

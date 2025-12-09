@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Avatar, PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 class AvatarService {
@@ -24,12 +25,11 @@ class AvatarService {
   }
 
   async listarUmAvatar(usuarioId: number): Promise<Avatar | null> {
-    const avatar = await prisma.avatar.findFirst({
+    return prisma.avatar.findFirst({
       where: {
         usuarioId,
       },
     });
-    return avatar;
   }
 
   async remover(usuarioId: number): Promise<void | null> {

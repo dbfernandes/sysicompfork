@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `defesa` ADD COLUMN `correcaoSolicitada` TEXT NULL;
+ALTER TABLE `Defesa` ADD COLUMN `correcaoSolicitada` TEXT NULL;

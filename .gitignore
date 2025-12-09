@@ -9,6 +9,7 @@ uploads/*
 public/candidato/*
 public/afastamentos/*
 public/uploads/*
+public/avatar/*
 
 #Removing the .xlsx file
 /planilha.xlsx

@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/', alunosController.exibirPaginaGerenciamento);
 
 // Rota para importar lista de alunos
-router.post('/importar', alunosController.importarListaAlunos);
+router.post('/upload', alunosController.importarListaAlunos);
 
 export default router;

@@ -1,19 +1,6 @@
 import multer from 'multer';
-import fs from 'fs';
 import path from 'path';
-// Função para garantir que o diretório exista, se não, cria-o
-const ensureDirectoryExistence = (filePath) => {
-  const parts = filePath.split('/');
-  let currentPath = '';
-
-  for (let i = 0; i < parts.length; i++) {
-    currentPath += parts[i] + '/';
-
-    if (!fs.existsSync(currentPath)) {
-      fs.mkdirSync(currentPath);
-    }
-  }
-};
+import { ensureDirectoryExistence } from '@/utils';
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {

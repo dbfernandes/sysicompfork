@@ -42,7 +42,7 @@
             {{#if (autorizarUsuario tipoUsuario "administrador")}}
               <li class="nav-item">
                 <a href="/usuarios/adicionar"
-                   class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
+                  class="nav-link {{#ifEqual page 'usuarios-adicionar'}}active{{/ifEqual}} text-sm">
                   <i class="fas fa-user-plus nav-icon"></i>
                   <p>Adicionar Usuário</p>
                 </a>
@@ -57,7 +57,6 @@
           </ul>
         </li>
         <li class="nav-header">Coordenação PPGI</li>
-
 
         <li class="nav-item {{#ifEqual module 'selecaoppgi'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
           <a href="#" class="nav-link {{#ifEqual module 'selecaoppgi'}}active{{/ifEqual}}">
@@ -124,7 +123,7 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/afastamentoTemporario/criar"
-                   class="nav-link {{#ifEqual page 'solicitar-afastamento'}}active{{/ifEqual}} text-sm">
+                 class="nav-link {{#ifEqual page 'solicitar-afastamento'}}active{{/ifEqual}} text-sm">
                   <i class="fas fa-regular fa-plus nav-icon"></i>
                   <p>Solicitar Afastamento</p>
                 </a>
@@ -138,39 +137,39 @@
             </ul>
           </li>
           <li class="nav-item">
-            <!--<li class="nav-item">
-              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-file-alt"></i>
-                <p>
-                  Gerar Relatório Bancas
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-cog"></i>
-                <p>
-                  Gerenciar Equipamentos
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-file-alt"></i>
-                <p>
-                  Gerar Cautela
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/script-adminlte/pages/widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-file-alt"></i>
-                <p>
-                  Gerar Cautela Avulsa
-                </p>
-              </a>
-            </li>-->
-          <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
+        <!--<li class="nav-item">
+          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>
+              Gerar Relatório Bancas
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+            <i class="nav-icon fas fa-cog"></i>
+            <p>
+              Gerenciar Equipamentos
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>
+              Gerar Cautela
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/script-adminlte/pages/widgets.html" class="nav-link">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>
+              Gerar Cautela Avulsa
+            </p>
+          </a>
+        </li>-->
+          <li class="nav-item {{#ifEqual module 'salas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} {{#ifEqual module 'timeline'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}{{#ifEqual module 'reservas'}}menu-is-open menu-is-opening menu-open{{/ifEqual}} ">
             <a href="#" class="nav-link {{#ifEqual module 'salas'}}active{{/ifEqual}} {{#ifEqual module 'reservas'}}active{{/ifEqual}}">
               <i class="nav-icon far fa-clipboard "></i>
               <p>
@@ -200,30 +199,38 @@
               </li>
             </ul>
           </li>
-          {{!-- <li class="nav-item {{#ifEqual module 'horasComplementares'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
-            <a href="#" class="nav-link {{#ifEqual module 'horasComplementares'}}active{{/ifEqual}}">
-              <i class="nav-icon fas fa-list-ul"></i>
+        {{!-- <li class="nav-item {{#ifEqual module 'horasComplementares'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+          <a href="#" class="nav-link {{#ifEqual module 'horasComplementares'}}active{{/ifEqual}}">
+            <i class="nav-icon fas fa-list-ul"></i>
+            <p>
+              Horas Complementares
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/horasComplementares/adicionar"
+                class="nav-link {{#ifEqual page 'adicionar-atividade'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-regular fa-plus nav-icon"></i>
+                <p>Adicionar Atividade</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/horasComplementares/listar" class="nav-link {{#ifEqual page 'main'}}active{{/ifEqual}} text-sm">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Listar Atividades</p>
+              </a>
+            </li>
+          </ul>
+        </li> --}}
+          <li class="nav-item">
+            <a href="/defesas/listar" class="nav-link {{#ifEqual page 'defesas-listar'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-graduation-cap"></i>
               <p>
-                Horas Complementares
-                <i class="right fas fa-angle-left"></i>
+                Minhas Defesas
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="/horasComplementares/adicionar"
-                  class="nav-link {{#ifEqual page 'adicionar-atividade'}}active{{/ifEqual}} text-sm">
-                  <i class="fas fa-regular fa-plus nav-icon"></i>
-                  <p>Adicionar Atividade</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="/horasComplementares/listar" class="nav-link {{#ifEqual page 'main'}}active{{/ifEqual}} text-sm">
-                  <i class="fas fa-table nav-icon"></i>
-                  <p>Listar Atividades</p>
-                </a>
-              </li>
-            </ul>
-          </li> --}}
+          </li>
           <li class="nav-item">
             <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
               <i class="nav-icon fas fa-file"></i>
@@ -232,16 +239,16 @@
               </p>
             </a>
           </li>
-
+          <li class="nav-item">
+            <a href="https://numeros.icomp.ufam.edu.br" class="nav-link {{#ifEqual module 'icompNumeros'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-th-large"></i>
+              <p>
+                Icomp Números
+              </p>
+            </a>
+          </li>
         {{/if}}
-        <li class="nav-item">
-          <a href="/defesas/listar" class="nav-link {{#ifEqual page 'defesas-listar'}}active{{/ifEqual}}">
-            <i class="nav-icon fas fa-graduation-cap"></i>
-            <p>
-              Minhas Defesas
-            </p>
-          </a>
-        </li>
+
         {{#if (autorizarUsuario tipoUsuario "secretaria")}}
           <li class="nav-header">Secretaria</li>
           <li class="nav-item">
@@ -260,6 +267,25 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="/processos" class="nav-link {{#ifEqual module 'processos'}}active{{/ifEqual}}">
+              <i class="nav-icon fa fa-sitemap"></i>
+              <p>
+                Gerenciar Processos
+              </p>
+            </a>
+          </li>
+          {{#if (autorizarUsuario tipoUsuario "professor")}}
+          {{else}}
+            <li class="nav-item">
+              <a href="https://numeros.icomp.ufam.edu.br" class="nav-link {{#ifEqual module 'icompNumeros'}}active{{/ifEqual}}">
+                <i class="nav-icon fas fa-th-large"></i>
+                <p>
+                  Icomp Números
+                </p>
+              </a>
+            </li>
+          {{/if}}
         {{/if}}
       </ul>
     </nav>

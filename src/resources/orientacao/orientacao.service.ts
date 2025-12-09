@@ -12,7 +12,7 @@ class OrientacaoService {
           professorId,
           titulo: o.titulo,
           aluno: o.aluno,
-          ano: o.ano,
+          ano: Number(o.ano),
           natureza: o.natureza,
           tipo: o.tipo,
           status: o.status,

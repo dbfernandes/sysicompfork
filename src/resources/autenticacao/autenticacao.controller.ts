@@ -99,7 +99,6 @@ const login = async (req: Request, res: Response) => {
             type: 'danger',
           });
       }
-
       req.session.uid = String(usuario.id);
       req.session.nome = formatNameSession(usuario.nomeCompleto);
       req.session.tipoUsuario = {
@@ -108,6 +107,7 @@ const login = async (req: Request, res: Response) => {
         secretaria: usuario.secretaria,
         professor: usuario.professor,
         diretor: usuario.diretor,
+        professorPPGI: usuario.professorPPGI,
       };
       return res.status(StatusCodes.ACCEPTED).redirect('/inicio');
     } catch (err) {

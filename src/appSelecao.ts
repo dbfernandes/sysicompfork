@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import helpers from './views/helpers/helpers'; // se o export for `export default`
+import helpers from './views/helpers/helpers';
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -37,6 +37,7 @@ declare module 'express-session' {
           coordenador: number;
           diretor: number;
           professor: number;
+          professorPPGI: number;
         }
       | undefined;
     uid: string;

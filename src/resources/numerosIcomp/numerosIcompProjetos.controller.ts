@@ -1,9 +1,9 @@
-import { Request, Response } from 'express'
-import projetosService from '../projetos/projetos.service'
-import path from 'path'
+import { NextFunction, Request, Response } from 'express';
+import projetosService from '../projetos/projetos.service';
+import path from 'path';
 
 function resolveView(viewName: string): string {
-  return path.resolve(__dirname, 'views', viewName)
+  return path.resolve(__dirname, 'views', viewName);
 }
 
 // Escolha do Layout
@@ -12,8 +12,7 @@ const layoutMain = {
 };
 
 // Listagem Projetos
-
-const projetos = async (req: Request, res: Response) => {
+const projetos = async (req: Request, res: Response, next: NextFunction) => {
   switch (req.method) {
     case 'GET':
       try {
@@ -26,10 +25,9 @@ const projetos = async (req: Request, res: Response) => {
           projetosFiltrados,
         });
       } catch (error) {
-        return res
-          .status(502)
-          .send('O Servidor não obteve uma resposta válida. Bad Gateway (502)');
+        next(error);
       }
+      break;
     default:
       return res
         .status(400)
