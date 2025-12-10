@@ -103,7 +103,7 @@ const adicionarUsuario = async (
           }),
         );
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
         return res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .render(resolveView('usuariosAdicionar'), {
@@ -149,7 +149,7 @@ const bloquearUsuario = async (
           }),
         );
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).redirect(
           criarURL('/usuarios/listar', {
             messageTitle: 'Bloqueio de usuário indisponível!',
@@ -192,7 +192,7 @@ const restaurarUsuario = async (
           .status(StatusCodes.OK)
           .redirect(criarURL('/usuarios/listar', successParams));
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
 
         const errorParams = {
           message: 'Não foi possível desbloquear este usuário.',
@@ -290,7 +290,7 @@ const exibirDetalhesUsuario = async (
             tipoUsuario: req.session.tipoUsuario,
           });
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
         return res.status(StatusCodes.SERVICE_UNAVAILABLE).redirect(
           criarURL('/usuarios/listar', {
             message: 'Não foi possível visualizar este usuário.',
@@ -410,7 +410,7 @@ const editarUsuario = async (
           .status(StatusCodes.OK)
           .redirect(criarURL(`/usuarios/dados/${userId}`, successParams));
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
 
         // Recria os dados do formulário para reexibição
         const formData = {
@@ -450,7 +450,7 @@ const verificarUsuarioDiretor = async (req: Request, res: Response) => {
         const diretor = await usuarioService.buscarUsuarioPor({ diretor: 1 });
         return res.status(StatusCodes.OK).json({ diretor: !!diretor });
       } catch (error: unknown) {
-        console.log(error);
+        console.error(error);
         return res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .json({ diretor: false });

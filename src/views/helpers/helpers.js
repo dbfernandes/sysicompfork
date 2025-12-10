@@ -110,6 +110,8 @@ const autorizarUsuario = (tipos, autorizacao) => {
     return tipos.administrador || tipos.secretaria || tipos.coordenador;
   } else if (autorizacao === 'professor') {
     return tipos.administrador || tipos.secretaria || tipos.professor;
+  } else if (autorizacao === 'professorPPGI') {
+    return tipos.professor || tipos.professorPPGI;
   }
 };
 
@@ -127,7 +129,7 @@ const unlessEquals = function (a, b, options) {
   return options.inverse(this);
 };
 
-const range = function(start, end) {
+const range = function (start, end) {
   const list = [];
   for (let i = start; i <= end; i++) {
     list.push(i);
@@ -135,18 +137,18 @@ const range = function(start, end) {
   return list;
 };
 
-const lookup = function(obj, field) {
+const lookup = function (obj, field) {
   return obj && obj[field];
 };
 
-const assign = function(varName, varValue, options) { 
+const assign = function (varName, varValue, options) {
   if (!options.data.root) {
     options.data.root = {};
   }
   options.data.root[varName] = varValue;
 };
 
-const isLessThan = function(a, b) { 
+const isLessThan = function (a, b) {
   return a < b;
 };
 

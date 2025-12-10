@@ -223,7 +223,8 @@
             </li>
           </ul>
         </li> --}}
-          <li class="nav-item">
+          {{#if (autorizarUsuario tipoUsuario "professorPPGI")}}
+            <li class="nav-item">
             <a href="/defesas/listar" class="nav-link {{#ifEqual page 'defesas-listar'}}active{{/ifEqual}}">
               <i class="nav-icon fas fa-graduation-cap"></i>
               <p>
@@ -231,6 +232,7 @@
               </p>
             </a>
           </li>
+          {{/if}}
           <li class="nav-item">
             <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
               <i class="nav-icon fas fa-file"></i>
