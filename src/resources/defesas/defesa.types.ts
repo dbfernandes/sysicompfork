@@ -58,7 +58,7 @@ export interface QualiStep1Dto {
 }
 
 export interface QualiStep2Dto {
-  localOuLink?: string;
+  localOuLink: string;
 }
 
 export interface QualiStep3Dto {
@@ -126,5 +126,6 @@ export interface FinalStep6Dto {
   artigoTitulo?: string;
   artigoVeiculoOuDoi?: string;
   incluiuAgradecimentosObrigatorios?: boolean;
+  textoAgradecimentos?: string;
   autoavaliacaoPreenchida?: boolean;
 }

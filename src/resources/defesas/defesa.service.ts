@@ -140,6 +140,10 @@ export const DefesaService = {
     return defesa;
   },
 
+  async excluir(id: string) {
+    return prisma.defesa.delete({ where: { id } });
+  },
+
   async createInit(dto: DefesaInitDto, userId: number) {
     const { error, value } = defesaInitSchema.validate(dto, {
       abortEarly: false,

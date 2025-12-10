@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { custom } from 'joi';
 import {
   DefesaModalidade,
   DefesaNivel,
@@ -52,7 +52,7 @@ export const qualiStep1Schema = Joi.object<QualiStep1Dto>({
   coorientadorExternoInstituicao: Joi.string().allow(null, '').optional(),
 });
 export const qualiStep2Schema = Joi.object<QualiStep2Dto>({
-  local: Joi.string().max(1000).optional().allow(''),
+  localOuLink: Joi.string().max(1000).optional().allow(''),
 });
 export const qualiStep3Schema = Joi.object<QualiStep3Dto>({
   resumoOuAbstract: Joi.string().max(15000).optional(),
@@ -70,11 +70,11 @@ export const qualiStep5Schema = Joi.object<QualiStep5Dto>({
 
       const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
-        return helpers.message(
-          'É necessário preencher os dados de pelo menos 2 membros titulares.',
-        );
+        return helpers.message({
+          custom:
+            'É necessário preencher os dados de pelo menos 2 membros titulares.',
+        });
       }
-
       return value;
     })
     .optional(),
@@ -86,9 +86,9 @@ export const qualiStep6Schema = Joi.object<QualiStep6Dto>({
       if (!value) return value;
       const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
-        return helpers.message(
-          'É necessário preencher os dados dos 2 membros suplentes.',
-        );
+        return helpers.message({
+          custom: 'É necessário preencher os dados dos 2 membros suplentes.',
+        });
       }
       return value;
     })
@@ -160,9 +160,10 @@ export const finalStep4Schema = Joi.object<FinalStep4Dto>({
       if (!value) return value;
       const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
-        return helpers.message(
-          'É necessário preencher os dados dos 2 primeiros membros titulares.',
-        );
+        return helpers.message({
+          custom:
+            'É necessário preencher os dados dos 2 primeiros membros titulares.',
+        });
       }
       return value;
     })
@@ -176,9 +177,9 @@ export const finalStep5Schema = Joi.object<FinalStep5Dto>({
       if (!value) return value;
       const filledMembers = value.filter((m) => m.nome && m.nome.trim() !== '');
       if (filledMembers.length < 2) {
-        return helpers.message(
-          'É necessário preencher os dados dos 2 membros suplentes.',
-        );
+        return helpers.message({
+          custom: 'É necessário preencher os dados dos 2 membros suplentes.',
+        });
       }
       return value;
     })
