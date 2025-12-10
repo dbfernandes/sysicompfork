@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import defesaController from './defesa.controller';
 import defesaUpload from './defesa.multer.config';
 import autenticacaoController from '../autenticacao/autenticacao.controller'; // Ajuste o caminho conforme necessário
@@ -30,18 +30,18 @@ router.post('/editar/:id/qualificacao/step6', defesaController.saveQualiStep6);
 router.get('/editar/:id/qualificacao/step7', defesaController.viewQualiStep7);
 router.post(
   '/editar/:id/qualificacao/step7',
-  (req, res, next) => { 
-    console.log('--- ROTA STEP 7 CHAMADA ---'); 
-    next(); 
+  (req, res, next) => {
+    console.log('--- ROTA STEP 7 CHAMADA ---');
+    next();
   },
-  defesaUpload.single('propostaPdf'), 
+  defesaUpload.single('propostaPdf'),
   (err: any, req: Request, res: Response, next: NextFunction) => {
     if (err) {
-      console.error('--- ERRO DO MULTER ---:', err); 
+      console.error('--- ERRO DO MULTER ---:', err);
     }
     next(err);
   },
-  defesaController.saveQualiStep7
+  defesaController.saveQualiStep7,
 );
 
 //rotas de defesa final
@@ -60,18 +60,23 @@ router.get('/editar/:id/final/step6', defesaController.viewFinalStep6);
 router.post(
   '/editar/:id/final/step6',
   defesaUpload.single('tesePdf'),
-  defesaController.saveFinalStep6
+  defesaController.saveFinalStep6,
 );
 
 // ROTAS DE DIVULGAÇÃO (SECRETARIA)
-router.get('/divulgar/:id', isAuth, autenticacaoController.autorizarAdmin, defesaController.viewDivulgarDefesa);
+router.get(
+  '/divulgar/:id',
+  isAuth,
+  autenticacaoController.autorizarAdmin,
+  defesaController.viewDivulgarDefesa,
+);
 
 router.post(
-  '/divulgar/:id', 
-  isAuth, 
-  autenticacaoController.autorizarAdmin, 
+  '/divulgar/:id',
+  isAuth,
+  autenticacaoController.autorizarAdmin,
   defesaUpload.single('portariaFile'),
-  defesaController.sendDivulgacaoEmail
+  defesaController.sendDivulgacaoEmail,
 );
 
 router.get('/download/:uploadId', defesaController.downloadAnexo);
