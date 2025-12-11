@@ -90,6 +90,9 @@ const login = async (req: Request, res: Response) => {
       }
 
       const isSenhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
+      console.log(senha);
+      console.log(isSenhaCorreta);
+      console.log(isSenhaCorreta);
       if (!isSenhaCorreta) {
         return res
           .status(StatusCodes.UNAUTHORIZED)
