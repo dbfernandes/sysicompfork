@@ -6,9 +6,9 @@ import prisma from '@client/prismaClient';
 /* eslint-disable camelcase */
 
 class EditalService {
-  async getById(id: string): Promise<Edital | null> {
+  async getById(id: string) {
     try {
-      return await prisma.edital.findFirst({
+      return await prisma.edital.findUnique({
         where: {
           id,
         },

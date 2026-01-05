@@ -133,6 +133,19 @@
                                      data-off-text="Não" id="carta_orientador">
                             </div>
                           </div>
+                          <div class="col-sm-3 col-md-3 ">
+                            <div class="form-group">
+                              <div class="form-row">
+                                <label for="projeto_pesquisa">
+                                  <span style="color: #FF0000; ">* </span>
+                                  Projeto de Pesquisa?
+                                </label>
+                              </div>
+                              <input type="checkbox" name="projeto_pesquisa" data-bootstrap-switch
+                                     data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                     data-off-text="Não" id="projeto_pesquisa">
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="form-group card bg-light p-1">
@@ -420,39 +433,42 @@
     });
 
 
-    function pegaDados() {       
-        const vaga_regular_mestrado = parseInt($("#vaga_regular_mestrado").val(), 10);
-        const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
-        const vaga_taes_mestrado = parseInt($("#vaga_taes_mestrado").val(), 10);
-        const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
-        const vaga_suplementar_doutorado = parseInt($("#vaga_suplementar_doutorado").val(), 10);
-        const vaga_taes_doutorado = parseInt($("#vaga_taes_doutorado").val(), 10);
-        const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
-        const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
-        const num_edital = $("#num_edital").val();
-        const documento = $("#documento").val();
-        const start = $("#datas").data('daterangepicker').startDate;
-        const end = $("#datas").data('daterangepicker').endDate;
+    function pegaDados() {
+      const vaga_regular_mestrado = parseInt($("#vaga_regular_mestrado").val(), 10);
+      const vaga_suplementar_mestrado = parseInt($("#vaga_suplementar_mestrado").val(), 10);
+      const vaga_taes_mestrado = parseInt($("#vaga_taes_mestrado").val(), 10);
+      const vaga_regular_doutorado = parseInt($("#vaga_regular_doutorado").val(), 10);
+      const vaga_suplementar_doutorado = parseInt($("#vaga_suplementar_doutorado").val(), 10);
+      const vaga_taes_doutorado = parseInt($("#vaga_taes_doutorado").val(), 10);
+      const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
+      const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
+      const projeto_pesquisa = $("#projeto_pesquisa").bootstrapSwitch('state') ? '1' : '0';
+
+      const num_edital = $("#num_edital").val();
+      const documento = $("#documento").val();
+      const start = $("#datas").data('daterangepicker').startDate;
+      const end = $("#datas").data('daterangepicker').endDate;
 
         // Convertemos para GMT-4 (America/Manaus), com hora 00:00
-        const data_inicio = moment.tz(start.format('YYYY-MM-DD') + ' 00:00', 'America/Manaus').toISOString();
-        const data_fim = moment.tz(end.format('YYYY-MM-DD') + ' 23:59', 'America/Manaus').toISOString();
+      const data_inicio = moment.tz(start.format('YYYY-MM-DD') + ' 00:00', 'America/Manaus').toISOString();
+      const data_fim = moment.tz(end.format('YYYY-MM-DD') + ' 23:59', 'America/Manaus').toISOString();
 
 
-        return {
-            vaga_regular_mestrado,
-            vaga_suplementar_mestrado,
-            vaga_taes_mestrado,
-            vaga_regular_doutorado,
-            vaga_suplementar_doutorado,
-            vaga_taes_doutorado,
-            carta_recomendacao,
-            carta_orientador,
-            num_edital,
-            documento,
-            data_inicio,
-            data_fim
-        };
+      return {
+        vaga_regular_mestrado,
+        vaga_suplementar_mestrado,
+        vaga_taes_mestrado,
+        vaga_regular_doutorado,
+        vaga_suplementar_doutorado,
+        vaga_taes_doutorado,
+        carta_recomendacao,
+        carta_orientador,
+        projeto_pesquisa,
+        num_edital,
+        documento,
+        data_inicio,
+        data_fim
+      };
     }
 
 

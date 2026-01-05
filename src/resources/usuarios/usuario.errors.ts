@@ -10,6 +10,11 @@ export class UsuarioNotFoundError extends BaseError {
   }
 }
 
+export class InvalidPasswordError extends BaseError {
+  constructor() {
+    super('Senha atual inválida.', StatusCodes.BAD_REQUEST);
+  }
+}
 export class InvalidPasswordRecoveryError extends BaseError {
   constructor() {
     super(

@@ -11,7 +11,7 @@
     "start:prod-syscomp": "npm run prisma:init:dev && NODE_ENV=production node build/server.js",
     "start:dev": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up",
     "start:dev:dbs": "NODE_ENV=development docker compose -f docker-compose.devlopment.yml up --build redis phpmyadmin db gotenberg",
-    "start:syscomp": "cross-env NODE_ENV=development tsx watch src/server.ts",
+    "start:syscomp": "NODE_ENV=development tsx watch --watch src/server.ts",
     "start:selecao": "NODE_ENV=development tsx watch --watch src/serverSelecao.ts ",
     "start:numeros": "NODE_ENV=development tsx watch  src/app/serverNumerosIcomp.ts",
     "build": "tsc && tsc-alias && npm run copy-static",

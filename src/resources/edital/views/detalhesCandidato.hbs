@@ -227,11 +227,12 @@
                                   </span></td>
                                 </tr>
                                 <tr>
-                                    <th class="col-3">Título da proposta</th>
-                                    <td><span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
-                                        {{else}}badge bg-danger">Não Registrado{{/if}}
-
-                                    </span></td>
+                                  <th class="col-3">Título da proposta</th>
+                                  <td>
+                                    <span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
+                                      {{else}}badge bg-danger">Não Registrado{{/if}}
+                                    </span>
+                                  </td>
                                 </tr>
                                 <tr>
                                   <th class="col-3">Professor orientador</th>
@@ -264,9 +265,10 @@
                                     </td>
                                 </tr>
                                 {{/if}}
-                               
-                                <tr>
-                                    <th class="col-3">Proposta de Trabalho (PDF)</th>
+
+                                {{#if edital.projetoPesquisa}}
+                                  <tr>
+                                    <th class="col-3">Projeto de Pesquisa (PDF)</th>
                                     <td>
                                       <span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
                                         <a style="margin-right: 16px"
@@ -274,14 +276,16 @@
                                            target="_blank"
                                            href="/edital/viewDocumentCandidate/{{candidato.id}}?documento=PropostaTrabalho.pdf"
                                            class='fa fa-solid fa-eye'></a>
-                                        <a  style="margin-right: 3px"
-                                            title="Baixar"
-                                            href="/downloadCandidateDocument/{{candidato.id}}?documento=PropostaTrabalho.pdf"
-                                            class='fa fa-solid fa-download'></a>
+                                        <a style="margin-right: 3px"
+                                           title="Baixar"
+                                           href="/downloadCandidateDocument/{{candidato.id}}?documento=PropostaTrabalho.pdf"
+                                           class='fa fa-solid fa-download'></a>
                                       {{else}}badge bg-warning">Pendente{{/if}}
                                       </span>
                                     </td>
-                                </tr>
+                                  </tr>
+                                {{/if}}
+
                                 <tr>
                                     <th class="col-3">Curriculum (PDF)</th>
                                     <td>

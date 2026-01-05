@@ -4,14 +4,13 @@
   <link rel="stylesheet" href="/public/css/ppgiConfirmacao.css">
 {{/section}}
 
-<main class="forms-page">
+<main class="forms-page" style="min-height: 100dvh">
   <header>
     <div class="container d-flex justify-content-between align-items-center px-3">
       <h1 class="header-title">PPGI</h1>
       <div class="options">
         {{> ppgi/selectLanguageHeader}}
         <button class="p-0" type="button" id="btn_logout">{{__ "ppgi.header.logoutButton"}}</button>
-
       </div>
     </div>
   </header>
@@ -169,7 +168,6 @@
   $(document).ready(function () {
     const basePath = "{{basePath}}";
 
-    // --- SCRIPT DO CONTADOR ADICIONADO ---
     const countdownElement = $("#countdown");
     const deadline = countdownElement.data("deadline");
 
@@ -202,7 +200,6 @@
     } else {
       countdownElement.text("Data não definida");
     }
-    // --- FIM DO SCRIPT DO CONTADOR ---
 
     $("#btn_logout").click(function () {
       $.ajax({

@@ -85,27 +85,6 @@
                 </div>
               </div>
             </div>
-
-            <div class="form-group">
-              <div class="row">
-                <div class="col-sm-12 col-md-6 col-lg-6">
-                  <label for="senhaInput">
-                    Senha:
-                  </label>
-                  <input type="password" name="senha" class="form-control" id="senhaInput" autocomplete="off"
-                         placeholder="Senha...">
-                </div>
-
-                <div class="col-sm-12 col-md-6 col-lg-6">
-                  <label for="repetirSenhaInput">
-                    Repetir senha:
-                  </label>
-                  <input type="password" name="repetirSenha" class="form-control" autocomplete="off"
-                         id="repetirSenhaInput" placeholder="Repetir senha">
-                </div>
-              </div>
-            </div>
-
             <div class="form-group">
               <div style="margin-bottom: 20px;">
                 <label for="">
@@ -315,9 +294,7 @@
 
         }, 'Insira uma data válida no formato dd/mm/yyyy');
 
-        $.validator.addMethod("repetirSenha", function (el) {
-            return $('#senhaInput')[0].value === $('#repetirSenhaInput')[0].value
-        })
+
 
         $.validator.addMethod("cpfLength", function (el) {
             const cpfValue = $('#cpfInput')[0].value.split('.').join('').split('-').join('').split('_').join('')
@@ -357,13 +334,6 @@
                     required: true,
                     email: true
                 },
-                senha: {
-                    minlength: 6,
-                },
-                repetirSenha: {
-                    repetirSenha: true,
-                    minlength: 6,
-                },
                 dateDeIngresso: {
                   dateBr: true
                 }
@@ -381,15 +351,6 @@
                 email: {
                     required: '"E-mail" não pode ficar em branco.',
                     email: '"E-mail" não é um endereço de e-mail válido.'
-                },
-                senha: {
-                    required: '"Senha" não pode ficar em branco',
-                    minlength: '"Senha" deve conter pelo menos 6 caracteres'
-                },
-                repetirSenha: {
-                    required: '"Senha" não pode ficar em branco',
-                    repetirSenha: '"Repetir senha" deve ser igual ao campo "Senha"',
-                    minlength: '"Senha" deve conter pelo menos 6 caracteres',
                 },
                 dateDeIngresso: {
                   dateBr: '"Data de Ingresso" deve estar vazia ou no formato dd/mm/yyyy válido.'

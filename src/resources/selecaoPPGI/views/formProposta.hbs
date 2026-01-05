@@ -1,64 +1,4 @@
-{{ setTitle title="Proposta de Projeto" }}
-<!-- Modal de Confirmação -->
-<div
-  class="modal fade mt-5"
-  id="confirm-register"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="confirm-register-title"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirm-register-title">
-          {{__ "ppgiForm3.finalizar"}}
-        </h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
 
-      <div class="modal-body">
-        <p>{{__ "ppgiForm3.finalizar"}}</p>
-      </div>
-
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary color-white"
-          data-dismiss="modal"
-        >
-          {{__ "ppgi.form.cancel"}}
-        </button>
-        <button
-          id="confirmButton"
-          type="button"
-          class="btn btn-warning color-white"
-          onclick="finishRegister()"
-        >
-          {{__ "ppgi.form.confirm"}}
-          <span
-            class="spinner-border spinner-border-sm"
-            hidden="hidden"
-            role="status"
-            aria-hidden="true"
-          ></span>
-        </button>
-      </div>
-
-      <!-- Formulário que pode ser usado caso precise de POST isolado -->
-      <form name="postDelete" id="finish-register" method="POST">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-      </form>
-    </div>
-  </div>
-</div>
 
 <!-- Conteúdo principal -->
 <main class="forms-page">
@@ -83,10 +23,7 @@
       <!-- Formulário principal -->
       <form id="candidato-formulario" novalidate autofocus>
         <!-- Tokens e inputs ocultos -->
-        <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
         <input id="email" type="hidden" value="{{email}}" />
-        <input id="editalPosicao" type="hidden" value="{{editalPosicao}}" />
-        <input id="idCandidato" type="hidden" value="{{id}}" />
 
         <!-- Card 1: Título e Linha de Pesquisa -->
         <div class="card card-primary">
@@ -148,7 +85,7 @@
         <!-- Card 2: Orientador -->
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">{{__ "ppgiForm3.orientador.titulo"}}:</h3>
+            <h3 class="card-title">{{__ "ppgiForm3.orientador.titulo"}}</h3>
           </div>
           <div class="card-body">
             <p>{{__ "ppgiForm3.orientador.descricao"}}</p>
@@ -373,7 +310,8 @@
             {{/if}}
 
             <!-- Proposta de Trabalho -->
-            <div class="row">
+            {{#if edital.projetoPesquisa}}
+             <div class="row">
               <div class="col-12">
                 <label for="PropostaTrabalho" class="control-label">
                   <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.propostaTrabalho"}}:</b>
@@ -413,13 +351,15 @@
                 </label>
               </div>
             </div>
+            {{/if}}
 
             <!-- Comprovante de Pagamento -->
             <div class="row">
               <div class="col-12">
                 <label for="ComprovantePagamento" class="control-label">
-<!--                  <span class="text-danger">*</span>-->
-                  <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
+                  <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
+                  <br>
+                  (caso esteja inserido como isento, envie a classificação final para verificação)
                 </label>
               </div>
               <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasComprovante)}}none{{else}}flex{{/if}}; gap: 16px"  >
@@ -462,8 +402,8 @@
           <div class="card-footer ">
             <div class="col d-flex flex-row-reverse p-0" style="gap: 6px;">
               <!-- Botão Finalizar (Save and Continue) -->
-              <button class="btn btn-success custom-button">
-                {{__ "ppgi.form.finish"}}
+              <button class="btn btn-success custom-button" id="btn-save-continue" >
+                {{__ "ppgi.form.saveAndContinue"}}
                 <span
                   class="spinner-border spinner-border-sm"
                   hidden="hidden"
@@ -594,9 +534,6 @@
 
 
       $.ajax({
-        headers: {
-          'X-CSRF-TOKEN': $("#csrfToken").val()
-        },
         url: `${basePath}/formulario/3`,
         type: 'PUT',
         data: formData,
@@ -647,9 +584,6 @@
 			$.ajax({
 				url: `${basePath}/logout`,
 				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
 				success: function () {
           window.location.replace(`${basePath}/entrar`);
 				},
@@ -667,9 +601,6 @@
 			$.ajax({
 				url: `${basePath}/voltarInicio`,
 				type: "POST",
-				data: {
-					_csrf: $("#csrfToken").val()
-				},
 				success: function (data) {
 					window.location.href = `${basePath}/formulario`;
 				},
@@ -686,18 +617,11 @@
         const btnVoltar = $("#voltarForm");
         btnVoltar.prop("disabled", true);
         btnVoltar.find("span").prop("hidden", false);
-        const csrfToken = $("#csrfToken").val();
-        const id = $("#idCandidato").val();
-        const editalPosicao = $("#editalPosicao").val();
 
         $.ajax({    
           url: `${basePath}/voltar`,
           type: 'POST',
-          data: {
-            _csrf: csrfToken,
-            editalPosicao: editalPosicao, 
-            id: id
-          }, success: function (data) {
+          success: function (data) {
             window.location.href = `${basePath}/formulario`;
             window.location.reload(true);
           },
@@ -802,7 +726,7 @@
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "ComprovantePagamento": {
-          required:false,
+          required: true,
           fileSize: 30 * 1024 * 1024 // Tamanho máximo em bytes (por exemplo, 30MB = 30 * 1024 * 1024 bytes)
         },
         "CartaAceiteOrientador": {
@@ -846,7 +770,7 @@
       },
       submitHandler: (form, e) => {
         e.preventDefault();
-        $('#confirm-register').modal()
+        finishRegister();
       }
     });
 
@@ -855,15 +779,12 @@
   function finishRegister(){
     const linhaDePesquisaId = $("#candidato-pesquisa").val();
     const formData = new FormData($("#candidato-formulario")[0]);
-    const btnSubmit = $("#confirmButton");
+    const btnSubmit = $("#btn-save-continue");
     btnSubmit.attr("disabled", true);
     btnSubmit.find("span").prop("hidden", false);
     formData.append('idLinhaPesquisa', linhaDePesquisaId);
     formData.append('isNext', true);
     $.ajax({
-      headers: {
-        'X-CSRF-TOKEN': $("#csrfToken").val()
-      },
       url: `{{basePath}}/formulario/3`,
       type: 'PUT',
       data: formData,

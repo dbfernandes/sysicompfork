@@ -354,7 +354,6 @@ const editarUsuario = async (
           nomeCompleto: requestBody.nomeCompleto,
           cpf: requestBody.cpf,
           email: requestBody.email,
-          senha: requestBody.senha || undefined,
           administrador: requestBody.administrador === 'on' ? 1 : 0,
           coordenador: requestBody.coordenador === 'on' ? 1 : 0,
           secretaria: requestBody.secretaria === 'on' ? 1 : 0,

@@ -14,8 +14,7 @@ function formatarPublicacao(publicacao: CandidatoPublicacao) {
 }
 
 export async function getFormattedDataCandidateFinish(candidateId: string) {
-  const candidato =
-    await candidatoService.listarTodasInformacoesDeCandidato(candidateId);
+  const candidato = await candidatoService.getWithAllInformations(candidateId);
   const periodicals = candidato.publicacoes
     .filter((publicacao) => publicacao.tipoId === TYPES_PUBLICACAO.PERIODICOS)
     .map(formatarPublicacao);

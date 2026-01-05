@@ -64,6 +64,9 @@ app.set('trust proxy', 1);
 
 app.use(cookieParser());
 
+const timeToLiveRedis = 60 * 60 * 24 * 11; // 11 dias
+const maxAgeCookie = 11 * 24 * 60 * 60 * 1000; // 11 dias em ms
+
 app.use(
   session({
     name: 'selecao_sysicomp_sessao', // 👈 nome diferente por app
@@ -71,14 +74,14 @@ app.use(
     store: new RedisStore({
       client: redisClient,
       prefix: 'selecao_sysicomp_sessao:', // prefixo diferente no Redis
-      ttl: 60 * 60 * 24 * 7, // 48h
+      ttl: timeToLiveRedis,
       disableTouch: true, // Desabilita o touch para não atualizar o TTL automaticamente
     }),
     secret: keySession,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 2 horas
+      maxAge: maxAgeCookie,
       httpOnly: true,
       secure: isProduction, // true se usar HTTPS
     },

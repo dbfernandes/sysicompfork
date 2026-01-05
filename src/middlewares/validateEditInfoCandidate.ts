@@ -4,6 +4,7 @@ import candidatoService from '@resources/candidato/candidato.service';
 import { DateTime } from 'luxon';
 import { StatusCodes } from 'http-status-codes';
 import { StatusEdital } from '@resources/edital/edital.types';
+import { StepCandidateEdital } from '@resources/candidato/candidato.types';
 
 export function isNoticeExpired(dataFim: Date | string): boolean {
   const agora = DateTime.now().setZone('America/Manaus');
@@ -20,7 +21,8 @@ export const validateCandidateEditInfo = async (
     const id = req.session.uid;
     const candidate = await candidatoService.findByIdComEdital(id);
 
-    const candidateAlreadyFinished = !!candidate.finishedAt;
+    const candidateAlreadyFinished =
+      candidate.posicaoEdital === StepCandidateEdital.FINALIZACAO;
     const { edital } = candidate;
     const editalAlreadyFinished =
       isNoticeExpired(edital.dataFim) || edital.status !== StatusEdital.ATIVO;

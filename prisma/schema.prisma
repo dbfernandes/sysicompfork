@@ -205,6 +205,7 @@ model Edital {
   cartaOrientador      String   @db.VarChar(255)
   cartaRecomendacao    String   @db.VarChar(255)
   documento            String   @db.VarChar(255)
+  projetoPesquisa      Boolean  @default(true)
   dataInicio           DateTime
   dataFim              DateTime
   status               Int      @default(0) @db.SmallInt
@@ -470,11 +471,10 @@ model Defesa {
   orientadorId Int?
   orientador   Usuario? @relation("OrientadorDefesa", fields: [orientadorId], references: [id])
 
-  coorientadorId Int?
-  coorientador   Usuario? @relation("CoorientadorDefesa", fields: [coorientadorId], references: [id])
-  coorientadorExternoNome       String?
+  coorientadorId                 Int?
+  coorientador                   Usuario? @relation("CoorientadorDefesa", fields: [coorientadorId], references: [id])
+  coorientadorExternoNome        String?
   coorientadorExternoInstituicao String?
-
 
   tituloTrabalho String?
   dataHora       DateTime?
@@ -485,8 +485,8 @@ model Defesa {
   linhaPesquisaId Int?
   linhaPesquisa   LinhaPesquisa? @relation(fields: [linhaPesquisaId], references: [id])
 
-  status DefesaStatus @default(RASCUNHO)
-  correcaoSolicitada String? @db.Text
+  status             DefesaStatus @default(RASCUNHO)
+  correcaoSolicitada String?      @db.Text
 
   // rastreabilidade de quem iniciou
   criadoPorId Int

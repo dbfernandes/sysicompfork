@@ -18,6 +18,17 @@ const whichCourse = (course, lng) => {
   }
 };
 
+function formatDate(value) {
+  const format = 'DD/MM/YYYY';
+
+  if (!value) return '-';
+
+  const m = moment(value);
+  if (!m.isValid()) return '-';
+
+  return m.format(format);
+}
+
 function formatarNome(nome) {
   if (!nome) return '';
   const partes = nome.split(' ');
@@ -273,6 +284,7 @@ export default {
   checkedIn,
   checkedUnica,
   autorizarUsuario,
+  formatDate,
   formataBioSex,
   formataData,
   formataDataLng,

@@ -1,10 +1,9 @@
 {{> header}}
-
 {{> sidebar module='perfil' page='perfil-dados' }}
-
+{{#section "head"}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+{{/section}}
 <div class="content-wrapper">
-
-
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -21,16 +20,27 @@
         </div>
       </div>
       <div class="row mb-4">
-          <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
-              <a class="btn btn-warning color-white" href="/inicio">
-                  <i class="fa fa-arrow-left"></i>
-                  Voltar
-              </a>
-              <a type="button" class="btn btn-success" href="/perfil/editar/{{usuario.id}}">
-                  <i class="fa fa-solid fa-pen color-white"></i>
-                  Editar Perfil
-              </a>
-          </div>
+        <div class="text-nowrap col-sm-3 col-md-2 col-lg-1 min-width-button mt-4">
+          <a class="btn btn-warning color-white" href="/inicio">
+            <i class="fa fa-arrow-left"></i>
+            Voltar
+          </a>
+
+          <a type="button" class="btn btn-success" href="/perfil/editar/{{usuario.id}}">
+            <i class="fa fa-solid fa-pen color-white"></i>
+            Editar Perfil
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#modalAlterarSenha"
+          >
+            <i class="fa fa-key"></i>
+            Alterar Senha
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -146,7 +156,7 @@
               </tr>
               <tr>
                 <th class="col-3">Data de Ingresso</th>
-                <td>{{usuario.dataIngresso}}</td>
+                <td>{{formatDate usuario.dataIngresso}}</td>
               </tr>
               <tr>
                 <th class="col-3">Unidade</th>
@@ -162,22 +172,230 @@
 
       </div>
     </div>
-
-
-  
   </section>
+</div><div class="modal fade" id="modalAlterarSenha" tabindex="-1" role="dialog" aria-labelledby="modalAlterarSenhaLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="formAlterarSenha">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAlterarSenhaLabel">
+            <i class="fa fa-key"></i> Alterar Senha
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label for="senhaAtual">Senha atual</label>
+            <div style="grid-template-columns: 1fr auto; display: grid; margin-bottom: 16px;">
+              <input
+                type="password" class="form-control" id="senhaAtual" name="senhaAtual" required autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="btn btn-light button-eye"
+                id="togglePassword"
+                title="Mostrar/Ocultar Senha"
+              >
+                <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="novaSenha">Nova senha</label>
+            <div style="grid-template-columns: 1fr auto; display: grid; margin-bottom: 16px;">
+              <input
+                type="password" class="form-control" id="novaSenha" name="novaSenha" required autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="btn btn-light button-eye"
+                id="toggleNewPassword"
+                title="Mostrar/Ocultar Senha"
+              >
+                <i class="bi bi-eye-slash" id="toggleNewPasswordIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmarNovaSenha">Confirmar nova senha</label>
+            <div style="grid-template-columns: 1fr auto; display: grid; margin-bottom: 16px;">
+              <input
+                type="password" class="form-control" id="confirmarNovaSenha" name="confirmarNovaSenha" required autocomplete="off"
+              />
+              <button
+                type="button"
+                class="btn btn-light button-eye"
+                id="toggleNewPasswordConfirm"
+                title="Mostrar/Ocultar Senha"
+              >
+                <i class="bi bi-eye-slash" id="toggleNewPasswordConfirmIcon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnSalvarSenha">
+            <i class="fa fa-save"></i> Salvar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
+{{> footer}}
 {{#if message}}
   <script>
-      $(document).Toasts('create', {
-          icon: 'success',
-          class: "bg-{{type}}",
-          autohide: true,
-          delay: 10000,
-          title: '{{messageTitle}}',
-          body: '{{message}}'
-          })
+    $(document).Toasts('create', {
+      icon: 'success',
+      class: "bg-{{type}}",
+      autohide: true,
+      delay: 10000,
+      title: '{{messageTitle}}',
+      body: '{{message}}'
+    })
   </script>
 {{/if}}
-{{> footer}}
+<script src="/script-adminlte/plugins/toastr/toastr.min.js"></script>
+<script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
+
+<script>
+
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    newestOnTop: true,
+    timeOut: 5000,
+    positionClass: 'toast-top-right'
+  };
+
+  const inputsToogles = [
+    { toggleId: 'togglePassword', inputId: 'senhaAtual', iconId: 'togglePasswordIcon' },
+    { toggleId: 'toggleNewPassword', inputId: 'novaSenha', iconId: 'toggleNewPasswordIcon' },
+    { toggleId: 'toggleNewPasswordConfirm', inputId: 'confirmarNovaSenha', iconId: 'toggleNewPasswordConfirmIcon' }
+  ];
+
+  inputsToogles.forEach(({ toggleId, inputId, iconId }) => {
+    $(`#${toggleId}`).click(function() {
+      const input = $(`#${inputId}`);
+      const icon = $(`#${iconId}`);
+      const isPassword = input.attr('type') === 'password';
+      const type = isPassword ? 'text' : 'password';
+      input.attr('type', type);
+      icon.toggleClass('bi-eye-slash bi-eye');
+
+    });
+  });
+
+  $(function () {
+    $('#formAlterarSenha').validate({
+      ignore: [],
+      rules: {
+        senhaAtual: {
+          required: true
+        },
+        novaSenha: {
+          required: true,
+          minlength: 8
+        },
+        confirmarNovaSenha: {
+          required: true,
+          minlength: 8,
+          equalTo: '#novaSenha'
+        }
+      },
+
+      messages: {
+        senhaAtual: {
+          required: 'Informe sua senha atual.'
+        },
+        novaSenha: {
+          required: 'Informe a nova senha.',
+          minlength: 'A nova senha deve ter pelo menos 8 caracteres.'
+        },
+        confirmarNovaSenha: {
+          required: 'Confirme a nova senha.',
+          minlength: 'A confirmação deve ter pelo menos 8 caracteres.',
+          equalTo: 'A confirmação não confere com a nova senha.'
+        }
+      },
+
+      errorElement: 'span',
+      errorClass: 'invalid-feedback',
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('div').append(error);
+        },
+
+      submitHandler: function (form, event) {
+        event.preventDefault();
+
+        const $btn = $('#btnSalvarSenha');
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Salvando...');
+
+        const payload = {
+          currentPassword: $('#senhaAtual').val(),
+          newPassword: $('#novaSenha').val(),
+        };
+
+        $.ajax({
+        url: '/perfil/alterarSenha',
+          type: 'POST',
+          data: payload,
+          success: function (res) {
+          console.log("Chegou aqui");
+            const msg = (res && res.message) ? res.message : 'Senha alterada com sucesso!';
+            toastr.success(msg, 'Sucesso');
+
+            // fechar modal + limpar form
+            $('#modalAlterarSenha').modal('hide');
+            $('#formAlterarSenha')[0].reset();
+
+            // remove validações visuais
+            $('#formAlterarSenha .is-invalid').removeClass('is-invalid');
+            $('#formAlterarSenha .invalid-feedback').remove();
+          },
+
+          error: function (xhr) {
+            let msg = 'Não foi possível alterar a senha. Tente novamente.';
+            try {
+              const data = xhr.responseJSON;
+              if (data && data.message) msg = data.message;
+            } catch (e) {}
+
+            toastr.error(msg, 'Erro');
+          },
+
+          complete: function () {
+            $btn.prop('disabled', false).html('<i class="fa fa-save"></i> Salvar');
+          }
+        });
+
+        return false;
+      }
+    });
+
+    // limpar estado ao fechar o modal
+    $('#modalAlterarSenha').on('hidden.bs.modal', function () {
+      $('#formAlterarSenha')[0].reset();
+      $('#formAlterarSenha').validate().resetForm();
+      $('#formAlterarSenha .is-invalid').removeClass('is-invalid');
+      $('#formAlterarSenha .invalid-feedback').remove();
+      $('#btnSalvarSenha').prop('disabled', false).html('<i class="fa fa-save"></i> Salvar');
+    });
+  });
+</script>

@@ -18,6 +18,7 @@ import {
   RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
+  StepCandidateEdital,
 } from '../candidato/candidato.types';
 
 import {
@@ -28,13 +29,12 @@ import {
   COMPROVANTE_FILE,
   CURRICULUM_FILE,
   Nacionalidade,
-  PassoFormCandidato,
   PROPOSTA_FILE,
   PROVA_ANTERIOR_FILE,
 } from './selecao.ppgi.types';
-import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 import { Edital } from '.prisma/client';
 import { verificarArquivoDiretorio } from '@utils/utils';
+import mime from 'mime-types';
 
 interface AuthenticatedRequest extends Request {
   candidato?: Candidato & { edital: Edital }; // Substitua `any` pelo tipo correto do candidato
@@ -228,10 +228,11 @@ async function voltarInicio(
 
 // Mapeamento de posicaoEdital para funções de renderização
 const posicaoEditalMap: Record<number, RenderFunction> = {
-  [PassoFormCandidato.DADOS_PESSOAIS]: renderFormDados,
-  [PassoFormCandidato.HISTORICO]: renderFormHistorico,
-  [PassoFormCandidato.PROPOSTA]: renderFormProposta,
-  [PassoFormCandidato.FINALIZACAO]: renderFormConfirmacao,
+  [StepCandidateEdital.DADOS_PESSOAIS]: renderFormDados,
+  [StepCandidateEdital.HISTORICO]: renderFormHistorico,
+  [StepCandidateEdital.PROPOSTA]: renderFormProposta,
+  [StepCandidateEdital.REVISAO]: renderFormRevisao,
+  [StepCandidateEdital.FINALIZACAO]: renderFormConfirmacao,
 };
 
 async function renderFormDados(
@@ -262,6 +263,15 @@ async function renderFormDados(
     caminhoDiretorioUsuario,
     AUTODECLARACAO_VIDEO,
   );
+  const { edital } = req.candidato;
+  const hasVacanciesPhd =
+    edital.taesDoutorado > 0 ||
+    edital.vagasDoutorado > 0 ||
+    edital.cotasDoutorado > 0;
+  const hasVacanciesMasters =
+    edital.taesMestrado > 0 ||
+    edital.vagasMestrado > 0 ||
+    edital.cotasMestrado > 0;
   res.status(200).render(resolveView('formDados'), {
     ...locals,
     ...req.candidato,
@@ -269,6 +279,8 @@ async function renderFormDados(
     hasComprovanteCota,
     hasAutodeclaracao,
     hasVideoAutodeclaracao,
+    hasVacanciesPhd,
+    hasVacanciesMasters,
   });
 }
 
@@ -362,8 +374,6 @@ async function renderFormProposta(
     ...req.candidato,
     recomendacoes,
     edital,
-    editalPosicao: req.session.editalPosition,
-    id: uid,
     linhasPesquisa: linhas,
     hasCartaAceiteOrientador,
     hasPropostaTrabalho,
@@ -410,7 +420,7 @@ async function renderFormConfirmacao(
     COMPROVANTE_FILE,
   );
 
-  res.render(resolveView('formConfirmacao'), {
+  res.render(resolveView('formFinalizacao'), {
     ...locals,
     editalPosicao: req.session.editalPosition,
     id: uid,
@@ -421,6 +431,97 @@ async function renderFormConfirmacao(
     hasVideoAutodeclaracao,
     hasComprovanteCota,
     currentLanguage,
+  });
+}
+
+async function renderFormRevisao(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const uid = req.session.uid;
+  const candidato = await candidatoService.getWithAllInformations(uid);
+  const currentLanguage = getLanguage(req);
+  const caminhoDiretorioUsuario = path.join(
+    'uploads',
+    'candidato',
+    uid.toString(),
+  );
+
+  const candidatoDocs = {
+    Curriculum: false,
+    CartaDoOrientador: false,
+    PropostaDeTrabalho: false,
+    ProvaAnteriorSelecao: false,
+    ComprovantePagamento: false,
+    Recomendacoes: false,
+    AutodeclaracaoVideo: false,
+    Autodeclaracao: false,
+    ComprovanteCota: false,
+  };
+  const countRecomendations = candidato.recomendacoes.length;
+  const countRecomendationsFinished = candidato.recomendacoes.filter(
+    (recomendacao) => Boolean(recomendacao.dataResposta),
+  ).length;
+  // const caminhoDiretorioUsuario = path.join(
+  //   __dirname,
+  //   '..',
+  //   '..',
+  //   '..',
+  //   'uploads',
+  //   'candidato',
+  //   candidato.id,
+  // );
+
+  candidatoDocs.Curriculum = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    CURRICULUM_FILE,
+  );
+
+  candidatoDocs.CartaDoOrientador = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    CARTA_ACEITE_ORIENTADOR_FILE,
+  );
+
+  candidatoDocs.PropostaDeTrabalho = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    PROPOSTA_FILE,
+  );
+
+  candidatoDocs.ProvaAnteriorSelecao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    PROVA_ANTERIOR_FILE,
+  );
+
+  candidatoDocs.ComprovantePagamento = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_FILE,
+  );
+  candidatoDocs.Recomendacoes = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    'Recomendacoes.pdf',
+  );
+
+  candidatoDocs.ComprovanteCota = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    COMPROVANTE_COTA,
+  );
+  candidatoDocs.Autodeclaracao = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO,
+  );
+  candidatoDocs.AutodeclaracaoVideo = await verificarArquivoDiretorio(
+    caminhoDiretorioUsuario,
+    AUTODECLARACAO_VIDEO,
+  );
+
+  res.render(resolveView('formRevisao'), {
+    ...locals,
+    candidato,
+    candidatoDocs: candidatoDocs,
+    currentLanguage,
+    countRecomendationsFinished,
+    countRecomendations,
+    posicaoEdital: StepCandidateEdital.REVISAO,
   });
 }
 
@@ -744,7 +845,9 @@ async function formProposta(
             new Date(candidato.edital.dataFim),
           );
         }
-        const posicaoEdital = body.isNext ? 4 : 3;
+        const posicaoEdital = body.isNext
+          ? StepCandidateEdital.REVISAO
+          : StepCandidateEdital.PROPOSTA;
 
         const candidato: Partial<Candidato> = {
           linhaPesquisaId: Number(body.idLinhaPesquisa),
@@ -752,24 +855,12 @@ async function formProposta(
           nomeOrientador: body.nomeOrientador,
           motivos: body.motivos,
           posicaoEdital,
-          ...(body.isNext && { finishedAt: new Date() }),
         };
 
-        const id = uid;
         await candidatoService.update({
-          id,
+          id: uid,
           data: candidato,
         });
-
-        if (body.isNext) {
-          const url = `http://${req.headers.host}/recomendacoes`;
-          await generatePdfEnrollment(uid.toString());
-          candidatoRecomendacaoService.sendEmailForUsersByCandidate({
-            id,
-            url,
-          });
-          candidatoService.enviarEmailConfirmacao({ id });
-        }
 
         res.status(StatusCodes.OK).send();
       } catch (err) {
@@ -783,6 +874,31 @@ async function formProposta(
   }
 }
 
+async function formRevisao(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  switch (req.method) {
+    case 'PUT': {
+      try {
+        const { uid } = req.session;
+        await candidatoService.finishApplication({
+          id: uid,
+          host: req.headers.host,
+        });
+
+        res.status(StatusCodes.OK).send();
+      } catch (err) {
+        next(err);
+      }
+      break;
+    }
+    default:
+      res.status(StatusCodes.METHOD_NOT_ALLOWED).send();
+      break;
+  }
+}
 async function uploadsPublicacoes(
   req: Request,
   res: Response,
@@ -964,6 +1080,50 @@ function downloadFile(req: Request, res: Response): void {
   });
 }
 
+async function viewFile(req: Request, res: Response) {
+  try {
+    const userId = req.session.uid;
+    const nomeArquivo = req.params.name;
+    const caminhoDoc = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'uploads',
+      'candidato',
+      userId,
+      path.basename(nomeArquivo),
+    );
+
+    // Verifica se existe
+    try {
+      await fs.promises.access(caminhoDoc, fs.constants.R_OK);
+    } catch {
+      return res.status(404).json({ error: 'Arquivo não encontrado.' });
+    }
+    // Define MIME-type
+    const mimeType = mime.lookup(caminhoDoc) || 'application/octet-stream';
+    res.type(mimeType); // === res.setHeader('Content-Type', mimeType)
+
+    // Só usa inline para PDFs
+    if (mimeType === 'application/pdf') {
+      res.setHeader('Content-Disposition', 'inline');
+    }
+
+    // Envia o arquivo
+    res.sendFile(caminhoDoc, (err) => {
+      if (err && !res.headersSent) {
+        console.error(err);
+        res.status(500).json({ error: 'Falha ao transferir o arquivo.' });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent)
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+}
+
 async function deleteAllPublications(
   req: Request,
   res: Response,
@@ -1005,6 +1165,7 @@ export default {
   formDados,
   formHistorico,
   formProposta,
+  formRevisao,
   uploadsPublicacoes,
   voltarPassoForm,
   logout,
@@ -1012,5 +1173,6 @@ export default {
   recuperarSenha,
   trocarSenha,
   downloadFile,
+  viewFile,
   deleteAllPublications,
 };

@@ -21,6 +21,7 @@ export type CreateEditalDto = Pick<
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
   | 'id'
+  | 'projetoPesquisa'
 >;
 
 export type UpdateEditalDto = Pick<
@@ -40,4 +41,5 @@ export type UpdateEditalDto = Pick<
   | 'inscricoesEncerradas'
   | 'inscricoesIniciadas'
   | 'id'
+  | 'projetoPesquisa'
 >;

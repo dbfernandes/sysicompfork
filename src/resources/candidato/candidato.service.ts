@@ -13,6 +13,7 @@ import {
   RecuperarSenhaDto,
   SignInDto,
   SignUpDto,
+  StepCandidateEdital,
 } from '../candidato/candidato.types';
 import { sendEmail } from '../email/email.service';
 import { CandidatoFinalizadoError } from './errors/candidatoFinalizadoError';
@@ -22,6 +23,8 @@ import { CandidatoNaoExisteError } from './errors/candidatoNaoExiteError';
 import { TokenExpiradoError } from './errors/tokenExpiradoError';
 import { TokenInvalidoError } from './errors/tokenInvalidoError.';
 import { Edital } from '.prisma/client';
+import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
+import candidatoRecomendacaoService from '@resources/candidatoRecomendacao/candidato.recomendacao.service';
 
 class CandidatoService {
   async list() {
@@ -113,7 +116,7 @@ class CandidatoService {
     );
   }
 
-  async listarTodasInformacoesDeCandidato(id: string) {
+  async getWithAllInformations(id: string) {
     return prisma.candidato.findFirst({
       where: {
         id,
@@ -310,21 +313,28 @@ class CandidatoService {
   }
 
   async voltarPassoEdital({ id }: { id: string }): Promise<number> {
-    const candidato = await prisma.candidato.update({
+    const candidato = await prisma.candidato.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!candidato) {
+      throw new CandidatoNaoExisteError();
+    }
+    const candidatoUpdate = await prisma.candidato.update({
       where: {
         id,
         posicaoEdital: { gt: 1 },
       },
       data: {
-        posicaoEdital: { decrement: 1 },
+        posicaoEdital: {
+          decrement:
+            candidato.posicaoEdital === StepCandidateEdital.REVISAO ? 2 : 1,
+        },
       },
     });
 
-    if (!candidato) {
-      throw new CandidatoNaoExisteError();
-    }
-
-    return candidato.posicaoEdital;
+    return candidatoUpdate.posicaoEdital;
   }
 
   async enviarEmailConfirmacao({ id }: { id: string }): Promise<void> {
@@ -375,6 +385,24 @@ class CandidatoService {
         });
       });
     });
+  }
+
+  async finishApplication({ id, host }: { id: string; host: string }) {
+    const url = `http://${host}/recomendacoes`;
+    await this.update({
+      id,
+      data: {
+        finishedAt: new Date(),
+        posicaoEdital: StepCandidateEdital.FINALIZACAO,
+      },
+    });
+
+    await generatePdfEnrollment(id);
+    candidatoRecomendacaoService.sendEmailForUsersByCandidate({
+      id,
+      url,
+    });
+    this.enviarEmailConfirmacao({ id });
   }
 }
 

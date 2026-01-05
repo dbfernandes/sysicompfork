@@ -97,6 +97,11 @@ router.put(
   uploadsProposta,
   selecaoppgiController.formProposta,
 );
+router.put(
+  '/formulario/5',
+  validateCandidateEditInfo,
+  selecaoppgiController.formRevisao,
+);
 
 router.get(
   '/formulario/publicacoes',
@@ -119,6 +124,7 @@ router.delete(
 );
 
 router.get('/download/arquivo/:name', selecaoppgiController.downloadFile);
+router.get('/view/arquivo/:name', selecaoppgiController.viewFile);
 
 /////////
 router.post('/logout', selecaoppgiController.logout);

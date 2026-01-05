@@ -20,7 +20,8 @@ import {
 import { Candidato } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import { verificarArquivoDiretorio } from '@utils/utils';
-import mime from 'mime-types'; // npm i mime-types
+import mime from 'mime-types';
+import { StepCandidateEdital } from '@resources/candidato/candidato.types'; // npm i mime-types
 
 const locals = {
   layout: 'selecaoppgi',
@@ -30,7 +31,7 @@ function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
 
-const adicionarEditalSelecao = async (req: Request, res: Response) => {
+const add = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
       return res.render(resolveView('adicionarEdital'), {
@@ -49,6 +50,7 @@ const adicionarEditalSelecao = async (req: Request, res: Response) => {
         cartaOrientador: req.body.carta_orientador,
         vagasMestrado: Number(req.body.vaga_regular_mestrado),
         cotasMestrado: Number(req.body.vaga_suplementar_mestrado),
+        projetoPesquisa: req.body.projeto_pesquisa === '1',
         taesMestrado: Number(req.body.vaga_taes_mestrado),
         vagasDoutorado: Number(req.body.vaga_regular_doutorado),
         cotasDoutorado: Number(req.body.vaga_suplementar_doutorado),
@@ -167,7 +169,7 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
         (candidato) =>
           candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
       ).length;
-      return res.render(resolveView('visualizarEdital'), {
+      return res.render(resolveView('detalhesEdital'), {
         nome: req.session.nome,
         ...locals,
         edital,
@@ -179,7 +181,7 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
   }
 };
 
-const updateEdital = async (req: Request, res: Response) => {
+const update = async (req: Request, res: Response) => {
   const { id_update } = req.params;
   switch (req.method) {
     case 'GET': {
@@ -204,11 +206,11 @@ const updateEdital = async (req: Request, res: Response) => {
           dataFim: req.body.data_fim,
           cartaRecomendacao: req.body.carta_recomendacao,
           cartaOrientador: req.body.carta_orientador,
+          projetoPesquisa: req.body.projeto_pesquisa === '1',
           vagasMestrado: parseInt(req.body.vaga_regular_mestrado),
           cotasMestrado: parseInt(req.body.vaga_suplementar_mestrado),
           taesMestrado: Number(req.body.vaga_taes_mestrado),
           taesDoutorado: Number(req.body.vaga_taes_doutorado),
-
           vagasDoutorado: parseInt(req.body.vaga_regular_doutorado),
           cotasDoutorado: parseInt(req.body.vaga_suplementar_doutorado),
           inscricoesEncerradas: 0,
@@ -245,12 +247,14 @@ const listarCandidatos = async (req: Request, res: Response) => {
           throw new Error('Erro ao buscar candidatos');
         const quantidadeInscricaoAndamento = candidatos.filter(
           (candidato) =>
-            candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
+            candidato.posicaoEdital !== null &&
+            candidato.posicaoEdital !== StepCandidateEdital.FINALIZACAO,
         ).length;
 
         const quantidadeInscricaoFinalizada = candidatos.filter(
           (candidato) =>
-            candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
+            candidato.posicaoEdital !== null &&
+            candidato.posicaoEdital !== StepCandidateEdital.FINALIZACAO,
         ).length;
 
         return res.render(resolveView('listarCandidatosPorEdital'), {
@@ -642,11 +646,11 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
 
 export default {
   listarEditalSelecao,
-  adicionarEditalSelecao,
+  add,
   deletarEdital,
   arquivarEdital,
   exibirDetalhesEdital,
-  updateEdital,
+  update,
   geraPlanilha,
   listarCandidatos,
   exibirDetalhesCandidato,

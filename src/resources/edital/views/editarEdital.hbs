@@ -19,7 +19,7 @@
                         <li class="breadcrumb-item"><a href="/">Página Inicial </a></li>
                         <li class="breadcrumb-item active"><a href="/edital/listEdital">Editais</a></li>
                         <li class="breadcrumb-item active">{{edital.id}}</li>
-                        <li class="breadcrumb-item active">Update</li>
+                        <li class="breadcrumb-item active">Editar</li>
                     </ol>
                 </div>
             </div>
@@ -140,13 +140,26 @@
                                                     <span style="color: #FF0000; ">*</span>Carta Orientador?
                                                 </label>
                                             </div>
-                                            <input type="checkbox" name="carta_orientador" {{#ifEqual
-                                                edital.cartaOrientador '1' }}checked
-                                                data-bootstrap-switch{{else}}data-bootstrap-switch{{/ifEqual}}
+                                            <input type="checkbox" name="carta_orientador"
+                                                   {{#ifEqual edital.cartaOrientador '1' }}checked{{/ifEqual}} data-bootstrap-switch
                                                 data-off-color="danger" data-on-color="success" data-on-text="Sim"
                                                 data-off-text="Não" id="carta_orientador">
                                         </div>
                                     </div>
+                                  <div class="col-sm-3 col-md-3 ">
+                                    <div class="form-group">
+                                      <div class="form-row">
+                                        <label for="projeto_pesquisa">
+                                          <span style="color: #FF0000; ">* </span>
+                                          Projeto de Pesquisa?
+                                        </label>
+                                      </div>
+                                      <input type="checkbox" name="projeto_pesquisa"
+                                             {{#if edital.projetoPesquisa}}checked{{/if}} data-bootstrap-switch
+                                             data-off-color="danger" data-on-color="success" data-on-text="Sim"
+                                             data-off-text="Não" id="projeto_pesquisa">
+                                    </div>
+                                  </div>
                                 </div>
                             </div>
 
@@ -454,6 +467,8 @@
         const vaga_taes_doutorado = parseInt($("#vaga_taes_doutorado").val(), 10);
         const carta_recomendacao = $('#carta_recomendacao').bootstrapSwitch('state') ? '1' : '0';
         const carta_orientador = $("#carta_orientador").bootstrapSwitch('state') ? '1' : '0';
+        const projeto_pesquisa = $("#projeto_pesquisa").bootstrapSwitch('state') ? '1' : '0';
+
         const num_edital = $("#num_edital").val();
         const documento = $("#documento").val();
 
@@ -473,6 +488,7 @@
             vaga_taes_doutorado,
             carta_recomendacao,
             carta_orientador,
+            projeto_pesquisa,
             num_edital,
             documento,
             data_inicio,

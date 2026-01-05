@@ -23,7 +23,6 @@
     </div>
   </header>
 
-  <!-- Área de notificações (toast) -->
   <div class="toast-container position-fixed">
     <div
       id="myToast"
@@ -62,7 +61,6 @@
       <article>
         <form id="candidato-formulario" >
           <!-- Tokens e inputs ocultos -->
-          <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
           <input id="email" type="hidden" value="{{email}}" />
           <input id="editalPosicao" type="hidden" value="{{editalPosicao}}" />
           <input id="ComoSoubeObj" type="hidden" value="{{comoSoube}}" />
@@ -529,29 +527,32 @@
                     class="radio-group"
                     aria-label="{{__ 'ppgiForm1.inscricao.cursoDesejado'}}"
                   >
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Curso1"
-                        name="candidatoCurso"
-                        {{#if (eq cursoDesejado 'Mestrado')}}checked{{/if}}
-                      />
-                      <label for="Curso1" style="margin-right: 20px;">
-                        {{__ "ppgiForm1.inscricao.mestrado"}}
-                      </label>
-                    </div>
-
-                    <div class="icheck-primary d-inline">
-                      <input
-                        type="radio"
-                        id="Curso2"
-                        name="candidatoCurso"
-                        {{#if (eq cursoDesejado 'Doutorado')}}checked{{/if}}
-                      />
-                      <label for="Curso2">
-                        {{__ "ppgiForm1.inscricao.doutorado"}}
-                      </label>
-                    </div>
+                    {{#if hasVacanciesMasters}}
+                      <div class="icheck-primary d-inline">
+                        <input
+                         type="radio"
+                         id="Curso1"
+                         name="candidatoCurso"
+                          {{#if (eq cursoDesejado 'Mestrado')}}checked{{/if}}
+                        />
+                        <label for="Curso1" style="margin-right: 20px;">
+                          {{__ "ppgiForm1.inscricao.mestrado"}}
+                        </label>
+                      </div>
+                    {{/if}}
+                    {{#if hasVacanciesPhd}}
+                      <div class="icheck-primary d-inline">
+                        <input
+                          type="radio"
+                          id="Curso2"
+                          name="candidatoCurso"
+                          {{#if (eq cursoDesejado 'Doutorado')}}checked{{/if}}
+                        />
+                        <label for="Curso2">
+                          {{__ "ppgiForm1.inscricao.doutorado"}}
+                        </label>
+                      </div>
+                    {{/if}}
                   </div>
                 </div>
 
@@ -1182,9 +1183,9 @@
       let MestradoRadio = document.getElementById("Curso1");
       let DoutoradoRadio = document.getElementById("Curso2");
       let selectedCurso = "";
-      if (MestradoRadio.checked) {
+      if (MestradoRadio && MestradoRadio.checked) {
         selectedCurso = "Mestrado";
-      } else if (DoutoradoRadio.checked) {
+      } else if (DoutoradoRadio && DoutoradoRadio.checked) {
         selectedCurso = "Doutorado";
       }
       return selectedCurso;
@@ -1322,9 +1323,6 @@
       $.ajax({
         url: `${basePath}/logout`,
         type: "POST",
-        data: {
-          _csrf: $("#csrfToken").val()
-        },
         success: function (data) {
           window.location.replace(`${basePath}/entrar`);
         },
@@ -1555,10 +1553,9 @@
         btnSave.find("span").prop("hidden", false);
         btnSave.prop("disabled", true);
         const data = getValueFromForm();
-        const csrfToken = $("#csrfToken").val();
 
         $.ajax({
-        	url: `${basePath}/formulario/1?_csrf=${csrfToken}`,
+        	url: `${basePath}/formulario/1`,
         	type: "PUT",
         	data,
           contentType: false,
@@ -1587,7 +1584,6 @@
       btnSave.prop("disabled", true);
 
       const data = getValueFromForm();
-      const csrfToken = $("#csrfToken").val();
       const email = $("#email").val();
       const editalPosicao = $("#editalPosicao").val();
       const id = $("#id").val();

@@ -3,9 +3,13 @@ import prisma from '@client/prismaClient';
 import bcrypt from 'bcrypt';
 import { Usuario } from '@prisma/client';
 import { generateHashPassword } from '@utils/utils';
-import { CreateUsuarioDto, UpdateUsuarioWithPassword } from './usuario.types';
+import {
+  ChangePasswordServiceDto,
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+} from './usuario.types';
 import { sendEmail } from '../email/email.service';
-import { UsuarioNotFoundError } from './usuario.errors';
+import { InvalidPasswordError, UsuarioNotFoundError } from './usuario.errors';
 
 class UsuarioService {
   async verificaCpf(cpf: string): Promise<boolean> {
@@ -63,12 +67,7 @@ class UsuarioService {
     });
   }
 
-  async alterar(id: number, user: UpdateUsuarioWithPassword) {
-    if ('senha' in user && Boolean(user.senha)) {
-      user.senhaHash = await generateHashPassword(user.senha);
-      delete user.senha;
-    }
-
+  async alterar(id: number, user: UpdateUsuarioDto) {
     if (user.diretor === 1) {
       const usuarioAtual = await prisma.usuario.findFirst({
         where: {
@@ -259,26 +258,6 @@ class UsuarioService {
     });
   }
 
-  async atualizarTokenSenha(id: number) {
-    const token = crypto.randomBytes(20).toString('hex');
-    const timeAdd = process.env.TIME_MILLIS_EXPIRE_EMAIL || 3600000;
-    const timeExpires = new Date();
-    timeExpires.setTime(timeExpires.getTime() + Number(timeAdd));
-    try {
-      await prisma.usuario.update({
-        where: {
-          id,
-        },
-        data: {
-          tokenResetSenha: token,
-          validadeTokenResetSenha: timeExpires,
-        },
-      });
-    } catch (error) {
-      throw new Error('Erro ao atualizar token');
-    }
-  }
-
   async mudarSenhaComToken({ token, password }) {
     try {
       const usuario = await prisma.usuario.findFirst({
@@ -307,6 +286,29 @@ class UsuarioService {
     } catch (error) {
       throw new Error('Erro ao atualizar senha');
     }
+  }
+
+  async changePassword({
+    newPassword,
+    currentPassword,
+    userId,
+  }: ChangePasswordServiceDto) {
+    const usuario = await prisma.usuario.findUnique({ where: { id: userId } });
+    if (!usuario) {
+      throw new UsuarioNotFoundError(`ID ${userId}`);
+    }
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      usuario.senhaHash,
+    );
+    if (!isPasswordValid) {
+      throw new InvalidPasswordError();
+    }
+    const newPasswordHash = await generateHashPassword(newPassword);
+    await prisma.usuario.update({
+      where: { id: userId },
+      data: { senhaHash: newPasswordHash },
+    });
   }
 }
 
