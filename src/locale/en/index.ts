@@ -21,6 +21,8 @@ import ppgiForm3 from './ppgiForm3.json';
 import ppgiForm4 from './ppgiForm4.json';
 
 import ppgiRecomendacao from './ppgiRecomendacao.json';
+import ppgiFormReview from './ppgiFormReview.json';
+
 export default {
   translation: {
     navbar,
@@ -42,6 +44,7 @@ export default {
     ppgiForm3,
     ppgiForm4,
     ppgiRecomendacao,
+    ppgiFormReview,
     intlTel,
 
     ...db,

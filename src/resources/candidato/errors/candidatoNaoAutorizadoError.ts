@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { BaseError } from '../../../utils/baseError';
+import { BaseError } from '@utils/baseError';
 
 export class CandidatoNaoAutorizadoError extends BaseError {
   constructor() {

@@ -1,8 +1,8 @@
-{{ setTitle title="Histórico" }}
+{{ setTitle title="Histórico" i18nKey="ppgi.titles.selecao.formHistorico"}}
 
 {{#section "head"}}
-<!--  Links Histórico-->
-<link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+  <!--  Links Histórico-->
+  <link href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 {{/section}}
 
 <main class="forms-page">
@@ -21,7 +21,6 @@
 
   <!-- Seção de conteúdo principal -->
   <section class="content container px-3">
-    <!-- Possível nav (dependendo de como seu partial é estruturado) -->
     {{> ppgi/infoEdital editalNome=edital.id dataFimInscricao=edital.dataFim  link=edital.documento }}
     {{> ppgi/nav active="historico" indexSelect="2" progress="50"}}
 
@@ -30,10 +29,8 @@
       <article>
         <form id="candidato-formulario2" novalidate>
           <!-- Inputs escondidos de controle -->
-          <input id="csrfToken" type="hidden" name="_csrf" value="{{csrfToken}}" />
           <input id="email" type="hidden" value="{{email}}" />
-          <input id="idCandidato" type="hidden" value="{{id}}" />
-          <input id="idCandidato" type="hidden" value="{{message}}" />
+          <input id="message" type="hidden" value="{{message}}" />
           <p>{{message}}</p>
 
           <!-- Card 1: Curso de Graduação -->
@@ -197,6 +194,7 @@
                     class="form-control"
                     id="candidato-instituicao-pos"
                     type="text"
+                    autocomplete="off"
                     name="instituicaoPos"
                     maxlength="50"
                     value="{{instituicaoPos}}"
@@ -299,8 +297,10 @@
                 </div>
               </div>
               <div id="publicacoes-container">
+              {{#if hasVitaeXML}}
                 {{!-- conteúdo inicial gerado pelo servidor (igual ao trecho antigo) --}}
                 {{> ppgi/publicacoes}}
+              {{/if}}
               </div>
             </div>
           </div><!-- /card Currículo Vitae -->
@@ -500,6 +500,7 @@
               <button
                 id="add-experiencia-button"
                 class="btn btn-primary align-self-end"
+                type="button"
                 style="margin-left: auto;"
               >
                 {{__ "ppgiForm2.experienciaAcademica.adicionarExperiencia"}}
@@ -551,7 +552,6 @@
 <script>
   $(document).ready(function () {
     const basePath = "{{basePath}}";
-
     const inputFilesConfig = {
       Curriculum: {
         input: "#vittaepdf",
@@ -641,15 +641,10 @@
       });
     });
 
-
-
     $("#btn_logout").click(function () {
       $.ajax({
         url: `${basePath}/logout`,
         type: "POST",
-        data: {
-          _csrf: $("#csrfToken").val()
-        },
         success: function (data) {
           window.location.replace(`${basePath}/entrar`);
         },
@@ -665,9 +660,6 @@
       $.ajax({
         url: `${basePath}/voltarInicio`,
         type: "POST",
-        data: {
-          _csrf: $("#csrfToken").val()
-        },
         success: function () {
           window.location.href = `${basePath}/formulario`;
         },
@@ -683,16 +675,11 @@
       const btnVoltar = $("#voltarForm");
       btnVoltar.attr("disabled", true);
       btnVoltar.find("span").prop("hidden", false);
-      const csrfToken = $("#csrfToken").val();
-      const id = $("#idCandidato").val();
 
       $.ajax({
         url:`${basePath}/voltar`,
         type: 'POST',
-        data: {
-          _csrf: csrfToken,
-          id: id
-        }, success: function (data) {
+        success: function (data) {
           window.location.href = `${basePath}/formulario`;
           window.location.reload(true);
         },
@@ -738,7 +725,7 @@
 
     $('#btn-delete-vittae').click(function () {
       $.ajax({
-        url: `${basePath}/formulario/publicacoes?_csrf={{csrfToken}}`,
+        url: `${basePath}/formulario/publicacoes`,
         type: "DELETE",
         success: function (data /*, textStatus, jqXHR */) {
           /* 1. Substitui o bloco de publicações pelo HTML parcial vazio/atualizado */
@@ -795,7 +782,7 @@
       data.publicacoes && formData.append('publicacoes', JSON.stringify(data.publicacoes));
 
       $.ajax({
-        url: `${basePath}/formulario/publicacoes?_csrf={{csrfToken}}`,
+        url: `${basePath}/formulario/publicacoes`,
         type: "POST",
         data: formData,
         success: function (htmlParcial /*, textStatus, jqXHR */) {
@@ -901,7 +888,6 @@
       }
       return element.files[0].size <= param;
     }, "O arquivo deve ter no máximo {0} bytes.");
-
 
     $.validator.addMethod("anoPosValido", function (value, element) {
       if (value.trim() === "") {
@@ -1015,11 +1001,9 @@
         btnSubmit.find("span").prop("hidden", false);
 
         const formData = new FormData($('#candidato-formulario2')[0]);
-        formData.append('csrfToken', $("#csrfToken").val());
 
-        const csrfToken = $("#csrfToken").val();
         $.ajax({
-          url: `${basePath}/formulario/2?_csrf=${csrfToken}`,
+          url: `${basePath}/formulario/2`,
           type: "PUT",
           data: formData,
           contentType: false,
@@ -1061,51 +1045,51 @@
         accordion.collapse("show");
       }
     }
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    const addButton = document.getElementById("add-experiencia-button");
+    const experienciaContainer = document.getElementById("experiencia-container");
+    const exemploRow = document.querySelector(".experiencia-row");
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const addButton = document.getElementById("add-experiencia-button");
-      const experienciaContainer = document.getElementById("experiencia-container");
-      const exemploRow = document.querySelector(".experiencia-row");
+    const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
+    if (experiencias.length >= 1) {
+      for (const experiencia of experiencias) {
+        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+
+        deleteButton.addEventListener("click", function () {
+          experienciaContainer.removeChild(experiencia);
+        });
+      }
+    }
+    addButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      const newExperienciaRow = exemploRow.cloneNode(true);
+
+      const inputs = newExperienciaRow.querySelectorAll("input");
+      inputs.forEach(input => input.value = "");
+
+      experienciaContainer.appendChild(newExperienciaRow);
 
       const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
-      if (experiencias.length >= 1) {
+      if (experiencias.length > 1) {
         for (const experiencia of experiencias) {
           const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-
+          deleteButton.style.display = "inline-block";
           deleteButton.addEventListener("click", function () {
             experienciaContainer.removeChild(experiencia);
+            if (experiencias.length === 1) {
+              const experiencia = experiencias[0];
+              const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+              deleteButton.style.display = "none";
+            }
           });
         }
+      } else {
+        const experiencia = experiencias[0];
+        const deleteButton = experiencia.querySelector(".delete-experiencia-button");
+        deleteButton.style.display = "none";
       }
-      addButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        const newExperienciaRow = exemploRow.cloneNode(true);
-
-        const inputs = newExperienciaRow.querySelectorAll("input");
-        inputs.forEach(input => input.value = "");
-
-        experienciaContainer.appendChild(newExperienciaRow);
-
-        const experiencias = experienciaContainer.getElementsByClassName("experiencia-row");
-        if (experiencias.length > 1) {
-          for (const experiencia of experiencias) {
-            const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-            deleteButton.style.display = "inline-block";
-            deleteButton.addEventListener("click", function () {
-              experienciaContainer.removeChild(experiencia);
-              if (experiencias.length === 1) {
-                const experiencia = experiencias[0];
-                const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-                deleteButton.style.display = "none";
-              }
-            });
-          }
-        } else {
-          const experiencia = experiencias[0];
-          const deleteButton = experiencia.querySelector(".delete-experiencia-button");
-          deleteButton.style.display = "none";
-        }
-      });
     });
   });
+
 </script>

@@ -26,6 +26,7 @@
     "propostaTrabalho": "Research Proposal in PDF",
     "comprovantePagamento": "Payment Receipt in PDF"
   },
+  "exempt": "if exempt, send the final grade for verification",
   "finalizar": "Finalize your registration? After this step, your data will be submitted for evaluation and cannot be changed.",
   "adicionarRecomendacao": "Add Recommendation",
   "downloadModelLetter": "Download Model Letter",

@@ -1,4 +1,4 @@
-{{ setTitle title="Revisão dados" }}
+{{ setTitle title="Revisão dados" i18nKey="ppgi.titles.selecao.formRevisao"}}
 <!-- Modal de Confirmação -->
 <div
   class="modal fade mt-5"
@@ -73,28 +73,22 @@
     <main class="w-100 d-flex justify-content-between flex-column" style="flex: 1;">
       <div>
         <div class="callout callout-info">
-          <h5><i class="fas fa-info"></i> Atenção</h5>
+          <h5><i class="fas fa-info"></i> {{__ "ppgiFormReview.atencao"}}</h5>
           <p>
-            Você está atualmente na <strong>etapa de revisão da sua candidatura</strong>.
-            Nesta fase, é fundamental conferir cuidadosamente todas as informações
-            fornecidas nas etapas anteriores.
+            {{__ "ppgiFormReview.callout.p1"}}
           </p>
           <p>
-            Caso identifique qualquer inconsistência ou deseje realizar ajustes,
-            utilize as opções disponíveis para retornar às etapas anteriores e efetuar
-            as correções necessárias.
+            {{__ "ppgiFormReview.callout.p2"}}
           </p>
           <p>
-            <strong>Se todas as informações estiverem corretas</strong>, você pode
-            prosseguir e <strong>finalizar sua inscrição</strong> utilizando a opção
-            disponível ao final desta página.
+            {{__ "ppgiFormReview.callout.p3"}}
           </p>
         </div>
 
         <div class="card card-primary  w-full">
           <div class="card-header">
             <h3 class="card-title">
-              Dados
+              {{__ "ppgiFormReview.sections.dados"}}
             </h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -105,164 +99,164 @@
             <table id="example2" class="table table-bordered table-hover">
               <tbody>
               <tr>
-                <th class="col-3">Nome Completo</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.nomeCompleto"}}</th>
                 <td>{{candidato.nome}}</td>
               </tr>
               <tr>
-                <th class="col-3">Endereço</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.endereco"}}</th>
                 <td>{{candidato.endereco}}</td>
               </tr>
               <tr>
-                <th class="col-3">Bairro</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.bairro"}}</th>
                 <td>{{candidato.bairro}}</td>
               </tr>
               <tr>
-                <th class="col-3">Cidade</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cidade"}}</th>
                 <td>{{candidato.cidade}}</td>
               </tr>
               <tr>
-                <th class="col-3">Estado</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.estado"}}</th>
                 <td>{{candidato.uf}}</td>
               </tr>
               <tr>
-                <th class="col-3">CEP</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cep"}}</th>
                 <td>{{candidato.cep}}</td>
               </tr>
               <tr>
-                <th class="col-3">E-mail</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.email"}}</th>
                 <td>{{candidato.email}}</td>
               </tr>
               <tr>
-                <th class="col-3">Data de nascimento</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.dataNascimento"}}</th>
                 <td>{{#if (notEmpty candidato.dataNascimento)}} {{formataData candidato.dataNascimento}}{{/if}}</td>
               </tr>
               <tr>
-                <th class="col-3">Nacionalidade</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.nacionalidade"}}</th>
                 <td>{{candidato.nacionalidade}}</td>
               </tr>
 
               {{#if (notEmpty candidato.cpf)}}
                 <tr>
-                  <th class="col-3">CPF</th>
+                  <th class="col-3">{{__ "ppgiFormReview.fields.cpf"}}</th>
                   <td>{{candidato.cpf}}</td>
                 </tr>
               {{/if}}
               {{#if (notEmpty candidato.passaporte)}}
                 <tr>
-                  <th class="col-3">Passaporte</th>
+                  <th class="col-3">{{__ "ppgiFormReview.fields.passaporte"}}</th>
                   <td>{{candidato.passaporte}}</td>
                 </tr>
               {{/if}}
               {{#if (notEmpty candidato.pais)}}
                 <tr>
-                  <th class="col-3">País</th>
+                  <th class="col-3">{{__ "ppgiFormReview.fields.pais"}}</th>
                   <td>{{candidato.pais}}</td>
                 </tr>
               {{/if}}
               <tr>
-                <th class="col-3">Sexo</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.sexo"}}</th>
                 <td><span class="{{#if (notEmpty candidato.sexo)}}">{{formataBioSex candidato.sexo}}
                 {{else}}badge bg-danger">Não Informado{{/if}}</span></td>
               </tr>
               <tr>
-                <th class="col-3">Telefone Principal</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.telefonePrincipal"}}</th>
                 <td>{{candidato.telefone}}</td>
               </tr>
               <tr>
-                <th class="col-3">Telefone Alternativo</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.telefoneAlternativo"}}</th>
                 <td>{{candidato.telefoneSecundario}}</td>
               </tr>
               <tr>
-                <th class="col-3">Regime de Dedicação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.regimeDedicacao"}}</th>
                 <td>{{candidato.regime}}</td>
               </tr>
               <tr>
-                <th class="col-3">Curso desejado</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cursoDesejado"}}</th>
                 <td>{{candidato.cursoDesejado}}</td>
               </tr>
 
               <tr>
-                <th class="col-3">Solicita Bolsa?</th>
-                <td><span class="{{#if (eq candidato.bolsista '1')}} badge bg-success">Sim{{else}}badge bg-danger">Não{{/if}}</span></td>
+                <th class="col-3">{{__ "ppgiFormReview.fields.solicitaBolsa"}}</th>
+                <td><span class="{{#if (eq candidato.bolsista '1')}} badge bg-success">{{__ "ppgiFormReview.status.sim"}}{{else}}badge bg-danger">{{__ "ppgiFormReview.status.nao"}}{{/if}}</span></td>
               </tr>
               <tr>
-                <th class="col-3">Tae?</th>
-                <td><span class="{{#if (eq candidato.tae '1')}} badge bg-success">Sim{{else}}badge bg-danger">Não{{/if}}</span></td>
+                <th class="col-3">{{__ "ppgiFormReview.fields.tae"}}</th>
+                <td><span class="{{#if (eq candidato.tae '1')}} badge bg-success">{{__ "ppgiFormReview.status.sim"}}{{else}}badge bg-danger">{{__ "ppgiFormReview.status.nao"}}{{/if}}</span></td>
               </tr>
               <tr>
-                <th class="col-3">Cotista?</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cotista"}}</th>
                 <td>
                   {{#if (eq candidato.cotista '1')}}
                     {{candidato.cotistaTipo}}
                   {{else}}
-                    <span class="badge bg-danger">Não</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.nao"}}</span>
                   {{/if}}
                 </td>
               </tr>
               {{#if  (eq candidato.cotista '1') }}
                 {{#if (or (eq candidato.cotistaTipo 'indigena')  (eq candidato.cotistaTipo 'pcd'))}}
                   <tr>
-                    <th class="col-3">Comprovante cota</th>
+                    <th class="col-3">{{__ "ppgiFormReview.fields.comprovanteCota"}}</th>
                     <td>
                       <span class="{{#if candidatoDocs.ComprovanteCota}}">
                         <a style="margin-right: 16px"
-                           title="Visualizar"
+                           title="{{__ "ppgiFormReview.actions.visualizar"}}"
                            target="_blank"
                            href="/view/arquivo/ComprovanteCota.pdf"
                            class='fa fa-solid fa-eye'></a>
                         <a  style="margin-right: 3px"
-                            title="Baixar"
+                            title="{{__ "ppgiFormReview.actions.baixar"}}"
                             href="/download/arquivo/ComprovanteCota.pdf"
                             class='fa fa-solid fa-download'></a>
-                      {{else}}badge bg-warning">Pendente{{/if}}
+                      {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                       </span>
                     </td>
                   </tr>
                 {{/if}}
                 {{#if (or (eq candidato.cotistaTipo 'negro')  (eq candidato.cotistaTipo 'pardo'))}}
                   <tr>
-                    <th class="col-3">Autodeclaração (PDF)</th>
+                    <th class="col-3">{{__ "ppgiFormReview.fields.autodeclaracaoPdf"}}</th>
                     <td>
                       <span class="{{#if candidatoDocs.Autodeclaracao}}">
                         <a style="margin-right: 16px"
-                           title="Visualizar"
+                           title="{{__ "ppgiFormReview.actions.visualizar"}}"
                            target="_blank"
                            href="/view/arquivo/AutodeclaracaoCiencia.pdf"
                            class='fa fa-solid fa-eye'></a>
                         <a  style="margin-right: 3px"
-                            title="Baixar"
+                            title="{{__ "ppgiFormReview.actions.baixar"}}"
                             href="/download/arquivo/AutodeclaracaoCiencia.pdf"
                             class='fa fa-solid fa-download'></a>
-                      {{else}}badge bg-warning">Pendente{{/if}}
+                      {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                       </span>
                     </td>
                   </tr>
                   <tr>
-                    <th class="col-3">Autodeclaração (Vídeo)</th>
+                    <th class="col-3">{{__ "ppgiFormReview.fields.autodeclaracaoVideo"}}</th>
                     <td>
                       <span class="{{#if candidatoDocs.AutodeclaracaoVideo}}">
                         <a style="margin-right: 16px"
-                           title="Visualizar"
+                           title="{{__ "ppgiFormReview.actions.visualizar"}}"
                            target="_blank"
                            href="/view/arquivo/VideoAutodeclaracao.mp4"
                            class='fa fa-solid fa-eye'></a>
                         <a  style="margin-right: 3px"
-                            title="Baixar"
+                            title="{{__ "ppgiFormReview.actions.baixar"}}"
                             href="/download/arquivo/VideoAutodeclaracao.mp4"
                             class='fa fa-solid fa-download'></a>
-                      {{else}}badge bg-warning">Pendente{{/if}}
+                      {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                       </span>
                     </td>
                   </tr>
                 {{/if}}
               {{/if}}
               <tr>
-                <th class="col-3">Possui algum tipo de problema de saúde física ou psiquiátrica?</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.condicaoSaude"}}</th>
                 <td>
                   {{#if (eq candidato.condicao '1')}}
                     {{candidato.condicaoTipo}}
                   {{else}}
-                    <span class="badge bg-danger">Não</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.nao"}}</span>
                   {{/if}}</td>
               </tr>
               </tbody>
@@ -273,7 +267,7 @@
         <div class="card card-primary w-full">
           <div class="card-header">
             <h3 class="card-title">
-              Histórico Acadêmico
+              {{__ "ppgiFormReview.sections.historicoAcademico"}}
             </h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -283,111 +277,107 @@
           <div class="card-body" style="overflow-x:auto;">
             <table id="example2" class="table table-bordered table-hover">
               <tbody>
-
-
-
-
               <tr>
-                <th class="col-3">Curriculum (PDF)</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.curriculumPdf"}}</th>
                 <td>
                 <span class="{{#if candidatoDocs.Curriculum}}">
                   <a style="margin-right: 16px"
-                     title="Visualizar"
+                     title="{{__ "ppgiFormReview.actions.visualizar"}}"
                      target="_blank"
                      href="/view/arquivo/Curriculum.pdf"
                      class='fa fa-solid fa-eye'></a>
                   <a  style="margin-right: 3px"
-                      title="Baixar"
+                      title="{{__ "ppgiFormReview.actions.baixar"}}"
                       href="/download/arquivo/Curriculum.pdf"
                       class='fa fa-solid fa-download'></a>
-                {{else}}badge bg-warning">Pendente{{/if}}
+                {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                 </span>
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Curso de graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cursoGraduacao"}}</th>
                 <td>
                   {{#if (notEmpty candidato.cursoGraduacao)}}
                     <span>
                       {{candidato.cursoGraduacao}}
                     </span>
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Instituição da graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.instituicaoGraduacao"}}</th>
                 <td>
                   {{#if (notEmpty candidato.instituicaoGraduacao)}}
                     <span>{{candidato.instituicaoGraduacao}}</span>
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Ano de Egresso na Graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.anoEgressoGraduacao"}}</th>
                 <td>
                   {{#if (notEmpty candidato.anoEgressoGraduacao)}}
                     {{candidato.anoEgressoGraduacao}}
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Curso de Pós Graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.cursoPos"}}</th>
                 <td>
                   {{#if (notEmpty candidato.cursoPos)}}
                     {{candidato.cursoPos}}
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Tipo de Pós Graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.tipoPos"}}</th>
                 <td>
                   {{#if (notEmpty candidato.tipoPos)}}
                     {{candidato.tipoPos}}
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Instituição da Pós Graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.instituicaoPos"}}</th>
                 <td>
                   {{#if (notEmpty candidato.instituicaoPos)}}
                     {{candidato.instituicaoPos}}
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Ano de Egresso na Pós Graduação</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.anoEgressoPos"}}</th>
                 <td>
                   {{#if (notEmpty candidato.anoEgressoPos)}}
                     {{candidato.anoEgressoPos}}
                   {{else}}
-                    <span class="badge bg-danger">Não Registrado</span>
+                    <span class="badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}</span>
                   {{/if}}
                 </td>
               </tr>
               </tbody>
             </table>
             <hr />
-            <h4><b>Experiências Acadêmicas</b></h4>
+            <h4><b>{{__ "ppgiFormReview.sections.experienciasAcademicas"}}</b></h4>
             {{#if candidato.experienciasAcademicas.length}}
               <div class="table-responsive">
                 <table class="table table-bordered table-hover mt-2">
                   <thead>
                   <tr>
-                    <th>Instituição</th>
-                    <th>Atividade</th>
-                    <th>Período</th>
+                    <th>{{__ "ppgiFormReview.experienciasTable.instituicao"}}</th>
+                    <th>{{__ "ppgiFormReview.experienciasTable.atividade"}}</th>
+                    <th>{{__ "ppgiFormReview.experienciasTable.periodo"}}</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -402,10 +392,10 @@
                 </table>
               </div>
             {{else}}
-              <p class="badge bg-warning mt-2">Nenhuma experiência acadêmica registrada.</p>
+              <p class="badge bg-warning mt-2">{{__ "ppgiFormReview.status.nenhumaExperienciaRegistrada"}}</p>
             {{/if}}
             <hr />
-            <h4><b>Publicações Acadêmicas</b></h4>
+            <h4><b>{{__ "ppgiFormReview.sections.publicacoesAcademicas"}}</b></h4>
 
             {{#if candidato.publicacoes.length}}
               {{#each (groupByTipo candidato.publicacoes) as |grupo tipoId|}}
@@ -415,13 +405,13 @@
                       <h5 class="mb-0 d-flex justify-content-between align-items-center">
                         <button class="btn  collapsed d-flex justify-content-between w-100" data-toggle="collapse" data-target="#collapseTipo{{tipoId}}" aria-expanded="false" aria-controls="collapseTipo{{tipoId}}">
                                         <span>
-                                          {{#if (eq tipoId 1)}} Periódicos
-                                          {{else if (eq tipoId 2)}} Eventos
-                                          {{else if (eq tipoId 3)}} Livros
-                                          {{else if (eq tipoId 4)}} Capítulos
-                                          {{else if (eq tipoId 5)}} Outras
-                                          {{else if (eq tipoId 6)}} Prefácios
-                                          {{else}} Outros
+                                          {{#if (eq tipoId 1)}} {{__ "ppgiFormReview.publicacoes.periodicos"}}
+                                          {{else if (eq tipoId 2)}} {{__ "ppgiFormReview.publicacoes.eventos"}}
+                                          {{else if (eq tipoId 3)}} {{__ "ppgiFormReview.publicacoes.livros"}}
+                                          {{else if (eq tipoId 4)}} {{__ "ppgiFormReview.publicacoes.capitulos"}}
+                                          {{else if (eq tipoId 5)}} {{__ "ppgiFormReview.publicacoes.outras"}}
+                                          {{else if (eq tipoId 6)}} {{__ "ppgiFormReview.publicacoes.prefacios"}}
+                                          {{else}} {{__ "ppgiFormReview.publicacoes.outros"}}
                                           {{/if}}
                                         </span>
                           <i class="fa fa-chevron-down transition-icon"></i>
@@ -434,11 +424,11 @@
                           {{#each grupo}}
                             <li class="list-group-item">
                               <strong>{{this.titulo}}</strong><br />
-                              <small><b>Autores:</b> {{this.autores}}</small><br />
-                              <small><b>Local:</b> {{this.local}}</small><br />
-                              <small><b>Ano:</b> {{this.ano}}</small><br />
-                              {{#if this.issn}}<small><b>ISSN:</b> {{this.issn}}</small><br />{{/if}}
-                              <small><b>Natureza:</b> {{this.natureza}}</small>
+                              <small><b>{{__ "ppgiFormReview.publicacoes.autores"}}:</b> {{this.autores}}</small><br />
+                              <small><b>{{__ "ppgiFormReview.publicacoes.local"}}:</b> {{this.local}}</small><br />
+                              <small><b>{{__ "ppgiFormReview.publicacoes.ano"}}:</b> {{this.ano}}</small><br />
+                              {{#if this.issn}}<small><b>{{__ "ppgiFormReview.publicacoes.issn"}}:</b> {{this.issn}}</small><br />{{/if}}
+                              <small><b>{{__ "ppgiFormReview.publicacoes.natureza"}}:</b> {{this.natureza}}</small>
                             </li>
                           {{/each}}
                         </ul>
@@ -448,7 +438,7 @@
                 </div>
               {{/each}}
             {{else}}
-              <p class="badge bg-warning mt-2">Nenhuma publicação registrada.</p>
+              <p class="badge bg-warning mt-2">{{__ "ppgiFormReview.status.nenhumaPublicacaoRegistrada"}}</p>
             {{/if}}
           </div>
         </div>
@@ -456,7 +446,7 @@
         <div class="card card-primary  w-full">
           <div class="card-header">
             <h3 class="card-title">
-              Informações Projetos
+              {{__ "ppgiFormReview.sections.informacoesProjetos"}}
             </h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -468,47 +458,47 @@
               <tbody>
 
               <tr>
-                <th class="col-3">Linha de Pesquisa</th>
+                <th class="col-3"> {{__ "ppgiFormReview.fields.linhaPesquisa"}}</th>
                 <td><span class="{{#if (notEmpty candidato.linhaPesquisa)}}">{{candidato.linhaPesquisa.nome}}
-                {{else}}badge bg-danger">Não Registrado{{/if}}
+                {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
 
                 </span></td>
               </tr>
               <tr>
-                <th class="col-3">Título da proposta</th>
+                <th class="col-3"> {{__ "ppgiFormReview.fields.tituloProposta"}}</th>
                 <td>
                 <span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
-                {{else}}badge bg-danger">Não Registrado{{/if}}
+                {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
                 </span>
                 </td>
               </tr>
               <tr>
-                <th class="col-3">Professor orientador</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.professorOrientador"}}</th>
                 <td>{{#if (notEmpty candidato.nomeOrientador)}}{{candidato.nomeOrientador}}
                 {{else}}-{{/if}}</td>
               </tr>
               <tr>
-                <th class="col-3">Motivos</th>
+                <th class="col-3">M{{__ "ppgiFormReview.fields.motivos"}}s</th>
                 <td><span class="{{#if (notEmpty candidato.motivos)}}">{{candidato.motivos}}
-                {{else}}badge bg-danger">Não Registrado{{/if}}
+                {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
 
                 </span></td>
               </tr>
               {{#if (eq candidato.edital.cartaOrientador 1)}}
                 <tr>
-                  <th class="col-3">Carta do Orientador (PDF)</th>
+                  <th class="col-3">{{__ "ppgiFormReview.fields.cartaOrientadorPdf"}}</th>
                   <td>
                   <span class="{{#if candidatoDocs.CartaDoOrientador}}">
                     <a style="margin-right: 16px"
-                       title="Visualizar"
+                       title="{{__ "ppgiFormReview.actions.visualizar"}}"
                        target="_blank"
                        href="/view/arquivo/CartaAceiteOrientador.pdf"
                        class='fa fa-solid fa-eye'></a>
                     <a  style="margin-right: 3px"
-                        title="Baixar"
+                        title="{{__ "ppgiFormReview.actions.baixar"}}"
                         href="/download/arquivo/CartaAceiteOrientador.pdf"
                         class='fa fa-solid fa-download'></a>
-                  {{else}}badge bg-warning">Pendente{{/if}}
+                  {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                   </span>
                   </td>
                 </tr>
@@ -516,42 +506,41 @@
 
               {{#if candidato.edital.projetoPesquisa}}
                 <tr>
-                  <th class="col-3">Projeto de Pesquisa (PDF)</th>
+                  <th class="col-3">{{__ "ppgiFormReview.fields.projetoPesquisaPdf"}}</th>
                   <td>
                   <span class="{{#if candidatoDocs.PropostaDeTrabalho}}">
                     <a style="margin-right: 16px"
-                       title="Visualizar"
+                       title="{{__ "ppgiFormReview.actions.visualizar"}}"
                        target="_blank"
                        href="/view/arquivo/PropostaTrabalho.pdf"
                        class='fa fa-solid fa-eye'></a>
                     <a style="margin-right: 3px"
-                       title="Baixar"
+                       title="{{__ "ppgiFormReview.actions.baixar"}}"
                        href="/download/arquivo/PropostaTrabalho.pdf"
                        class='fa fa-solid fa-download'></a>
-                  {{else}}badge bg-warning">Pendente{{/if}}
+                  {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                   </span>
                   </td>
                 </tr>
               {{/if}}
 
               <tr>
-                <th class="col-3">Comprovante de Pagamento (PDF)</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.comprovantePagamentoPdf"}}</th>
                 <td>
                 <span class="{{#if candidatoDocs.ComprovantePagamento}}">
                   <a style="margin-right: 16px"
-                     title="Visualizar"
+                     title="{{__ "ppgiFormReview.actions.visualizar"}}"
                      target="_blank"
                      href="/view/arquivo/ComprovantePagamento.pdf"
                      class='fa fa-solid fa-eye'></a>
                   <a  style="margin-right: 3px"
-                      title="Baixar"
+                      title="{{__ "ppgiFormReview.actions.baixar"}}"
                       href="/download/arquivo/ComprovantePagamento.pdf"
                       class='fa fa-solid fa-download'></a>
-                {{else}}badge bg-warning">Pendente{{/if}}
+                {{else}}badge bg-warning">{{__ "ppgiFormReview.status.pendente"}}{{/if}}
                 </span>
                 </td>
               </tr>
-
               </tbody>
             </table>
           </div>
@@ -594,6 +583,38 @@
 <script>
   $(document).ready(function() {
     const basePath = "{{basePath}}";
+    $("#btn_logout").click(function () {
+      $.ajax({
+        url: `${basePath}/logout`,
+        type: "POST",
+        success: function () {
+          window.location.replace(`${basePath}/entrar`);
+        },
+        error: function (xhr) {
+          if (xhr.status === 401){
+            window.location.replace(`${basePath}/entrar`);
+            return
+          }
+          toastr.error('Atualize a página e tente novamente', 'Erro ao realizar logout');
+        }
+      });
+    });
+
+    $("#btn_inicio").click(function () {
+      $.ajax({
+        url: `${basePath}/voltarInicio`,
+        type: "POST",
+        success: function (data) {
+          window.location.href = `${basePath}/formulario`;
+        },
+        error: function (xhr) {
+          if (xhr.status === 401){
+            document.location.href = `${basePath}/entrar?expired=true`;
+            return
+          }
+        }
+      });
+    });
 
     $("#voltarForm").on("click", function () {
       const btnVoltar = $("#voltarForm");

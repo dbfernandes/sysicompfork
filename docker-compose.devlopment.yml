@@ -68,7 +68,7 @@ services:
       context: .
       dockerfile: Dockerfile.devlopment
     command: 'npm run start:selecao'
-    restart: no
+    restart: "no"
     ports:
       - '${PORT_SELECAO:-4000}:${PORT_SELECAO:-4000}'
     working_dir: /app
