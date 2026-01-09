@@ -317,11 +317,13 @@ async function renderFormHistorico(
     caminhoDiretorioUsuario,
     'VitaeXML.xml',
   );
+
+  const hasPublications =
+    (conferencias.length > 0 || periodicos.length > 0) && hasVitaeXML;
+
   res.render(resolveView('formHistorico'), {
     ...locals,
     ...req.candidato,
-    editalPosicao: req.candidato.posicaoEdital,
-    id: uid,
     hasCurriculum,
     hasProvaAnterior,
     hasVitaeXML,
@@ -329,6 +331,7 @@ async function renderFormHistorico(
     conferencias,
     periodicos,
     currentLanguage,
+    hasPublications,
   });
 }
 
@@ -938,13 +941,16 @@ async function uploadsPublicacoes(
         // 3. Busca listas atualizadas
         const { periodicos, conferencias } =
           await candidatoPublicacaoService.getPublicacoes(uid);
-
+        const hasPublications =
+          conferencias.length > 0 || periodicos.length > 0;
         // 4. Renderiza o trecho HTML e retorna
+
         res.render('partials/ppgi/publicacoes', {
           layout: false, // retorna só o fragmento
           periodicos,
           conferencias,
           hasVitaeXML: true, // exibe botões “trocar/deletar” etc.
+          hasPublications,
         });
       } catch (err) {
         next(err);

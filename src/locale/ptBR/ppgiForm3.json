@@ -21,6 +21,7 @@
     "motivosPlaceholder": "Digite os motivos",
     "caracteresRestantesLabel": "Caracteres Restantes"
   },
+  "exempt": "caso esteja isento, envie a classificação final para verificação",
   "documentos": {
     "cartaOrientador": "Carta de Aceite do Orientador em PDF (obrigatório para doutorado)",
     "propostaTrabalho": "Projeto de Pesquisa em PDF",

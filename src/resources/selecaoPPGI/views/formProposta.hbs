@@ -1,4 +1,4 @@
-
+{{ setTitle title="Proposta de Projeto" i18nKey="ppgi.titles.selecao.formProposta"}}
 
 <!-- Conteúdo principal -->
 <main class="forms-page">
@@ -359,7 +359,9 @@
                 <label for="ComprovantePagamento" class="control-label">
                   <span class="text-danger">*</span> <b> {{__ "ppgiForm3.documentos.comprovantePagamento"}}:</b>
                   <br>
-                  (caso esteja inserido como isento, envie a classificação final para verificação)
+                  <span style="font-weight: normal;">
+                    ({{__ "ppgiForm3.exempt"}})
+                  </span>
                 </label>
               </div>
               <div id="buttons-pagamento" class="col-12 flex-row align-items-center mb-4" style="display: {{#if (not hasComprovante)}}none{{else}}flex{{/if}}; gap: 16px"  >

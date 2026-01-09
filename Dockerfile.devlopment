@@ -1,15 +1,13 @@
 FROM node:24
 
-# Criar diretório de trabalho
 WORKDIR /app
 
-# Copiar package.json e package-lock.json
 COPY package*.json ./
-
-# Instalar dependências do Node
 RUN npm install
 
-# Copiar restante do código
+COPY prisma ./prisma
+RUN npx prisma generate
+
 COPY . .
 
-RUN npx prisma generate
+CMD ["npm", "run", "dev"]

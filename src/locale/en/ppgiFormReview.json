@@ -1,0 +1,96 @@
+{
+    "atencao": "Attention",
+
+    "callout": {
+      "p1": "You are currently in the <strong>application review stage</strong>. At this stage, it is essential to carefully check all the information provided in the previous steps.",
+      "p2": "If you identify any inconsistencies or wish to make changes, use the available options to return to the previous steps and make the necessary corrections.",
+      "p3": "<strong>If all the information is correct</strong>, you may proceed and <strong>complete your application</strong> using the option available at the bottom of this page."
+    },
+
+    "sections": {
+      "dados": "Personal Information",
+      "historicoAcademico": "Academic Background",
+      "informacoesProjetos": "Project Information",
+      "experienciasAcademicas": "Academic Experience",
+      "publicacoesAcademicas": "Academic Publications"
+    },
+
+    "fields": {
+      "nomeCompleto": "Full Name",
+      "endereco": "Address",
+      "bairro": "Neighborhood",
+      "cidade": "City",
+      "estado": "State",
+      "cep": "Postal Code",
+      "email": "Email",
+      "dataNascimento": "Date of Birth",
+      "nacionalidade": "Nationality",
+      "cpf": "CPF",
+      "passaporte": "Passport",
+      "pais": "Country",
+      "sexo": "Gender",
+      "telefonePrincipal": "Primary Phone",
+      "telefoneAlternativo": "Secondary Phone",
+      "regimeDedicacao": "Dedication Regime",
+      "cursoDesejado": "Intended Program",
+      "solicitaBolsa": "Applying for Scholarship?",
+      "tae": "TAE?",
+      "cotista": "Quota Applicant?",
+      "comprovanteCota": "Quota Proof",
+      "autodeclaracaoPdf": "Self-Declaration (PDF)",
+      "autodeclaracaoVideo": "Self-Declaration (Video)",
+      "condicaoSaude": "Do you have any physical or psychiatric health condition?",
+      "curriculumPdf": "Curriculum Vitae (PDF)",
+      "cursoGraduacao": "Undergraduate Degree",
+      "instituicaoGraduacao": "Undergraduate Institution",
+      "anoEgressoGraduacao": "Undergraduate Graduation Year",
+      "cursoPos": "Postgraduate Degree",
+      "tipoPos": "Postgraduate Type",
+      "instituicaoPos": "Postgraduate Institution",
+      "anoEgressoPos": "Postgraduate Graduation Year",
+      "linhaPesquisa": "Research Line",
+      "tituloProposta": "Research Proposal Title",
+      "professorOrientador": "Advisor",
+      "motivos": "Motivation",
+      "cartaOrientadorPdf": "Advisor Letter (PDF)",
+      "projetoPesquisaPdf": "Research Project (PDF)",
+      "comprovantePagamentoPdf": "Payment Receipt (PDF)"
+    },
+
+    "actions": {
+      "visualizar": "View",
+      "baixar": "Download"
+    },
+
+    "status": {
+      "sim": "Yes",
+      "nao": "No",
+      "pendente": "Pending",
+      "naoInformado": "Not Informed",
+      "naoRegistrado": "Not Registered",
+      "nenhumaExperienciaRegistrada": "No academic experience registered.",
+      "nenhumaPublicacaoRegistrada": "No publications registered."
+    },
+
+    "experienciasTable": {
+      "instituicao": "Institution",
+      "atividade": "Activity",
+      "periodo": "Period"
+    },
+
+    "publicacoes": {
+      "periodicos": "Journals",
+      "eventos": "Conferences",
+      "livros": "Books",
+      "capitulos": "Chapters",
+      "outras": "Others",
+      "prefacios": "Prefaces",
+      "outros": "Other",
+      "autores": "Authors:",
+      "local": "Venue:",
+      "ano": "Year:",
+      "issn": "ISSN:",
+      "natureza": "Type:"
+    }
+
+}

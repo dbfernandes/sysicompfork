@@ -227,7 +227,10 @@ const validaLabel = (status, dataInicio, dataFim, options) => {
 };
 
 function setTitle(options) {
-  this.title = options.hash.title;
+  const { title, i18nKey } = options.hash;
+  const i18n = language.i18next;
+  const titleBackup = title || 'Default Title';
+  this.title = i18nKey ? i18n.t(i18nKey) : titleBackup;
   return '';
 }
 

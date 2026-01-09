@@ -20,6 +20,7 @@ import ppgiForm2 from './ppgiForm2.json';
 import ppgiForm3 from './ppgiForm3.json';
 import ppgiForm4 from './ppgiForm4.json';
 import ppgiRecomendacao from './ppgiRecomendacao.json';
+import ppgiFormReview from './ppgiFormReview.json';
 
 export default {
   translation: {
@@ -42,6 +43,7 @@ export default {
     ppgiForm3,
     ppgiForm4,
     ppgiRecomendacao,
+    ppgiFormReview,
     intlTel,
     ...db,
   },

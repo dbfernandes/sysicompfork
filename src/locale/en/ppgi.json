@@ -12,6 +12,25 @@
     "initButton": "Start",
     "logoutButton": "Logout"
   },
+  "titles": {
+    "recomendacao": {
+      "inicio": "Letter of Recommendation for Master's/PhD Application to PPGI/UFAM",
+      "envio": "Form submitted",
+      "finalizacao": "Form completed",
+      "tokenInvalido": "Invalid token"
+    },
+    "selecao": {
+      "inicio": "Selection Process for Master's/PhD – PPGI/UFAM",
+      "formDados": "Personal Information",
+      "formFinalizacao": "Confirmation",
+      "formHistorico": "Academic Record",
+      "formProposta": "Project Proposal",
+      "formRevisao": "Data Review",
+      "recuperarSenha": "Password Recovery – PPGI/UFAM",
+      "trocarSenha": "Change Password – PPGI/UFAM",
+      "login": "Login – PPGI/UFAM"
+    }
+  },
   "nav": {
     "dados": "Data",
     "historico": "History",

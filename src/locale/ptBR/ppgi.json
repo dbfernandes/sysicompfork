@@ -7,6 +7,26 @@
   "remainingTime": "Tempo Restante para inscrição",
   "calculating": "Calculando",
   "portuguese": "Português",
+  "titles": {
+    "tokenInvalido": "Token inválido",
+    "recomendacao": {
+      "inicio": "Carta de Recomendação para de Inscrição no Mestrado/Doutorado no PPGI/UFAM",
+      "envio": "Formulário enviado",
+      "finalizacao": "Formulário preenchido",
+      "tokenInvalido": "Token inválido"
+    },
+    "selecao": {
+      "inicio": "Processo Seletivo para Mestrado/Doutorado - PPGI/UFAM",
+      "formDados": "Dados Pessoais",
+      "formFinalizacao": "Confirmação",
+      "formHistorico": "Histórico",
+      "formProposta": "Proposta de Projeto",
+      "formRevisao": "Revisao dados",
+      "recuperarSenha": "Recuperar Senha - PPGI/UFAM",
+      "trocarSenha": "Trocar Senha - PPGI/UFAM",
+      "login": "Login - PPGI/UFAM"
+    }
+  },
   "header": {
     "title": "PPGI",
     "initButton": "Início",

@@ -202,10 +202,9 @@ class CandidatoService {
     if (!(await bcrypt.compare(senha, candidato.senhaHash))) {
       throw new CandidatoNaoAutorizadoError();
     }
-
-    if (candidato.posicaoEdital > 4) {
-      throw new CandidatoFinalizadoError();
-    }
+    // if (candidato.posicaoEdital === StepCandidateEdital.FINALIZACAO) {
+    //   throw new CandidatoFinalizadoError();
+    // }
 
     delete candidato.senhaHash;
     return candidato;

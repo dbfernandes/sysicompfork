@@ -1,0 +1,95 @@
+{
+    "atencao": "Atenção",
+
+    "callout": {
+      "p1": "Você está atualmente na <strong>etapa de revisão da sua candidatura</strong>. Nesta fase, é fundamental conferir cuidadosamente todas as informações fornecidas nas etapas anteriores.",
+      "p2": "Caso identifique qualquer inconsistência ou deseje realizar ajustes, utilize as opções disponíveis para retornar às etapas anteriores e efetuar as correções necessárias.",
+      "p3": "<strong>Se todas as informações estiverem corretas</strong>, você pode prosseguir e <strong>finalizar sua inscrição</strong> utilizando a opção disponível ao final desta página."
+    },
+
+    "sections": {
+      "dados": "Dados",
+      "historicoAcademico": "Histórico Acadêmico",
+      "informacoesProjetos": "Informações Projetos",
+      "experienciasAcademicas": "Experiências Acadêmicas",
+      "publicacoesAcademicas": "Publicações Acadêmicas"
+    },
+
+    "fields": {
+      "nomeCompleto": "Nome Completo",
+      "endereco": "Endereço",
+      "bairro": "Bairro",
+      "cidade": "Cidade",
+      "estado": "Estado",
+      "cep": "CEP",
+      "email": "E-mail",
+      "dataNascimento": "Data de nascimento",
+      "nacionalidade": "Nacionalidade",
+      "cpf": "CPF",
+      "passaporte": "Passaporte",
+      "pais": "País",
+      "sexo": "Sexo",
+      "telefonePrincipal": "Telefone Principal",
+      "telefoneAlternativo": "Telefone Alternativo",
+      "regimeDedicacao": "Regime de Dedicação",
+      "cursoDesejado": "Curso desejado",
+      "solicitaBolsa": "Solicita Bolsa?",
+      "tae": "Tae?",
+      "cotista": "Cotista?",
+      "comprovanteCota": "Comprovante cota",
+      "autodeclaracaoPdf": "Autodeclaração (PDF)",
+      "autodeclaracaoVideo": "Autodeclaração (Vídeo)",
+      "condicaoSaude": "Possui algum tipo de problema de saúde física ou psiquiátrica?",
+      "curriculumPdf": "Curriculum (PDF)",
+      "cursoGraduacao": "Curso de graduação",
+      "instituicaoGraduacao": "Instituição da graduação",
+      "anoEgressoGraduacao": "Ano de Egresso na Graduação",
+      "cursoPos": "Curso de Pós Graduação",
+      "tipoPos": "Tipo de Pós Graduação",
+      "instituicaoPos": "Instituição da Pós Graduação",
+      "anoEgressoPos": "Ano de Egresso na Pós Graduação",
+      "linhaPesquisa": "Linha de Pesquisa",
+      "tituloProposta": "Título da proposta",
+      "professorOrientador": "Professor orientador",
+      "motivos": "Motivos",
+      "cartaOrientadorPdf": "Carta do Orientador (PDF)",
+      "projetoPesquisaPdf": "Projeto de Pesquisa (PDF)",
+      "comprovantePagamentoPdf": "Comprovante de Pagamento (PDF)"
+    },
+
+    "actions": {
+      "visualizar": "Visualizar",
+      "baixar": "Baixar"
+    },
+
+    "status": {
+      "sim": "Sim",
+      "nao": "Não",
+      "pendente": "Pendente",
+      "naoInformado": "Não Informado",
+      "naoRegistrado": "Não Registrado",
+      "nenhumaExperienciaRegistrada": "Nenhuma experiência acadêmica registrada.",
+      "nenhumaPublicacaoRegistrada": "Nenhuma publicação registrada."
+    },
+
+    "experienciasTable": {
+      "instituicao": "Instituição",
+      "atividade": "Atividade",
+      "periodo": "Período"
+    },
+
+    "publicacoes": {
+      "periodicos": "Periódicos",
+      "eventos": "Eventos",
+      "livros": "Livros",
+      "capitulos": "Capítulos",
+      "outras": "Outras",
+      "prefacios": "Prefácios",
+      "outros": "Outros",
+      "autores": "Autores:",
+      "local": "Local:",
+      "ano": "Ano:",
+      "issn": "ISSN:",
+      "natureza": "Natureza:"
+    }
+}

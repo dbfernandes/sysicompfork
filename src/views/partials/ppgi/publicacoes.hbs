@@ -1,4 +1,4 @@
-{{#if (and hasVitaeXML (eq periodicos.length 0) (eq conferencias.length 0))}}
+{{#if (not hasPublications)}}
   <p class="text-gray">
     <i class="fa fa-info-circle" aria-hidden="true"></i> {{__ "ppgiForm2.curriculumVittae.emptyPublications"}}
   </p>
