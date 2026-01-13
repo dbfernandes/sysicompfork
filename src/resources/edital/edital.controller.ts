@@ -22,7 +22,7 @@ import { StatusCodes } from 'http-status-codes';
 import { verificarArquivoDiretorio } from '@utils/utils';
 import mime from 'mime-types';
 import { StepCandidateEdital } from '@resources/candidato/candidato.types';
-import { generatePdfEnrollment } from '@resources/pdf/pdf.controller'; // npm i mime-types
+import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 
 const locals = {
   layout: 'selecaoppgi',
