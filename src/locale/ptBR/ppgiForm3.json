@@ -6,6 +6,8 @@
   "orientador": {
     "titulo": "Orientador",
     "descricao": "Caso o tema da proposta tenha sido definido junto com algum orientador do PPGI, informe o nome dele abaixo.",
+    "descricaoSemProposta": "Caso a inscrição tenha sido definido junto com algum orientador do PPGI, informe o nome dele abaixo.",
+
     "nomeOrientadorLabel": "Nome do Orientador"
   },
   "cartaRecomendacao": {

@@ -23,8 +23,6 @@
       <!-- Formulário principal -->
       <form id="candidato-formulario" novalidate autofocus>
         <!-- Tokens e inputs ocultos -->
-        <input id="email" type="hidden" value="{{email}}" />
-
         <!-- Card 1: Título e Linha de Pesquisa -->
         <div class="card card-primary">
           <div class="card-header">
@@ -33,26 +31,27 @@
 
           <div class="card-body">
             <div class="row">
-
               <!-- Título Proposta -->
-              <div class="col-md-7 form-group">
-                <label
-                  class="control-label"
-                  for="candidato-titulo-proposta"
-                >
-                  <span class="text-danger">*</span>
-                  <b>{{__ "ppgiForm3.tituloPropostaLabel"}}:</b>
-                </label>
-                <input
-                  autofocus
-                  class="form-control"
-                  id="candidato-titulo-proposta"
-                  type="text"
-                  name="tituloProposta"
-                  maxlength="60"
-                  value="{{tituloProposta}}"
-                />
-              </div>
+              {{#if edital.projetoPesquisa}}
+                <div class="col-md-7 form-group">
+                  <label
+                    class="control-label"
+                    for="candidato-titulo-proposta"
+                  >
+                    <span class="text-danger">*</span>
+                    <b>{{__ "ppgiForm3.tituloPropostaLabel"}}:</b>
+                  </label>
+                  <input
+                    autofocus
+                    class="form-control"
+                    id="candidato-titulo-proposta"
+                    type="text"
+                    name="tituloProposta"
+                    maxlength="100"
+                    value="{{tituloProposta}}"
+                  />
+                </div>
+                {{/if}}
               <!-- Linha de Pesquisa -->
               <div class="form-group col-md-5">
                 <label for="candidato-pesquisa">
@@ -88,7 +87,12 @@
             <h3 class="card-title">{{__ "ppgiForm3.orientador.titulo"}}</h3>
           </div>
           <div class="card-body">
-            <p>{{__ "ppgiForm3.orientador.descricao"}}</p>
+            {{#if edital.projetoPesquisa}}
+              <p>{{__ "ppgiForm3.orientador.descricao"}}</p>
+              {{else}}
+              <p>{{__ "ppgiForm3.orientador.descricaoSemProposta"}}</p>
+            {{/if}}
+
             <div class="row">
               <!-- Nome do Orientador -->
               <div class="form-group col-12">
