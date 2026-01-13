@@ -6,6 +6,7 @@
   "orientador": {
     "titulo": "Advisor",
     "descricao": "If the proposal theme was defined together with a PPGI advisor, please provide their name below.",
+    "descricaoSemProposta": "If the application was defined together with a PPGI advisor, please provide their name below.",
     "nomeOrientadorLabel": "Advisor's Name"
   },
   "cartaRecomendacao": {

@@ -464,21 +464,23 @@
 
                 </span></td>
               </tr>
-              <tr>
-                <th class="col-3"> {{__ "ppgiFormReview.fields.tituloProposta"}}</th>
-                <td>
-                <span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
-                {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
-                </span>
-                </td>
-              </tr>
+              {{#if candidato.edital.projetoPesquisa}}
+                <tr>
+                  <th class="col-3"> {{__ "ppgiFormReview.fields.tituloProposta"}}</th>
+                  <td>
+                  <span class="{{#if (notEmpty candidato.tituloProposta)}}">{{candidato.tituloProposta}}
+                  {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
+                  </span>
+                  </td>
+                </tr>
+              {{/if}}
               <tr>
                 <th class="col-3">{{__ "ppgiFormReview.fields.professorOrientador"}}</th>
                 <td>{{#if (notEmpty candidato.nomeOrientador)}}{{candidato.nomeOrientador}}
                 {{else}}-{{/if}}</td>
               </tr>
               <tr>
-                <th class="col-3">M{{__ "ppgiFormReview.fields.motivos"}}s</th>
+                <th class="col-3">{{__ "ppgiFormReview.fields.motivos"}}s</th>
                 <td><span class="{{#if (notEmpty candidato.motivos)}}">{{candidato.motivos}}
                 {{else}}badge bg-danger">{{__ "ppgiFormReview.status.naoRegistrado"}}{{/if}}
 
