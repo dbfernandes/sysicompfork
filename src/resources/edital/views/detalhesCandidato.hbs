@@ -28,7 +28,17 @@
                     <a class="btn btn-warning color-white" id="voltarBtn">
                         <i class="fa fa-arrow-left"></i>
                         Voltar
-                    </a> 
+                    </a>
+                  {{#if (eq candidato.posicaoEdital 4)}}
+                    <a
+                      href="/edital/updateDocumentCandidate/{{candidato.id}}"
+                      class="btn btn-default color-white js-update-doc-candidate ml-2"
+                      title="Atualizar ficha de inscrição do candidato"
+                      data-id="{{candidato.id}}">
+                      <i class="fa fa-solid fa-undo"></i>
+                      Atualizar ficha
+                    </a>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -545,6 +555,54 @@
   document.getElementById("voltarBtn").addEventListener("click", function() {
     window.history.back();
   });
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: 'toast-top-right',
+    timeOut: 3500,
+  }
+  $(document).ready(function () {
+    $(document).on('click', '.js-update-doc-candidate', function (e) {
+      e.preventDefault()
+
+      const $btn = $(this)
+      const id = $btn.data('id')
+      const url = `/edital/updateDocumentCandidate/${id}`
+
+      // evita clique duplo
+      if ($btn.data('loading')) return
+      $btn.data('loading', true).addClass('disabled')
+
+      $.ajax({
+        url,
+        type: 'GET', // se sua rota for GET, troque pra 'GET'
+        success: function (res) {
+          // se seu backend retornar algo tipo { ok: true, message: '...' }
+          if (res && res.ok === false) {
+            toastr.error(res.message || 'Não foi possível atualizar a ficha do candidato.')
+            return
+          }
+
+          toastr.success(res?.message || 'Ficha de inscrição atualizada com sucesso!')
+
+          // se quiser, recarrega a página ou atualiza UI
+          // window.location.reload()
+        },
+        error: function (xhr) {
+          const msg =
+            (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.error)) ||
+            (xhr.responseText ? xhr.responseText : null) ||
+            'Erro ao atualizar a ficha do candidato. Tente novamente.'
+
+          toastr.error(msg)
+        },
+        complete: function () {
+          $btn.data('loading', false).removeClass('disabled')
+        },
+      })
+    })
+  })
+
 </script>
 
 {{> footer}}

@@ -27,5 +27,9 @@ router.all(
   '/getEditalCandidatesDocs/:id',
   editalController.pegarDocumentosDeTodosCandidatos,
 );
+router.get(
+  '/updateDocumentCandidate/:id',
+  editalController.updateDocumentCandidate,
+);
 
 export default router;
