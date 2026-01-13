@@ -129,5 +129,6 @@ export async function getFormattedDataCandidateFinish(candidateId: string) {
     scholarship,
     quota,
     deficiency,
+    hasProjetoPesquisa: candidato.edital.projetoPesquisa,
   };
 }

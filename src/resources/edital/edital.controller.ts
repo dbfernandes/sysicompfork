@@ -21,7 +21,8 @@ import { Candidato } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import { verificarArquivoDiretorio } from '@utils/utils';
 import mime from 'mime-types';
-import { StepCandidateEdital } from '@resources/candidato/candidato.types'; // npm i mime-types
+import { StepCandidateEdital } from '@resources/candidato/candidato.types';
+import { generatePdfEnrollment } from '@resources/pdf/pdf.controller';
 
 const locals = {
   layout: 'selecaoppgi',
@@ -254,7 +255,7 @@ const listarCandidatos = async (req: Request, res: Response) => {
         const quantidadeInscricaoFinalizada = candidatos.filter(
           (candidato) =>
             candidato.posicaoEdital !== null &&
-            candidato.posicaoEdital !== StepCandidateEdital.FINALIZACAO,
+            candidato.posicaoEdital === StepCandidateEdital.FINALIZACAO,
         ).length;
 
         return res.render(resolveView('listarCandidatosPorEdital'), {
@@ -644,6 +645,28 @@ const exibirDetalhesCandidato = async (req: Request, res: Response) => {
   }
 };
 
+const updateDocumentCandidate = async (req: Request, res: Response) => {
+  try {
+    const candidatoId = req.params.id;
+
+    if (!candidatoId) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'ID do candidato inválido.' });
+    }
+    await generatePdfEnrollment(candidatoId);
+
+    return res.status(StatusCodes.OK).json({
+      message: 'Documento atualizado com sucesso.',
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar documento do candidato:', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: 'Erro ao atualizar o documento do candidato.',
+    });
+  }
+};
+
 export default {
   listarEditalSelecao,
   add,
@@ -658,4 +681,5 @@ export default {
   pegarDocumentosDeTodosCandidatos,
   pegarDocumentsDeUmCandidate,
   viewDocumentCandidate,
+  updateDocumentCandidate,
 };

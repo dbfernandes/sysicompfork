@@ -55,7 +55,6 @@ export async function generatePdf(
     if (type === 'inscricao' && id) {
       data = await getFormattedDataCandidateFinish(id);
     }
-
     /* ---------- 2. HTML compilado --------------------- */
     const compiledHtml = await compileTemplates(templateSrc, data);
     const compiledHeader = await compileTemplates(headerPathSrc, data);
