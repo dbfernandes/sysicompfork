@@ -963,9 +963,9 @@
 		$("#como-soube").val(comoSoubeValue);
 
     {{#if dataNascimento}}
-      const nascimentoValue = new Date("{{dataNascimento}}").toISOString();
-      const formattedDate = moment(nascimentoValue).format("DD/MM/YYYY");
+      const formattedDate = moment.utc("{{dataNascimento}}").format("DD/MM/YYYY");
       $("#data-nascimento").val(formattedDate);
+
       $('#candidato-datanascimento').datetimepicker({
         format: 'DD/MM/YYYY',
       });
