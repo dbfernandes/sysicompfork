@@ -163,12 +163,14 @@ const exibirDetalhesEdital = async (req: Request, res: Response) => {
 
       const quantidadeInscricaoAndamento = candidatos.filter(
         (candidato) =>
-          candidato.posicaoEdital !== null && candidato.posicaoEdital < 4,
+          candidato.posicaoEdital !== null &&
+          candidato.posicaoEdital !== StepCandidateEdital.FINALIZACAO,
       ).length;
 
       const quantidadeInscricaoFinalizada = candidatos.filter(
         (candidato) =>
-          candidato.posicaoEdital !== null && candidato.posicaoEdital === 4,
+          candidato.posicaoEdital !== null &&
+          candidato.posicaoEdital === StepCandidateEdital.FINALIZACAO,
       ).length;
       return res.render(resolveView('detalhesEdital'), {
         nome: req.session.nome,

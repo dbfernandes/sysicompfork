@@ -218,7 +218,6 @@ function getCompleteFormData(data, publicCallback) {
     'load',
     () => {
       xmlText = x2js.xml_str2json(reader.result);
-      console.log(xmlText);
       const nomeCompleto =
         xmlText['CURRICULO-VITAE']['DADOS-GERAIS']['NOME-COMPLETO'];
       const userDict = {};

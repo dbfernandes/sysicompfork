@@ -2,6 +2,7 @@ import { Candidato, Edital } from '@prisma/client';
 import { DateTime } from 'luxon';
 import { CreateEditalDto, StatusEdital, UpdateEditalDto } from './edital.types';
 import prisma from '@client/prismaClient';
+import { StepCandidateEdital } from '@resources/candidato/candidato.types';
 
 /* eslint-disable camelcase */
 
@@ -85,10 +86,12 @@ class EditalService {
       return {
         ...edital,
         qtdeInscricoesFinalizadas: edital.candidatos.filter(
-          (candidato) => candidato.posicaoEdital >= 4,
+          (candidato) =>
+            candidato.posicaoEdital === StepCandidateEdital.FINALIZACAO,
         ).length,
         qtdeInscricoesPendentes: edital.candidatos.filter(
-          (candidato) => candidato.posicaoEdital < 4,
+          (candidato) =>
+            candidato.posicaoEdital !== StepCandidateEdital.FINALIZACAO,
         ).length,
       };
     });

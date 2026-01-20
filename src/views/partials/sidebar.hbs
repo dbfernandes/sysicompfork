@@ -223,6 +223,30 @@
             </li>
           </ul>
         </li> --}}
+          <li class="nav-item {{#ifEqual module 'curriculo'}}menu-is-open menu-is-opening menu-open{{/ifEqual}}">
+            <a href="#" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
+              <i class="nav-icon fas fa-file"></i>
+              <p>
+                Lattes
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/lattes/numeros"
+                   class="nav-link {{#ifEqual page 'curriculo-numeros'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-regular fa-table nav-icon"></i>
+                  <p>Números Lattes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/lattes" class="nav-link {{#ifEqual page 'curriculo-adicionar'}}active{{/ifEqual}} text-sm">
+                  <i class="fas fa-upload nav-icon"></i>
+                  <p>Upload Lattes</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           {{#if (autorizarUsuario tipoUsuario "professorPPGI")}}
             <li class="nav-item">
             <a href="/defesas/listar" class="nav-link {{#ifEqual page 'defesas-listar'}}active{{/ifEqual}}">
@@ -233,14 +257,22 @@
             </a>
           </li>
           {{/if}}
-          <li class="nav-item">
-            <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">
-              <i class="nav-icon fas fa-file"></i>
-              <p>
-                Upload Lattes
-              </p>
-            </a>
-          </li>
+<!--          <li class="nav-item">-->
+<!--            <a href="/lattes" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">-->
+<!--              <i class="nav-icon fas fa-file"></i>-->
+<!--              <p>-->
+<!--                Upload Lattes-->
+<!--              </p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="/lattes/numeros" class="nav-link {{#ifEqual module 'curriculo'}}active{{/ifEqual}}">-->
+<!--              <i class="nav-icon fas fa-table"></i>-->
+<!--              <p>-->
+<!--                Números Lattes-->
+<!--              </p>-->
+<!--            </a>-->
+<!--          </li>-->
           <li class="nav-item">
             <a href="https://numeros.icomp.ufam.edu.br" class="nav-link {{#ifEqual module 'icompNumeros'}}active{{/ifEqual}}">
               <i class="nav-icon fas fa-th-large"></i>
