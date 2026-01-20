@@ -17,11 +17,37 @@ import {
   PublicacaoParsed,
 } from '../projetos/projetos.types';
 import { UploadRequest } from './curriculo.types';
+import CurriculoService from '@resources/curriculo/curriculo.service';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
-
+async function viewData(req: Request, res: Response) {
+  try {
+    const { message, type, messageTitle } = req.query;
+    const data = await CurriculoService.getAcompanhamentoLattes();
+    return res.render(resolveView('curriculoNumeros'), {
+      ...data,
+      nome: req.session.nome,
+      usuarioId: req.session.uid,
+      message,
+      type,
+      messageTitle,
+      tipoUsuario: req.session.tipoUsuario,
+      avatar: null,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(503).redirect(
+      criarURL('/inicio', {
+        message: 'Não foi possível abrir o envio de currículo.',
+        type: 'danger',
+        messageTitle: 'Envio de currículo indisponível!',
+        tipoUsuario: req.session.tipoUsuario,
+      }),
+    );
+  }
+}
 const visualizarCurriculo = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
@@ -132,4 +158,4 @@ const carregar = (req: UploadRequest, res: Response, next: NextFunction) => {
   });
 };
 
-export default { visualizarCurriculo, verificarAvatar, carregar };
+export default { visualizarCurriculo, verificarAvatar, viewData, carregar };

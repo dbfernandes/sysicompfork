@@ -1,6 +1,17 @@
 import moment from 'moment-timezone';
 import language from '../../utils/i18n';
 
+const countArray = (array, options) => {
+  if (!Array.isArray(array)) return 0;
+  console.log(options?.hash);
+  const { key, value } = options?.hash || {};
+
+  // sem filtro → conta tudo
+  if (!key) return array.length;
+
+  return array.filter((item) => item?.[key] === value).length;
+};
+
 const whichCourse = (course, lng) => {
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
@@ -314,4 +325,5 @@ export default {
   lookup,
   assign,
   isLessThan,
+  countArray,
 };

@@ -59,6 +59,7 @@ class UsuarioService {
       },
     });
   }
+
   async getCoordenador(): Promise<Usuario | null> {
     return prisma.usuario.findFirst({
       where: {
@@ -165,7 +166,7 @@ class UsuarioService {
     };
   }
 
-  async listarTodosPorCondicao(data: any): Promise<any[]> {
+  async listarTodosPorCondicao(data: any) {
     const usuarios = await prisma.usuario.findMany({
       where: data,
       orderBy: {
