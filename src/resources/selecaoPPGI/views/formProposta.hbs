@@ -786,6 +786,18 @@
     const linhaDePesquisaId = $("#candidato-pesquisa").val();
     const formData = new FormData($("#candidato-formulario")[0]);
     const btnSubmit = $("#btn-save-continue");
+
+    const MAX_LENGTH = 1000
+    const textarea = $("#candidato-Motivo")
+
+    let motivos = textarea.val() || ""
+    motivos = motivos.replace(/\r\n/g, '\n')
+    if (motivos.length > MAX_LENGTH) {
+      motivos = motivos.substring(0, MAX_LENGTH)
+    }
+    textarea.val(motivos)
+    formData.set('motivos', motivos)
+
     btnSubmit.attr("disabled", true);
     btnSubmit.find("span").prop("hidden", false);
     formData.append('idLinhaPesquisa', linhaDePesquisaId);

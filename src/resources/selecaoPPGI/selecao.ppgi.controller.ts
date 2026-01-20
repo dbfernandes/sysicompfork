@@ -852,11 +852,23 @@ async function formProposta(
           ? StepCandidateEdital.REVISAO
           : StepCandidateEdital.PROPOSTA;
 
+        const MAX_LENGTH = 1000;
+        let { motivos } = req.body;
+        if (typeof motivos === 'string') {
+          motivos = motivos.replace(/\r\n/g, '\n');
+          if (motivos.length > MAX_LENGTH) {
+            res.status(400).json({
+              error: 'Texto excede o limite de 1000 caracteres',
+            });
+            break;
+          }
+        }
+
         const candidato: Partial<Candidato> = {
           linhaPesquisaId: Number(body.idLinhaPesquisa),
           tituloProposta: body.tituloProposta,
           nomeOrientador: body.nomeOrientador,
-          motivos: body.motivos,
+          motivos,
           posicaoEdital,
         };
 
