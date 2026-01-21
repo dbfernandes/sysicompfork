@@ -308,8 +308,20 @@
     data.append("professorId", professorId)
     if (image) data.append("file", image) // só anexa se o usuário escolheu
     try {
-      getCompleteFormData(data, reqAjax)
+      getCompleteFormData(data, reqAjax, (err) => {
+        submitButton.disabled = false; // reabilita o botão
+        console.error("Erro ao processar o arquivo XML:", err);
+        $(document).Toasts('create', {
+          icon: 'success',
+          class: "bg-danger",
+          autohide: true,
+          delay: 10000,
+          title: 'Ocorreu um problema ao processar o arquivo XML!',
+          body: 'Verifique se o arquivo está correto e tente novamente.'
+        })
+      })
     } catch (error) {
+      submitButton.disabled = false; // reabilita o botão
       console.error("Erro ao processar o arquivo XML:", error);
       $(document).Toasts('create', {
         icon: 'success',

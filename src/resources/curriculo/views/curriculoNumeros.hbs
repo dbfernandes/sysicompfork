@@ -46,52 +46,24 @@
   </section>
   <section class="content">
     <div class="container-fluid">
-      <div class="grid-cards gx-5">
-        <div class="small-box bg-success info-card">
-          <div class="inner">
-            <h3>{{numberProfessors}}</h3>
-            <p>Docentes</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-users"></i>
-          </div>
-        </div>
-        <div class="small-box bg-success info-card">
-          <div class="inner">
-            <h3>{{numberUpdated}}</h3>
-            <p>Atualizados</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-check-circle"></i>
-          </div>
-        </div>
-        <div class="small-box bg-warning info-card">
-          <div class="inner">
-            <h3>{{numberStale}}</h3>
-            <p>Desatualizados</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-minus-circle"></i>
-          </div>
-        </div>
-        <div class="small-box bg-danger info-card">
-          <div class="inner">
-            <h3>{{numberNoRecords}}</h3>
-            <p>Sem registros</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-        </div>
-      </div>
       <div class="card card-primary">
 
         <div class="card-body">
-          <div class="d-flex mb-3" style="flex-wrap: wrap; gap: 1rem;">
+          <div class="d-flex align-items-center" style="flex-wrap: wrap; gap: 1rem;">
+            <div class="small-box bg-success mb-0" style="width: 300px;">
+              <div class="inner">
+                <h3>{{numberProfessors}}</h3>
+                <p>Docentes</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-users"></i>
+              </div>
+            </div>
+            <div style="flex-grow: 1"></div>
             <div style="width: 100px;">
               <label>Ano inicial</label>
               <div class="input-group date" id="yearStartPicker" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" data-target="#yearStartPicker" id="filtroDataFimInput" />
+                <input type="text" class="form-control datetimepicker-input" data-target="#yearStartPicker" />
                 <div class="input-group-append" data-target="#yearStartPicker" data-toggle="datetimepicker">
                   <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                 </div>
@@ -101,22 +73,22 @@
             <div style="width: 100px;">
               <label>Ano final</label>
               <div class="input-group date" id="yearEndPicker" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" data-target="#yearEndPicker" id="filtroDataFimInput" />
+                <input type="text" class="form-control datetimepicker-input" data-target="#yearEndPicker" />
                 <div class="input-group-append" data-target="#yearEndPicker" data-toggle="datetimepicker">
                   <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                 </div>
               </div>
             </div>
 
-            <div style="width: 300px;">
-              <label for="status-filter" class="form-label">Filtrar por status</label>
-              <select id="status-filter" class="form-control form-control-sm">
-                <option value="all" selected>Todos</option>
-                <option value="ATUALIZADO">Atualizado</option>
-                <option value="DESATUALIZADO">Desatualizado</option>
-                <option value="SEM_REGISTROS">Sem registros</option>
-              </select>
-            </div>
+<!--            <div style="width: 300px;">-->
+<!--              <label for="status-filter" class="form-label">Filtrar por status</label>-->
+<!--              <select id="status-filter" class="form-control form-control-sm">-->
+<!--                <option value="all" selected>Todos</option>-->
+<!--                <option value="ATUALIZADO">Atualizado</option>-->
+<!--                <option value="DESATUALIZADO">Desatualizado</option>-->
+<!--                <option value="SEM_REGISTROS">Sem registros</option>-->
+<!--              </select>-->
+<!--            </div>-->
           </div>
 
         </div>
@@ -128,46 +100,45 @@
           <thead>
             <tr style="text-align: center;">
               <th style="text-align: center;">Nome</th>
-              <th style="text-align: center;">Última atualização</th>
+              <th style="text-align: center;">Atualizado em</th>
               <th style="text-align: center;">Projetos</th>
               <th colspan="6" style="text-align: center;">Publicações</th>
               <th colspan="3" style="text-align: center;">Orientações</th>
               <th style="text-align: center;">Prêmios</th>
-              <th style="text-align: center;">Status</th>
             </tr>
             <tr>
               <th colspan="3"></th>
               <th>
-                A.C.
+                Art. em Conf.
                 <span data-toggle="tooltip" data-placement="top" title="Artigos em Conferências">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th>
-                A. P.
+                Art. em Perí.
                 <span data-toggle="tooltip" data-placement="top" title="Artigos em Períodicos">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th>
-                L.
+                Liv.
                 <span data-toggle="tooltip" data-placement="top" title="Livros">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th>
-                C.L.
+                Cap. em Liv.
                 <span data-toggle="tooltip" data-placement="top" title="Capítulos em Livros">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th>
-                T.T.
+                Trab. Tec.
                 <span data-toggle="tooltip" data-placement="top" title="Trabalho Técnico">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               <th>
-                P.
+                Pref.
                 <span data-toggle="tooltip" data-placement="top" title="Prefácio">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
@@ -175,26 +146,25 @@
 
               <th>TCC</th>
               <th>
-                M.
+                Mes.
                 <span data-toggle="tooltip" data-placement="top" title="Mestrado">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th>
-                D.
+                Dout.
                 <span data-toggle="tooltip" data-placement="top" title="Doutorado">
                   <i class="fa fa-question-circle"  aria-hidden="true"></i>
                 </span>
               </th>
               <th colspan="4"></th>
-
             </tr>
           </thead>
           <tbody>
             {{#each professores}}
               <tr>
                 <td>{{nome}}</td>
-                <td>{{formatDate ultimaAtualizacao}}</td>
+                <td >{{formatDate ultimaAtualizacao}}</td>
                 <td>{{countArray projetos}}</td>
                 <td>{{countArray publicacoes key='tipo' value=1}}</td>
                 <td>{{countArray publicacoes key='tipo' value=2}}</td>
@@ -207,23 +177,6 @@
                 <td>{{countArray orientacoes key='tipo' value=2}}</td>
                 <td>{{countArray orientacoes key='tipo' value=3}}</td>
                 <td>{{countArray premios}}</td>
-                <td >
-                  {{#if (eq status "DESATUALIZADO")}}
-                    <span data-status="{{status}}" class="badge bg-warning">
-                      Desatualizado
-                    </span>
-                  {{/if}}
-                  {{#if (eq status "SEM_REGISTROS")}}
-                    <span data-status="{{status}}" class="badge bg-danger">
-                      Sem registros
-                    </span>
-                  {{/if}}
-                  {{#if (eq status "ATUALIZADO")}}
-                    <span data-status="{{status}}" class="badge bg-success">
-                      Atualizado
-                    </span>
-                  {{/if}}
-                </td>
               </tr>
             {{/each}}
           </tbody>
@@ -251,10 +204,11 @@
 <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
-<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+
 <script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
 <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
-
+<script src="/script-adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <script>
   function renderStatusBadge(status) {
@@ -304,6 +258,7 @@
 
     });
 
+
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
       const selectedStatus = $('#status-filter').val()
 
@@ -320,7 +275,6 @@
     $('#yearStartPicker').datetimepicker({
       locale: 'pt-br',
       useCurrent: false,
-      allowInputToggle: true,
       viewMode: 'years',
       format: 'YYYY',
       buttons: {
@@ -330,7 +284,7 @@
 
     $('#yearEndPicker').datetimepicker({
       locale: 'pt-br',
-      useCurrent: false,
+      useCurrent: true,
       viewMode: 'years',
       format: 'YYYY',
       allowInputToggle: true,
@@ -339,23 +293,77 @@
         showClear: true,
       }});
     $("#yearStartPicker").on("change.datetimepicker", function (e) {
-      $('#yearEndPicker').datetimepicker('minDate', e.date);
+      const inputValue = $(this).find('input').val().trim()
+
+      if (e.date && inputValue) {
+        $('#yearEndPicker').datetimepicker('minDate', e.date)
+      } else if (!inputValue) {
+        $('#yearEndPicker').datetimepicker('minDate', false)
+        // Limpa a data do picker que foi apagado
+        const maxYearEnd = $('#yearStartPicker').datetimepicker('maxDate')
+        $('#yearStartPicker').datetimepicker('destroy')
+        $('#yearStartPicker').datetimepicker({
+          locale: 'pt-br',
+          useCurrent: false,
+          viewMode: 'years',
+          format: 'YYYY',
+          buttons: {
+            showToday: true,
+            showClear: true,
+          }});
+          if (maxYearEnd) {
+            $('#yearStartPicker').datetimepicker('maxDate', maxYearEnd)
+          }
+      }
+      applyFilters()
     });
     $("#yearEndPicker").on("change.datetimepicker", function (e) {
-      $('#yearStartPicker').datetimepicker('maxDate', e.date);
+      const inputValue = $(this).find('input').val().trim()
+
+      if (e.date && inputValue) {
+        $('#yearStartPicker').datetimepicker('maxDate', e.date)
+      } else if (!inputValue) {
+        // Reseta corretamente o datetimepicker
+        $('#yearStartPicker').datetimepicker('maxDate', false)
+
+        const minYearStart = $('#yearEndPicker').datetimepicker('minDate')
+        $('#yearEndPicker').datetimepicker('destroy')
+        $('#yearEndPicker').datetimepicker({
+          locale: 'pt-br',
+          useCurrent: true,
+          viewMode: 'years',
+          format: 'YYYY',
+          allowInputToggle: true,
+          buttons: {
+            showToday: true,
+            showClear: true,
+          }});
+          if (minYearStart) {
+            $('#yearEndPicker').datetimepicker('minDate', minYearStart)
+          }
+      }
+      applyFilters()
+
     });
+    // Listener para quando o usuário clica no botão de limpar
+    // $("#yearStartPicker, #yearEndPicker").on("hide.datetimepicker", function (e) {
+    //   console.log("teset filtro")
+    //   applyFilters()
+    // })
+
     let professores = {{{safeJson professores}}};
+
     const datatable = $('#table-professors').DataTable({
 
       language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
       dom:
         "<'row mb-2'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
         " t<'dt-bottom d-flex flex-wrap justify-content-start align-items-center gap-table'lip>",
-
       responsive: true,
       columns: [
-        { responsivePriority: 1, orderable: true },
-        { responsivePriority: 2, orderable: true },
+        { responsivePriority: 1 },
+        { responsivePriority: 2
+        },
         { responsivePriority: 3, orderable: true },
         { responsivePriority: 4, orderable: true },
         { responsivePriority: 5, orderable: true },
@@ -367,9 +375,19 @@
         { responsivePriority: 11, orderable: true },
         { responsivePriority: 12, orderable: true },
         { responsivePriority: 13, orderable: true },
-        { responsivePriority: 14, orderable: false },
       ],
-
+      columnDefs: [
+        {
+          targets: 1, render: function (data, type, row) {
+            if (type === 'sort' || type === 'type') {
+              // Para ordenação, retorna timestamp
+              return data ? moment(data, 'DD/MM/YYYY').valueOf() : 0;
+            }
+            // Para exibição, retorna a data formatada
+            return data;
+          }
+        } // índice 1 = segunda coluna
+      ]
     });
 
     $('#status-filter').on('change', function () {
@@ -387,11 +405,12 @@
       datatable.clear()
 
       professoresFiltrados.forEach((p) => {
+        const dataFormatada = p.ultimaAtualizacao
+          ? moment(p.ultimaAtualizacao).format('DD/MM/YYYY')
+          : '-';
         datatable.row.add([
           p.nome,
-          p.ultimaAtualizacao
-            ? moment(p.ultimaAtualizacao).format('DD/MM/YYYY')
-            : '-',
+          dataFormatada,
           p.projetos.filter(p => compYears(p.dataInicio, yearStart, yearEnd) || compYears(p.dataFim, yearStart, yearEnd)).length,
           p.publicacoes.filter((p) => p.tipo === 1 && compYears(p.ano, yearStart, yearEnd)).length,
           p.publicacoes.filter((p) => p.tipo === 2 && compYears(p.ano, yearStart, yearEnd)).length,
@@ -403,7 +422,6 @@
           p.orientacoes.filter((o) => o.tipo === 2 && compYears(o.ano, yearStart, yearEnd)).length,
           p.orientacoes.filter((o) => o.tipo === 3 && compYears(o.ano, yearStart, yearEnd)).length,
           p.premios.filter(p => compYears(p.ano, yearStart, yearEnd)).length,
-          renderStatusBadge(p.status),
         ])
       })
 
@@ -411,27 +429,26 @@
     }
 
     function applyFilters() {
-      const yearStartMoment = $('#yearStartPicker')
-        .datetimepicker('viewDate')
+      const yearStartMoment = $('#yearStartPicker').datetimepicker('viewDate')
+      const yearEndMoment = $('#yearEndPicker').datetimepicker('viewDate')
 
-      const yearEndMoment = $('#yearEndPicker')
-        .datetimepicker('viewDate')
+      // Pega os valores dos inputs diretamente também
+      const yearStartInput = $('#yearStartPicker').find('input').val()
+      const yearEndInput = $('#yearEndPicker').find('input').val()
 
-      // se algum dos dois não foi escolhido, não filtra por ano
-      if (!yearStartMoment || !yearEndMoment) {
+      // Se ambos os campos estão vazios, mostra todos os dados
+      if ((!yearStartMoment && !yearStartInput) && (!yearEndMoment && !yearEndInput)) {
         renderTable(professores)
         return
       }
 
-      const yearStart = yearStartMoment.year()
-      const yearEnd = yearEndMoment.year()
+      // Se apenas um dos campos está preenchido, ainda filtra
+      const yearStart = yearStartInput ? yearStartMoment.year() : null
+      const yearEnd = yearEndInput ? yearEndMoment.year() : null
 
       renderTable(professores, { yearStart, yearEnd })
     }
-    $("#yearStartPicker").on("change.datetimepicker", function (e) {
-      applyFilters()
-    })
-    })
+  })
 
 </script>
 
