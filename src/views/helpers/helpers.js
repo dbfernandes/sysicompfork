@@ -3,7 +3,6 @@ import language from '../../utils/i18n';
 
 const countArray = (array, options) => {
   if (!Array.isArray(array)) return 0;
-  console.log(options?.hash);
   const { key, value } = options?.hash || {};
 
   // sem filtro → conta tudo
