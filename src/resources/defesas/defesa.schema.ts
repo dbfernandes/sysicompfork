@@ -43,7 +43,7 @@ export const defesaInitSchema = Joi.object<DefesaInitDto>({
 // ===== QUALI (parciais) =====
 export const qualiStep1Schema = Joi.object<QualiStep1Dto>({
   tituloTrabalho: Joi.string().max(500).optional(),
-  candidatoId: Joi.string().required(),
+  candidatoNome: Joi.string().required(),
   orientadorId: Joi.number().integer().required(),
   coorientadorId: Joi.number().integer().allow(null).optional(),
   dataHora: Joi.string().isoDate().optional(),
@@ -114,9 +114,9 @@ export const finalStep1Schema = Joi.object<FinalStep1Dto>({
   linhaPesquisaId: Joi.string()
     .required()
     .messages({ 'any.required': 'A linha de pesquisa é obrigatória.' }),
-  candidatoId: Joi.string()
+  candidatoNome: Joi.string()
     .required()
-    .messages({ 'any.required': 'O candidato é obrigatório.' }),
+    .messages({ 'any.required': 'O candidatoNome é obrigatório.' }),
   orientadorId: Joi.number()
     .integer()
     .required()

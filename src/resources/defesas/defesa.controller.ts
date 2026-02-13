@@ -350,7 +350,7 @@ const saveQualiStep1 = async (
 
     const payload: QualiStep1Dto = {
       tituloTrabalho: body.tituloTrabalho,
-      candidatoId: body.candidatoId || null,
+      candidatoNome: body.candidatoNome || null,
       orientadorId: body.orientadorId ? Number(body.orientadorId) : null,
       dataHora: body.dataHora || undefined,
       modalidade: body.modalidade,
@@ -812,7 +812,7 @@ const saveFinalStep1 = async (req: Request, res: Response) => {
     const payload: FinalStep1Dto = {
       tituloTrabalho: body.tituloTrabalho,
       linhaPesquisaId: body.linhaPesquisaId || null,
-      candidatoId: body.candidatoId || null,
+      candidatoNome: body.candidatoNome || null,
       orientadorId: body.orientadorId ? Number(body.orientadorId) : null,
       dataHora: body.dataHora || undefined,
       modalidade: body.modalidade,
@@ -1366,13 +1366,13 @@ E-mail: secretariappgi@icomp.ufam.edu.br
 Fones: (92) 3305-1181 Ramal: 1193 / 2808 / 2809`;
 
     // Formato: Convite: Qualificação de Mestrado_NomeDoCandidato
-    const defaultSubject = `Convite: ${tipoLabel} de ${nivelLabel}_${defesa.candidato?.nome}`;
+    const defaultSubject = `Convite: ${tipoLabel} de ${nivelLabel}_${defesa.candidatoNome}`;
 
     const defaultBody = `A Coordenação do Programa de Pós-Graduação em Informática PPGI/UFAM convida a comunidade para assistir a realização da sessão pública de ${tipoEvento} de ${nivelExtenso}:
 
 TÍTULO: ${defesa.tituloTrabalho}
 
-CANDIDATO: ${defesa.candidato?.nome}
+CANDIDATO: ${defesa.candidatoNome}
 
 BANCA EXAMINADORA:
 

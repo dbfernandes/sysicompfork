@@ -123,15 +123,37 @@ async function getCandidatos(editalId: string, host: string) {
 }
 
 // Função que gera a planilha
-export default async function gerarPlanilha(editalId: string, host: string) {
+type OptionsGenerate = {
+  hasProof: boolean;
+};
+export default async function gerarPlanilha(
+  editalId: string,
+  host: string,
+  opts: OptionsGenerate,
+) {
   const workbook = new exceljs.Workbook();
 
   const candidatos = await getCandidatos(editalId, host);
   const candidateAba = workbook.addWorksheet('Candidato');
-  const provasAba = workbook.addWorksheet('Provas');
+
+  if (opts.hasProof) {
+    const provasAba = workbook.addWorksheet('Provas');
+
+    provasWorksheet(
+      [
+        { header: 'Nome', key: 'nome', width: 40 },
+        { header: 'Inscrição', key: 'provaInscricao', width: 20 },
+        { header: 'Nota Final', key: 'notaFinal', width: 20 },
+      ],
+      candidatos,
+      provasAba,
+    );
+  }
+
   const propostasAba = workbook.addWorksheet('Propostas');
   const titulosAba = workbook.addWorksheet('Titulos');
   const mediaFinalAba = workbook.addWorksheet('Media Final');
+
   candidateWorksheet(
     [
       { header: 'Nome', key: 'nome', width: 40 },
@@ -160,17 +182,6 @@ export default async function gerarPlanilha(editalId: string, host: string) {
     candidatos,
     candidateAba,
   );
-
-  provasWorksheet(
-    [
-      { header: 'Nome', key: 'nome', width: 40 },
-      { header: 'Inscrição', key: 'provaInscricao', width: 20 },
-      { header: 'Nota Final', key: 'notaFinal', width: 20 },
-    ],
-    candidatos,
-    provasAba,
-  );
-
   propostasWorksheet(
     [
       { header: 'Nome', key: 'nome', width: 40 },

@@ -286,7 +286,11 @@ const geraPlanilha = async (
   next: NextFunction,
 ) => {
   try {
-    const planilha = await gerarPlanilha(req.params.id, req.headers.host);
+    const { id } = req.params;
+    const { prova } = req.query;
+    const hasProof = prova === '1';
+
+    const planilha = await gerarPlanilha(id, req.headers.host, { hasProof });
     return res
       .set({
         'Content-Type':

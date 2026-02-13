@@ -465,8 +465,9 @@ model Defesa {
   nivel DefesaNivel
 
   // agora opcionais para permitir criação parcial
-  candidatoId String?
-  candidato   Candidato? @relation(fields: [candidatoId], references: [id])
+  candidatoNome String?    @db.VarChar(200)
+  candidatoId   String?
+  candidato     Candidato? @relation(fields: [candidatoId], references: [id])
 
   orientadorId Int?
   orientador   Usuario? @relation("OrientadorDefesa", fields: [orientadorId], references: [id])

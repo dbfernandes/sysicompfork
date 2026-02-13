@@ -28,7 +28,7 @@ export interface DefesaListItem {
   titulo: string;
   tipo: DefesaTipo;
   nivel: DefesaNivel;
-  modalidade: DefesaModalidade | null; 
+  modalidade: DefesaModalidade | null;
   dataHora: string;
   localOuLink?: string;
   status: DefesaStatus;
@@ -48,7 +48,7 @@ export interface MembroInput {
 
 export interface QualiStep1Dto {
   tituloTrabalho?: string;
-  candidatoId?: string | null;
+  candidatoNome?: string | null;
   orientadorId?: number | null;
   coorientadorId?: number | null;
   coorientadorExternoNome?: string | null;
@@ -93,7 +93,7 @@ export interface QualiStep7Dto {
 export interface FinalStep1Dto {
   tituloTrabalho?: string;
   linhaPesquisaId?: string | null;
-  candidatoId?: string | null;
+  candidatoNome?: string | null;
   orientadorId?: number | null;
   dataHora?: string;
   modalidade?: DefesaModalidade;
