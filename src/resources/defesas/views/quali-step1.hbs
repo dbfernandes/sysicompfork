@@ -117,13 +117,10 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                      <label for="candidatoId">Candidato(a) <span class="text-danger">*</span></label>
-                      <select class="form-control" id="candidatoId" name="candidatoId" style="width: 100%;">
-                        {{#if defesa.candidato}}
-                          <option value="{{defesa.candidatoId}}" selected="selected">{{defesa.candidato.nome}}</option>
-                        {{/if}}
-                      </select>
-                      </div>
+                    <label for="candidatoNome">Candidato(a)  <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="candidatoNome" name="candidatoNome" maxlength="200"
+                           placeholder="Digite o nome do candidato" value="{{defesa.candidatoNome}}">
+                  </div>
                     <div class="form-group col-md-6">
                       <label for="orientadorId">Orientador(a) <span class="text-danger">*</span></label>
                       <select class="form-control" id="orientadorId" name="orientadorId">
@@ -251,42 +248,7 @@
 
 {{> footer}}
 
-<script>
-  $(document).ready(function() {
-    $('#candidatoId').select2({
-      theme: 'bootstrap4',
-      placeholder: "Digite para buscar um candidato...",
-      minimumInputLength: 2,
-      language: {
-        inputTooShort: function () {
-          return "Digite 2 ou mais caracteres para buscar";
-        },
-        noResults: function () {
-          return "Nenhum resultado encontrado";
-        },
-        searching: function () {
-          return "Buscando...";
-        }
-      },
-      ajax: {
-        url: '/api/candidatos/search',
-        dataType: 'json',
-        delay: 250, // 
-        data: function (params) {
-          return {
-            q: params.term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.results
-          };
-        },
-        cache: true
-      }
-    });
-  });
-</script>
+
 <script>
   $(document).ready(function() {
     function toggleCoorientadorFields() {
@@ -314,7 +276,7 @@
     const tituloInput = $('#tituloTrabalho');
     const dataHoraInput = $('#dataHoraLocal'); 
     const modalidadeRadios = $('input[name="modalidade"]');
-    const candidatoSelect = $('#candidatoId'); 
+    const candidatoSelect = $('#candidatoNome');
     const orientadorSelect = $('#orientadorId');
     const btnContinuar = $('#btnContinuar');
 

@@ -1,20 +1,22 @@
 import {
-  PrismaClient,
-  Prisma,
-  VinculoMembro,
+  DefesaModalidade,
+  DefesaNivel,
   DefesaStatus,
   DefesaTipo,
-  DefesaNivel,
-  DefesaModalidade,
+  Prisma,
+  PrismaClient,
+  VinculoMembro,
 } from '@prisma/client';
 import {
   DefesaInitDto,
+  DefesaListItem,
   FinalStep1Dto,
   FinalStep2Dto,
   FinalStep3Dto,
   FinalStep4Dto,
   FinalStep5Dto,
   FinalStep6Dto,
+  ListarParams,
   MembroInput,
   QualiStep1Dto,
   QualiStep2Dto,
@@ -23,8 +25,6 @@ import {
   QualiStep5Dto,
   QualiStep6Dto,
   QualiStep7Dto,
-  ListarParams,
-  DefesaListItem,
 } from './defesa.types';
 import {
   defesaInitSchema,
@@ -34,7 +34,6 @@ import {
   finalStep4Schema,
   finalStep5Schema,
   finalStep6Schema,
-  qualiStep1Schema,
   qualiStep2Schema,
   qualiStep3Schema,
   qualiStep4Schema,
@@ -94,23 +93,29 @@ async function replaceMembros(
   }
 }
 
-function buildWhere(params: ListarParams & { orientadorId?: number } = {}): Prisma.DefesaWhereInput {
+function buildWhere(
+  params: ListarParams & { orientadorId?: number } = {},
+): Prisma.DefesaWhereInput {
   const where: Prisma.DefesaWhereInput = {};
   if (params.status) where.status = params.status;
   if (params.tipo) where.tipo = params.tipo;
   if (params.nivel) where.nivel = params.nivel;
-  
+
   if (params.orientadorId) {
     where.orientadorId = params.orientadorId;
   }
-  
+
   return where;
 }
 
 function mapListItem(row: any): DefesaListItem {
   return {
     id: row.id,
-    candidatoNome: row.candidato?.nomeCompleto ?? row.candidato?.nome ?? '—',
+    candidatoNome:
+      row.candidatoNome ??
+      row.candidato?.nomeCompleto ??
+      row.candidato?.nome ??
+      '—',
     titulo: row.tituloTrabalho ?? '—',
     tipo: row.tipo as DefesaTipo,
     nivel: row.nivel as DefesaNivel,
@@ -151,7 +156,7 @@ export const DefesaService = {
     if (error) throw new Error(error.details.map((d) => d.message).join('; '));
 
     const criador = await prisma.usuario.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     let orientadorId = null;
@@ -177,7 +182,7 @@ export const DefesaService = {
       where: { id: defesaId },
       data: {
         tituloTrabalho: payload.tituloTrabalho,
-        candidatoId: payload.candidatoId,
+        candidatoNome: payload.candidatoNome,
         orientadorId: payload.orientadorId,
         coorientadorId: payload.coorientadorId,
         coorientadorExternoNome: payload.coorientadorExternoNome,
@@ -323,7 +328,7 @@ export const DefesaService = {
         linhaPesquisaId: value.linhaPesquisaId
           ? parseInt(value.linhaPesquisaId)
           : null,
-        candidatoId: value.candidatoId,
+        candidatoNome: value.candidatoNome,
         orientadorId: value.orientadorId,
         dataHora: value.dataHora ? new Date(value.dataHora) : undefined,
         modalidade: value.modalidade,
@@ -351,7 +356,7 @@ export const DefesaService = {
 
     return prisma.defesaFinalExtra.upsert({
       where: { defesaId },
-      create: { 
+      create: {
         defesaId,
         resumoPt: value.resumoPt ?? '',
         palavrasChavePt: value.palavrasChavePt ?? '',
@@ -360,8 +365,11 @@ export const DefesaService = {
         idiomaTese: value.idiomaTese ?? '',
         creditosOk: value.creditosOk ?? false,
         creditosExigidos: value.creditosExigidos,
-        artigoEstratoSuperiorOk: false, artigoTitulo: '', artigoVeiculoOuDoi: '',
-        incluiuAgradecimentosObrigatorios: false, autoavaliacaoPreenchida: false,
+        artigoEstratoSuperiorOk: false,
+        artigoTitulo: '',
+        artigoVeiculoOuDoi: '',
+        incluiuAgradecimentosObrigatorios: false,
+        autoavaliacaoPreenchida: false,
       },
       update: {
         resumoPt: value.resumoPt,
@@ -431,7 +439,7 @@ export const DefesaService = {
     await prisma.defesaUpload.deleteMany({
       where: { defesaId, tipo: 'TESE_PDF' },
     });
-    
+
     return prisma.defesaUpload.create({
       data: {
         defesaId,
@@ -460,7 +468,7 @@ export const DefesaService = {
       },
     });
   },
-  
+
   // ========= submissão (valida tudo e muda status) =========
   async validateAndSubmit(defesaId: string) {
     const d = await prisma.defesa.findUnique({
@@ -573,7 +581,7 @@ export const DefesaService = {
 
   async autoConcluirDefesasPassadas() {
     const agora = new Date();
-    
+
     const result = await prisma.defesa.updateMany({
       where: {
         status: 'DIVULGADO',
@@ -585,7 +593,7 @@ export const DefesaService = {
         status: 'CONCLUIDO',
       },
     });
-    
+
     return result;
   },
 
@@ -594,7 +602,9 @@ export const DefesaService = {
   async listarParaGerenciamento() {
     return prisma.defesa.findMany({
       where: {
-        status: { in: ['AGUARDANDO_VALIDACAO', 'VALIDADO', 'DIVULGADO', 'CONCLUIDO'] }
+        status: {
+          in: ['AGUARDANDO_VALIDACAO', 'VALIDADO', 'DIVULGADO', 'CONCLUIDO'],
+        },
       },
       include: {
         candidato: true,
@@ -606,13 +616,17 @@ export const DefesaService = {
     });
   },
 
-  async processarAprovacao(defesaId: string, action: 'APROVAR' | 'REJEITAR', motivoCorrecao?: string) {
+  async processarAprovacao(
+    defesaId: string,
+    action: 'APROVAR' | 'REJEITAR',
+    motivoCorrecao?: string,
+  ) {
     let newStatus: DefesaStatus;
     let correcaoData: string | null;
 
     if (action === 'APROVAR') {
       newStatus = 'VALIDADO';
-      correcaoData = null; 
+      correcaoData = null;
     } else {
       newStatus = 'EM_CORRECAO';
       correcaoData = motivoCorrecao || 'Correção solicitada.';
@@ -628,8 +642,11 @@ export const DefesaService = {
   },
 
   // ========= listagem (COM FILTRO DE PROFESSOR) =========
-  async listar(params: ListarParams & { orientadorId?: number } = {}): Promise<DefesaListItem[]> {
+  async listar(
+    params: ListarParams & { orientadorId?: number } = {},
+  ): Promise<DefesaListItem[]> {
     const where = buildWhere(params);
+    console.log(where);
     const rows = await prisma.defesa.findMany({
       where,
       include: {
@@ -637,6 +654,7 @@ export const DefesaService = {
       },
       orderBy: [{ dataHora: 'desc' }, { createdAt: 'desc' }],
     });
+    console.log(rows);
     return rows.map(mapListItem);
   },
 
@@ -644,7 +662,6 @@ export const DefesaService = {
     counts: Record<DefesaStatus, number>;
     total: number;
   }> {
-    
     const whereClause: Prisma.DefesaWhereInput = {};
     if (orientadorId) {
       whereClause.orientadorId = orientadorId;
@@ -653,7 +670,7 @@ export const DefesaService = {
     const gb = await prisma.defesa.groupBy({
       by: ['status'],
       _count: { _all: true },
-      where: whereClause
+      where: whereClause,
     });
     const base: Record<DefesaStatus, number> = {
       RASCUNHO: 0,
@@ -673,7 +690,7 @@ export const DefesaService = {
     await prisma.defesaUpload.deleteMany({
       where: { defesaId, tipo: 'PORTARIA_PDF' },
     });
-    
+
     return prisma.defesaUpload.create({
       data: {
         defesaId,

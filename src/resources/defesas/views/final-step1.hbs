@@ -57,10 +57,9 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="candidatoId">Nome completo do candidato <span class="text-danger">*</span></label>
-                    <select class="form-control" id="candidatoId" name="candidatoId" style="width: 100%;">
-                      {{#if defesa.candidato}}<option value="{{defesa.candidatoId}}" selected="selected">{{defesa.candidato.nome}}</option>{{/if}}
-                    </select>
+                    <label for="candidatoNome">Nome completo do candidato <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="candidatoNome" name="candidatoNome" maxlength="200"
+                           placeholder="Digite o nome do candidato" value="{{defesa.candidatoNome}}">
                   </div>
                   <div class="form-group col-md-6">
                     <label for="orientadorId">Nome completo do orientador <span class="text-danger">*</span></label>
@@ -137,13 +136,11 @@
 
 <script>(function initDateInput(){const i=document.getElementById("dataHoraLocal"),t=document.getElementById("dataHora");function a(e){if(!e)return"";const n=new Date(e);if(isNaN(n.getTime()))return"";const o=n.getTimezoneOffset();return new Date(n.getTime()-6e4*o).toISOString().slice(0,16)}const e=i.getAttribute("data-iso"),n=a(e);n&&(i.value=n);document.getElementById("formFinalStep1")?.addEventListener("submit",function(a){const e=i.value;e?t.value=new Date(e).toISOString():t.value=""})})();</script>
 
-<script>$(document).ready(function(){$("#candidatoId").select2({theme:"bootstrap4",placeholder:"Digite para buscar um candidato...",minimumInputLength:2,language:{inputTooShort:function(){return"Digite 2 ou mais caracteres"},noResults:function(){return"Nenhum resultado encontrado"},searching:function(){return"Buscando..."},errorLoading:function(){return"Os resultados não puderam ser carregados."}},ajax:{url:"/api/candidatos/search",dataType:"json",delay:250,data:function(a){return{q:a.term}},processResults:function(a){return{results:a.results}},cache:!0}})});</script>
-
 <script>
   $(document).ready(function() {
     const tituloInput = $('#tituloTrabalho');
     const linhaPesquisaSelect = $('#linhaPesquisaId');
-    const candidatoSelect = $('#candidatoId');
+    const candidatoSelect = $('#candidatoNome');
     const orientadorSelect = $('#orientadorId');
     const dataHoraInput = $('#dataHoraLocal');
     const modalidadeRadios = $('input[name="modalidade"]');

@@ -2,6 +2,44 @@
 
 {{> sidebar module='edital' page='edital-listar'}}
 {{ setTitle title=(concat "Edital " edital.id) }}
+<div id="modalPlanilha" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalPlanilhaLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPlanilhaLabel">Gerar planilha de avaliação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group ">
+          <label class="mb-2">A planilha vai ter prova?</label>
+          <div class="custom-control custom-radio">
+            <input class="custom-control-input" type="radio" id="planilhaProvaSim" name="planilhaProva" value="1">
+            <label for="planilhaProvaSim" class="custom-control-label">Sim</label>
+          </div>
+
+          <div class="custom-control custom-radio">
+            <input class="custom-control-input" type="radio" id="planilhaProvaNao" name="planilhaProva" value="0" checked>
+            <label for="planilhaProvaNao" class="custom-control-label">Não</label>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="confirmarGeracaoPlanilha()">
+          <i class="fas fa-download"></i>
+          Gerar planilha
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -44,10 +82,10 @@
                         <i class="fas fa-list color-white"></i>
                         Lista de Inscritos
                     </a>
-                    <a class="btn bg-success" href="/edital/geraPlanilha/{{edital.id}}">
-                        <i class="fas fa-file-csv color-white"></i>
-                        Planilha Excel para Avaliação (Excel)
-                    </a>
+                  <a class="btn bg-success" href="javascript:void(0)" onclick="abrirModalPlanilha()">
+                    <i class="fas fa-file-csv color-white"></i>
+                    Planilha Excel para Avaliação (Excel)
+                  </a>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -169,170 +207,171 @@
 </div>
 
 <script>
+  function abrirModalPlanilha() {
+    $('#modalPlanilha').modal('show');
+  }
 
-    let status = "{{edital.status}}";
+  function confirmarGeracaoPlanilha() {
+    const prova = document.querySelector('input[name="planilhaProva"]:checked')?.value ?? "0"; // "1" ou "0"
 
-    const regMestrado = "{{edital.vagaMestrado}}";
-    const supMestrado = "{{edital.cotasMestrado}}";
+    // Exemplo de URL com querystring (recomendado)
+    // Você ajusta o backend para ler ?etapa=1&prova=1
+    const url = `/edital/geraPlanilha/${id}?prova=${encodeURIComponent(prova)}`;
 
-    const regDoutorado = "{{edital.vagaDoutorado}}";
-    const supDoutorado = "{{edital.cotasDoutorado}}";
+    $('#modalPlanilha').modal('hide');
+    window.location.href = url;
+  }
 
-    let curso;
+  let status = "{{edital.status}}";
 
-    if ((regMestrado > 0 || supMestrado > 0) && (regDoutorado > 0 || supDoutorado > 0)) {
-        curso = 'Mestrado e  Doutorado';
-    }
-    else if ((regMestrado == 0 && supMestrado == 0) && (regDoutorado > 0 || supDoutorado > 0)) {
-        curso = 'Doutorado';
-    }
-    else {
-        curso = 'Mestrado';
-    }
+  const regMestrado = "{{edital.vagaMestrado}}";
+  const supMestrado = "{{edital.cotasMestrado}}";
 
-    document.getElementById("curso").innerText = curso;
+  const regDoutorado = "{{edital.vagaDoutorado}}";
+  const supDoutorado = "{{edital.cotasDoutorado}}";
 
-    /* Fuso horário oficial da UFAM  */
-    const TZ = "America/Manaus";
+  let curso;
 
-    /* Datas do edital (strings vindas do template) → Moment   */
-    const dataInicio = moment.tz("{{edital.dataInicio}}", TZ).startOf("day");
-    const dataFim    = moment.tz("{{edital.dataFim}}",    TZ).endOf("day");
+  if ((regMestrado > 0 || supMestrado > 0) && (regDoutorado > 0 || supDoutorado > 0)) {
+    curso = 'Mestrado e  Doutorado';
+  }
+  else if ((regMestrado == 0 && supMestrado == 0) && (regDoutorado > 0 || supDoutorado > 0)) {
+    curso = 'Doutorado';
+  }
+  else {
+    curso = 'Mestrado';
+  }
 
-    /* Data de hoje em Manaus                                    */
-    const hoje = moment.tz(TZ).startOf("day");
+  document.getElementById("curso").innerText = curso;
 
-    /* Cálculo do rótulo */
-    let labelStatus;
+  /* Fuso horário oficial da UFAM  */
+  const TZ = "America/Manaus";
 
-    if (status === "1") {                // 1 = edital ativo
-      if (hoje.isBefore(dataInicio)) {
-        labelStatus = "Não Iniciado";    // inscrições ainda não começaram
-      } else if (hoje.isAfter(dataFim)) {
-        labelStatus = "Encerrado";       // inscrições já terminaram
-      } else {
-        labelStatus = "Aberto";          // dentro do período
-      }
+  /* Datas do edital (strings vindas do template) → Moment   */
+  const dataInicio = moment.tz("{{edital.dataInicio}}", TZ).startOf("day");
+  const dataFim    = moment.tz("{{edital.dataFim}}",    TZ).endOf("day");
+
+  /* Data de hoje em Manaus                                    */
+  const hoje = moment.tz(TZ).startOf("day");
+
+  /* Cálculo do rótulo */
+  let labelStatus;
+
+  if (status === "1") {                // 1 = edital ativo
+    if (hoje.isBefore(dataInicio)) {
+      labelStatus = "Não Iniciado";    // inscrições ainda não começaram
+    } else if (hoje.isAfter(dataFim)) {
+      labelStatus = "Encerrado";       // inscrições já terminaram
     } else {
-      labelStatus = "Suspenso";          // status diferente de 1
+      labelStatus = "Aberto";          // dentro do período
     }
+  } else {
+    labelStatus = "Suspenso";          // status diferente de 1
+  }
 
-    document.getElementById("labelStatus").innerText = labelStatus;
+  document.getElementById("labelStatus").innerText = labelStatus;
 
-    let csrfToken = "{{csrfToken}}";
-    let id = "{{edital.id}}";
+  let csrfToken = "{{csrfToken}}";
+  let id = "{{edital.id}}";
+
+  function abrirModal() {
+    if (status == '1') {
+      $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + id + "?");
+      $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+    } else {
+      $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + id + "?");
+      $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
+    }
+    $('#modalArquivar').modal('show');
+  }
+
+  function arquivarEdital() {
+    let novoStatus = (status == '1' ? '0' : '1');
+
+    const dataFromForm = {
+      status: novoStatus,
+      _csrf: csrfToken
+    };
+
+    // Fechar o modal
+    $('#modalArquivar').modal('hide');
+
+    $.ajax({
+      url: `/edital/arquivarEdital/${id}`,
+      type: 'PUT',
+      data: dataFromForm,
+      success: function (data) {
+        const mensagem = "Status do Edital alterado no sistema com sucesso";
+        const expirationTime = new Date(new Date().getTime() + 5000);
+        document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+        document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+
+        window.location.href = '/edital/listEdital';
+
+      },
+      error: function (data) {
+        $(document).Toasts('create', {
+          icon: 'error',
+          class: "bg-danger",
+          autohide: true,
+          delay: 3000,
+          title: 'Erro!',
+          body: 'Erro: ' + data.responseJSON.error
+        });
+      }
+    });
 
     function abrirModal() {
+      if (status == '1') {
+        $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + id + "?");
+        $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
+      } else {
+        $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + id + "?");
+        $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
+      }
 
-        if (status == '1') {
-            $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + id + "?");
-            $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
-        } else {
-            $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + id + "?");
-            $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
-        }
-
-        $('#modalArquivar').modal('show');
+      $('#modalArquivar').modal('show');
     }
 
     function arquivarEdital() {
+      let novoStatus = (status == '1' ? '0' : '1');
+      const dataFromForm = {
+        status: novoStatus,
+        _csrf: csrfToken
+      };
 
-        let novoStatus = (status == '1' ? '0' : '1');
+      // Fechar o modal
+      $('#modalArquivar').modal('hide');
 
-        const dataFromForm = {
-            status: novoStatus,
-            _csrf: csrfToken
-        };
+      $.ajax({
+        url: `/edital/arquivarEdital/${id}`,
+        type: 'PUT',
+        data: dataFromForm,
+        success: function (data) {
+          const mensagem = "Status do Edital alterado no sistema com sucesso";
+          const expirationTime = new Date(new Date().getTime() + 5000);
+          document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
+          document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
+          window.location.href = '/edital/listEdital';
 
-
-        // Fechar o modal
-        $('#modalArquivar').modal('hide');
-
-        $.ajax({
-            url: `/edital/arquivarEdital/${id}`,
-            type: 'PUT',
-            data: dataFromForm,
-            success: function (data) {
-
-                const mensagem = "Status do Edital alterado no sistema com sucesso";
-                const expirationTime = new Date(new Date().getTime() + 5000);
-
-                document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
-                document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
-
-                window.location.href = '/edital/listEdital';
-
-            },
-            error: function (data) {
-                $(document).Toasts('create', {
-                    icon: 'error',
-                    class: "bg-danger",
-                    autohide: true,
-                    delay: 3000,
-                    title: 'Erro!',
-                    body: 'Erro: ' + data.responseJSON.error
-                });
-            }
-        });
-
-        function abrirModal() {
-
-            if (status == '1') {
-                $('#modalArquivarBody').html("Você realmente deseja encerrar o edital com ID " + id + "?");
-                $('#confirmButton').removeClass('btn btn-success').addClass('btn btn-danger');
-            } else {
-                $('#modalArquivarBody').html("Você realmente deseja abrir o edital com ID " + id + "?");
-                $('#confirmButton').removeClass('btn btn-danger').addClass('btn btn-success');
-            }
-
-            $('#modalArquivar').modal('show');
+        },
+        error: function (data) {
+          $(document).Toasts('create', {
+            icon: 'error',
+            class: "bg-danger",
+            autohide: true,
+            delay: 3000,
+            title: 'Erro!',
+            body: 'Erro: ' + data.responseJSON.error
+          });
         }
-
-        function arquivarEdital() {
-
-            let novoStatus = (status == '1' ? '0' : '1');
-
-            const dataFromForm = {
-                status: novoStatus,
-                _csrf: csrfToken
-            };
-
-
-            // Fechar o modal
-            $('#modalArquivar').modal('hide');
-
-            $.ajax({
-                url: `/edital/arquivarEdital/${id}`,
-                type: 'PUT',
-                data: dataFromForm,
-                success: function (data) {
-
-                    const mensagem = "Status do Edital alterado no sistema com sucesso";
-                    const expirationTime = new Date(new Date().getTime() + 5000);
-
-                    document.cookie = `showToast=true; expires=${expirationTime.toUTCString()}`;
-                    document.cookie = `mensagem=${mensagem}; expires=${expirationTime.toUTCString()}`;
-
-                    window.location.href = '/edital/listEdital';
-
-                },
-                error: function (data) {
-                    $(document).Toasts('create', {
-                        icon: 'error',
-                        class: "bg-danger",
-                        autohide: true,
-                        delay: 3000,
-                        title: 'Erro!',
-                        body: 'Erro: ' + data.responseJSON.error
-                    });
-                }
-            });
-        }
+      });
     }
+  }
 
-    document.getElementById("voltarBtnView").addEventListener("click", function () {
-        window.history.back();
-    });
+  document.getElementById("voltarBtnView").addEventListener("click", function () {
+    window.history.back();
+  });
 </script>
 
 {{> footer}}
