@@ -200,7 +200,7 @@ export const DefesaService = {
     return prisma.defesa.update({
       where: { id: defesaId },
       data: {
-        localOuLink: value.local,
+        localOuLink: value.localOuLink,
       },
     });
   },
@@ -646,7 +646,6 @@ export const DefesaService = {
     params: ListarParams & { orientadorId?: number } = {},
   ): Promise<DefesaListItem[]> {
     const where = buildWhere(params);
-    console.log(where);
     const rows = await prisma.defesa.findMany({
       where,
       include: {
@@ -654,7 +653,6 @@ export const DefesaService = {
       },
       orderBy: [{ dataHora: 'desc' }, { createdAt: 'desc' }],
     });
-    console.log(rows);
     return rows.map(mapListItem);
   },
 
