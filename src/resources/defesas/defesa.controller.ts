@@ -1165,7 +1165,7 @@ const viewManagementList = async (
 
       return {
         id: d.id,
-        candidatoNome: d.candidato?.nome ?? 'Não vinculado',
+        candidatoNome: d.candidatoNome ?? 'Não vinculado',
         orientadorNome: d.orientador?.nomeCompleto ?? '—',
         tipo: d.tipo,
         nivel: d.nivel,
