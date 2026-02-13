@@ -424,7 +424,7 @@ const saveQualiStep2 = async (
     const { id } = req.params;
 
     await DefesaService.updateQualiStep2(id, {
-      localOuLink: req.body.localOuLink,
+      localOuLink: req.body.local,
     });
 
     if (req.body.action === 'next') {
