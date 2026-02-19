@@ -215,6 +215,9 @@
   });
 
   function reqAjax(data){
+    const [file] = document.querySelector('#vittaexml').files;
+    if (data) data.append("curriculoXML", file) // só anexa se o usuário escolheu
+
     $.ajax({
       type: "POST",
       url: 'lattes/upload',

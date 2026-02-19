@@ -229,6 +229,7 @@ model LinhaPesquisa {
   Defesa     Defesa[]
 }
 
+// MODELOS PARA O LATTES
 model Orientacao {
   id          Int      @id @default(autoincrement())
   professorId Int
@@ -296,6 +297,17 @@ model Publicacao {
   @@index([tipoId])
 }
 
+model TipoPublicacao {
+  id        Int      @id @default(autoincrement())
+  nome      String   @db.VarChar(255)
+  chave     String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  publicacoes Publicacao[]
+}
+
+//////////////////////////////
 model Recomendacoes {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
@@ -346,16 +358,6 @@ model Sala {
   reservas ReservaSala[]
 }
 
-model TipoPublicacao {
-  id        Int      @id @default(autoincrement())
-  nome      String   @db.VarChar(255)
-  chave     String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  publicacoes Publicacao[]
-}
-
 model Usuario {
   id                      Int       @id @default(autoincrement())
   nomeCompleto            String    @db.VarChar(255)
@@ -392,13 +394,14 @@ model Usuario {
   updatedAt         DateTime  @updatedAt
 
   // Relacionamentos existentes do seu projeto
-  avatares      Avatar[]
-  orientacoes   Orientacao[]
-  premios       Premio[]
-  projetos      Projeto[]
-  publicacoes   UsuarioPublicacao[]
-  reservasSalas ReservaSala[]
-  afastamentos  AfastamentoTemporario[]
+  lattesProfessor LattesProfessor?
+  avatares        Avatar[]
+  orientacoes     Orientacao[]
+  premios         Premio[]
+  projetos        Projeto[]
+  publicacoes     UsuarioPublicacao[]
+  reservasSalas   ReservaSala[]
+  afastamentos    AfastamentoTemporario[]
 
   // ===== Inversos para Defesa (conforme schema que desenhamos) =====
   defesasComoOrientador   Defesa[] @relation("OrientadorDefesa")
@@ -683,4 +686,828 @@ model ProcessoTag {
   @@id([processoId, tagId])
   @@index([tagId])
   @@index([processoId])
+}
+
+//////////////////////////////////
+// ===========================
+// LATTES (NORMALIZADO) - MYSQL
+// ===========================
+
+model LattesAgenciaFinanciadora {
+  agenciaFinanciadoraId            Int                                @id @default(autoincrement())
+  nomeAgenciaFinanciadora          String?                            @db.VarChar(200)
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+  LattesFinanciamentoProjeto       LattesFinanciamentoProjeto[]
+}
+
+model LattesBaseDeConsulta {
+  baseDeConsultaId   Int     @id @default(autoincrement())
+  nomeBaseDeConsulta String? @db.VarChar(80)
+}
+
+model LattesAreaConhecimento {
+  areaConhecimentoId                               Int                                                @id @default(autoincrement())
+  grandeAreaConhecimento                           String?                                            @db.VarChar(50)
+  areaConhecimento                                 String?                                            @db.VarChar(100)
+  subAreaConhecimento                              String?                                            @db.VarChar(100)
+  especialidade                                    String?                                            @db.VarChar(100)
+  termoCompleto                                    String?                                            @db.VarChar(350)
+  LattesFormacaoAcademicaTitulacaoAreaConhecimento LattesFormacaoAcademicaTitulacaoAreaConhecimento[]
+  LattesProducaoTecnicaAreaConhecimento            LattesProducaoTecnicaAreaConhecimento[]
+  LattesProducaoBibliograficaAreaConhecimento      LattesProducaoBibliograficaAreaConhecimento[]
+  LattesOrientacaoSupervisaoAreaConhecimento       LattesOrientacaoSupervisaoAreaConhecimento[]
+  LattesParticipacaoEventoAreaConhecimento         LattesParticipacaoEventoAreaConhecimento[]
+  LattesBancaDeTrabalhoAreaConhecimento            LattesBancaDeTrabalhoAreaConhecimento[]
+  LattesBancaJulgadoraAreaConhecimento             LattesBancaJulgadoraAreaConhecimento[]
+}
+
+model LattesPalavraChave {
+  palavraChaveId                               Int                                            @id @default(autoincrement())
+  nomePalavraChave                             String?                                        @db.VarChar(150)
+  LattesFormacaoAcademicaTitulacaoPalavraChave LattesFormacaoAcademicaTitulacaoPalavraChave[]
+  LattesProducaoTecnicaPalavraChave            LattesProducaoTecnicaPalavraChave[]
+  LattesProducaoBibliograficaPalavraChave      LattesProducaoBibliograficaPalavraChave[]
+  LattesOrientacaoSupervisaoPalavraChave       LattesOrientacaoSupervisaoPalavraChave[]
+  LattesParticipacaoEventoPalavraChave         LattesParticipacaoEventoPalavraChave[]
+  LattesBancaDeTrabalhoPalavraChave            LattesBancaDeTrabalhoPalavraChave[]
+  LattesBancaJulgadoraPalavraChave             LattesBancaJulgadoraPalavraChave[]
+}
+
+model LattesIdioma {
+  idiomaId               Int                      @id @default(autoincrement())
+  nomeIdioma             String?                  @db.VarChar(50)
+  LattesIdiomasProfessor LattesIdiomasProfessor[]
+}
+
+model LattesEndereco {
+  enderecoId                      Int               @id @default(autoincrement())
+  codigoInstituicaoEmpresa        String?           @db.VarChar(25)
+  codigoOrgaoInstituicaoEmpresa   String?           @db.VarChar(25)
+  codigoUnidadeInstituicaoEmpresa String?           @db.VarChar(25)
+  nomeInstituicaoEmpresa          String?           @db.VarChar(200)
+  nomeOrgaoInstituicaoEmpresa     String?           @db.VarChar(200)
+  nomeUnidadeInstituicaoEmpresa   String?           @db.VarChar(200)
+  logradouro                      String?           @db.VarChar(200)
+  cidade                          String?           @db.VarChar(100)
+  uf                              String?           @db.Char(2)
+  cep                             String?           @db.VarChar(15)
+  pais                            String?           @db.VarChar(50)
+  caixaPostal                     String?           @db.VarChar(20)
+  bairro                          String?           @db.VarChar(100)
+  ddd                             String?           @db.VarChar(5)
+  telefone                        String?           @db.VarChar(30)
+  ramal                           String?           @db.VarChar(10)
+  fax                             String?           @db.VarChar(30)
+  email                           String?           @db.VarChar(200)
+  homePage                        String?           @db.VarChar(200)
+  professoresResidencial          LattesProfessor[] @relation("EnderecoResidencial")
+  professoresProfissional         LattesProfessor[] @relation("EnderecoProfissional")
+}
+
+model LattesInstituicaoEmpresa {
+  instituicaoEmpresaId             Int                                @id @default(autoincrement())
+  nomeInstituicaoEmpresa           String?                            @db.VarChar(200)
+  siglaInstituicaoEmpresa          String?                            @db.VarChar(50)
+  codigoInstituicaoEmpresa         String?                            @db.VarChar(25)
+  LattesOrgaoInstituicaoEmpresa    LattesOrgaoInstituicaoEmpresa[]
+  LattesUnidadeInstituicaoEmpresa  LattesUnidadeInstituicaoEmpresa[]
+  LattesProfessor                  LattesProfessor[]
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+  LattesAtividadeProfissional      LattesAtividadeProfissional[]
+}
+
+model LattesOrgaoInstituicaoEmpresa {
+  orgaoInstituicaoEmpresaId     Int     @id @default(autoincrement())
+  instituicaoEmpresaId          Int
+  nomeOrgaoInstituicaoEmpresa   String? @db.VarChar(200)
+  codigoOrgaoInstituicaoEmpresa String? @db.VarChar(25)
+
+  instituicaoEmpresa               LattesInstituicaoEmpresa           @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  LattesUnidadeInstituicaoEmpresa  LattesUnidadeInstituicaoEmpresa[]
+  LattesProfessor                  LattesProfessor[]
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+  LattesAtividadeProfissional      LattesAtividadeProfissional[]
+
+  @@index([instituicaoEmpresaId])
+}
+
+model LattesUnidadeInstituicaoEmpresa {
+  unidadeInstituicaoEmpresaId     Int     @id @default(autoincrement())
+  instituicaoEmpresaId            Int
+  orgaoInstituicaoEmpresaId       Int?
+  nomeUnidadeInstituicaoEmpresa   String? @db.VarChar(200)
+  codigoUnidadeInstituicaoEmpresa String? @db.VarChar(25)
+
+  instituicaoEmpresa               LattesInstituicaoEmpresa           @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  orgaoInstituicaoEmpresa          LattesOrgaoInstituicaoEmpresa?     @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  LattesProfessor                  LattesProfessor[]
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+  LattesAtividadeProfissional      LattesAtividadeProfissional[]
+
+  @@index([instituicaoEmpresaId])
+  @@index([orgaoInstituicaoEmpresaId])
+}
+
+model LattesProfessor {
+  usuarioId               Int     @unique
+  professorId             Int     @id @default(autoincrement())
+  numeroCurriculo         String  @db.Char(20)
+  nomeProfessor           String  @db.VarChar(200)
+  nomeEmCitacoesProfessor String? @db.VarChar(300)
+
+  enderecoResidencialId Int?
+  logradouroResidencial String? @db.VarChar(250)
+
+  enderecoProfissionalId Int?
+  logradouroProfissional String? @db.VarChar(250)
+
+  instituicaoEmpresaId        Int?
+  unidadeInstituicaoEmpresaId Int?
+  orgaoInstituicaoEmpresaId   Int?
+
+  dataUltimaAtualizacaoCurriculo DateTime
+  dataUltimaPublicacaoCurriculo  DateTime @db.Date
+
+  linkParaCurriculo String @db.VarChar(150)
+
+  nacionalidadeProfessor      String? @db.VarChar(50)
+  paisNascimentoProfessor     String? @db.VarChar(50)
+  ufNascimentoProfessor       String? @db.Char(2)
+  cidadeNascimentoProfessor   String? @db.VarChar(50)
+  paisNascionalidadeProfessor String? @db.VarChar(50)
+
+  Usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  enderecoResidencial       LattesEndereco?                  @relation("EnderecoResidencial", fields: [enderecoResidencialId], references: [enderecoId])
+  enderecoProfissional      LattesEndereco?                  @relation("EnderecoProfissional", fields: [enderecoProfissionalId], references: [enderecoId])
+  instituicaoEmpresa        LattesInstituicaoEmpresa?        @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  orgaoInstituicaoEmpresa   LattesOrgaoInstituicaoEmpresa?   @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  unidadeInstituicaoEmpresa LattesUnidadeInstituicaoEmpresa? @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
+
+  LattesContatoProfessor            LattesContatoProfessor[]
+  LattesAreaAtuacao                 LattesAreaAtuacao[]
+  LattesIdiomasProfessor            LattesIdiomasProfessor[]
+  LattesFormacaoAcademicaTitulacao  LattesFormacaoAcademicaTitulacao[]
+  LattesAtividadeProfissional       LattesAtividadeProfissional[]
+  LattesProjeto                     LattesProjeto[]
+  LattesParticipacaoEmProjeto       LattesParticipacaoEmProjeto[]
+  LattesPremioOuTitulo              LattesPremioOuTitulo[]
+  LattesProducaoTecnica             LattesProducaoTecnica[]
+  LattesAutorProducaoTecnica        LattesAutorProducaoTecnica[]
+  LattesProducaoBibliografica       LattesProducaoBibliografica[]
+  LattesAutorProducaoBibliografica  LattesAutorProducaoBibliografica[]
+  LattesOrientacaoSupervisao        LattesOrientacaoSupervisao[]
+  LattesParticipacaoEvento          LattesParticipacaoEvento[]
+  LattesParticipacaoBancaDeTrabalho LattesParticipacaoBancaDeTrabalho[]
+  LattesParticipacaoBancaJulgadora  LattesParticipacaoBancaJulgadora[]
+
+  @@index([enderecoResidencialId])
+  @@index([enderecoProfissionalId])
+  @@index([instituicaoEmpresaId])
+  @@index([orgaoInstituicaoEmpresaId])
+  @@index([unidadeInstituicaoEmpresaId])
+  @@index([numeroCurriculo])
+}
+
+model LattesContatoProfessor {
+  professorId          Int     @id
+  enderecoEletronico   String? @db.VarChar(200)
+  enderecoParaHomepage String? @db.VarChar(200)
+  dddTelefone          String? @db.VarChar(5)
+  numeroTelefone       String? @db.VarChar(30)
+  dddFax               String? @db.VarChar(5)
+  numeroFax            String? @db.VarChar(30)
+
+  professor LattesProfessor @relation(fields: [professorId], references: [professorId])
+
+  @@index([professorId])
+}
+
+model LattesAreaAtuacao {
+  professorId          Int
+  sequenciaAreaAtuacao Int
+  grandeAreaAtuacao    String? @db.VarChar(50)
+  areaAtuacao          String? @db.VarChar(100)
+  subAreaAtuacao       String? @db.VarChar(100)
+  especialidade        String? @db.VarChar(100)
+  termoCompleto        String? @db.VarChar(350)
+
+  professor LattesProfessor @relation(fields: [professorId], references: [professorId])
+
+  @@id([professorId, sequenciaAreaAtuacao])
+  @@index([professorId])
+}
+
+model LattesIdiomasProfessor {
+  professorId             Int
+  idiomaId                Int
+  proficienciaLeitura     String? @db.VarChar(25)
+  proficienciaFala        String? @db.VarChar(25)
+  proficienciaEscrita     String? @db.VarChar(25)
+  proficienciaCompreensao String? @db.VarChar(25)
+
+  professor LattesProfessor @relation(fields: [professorId], references: [professorId])
+  idioma    LattesIdioma    @relation(fields: [idiomaId], references: [idiomaId])
+
+  @@id([professorId, idiomaId])
+  @@index([idiomaId])
+  @@index([professorId])
+}
+
+model LattesCurso {
+  cursoId                          Int                                @id @default(autoincrement())
+  nomeCurso                        String?                            @db.VarChar(150)
+  codigoCurso                      String?                            @db.VarChar(25)
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+  LattesAtividadeProfissional      LattesAtividadeProfissional[]
+}
+
+model LattesLinhaDePesquisa {
+  linhaDePesquisaId           Int                           @id @default(autoincrement())
+  nomeLinhaDePesquisa         String?                       @db.VarChar(150)
+  LattesAtividadeProfissional LattesAtividadeProfissional[]
+}
+
+model LattesOrientador {
+  orientadorId                     Int                                @id @default(autoincrement())
+  nomeOrientador                   String?                            @db.VarChar(150)
+  LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
+}
+
+model LattesFormacaoAcademicaTitulacao {
+  professorId                Int
+  sequenciaFormacaoAcademica Int
+
+  nivelFormacaoAcademica String? @db.VarChar(50)
+  codigoCurso            String? @db.VarChar(25)
+  nomeCurso              String? @db.VarChar(150)
+
+  codigoInstituicaoEmpresa String? @db.VarChar(25)
+  nomeInstituicaoEmpresa   String? @db.VarChar(200)
+
+  statusDoCurso     String? @db.VarChar(50)
+  anoInicio         Int?
+  anoConclusao      Int?
+  anoObtencaoTitulo Int?
+
+  tituloTrabalhoConclusaoCurso String? @db.VarChar(350)
+  nomeOrientador               String? @db.VarChar(150)
+
+  tipoBolsa                 String? @db.VarChar(50)
+  codigoAgenciaFinanciadora String? @db.VarChar(25)
+  nomeAgenciaFinanciadora   String? @db.VarChar(200)
+
+  codigoInstituicaoEmpresaOutra String? @db.VarChar(25)
+  nomeInstituicaoEmpresaOutra   String? @db.VarChar(200)
+
+  codigoOrgaoInstituicaoEmpresa String? @db.VarChar(25)
+  nomeOrgaoInstituicaoEmpresa   String? @db.VarChar(200)
+
+  codigoUnidadeInstituicaoEmpresa String? @db.VarChar(25)
+  nomeUnidadeInstituicaoEmpresa   String? @db.VarChar(200)
+
+  cursoId                     Int?
+  instituicaoEmpresaId        Int?
+  orgaoInstituicaoEmpresaId   Int?
+  unidadeInstituicaoEmpresaId Int?
+  orientadorId                Int?
+  agenciaFinanciadoraId       Int?
+
+  areasConhecimento LattesFormacaoAcademicaTitulacaoAreaConhecimento[]
+
+  professor                                    LattesProfessor                                @relation(fields: [professorId], references: [professorId])
+  curso                                        LattesCurso?                                   @relation(fields: [cursoId], references: [cursoId])
+  instituicaoEmpresa                           LattesInstituicaoEmpresa?                      @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  orgaoInstituicaoEmpresa                      LattesOrgaoInstituicaoEmpresa?                 @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  unidadeInstituicaoEmpresa                    LattesUnidadeInstituicaoEmpresa?               @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
+  orientador                                   LattesOrientador?                              @relation(fields: [orientadorId], references: [orientadorId])
+  agenciaFinanciadora                          LattesAgenciaFinanciadora?                     @relation(fields: [agenciaFinanciadoraId], references: [agenciaFinanciadoraId])
+  LattesFormacaoAcademicaTitulacaoPalavraChave LattesFormacaoAcademicaTitulacaoPalavraChave[]
+
+  @@id([professorId, sequenciaFormacaoAcademica])
+  @@index([agenciaFinanciadoraId])
+  @@index([cursoId])
+  @@index([instituicaoEmpresaId])
+  @@index([orgaoInstituicaoEmpresaId])
+  @@index([unidadeInstituicaoEmpresaId])
+  @@index([orientadorId])
+  @@index([professorId])
+}
+
+model LattesFormacaoAcademicaTitulacaoAreaConhecimento {
+  professorId                Int
+  sequenciaFormacaoAcademica Int
+  areaConhecimentoId         Int
+
+  formacaoAcademica LattesFormacaoAcademicaTitulacao @relation(fields: [professorId, sequenciaFormacaoAcademica], references: [professorId, sequenciaFormacaoAcademica])
+  areaConhecimento  LattesAreaConhecimento           @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([professorId, sequenciaFormacaoAcademica, areaConhecimentoId])
+  @@index([areaConhecimentoId])
+  @@index([professorId])
+}
+
+model LattesFormacaoAcademicaTitulacaoPalavraChave {
+  professorId                Int
+  sequenciaFormacaoAcademica Int
+  palavraChaveId             Int
+
+  formacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao @relation(fields: [professorId, sequenciaFormacaoAcademica], references: [professorId, sequenciaFormacaoAcademica])
+  palavraChave               LattesPalavraChave               @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([professorId, sequenciaFormacaoAcademica, palavraChaveId])
+  @@index([palavraChaveId])
+  @@index([professorId])
+}
+
+model LattesAtividadeProfissional {
+  professorId                    Int
+  sequenciaAtividadeProfissional Int
+
+  instituicaoEmpresaId        Int
+  unidadeInstituicaoEmpresaId Int?
+  orgaoInstituicaoEmpresaId   Int?
+  tipoAtividadeProfissional   String? @db.VarChar(50)
+  linhaDePesquisaId           Int?
+  disciplina                  String? @db.VarChar(150)
+  codigoCurso                 String? @db.VarChar(25)
+  cursoId                     Int?
+  unidadeId                   String? @db.VarChar(25)
+  orgaoId                     String? @db.VarChar(25)
+  nomeUnidade                 String? @db.VarChar(150)
+  nomeOrgao                   String? @db.VarChar(150)
+  nomeCurso                   String? @db.VarChar(150)
+
+  professor                 LattesProfessor                  @relation(fields: [professorId], references: [professorId])
+  instituicaoEmpresa        LattesInstituicaoEmpresa         @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  unidadeInstituicaoEmpresa LattesUnidadeInstituicaoEmpresa? @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
+  orgaoInstituicaoEmpresa   LattesOrgaoInstituicaoEmpresa?   @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  curso                     LattesCurso?                     @relation(fields: [cursoId], references: [cursoId])
+  linhaDePesquisa           LattesLinhaDePesquisa?           @relation(fields: [linhaDePesquisaId], references: [linhaDePesquisaId])
+
+  vinculos LattesVinculoAtuacaoProfissional[]
+
+  @@id([professorId, sequenciaAtividadeProfissional])
+  @@index([professorId])
+  @@index([instituicaoEmpresaId])
+  @@index([unidadeInstituicaoEmpresaId])
+  @@index([orgaoInstituicaoEmpresaId])
+  @@index([cursoId])
+  @@index([linhaDePesquisaId])
+}
+
+model LattesVinculoAtuacaoProfissional {
+  professorId                         Int
+  sequenciaAtividadeProfissional      Int
+  sequenciaVinculoAtuacaoProfissional Int
+
+  tipoVinculoAtuacaoProfissional String? @db.VarChar(50)
+  regimeTrabalho                 String? @db.VarChar(50)
+  enquadramentoFuncional         String? @db.VarChar(50)
+  cargaHorariaSemanal            Int?
+  anoInicio                      Int?
+  anoFim                         Int?
+  outrasInformacoes              String? @db.VarChar(250)
+
+  atividadeProfissional LattesAtividadeProfissional @relation(fields: [professorId, sequenciaAtividadeProfissional], references: [professorId, sequenciaAtividadeProfissional])
+
+  @@id([professorId, sequenciaAtividadeProfissional, sequenciaVinculoAtuacaoProfissional])
+  @@index([professorId])
+  @@index([professorId, sequenciaAtividadeProfissional])
+}
+
+model LattesProjeto {
+  projetoId            Int     @id @default(autoincrement())
+  professorId          Int
+  tituloProjeto        String? @db.VarChar(350)
+  anoInicioProjeto     Int
+  anoFimProjeto        Int?
+  naturezaProjeto      String? @db.VarChar(50)
+  situacaoProjeto      String? @db.VarChar(50)
+  descricaoProjeto     String? @db.Text
+  identificadorProjeto String? @db.VarChar(100)
+
+  professor                   LattesProfessor               @relation(fields: [professorId], references: [professorId])
+  LattesParticipacaoEmProjeto LattesParticipacaoEmProjeto[]
+  LattesFinanciamentoProjeto  LattesFinanciamentoProjeto[]
+
+  @@index([professorId])
+}
+
+model LattesParticipacaoEmProjeto {
+  projetoId        Int
+  professorId      Int
+  tipoParticipacao String? @db.VarChar(50)
+
+  projeto   LattesProjeto   @relation(fields: [projetoId], references: [projetoId])
+  professor LattesProfessor @relation(fields: [professorId], references: [professorId])
+
+  @@id([projetoId, professorId])
+  @@index([projetoId])
+  @@index([professorId])
+}
+
+model LattesFinanciamentoProjeto {
+  projetoId             Int
+  agenciaFinanciadoraId Int
+  naturezaFinanciamento String? @db.VarChar(50)
+
+  projeto             LattesProjeto             @relation(fields: [projetoId], references: [projetoId])
+  agenciaFinanciadora LattesAgenciaFinanciadora @relation(fields: [agenciaFinanciadoraId], references: [agenciaFinanciadoraId])
+
+  @@id([projetoId, agenciaFinanciadoraId])
+  @@index([projetoId])
+  @@index([agenciaFinanciadoraId])
+}
+
+model LattesPremioOuTitulo {
+  premioOuTituloId      Int     @id @default(autoincrement())
+  professorId           Int
+  nomePremioOuTitulo    String? @db.VarChar(250)
+  nomeEntidadePromotora String? @db.VarChar(250)
+  anoPremioOuTitulo     Int
+
+  professor LattesProfessor @relation(fields: [professorId], references: [professorId])
+
+  @@index([professorId])
+}
+
+model LattesProducaoTecnica {
+  producaoTecnicaId       Int     @id @default(autoincrement())
+  professorId             Int
+  tipoProducaoTecnica     String? @db.VarChar(50)
+  tituloProducaoTecnica   String? @db.VarChar(350)
+  anoProducaoTecnica      Int
+  naturezaProducaoTecnica String? @db.VarChar(25)
+  meioDivulgacao          String? @db.VarChar(50)
+  homePageDoTrabalho      String? @db.VarChar(200)
+  flagRelevancia          String? @db.VarChar(5)
+
+  professor                             LattesProfessor                         @relation(fields: [professorId], references: [professorId])
+  LattesAutorProducaoTecnica            LattesAutorProducaoTecnica[]
+  LattesProducaoTecnicaAreaConhecimento LattesProducaoTecnicaAreaConhecimento[]
+  LattesProducaoTecnicaPalavraChave     LattesProducaoTecnicaPalavraChave[]
+  LattesPatenteRegistro                 LattesPatenteRegistro[]
+
+  @@index([professorId])
+}
+
+model LattesAutorProducaoTecnica {
+  producaoTecnicaId Int
+  professorId       Int
+
+  producaoTecnica LattesProducaoTecnica @relation(fields: [producaoTecnicaId], references: [producaoTecnicaId])
+  professor       LattesProfessor       @relation(fields: [professorId], references: [professorId])
+
+  @@id([producaoTecnicaId, professorId])
+  @@index([producaoTecnicaId])
+  @@index([professorId])
+}
+
+model LattesProducaoTecnicaAreaConhecimento {
+  producaoTecnicaId  Int
+  areaConhecimentoId Int
+
+  producaoTecnica  LattesProducaoTecnica  @relation(fields: [producaoTecnicaId], references: [producaoTecnicaId])
+  areaConhecimento LattesAreaConhecimento @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([producaoTecnicaId, areaConhecimentoId])
+  @@index([producaoTecnicaId])
+  @@index([areaConhecimentoId])
+}
+
+model LattesProducaoTecnicaPalavraChave {
+  producaoTecnicaId Int
+  palavraChaveId    Int
+
+  producaoTecnica LattesProducaoTecnica @relation(fields: [producaoTecnicaId], references: [producaoTecnicaId])
+  palavraChave    LattesPalavraChave    @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([producaoTecnicaId, palavraChaveId])
+  @@index([producaoTecnicaId])
+  @@index([palavraChaveId])
+}
+
+model LattesPatenteRegistro {
+  patenteRegistroId                   Int       @id @default(autoincrement())
+  producaoTecnicaId                   Int
+  numeroPatenteRegistro               String?   @db.VarChar(50)
+  dataDeposito                        DateTime? @db.Date
+  dataConcessao                       DateTime? @db.Date
+  codigoInstituicaoEmpresaDepositante String?   @db.VarChar(25)
+  nomeInstituicaoEmpresaDepositante   String?   @db.VarChar(200)
+
+  producaoTecnica LattesProducaoTecnica @relation(fields: [producaoTecnicaId], references: [producaoTecnicaId])
+
+  @@index([producaoTecnicaId])
+}
+
+model LattesExtratoQualis {
+  extratoQualisId       Int                     @id @default(autoincrement())
+  nomeExtratoQualis     String?                 @db.VarChar(10)
+  LattesPeriodicoQualis LattesPeriodicoQualis[]
+}
+
+model LattesPeriodicoQualis {
+  periodicoQualisId Int     @id @default(autoincrement())
+  issn              String? @db.VarChar(15)
+  tituloPeriodico   String? @db.VarChar(200)
+  extratoQualisId   Int
+  anoBase           Int
+
+  extratoQualis               LattesExtratoQualis           @relation(fields: [extratoQualisId], references: [extratoQualisId])
+  LattesProducaoBibliografica LattesProducaoBibliografica[]
+
+  @@index([extratoQualisId])
+  @@index([issn])
+}
+
+model LattesProducaoBibliografica {
+  producaoBibliograficaId Int @id @default(autoincrement())
+  professorId             Int
+
+  tipoProducaoBibliografica            String? @db.VarChar(50)
+  tituloProducaoBibliografica          String? @db.VarChar(350)
+  anoProducaoBibliografica             Int
+  naturezaProducaoBibliografica        String? @db.VarChar(25)
+  localPublicacaoProducaoBibliografica String? @db.VarChar(150)
+
+  issn String? @db.VarChar(15)
+  isbn String? @db.VarChar(25)
+  doi  String? @db.VarChar(100)
+
+  nomeEvento   String? @db.VarChar(250)
+  cidadeEvento String? @db.VarChar(50)
+  paisEvento   String? @db.VarChar(50)
+  ufEvento     String? @db.Char(2)
+
+  paginaInicial    String? @db.VarChar(15)
+  paginaFinal      String? @db.VarChar(15)
+  volume           String? @db.VarChar(10)
+  fasciculo        String? @db.VarChar(10)
+  serie            String? @db.VarChar(10)
+  editora          String? @db.VarChar(150)
+  edicao           String? @db.VarChar(10)
+  cidadePublicacao String? @db.VarChar(50)
+  paisPublicacao   String? @db.VarChar(50)
+
+  idiomaPublicacao   String? @db.VarChar(50)
+  meioDivulgacao     String? @db.VarChar(50)
+  homePageDoTrabalho String? @db.VarChar(200)
+  flagRelevancia     String? @db.VarChar(5)
+
+  periodicoQualisId Int?
+
+  professor                                   LattesProfessor                               @relation(fields: [professorId], references: [professorId])
+  periodicoQualis                             LattesPeriodicoQualis?                        @relation(fields: [periodicoQualisId], references: [periodicoQualisId])
+  LattesAutorProducaoBibliografica            LattesAutorProducaoBibliografica[]
+  LattesProducaoBibliograficaPalavraChave     LattesProducaoBibliograficaPalavraChave[]
+  LattesProducaoBibliograficaAreaConhecimento LattesProducaoBibliograficaAreaConhecimento[]
+
+  @@index([professorId])
+  @@index([periodicoQualisId])
+  @@index([issn])
+  @@index([doi])
+}
+
+model LattesAutorProducaoBibliografica {
+  producaoBibliograficaId Int
+  professorId             Int
+
+  producaoBibliografica LattesProducaoBibliografica @relation(fields: [producaoBibliograficaId], references: [producaoBibliograficaId])
+  professor             LattesProfessor             @relation(fields: [professorId], references: [professorId])
+
+  @@id([producaoBibliograficaId, professorId])
+  @@index([producaoBibliograficaId])
+  @@index([professorId])
+}
+
+// no SQL do script estava "ProducaoBibligraficaPalavraChave" (com erro de digitação)
+// aqui ficou com nome correto, mas você pode manter o nome "errado" se quiser.
+model LattesProducaoBibliograficaPalavraChave {
+  producaoBibliograficaId Int
+  palavraChaveId          Int
+
+  producaoBibliografica LattesProducaoBibliografica @relation(fields: [producaoBibliograficaId], references: [producaoBibliograficaId])
+  palavraChave          LattesPalavraChave          @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([producaoBibliograficaId, palavraChaveId])
+  @@index([producaoBibliograficaId])
+  @@index([palavraChaveId])
+}
+
+model LattesProducaoBibliograficaAreaConhecimento {
+  producaoBibliograficaId Int
+  areaConhecimentoId      Int
+
+  producaoBibliografica LattesProducaoBibliografica @relation(fields: [producaoBibliograficaId], references: [producaoBibliograficaId])
+  areaConhecimento      LattesAreaConhecimento      @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([producaoBibliograficaId, areaConhecimentoId])
+  @@index([producaoBibliograficaId])
+  @@index([areaConhecimentoId])
+}
+
+model LattesOrientacaoSupervisao {
+  orientacaoSupervisaoId       Int     @id @default(autoincrement())
+  professorId                  Int
+  naturezaOrientacaoSupervisao String? @db.VarChar(25)
+  tipoOrientacaoSupervisao     String? @db.VarChar(50)
+  statusOrientacaoSupervisao   String? @db.VarChar(50)
+  tituloOrientacaoSupervisao   String? @db.VarChar(350)
+  anoOrientacaoSupervisao      Int
+  nomeOrientado                String? @db.VarChar(200)
+  nomeInstituicao              String? @db.VarChar(200)
+  nomeCurso                    String? @db.VarChar(200)
+
+  professor                                  LattesProfessor                              @relation(fields: [professorId], references: [professorId])
+  LattesOrientacaoSupervisaoAreaConhecimento LattesOrientacaoSupervisaoAreaConhecimento[]
+  LattesOrientacaoSupervisaoPalavraChave     LattesOrientacaoSupervisaoPalavraChave[]
+
+  @@index([professorId])
+}
+
+model LattesOrientacaoSupervisaoAreaConhecimento {
+  orientacaoSupervisaoId Int
+  areaConhecimentoId     Int
+
+  orientacaoSupervisao LattesOrientacaoSupervisao @relation(fields: [orientacaoSupervisaoId], references: [orientacaoSupervisaoId])
+  areaConhecimento     LattesAreaConhecimento     @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([orientacaoSupervisaoId, areaConhecimentoId])
+  @@index([orientacaoSupervisaoId])
+  @@index([areaConhecimentoId])
+}
+
+model LattesOrientacaoSupervisaoPalavraChave {
+  orientacaoSupervisaoId Int
+  palavraChaveId         Int
+
+  orientacaoSupervisao LattesOrientacaoSupervisao @relation(fields: [orientacaoSupervisaoId], references: [orientacaoSupervisaoId])
+  palavraChave         LattesPalavraChave         @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([orientacaoSupervisaoId, palavraChaveId])
+  @@index([orientacaoSupervisaoId])
+  @@index([palavraChaveId])
+}
+
+model LattesEvento {
+  eventoId                 Int                        @id @default(autoincrement())
+  nomeEvento               String?                    @db.VarChar(250)
+  anoEvento                Int
+  paisEvento               String?                    @db.VarChar(50)
+  ufEvento                 String?                    @db.Char(2)
+  cidadeEvento             String?                    @db.VarChar(50)
+  naturezaEvento           String?                    @db.VarChar(25)
+  LattesParticipacaoEvento LattesParticipacaoEvento[]
+}
+
+model LattesParticipacaoEvento {
+  eventoId    Int
+  professorId Int
+
+  evento                                   LattesEvento                               @relation(fields: [eventoId], references: [eventoId])
+  professor                                LattesProfessor                            @relation(fields: [professorId], references: [professorId])
+  LattesParticipacaoEventoAreaConhecimento LattesParticipacaoEventoAreaConhecimento[]
+  LattesParticipacaoEventoPalavraChave     LattesParticipacaoEventoPalavraChave[]
+
+  @@id([eventoId, professorId])
+  @@index([eventoId])
+  @@index([professorId])
+}
+
+model LattesParticipacaoEventoAreaConhecimento {
+  eventoId           Int
+  professorId        Int
+  areaConhecimentoId Int
+
+  participacaoEvento LattesParticipacaoEvento @relation(fields: [eventoId, professorId], references: [eventoId, professorId])
+  areaConhecimento   LattesAreaConhecimento   @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([eventoId, professorId, areaConhecimentoId])
+  @@index([areaConhecimentoId])
+  @@index([professorId])
+}
+
+model LattesParticipacaoEventoPalavraChave {
+  eventoId       Int
+  professorId    Int
+  palavraChaveId Int
+
+  participacaoEvento LattesParticipacaoEvento @relation(fields: [eventoId, professorId], references: [eventoId, professorId])
+  palavraChave       LattesPalavraChave       @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([eventoId, professorId, palavraChaveId])
+  @@index([palavraChaveId])
+  @@index([professorId])
+}
+
+model LattesBancaDeTrabalho {
+  bancaDeTrabalhoId                     Int                                     @id @default(autoincrement())
+  naturezaBancaDeTrabalho               String?                                 @db.VarChar(25)
+  tipoBancaDeTrabalho                   String                                  @db.VarChar(50)
+  tituloBancaDeTrabalho                 String                                  @db.VarChar(350)
+  anoBancaDeTrabalho                    Int
+  nomeCandidato                         String?                                 @db.VarChar(200)
+  nomeInstituicao                       String?                                 @db.VarChar(200)
+  nomeCurso                             String?                                 @db.VarChar(200)
+  LattesParticipacaoBancaDeTrabalho     LattesParticipacaoBancaDeTrabalho[]
+  LattesBancaDeTrabalhoAreaConhecimento LattesBancaDeTrabalhoAreaConhecimento[]
+  LattesBancaDeTrabalhoPalavraChave     LattesBancaDeTrabalhoPalavraChave[]
+}
+
+model LattesParticipacaoBancaDeTrabalho {
+  bancaDeTrabalhoId Int
+  professorId       Int
+
+  bancaDeTrabalho LattesBancaDeTrabalho @relation(fields: [bancaDeTrabalhoId], references: [bancaDeTrabalhoId])
+  professor       LattesProfessor       @relation(fields: [professorId], references: [professorId])
+
+  @@id([bancaDeTrabalhoId, professorId])
+  @@index([bancaDeTrabalhoId])
+  @@index([professorId])
+}
+
+model LattesBancaDeTrabalhoAreaConhecimento {
+  bancaDeTrabalhoId  Int
+  areaConhecimentoId Int
+
+  bancaDeTrabalho  LattesBancaDeTrabalho  @relation(fields: [bancaDeTrabalhoId], references: [bancaDeTrabalhoId])
+  areaConhecimento LattesAreaConhecimento @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([bancaDeTrabalhoId, areaConhecimentoId])
+  @@index([bancaDeTrabalhoId])
+  @@index([areaConhecimentoId])
+}
+
+model LattesBancaDeTrabalhoPalavraChave {
+  bancaDeTrabalhoId Int
+  palavraChaveId    Int
+
+  bancaDeTrabalho LattesBancaDeTrabalho @relation(fields: [bancaDeTrabalhoId], references: [bancaDeTrabalhoId])
+  palavraChave    LattesPalavraChave    @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([bancaDeTrabalhoId, palavraChaveId])
+  @@index([bancaDeTrabalhoId])
+  @@index([palavraChaveId])
+}
+
+model LattesBancaJulgadora {
+  bancaJulgadoraId                     Int                                    @id @default(autoincrement())
+  naturezaBancaJulgadora               String?                                @db.VarChar(25)
+  tipoBancaJulgadora                   String                                 @db.VarChar(50)
+  tituloBancaJulgadora                 String                                 @db.VarChar(350)
+  anoBancaJulgadora                    Int
+  nomeCandidato                        String?                                @db.VarChar(200)
+  nomeInstituicao                      String?                                @db.VarChar(200)
+  nomeCurso                            String?                                @db.VarChar(200)
+  LattesParticipacaoBancaJulgadora     LattesParticipacaoBancaJulgadora[]
+  LattesBancaJulgadoraAreaConhecimento LattesBancaJulgadoraAreaConhecimento[]
+  LattesBancaJulgadoraPalavraChave     LattesBancaJulgadoraPalavraChave[]
+}
+
+model LattesParticipacaoBancaJulgadora {
+  bancaJulgadoraId Int
+  professorId      Int
+
+  bancaJulgadora LattesBancaJulgadora @relation(fields: [bancaJulgadoraId], references: [bancaJulgadoraId])
+  professor      LattesProfessor      @relation(fields: [professorId], references: [professorId])
+
+  @@id([bancaJulgadoraId, professorId])
+  @@index([bancaJulgadoraId])
+  @@index([professorId])
+}
+
+model LattesBancaJulgadoraAreaConhecimento {
+  bancaJulgadoraId   Int
+  areaConhecimentoId Int
+
+  bancaJulgadora   LattesBancaJulgadora   @relation(fields: [bancaJulgadoraId], references: [bancaJulgadoraId])
+  areaConhecimento LattesAreaConhecimento @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+
+  @@id([bancaJulgadoraId, areaConhecimentoId])
+  @@index([bancaJulgadoraId])
+  @@index([areaConhecimentoId])
+}
+
+model LattesBancaJulgadoraPalavraChave {
+  bancaJulgadoraId Int
+  palavraChaveId   Int
+
+  bancaJulgadora LattesBancaJulgadora @relation(fields: [bancaJulgadoraId], references: [bancaJulgadoraId])
+  palavraChave   LattesPalavraChave   @relation(fields: [palavraChaveId], references: [palavraChaveId])
+
+  @@id([bancaJulgadoraId, palavraChaveId])
+  @@index([bancaJulgadoraId])
+  @@index([palavraChaveId])
+}
+
+model LattesJcr {
+  jcrId           Int      @id @default(autoincrement())
+  issn            String?  @db.VarChar(15)
+  tituloPeriodico String?  @db.VarChar(200)
+  impactFactor    Decimal? @db.Decimal(10, 5)
+  anoBase         Int
+
+  @@index([issn])
 }
