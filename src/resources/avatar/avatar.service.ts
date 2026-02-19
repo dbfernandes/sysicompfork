@@ -14,7 +14,7 @@ class AvatarService {
     const caminhoArr = caminho.split('/');
     const caminhoParsed = caminhoArr.slice(caminhoArr.length - 3).join('/');
     const caminhoFormated = '/' + caminhoParsed;
-
+    await prisma.avatar.deleteMany({ where: { usuarioId } });
     await prisma.avatar.create({
       data: {
         usuarioId,
