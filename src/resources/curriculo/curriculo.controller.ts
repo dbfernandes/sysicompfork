@@ -7,7 +7,7 @@ import ProjetoService from '../projetos/projetos.service';
 import OrientacaoService from '../orientacao/orientacao.service';
 import criarURL from '../../utils/criarUrl';
 import path from 'path';
-import upload from '../../middlewares/multer.config';
+import upload from './curriculo.multer';
 import {
   InfoParsed,
   OrientacaoParsed,
@@ -16,7 +16,6 @@ import {
   ProjetoTransformed,
   PublicacaoParsed,
 } from '../projetos/projetos.types';
-import { UploadRequest } from './curriculo.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
 
 function resolveView(viewName: string): string {
@@ -98,7 +97,7 @@ const verificarAvatar = async (
   }
 };
 
-const carregar = (req: UploadRequest, res: Response, next: NextFunction) => {
+const carregar = (req, res: Response, next: NextFunction) => {
   upload(req, res, async (err) => {
     if (err) {
       console.error('Erro no upload:', err);
@@ -117,7 +116,7 @@ const carregar = (req: UploadRequest, res: Response, next: NextFunction) => {
       const infoParsed = JSON.parse(info) as InfoParsed;
       const projetosParsed = JSON.parse(projetos).projetos as ProjetoParsed[];
       const orientacoesParsed = JSON.parse(orientacoes)
-        .orientacoes as OrientacaoParsed[];
+        .orientacoes as OrientacaoPa;
 
       // Transformação dos projetos para o formato esperado pelo service
       const projetosTransformed: ProjetoTransformed = {
@@ -140,12 +139,12 @@ const carregar = (req: UploadRequest, res: Response, next: NextFunction) => {
         PremioService.adicionarVarios(professorIdParsed, premiosParsed),
         PublicacaoService.adicionarVarios(professorIdParsed, publicacoesParsed),
       ]);
-
-      if (req.file) {
+      if (req.files && req.files.file && req.files.file.length > 0) {
+        const fileUpload = req.files.file[0];
         await AvatarService.adicionarAvatar(
           professorIdParsed,
-          req.file.originalname,
-          req.file.path,
+          fileUpload.originalname,
+          fileUpload.path,
         );
       }
 
