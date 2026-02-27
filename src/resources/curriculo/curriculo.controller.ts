@@ -118,6 +118,13 @@ const carregar = (req, res: Response, next: NextFunction) => {
       const orientacoesParsed = JSON.parse(orientacoes)
         .orientacoes as OrientacaoParsed[];
 
+      // const curriculoFile = req.files?.curriculoXML?.[0];
+
+      // if (curriculoFile) {
+      //   const xmlPath = curriculoFile.path;
+      //   await CurriculoService.importarLattes(xmlPath, professorIdParsed);
+      // }
+
       // Transformação dos projetos para o formato esperado pelo service
       const projetosTransformed: ProjetoTransformed = {
         projetos: projetosParsed.map((p) => ({

@@ -229,7 +229,6 @@ model LinhaPesquisa {
   Defesa     Defesa[]
 }
 
-// MODELOS PARA O LATTES
 model Orientacao {
   id          Int      @id @default(autoincrement())
   professorId Int
@@ -297,17 +296,6 @@ model Publicacao {
   @@index([tipoId])
 }
 
-model TipoPublicacao {
-  id        Int      @id @default(autoincrement())
-  nome      String   @db.VarChar(255)
-  chave     String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  publicacoes Publicacao[]
-}
-
-//////////////////////////////
 model Recomendacoes {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
@@ -358,6 +346,16 @@ model Sala {
   reservas ReservaSala[]
 }
 
+model TipoPublicacao {
+  id        Int      @id @default(autoincrement())
+  nome      String   @db.VarChar(255)
+  chave     String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  publicacoes Publicacao[]
+}
+
 model Usuario {
   id                      Int       @id @default(autoincrement())
   nomeCompleto            String    @db.VarChar(255)
@@ -394,22 +392,22 @@ model Usuario {
   updatedAt         DateTime  @updatedAt
 
   // Relacionamentos existentes do seu projeto
-  lattesProfessor LattesProfessor?
-  avatares        Avatar[]
-  orientacoes     Orientacao[]
-  premios         Premio[]
-  projetos        Projeto[]
-  publicacoes     UsuarioPublicacao[]
-  reservasSalas   ReservaSala[]
-  afastamentos    AfastamentoTemporario[]
+  avatares      Avatar[]
+  orientacoes   Orientacao[]
+  premios       Premio[]
+  projetos      Projeto[]
+  publicacoes   UsuarioPublicacao[]
+  reservasSalas ReservaSala[]
+  afastamentos  AfastamentoTemporario[]
 
   // ===== Inversos para Defesa (conforme schema que desenhamos) =====
   defesasComoOrientador   Defesa[] @relation("OrientadorDefesa")
   defesasComoCoorientador Defesa[] @relation("CoorientadorDefesa")
   defesasCriadas          Defesa[] @relation("CriadorDefesa")
 
-  Defesa   Defesa[]
-  Processo Processo[]
+  Defesa          Defesa[]
+  Processo        Processo[]
+  LattesProfessor LattesProfessor?
 }
 
 enum DefesaTipo {
@@ -688,21 +686,14 @@ model ProcessoTag {
   @@index([processoId])
 }
 
-//////////////////////////////////
 // ===========================
 // LATTES (NORMALIZADO) - MYSQL
 // ===========================
-
 model LattesAgenciaFinanciadora {
   agenciaFinanciadoraId            Int                                @id @default(autoincrement())
   nomeAgenciaFinanciadora          String?                            @db.VarChar(200)
   LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
   LattesFinanciamentoProjeto       LattesFinanciamentoProjeto[]
-}
-
-model LattesBaseDeConsulta {
-  baseDeConsultaId   Int     @id @default(autoincrement())
-  nomeBaseDeConsulta String? @db.VarChar(80)
 }
 
 model LattesAreaConhecimento {
@@ -836,14 +827,12 @@ model LattesProfessor {
   cidadeNascimentoProfessor   String? @db.VarChar(50)
   paisNascionalidadeProfessor String? @db.VarChar(50)
 
-  Usuario Usuario @relation(fields: [usuarioId], references: [id])
-
-  enderecoResidencial       LattesEndereco?                  @relation("EnderecoResidencial", fields: [enderecoResidencialId], references: [enderecoId])
-  enderecoProfissional      LattesEndereco?                  @relation("EnderecoProfissional", fields: [enderecoProfissionalId], references: [enderecoId])
-  instituicaoEmpresa        LattesInstituicaoEmpresa?        @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
-  orgaoInstituicaoEmpresa   LattesOrgaoInstituicaoEmpresa?   @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
-  unidadeInstituicaoEmpresa LattesUnidadeInstituicaoEmpresa? @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
-
+  usuario                           Usuario                             @relation(fields: [usuarioId], references: [id])
+  enderecoResidencial               LattesEndereco?                     @relation("EnderecoResidencial", fields: [enderecoResidencialId], references: [enderecoId])
+  enderecoProfissional              LattesEndereco?                     @relation("EnderecoProfissional", fields: [enderecoProfissionalId], references: [enderecoId])
+  instituicaoEmpresa                LattesInstituicaoEmpresa?           @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  orgaoInstituicaoEmpresa           LattesOrgaoInstituicaoEmpresa?      @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  unidadeInstituicaoEmpresa         LattesUnidadeInstituicaoEmpresa?    @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
   LattesContatoProfessor            LattesContatoProfessor[]
   LattesAreaAtuacao                 LattesAreaAtuacao[]
   LattesIdiomasProfessor            LattesIdiomasProfessor[]
@@ -934,6 +923,12 @@ model LattesOrientador {
   LattesFormacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao[]
 }
 
+enum LattesStatusDoCurso {
+  EM_ANDAMENTO
+  CONCLUIDO
+  INCOMPLETO
+}
+
 model LattesFormacaoAcademicaTitulacao {
   professorId                Int
   sequenciaFormacaoAcademica Int
@@ -945,7 +940,7 @@ model LattesFormacaoAcademicaTitulacao {
   codigoInstituicaoEmpresa String? @db.VarChar(25)
   nomeInstituicaoEmpresa   String? @db.VarChar(200)
 
-  statusDoCurso     String? @db.VarChar(50)
+  statusDoCurso     LattesStatusDoCurso?
   anoInicio         Int?
   anoConclusao      Int?
   anoObtencaoTitulo Int?
@@ -973,16 +968,15 @@ model LattesFormacaoAcademicaTitulacao {
   orientadorId                Int?
   agenciaFinanciadoraId       Int?
 
-  areasConhecimento LattesFormacaoAcademicaTitulacaoAreaConhecimento[]
-
-  professor                                    LattesProfessor                                @relation(fields: [professorId], references: [professorId])
-  curso                                        LattesCurso?                                   @relation(fields: [cursoId], references: [cursoId])
-  instituicaoEmpresa                           LattesInstituicaoEmpresa?                      @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
-  orgaoInstituicaoEmpresa                      LattesOrgaoInstituicaoEmpresa?                 @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
-  unidadeInstituicaoEmpresa                    LattesUnidadeInstituicaoEmpresa?               @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
-  orientador                                   LattesOrientador?                              @relation(fields: [orientadorId], references: [orientadorId])
-  agenciaFinanciadora                          LattesAgenciaFinanciadora?                     @relation(fields: [agenciaFinanciadoraId], references: [agenciaFinanciadoraId])
-  LattesFormacaoAcademicaTitulacaoPalavraChave LattesFormacaoAcademicaTitulacaoPalavraChave[]
+  professor                                        LattesProfessor                                    @relation(fields: [professorId], references: [professorId])
+  curso                                            LattesCurso?                                       @relation(fields: [cursoId], references: [cursoId])
+  instituicaoEmpresa                               LattesInstituicaoEmpresa?                          @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  orgaoInstituicaoEmpresa                          LattesOrgaoInstituicaoEmpresa?                     @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  unidadeInstituicaoEmpresa                        LattesUnidadeInstituicaoEmpresa?                   @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
+  orientador                                       LattesOrientador?                                  @relation(fields: [orientadorId], references: [orientadorId])
+  agenciaFinanciadora                              LattesAgenciaFinanciadora?                         @relation(fields: [agenciaFinanciadoraId], references: [agenciaFinanciadoraId])
+  LattesFormacaoAcademicaTitulacaoAreaConhecimento LattesFormacaoAcademicaTitulacaoAreaConhecimento[]
+  LattesFormacaoAcademicaTitulacaoPalavraChave     LattesFormacaoAcademicaTitulacaoPalavraChave[]
 
   @@id([professorId, sequenciaFormacaoAcademica])
   @@index([agenciaFinanciadoraId])
@@ -999,8 +993,8 @@ model LattesFormacaoAcademicaTitulacaoAreaConhecimento {
   sequenciaFormacaoAcademica Int
   areaConhecimentoId         Int
 
-  formacaoAcademica LattesFormacaoAcademicaTitulacao @relation(fields: [professorId, sequenciaFormacaoAcademica], references: [professorId, sequenciaFormacaoAcademica])
-  areaConhecimento  LattesAreaConhecimento           @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
+  formacaoAcademicaTitulacao LattesFormacaoAcademicaTitulacao @relation(fields: [professorId, sequenciaFormacaoAcademica], references: [professorId, sequenciaFormacaoAcademica])
+  areaConhecimento           LattesAreaConhecimento           @relation(fields: [areaConhecimentoId], references: [areaConhecimentoId])
 
   @@id([professorId, sequenciaFormacaoAcademica, areaConhecimentoId])
   @@index([areaConhecimentoId])
@@ -1023,29 +1017,27 @@ model LattesFormacaoAcademicaTitulacaoPalavraChave {
 model LattesAtividadeProfissional {
   professorId                    Int
   sequenciaAtividadeProfissional Int
+  instituicaoEmpresaId           Int
+  unidadeInstituicaoEmpresaId    Int?
+  orgaoInstituicaoEmpresaId      Int?
+  tipoAtividadeProfissional      String? @db.VarChar(50)
+  linhaDePesquisaId              Int?
+  disciplina                     String? @db.VarChar(150)
+  codigoCurso                    String? @db.VarChar(25)
+  cursoId                        Int?
+  unidadeId                      String? @db.VarChar(25)
+  orgaoId                        String? @db.VarChar(25)
+  nomeUnidade                    String? @db.VarChar(150)
+  nomeOrgao                      String? @db.VarChar(150)
+  nomeCurso                      String? @db.VarChar(150)
 
-  instituicaoEmpresaId        Int
-  unidadeInstituicaoEmpresaId Int?
-  orgaoInstituicaoEmpresaId   Int?
-  tipoAtividadeProfissional   String? @db.VarChar(50)
-  linhaDePesquisaId           Int?
-  disciplina                  String? @db.VarChar(150)
-  codigoCurso                 String? @db.VarChar(25)
-  cursoId                     Int?
-  unidadeId                   String? @db.VarChar(25)
-  orgaoId                     String? @db.VarChar(25)
-  nomeUnidade                 String? @db.VarChar(150)
-  nomeOrgao                   String? @db.VarChar(150)
-  nomeCurso                   String? @db.VarChar(150)
-
-  professor                 LattesProfessor                  @relation(fields: [professorId], references: [professorId])
-  instituicaoEmpresa        LattesInstituicaoEmpresa         @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
-  unidadeInstituicaoEmpresa LattesUnidadeInstituicaoEmpresa? @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
-  orgaoInstituicaoEmpresa   LattesOrgaoInstituicaoEmpresa?   @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
-  curso                     LattesCurso?                     @relation(fields: [cursoId], references: [cursoId])
-  linhaDePesquisa           LattesLinhaDePesquisa?           @relation(fields: [linhaDePesquisaId], references: [linhaDePesquisaId])
-
-  vinculos LattesVinculoAtuacaoProfissional[]
+  professor                        LattesProfessor                    @relation(fields: [professorId], references: [professorId])
+  instituicaoEmpresa               LattesInstituicaoEmpresa           @relation(fields: [instituicaoEmpresaId], references: [instituicaoEmpresaId])
+  unidadeInstituicaoEmpresa        LattesUnidadeInstituicaoEmpresa?   @relation(fields: [unidadeInstituicaoEmpresaId], references: [unidadeInstituicaoEmpresaId])
+  orgaoInstituicaoEmpresa          LattesOrgaoInstituicaoEmpresa?     @relation(fields: [orgaoInstituicaoEmpresaId], references: [orgaoInstituicaoEmpresaId])
+  curso                            LattesCurso?                       @relation(fields: [cursoId], references: [cursoId])
+  linhaDePesquisa                  LattesLinhaDePesquisa?             @relation(fields: [linhaDePesquisaId], references: [linhaDePesquisaId])
+  LattesVinculoAtuacaoProfissional LattesVinculoAtuacaoProfissional[]
 
   @@id([professorId, sequenciaAtividadeProfissional])
   @@index([professorId])
@@ -1073,7 +1065,6 @@ model LattesVinculoAtuacaoProfissional {
 
   @@id([professorId, sequenciaAtividadeProfissional, sequenciaVinculoAtuacaoProfissional])
   @@index([professorId])
-  @@index([professorId, sequenciaAtividadeProfissional])
 }
 
 model LattesProjeto {
@@ -1500,14 +1491,4 @@ model LattesBancaJulgadoraPalavraChave {
   @@id([bancaJulgadoraId, palavraChaveId])
   @@index([bancaJulgadoraId])
   @@index([palavraChaveId])
-}
-
-model LattesJcr {
-  jcrId           Int      @id @default(autoincrement())
-  issn            String?  @db.VarChar(15)
-  tituloPeriodico String?  @db.VarChar(200)
-  impactFactor    Decimal? @db.Decimal(10, 5)
-  anoBase         Int
-
-  @@index([issn])
 }
