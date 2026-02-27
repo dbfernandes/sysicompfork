@@ -252,7 +252,8 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
                 '_TEXTO-RESUMO-CV-RH-EN'
               ]
             : '';
-        userDict['ultimaAtualizacao'] = parseDateDDMMYYYY(dataAtualizacao);
+        userDict['ultimaAtualizacao'] = new Date();
+        // userDict['ultimaAtualizacao'] = parseDateDDMMYYYY(dataAtualizacao);
         const formacao =
           xmlText['CURRICULO-VITAE']['DADOS-GERAIS'][
             'FORMACAO-ACADEMICA-TITULACAO'
