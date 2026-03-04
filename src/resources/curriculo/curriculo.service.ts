@@ -1,4 +1,13 @@
 import prisma from '@client/prismaClient';
+import xml2json from 'xml2json';
+import fs from 'fs/promises';
+
+import {
+  getAtuacoesProfissionais,
+  getDadosProfessor,
+  getFormacaoAcademicaTitulacao,
+  getPremiosTitulos,
+} from '@resources/curriculo/teste';
 
 enum LattesStatus {
   ATUALIZADO = 'ATUALIZADO',
@@ -108,6 +117,107 @@ class CurriculoService {
       numberNoRecords,
       professores: professorsData,
     };
+  }
+  async importarLattes(filePath: string, usuarioId: number) {
+    try {
+      const xml = await fs.readFile(filePath, 'utf-8');
+
+      const json = xml2json.toJson(xml, {
+        object: true,
+        trim: true,
+        sanitize: false,
+        coerce: false,
+      });
+
+      const curriculo = json['CURRICULO-VITAE'];
+
+      const professorDto = getDadosProfessor(curriculo);
+      const { instituicoes, atividades, vinculos } =
+        getAtuacoesProfissionais(curriculo);
+
+      await prisma.$transaction(async (tx) => {
+        // 🔥 1️⃣ Upsert do professor
+        const lattesProfessor = await tx.lattesProfessor.upsert({
+          where: { usuarioId },
+          update: professorDto,
+          create: {
+            usuarioId,
+            dataUltimaPublicacaoCurriculo: new Date(),
+            linkParaCurriculo: '',
+            ...professorDto,
+          },
+        });
+
+        const professorId = lattesProfessor.professorId;
+
+        // 🔥 2️⃣ Limpa dados antigos
+        await tx.lattesVinculoAtuacaoProfissional.deleteMany({
+          where: { professorId },
+        });
+
+        await tx.lattesAtividadeProfissional.deleteMany({
+          where: { professorId },
+        });
+
+        // 🔥 3️⃣ Criar instituições (sem duplicar)
+        const instituicoesCriadas: Record<string, number> = {};
+
+        for (const inst of instituicoes) {
+          const instituicao = await tx.lattesInstituicaoEmpresa.upsert({
+            where: {
+              codigoInstituicaoEmpresa: inst.codigoInstituicaoEmpresa,
+            },
+            update: {},
+            create: inst,
+          });
+
+          instituicoesCriadas[inst.codigoInstituicaoEmpresa] =
+            instituicao.instituicaoEmpresaId;
+        }
+
+        // 🔥 4️⃣ Criar atividades com FK correta
+        const atividadesCriadas = [];
+
+        for (const atividade of atividades) {
+          const codigo = curriculo['DADOS-GERAIS']?.[
+            'ATUACOES-PROFISSIONAIS'
+          ]?.['ATUACAO-PROFISSIONAL']?.find(
+            (a: any) =>
+              Number(a['SEQUENCIA-ATIVIDADE']) ===
+              atividade.sequenciaAtividadeProfissional,
+          )?.['CODIGO-INSTITUICAO'];
+
+          const instituicaoEmpresaId = instituicoesCriadas[codigo];
+
+          const atividadeCriada = await tx.lattesAtividadeProfissional.create({
+            data: {
+              professorId,
+              sequenciaAtividadeProfissional:
+                atividade.sequenciaAtividadeProfissional,
+              instituicaoEmpresaId,
+            },
+          });
+
+          atividadesCriadas.push(atividadeCriada);
+        }
+
+        // 🔥 5️⃣ Criar vínculos
+        await tx.lattesVinculoAtuacaoProfissional.createMany({
+          data: vinculos.map((v) => ({
+            ...v,
+            professorId,
+          })),
+        });
+      });
+
+      return {
+        sucesso: true,
+        message: 'Currículo importado com sucesso',
+      };
+    } catch (error) {
+      console.error('Erro ao importar Lattes:', error);
+      throw new Error('Erro ao importar currículo Lattes');
+    }
   }
 }
 

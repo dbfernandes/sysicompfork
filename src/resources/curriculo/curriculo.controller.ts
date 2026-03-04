@@ -17,6 +17,7 @@ import {
   PublicacaoParsed,
 } from '../projetos/projetos.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
+import { parseLattesXml } from '@resources/curriculo/teste';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -118,12 +119,12 @@ const carregar = (req, res: Response, next: NextFunction) => {
       const orientacoesParsed = JSON.parse(orientacoes)
         .orientacoes as OrientacaoParsed[];
 
-      // const curriculoFile = req.files?.curriculoXML?.[0];
+      const curriculoFile = req.files?.curriculoXML?.[0];
 
-      // if (curriculoFile) {
-      //   const xmlPath = curriculoFile.path;
-      //   await CurriculoService.importarLattes(xmlPath, professorIdParsed);
-      // }
+      if (curriculoFile) {
+        const xmlPath = curriculoFile.path;
+        await CurriculoService.importarLattes(xmlPath, professorIdParsed);
+      }
 
       // Transformação dos projetos para o formato esperado pelo service
       const projetosTransformed: ProjetoTransformed = {
