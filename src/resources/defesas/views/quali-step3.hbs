@@ -130,30 +130,149 @@
       </div></div></section>
 </div>
 
-<script>
-  $(document).ready(function() {
-    const resumoInput = $('#resumoOuAbstract');
-    const palavrasInput = $('#palavrasChaves');
-    const creditosRadios = $('input[name="creditosMinimosOk"]');
-    const btnContinuar = $('#btnContinuarStep3');
+{{> footer}}
 
-    function checkFormValidity() {
-      const resumoVal = resumoInput.val()?.trim() ?? '';
-      const palavrasVal = palavrasInput.val()?.trim() ?? '';
-      const creditosVal = $('input[name="creditosMinimosOk"]:checked').val();
-      
-      return resumoVal !== '' && palavrasVal !== '' && creditosVal;
-    }
+<script>
+  $(document).ready(function () {
+    const $form = $('#formStep3');
+    const $btnContinuar = $('#btnContinuarStep3');
+
+    const $resumo = $('#resumoOuAbstract');
+    const $palavras = $('#palavrasChaves');
+    const $creditos = $('input[name="creditosMinimosOk"]');
+
+    let hasTriedSubmit = false;
+
+    const validator = $form.validate({
+      ignore: ':hidden',
+
+      rules: {
+        resumoOuAbstract: {
+          required: true,
+          minlength: 10,
+          maxlength: 5000
+        },
+        palavrasChaves: {
+          required: true,
+          minlength: 3,
+          maxlength: 500
+        },
+        creditosMinimosOk: {
+          required: true
+        }
+      },
+
+      messages: {
+        resumoOuAbstract: {
+          required: 'Preencha o resumo do trabalho.',
+          minlength: 'O resumo deve ter pelo menos 10 caracteres.',
+          maxlength: 'O resumo pode ter no máximo 5000 caracteres.'
+        },
+        palavrasChaves: {
+          required: 'Informe as palavras-chave.',
+          minlength: 'Informe pelo menos uma palavra-chave.',
+          maxlength: 'As palavras-chave podem ter no máximo 500 caracteres.'
+        },
+        creditosMinimosOk: {
+          required: 'Informe se os créditos mínimos foram alcançados.'
+        }
+      },
+
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+
+        if (element.is(':radio')) {
+          // coloca a mensagem abaixo do bloco todo (form-group do rádio)
+          error.insertAfter(element.closest('.form-group'));
+          return;
+        }
+
+        element.closest('.form-group').append(error);
+      },
+
+      highlight: function (element) {
+        const $el = $(element);
+
+        if ($el.is(':radio')) {
+          $el.closest('.form-group').find('label').addClass('text-danger');
+          return;
+        }
+
+        $el.addClass('is-invalid');
+      },
+
+      unhighlight: function (element) {
+        const $el = $(element);
+
+        if ($el.is(':radio')) {
+          $el.closest('.form-group').find('label').removeClass('text-danger');
+          return;
+        }
+
+        $el.removeClass('is-invalid');
+      },
+
+      // antes do 1º submit: sem validação em tempo real
+      onkeyup: false,
+      onfocusout: false,
+      onclick: false,
+
+      // não mostra erros antes do 1º submit
+      showErrors: function () {
+        if (!hasTriedSubmit) return;
+        this.defaultShowErrors();
+      },
+
+      // ao tentar enviar e falhar, liga tempo real
+      invalidHandler: function () {
+        if (!hasTriedSubmit) {
+          hasTriedSubmit = true;
+
+          validator.settings.onkeyup = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+          validator.settings.onfocusout = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+          validator.settings.onclick = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+        }
+
+        updateButtonState();
+      },
+
+      submitHandler: function (form, e) {
+        e.preventDefault();
+
+        if (!hasTriedSubmit) hasTriedSubmit = true;
+
+        // valida e mostra erros agora (save e next)
+        if (!validator.form()) {
+          updateButtonState();
+          return;
+        }
+
+        form.submit();
+      }
+    });
 
     function updateButtonState() {
-      btnContinuar.prop('disabled', !checkFormValidity());
+      // checkForm() não exibe erros
+      const ok = validator.checkForm();
+      $btnContinuar.prop('disabled', !ok);
     }
 
-    resumoInput.on('input keyup', updateButtonState);
-    palavrasInput.on('input keyup', updateButtonState);
-    creditosRadios.on('change', updateButtonState);
-    updateButtonState(); 
+    // enquanto não submeteu, só controla botão; após submit inválido, o validator mostra em tempo real
+    $resumo.on('input keyup', updateButtonState);
+    $palavras.on('input keyup', updateButtonState);
+    $creditos.on('change', updateButtonState);
+
+    // estado inicial do botão (sem mostrar erros)
+    updateButtonState();
   });
 </script>
-
-{{> footer}}

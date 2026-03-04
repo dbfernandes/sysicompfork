@@ -113,24 +113,125 @@
         </div>
       </div></div></section>
 </div>
-
+{{> footer}}
 <script>
-  $(document).ready(function() {
-    const localInput = $('#local');
-    const btnContinuar = $('#btnContinuarStep2');
+  $(document).ready(function () {
+    const $form = $('#formStep2');
+    const $btnContinuar = $('#btnContinuarStep2');
+    const $local = $('#local');
 
-    function checkFormValidity() {
-      const localVal = localInput.val()?.trim() ?? '';
-      return localVal !== '';
-    }
+    // vem do servidor (handlebars). Se estiver PRESENCIAL, não exige URL.
+    const modalidade = '{{defesa.modalidade}}';
+    const isOnline = modalidade === 'ONLINE';
+
+    let hasTriedSubmit = false;
+
+    // Método de URL simples (http/https). Aceita meet/teams/etc.
+    $.validator.addMethod(
+      'urlHttp',
+      function (value, element) {
+        const v = (value || '').trim();
+        if (this.optional(element)) return true;
+        return /^https?:\/\/\S+$/i.test(v);
+      },
+      'Informe um link válido (comece com http:// ou https://).'
+    );
+
+    const validator = $form.validate({
+      ignore: ':hidden',
+
+      rules: {
+        local: {
+          required: true,
+          maxlength: 500,
+          urlHttp: function () {
+            return isOnline; // só valida URL se for ONLINE
+          }
+        }
+      },
+
+      messages: {
+        local: {
+          required: isOnline
+            ? 'Informe o link da reunião.'
+            : 'Informe o local da defesa.',
+          maxlength: 'O campo pode ter no máximo 500 caracteres.'
+        }
+      },
+
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+
+      // Antes do 1º submit: sem validação em tempo real
+      onkeyup: false,
+      onfocusout: false,
+      onclick: false,
+
+      // Não mostrar erros antes do 1º submit
+      showErrors: function () {
+        if (!hasTriedSubmit) return;
+        this.defaultShowErrors();
+      },
+
+      // Se tentou enviar e estava inválido, liga tempo real a partir daí
+      invalidHandler: function () {
+        if (!hasTriedSubmit) {
+          hasTriedSubmit = true;
+
+          validator.settings.onkeyup = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+          validator.settings.onfocusout = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+          validator.settings.onclick = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+        }
+
+        updateButtonState();
+      },
+
+      submitHandler: function (form, e) {
+        e.preventDefault();
+
+        // marca tentativa
+        if (!hasTriedSubmit) hasTriedSubmit = true;
+
+        // valida e mostra erros agora
+        if (!validator.form()) {
+          updateButtonState();
+          return;
+        }
+
+        form.submit();
+      }
+    });
 
     function updateButtonState() {
-      btnContinuar.prop('disabled', !checkFormValidity());
+      // checkForm() não exibe erros
+      const ok = validator.checkForm();
+      $btnContinuar.prop('disabled', !ok);
     }
 
-    localInput.on('input keyup', updateButtonState);
+    // Atualiza botão conforme digita, mas sem exibir erro antes do submit
+    $local.on('input change keyup', updateButtonState);
+
+    // estado inicial do botão
     updateButtonState();
   });
 </script>
-
-{{> footer}}
