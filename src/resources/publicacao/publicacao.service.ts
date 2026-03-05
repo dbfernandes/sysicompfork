@@ -16,7 +16,7 @@ class PublicacaoService {
         professorId,
         tipos,
       );
-
+      console.log(publicArr);
       const professor = await prisma.usuario.findUnique({
         where: { id: professorId },
         include: {

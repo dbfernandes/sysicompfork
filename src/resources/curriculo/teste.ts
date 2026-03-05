@@ -171,7 +171,6 @@ export function getFormacaoAcademicaTitulacao(
   if (!dadosGerais) return [];
 
   const formacaoContainer = dadosGerais['FORMACAO-ACADEMICA-TITULACAO'];
-
   if (!formacaoContainer) return [];
 
   const tiposFormacao = [
@@ -257,7 +256,7 @@ export function getAtuacoesProfissionais(xml: XmlJson) {
   }
 
   const atuacoes = toArray(atuacoesRoot['ATUACAO-PROFISSIONAL']);
-
+  console.log(atuacoes);
   const instituicoesMap = new Map<string, LattesInstituicaoEmpresaDto>();
 
   const atividades: LattesAtividadeProfissionalDto[] = [];

@@ -35,6 +35,11 @@ function addMonths(date: Date, months: number) {
 function toYearRange(from: Date, to: Date) {
   return { fromYear: from.getFullYear(), toYear: to.getFullYear() };
 }
+// se você já tem isso em outro lugar, reaproveite
+function toArray<T>(value: T | T[] | undefined): T[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
 
 class CurriculoService {
   async getAcompanhamentoLattes() {
@@ -130,13 +135,32 @@ class CurriculoService {
       });
 
       const curriculo = json['CURRICULO-VITAE'];
+      if (!curriculo) {
+        throw new Error('XML inválido: CURRICULO-VITAE não encontrado');
+      }
 
       const professorDto = getDadosProfessor(curriculo);
+      const premios = getPremiosTitulos(curriculo);
+      const formacoes = getFormacaoAcademicaTitulacao(curriculo);
       const { instituicoes, atividades, vinculos } =
         getAtuacoesProfissionais(curriculo);
 
+      // 🔥 Mapa: sequenciaAtividade -> codigoInstituicao
+      const atuacoesXml = toArray(
+        curriculo?.['DADOS-GERAIS']?.['ATUACOES-PROFISSIONAIS']?.[
+          'ATUACAO-PROFISSIONAL'
+        ],
+      );
+
+      const codigoPorSequencia = new Map<number, string | undefined>();
+      for (const a of atuacoesXml) {
+        const seq = Number(a?.['SEQUENCIA-ATIVIDADE']);
+        const cod = a?.['CODIGO-INSTITUICAO'];
+        if (!Number.isNaN(seq)) codigoPorSequencia.set(seq, cod);
+      }
+
       await prisma.$transaction(async (tx) => {
-        // 🔥 1️⃣ Upsert do professor
+        // 1) Upsert do professor
         const lattesProfessor = await tx.lattesProfessor.upsert({
           where: { usuarioId },
           update: professorDto,
@@ -150,70 +174,235 @@ class CurriculoService {
 
         const professorId = lattesProfessor.professorId;
 
-        // 🔥 2️⃣ Limpa dados antigos
+        // 2) Limpa dados antigos (ordem por FK)
+        await tx.lattesPremioOuTitulo.deleteMany({ where: { professorId } });
         await tx.lattesVinculoAtuacaoProfissional.deleteMany({
           where: { professorId },
         });
-
         await tx.lattesAtividadeProfissional.deleteMany({
           where: { professorId },
         });
 
-        // 🔥 3️⃣ Criar instituições (sem duplicar)
-        const instituicoesCriadas: Record<string, number> = {};
+        // 🔥 2.5) Limpa formações antigas
+        await tx.lattesFormacaoAcademicaTitulacao.deleteMany({
+          where: { professorId },
+        });
 
-        for (const inst of instituicoes) {
-          const instituicao = await tx.lattesInstituicaoEmpresa.upsert({
+        // 🔥 2.6) Insere formações (reimport total)
+        for (const f of formacoes) {
+          await tx.lattesFormacaoAcademicaTitulacao.upsert({
             where: {
-              codigoInstituicaoEmpresa: inst.codigoInstituicaoEmpresa,
+              professorId_sequenciaFormacaoAcademica: {
+                professorId,
+                sequenciaFormacaoAcademica: f.sequenciaFormacaoAcademica,
+              },
             },
-            update: {},
-            create: inst,
-          });
+            update: {
+              tipoFormacao: f.tipoFormacao,
+              nivelFormacaoAcademica: f.nivelFormacaoAcademica ?? null,
+              codigoCurso: f.codigoCurso ?? null,
+              nomeCurso: f.nomeCurso ?? null,
 
-          instituicoesCriadas[inst.codigoInstituicaoEmpresa] =
-            instituicao.instituicaoEmpresaId;
+              codigoInstituicaoEmpresa: f.codigoInstituicaoEmpresa ?? null,
+              nomeInstituicaoEmpresa: f.nomeInstituicaoEmpresa ?? null,
+
+              statusDoCurso: f.statusDoCurso ?? null,
+              anoInicio: f.anoInicio ?? null,
+              anoConclusao: f.anoConclusao ?? null,
+              anoObtencaoTitulo: f.anoObtencaoTitulo ?? null,
+
+              tituloTrabalhoConclusaoCurso:
+                f.tituloTrabalhoConclusaoCurso ?? null,
+              nomeOrientador: f.nomeOrientador ?? null,
+
+              tipoBolsa: (f as any).tipoBolsa ?? null, // se você adicionar no DTO, tira esse any
+              codigoAgenciaFinanciadora: f.codigoAgenciaFinanciadora ?? null,
+              nomeAgenciaFinanciadora: f.nomeAgenciaFinanciadora ?? null,
+
+              // Se você quiser preencher essas colunas textuais quando existirem no XML
+              // (e incluir no DTO depois), deixe aqui:
+              // codigoInstituicaoEmpresaOutra: f.codigoInstituicaoEmpresaOutra ?? null,
+              // nomeInstituicaoEmpresaOutra: f.nomeInstituicaoEmpresaOutra ?? null,
+              // codigoOrgaoInstituicaoEmpresa: f.codigoOrgaoInstituicaoEmpresa ?? null,
+              // nomeOrgaoInstituicaoEmpresa: f.nomeOrgaoInstituicaoEmpresa ?? null,
+              // codigoUnidadeInstituicaoEmpresa: f.codigoUnidadeInstituicaoEmpresa ?? null,
+              // nomeUnidadeInstituicaoEmpresa: f.nomeUnidadeInstituicaoEmpresa ?? null,
+
+              // FKs ficam null por enquanto (normalização opcional depois)
+              cursoId: null,
+              instituicaoEmpresaId: null,
+              orgaoInstituicaoEmpresaId: null,
+              unidadeInstituicaoEmpresaId: null,
+              orientadorId: null,
+              agenciaFinanciadoraId: null,
+            },
+            create: {
+              professorId,
+              sequenciaFormacaoAcademica: f.sequenciaFormacaoAcademica,
+
+              tipoFormacao: f.tipoFormacao,
+              nivelFormacaoAcademica: f.nivelFormacaoAcademica ?? null,
+              codigoCurso: f.codigoCurso ?? null,
+              nomeCurso: f.nomeCurso ?? null,
+
+              codigoInstituicaoEmpresa: f.codigoInstituicaoEmpresa ?? null,
+              nomeInstituicaoEmpresa: f.nomeInstituicaoEmpresa ?? null,
+
+              statusDoCurso: f.statusDoCurso ?? null,
+              anoInicio: f.anoInicio ?? null,
+              anoConclusao: f.anoConclusao ?? null,
+              anoObtencaoTitulo: f.anoObtencaoTitulo ?? null,
+
+              tituloTrabalhoConclusaoCurso:
+                f.tituloTrabalhoConclusaoCurso ?? null,
+              nomeOrientador: f.nomeOrientador ?? null,
+
+              tipoBolsa: (f as any).tipoBolsa ?? null,
+              codigoAgenciaFinanciadora: f.codigoAgenciaFinanciadora ?? null,
+              nomeAgenciaFinanciadora: f.nomeAgenciaFinanciadora ?? null,
+
+              cursoId: null,
+              instituicaoEmpresaId: null,
+              orgaoInstituicaoEmpresaId: null,
+              unidadeInstituicaoEmpresaId: null,
+              orientadorId: null,
+              agenciaFinanciadoraId: null,
+            },
+          });
         }
 
-        // 🔥 4️⃣ Criar atividades com FK correta
-        const atividadesCriadas = [];
+        // 3) Upsert/criação de instituições (sem quebrar quando código é null)
+        const instituicoesCriadas = new Map<string, number>();
 
+        for (const inst of instituicoes) {
+          const codigo = inst.codigoInstituicaoEmpresa?.trim();
+          const nome = inst.nomeInstituicaoEmpresa?.trim();
+
+          // Se tiver código, dá pra usar upsert (unique)
+          if (codigo) {
+            const instituicao = await tx.lattesInstituicaoEmpresa.upsert({
+              where: { codigoInstituicaoEmpresa: codigo },
+              update: {
+                // se quiser atualizar nome quando vier vazio no banco:
+                ...(nome ? { nomeInstituicaoEmpresa: nome } : {}),
+              },
+              create: {
+                codigoInstituicaoEmpresa: codigo,
+                nomeInstituicaoEmpresa: nome ?? null,
+              },
+            });
+            instituicoesCriadas.set(codigo, instituicao.instituicaoEmpresaId);
+            continue;
+          }
+
+          // Sem código: tenta reusar por nome (evita duplicar um pouco)
+          if (nome) {
+            const existente = await tx.lattesInstituicaoEmpresa.findFirst({
+              where: { nomeInstituicaoEmpresa: nome },
+              select: { instituicaoEmpresaId: true },
+            });
+
+            if (existente) {
+              // chave de fallback por nome
+              instituicoesCriadas.set(
+                `__NOME__:${nome}`,
+                existente.instituicaoEmpresaId,
+              );
+            } else {
+              const criada = await tx.lattesInstituicaoEmpresa.create({
+                data: {
+                  codigoInstituicaoEmpresa: null,
+                  nomeInstituicaoEmpresa: nome,
+                },
+                select: { instituicaoEmpresaId: true },
+              });
+              instituicoesCriadas.set(
+                `__NOME__:${nome}`,
+                criada.instituicaoEmpresaId,
+              );
+            }
+          }
+        }
+
+        // 4) Criar atividades com FK correta
         for (const atividade of atividades) {
-          const codigo = curriculo['DADOS-GERAIS']?.[
-            'ATUACOES-PROFISSIONAIS'
-          ]?.['ATUACAO-PROFISSIONAL']?.find(
-            (a: any) =>
-              Number(a['SEQUENCIA-ATIVIDADE']) ===
-              atividade.sequenciaAtividadeProfissional,
-          )?.['CODIGO-INSTITUICAO'];
+          const seq = atividade.sequenciaAtividadeProfissional;
+          const codigo = codigoPorSequencia.get(seq)?.trim();
 
-          const instituicaoEmpresaId = instituicoesCriadas[codigo];
+          // resolve instituicaoEmpresaId:
+          let instituicaoEmpresaId: number | undefined;
 
-          const atividadeCriada = await tx.lattesAtividadeProfissional.create({
+          if (codigo) {
+            instituicaoEmpresaId = instituicoesCriadas.get(codigo);
+          } else {
+            // fallback por nome (se existir no XML)
+            const nome = atuacoesXml
+              .find((a: any) => Number(a?.['SEQUENCIA-ATIVIDADE']) === seq)
+              ?.['NOME-INSTITUICAO']?.trim();
+
+            if (nome) {
+              instituicaoEmpresaId = instituicoesCriadas.get(
+                `__NOME__:${nome}`,
+              );
+            }
+          }
+
+          // Se ainda não achou, você pode:
+          // - lançar erro (mais rígido)
+          // - ou criar uma instituição "desconhecida" (mais permissivo)
+          if (!instituicaoEmpresaId) {
+            // modo rígido:
+            // throw new Error(`Instituição não resolvida para atividade seq=${seq}`)
+
+            // modo permissivo (recomendado pra não travar import):
+            const criada = await tx.lattesInstituicaoEmpresa.create({
+              data: {
+                codigoInstituicaoEmpresa: codigo ?? null,
+                nomeInstituicaoEmpresa:
+                  atuacoesXml.find(
+                    (a: any) => Number(a?.['SEQUENCIA-ATIVIDADE']) === seq,
+                  )?.['NOME-INSTITUICAO'] ?? null,
+              },
+              select: { instituicaoEmpresaId: true },
+            });
+            instituicaoEmpresaId = criada.instituicaoEmpresaId;
+            if (codigo) instituicoesCriadas.set(codigo, instituicaoEmpresaId);
+          }
+
+          await tx.lattesAtividadeProfissional.create({
             data: {
               professorId,
-              sequenciaAtividadeProfissional:
-                atividade.sequenciaAtividadeProfissional,
+              sequenciaAtividadeProfissional: seq,
               instituicaoEmpresaId,
             },
           });
-
-          atividadesCriadas.push(atividadeCriada);
         }
 
-        // 🔥 5️⃣ Criar vínculos
-        await tx.lattesVinculoAtuacaoProfissional.createMany({
-          data: vinculos.map((v) => ({
-            ...v,
-            professorId,
-          })),
-        });
+        // 5) Criar vínculos (depende de professorId e sequenciaAtividadeProfissional)
+        if (vinculos.length) {
+          await tx.lattesVinculoAtuacaoProfissional.createMany({
+            data: vinculos.map((v) => ({
+              ...v,
+              professorId,
+            })),
+            skipDuplicates: true, // ajuda se o XML tiver repetição
+          });
+        }
+
+        // 6) Criar prêmios (pode ser createMany)
+        if (premios.length) {
+          await tx.lattesPremioOuTitulo.createMany({
+            data: premios.map((p) => ({
+              professorId,
+              anoPremioOuTitulo: p.anoPremioOuTitulo,
+              nomeEntidadePromotora: p.nomeEntidadePromotora ?? null,
+              nomePremioOuTitulo: p.nomePremioOuTitulo ?? null,
+            })),
+          });
+        }
       });
 
-      return {
-        sucesso: true,
-        message: 'Currículo importado com sucesso',
-      };
+      return { sucesso: true, message: 'Currículo importado com sucesso' };
     } catch (error) {
       console.error('Erro ao importar Lattes:', error);
       throw new Error('Erro ao importar currículo Lattes');

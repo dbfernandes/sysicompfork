@@ -308,6 +308,7 @@ model UsuarioPublicacao {
   usuario      Usuario    @relation(fields: [usuarioId], references: [id])
   publicacao   Publicacao @relation(fields: [publicacaoId], references: [id])
 
+  @@unique([usuarioId, publicacaoId], name: "usuarioId_publicacaoId")
   @@index([usuarioId])
   @@index([publicacaoId])
 }
@@ -1075,7 +1076,7 @@ model LattesVinculoAtuacaoProfissional {
   cargaHorariaSemanal            Int?
   anoInicio                      Int?
   anoFim                         Int?
-  outrasInformacoes              String? @db.VarChar(250)
+  outrasInformacoes              String? @db.VarChar(1000)
 
   atividadeProfissional LattesAtividadeProfissional @relation(fields: [professorId, sequenciaAtividadeProfissional], references: [professorId, sequenciaAtividadeProfissional])
 
