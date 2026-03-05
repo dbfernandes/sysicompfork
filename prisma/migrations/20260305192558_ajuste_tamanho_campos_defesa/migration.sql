@@ -1,3 +1,10 @@
+-- AlterTable
+ALTER TABLE `DefesaFinalExtra` MODIFY `resumoPt` LONGTEXT NOT NULL,
+    MODIFY `palavrasChavePt` TEXT NOT NULL,
+    MODIFY `abstractEn` LONGTEXT NOT NULL,
+    MODIFY `keywordsEn` TEXT NOT NULL,
+    MODIFY `idiomaTese` VARCHAR(500) NOT NULL;
+
 -- CreateTable
 CREATE TABLE `LattesAgenciaFinanciadora` (
     `agenciaFinanciadoraId` INTEGER NOT NULL AUTO_INCREMENT,
