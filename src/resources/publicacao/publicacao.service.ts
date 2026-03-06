@@ -9,8 +9,7 @@ class PublicacaoService {
     professorId: number,
     publicacoes: Partial<Publicacao>[],
   ): Promise<void> {
-    if (publicacoes === undefined) return;
-
+    if (!Object.keys(publicacoes).length) return;
     const tipos = await prisma.tipoPublicacao.findMany();
     const publicArrRaw = await getPublicationsArr(
       publicacoes,
@@ -18,144 +17,141 @@ class PublicacaoService {
       tipos,
     );
 
-    // garante campos obrigatórios do model (autores/issn) + normalizações
-    const publicArr = publicArrRaw.map((p) => {
-      const titulo = (p.titulo ?? '').trim();
-      const autores = (p.autores ?? '').trim(); // obrigatório no schema
-      const issn = (p.issn ?? '').trim(); // obrigatório no schema
+    const normTitle = (s: string) =>
+      (s ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-      if (!titulo) throw new Error('Publicação sem título (titulo vazio).');
-      if (!p.ano || Number.isNaN(Number(p.ano))) {
-        throw new Error(`Publicação "${titulo}" com ano inválido.`);
-      }
-      if (!p.tipoId) throw new Error(`Publicação "${titulo}" sem tipoId.`);
+    const normLocal = (s: string | null | undefined) =>
+      (s ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-      return {
-        ...p,
-        titulo,
-        autores,
-        issn,
-      } as Prisma.PublicacaoCreateInput; // ou Prisma.PublicacaoUncheckedCreateInput
-    });
+    // valida + garante obrigatórios do schema
+    const publicArr = publicArrRaw
+      .map((p) => {
+        const titulo = (p.titulo ?? '').trim();
+        const ano = Number(p.ano);
+        const tipoId = Number(p.tipoId);
+
+        if (!titulo) return null;
+        if (!Number.isFinite(ano) || ano <= 0) return null;
+        if (!Number.isFinite(tipoId) || tipoId <= 0) return null;
+
+        const autores = (p.autores ?? '').trim() || 'Não informado';
+        const issn = (p.issn ?? '').trim() || 'Não informado';
+
+        return {
+          ...p,
+          titulo,
+          ano,
+          tipoId,
+          autores,
+          issn,
+        } as Prisma.PublicacaoUncheckedCreateInput;
+      })
+      .filter((x): x is Prisma.PublicacaoUncheckedCreateInput => !!x);
+
+    if (!publicArr.length) return;
 
     await prisma.$transaction(async (tx) => {
-      const professor = await tx.usuario.findUnique({
-        where: { id: professorId },
-        include: {
-          publicacoes: { include: { publicacao: true } },
-        },
+      // 1) Apaga todas as relações do professor
+      await tx.usuarioPublicacao.deleteMany({
+        where: { usuarioId: professorId },
       });
 
-      const publicacoesExistentes =
-        professor?.publicacoes.map((rel) => rel.publicacao) || [];
-
-      // Remove relações antigas do professor e apaga publicações órfãs (iguais ao teu fluxo)
-      if (publicacoesExistentes.length > 0) {
-        const idsExistentes = publicacoesExistentes.map((p) => p.id);
-
-        const todasRelacoes = await tx.usuarioPublicacao.findMany({
-          where: { publicacaoId: { in: idsExistentes } },
-          select: { publicacaoId: true, usuarioId: true },
-        });
-
-        const idsAExcluir = idsExistentes.filter((publicacaoId) => {
-          const outraRelacao = todasRelacoes.find(
-            (e) =>
-              e.publicacaoId === publicacaoId && e.usuarioId !== professorId,
-          );
-          return !outraRelacao;
-        });
-
-        await tx.usuario.update({
-          where: { id: professorId },
-          data: {
-            publicacoes: {
-              deleteMany: { publicacaoId: { in: idsAExcluir } },
-            },
-          },
-        });
-
-        if (idsAExcluir.length) {
-          await tx.publicacao.deleteMany({
-            where: { id: { in: idsAExcluir } },
-          });
-        }
-      }
-
-      // Pré-carrega por (ano+tipoId) pra reduzir consultas dentro do loop
-      const pares = new Map<string, { ano: number; tipoId: number }>();
-      for (const p of publicArr)
-        pares.set(`${p.ano}:${p.tipoId}`, { ano: p.ano, tipoId: p.tipoId });
-
-      const paresArr = Array.from(pares.values());
-      const existentesPorAnoTipo = await tx.publicacao.findMany({
-        where: {
-          OR: paresArr.map(({ ano, tipoId }) => ({ ano, tipoId })),
-        },
-        select: { id: true, titulo: true, ano: true, tipoId: true, issn: true },
+      // 2) Apaga publicações órfãs (sem nenhuma relação)
+      const orfas = await tx.publicacao.findMany({
+        where: { usuarioPublicacoes: { none: {} } },
+        select: { id: true },
       });
 
-      const bucket = new Map<string, typeof existentesPorAnoTipo>();
-      for (const e of existentesPorAnoTipo) {
-        const key = `${e.ano}:${e.tipoId}`;
-        const arr = bucket.get(key) ?? [];
-        arr.push(e);
-        bucket.set(key, arr);
+      if (orfas.length) {
+        await tx.publicacao.deleteMany({
+          where: { id: { in: orfas.map((o) => o.id) } },
+        });
       }
 
-      // helper simples pra normalizar título antes do levenshtein
-      const norm = (s: string) =>
-        s
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, ' ')
-          .trim();
-
+      // 3) Para cada publicação do input:
+      //    - tenta achar uma existente por similaridade do título (mesmo ano + tipo)
+      //    - se não achar, cria
+      //    - cria a relação usuarioPublicacao (upsert pelo unique composto)
       for (const pub of publicArr) {
-        const key = `${pub.ano}:${pub.tipoId}`;
-        const candidatos = bucket.get(key) ?? [];
+        const alvoTitulo = normTitle(pub.titulo);
+        const alvoLocal = normLocal(pub.local);
 
-        // 1) se tiver ISSN, tenta bater por ISSN primeiro (bem mais confiável)
-        let unica = pub.issn
-          ? candidatos.find((c) => c.issn && c.issn === pub.issn)
-          : undefined;
+        const candidatos = await tx.publicacao.findMany({
+          where: { ano: pub.ano, tipoId: pub.tipoId },
+          select: { id: true, titulo: true, local: true },
+        });
 
-        // 2) senão, tenta bater por similaridade do título
-        if (!unica) {
-          const alvo = norm(pub.titulo);
-          unica = candidatos.find((c) => distance(norm(c.titulo), alvo) <= 3);
+        // tolerância do título (você estava usando 1% — eu manteria 2%~3% pra título)
+        const maxDistTitulo = Math.min(
+          10,
+          Math.max(2, Math.floor(Math.max(alvoTitulo.length, 1) * 0.02)),
+        );
+
+        // tolerância do local (local costuma ser pequeno: congresso/jornal)
+        const maxDistLocal = Math.min(
+          8,
+          Math.max(1, Math.floor(Math.max(alvoLocal.length, 1) * 0.15)),
+        );
+
+        let best: { id: number; dTitulo: number; dLocal: number } | null = null;
+
+        for (const c of candidatos) {
+          const candTitulo = normTitle(c.titulo);
+          const dTitulo = distance(candTitulo, alvoTitulo);
+          if (dTitulo > maxDistTitulo) continue;
+
+          // Se o input tem local, exige match de local também
+          let dLocal = 0;
+          if (alvoLocal) {
+            const candLocal = normLocal(c.local);
+            dLocal = distance(candLocal, alvoLocal);
+            if (dLocal > maxDistLocal) continue;
+          }
+
+          // escolhe o melhor: primeiro menor distância do título; empate -> menor do local
+          if (
+            !best ||
+            dTitulo < best.dTitulo ||
+            (dTitulo === best.dTitulo && dLocal < best.dLocal)
+          ) {
+            best = { id: c.id, dTitulo, dLocal };
+          }
+
+          // match perfeito (título igual e, se houver local, local igual)
+          if (dTitulo === 0 && (!alvoLocal || dLocal === 0)) break;
         }
 
-        // 3) cria se não achou
-        if (!unica) {
-          const criada = await tx.publicacao.create({ data: pub });
-          unica = {
-            id: criada.id,
-            titulo: criada.titulo,
-            ano: criada.ano,
-            tipoId: criada.tipoId,
-            issn: criada.issn,
-          };
-
-          // mantém o bucket atualizado pra evitar duplicar dentro do mesmo batch
-          candidatos.push(unica);
-          bucket.set(key, candidatos);
+        let publicacaoId: number;
+        if (best) {
+          publicacaoId = best.id;
+        } else {
+          const criada = await tx.publicacao.create({
+            data: pub,
+            select: { id: true },
+          });
+          publicacaoId = criada.id;
         }
 
-        // 4) cria relação sem duplicar
-        // (recomendo ter unique([usuarioId, publicacaoId]) no model UsuarioPublicacao)
         await tx.usuarioPublicacao.upsert({
           where: {
             usuarioId_publicacaoId: {
               usuarioId: professorId,
-              publicacaoId: unica.id,
+              publicacaoId,
             },
           },
-          create: {
-            usuarioId: professorId,
-            publicacaoId: unica.id,
-          },
+          create: { usuarioId: professorId, publicacaoId },
           update: {},
         });
       }
