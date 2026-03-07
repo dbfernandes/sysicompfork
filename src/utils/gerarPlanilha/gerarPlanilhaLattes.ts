@@ -33,7 +33,7 @@ export default async function gerarPlanilhaNumerosLattes() {
     { header: 'Trabalhos Técnicos', key: 'tec', width: 18 },
     { header: 'Prefácios', key: 'pre', width: 14 },
 
-    { header: 'Iniciação Cientí.', key: 'ini_cie', width: 14 },
+    { header: 'Iniciação Cientí.', key: 'ini_cie', width: 16 },
     { header: 'TCC', key: 'tcc', width: 8 },
     { header: 'Mestrado', key: 'mes', width: 12 },
     { header: 'Doutorado', key: 'dou', width: 12 },
@@ -43,11 +43,58 @@ export default async function gerarPlanilhaNumerosLattes() {
     { header: 'Status', key: 'status', width: 16 },
   ];
 
-  const headerRow = ws.getRow(1);
+  // =========================================
+  // ✅ NOVO: Linha acima com grupos (merge)
+  // =========================================
+  ws.insertRow(1, []); // insere uma linha no topo
+
+  // Mescla e escreve os títulos dos grupos
+  // Publicações: colunas 4..9 (D..I)
+  ws.mergeCells(1, 3, 1, 9);
+  ws.getCell(1, 3).value = 'Publicações';
+
+  // Orientações: colunas 10..14 (J..N)
+  ws.mergeCells(1, 10, 1, 14);
+  ws.getCell(1, 10).value = 'Orientações';
+
+  const pubCell = ws.getCell(1, 3);
+  pubCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF38761D' },
+  };
+  pubCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  pubCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+  // Orientações (célula mesclada 1,10)
+  const oriCell = ws.getCell(1, 10);
+  oriCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF7F6000' },
+  };
+  oriCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  oriCell.alignment = { vertical: 'middle', horizontal: 'center' };
+  // (opcional) estiliza os grupos
+  const groupRow = ws.getRow(1);
+  groupRow.height = 18;
+
+  function styleGroupCell(cell: exceljs.Cell) {
+    cell.font = { bold: true };
+    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+  }
+  styleGroupCell(ws.getCell(1, 4));
+  styleGroupCell(ws.getCell(1, 10));
+
+  // =========================================
+  // Header real agora virou linha 2
+  // =========================================
+  const headerRow = ws.getRow(2);
   headerRow.font = { bold: true };
   headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
   headerRow.height = 18;
 
+  // Dados começam na linha 3 agora
   for (const p of data.professores ?? []) {
     const orientacoes = p.orientacoes ?? [];
     const inic = orientacoes.filter(
@@ -80,7 +127,8 @@ export default async function gerarPlanilhaNumerosLattes() {
     });
   }
 
-  ws.views = [{ state: 'frozen', ySplit: 1 }];
+  // Congela 2 linhas (grupos + header)
+  ws.views = [{ state: 'frozen', ySplit: 2 }];
 
   ws.getColumn('nome').alignment = { horizontal: 'left' };
   for (const key of [
@@ -103,7 +151,6 @@ export default async function gerarPlanilhaNumerosLattes() {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }
 
-  // ✅ Não salva em disco: gera em memória
   const arrayBuffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(arrayBuffer);
 }
