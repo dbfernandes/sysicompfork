@@ -17,6 +17,7 @@ import {
   PublicacaoParsed,
 } from '../projetos/projetos.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
+import gerarPlanilhaNumerosLattes from '@utils/gerarPlanilha/gerarPlanilhaLattes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -164,4 +165,32 @@ const carregar = (req, res: Response, next: NextFunction) => {
   });
 };
 
-export default { visualizarCurriculo, verificarAvatar, viewData, carregar };
+const geraPlanilha = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const buffer = await gerarPlanilhaNumerosLattes();
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="numeros-lattes.xlsx"',
+    );
+    res.end(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default {
+  visualizarCurriculo,
+  verificarAvatar,
+  viewData,
+  carregar,
+  geraPlanilha,
+};

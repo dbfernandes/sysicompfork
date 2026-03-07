@@ -57,6 +57,7 @@ class CurriculoService {
           select: {
             tipo: true,
             ano: true,
+            natureza: true,
           },
         },
         premios: {
