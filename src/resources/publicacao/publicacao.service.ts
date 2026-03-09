@@ -2,97 +2,160 @@ import prisma from '@client/prismaClient';
 import { Prisma, Publicacao } from '@prisma/client';
 import { distance } from 'fastest-levenshtein';
 import getPublicationsArr from '../../utils/listaPublicacoes';
-import { ContagemResult, PublicacaoCount } from './publicacao.types';
+import { ContagemResult } from '@resources/publicacao/publicacao.types';
 
 class PublicacaoService {
   async adicionarVarios(
     professorId: number,
     publicacoes: Partial<Publicacao>[],
   ): Promise<void> {
-    if (publicacoes !== undefined) {
-      const tipos = await prisma.tipoPublicacao.findMany();
-      const publicArr = await getPublicationsArr(
-        publicacoes,
-        professorId,
-        tipos,
-      );
-      console.log(publicArr);
-      const professor = await prisma.usuario.findUnique({
-        where: { id: professorId },
-        include: {
-          publicacoes: {
-            include: {
-              publicacao: true,
-            },
-          },
-        },
+    if (!Object.keys(publicacoes).length) return;
+    const tipos = await prisma.tipoPublicacao.findMany();
+    const publicArrRaw = await getPublicationsArr(
+      publicacoes,
+      professorId,
+      tipos,
+    );
+
+    const normTitle = (s: string) =>
+      (s ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const normLocal = (s: string | null | undefined) =>
+      (s ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    // valida + garante obrigatórios do schema
+    const publicArr = publicArrRaw
+      .map((p) => {
+        const titulo = (p.titulo ?? '').trim();
+        const ano = Number(p.ano);
+        const tipoId = Number(p.tipoId);
+
+        if (!titulo) return null;
+        if (!Number.isFinite(ano) || ano <= 0) return null;
+        if (!Number.isFinite(tipoId) || tipoId <= 0) return null;
+
+        const autores = (p.autores ?? '').trim() || 'Não informado';
+        const issn = (p.issn ?? '').trim() || 'Não informado';
+
+        return {
+          ...p,
+          titulo,
+          ano,
+          tipoId,
+          autores,
+          issn,
+        } as Prisma.PublicacaoUncheckedCreateInput;
+      })
+      .filter((x): x is Prisma.PublicacaoUncheckedCreateInput => !!x);
+
+    if (!publicArr.length) return;
+
+    await prisma.$transaction(async (tx) => {
+      // 1) Apaga todas as relações do professor
+      await tx.usuarioPublicacao.deleteMany({
+        where: { usuarioId: professorId },
       });
 
-      const publicacoesExistentes =
-        professor?.publicacoes.map((rel) => rel.publicacao) || [];
-      if (publicacoesExistentes.length > 0) {
-        const idPublicacoesExistentes = publicacoesExistentes.map((p) => p.id);
+      // 2) Apaga publicações órfãs (sem nenhuma relação)
+      const orfas = await tx.publicacao.findMany({
+        where: { usuarioPublicacoes: { none: {} } },
+        select: { id: true },
+      });
 
-        const todasRelacoes = await prisma.usuarioPublicacao.findMany({
-          where: {
-            publicacaoId: { in: idPublicacoesExistentes },
-          },
+      if (orfas.length) {
+        await tx.publicacao.deleteMany({
+          where: { id: { in: orfas.map((o) => o.id) } },
+        });
+      }
+
+      // 3) Para cada publicação do input:
+      //    - tenta achar uma existente por similaridade do título (mesmo ano + tipo)
+      //    - se não achar, cria
+      //    - cria a relação usuarioPublicacao (upsert pelo unique composto)
+      for (const pub of publicArr) {
+        const alvoTitulo = normTitle(pub.titulo);
+        const alvoLocal = normLocal(pub.local);
+
+        const candidatos = await tx.publicacao.findMany({
+          where: { ano: pub.ano, tipoId: pub.tipoId },
+          select: { id: true, titulo: true, local: true },
         });
 
-        const idPublicacoesAExcluir = idPublicacoesExistentes.filter(
-          (publicacaoId) => {
-            const outraRelacao = todasRelacoes.find(
-              (e) =>
-                e.publicacaoId === publicacaoId && e.usuarioId !== professorId,
-            );
-            return !outraRelacao;
-          },
+        // tolerância do título (você estava usando 1% — eu manteria 2%~3% pra título)
+        const maxDistTitulo = Math.min(
+          10,
+          Math.max(2, Math.floor(Math.max(alvoTitulo.length, 1) * 0.02)),
         );
 
-        await prisma.usuario.update({
-          where: { id: professorId },
-          data: {
-            publicacoes: {
-              deleteMany: {
-                publicacaoId: { in: idPublicacoesAExcluir },
-              },
+        // tolerância do local (local costuma ser pequeno: congresso/jornal)
+        const maxDistLocal = Math.min(
+          8,
+          Math.max(1, Math.floor(Math.max(alvoLocal.length, 1) * 0.15)),
+        );
+
+        let best: { id: number; dTitulo: number; dLocal: number } | null = null;
+
+        for (const c of candidatos) {
+          const candTitulo = normTitle(c.titulo);
+          const dTitulo = distance(candTitulo, alvoTitulo);
+          if (dTitulo > maxDistTitulo) continue;
+
+          // Se o input tem local, exige match de local também
+          let dLocal = 0;
+          if (alvoLocal) {
+            const candLocal = normLocal(c.local);
+            dLocal = distance(candLocal, alvoLocal);
+            if (dLocal > maxDistLocal) continue;
+          }
+
+          // escolhe o melhor: primeiro menor distância do título; empate -> menor do local
+          if (
+            !best ||
+            dTitulo < best.dTitulo ||
+            (dTitulo === best.dTitulo && dLocal < best.dLocal)
+          ) {
+            best = { id: c.id, dTitulo, dLocal };
+          }
+
+          // match perfeito (título igual e, se houver local, local igual)
+          if (dTitulo === 0 && (!alvoLocal || dLocal === 0)) break;
+        }
+
+        let publicacaoId: number;
+        if (best) {
+          publicacaoId = best.id;
+        } else {
+          const criada = await tx.publicacao.create({
+            data: pub,
+            select: { id: true },
+          });
+          publicacaoId = criada.id;
+        }
+
+        await tx.usuarioPublicacao.upsert({
+          where: {
+            usuarioId_publicacaoId: {
+              usuarioId: professorId,
+              publicacaoId,
             },
           },
-        });
-
-        await prisma.publicacao.deleteMany({
-          where: { id: { in: idPublicacoesAExcluir } },
+          create: { usuarioId: professorId, publicacaoId },
+          update: {},
         });
       }
-
-      for (const publicacao of publicArr) {
-        const publicacoesMesmoAno = await prisma.publicacao.findMany({
-          where: {
-            ano: publicacao.ano,
-          },
-          select: {
-            id: true,
-            titulo: true,
-          },
-        });
-
-        let unicaPublicacao = publicacoesMesmoAno.find(
-          (p) => distance(p.titulo, publicacao.titulo) <= 3,
-        );
-
-        if (!unicaPublicacao) {
-          unicaPublicacao = await prisma.publicacao.create({
-            data: publicacao,
-          });
-        }
-        await prisma.usuarioPublicacao.create({
-          data: {
-            usuarioId: professorId,
-            publicacaoId: unicaPublicacao.id,
-          },
-        });
-      }
-    }
+    });
   }
   async listarTodos(tipo: number[] = [], ano?: unknown) {
     try {

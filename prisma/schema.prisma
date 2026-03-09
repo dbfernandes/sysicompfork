@@ -517,7 +517,7 @@ model QualificacaoExtra {
 
   // Passo 3 – Dados do trabalho
   // “Resumo ou abstract” e “Palavras-chaves (pt ou en)”
-  resumoOuAbstract String
+  resumoOuAbstract String @db.LongText
   palavrasChaves   String // separadas por ";"
 
   // Créditos mínimos (12 M / 16 D) – validação de negócio na aplicação
@@ -544,12 +544,11 @@ model DefesaFinalExtra {
   defesaId String @id
   defesa   Defesa @relation(fields: [defesaId], references: [id], onDelete: Cascade)
 
-  // Passo 3 – Dados do trabalho
-  resumoPt        String
-  palavrasChavePt String // separadas por ";"
-  abstractEn      String
-  keywordsEn      String // separated by ";"
-  idiomaTese      String // “Idioma da Tese”
+  resumoPt        String @db.LongText
+  palavrasChavePt String @db.Text
+  abstractEn      String @db.LongText
+  keywordsEn      String @db.Text
+  idiomaTese      String @db.VarChar(500)
 
   // Créditos – regra: D=16, M=36 (validação de negócio)
   creditosOk       Boolean
@@ -1373,6 +1372,7 @@ model LattesEvento {
 model LattesParticipacaoEvento {
   eventoId    Int
   professorId Int
+  organizador Boolean
 
   evento                                   LattesEvento                               @relation(fields: [eventoId], references: [eventoId])
   professor                                LattesProfessor                            @relation(fields: [professorId], references: [professorId])

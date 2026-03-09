@@ -132,7 +132,6 @@ export default async function gerarPlanilha(
   opts: OptionsGenerate,
 ) {
   const workbook = new exceljs.Workbook();
-
   const candidatos = await getCandidatos(editalId, host);
   const candidateAba = workbook.addWorksheet('Candidato');
 

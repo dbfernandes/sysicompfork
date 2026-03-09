@@ -434,9 +434,11 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
               case 'ORIENTACAO-EM-ANDAMENTO-DE-DOUTORADO':
                 t = 3;
                 break;
-
               case 'ORIENTACAO-EM-ANDAMENTO-DE-MESTRADO':
                 t = 2;
+                break;
+              case 'ORIENTACAO-EM-ANDAMENTO-DE-POS-DOUTORADO':
+                t = 4;
                 break;
 
               default:
@@ -478,7 +480,9 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
               case 'ORIENTACOES-CONCLUIDAS-PARA-MESTRADO':
                 t = 2;
                 break;
-
+              case 'ORIENTACOES-CONCLUIDAS-PARA-POS-DOUTORADO':
+                t = 4;
+                break;
               default:
                 t = 1;
                 break;

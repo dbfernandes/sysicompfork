@@ -1,5 +1,5 @@
 import prisma from '@client/prismaClient';
-import { Prisma, Publicacao } from '@prisma/client';
+import { Prisma, Projeto, Publicacao } from '@prisma/client';
 import getPublicationsArr from '@utils/listaPublicacoes';
 import { distance } from 'fastest-levenshtein';
 
@@ -159,6 +159,44 @@ class ProjetoService {
         });
       }
     });
+  }
+  async listarAtuais(): Promise<
+    Pick<Projeto, 'id' | 'titulo' | 'descricao'>[]
+  > {
+    const projetos = await prisma.projeto.findMany({
+      where: {
+        OR: [
+          { dataFim: null }, // registros sem data de fim
+          { dataFim: 0 }, // registros com data "1970-01-01" (equivalente a 0 em JS)
+        ],
+      },
+      select: {
+        id: true,
+        titulo: true,
+        descricao: true,
+      },
+    });
+
+    const projetosFiltrados = projetos.reduce<typeof projetos>(
+      (acc, projeto) => {
+        const duplicado = acc.some(
+          (p) =>
+            p.titulo === projeto.titulo ||
+            (p.descricao === projeto.descricao &&
+              projeto.descricao !== '' &&
+              p.id !== projeto.id),
+        );
+
+        if (!duplicado) {
+          acc.push(projeto);
+        }
+
+        return acc;
+      },
+      [],
+    );
+
+    return projetosFiltrados;
   }
 }
 export default new ProjetoService();

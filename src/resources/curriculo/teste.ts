@@ -256,7 +256,6 @@ export function getAtuacoesProfissionais(xml: XmlJson) {
   }
 
   const atuacoes = toArray(atuacoesRoot['ATUACAO-PROFISSIONAL']);
-  console.log(atuacoes);
   const instituicoesMap = new Map<string, LattesInstituicaoEmpresaDto>();
 
   const atividades: LattesAtividadeProfissionalDto[] = [];
@@ -336,7 +335,7 @@ export async function parseLattesXml(filePath: string) {
     const professor = getDadosProfessor(curriculo);
     const premios = getPremiosTitulos(curriculo);
     const formacoes = getFormacaoAcademicaTitulacao(curriculo);
-    const atuações = getAtuacoesProfissionais(curriculo, 2);
+    const atuações = getAtuacoesProfissionais(curriculo);
 
     return json;
   } catch (error) {
