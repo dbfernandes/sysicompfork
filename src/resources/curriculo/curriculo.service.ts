@@ -806,7 +806,6 @@ class CurriculoService {
       const filePath = path.join(baseDir, dir.name, 'curriculoXML.xml');
       try {
         await fs.access(filePath);
-        console.log({ usuarioId, filePath });
         jobs.push({ usuarioId, filePath });
       } catch {
         // sem arquivo, ignora

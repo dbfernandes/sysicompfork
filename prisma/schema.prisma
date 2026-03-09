@@ -804,7 +804,7 @@ model LattesProfessor {
   professorId             Int     @id @default(autoincrement())
   numeroCurriculo         String  @db.Char(20)
   nomeProfessor           String  @db.VarChar(200)
-  nomeEmCitacoesProfessor String? @db.VarChar(300)
+  nomeEmCitacoesProfessor String? @db.VarChar(1000)
 
   enderecoResidencialId Int?
   logradouroResidencial String? @db.VarChar(250)
@@ -942,6 +942,7 @@ enum LattesTipoFormacao {
   APERFEICOAMENTO
   ENSINO_MEDIO
   ENSINO_FUNDAMENTAL
+  ENSINO_MEDIO_SEGUNDO_GRAU
 }
 
 model LattesFormacaoAcademicaTitulacao {
