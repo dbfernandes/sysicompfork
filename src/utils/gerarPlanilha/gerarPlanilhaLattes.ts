@@ -129,7 +129,7 @@ export default async function gerarPlanilhaNumerosLattes() {
     ws.addRow({
       nome: p.nome ?? '',
       atualizado: formatDateBR(p.ultimaAtualizacao),
-      lattes_atualizado: p.dataAtualizacao ?? '-',
+      lattes_atualizado: p.dataAtualizacaoFormatted ?? '-',
 
       projetos: (p.projetos ?? []).length,
 
@@ -155,7 +155,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   }
 
   // Congela 2 linhas (grupos + header)
-  ws.views = [{ state: 'frozen', ySplit: 2 }];
+  ws.views = [{ state: 'frozen', xSplit: 1, ySplit: 2 }];
 
   ws.getColumn('nome').alignment = { horizontal: 'left' };
   for (const key of [
@@ -183,6 +183,26 @@ export default async function gerarPlanilhaNumerosLattes() {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }
 
+  // depois do for (...) que adiciona as linhas
+
+  const firstDataRow = 3; // porque você inseriu 1 linha e o header ficou na 2
+  const lastDataRow = ws.rowCount;
+
+  const zebra1 = 'FFFFFFFF'; // branco
+  const zebra2 = 'FFF2F2F2'; // cinza claro
+
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    const fillColor = r % 2 === 0 ? zebra2 : zebra1;
+
+    const row = ws.getRow(r);
+    row.eachCell({ includeEmpty: true }, (cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: fillColor },
+      };
+    });
+  }
   const arrayBuffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(arrayBuffer);
 }

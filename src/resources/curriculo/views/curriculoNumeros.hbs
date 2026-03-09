@@ -143,7 +143,11 @@
           <thead>
             <tr style="text-align: center;">
               <th style="text-align: start;">Nome</th>
-              <th style="text-align: center;">Atualizado</th>
+              <th style="text-align: center;">
+                 <span data-toggle="tooltip" data-placement="top" title="Atualização lattes">
+                  Atualizado
+                </span>
+              </th>
               <th style="text-align: center;">Projetos</th>
               <th colspan="6" style="text-align: center;">Publicações</th>
               <th colspan="3" style="text-align: center;">Orientações</th>
@@ -202,7 +206,7 @@
             {{#each professores}}
               <tr>
                 <td>{{nome}}</td>
-                <td >{{formatDate ultimaAtualizacao}}</td>
+                <td >{{formatDate dataAtualizacao}}</td>
                 <td>{{countArray projetos}}</td>
                 <td>{{countArray publicacoes key='tipo' value=1}}</td>
                 <td>{{countArray publicacoes key='tipo' value=2}}</td>
@@ -458,8 +462,8 @@
       datatable.clear()
 
       professoresFiltrados.forEach((p) => {
-        const dataFormatada = p.ultimaAtualizacao
-          ? moment(p.ultimaAtualizacao).format('DD/MM/YYYY')
+        const dataFormatada = p.dataAtualizacao
+          ? moment(p.dataAtualizacao).format('DD/MM/YYYY')
           : '-';
         datatable.row.add([
           p.nome,

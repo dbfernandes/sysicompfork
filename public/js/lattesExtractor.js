@@ -394,6 +394,7 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
           if (projetos['PARTICIPACAO-EM-PROJETO'].length > 0) {
             sub_val = projetos['PARTICIPACAO-EM-PROJETO'];
             for (var p in sub_val) {
+              if (!sub_val[p]['PROJETO-DE-PESQUISA']) continue;
               if (sub_val[p]['PROJETO-DE-PESQUISA'].length > 0) {
                 for (var o in sub_val[p]['PROJETO-DE-PESQUISA']) {
                   const project = get_projectDict(
@@ -413,12 +414,14 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
               }
             }
           } else {
-            const project = get_projectDict(
-              sub_val['PROJETO-DE-PESQUISA'],
-              nomeCompleto,
-              userDict['lattesId'],
-            );
-            projectDict['projetos'].push(project);
+            if (sub_val['PROJETO-DE-PESQUISA']) {
+              const project = get_projectDict(
+                sub_val['PROJETO-DE-PESQUISA'],
+                nomeCompleto,
+                userDict['lattesId'],
+              );
+              projectDict['projetos'].push(project);
+            }
           }
         }
 

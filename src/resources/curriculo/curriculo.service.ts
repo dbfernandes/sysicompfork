@@ -144,7 +144,8 @@ class CurriculoService {
           : p.ultimaAtualizacao < staleLimit
             ? LattesStatus.DESATUALIZADO
             : LattesStatus.ATUALIZADO;
-        let dataAtualizacao: string;
+        let dataAtualizacao: Date | null;
+        let dataAtualizacaoFormatted: string;
         let hasMestrado = false;
         let hasDoutorado = false;
         let hasPos = false;
@@ -182,11 +183,15 @@ class CurriculoService {
               hasPos = true;
             }
           });
-          dataAtualizacao = new Intl.DateTimeFormat('pt-BR', {
+
+          dataAtualizacao = new Date(
+            p.LattesProfessor.dataUltimaAtualizacaoCurriculo,
+          );
+          dataAtualizacaoFormatted = new Intl.DateTimeFormat('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
-          }).format(new Date(p.LattesProfessor.dataUltimaAtualizacaoCurriculo));
+          }).format(dataAtualizacao);
         } else {
           dataAtualizacao = null;
         }
@@ -200,6 +205,7 @@ class CurriculoService {
           premios,
           status,
           dataAtualizacao,
+          dataAtualizacaoFormatted,
           hasMestrado,
           hasDoutorado,
           hasPos,
