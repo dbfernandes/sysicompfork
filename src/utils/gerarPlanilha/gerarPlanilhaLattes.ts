@@ -56,8 +56,8 @@ export default async function gerarPlanilhaNumerosLattes() {
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
-  ws.mergeCells(1, 4, 1, 10);
-  ws.getCell(1, 4).value = 'Publicações';
+  ws.mergeCells(1, 5, 1, 10);
+  ws.getCell(1, 5).value = 'Publicações';
 
   // Orientações: colunas 10..14 (J..N)
   ws.mergeCells(1, 11, 1, 15);
@@ -68,7 +68,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   ws.mergeCells(1, 16, 1, 17);
   ws.getCell(1, 16).value = 'Eventos';
 
-  const pubCell = ws.getCell(1, 4);
+  const pubCell = ws.getCell(1, 5);
   pubCell.fill = {
     type: 'pattern',
     pattern: 'solid',
