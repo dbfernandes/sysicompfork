@@ -11,4 +11,7 @@ router.get('/numeros/export-xlsx', curriculoController.geraPlanilha);
 router.get('/avatar/:id', curriculoController.verificarAvatar);
 router.post('/upload', curriculoController.carregar);
 
+// ✅ nova rota para reprocessar todos os XMLs
+router.get('/reprocessar-lattes', curriculoController.reprocessarTodos);
+
 export default router;

@@ -191,10 +191,31 @@ const geraPlanilha = async (
   }
 };
 
+const reprocessarTodos = async (req: Request, res: Response) => {
+  try {
+    // opcional: limitar concorrência via query (?concurrency=3)
+    const concurrency = Math.max(
+      1,
+      Math.min(10, Number(req.query.concurrency ?? 2)),
+    );
+
+    const result = await CurriculoService.reprocessarTodosOsXmls({
+      concurrency,
+    });
+
+    return res.json(result);
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Erro ao reprocessar currículos',
+      error: err?.message ?? String(err),
+    });
+  }
+};
 export default {
   visualizarCurriculo,
   verificarAvatar,
   viewData,
   carregar,
   geraPlanilha,
+  reprocessarTodos,
 };

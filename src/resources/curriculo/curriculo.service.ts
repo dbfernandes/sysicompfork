@@ -1,6 +1,7 @@
 import prisma from '@client/prismaClient';
 import xml2json from 'xml2json';
 import fs from 'fs/promises';
+import path from 'path';
 
 import {
   getAtuacoesProfissionais,
@@ -181,29 +182,11 @@ class CurriculoService {
               hasPos = true;
             }
           });
-          console.log(formacaoProfessor);
           dataAtualizacao = new Intl.DateTimeFormat('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
           }).format(new Date(p.LattesProfessor.dataUltimaAtualizacaoCurriculo));
-
-          console.log({
-            id: p.id,
-            nome: p.nomeCompleto,
-            ultimaAtualizacao: p.ultimaAtualizacao,
-            projetos,
-            publicacoes,
-            orientacoes,
-            premios,
-            status,
-            dataAtualizacao,
-            hasMestrado,
-            hasDoutorado,
-            hasPos,
-            participacaoEvento,
-            organizacaoEvento,
-          });
         } else {
           dataAtualizacao = null;
         }
@@ -802,6 +785,72 @@ class CurriculoService {
       console.error('Erro ao importar Lattes:', error);
       throw new Error('Erro ao importar currículo Lattes');
     }
+  }
+
+  async reprocessarTodosOsXmls(opts: { concurrency?: number } = {}) {
+    const concurrency = opts.concurrency ?? 2;
+
+    const baseDir = path.join(process.cwd(), 'uploads', 'usuario');
+
+    // lista pastas /uploads/usuario/{id}
+    const entries = await fs.readdir(baseDir, { withFileTypes: true });
+    const userDirs = entries.filter((e) => e.isDirectory());
+
+    // monta jobs { usuarioId, filePath }
+    const jobs: Array<{ usuarioId: number; filePath: string }> = [];
+
+    for (const dir of userDirs) {
+      const usuarioId = Number(dir.name);
+      if (!Number.isFinite(usuarioId)) continue;
+
+      const filePath = path.join(baseDir, dir.name, 'curriculoXML.xml');
+      try {
+        await fs.access(filePath);
+        console.log({ usuarioId, filePath });
+        jobs.push({ usuarioId, filePath });
+      } catch {
+        // sem arquivo, ignora
+      }
+    }
+
+    // pool simples de concorrência
+    const results: Array<
+      | { usuarioId: number; filePath: string; ok: true }
+      | { usuarioId: number; filePath: string; ok: false; error: string }
+    > = [];
+
+    let idx = 0;
+    const worker = async () => {
+      while (idx < jobs.length) {
+        const current = jobs[idx++];
+        try {
+          await this.importarLattes(current.filePath, current.usuarioId);
+          results.push({ ...current, ok: true });
+        } catch (e: any) {
+          results.push({
+            ...current,
+            ok: false,
+            error: e?.message ?? String(e),
+          });
+        }
+      }
+    };
+
+    await Promise.all(
+      Array.from({ length: Math.min(concurrency, jobs.length) }, worker),
+    );
+
+    const ok = results.filter((r) => r.ok).length;
+    const fail = results.length - ok;
+
+    return {
+      scannedFolders: userDirs.length,
+      foundXmls: jobs.length,
+      processed: results.length,
+      ok,
+      fail,
+      errors: results.filter((r) => !r.ok),
+    };
   }
 }
 
