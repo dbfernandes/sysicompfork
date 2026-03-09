@@ -71,27 +71,27 @@ app.use(
   express.urlencoded({ limit: '50mb', parameterLimit: 50000, extended: true }),
 );
 // cria token para body
-// morgan.token('body', (req: any) => {
-//   if (req.body && Object.keys(req.body).length > 0) {
-//     return JSON.stringify(req.body);
-//   }
-//   return '';
-// });
+morgan.token('body', (req: any) => {
+  if (req.body && Object.keys(req.body).length > 0) {
+    return JSON.stringify(req.body);
+  }
+  return '';
+});
 
-// app.use(
-//   morgan(
-//     ':method :url :status :res[content-length] - :response-time ms :body',
-//     {
-//       stream: {
-//         write: (message: string) => logger.info(message.trim()),
-//       },
-//       skip: (req, _) => {
-//         return STATIC_SKIP.test(req.originalUrl) || req.path === '/favicon.ico';
-//       },
-//     },
-//   ),
-// );
-// app.use(logRequestResponse);
+app.use(
+  morgan(
+    ':method :url :status :res[content-length] - :response-time ms :body',
+    {
+      stream: {
+        write: (message: string) => logger.info(message.trim()),
+      },
+      skip: (req, _) => {
+        return STATIC_SKIP.test(req.originalUrl) || req.path === '/favicon.ico';
+      },
+    },
+  ),
+);
+app.use(logRequestResponse);
 
 /* ───────── assets estáticos ───────── */
 app.use(
