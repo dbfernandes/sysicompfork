@@ -759,7 +759,7 @@ model LattesInstituicaoEmpresa {
   instituicaoEmpresaId             Int                                @id @default(autoincrement())
   nomeInstituicaoEmpresa           String?                            @db.VarChar(200)
   siglaInstituicaoEmpresa          String?                            @db.VarChar(50)
-  codigoInstituicaoEmpresa         String?                            @db.VarChar(25)
+  codigoInstituicaoEmpresa         String?                            @unique @db.VarChar(25)
   LattesOrgaoInstituicaoEmpresa    LattesOrgaoInstituicaoEmpresa[]
   LattesUnidadeInstituicaoEmpresa  LattesUnidadeInstituicaoEmpresa[]
   LattesProfessor                  LattesProfessor[]
@@ -929,13 +929,29 @@ enum LattesStatusDoCurso {
   INCOMPLETO
 }
 
+enum LattesTipoFormacao {
+  GRADUACAO
+  ESPECIALIZACAO
+  MESTRADO
+  MESTRADO_PROFISSIONALIZANTE
+  DOUTORADO
+  POS_DOUTORADO
+  LIVRE_DOCENCIA
+  RESIDENCIA_MEDICA
+  CURSO_TECNICO_PROFISSIONALIZANTE
+  APERFEICOAMENTO
+  ENSINO_MEDIO
+  ENSINO_FUNDAMENTAL
+}
+
 model LattesFormacaoAcademicaTitulacao {
   professorId                Int
   sequenciaFormacaoAcademica Int
 
-  nivelFormacaoAcademica String? @db.VarChar(50)
-  codigoCurso            String? @db.VarChar(25)
-  nomeCurso              String? @db.VarChar(150)
+  tipoFormacao           LattesTipoFormacao
+  nivelFormacaoAcademica String?            @db.VarChar(50)
+  codigoCurso            String?            @db.VarChar(25)
+  nomeCurso              String?            @db.VarChar(150)
 
   codigoInstituicaoEmpresa String? @db.VarChar(25)
   nomeInstituicaoEmpresa   String? @db.VarChar(200)
@@ -1059,7 +1075,7 @@ model LattesVinculoAtuacaoProfissional {
   cargaHorariaSemanal            Int?
   anoInicio                      Int?
   anoFim                         Int?
-  outrasInformacoes              String? @db.VarChar(250)
+  outrasInformacoes              String? @db.VarChar(1000)
 
   atividadeProfissional LattesAtividadeProfissional @relation(fields: [professorId, sequenciaAtividadeProfissional], references: [professorId, sequenciaAtividadeProfissional])
 
@@ -1356,6 +1372,7 @@ model LattesEvento {
 model LattesParticipacaoEvento {
   eventoId    Int
   professorId Int
+  organizador Boolean
 
   evento                                   LattesEvento                               @relation(fields: [eventoId], references: [eventoId])
   professor                                LattesProfessor                            @relation(fields: [professorId], references: [professorId])

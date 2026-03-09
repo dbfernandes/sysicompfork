@@ -24,6 +24,8 @@ export default async function gerarPlanilhaNumerosLattes() {
   ws.columns = [
     { header: 'Nome', key: 'nome', width: 45 },
     { header: 'Atualizado', key: 'atualizado', width: 14 },
+    { header: 'Lattes Atualização', key: 'lattes_atualizado', width: 17 },
+
     { header: 'Projetos', key: 'projetos', width: 12 },
 
     { header: 'Conferências', key: 'con', width: 14 },
@@ -38,9 +40,13 @@ export default async function gerarPlanilhaNumerosLattes() {
     { header: 'Mestrado', key: 'mes', width: 12 },
     { header: 'Doutorado', key: 'dou', width: 12 },
     { header: 'Pós-Doutorado', key: 'pos_dou', width: 14 },
-
+    { header: 'Participação', key: 'eventos_participacao', width: 17 },
+    { header: 'Organização', key: 'eventos_organizacao', width: 17 },
     { header: 'Prêmios', key: 'premios', width: 10 },
-    { header: 'Status', key: 'status', width: 16 },
+
+    { header: 'Mestrado', key: 'mestrado', width: 14 },
+    { header: 'Doutorado', key: 'doutorado', width: 14 },
+    { header: 'Pós-Doutorado', key: 'pos_doutorado', width: 17 },
   ];
 
   // =========================================
@@ -50,14 +56,19 @@ export default async function gerarPlanilhaNumerosLattes() {
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
-  ws.mergeCells(1, 3, 1, 9);
-  ws.getCell(1, 3).value = 'Publicações';
+  ws.mergeCells(1, 4, 1, 10);
+  ws.getCell(1, 4).value = 'Publicações';
 
   // Orientações: colunas 10..14 (J..N)
-  ws.mergeCells(1, 10, 1, 14);
-  ws.getCell(1, 10).value = 'Orientações';
+  ws.mergeCells(1, 11, 1, 15);
+  ws.getCell(1, 11).value = 'Orientações';
 
-  const pubCell = ws.getCell(1, 3);
+  // Mescla e escreve os títulos dos grupos
+  // Publicações: colunas 4..9 (D..I)
+  ws.mergeCells(1, 16, 1, 17);
+  ws.getCell(1, 16).value = 'Eventos';
+
+  const pubCell = ws.getCell(1, 4);
   pubCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -67,7 +78,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   pubCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Orientações (célula mesclada 1,10)
-  const oriCell = ws.getCell(1, 10);
+  const oriCell = ws.getCell(1, 11);
   oriCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -75,6 +86,17 @@ export default async function gerarPlanilhaNumerosLattes() {
   };
   oriCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
   oriCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+  // Orientações (célula mesclada 1,10)
+  const evvCell = ws.getCell(1, 16);
+  evvCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '032336' },
+  };
+  evvCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  evvCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
   // (opcional) estiliza os grupos
   const groupRow = ws.getRow(1);
   groupRow.height = 18;
@@ -107,6 +129,8 @@ export default async function gerarPlanilhaNumerosLattes() {
     ws.addRow({
       nome: p.nome ?? '',
       atualizado: formatDateBR(p.ultimaAtualizacao),
+      lattes_atualizado: p.dataAtualizacao ?? '-',
+
       projetos: (p.projetos ?? []).length,
 
       con: countByTipo(p.publicacoes, 1),
@@ -121,9 +145,12 @@ export default async function gerarPlanilhaNumerosLattes() {
       mes: countByTipo(orientacoes, 2),
       dou: countByTipo(orientacoes, 3),
       pos_dou: countByTipo(orientacoes, 4),
-
+      eventos_participacao: p.participacaoEvento.length,
+      eventos_organizacao: p.organizacaoEvento.length,
+      mestrado: p.hasMestrado ? 'Sim' : '-',
+      doutorado: p.hasDoutorado ? 'Sim' : '-',
+      pos_doutorado: p.hasPos ? 'Sim' : '-',
       premios: (p.premios ?? []).length,
-      status: p.status ?? '',
     });
   }
 
@@ -133,6 +160,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   ws.getColumn('nome').alignment = { horizontal: 'left' };
   for (const key of [
     'atualizado',
+    'lattes_atualizado',
     'projetos',
     'con',
     'per',
@@ -146,7 +174,11 @@ export default async function gerarPlanilhaNumerosLattes() {
     'dou',
     'pos_dou',
     'premios',
-    'status',
+    'eventos_participacao',
+    'mestrado',
+    'pos_doutorado',
+    'doutorado',
+    'eventos_organizacao',
   ]) {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }
