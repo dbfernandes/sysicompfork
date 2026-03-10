@@ -18,11 +18,11 @@ import {
 } from '../projetos/projetos.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
 import gerarPlanilhaNumerosLattes from '@utils/gerarPlanilha/gerarPlanilhaLattes';
-import { parseLattesXml } from '@resources/curriculo/teste';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
+
 async function viewData(req: Request, res: Response) {
   try {
     const { message, type, messageTitle } = req.query;
@@ -196,7 +196,7 @@ const reprocessarTodos = async (req: Request, res: Response) => {
     // opcional: limitar concorrência via query (?concurrency=3)
     const concurrency = Math.max(
       1,
-      Math.min(10, Number(req.query.concurrency ?? 2)),
+      Math.min(10, Number(req.query.concurrency ?? 1)),
     );
 
     const result = await CurriculoService.reprocessarTodosOsXmls({

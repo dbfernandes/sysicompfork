@@ -42,7 +42,15 @@ export default async function gerarPlanilhaNumerosLattes() {
     { header: 'Pós-Doutorado', key: 'pos_dou', width: 14 },
     { header: 'Participação', key: 'eventos_participacao', width: 17 },
     { header: 'Organização', key: 'eventos_organizacao', width: 17 },
+
+    { header: 'Graduação', key: 'banca_gra', width: 10 },
+    { header: 'Qualificação', key: 'banca_qua', width: 14 },
+    { header: 'Mestrado', key: 'banca_mes', width: 10 },
+    { header: 'Doutorado', key: 'banca_dou', width: 10 },
+    { header: 'Outras', key: 'banca_out', width: 10 },
+
     { header: 'Prêmios', key: 'premios', width: 10 },
+    { header: 'Revisor Periódico', key: 'rev_per', width: 16 },
 
     { header: 'Mestrado', key: 'mestrado', width: 14 },
     { header: 'Doutorado', key: 'doutorado', width: 14 },
@@ -67,6 +75,11 @@ export default async function gerarPlanilhaNumerosLattes() {
   // Publicações: colunas 4..9 (D..I)
   ws.mergeCells(1, 16, 1, 17);
   ws.getCell(1, 16).value = 'Eventos';
+
+  // Mescla e escreve os títulos dos grupos
+  // Publicações: colunas 4..9 (D..I)
+  ws.mergeCells(1, 18, 1, 22);
+  ws.getCell(1, 18).value = 'Bancas';
 
   const pubCell = ws.getCell(1, 5);
   pubCell.fill = {
@@ -97,7 +110,17 @@ export default async function gerarPlanilhaNumerosLattes() {
   evvCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
   evvCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
+  // Bancas
+  const baCell = ws.getCell(1, 18);
+  baCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '729fcf' },
+  };
+  baCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  baCell.alignment = { vertical: 'middle', horizontal: 'center' };
   // (opcional) estiliza os grupos
+
   const groupRow = ws.getRow(1);
   groupRow.height = 18;
 
@@ -145,12 +168,20 @@ export default async function gerarPlanilhaNumerosLattes() {
       mes: countByTipo(orientacoes, 2),
       dou: countByTipo(orientacoes, 3),
       pos_dou: countByTipo(orientacoes, 4),
+
+      banca_gra: p.bancas.graduacao.length,
+      banca_qua: p.bancas.qualificacao.length,
+      banca_mes: p.bancas.mestrado.length,
+      banca_dou: p.bancas.doutorado.length,
+      banca_out: p.bancas.outras.length,
+
       eventos_participacao: p.participacaoEvento.length,
       eventos_organizacao: p.organizacaoEvento.length,
       mestrado: p.hasMestrado ? 'Sim' : '-',
       doutorado: p.hasDoutorado ? 'Sim' : '-',
       pos_doutorado: p.hasPos ? 'Sim' : '-',
       premios: (p.premios ?? []).length,
+      rev_per: p.revPeriodico.length,
     });
   }
 
@@ -179,6 +210,12 @@ export default async function gerarPlanilhaNumerosLattes() {
     'pos_doutorado',
     'doutorado',
     'eventos_organizacao',
+    'banca_gra',
+    'banca_qua',
+    'banca_mes',
+    'banca_dou',
+    'banca_out',
+    'rev_per',
   ]) {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }

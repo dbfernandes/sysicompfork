@@ -9,6 +9,7 @@ import {
   getFormacaoAcademicaTitulacao,
   getPremiosTitulos,
 } from '@resources/curriculo/teste';
+import { uploadBancas } from '@resources/curriculo/util/uploadBancaTrabalho';
 
 enum LattesStatus {
   ATUALIZADO = 'ATUALIZADO',
@@ -149,22 +150,54 @@ class CurriculoService {
         let hasMestrado = false;
         let hasDoutorado = false;
         let hasPos = false;
+        let idLattes: null | string = null;
+
+        const revPeriodico: any[] = [];
         const participacaoEvento: any[] = [];
         const organizacaoEvento: any[] = [];
-
+        const bancas = {
+          mestrado: [],
+          doutorado: [],
+          qualificacao: [],
+          graduacao: [],
+          outras: [],
+        };
         if (p.LattesProfessor) {
+          const professorId = p.LattesProfessor.professorId;
+          idLattes = p.LattesProfessor.numeroCurriculo;
+
+          const vinculos =
+            await prisma.lattesVinculoAtuacaoProfissional.findMany({
+              where: {
+                professorId,
+              },
+            });
           const formacaoProfessor =
             await prisma.lattesFormacaoAcademicaTitulacao.findMany({
               where: {
-                professorId: p.LattesProfessor.professorId,
+                professorId,
               },
             });
           const eventosProfessor =
             await prisma.lattesParticipacaoEvento.findMany({
               where: {
-                professorId: p.LattesProfessor.professorId,
+                professorId,
               },
             });
+          const bancasTrabalho =
+            await prisma.lattesParticipacaoBancaDeTrabalho.findMany({
+              where: {
+                professorId,
+              },
+              include: {
+                bancaDeTrabalho: true,
+              },
+            });
+          vinculos.forEach((v) => {
+            if (v.tipoVinculoAtuacaoProfissional.includes('Revisor de peri')) {
+              revPeriodico.push(v);
+            }
+          });
           eventosProfessor.forEach((p) => {
             if (p.organizador) {
               organizacaoEvento.push(p);
@@ -184,6 +217,38 @@ class CurriculoService {
             }
           });
 
+          bancasTrabalho.forEach((bancaRel) => {
+            const tipoRaw =
+              bancaRel?.bancaDeTrabalho?.tipoBancaDeTrabalho ?? '';
+            const tipo = String(tipoRaw).toUpperCase();
+
+            if (tipo.includes('MESTRADO')) {
+              bancas.mestrado.push(bancaRel);
+              return;
+            }
+
+            if (tipo.includes('DOUTORADO')) {
+              bancas.doutorado.push(bancaRel);
+              return;
+            }
+
+            // QUALIFICACAO / EXAME_QUALIFICACAO / QUALIFICAÇÃO (se vier com acento)
+            if (
+              tipo.includes('QUALIFICACAO') ||
+              tipo.includes('QUALIFICA') || // cobre QUALIFICAÇÃO/QUALIFICACAO
+              tipo.includes('EXAME_QUALIFICACAO')
+            ) {
+              bancas.qualificacao.push(bancaRel);
+              return;
+            }
+
+            if (tipo.includes('GRADUACAO')) {
+              bancas.graduacao.push(bancaRel);
+              return;
+            }
+
+            bancas.outras.push(bancaRel);
+          });
           dataAtualizacao = new Date(
             p.LattesProfessor.dataUltimaAtualizacaoCurriculo,
           );
@@ -195,6 +260,7 @@ class CurriculoService {
         } else {
           dataAtualizacao = null;
         }
+
         return {
           id: p.id,
           nome: p.nomeCompleto,
@@ -209,8 +275,11 @@ class CurriculoService {
           hasMestrado,
           hasDoutorado,
           hasPos,
+          bancas,
           participacaoEvento,
           organizacaoEvento,
+          revPeriodico,
+          idLattes,
         };
       }),
     );
@@ -496,6 +565,7 @@ class CurriculoService {
       });
     }
   }
+
   async importarLattes(filePath: string, usuarioId: number) {
     try {
       const xml = await fs.readFile(filePath, 'utf-8');
@@ -551,6 +621,7 @@ class CurriculoService {
         });
 
         const professorId = lattesProfessor.professorId;
+        await uploadBancas(dadosComplementares, professorId, tx);
         await this.uploadParticipacaoEventos(
           dadosComplementares,
           professorId,

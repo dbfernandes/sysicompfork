@@ -1413,7 +1413,7 @@ model LattesParticipacaoEventoPalavraChave {
 
 model LattesBancaDeTrabalho {
   bancaDeTrabalhoId                     Int                                     @id @default(autoincrement())
-  naturezaBancaDeTrabalho               String?                                 @db.VarChar(25)
+  naturezaBancaDeTrabalho               String?                                 @db.VarChar(50)
   tipoBancaDeTrabalho                   String                                  @db.VarChar(50)
   tituloBancaDeTrabalho                 String                                  @db.VarChar(350)
   anoBancaDeTrabalho                    Int

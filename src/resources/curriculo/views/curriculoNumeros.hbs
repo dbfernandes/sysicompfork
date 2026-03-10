@@ -205,7 +205,15 @@
           <tbody>
             {{#each professores}}
               <tr>
-                <td>{{nome}}</td>
+                <td>
+                  {{#if idLattes}}
+                  <a href="https://lattes.cnpq.br/{{{idLattes}}}" target="_blank" style="color: #146097">
+                    {{nome}}
+                  </a>
+                  {{else}}
+                    {{nome}}
+                  {{/if}}
+                </td>
                 <td >{{formatDate dataAtualizacao}}</td>
                 <td>{{countArray projetos}}</td>
                 <td>{{countArray publicacoes key='tipo' value=1}}</td>
