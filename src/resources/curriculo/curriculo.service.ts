@@ -153,6 +153,8 @@ class CurriculoService {
         let idLattes: null | string = null;
 
         const revPeriodico: any[] = [];
+        const corpEditorial: any[] = [];
+
         const participacaoEvento: any[] = [];
         const organizacaoEvento: any[] = [];
         const bancas = {
@@ -196,6 +198,13 @@ class CurriculoService {
           vinculos.forEach((v) => {
             if (v.tipoVinculoAtuacaoProfissional.includes('Revisor de peri')) {
               revPeriodico.push(v);
+            }
+            if (
+              v.tipoVinculoAtuacaoProfissional.includes(
+                'Membro de corpo editorial',
+              )
+            ) {
+              corpEditorial.push(v);
             }
           });
           eventosProfessor.forEach((p) => {
@@ -276,6 +285,7 @@ class CurriculoService {
           hasDoutorado,
           hasPos,
           bancas,
+          corpEditorial,
           participacaoEvento,
           organizacaoEvento,
           revPeriodico,

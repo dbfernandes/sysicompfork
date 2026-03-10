@@ -51,6 +51,7 @@ export default async function gerarPlanilhaNumerosLattes() {
 
     { header: 'Prêmios', key: 'premios', width: 10 },
     { header: 'Revisor Periódico', key: 'rev_per', width: 16 },
+    { header: 'Corpo Editorial', key: 'corp_edi', width: 16 },
 
     { header: 'Mestrado', key: 'mestrado', width: 14 },
     { header: 'Doutorado', key: 'doutorado', width: 14 },
@@ -182,6 +183,7 @@ export default async function gerarPlanilhaNumerosLattes() {
       pos_doutorado: p.hasPos ? 'Sim' : '-',
       premios: (p.premios ?? []).length,
       rev_per: p.revPeriodico.length,
+      corp_edi: p.corpEditorial.length,
     });
   }
 
@@ -216,6 +218,7 @@ export default async function gerarPlanilhaNumerosLattes() {
     'banca_dou',
     'banca_out',
     'rev_per',
+    'corp_edi',
   ]) {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }
