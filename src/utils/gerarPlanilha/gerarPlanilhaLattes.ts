@@ -14,10 +14,13 @@ function formatDateBR(date: any) {
 function countByTipo(arr: Array<{ tipo: number }> | undefined, tipo: number) {
   return (arr ?? []).filter((x) => x.tipo === tipo).length;
 }
-
-export default async function gerarPlanilhaNumerosLattes() {
+type QuerySearch = {
+  yearStart?: number;
+  yearEnd?: number;
+};
+export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   const workbook = new exceljs.Workbook();
-  const data = await CurriculoService.getAcompanhamentoLattes();
+  const data = await CurriculoService.getAcompanhamentoLattes(query);
 
   const ws = workbook.addWorksheet('Professores');
 
@@ -40,8 +43,19 @@ export default async function gerarPlanilhaNumerosLattes() {
     { header: 'Mestrado', key: 'mes', width: 12 },
     { header: 'Doutorado', key: 'dou', width: 12 },
     { header: 'Pós-Doutorado', key: 'pos_dou', width: 14 },
-    { header: 'Participação', key: 'eventos_participacao', width: 17 },
-    { header: 'Organização', key: 'eventos_organizacao', width: 17 },
+
+    {
+      header: 'Membro do Comitê de Prog.',
+      key: 'comite_programa',
+      width: 26,
+    },
+    { header: 'Participação Total', key: 'eventos_participacao', width: 17 },
+    {
+      header: 'Membro do Comitê de Prog.',
+      key: 'org_comite_programa',
+      width: 30,
+    },
+    { header: 'Participação Total', key: 'eventos_organizacao', width: 17 },
 
     { header: 'Graduação', key: 'banca_gra', width: 10 },
     { header: 'Qualificação', key: 'banca_qua', width: 14 },
@@ -63,26 +77,41 @@ export default async function gerarPlanilhaNumerosLattes() {
   // =========================================
   ws.insertRow(1, []); // insere uma linha no topo
 
+  const tamPub = 6;
+  const tamOrie = 5;
+  const tamEven = 2;
+  const tamOriEven = 2;
+  const tamBanca = 5;
+
+  const iniPub = 5;
+  const iniOrie = iniPub + tamPub;
+  const iniEven = iniOrie + tamOrie;
+  const iniOrgEven = iniEven + tamEven;
+  const iniBanca = iniOrgEven + tamOriEven;
+
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
-  ws.mergeCells(1, 5, 1, 10);
-  ws.getCell(1, 5).value = 'Publicações';
+  ws.mergeCells(1, iniPub, 1, tamPub + iniPub - 1);
+  ws.getCell(1, iniPub).value = 'Publicações';
 
   // Orientações: colunas 10..14 (J..N)
-  ws.mergeCells(1, 11, 1, 15);
-  ws.getCell(1, 11).value = 'Orientações';
+  ws.mergeCells(1, iniOrie, 1, tamOrie + iniOrie - 1);
+  ws.getCell(1, iniOrie).value = 'Orientações';
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
-  ws.mergeCells(1, 16, 1, 17);
-  ws.getCell(1, 16).value = 'Eventos';
+  ws.mergeCells(1, iniEven, 1, iniEven + tamEven - 1);
+  ws.getCell(1, iniEven).value = 'Participação Eventos';
+
+  ws.mergeCells(1, iniOrgEven, 1, iniOrgEven + tamOriEven - 1);
+  ws.getCell(1, iniOrgEven).value = 'Organização Eventos';
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
-  ws.mergeCells(1, 18, 1, 22);
-  ws.getCell(1, 18).value = 'Bancas';
+  ws.mergeCells(1, iniBanca, 1, iniBanca + tamBanca - 1);
+  ws.getCell(1, iniBanca).value = 'Bancas';
 
-  const pubCell = ws.getCell(1, 5);
+  const pubCell = ws.getCell(1, iniPub);
   pubCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -92,7 +121,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   pubCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Orientações (célula mesclada 1,10)
-  const oriCell = ws.getCell(1, 11);
+  const oriCell = ws.getCell(1, iniOrie);
   oriCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -102,7 +131,7 @@ export default async function gerarPlanilhaNumerosLattes() {
   oriCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Orientações (célula mesclada 1,10)
-  const evvCell = ws.getCell(1, 16);
+  const evvCell = ws.getCell(1, iniEven);
   evvCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -111,8 +140,18 @@ export default async function gerarPlanilhaNumerosLattes() {
   evvCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
   evvCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
+  // Orientações (célula mesclada 1,10)
+  const orgEvCell = ws.getCell(1, iniOrgEven);
+  orgEvCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '8a840b' },
+  };
+  orgEvCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  orgEvCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
   // Bancas
-  const baCell = ws.getCell(1, 18);
+  const baCell = ws.getCell(1, iniBanca);
   baCell.fill = {
     type: 'pattern',
     pattern: 'solid',
@@ -151,7 +190,13 @@ export default async function gerarPlanilhaNumerosLattes() {
     );
 
     ws.addRow({
-      nome: p.nome ?? '',
+      nome: p.idLattes
+        ? {
+            text: p.nome ?? '',
+            hyperlink: `https://lattes.cnpq.br/${p.idLattes}`,
+            tooltip: 'Abra o lattes', // opcional
+          }
+        : (p.nome ?? ''),
       atualizado: formatDateBR(p.ultimaAtualizacao),
       lattes_atualizado: p.dataAtualizacaoFormatted ?? '-',
 
@@ -176,8 +221,11 @@ export default async function gerarPlanilhaNumerosLattes() {
       banca_dou: p.bancas.doutorado.length,
       banca_out: p.bancas.outras.length,
 
+      comite_programa: p.comiteTrabalho.length,
       eventos_participacao: p.participacaoEvento.length,
+      org_comite_programa: p.orgComitePrograma.length,
       eventos_organizacao: p.organizacaoEvento.length,
+
       mestrado: p.hasMestrado ? 'Sim' : '-',
       doutorado: p.hasDoutorado ? 'Sim' : '-',
       pos_doutorado: p.hasPos ? 'Sim' : '-',
@@ -219,6 +267,8 @@ export default async function gerarPlanilhaNumerosLattes() {
     'banca_out',
     'rev_per',
     'corp_edi',
+    'comite_programa',
+    'org_comite_programa',
   ]) {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }

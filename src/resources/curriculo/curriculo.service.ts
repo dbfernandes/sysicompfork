@@ -2,6 +2,7 @@ import prisma from '@client/prismaClient';
 import xml2json from 'xml2json';
 import fs from 'fs/promises';
 import path from 'path';
+import { distance } from 'fastest-levenshtein';
 
 import {
   getAtuacoesProfissionais,
@@ -89,8 +90,69 @@ function getChildByPrefix(obj: any, prefix: string): any | undefined {
   return key ? obj[key] : undefined;
 }
 
+function isComitePrograma(titulo?: string | null) {
+  const alvo = 'comite de programa';
+  const t = norm(titulo ?? '');
+
+  if (!t) return false;
+
+  // 1) contém (mais confiável e rápido)
+  if (t.includes(alvo)) return true;
+
+  // 2) fallback: aproximação por distância
+  // compara com janelas de tamanho parecido (evita comparar com texto muito grande)
+  const words = t.split(' ');
+  const alvoLen = alvo.split(' ').length;
+  const maxDist = 3; // ajuste: 2-4 geralmente ok
+
+  for (let i = 0; i <= words.length - alvoLen; i++) {
+    const slice = words.slice(i, i + alvoLen).join(' ');
+    if (distance(slice, alvo) <= maxDist) return true;
+  }
+
+  // fallback extra: compara a string inteira se for curta
+  if (t.length <= 40 && distance(t, alvo) <= maxDist) return true;
+
+  return false;
+}
+
+function compYears(yearComp: number, yearStart?: number, yearEnd?: number) {
+  if (!Number.isFinite(yearComp)) return false;
+  if (yearStart != null && yearComp < yearStart) return false;
+  if (yearEnd != null && yearComp > yearEnd) return false;
+  return true;
+}
+function overlapsYearsOngoing(
+  eventStart: number,
+  eventEnd: number | null | undefined,
+  filterStart?: number,
+  filterEnd?: number,
+) {
+  if (!Number.isFinite(eventStart)) return false;
+
+  const currentYear = new Date().getFullYear();
+
+  // Se ainda está ocorrendo, considera que vai até o ano atual (ou até o fim do filtro, se houver)
+  const effectiveEventEnd = eventEnd ?? filterEnd ?? currentYear;
+
+  const fs = filterStart ?? -Infinity;
+  const fe = filterEnd ?? Infinity;
+
+  // interseção dos intervalos
+  return eventStart <= fe && effectiveEventEnd >= fs;
+}
+
+type QuerySearch = {
+  yearStart?: number;
+  yearEnd?: number;
+};
+
 class CurriculoService {
-  async getAcompanhamentoLattes() {
+  async getAcompanhamentoLattes(queryInit?: QuerySearch) {
+    const query = queryInit ?? {
+      yearStart: null,
+      yearEnd: null,
+    };
     const staleLimit = addMonths(new Date(), -6);
 
     const professores = await prisma.usuario.findMany({
@@ -133,13 +195,26 @@ class CurriculoService {
 
     const professorsData: any[] = await Promise.all(
       professores.map(async (p) => {
-        const publicacoes = p.publicacoes.map((p) => ({
-          ano: p.publicacao.ano,
-          tipo: p.publicacao.tipoId,
-        }));
-        const projetos = p.projetos;
-        const orientacoes = p.orientacoes;
-        const premios = p.premios;
+        const publicacoes = p.publicacoes
+          .map((p) => ({
+            ano: p.publicacao.ano,
+            tipo: p.publicacao.tipoId,
+          }))
+          .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd));
+        const projetos = p.projetos.filter((proj) =>
+          overlapsYearsOngoing(
+            proj.dataInicio,
+            proj.dataFim,
+            query.yearStart,
+            query.yearEnd,
+          ),
+        );
+        const orientacoes = p.orientacoes.filter((orie) =>
+          compYears(orie.ano, query.yearStart, query.yearEnd),
+        );
+        const premios = p.premios.filter((prem) =>
+          compYears(prem.ano, query.yearStart, query.yearEnd),
+        );
         const status: LattesStatus = !p.ultimaAtualizacao
           ? LattesStatus.SEM_REGISTROS
           : p.ultimaAtualizacao < staleLimit
@@ -164,6 +239,9 @@ class CurriculoService {
           graduacao: [],
           outras: [],
         };
+        const comiteTrabalho: any[] = [];
+        const orgComitePrograma: any[] = [];
+
         if (p.LattesProfessor) {
           const professorId = p.LattesProfessor.professorId;
           idLattes = p.LattesProfessor.numeroCurriculo;
@@ -185,6 +263,9 @@ class CurriculoService {
               where: {
                 professorId,
               },
+              include: {
+                evento: true,
+              },
             });
           const bancasTrabalho =
             await prisma.lattesParticipacaoBancaDeTrabalho.findMany({
@@ -195,7 +276,17 @@ class CurriculoService {
                 bancaDeTrabalho: true,
               },
             });
+
           vinculos.forEach((v) => {
+            if (
+              !overlapsYearsOngoing(
+                v.anoInicio,
+                v.anoFim,
+                query.yearStart,
+                query.yearEnd,
+              )
+            )
+              return;
             if (v.tipoVinculoAtuacaoProfissional.includes('Revisor de peri')) {
               revPeriodico.push(v);
             }
@@ -208,10 +299,18 @@ class CurriculoService {
             }
           });
           eventosProfessor.forEach((p) => {
+            if (!compYears(p.evento.anoEvento)) return;
             if (p.organizador) {
               organizacaoEvento.push(p);
+              if (isComitePrograma(p.titulo)) {
+                orgComitePrograma.push(p);
+              }
             } else {
               participacaoEvento.push(p);
+
+              if (isComitePrograma(p.titulo)) {
+                comiteTrabalho.push(p);
+              }
             }
           });
           formacaoProfessor.forEach((formacao) => {
@@ -227,6 +326,14 @@ class CurriculoService {
           });
 
           bancasTrabalho.forEach((bancaRel) => {
+            if (
+              !compYears(
+                bancaRel.bancaDeTrabalho.anoBancaDeTrabalho,
+                query.yearStart,
+                query.yearEnd,
+              )
+            )
+              return;
             const tipoRaw =
               bancaRel?.bancaDeTrabalho?.tipoBancaDeTrabalho ?? '';
             const tipo = String(tipoRaw).toUpperCase();
@@ -290,6 +397,8 @@ class CurriculoService {
           organizacaoEvento,
           revPeriodico,
           idLattes,
+          comiteTrabalho,
+          orgComitePrograma,
         };
       }),
     );
@@ -333,7 +442,7 @@ class CurriculoService {
       'PARTICIPACAO-EM-OLIMPIADA',
       'OUTRAS-PARTICIPACOES-EM-EVENTOS-CONGRESSOS',
     ] as const;
-
+    // console.log(bloco);
     // Monta lista flat de participações com “tipo” (pra natureza fallback)
     const items: Array<{ tag: string; item: any }> = [];
     for (const tag of TAGS) {
@@ -364,7 +473,6 @@ class CurriculoService {
       // pega os blocos básicos/detalhamento independente do tipo
       const dadosBasicos = getChildByPrefix(item, 'DADOS-BASICOS') ?? {};
       const detalhamento = getChildByPrefix(item, 'DETALHAMENTO') ?? {};
-
       const anoEvento = Number(dadosBasicos?.['ANO']);
       if (!Number.isFinite(anoEvento) || anoEvento <= 0) continue;
 
@@ -373,6 +481,10 @@ class CurriculoService {
         pickFirst(detalhamento, ['NOME-DO-EVENTO', 'NOME-DO-EVENTO-INGLES']) ??
         pickFirst(dadosBasicos, ['TITULO', 'TITULO-INGLES']) ??
         null;
+      const tituloParticipacao = pickFirst(dadosBasicos, [
+        'TITULO',
+        'TITULO-INGLES',
+      ]);
 
       const paisEvento =
         pickFirst(dadosBasicos, ['PAIS']) ??
@@ -443,6 +555,7 @@ class CurriculoService {
           eventoId,
           professorId,
           organizador,
+          titulo: tituloParticipacao,
         },
         update: {
           organizador,
@@ -568,6 +681,7 @@ class CurriculoService {
           eventoId,
           professorId,
           organizador: true,
+          titulo: nomeEvento,
         },
         update: {
           organizador: true,

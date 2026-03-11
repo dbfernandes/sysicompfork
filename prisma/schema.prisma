@@ -1371,10 +1371,10 @@ model LattesEvento {
 }
 
 model LattesParticipacaoEvento {
-  eventoId    Int
-  professorId Int
-  organizador Boolean
-
+  eventoId                                 Int
+  professorId                              Int
+  organizador                              Boolean
+  titulo                                   String?                                    @db.VarChar(300)
   evento                                   LattesEvento                               @relation(fields: [eventoId], references: [eventoId])
   professor                                LattesProfessor                            @relation(fields: [professorId], references: [professorId])
   LattesParticipacaoEventoAreaConhecimento LattesParticipacaoEventoAreaConhecimento[]

@@ -175,16 +175,34 @@ const geraPlanilha = async (
   next: NextFunction,
 ) => {
   try {
-    const buffer = await gerarPlanilhaNumerosLattes();
+    const toNumber = (v: unknown): number | undefined => {
+      const raw = Array.isArray(v) ? v[0] : v;
+      if (raw == null) return undefined;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : undefined;
+    };
 
+    const yearStart = toNumber(req.query?.yearStart);
+    const yearEnd = toNumber(req.query?.yearEnd);
+
+    const buffer = await gerarPlanilhaNumerosLattes({
+      yearStart,
+      yearEnd,
+    });
+    let nameFile = `numero-lattes.xlsx`;
+
+    if (yearStart && yearEnd) {
+      nameFile = `numero-lattes-${yearStart}-${yearEnd}.xlsx`;
+    } else if (yearStart) {
+      nameFile = `numero-lattes-${yearStart}-____.xlsx`;
+    } else if (yearEnd) {
+      nameFile = `numero-lattes-____-${yearEnd}.xlsx`;
+    }
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
-    res.setHeader(
-      'Content-Disposition',
-      'attachment; filename="numeros-lattes.xlsx"',
-    );
+    res.setHeader('Content-Disposition', `attachment; filename="${nameFile}"`);
     res.end(buffer);
   } catch (error) {
     next(error);
