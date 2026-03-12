@@ -141,6 +141,22 @@ class DocenteService {
     // Implementar lógica de perfis conforme necessário
     return [];
   }
+  async listarPublicos() {
+    return prisma.usuario.findMany({
+      where: {
+        professor: 1,
+        status: 1,
+      },
+      select: {
+        id: true,
+        updatedAt: true,
+        ultimaAtualizacao: true,
+      },
+      orderBy: {
+        nomeCompleto: 'asc',
+      },
+    });
+  }
 }
 
 export default new DocenteService();

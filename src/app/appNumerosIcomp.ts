@@ -15,6 +15,8 @@ import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes';
 import { errorHandler } from '@/middlewares/errorHandler';
 import router from '@/routes/routesNumerosIcomp';
+import { createSeoRoutes } from '@resources/numerosIcomp/seo';
+import docenteService from '@resources/docente/docente.service';
 
 dotenv.config({
   path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`),
@@ -69,6 +71,13 @@ app.use((req, res, next) => {
   res.locals.basePath = req.baseUrl || ''; // Se usar Router
   next();
 });
+app.use(
+  createSeoRoutes({
+    professorService: {
+      listarPublicos: docenteService.listarPublicos,
+    },
+  }),
+);
 app.use(router);
 app.use(errorHandler);
 
