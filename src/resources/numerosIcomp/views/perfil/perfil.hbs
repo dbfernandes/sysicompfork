@@ -51,7 +51,7 @@
                 <div class="avatar avatar-xxl position-relative ms-3">
                   <img
                     src="{{#if professor.Avatar.[0]}}{{professor.Avatar.[0].caminho}}{{else}}/public/img/user-profile-generic.png{{/if}}"
-                    alt="Imagem do professor"
+                    alt="{{#if professor.Avatar.[0]}}Foto de {{professor.nomeCompleto}}{{else}}Imagem do professor{{/if}}"
                     class="w-100 border-radius-lg shadow-sm">
                 </div>
               </div>
@@ -112,3 +112,25 @@
   </section>
 {{> numerosIcomp/footer}}
 </div>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "{{professor.nomeCompleto}}",
+  "url": "{{urlCanonica}}/docentes/{{professor.id}}?lng={{lng}}",
+  "image": "{{#if professor.Avatar.[0]}}{{urlCanonica}}{{professor.Avatar.[0].caminho}}{{/if}}",
+  "email": "{{professor.email}}",
+  "affiliation": {
+    "@type": "CollegeOrUniversity",
+    "name": "Universidade Federal do Amazonas"
+  },
+  "worksFor": {
+    "@type": "CollegeOrUniversity",
+    "name": "Instituto de Computação da UFAM"
+  },
+  "sameAs": [
+    "https://lattes.cnpq.br/{{professor.lattesId}}"
+  ]
+}
+</script>

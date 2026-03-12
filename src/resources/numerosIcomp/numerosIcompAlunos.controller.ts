@@ -1,8 +1,11 @@
-import { Request, Response } from "express";
-import alunoService from "../alunos/aluno.service";
-import path from "path";
+import { Request, Response } from 'express';
+import alunoService from '../alunos/aluno.service';
+import path from 'path';
+import { getIndexInformations } from '@resources/numerosIcomp/numerosIcompInicio.controller';
+import language from '../../utils/i18n';
+
 function resolveView(viewName: string): string {
-  return path.resolve(__dirname, "views", viewName);
+  return path.resolve(__dirname, 'views', viewName);
 }
 
 // Escolha do Layout
@@ -10,8 +13,25 @@ const layoutMain = {
   layout: 'numerosIcompMain',
 };
 
+function whichCourse(course: string, lng: any) {
+  const i18n = language.i18next;
+  if (lng) {
+    i18n.changeLanguage(lng);
+  }
+  switch (course) {
+    case 'Processamento de Dados':
+      return i18n.t('students.processamentoDeDados');
+    case 'Ciência Da Computação':
+      return i18n.t('students.cienciaDaComputacao');
+    case 'Engenharia de Software / Sistemas de Informação':
+      return i18n.t('students.engenhariaESistemas');
+    case 'Mestrado':
+      return i18n.t('students.mestrado');
+    case 'Doutorado':
+      return i18n.t('students.doutorado');
+  }
+}
 // Listagem de Alunos
-
 const alunos = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':
@@ -45,15 +65,36 @@ const alunos = async (req: Request, res: Response) => {
             1,
           );
           const alunosFormados = alunosInfo.length;
+          const cursoForm =
+            cursoSearch === 'Engenharia de Software'
+              ? cursoSearch + ' / Sistemas de Informação'
+              : cursoSearch;
           return res.status(200).render(resolveView('alunos'), {
             lng,
             alunosInfo,
             alunosFormados,
             ...layoutMain,
-            curso:
-              cursoSearch === 'Engenharia de Software'
-                ? cursoSearch + ' / Sistemas de Informação'
-                : cursoSearch,
+            curso: cursoForm,
+            seo: getIndexInformations({
+              title: `Alunos Formados em ${whichCourse(
+                cursoForm,
+                lng,
+              )} | Números ICOMP`,
+              description: `Consulte a lista de alunos formados em  ${whichCourse(
+                cursoForm,
+                lng,
+              )} no Instituto  de Computação da UFAM, com informações sobre nome e data de conclusão.`,
+              enTitle: `Graduated Students in  ${whichCourse(
+                cursoForm,
+                lng,
+              )} | ICOMP in Numbers`,
+              enDescription: `Browse the list of graduated students in ${whichCourse(
+                cursoForm,
+                lng,
+              )} at the Institute of Computing at UFAM, including name and graduation date.`,
+              url: 'docentes',
+              language: lng as any,
+            }),
           });
         } else {
           return res.redirect(`/numerosIcomp?lng=${lng}#alunos`);

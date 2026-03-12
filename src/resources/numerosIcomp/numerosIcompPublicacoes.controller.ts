@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import publicacaoService from '../publicacao/publicacao.service';
 import path from 'path';
+import { getIndexInformations } from '@resources/numerosIcomp/numerosIcompInicio.controller';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -27,6 +28,16 @@ const publicacao = async (
       ...layoutMain,
       publicacoes,
       ano,
+      seo: getIndexInformations({
+        title: 'Publicações | Números ICOMP',
+        description:
+          'Consulte as publicações dos professores do Instituto de Computação da UFAM, com informações sobre título, ano, tipo, local de publicação, autores e ISSN ou ISBN.',
+        enTitle: 'Faculty Publications | ICOMP in Numbers',
+        enDescription:
+          'Browse publications by faculty members of the Institute of Computing at UFAM, including title, year, type, publication venue, authors, and ISSN or ISBN.',
+        url: 'publicacoes',
+        language: lng as any,
+      }),
     });
   } catch (error) {
     return res
