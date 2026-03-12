@@ -302,11 +302,13 @@ model Recomendacoes {
 }
 
 model UsuarioPublicacao {
-  id           Int        @id @default(autoincrement())
+  id           Int @id @default(autoincrement())
   usuarioId    Int
   publicacaoId Int
-  usuario      Usuario    @relation(fields: [usuarioId], references: [id])
-  publicacao   Publicacao @relation(fields: [publicacaoId], references: [id])
+
+  natureza   String?    @db.VarChar(100)
+  usuario    Usuario    @relation(fields: [usuarioId], references: [id])
+  publicacao Publicacao @relation(fields: [publicacaoId], references: [id])
 
   @@unique([usuarioId, publicacaoId], name: "usuarioId_publicacaoId")
   @@index([usuarioId])

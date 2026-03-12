@@ -44,7 +44,6 @@ const professores = async (req: Request, res: Response) => {
 };
 
 // Perfil
-
 const perfil = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'GET':

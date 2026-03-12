@@ -151,7 +151,11 @@ class PublicacaoService {
               publicacaoId,
             },
           },
-          create: { usuarioId: professorId, publicacaoId },
+          create: {
+            usuarioId: professorId,
+            publicacaoId,
+            natureza: pub.natureza,
+          },
           update: {},
         });
       }

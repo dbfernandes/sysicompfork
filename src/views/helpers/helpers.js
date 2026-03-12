@@ -214,6 +214,7 @@ const formataFormacao = (formacao, lng) => {
 };
 
 const formataFormacaoTitulo = (formacao, lng) => {
+  if (!formacao) return '-';
   const arr = formacao.split(';');
   const prep = lng === 'en' ? ' in ' : ' em ';
   return arr[0] + prep + arr[1];

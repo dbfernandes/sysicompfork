@@ -18,6 +18,16 @@ type QuerySearch = {
   yearStart?: number;
   yearEnd?: number;
 };
+
+function norm(s?: string | null) {
+  return (s ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   const workbook = new exceljs.Workbook();
   const data = await CurriculoService.getAcompanhamentoLattes(query);
@@ -43,6 +53,7 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
     { header: 'Mestrado', key: 'mes', width: 12 },
     { header: 'Doutorado', key: 'dou', width: 12 },
     { header: 'Pós-Doutorado', key: 'pos_dou', width: 14 },
+    { header: 'Outras', key: 'orie_outras', width: 10 },
 
     {
       header: 'Membro do Comitê de Prog.',
@@ -78,7 +89,7 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   ws.insertRow(1, []); // insere uma linha no topo
 
   const tamPub = 6;
-  const tamOrie = 5;
+  const tamOrie = 6;
   const tamEven = 2;
   const tamOriEven = 2;
   const tamBanca = 5;
@@ -182,11 +193,16 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   // Dados começam na linha 3 agora
   for (const p of data.professores ?? []) {
     const orientacoes = p.orientacoes ?? [];
-    const inic = orientacoes.filter(
-      (o) => o.natureza === 'Iniciacao cientifica',
+    const inic = orientacoes.filter((o) =>
+      norm(o.natureza).includes(norm('Iniciacao cientifica')),
     );
-    const naoInic = orientacoes.filter(
-      (o) => o.natureza !== 'Iniciacao cientifica',
+    const naoInic = orientacoes.filter((o) =>
+      norm(o.natureza).includes(norm('Trabalho de conclusao de curso')),
+    );
+    const outrasOrientacoes = orientacoes.filter(
+      (o) =>
+        !norm(o.natureza).includes(norm('Trabalho de conclusao de curso')) &&
+        !norm(o.natureza).includes(norm('Iniciacao cientifica')),
     );
 
     ws.addRow({
@@ -214,6 +230,7 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
       mes: countByTipo(orientacoes, 2),
       dou: countByTipo(orientacoes, 3),
       pos_dou: countByTipo(orientacoes, 4),
+      orie_outras: countByTipo(outrasOrientacoes, 1),
 
       banca_gra: p.bancas.graduacao.length,
       banca_qua: p.bancas.qualificacao.length,
@@ -269,6 +286,7 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
     'corp_edi',
     'comite_programa',
     'org_comite_programa',
+    'orie_outras',
   ]) {
     ws.getColumn(key).alignment = { horizontal: 'center' };
   }

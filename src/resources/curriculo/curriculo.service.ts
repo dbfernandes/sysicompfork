@@ -11,6 +11,9 @@ import {
   getPremiosTitulos,
 } from '@resources/curriculo/teste';
 import { uploadBancas } from '@resources/curriculo/util/uploadBancaTrabalho';
+import { getCompleteFormDataFromFile } from '@resources/curriculo/extractorLattes';
+import PublicacaoService from '@resources/publicacao/publicacao.service';
+import { ProjetoParsed } from '@resources/projetos/projetos.types';
 
 enum LattesStatus {
   ATUALIZADO = 'ATUALIZADO',
@@ -168,6 +171,7 @@ class CurriculoService {
               select: {
                 ano: true,
                 tipoId: true,
+                natureza: true,
               },
             },
           },
@@ -199,8 +203,10 @@ class CurriculoService {
           .map((p) => ({
             ano: p.publicacao.ano,
             tipo: p.publicacao.tipoId,
+            natureza: p.natureza,
           }))
-          .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd));
+          .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd))
+          .filter((p) => p.tipo !== 1 || p.natureza === 'COMPLETO');
         const projetos = p.projetos.filter((proj) =>
           overlapsYearsOngoing(
             proj.dataInicio,
@@ -1024,6 +1030,11 @@ class CurriculoService {
       while (idx < jobs.length) {
         const current = jobs[idx++];
         try {
+          const resultado = await getCompleteFormDataFromFile(current.filePath);
+          await PublicacaoService.adicionarVarios(
+            current.usuarioId,
+            resultado.publicacoes as ProjetoParsed[],
+          );
           await this.importarLattes(current.filePath, current.usuarioId);
           results.push({ ...current, ok: true });
         } catch (e: any) {
