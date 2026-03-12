@@ -93,8 +93,9 @@ function getChildByPrefix(obj: any, prefix: string): any | undefined {
   return key ? obj[key] : undefined;
 }
 
-function isComitePrograma(titulo?: string | null) {
-  const alvo = 'comite de programa';
+function isComitePrograma(opts: { titulo?: string; alvo?: string }) {
+  const titulo = opts.titulo || '';
+  const alvo = opts.alvo || 'comite de programa';
   const t = norm(titulo ?? '');
 
   if (!t) return false;
@@ -205,8 +206,8 @@ class CurriculoService {
             tipo: p.publicacao.tipoId,
             natureza: p.natureza,
           }))
-          .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd))
-          .filter((p) => p.tipo !== 1 || p.natureza === 'COMPLETO');
+          .filter((p) => p.tipo !== 1 || p.natureza === 'COMPLETO')
+          .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd));
         const projetos = p.projetos.filter((proj) =>
           overlapsYearsOngoing(
             proj.dataInicio,
@@ -308,13 +309,19 @@ class CurriculoService {
             if (!compYears(p.evento.anoEvento)) return;
             if (p.organizador) {
               organizacaoEvento.push(p);
-              if (isComitePrograma(p.titulo)) {
+              if (
+                isComitePrograma({ titulo: p.titulo }) ||
+                isComitePrograma({ titulo: p.titulo, alvo: 'program committe' })
+              ) {
                 orgComitePrograma.push(p);
               }
             } else {
               participacaoEvento.push(p);
 
-              if (isComitePrograma(p.titulo)) {
+              if (
+                isComitePrograma({ titulo: p.titulo }) ||
+                isComitePrograma({ titulo: p.titulo, alvo: 'program committe' })
+              ) {
                 comiteTrabalho.push(p);
               }
             }
