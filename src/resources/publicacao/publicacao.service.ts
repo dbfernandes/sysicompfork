@@ -177,7 +177,7 @@ class PublicacaoService {
 
       return await prisma.publicacao.findMany({
         where: whereConditions,
-        include: { usuarioPublicacoes: true },
+        include: { usuarioPublicacoes: true, tipo: true },
       });
     } catch (error) {
       throw new Error(`Erro ao listar publicações: ${error}`);

@@ -22,7 +22,7 @@ const publicacao = async (
   try {
     const { ano, lng } = req.query;
     const publicacoes = await publicacaoService.listarTodos([1, 2], ano);
-
+    console.log(publicacoes);
     return res.render(resolveView('publicacoes'), {
       lng,
       ...layoutMain,

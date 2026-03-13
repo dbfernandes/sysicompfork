@@ -19,7 +19,6 @@ const projetos = async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { lng } = req.query;
         const projetosFiltrados = await projetosService.listarAtuais();
-
         return res.status(200).render(resolveView('projetos'), {
           lng,
           ...layoutMain,

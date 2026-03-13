@@ -6,6 +6,8 @@
   "graduacao": "Graduação",
   "mestrado": "Mestrado",
   "doutorado": "Doutorado",
+  "iniciacao": "Iniciação Científica",
+
   "premios": "Prêmios",
   "formacao": "Formação",
   "local": "Local",
@@ -27,9 +29,12 @@
   "projetos": "Projetos",
   "naoHaProjetos": "Não há projetos cadastrados para",
   "naoHaPremios": "Não há prêmios cadastrados para",
+  "orientacoesDeIniciacaoEmAndamento": "Orientações de Iniciação Científica em Andamento",
   "orientacoesDeGraduacaoEmAndamento": "Orientações de Graduação em Andamento",
   "orientacoesDeMestradoEmAndamento": "Orientações de Mestrado em Andamento",
   "orientacoesDeDoutoradoEmAndamento": "Orientações de Doutorado em Andamento",
+  "orientacoesDeIniciacaoConcluidas": "Orientações de Iniciação Científica em Andamento",
+
   "orientacoesDeGraduacaoConcluidas": "Orientações de Graduação Concluídas",
   "orientacoesDeMestradoConcluidas": "Orientações de Mestrado Concluídas",
   "orientacoesDeDoutoradoConcluidas": "Orientações de Doutorado Concluídas",

@@ -76,6 +76,8 @@ const guidencesOnGoing = (course, lng) => {
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
+    case 'Iniciacao':
+      return i18n.t('profile.orientacoesDeIniciacaoEmAndamento');
     case 'Graduação':
       return i18n.t('profile.orientacoesDeGraduacaoEmAndamento');
     case 'Mestrado':
@@ -89,6 +91,8 @@ const guidencesEnded = (course, lng) => {
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
+    case 'Iniciacao':
+      return i18n.t('profile.orientacoesDeIniciacaoConcluidas');
     case 'Graduação':
       return i18n.t('profile.orientacoesDeGraduacaoConcluidas');
     case 'Mestrado':

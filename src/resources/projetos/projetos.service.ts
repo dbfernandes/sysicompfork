@@ -43,6 +43,8 @@ class ProjetoService {
         id: true,
         titulo: true,
         descricao: true,
+        financiadores: true,
+        integrantes: true,
       },
     });
 
