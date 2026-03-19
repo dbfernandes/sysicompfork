@@ -32,7 +32,13 @@ export type UpdateProjetoDto = Pick<
 
 export type ProjetoData = Pick<
   Projeto,
-  'titulo' | 'descricao' | 'papel' | 'financiadores' | 'integrantes'
+  | 'titulo'
+  | 'descricao'
+  | 'papel'
+  | 'financiadores'
+  | 'integrantes'
+  | 'isUfam'
+  | 'natureza'
 > & {
   inicio: number;
   fim: number;
@@ -70,5 +76,7 @@ export type ProjetoTransformed = {
     integrantes: string;
     inicio: number;
     fim: number;
+    isUfam: boolean;
+    natureza: string;
   }>;
 };

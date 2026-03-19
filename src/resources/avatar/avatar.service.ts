@@ -31,7 +31,6 @@ class AvatarService {
   }
 
   async remover(usuarioId: number): Promise<void | null> {
-    console.log('Remover', usuarioId);
     // const avatar = await prisma.avatar.findFirst({
     //   where: {
     //     usuarioId,

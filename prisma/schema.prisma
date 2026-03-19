@@ -261,17 +261,20 @@ model Premio {
 }
 
 model Projeto {
-  id            Int      @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   professorId   Int
-  titulo        String   @db.VarChar(1024)
-  descricao     String   @db.VarChar(5000)
+  titulo        String  @db.VarChar(1024)
+  descricao     String  @db.VarChar(5000)
   dataInicio    Int
   dataFim       Int?
-  papel         String   @db.VarChar(500)
-  financiadores String   @db.VarChar(1024)
-  integrantes   String   @db.VarChar(1024)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  papel         String  @db.VarChar(500)
+  financiadores String  @db.VarChar(1024)
+  integrantes   String  @db.Text
+  natureza      String? @db.VarChar(30)
+  isUfam        Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   professor Usuario @relation(fields: [professorId], references: [id])
 

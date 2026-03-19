@@ -14,6 +14,7 @@ import { uploadBancas } from '@resources/curriculo/util/uploadBancaTrabalho';
 import { getCompleteFormDataFromFile } from '@resources/curriculo/extractorLattes';
 import PublicacaoService from '@resources/publicacao/publicacao.service';
 import { ProjetoParsed } from '@resources/projetos/projetos.types';
+import ProjetoService from '@resources/projetos/projetos.service';
 
 enum LattesStatus {
   ATUALIZADO = 'ATUALIZADO',
@@ -181,6 +182,7 @@ class CurriculoService {
           select: {
             dataInicio: true,
             dataFim: true,
+            papel: true,
           },
         },
         orientacoes: {
@@ -1041,6 +1043,10 @@ class CurriculoService {
           await PublicacaoService.adicionarVarios(
             current.usuarioId,
             resultado.publicacoes as ProjetoParsed[],
+          );
+          await ProjetoService.adicionarVarios(
+            current.usuarioId,
+            resultado.projetos as any,
           );
           await this.importarLattes(current.filePath, current.usuarioId);
           results.push({ ...current, ok: true });

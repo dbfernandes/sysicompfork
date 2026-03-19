@@ -13,11 +13,14 @@ function get_projetos_from_instituicao(instituicoes) {
   if (instituicoes.length > 0) {
     for (var idx in instituicoes) {
       if (instituicoes[idx]['_CODIGO-INSTITUICAO'] == '008200000000') {
+        console.log(instituicoes[idx]);
         return instituicoes[idx]['ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO'];
       }
     }
   } else {
-    return instituicoes['ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO'];
+    if (instituicoes['_CODIGO-INSTITUICAO'] == '008200000000') {
+      return instituicoes['ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO'];
+    }
   }
 }
 
@@ -67,6 +70,7 @@ function get_publicDict(dados) {
 function get_projectDict(dados, nome, lattesId) {
   const titulo = dados['_NOME-DO-PROJETO'];
   const descricao = dados['_DESCRICAO-DO-PROJETO'];
+  const natureza = dados['_NATUREZA'];
   const inicio = dados['_ANO-INICIO'];
   const fim =
     dados['_ANO-FIM'] == '' || dados['_ANO-FIM'] == undefined
@@ -119,6 +123,7 @@ function get_projectDict(dados, nome, lattesId) {
     descricao,
     inicio,
     fim,
+    natureza,
     integrantes:
       typeof integrantes != 'string' ? integrantes.join('; ') : integrantes,
     financiadores:
@@ -220,7 +225,10 @@ function parseDateDDMMYYYY(value) {
 
   return new Date(year, month, day);
 }
-
+function toArray(value) {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
 function getCompleteFormData(data, publicCallback, errorCallback) {
   const [file] = document.querySelector('#vittaexml').files;
   const reader = new FileReader();
@@ -383,44 +391,41 @@ function getCompleteFormData(data, publicCallback, errorCallback) {
           }
         }
 
-        const instituicoes =
+        const instituicoes = toArray(
           xmlText?.['CURRICULO-VITAE']?.['DADOS-GERAIS']?.[
             'ATUACOES-PROFISSIONAIS'
-          ]?.['ATUACAO-PROFISSIONAL'] ?? [];
+          ]?.['ATUACAO-PROFISSIONAL'] ?? [],
+        );
 
-        const projetos = get_projetos_from_instituicao(instituicoes);
+        // const projetos = get_projetos_from_instituicao(instituicoes);
         const projectDict = { projetos: [] };
-        if (projetos) {
-          if (projetos['PARTICIPACAO-EM-PROJETO'].length > 0) {
-            sub_val = projetos['PARTICIPACAO-EM-PROJETO'];
-            for (var p in sub_val) {
-              if (!sub_val[p]['PROJETO-DE-PESQUISA']) continue;
-              if (sub_val[p]['PROJETO-DE-PESQUISA'].length > 0) {
-                for (var o in sub_val[p]['PROJETO-DE-PESQUISA']) {
-                  const project = get_projectDict(
-                    sub_val[p]['PROJETO-DE-PESQUISA'][o],
-                    nomeCompleto,
-                    userDict['lattesId'],
-                  );
-                  projectDict['projetos'].push(project);
-                }
-              } else {
-                const project = get_projectDict(
-                  sub_val[p]['PROJETO-DE-PESQUISA'],
-                  nomeCompleto,
-                  userDict['lattesId'],
-                );
-                projectDict['projetos'].push(project);
-              }
+        if (instituicoes.length > 0) {
+          for (let idx in instituicoes) {
+            let isUfam = false;
+            const projetos =
+              instituicoes[idx]['ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO'];
+
+            if (instituicoes[idx]['_CODIGO-INSTITUICAO'] == '008200000000') {
+              isUfam = true;
             }
-          } else {
-            if (sub_val['PROJETO-DE-PESQUISA']) {
-              const project = get_projectDict(
-                sub_val['PROJETO-DE-PESQUISA'],
-                nomeCompleto,
-                userDict['lattesId'],
-              );
-              projectDict['projetos'].push(project);
+            if (projetos) {
+              if (projetos['PARTICIPACAO-EM-PROJETO']) {
+                const sub_val = toArray(projetos['PARTICIPACAO-EM-PROJETO']);
+                for (var p in sub_val) {
+                  if (!sub_val[p]['PROJETO-DE-PESQUISA']) continue;
+                  const projetos = toArray(sub_val[p]['PROJETO-DE-PESQUISA']);
+                  if (projetos.length > 0) {
+                    for (let o in projetos) {
+                      const project = get_projectDict(
+                        projetos[o],
+                        nomeCompleto,
+                        userDict['lattesId'],
+                      );
+                      projectDict['projetos'].push({ ...project, isUfam });
+                    }
+                  }
+                }
+              }
             }
           }
         }

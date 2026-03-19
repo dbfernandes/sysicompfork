@@ -39,7 +39,8 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
     { header: 'Atualizado', key: 'atualizado', width: 14 },
     { header: 'Lattes Atualização', key: 'lattes_atualizado', width: 17 },
 
-    { header: 'Projetos', key: 'projetos', width: 12 },
+    { header: 'Coordenador', key: 'projetos_cord', width: 12 },
+    { header: 'Colaborador', key: 'projetos_col', width: 12 },
 
     { header: 'Conferências', key: 'con', width: 14 },
     { header: 'Períodicos', key: 'per', width: 14 },
@@ -88,17 +89,24 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   // =========================================
   ws.insertRow(1, []); // insere uma linha no topo
 
+  const tamPro = 2;
   const tamPub = 6;
   const tamOrie = 6;
   const tamEven = 2;
   const tamOriEven = 2;
   const tamBanca = 5;
 
-  const iniPub = 5;
+  const iniPro = 4;
+  const iniPub = iniPro + tamPro;
   const iniOrie = iniPub + tamPub;
   const iniEven = iniOrie + tamOrie;
   const iniOrgEven = iniEven + tamEven;
   const iniBanca = iniOrgEven + tamOriEven;
+
+  // Mescla e escreve os títulos dos grupos
+  // Publicações: colunas 4..9 (D..I)
+  ws.mergeCells(1, iniPro, 1, iniPro + tamPro - 1);
+  ws.getCell(1, iniPro).value = 'Projetos';
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
@@ -121,6 +129,15 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   // Publicações: colunas 4..9 (D..I)
   ws.mergeCells(1, iniBanca, 1, iniBanca + tamBanca - 1);
   ws.getCell(1, iniBanca).value = 'Bancas';
+
+  const proCell = ws.getCell(1, iniPro);
+  proCell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'ffde59' },
+  };
+  proCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  proCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
   const pubCell = ws.getCell(1, iniPub);
   pubCell.fill = {
@@ -205,6 +222,12 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
         !norm(o.natureza).includes(norm('Iniciacao cientifica')),
     );
 
+    const projetosCoord = (p.projetos ?? []).filter(
+      (p) => p.papel === 'Coordenador',
+    );
+    const projetosColab = (p.projetos ?? []).filter(
+      (p) => p.papel !== 'Coordenador',
+    );
     ws.addRow({
       nome: p.idLattes
         ? {
@@ -216,7 +239,8 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
       atualizado: formatDateBR(p.ultimaAtualizacao),
       lattes_atualizado: p.dataAtualizacaoFormatted ?? '-',
 
-      projetos: (p.projetos ?? []).length,
+      projetos_col: projetosCoord.length,
+      projetos_cord: projetosColab.length,
 
       con: countByTipo(p.publicacoes, 1),
       per: countByTipo(p.publicacoes, 2),
@@ -259,7 +283,8 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   for (const key of [
     'atualizado',
     'lattes_atualizado',
-    'projetos',
+    'projetos_cord',
+    'projetos_col',
     'con',
     'per',
     'liv',

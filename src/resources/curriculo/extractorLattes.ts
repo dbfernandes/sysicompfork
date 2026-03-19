@@ -72,6 +72,7 @@ function getPublicDict(dados) {
 function getProjectDict(dados, nome, lattesId) {
   const titulo = dados?.['_NOME-DO-PROJETO'] || '';
   const descricao = dados?.['_DESCRICAO-DO-PROJETO'] || '';
+  const natureza = dados?.['_NATUREZA'] || '';
   const inicio = dados?.['_ANO-INICIO'] || '';
   const fim =
     dados?.['_ANO-FIM'] === '' || dados?.['_ANO-FIM'] === undefined
@@ -122,6 +123,7 @@ function getProjectDict(dados, nome, lattesId) {
     descricao,
     inicio,
     fim,
+    natureza,
     integrantes: integrantes.join('; '),
     financiadores: financiadores.join('; '),
     papel,
@@ -266,30 +268,62 @@ function extractPublicacoes(xmlText) {
 }
 
 function extractProjetos(xmlText, nomeCompleto, lattesId) {
-  const instituicoes =
+  const instituicoes = ensureArray(
     xmlText?.['CURRICULO-VITAE']?.['DADOS-GERAIS']?.[
       'ATUACOES-PROFISSIONAIS'
-    ]?.['ATUACAO-PROFISSIONAL'] ?? [];
+    ]?.['ATUACAO-PROFISSIONAL'] ?? [],
+  );
 
-  const projetos = getProjetosFromInstituicao(instituicoes);
   const projectDict = { projetos: [] };
 
-  if (!projetos) {
-    return projectDict;
-  }
+  if (instituicoes.length > 0) {
+    for (let idx in instituicoes) {
+      let isUfam = false;
+      const projetos =
+        instituicoes[idx]['ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO'];
 
-  const participacoes = ensureArray(projetos['PARTICIPACAO-EM-PROJETO']);
-
-  for (const participacao of participacoes) {
-    const projetosPesquisa = ensureArray(participacao?.['PROJETO-DE-PESQUISA']);
-
-    for (const projeto of projetosPesquisa) {
-      if (!projeto) continue;
-
-      const project = getProjectDict(projeto, nomeCompleto, lattesId);
-      projectDict.projetos.push(project);
+      if (instituicoes[idx]['_CODIGO-INSTITUICAO'] == '008200000000') {
+        isUfam = true;
+      }
+      if (projetos) {
+        if (projetos['PARTICIPACAO-EM-PROJETO']) {
+          const sub_val = ensureArray(projetos['PARTICIPACAO-EM-PROJETO']);
+          for (let p in sub_val) {
+            if (!sub_val[p]['PROJETO-DE-PESQUISA']) continue;
+            const projetos = ensureArray(sub_val[p]['PROJETO-DE-PESQUISA']);
+            if (projetos.length > 0) {
+              for (let o in projetos) {
+                const project = getProjectDict(
+                  projetos[o],
+                  nomeCompleto,
+                  lattesId,
+                );
+                projectDict['projetos'].push({ ...project, isUfam });
+              }
+            }
+          }
+        }
+      }
     }
   }
+
+  // const projetos = getProjetosFromInstituicao(instituicoes);
+  // if (!projetos) {
+  //   return projectDict;
+  // }
+
+  // const participacoes = ensureArray(projetos['PARTICIPACAO-EM-PROJETO']);
+
+  // for (const participacao of participacoes) {
+  //   const projetosPesquisa = ensureArray(participacao?.['PROJETO-DE-PESQUISA']);
+  //
+  //   for (const projeto of projetosPesquisa) {
+  //     if (!projeto) continue;
+  //
+  //     const project = getProjectDict(projeto, nomeCompleto, lattesId);
+  //     projectDict.projetos.push(project);
+  //   }
+  // }
 
   return projectDict;
 }

@@ -18,6 +18,7 @@ import {
 } from '../projetos/projetos.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
 import gerarPlanilhaNumerosLattes from '@utils/gerarPlanilha/gerarPlanilhaLattes';
+import { getCompleteFormDataFromFile } from '@resources/curriculo/extractorLattes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -124,6 +125,8 @@ const carregar = (req, res: Response, next: NextFunction) => {
 
       if (curriculoFile) {
         const xmlPath = curriculoFile.path;
+        // const resultado = await getCompleteFormDataFromFile(xmlPath);
+        // console.log(resultado.projetos.projetos.length);
         await CurriculoService.importarLattes(xmlPath, professorIdParsed);
       }
 
@@ -137,10 +140,13 @@ const carregar = (req, res: Response, next: NextFunction) => {
           integrantes: p.integrantes || '',
           inicio: p.inicio || 0,
           fim: p.fim || 0,
+          isUfam: p.isUfam,
+          natureza: p.natureza,
         })),
       };
 
-      // Chamadas aos services com validação de tipos
+      // console.log(projetosTransformed.projetos.length);
+      // Chamadas aos servi  ces com validação de tipos
       await Promise.all([
         OrientacaoService.adicionarVarios(professorIdParsed, orientacoesParsed),
         ProjetoService.adicionarVarios(
