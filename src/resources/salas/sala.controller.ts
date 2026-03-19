@@ -31,14 +31,18 @@ const criarSala = async (req: Request, res: Response): Promise<void> => {
         res.status(401).send('Não autorizado');
         return;
       }
-
-      let { andar, bloco, nome, numero, capacidade } = req.body;
+      const { bloco, nome, andarOutro } = req.body;
+      let { andar, numero, capacidade } = req.body;
 
       if (!andar || !bloco || !nome) {
         res.status(400).json({
           error: 'Dados incompletos ou mal formatados',
         });
         return;
+      }
+
+      if (andar === 'outro') {
+        andar = andarOutro;
       }
 
       numero = parseInt(req.body.numero, 10) || 0;

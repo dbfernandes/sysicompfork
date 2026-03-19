@@ -140,7 +140,7 @@
       if (!map.has(s.id)) {
         map.set(s.id, {
           id: String(s.id),
-          title: `${s.nome || 'Sala'} — ${s.bloco || ''} ${s.andar ? `(${s.andar}º)` : ''}`.trim()
+          title: `${s.nome || 'Sala'} — ${s.bloco || ''} ${s.andar ? `(${s.andar})` : ''}`.trim()
         });
       }
     });
@@ -277,7 +277,7 @@
         const ev  = info.event;
         const raw = ev.extendedProps?.raw || {};
         const salaTxt = raw.sala
-          ? `${raw.sala.nome} — ${raw.sala.bloco || ''} ${raw.sala.andar ? '('+raw.sala.andar+'º)' : ''}`.trim()
+          ? `${raw.sala.nome} — ${raw.sala.bloco || ''} ${raw.sala.andar ? '('+raw.sala.andar+')' : ''}`.trim()
           : '-';
 
         // período
