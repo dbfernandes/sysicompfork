@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import path from 'path';
+import { getIndexInformations } from '@resources/numerosIcomp/numerosIcompInicio.controller';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
@@ -12,7 +13,18 @@ const layoutMain = {
 
 const erro404 = async (req: Request, res: Response) => {
   const { lng } = req.query;
-  return res.status(404).render(resolveView('error404'), { ...layoutMain, lng });
+  return res.status(404).render(resolveView('error404'), {
+    ...layoutMain,
+    lng,
+    seo: getIndexInformations({
+      title: 'Página não encontrada | ICOMP',
+      description: 'A página solicitada não foi encontrada.',
+      enTitle: 'Page not found | ICOMP',
+      enDescription: 'The requested page could not be found.',
+      url: '404',
+      language: lng as any,
+    }),
+  });
 };
 
 // Redirect Routes

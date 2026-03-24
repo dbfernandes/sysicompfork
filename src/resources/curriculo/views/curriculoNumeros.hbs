@@ -68,7 +68,7 @@
     <div class="container-fluid">
       <div class="row mb-3">
         <div class="col-sm-9">
-          <h1>Números Lattes</h1>
+          <h1>Painel de Indicadores Acadêmicos (PIA-IComp)</h1>
         </div>
         <div class="col-sm-3">
           <ol class="breadcrumb float-sm-right">
@@ -131,11 +131,23 @@
 
       <div class="card">
       <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2" style="gap: 8px; flex-wrap: wrap;">
+          <div></div>
+
+          <button id="btn-export-xlsx" class="btn btn-success btn-sm min-width-button">
+            <i class="fas fa-file-excel mr-1"></i>
+            Exportar XLSX
+          </button>
+        </div>
         <table id="table-professors" class="table table-striped table-bordered table-hover w-100">
           <thead>
             <tr style="text-align: center;">
               <th style="text-align: start;">Nome</th>
-              <th style="text-align: center;">Atualizado&nbsp;em</th>
+              <th style="text-align: center;">
+                 <span data-toggle="tooltip" data-placement="top" title="Atualização lattes">
+                  Atualizado
+                </span>
+              </th>
               <th style="text-align: center;">Projetos</th>
               <th colspan="6" style="text-align: center;">Publicações</th>
               <th colspan="3" style="text-align: center;">Orientações</th>
@@ -144,52 +156,47 @@
             <tr>
               <th colspan="3"></th>
               <th>
-                Confer.
                 <span data-toggle="tooltip" data-placement="top" title="Artigos em Conferências">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                  Con.
                 </span>
               </th>
               <th>
-                Periód.
                 <span data-toggle="tooltip" data-placement="top" title="Artigos em Períodicos">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                Per.
                 </span>
               </th>
               <th>
-                Livros
+                <span data-toggle="tooltip" data-placement="top" title="Livros">
+                  Liv.
+                </span>
 <!--                <span data-toggle="tooltip" data-placement="top" title="Livros">-->
 <!--                  <i class="fa fa-question-circle"  aria-hidden="true"></i>-->
 <!--                </span>-->
               </th>
               <th>
-                Cap Liv.
                 <span data-toggle="tooltip" data-placement="top" title="Capítulos em Livros">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                  Cap.
                 </span>
               </th>
               <th>
-                Trab. Tec.
                 <span data-toggle="tooltip" data-placement="top" title="Trabalho Técnico">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                  Trab. Tec.
                 </span>
               <th>
-              Prefác.
                 <span data-toggle="tooltip" data-placement="top" title="Prefácio">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                  Pre.
                 </span>
               </th>
-
               <th>TCC</th>
               <th>
-                Mes.
                 <span data-toggle="tooltip" data-placement="top" title="Mestrado">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+
+                  Mes.
                 </span>
               </th>
               <th>
-                Dout.
                 <span data-toggle="tooltip" data-placement="top" title="Doutorado">
-                  <i class="fa fa-question-circle"  aria-hidden="true"></i>
+                  Dou.
                 </span>
               </th>
               <th colspan="4"></th>
@@ -198,8 +205,16 @@
           <tbody>
             {{#each professores}}
               <tr>
-                <td>{{nome}}</td>
-                <td >{{formatDate ultimaAtualizacao}}</td>
+                <td>
+                  {{#if idLattes}}
+                  <a href="https://lattes.cnpq.br/{{{idLattes}}}" target="_blank" style="color: #146097">
+                    {{nome}}
+                  </a>
+                  {{else}}
+                    {{nome}}
+                  {{/if}}
+                </td>
+                <td >{{formatDate dataAtualizacao}}</td>
                 <td>{{countArray projetos}}</td>
                 <td>{{countArray publicacoes key='tipo' value=1}}</td>
                 <td>{{countArray publicacoes key='tipo' value=2}}</td>
@@ -228,18 +243,6 @@
 <!-- Exportação -->
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
-<script defer src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap4.min.js"></script>
-
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
-<script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
-
 
 <script src="/script-adminlte/plugins/moment/locale/pt-br.js"></script>
 <script src="/script-adminlte/plugins/select2/js/select2.full.min.js"></script>
@@ -293,6 +296,28 @@
 
     });
 
+    function getYearsFromInputs() {
+      const yearStartInput = $('#yearStartPicker').find('input').val().trim()
+      const yearEndInput = $('#yearEndPicker').find('input').val().trim()
+
+      // são strings tipo "2020" (porque format é YYYY)
+      const yearStart = yearStartInput ? Number(yearStartInput) : null
+      const yearEnd = yearEndInput ? Number(yearEndInput) : null
+
+      return { yearStart, yearEnd }
+    }
+
+    $('#btn-export-xlsx').on('click', function () {
+      const { yearStart, yearEnd } = getYearsFromInputs()
+
+      const params = new URLSearchParams()
+      if (yearStart) params.set('yearStart', String(yearStart))
+      if (yearEnd) params.set('yearEnd', String(yearEnd))
+
+      // ajuste a rota aqui
+      const url = `/lattes/numeros/export-xlsx?${params.toString()}`
+      window.location.href = url
+    })
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
       const selectedStatus = $('#status-filter').val()
@@ -392,7 +417,7 @@
 
       language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
       dom:
-        "<'row mb-2'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+        "<'row mb-2'<'col-sm-12 col-md-6'><'col-sm-12 col-md-6'f>>" +
         " t<'dt-bottom d-flex flex-wrap justify-content-start align-items-center gap-table'lip>",
       responsive: true,
       columns: [
@@ -445,8 +470,8 @@
       datatable.clear()
 
       professoresFiltrados.forEach((p) => {
-        const dataFormatada = p.ultimaAtualizacao
-          ? moment(p.ultimaAtualizacao).format('DD/MM/YYYY')
+        const dataFormatada = p.dataAtualizacao
+          ? moment(p.dataAtualizacao).format('DD/MM/YYYY')
           : '-';
         datatable.row.add([
           p.nome,

@@ -30,6 +30,7 @@
                   <span class="ms-1">{{__ "profile.orientacoes"}}</span>
                 </a>
                 <div class="dropdown-menu w-100 text-center">
+                  <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/iniciacao?lng={{lng}}">{{__ 'profile.iniciacao'}}</a>
                   <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/graduacao?lng={{lng}}">{{__ "profile.graduacao"}}</a>
                   <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/mestrado?lng={{lng}}">{{__ "profile.mestrado"}}</a>
                   <a class="dropdown-item" href="/docentes/{{professor.id}}/orientacoes/doutorado?lng={{lng}}">{{__ "profile.doutorado"}}</a>
@@ -51,7 +52,7 @@
                 <div class="avatar avatar-xxl position-relative ms-3">
                   <img
                     src="{{#if professor.Avatar.[0]}}{{professor.Avatar.[0].caminho}}{{else}}/public/img/user-profile-generic.png{{/if}}"
-                    alt="Imagem do professor"
+                    alt="{{#if professor.Avatar.[0]}}Foto de {{professor.nomeCompleto}}{{else}}Imagem do professor{{/if}}"
                     class="w-100 border-radius-lg shadow-sm">
                 </div>
               </div>
@@ -71,11 +72,16 @@
                 <div class="card card-plain h-100">
                   <div class="card-body p-3">
                     <p class="text-justify">
-                      {{#if (isEnLng lng)}}
-                        {{professor.resumoIngles}}
-                      {{else}}
-                        {{professor.resumo}}
+                      {{#if professor.resumoIngles}}
+                        {{#if (isEnLng lng)}}
+                          {{professor.resumoIngles}}
+                        {{else}}
+                          {{professor.resumo}}
+                        {{/if}}
+                        {{else}}
+                          {{professor.resumo}}
                       {{/if}}
+
                     </p>
                     <hr class="horizontal gray-light my-4">
                     <ul class="list-group">
@@ -107,3 +113,25 @@
   </section>
 {{> numerosIcomp/footer}}
 </div>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "{{professor.nomeCompleto}}",
+  "url": "{{urlCanonica}}/docentes/{{professor.id}}?lng={{lng}}",
+  "image": "{{#if professor.Avatar.[0]}}{{urlCanonica}}{{professor.Avatar.[0].caminho}}{{/if}}",
+  "email": "{{professor.email}}",
+  "affiliation": {
+    "@type": "CollegeOrUniversity",
+    "name": "Universidade Federal do Amazonas"
+  },
+  "worksFor": {
+    "@type": "CollegeOrUniversity",
+    "name": "Instituto de Computação da UFAM"
+  },
+  "sameAs": [
+    "https://lattes.cnpq.br/{{professor.lattesId}}"
+  ]
+}
+</script>

@@ -3,147 +3,310 @@
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-          <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between"  style="gap: 8px; white-space: nowrap;">
-            <div>
-              <h1>Adicionar Sala</h1>
-            </div>
-            <div>
-              <ol class="breadcrumb ">
-                <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
-                <li class="breadcrumb-item"><a href="/salas/gerenciar">Listagem de salas</a></li>
-                <li class="breadcrumb-item active">Adicionar</li>
-              </ol>
-            </div>
-          </div>
-            <div class="row mb-2">
-                <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
-                    <a type="button" class="btn btn-warning color-white" href="/salas/gerenciar">
-                        <i class="fa fa-arrow-left color-white"></i>
-                        Voltar
-                    </a>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col">
-                <div class="card card-primary" style="width: 50%;">
-                    <div class="card-header">
-                        <h3 class="card-title"><b>Dados da Sala</b></h3>
-                        <button class="expand-btn"
-                            style="color:white; position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;">
-                            <i class="fas fa-expand" style="color:white"></i>
-                        </button>
-                    </div>
-                    <div class="container-fluid">
-                        <form id="formAdicionarSala" method="POST" action="/salas/adicionar">
-                            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for="nome">
-                                            <font color="#FF0000">*</font> Nome:
-                                        </label>
-                                        <input type="text" class="form-control" id="nome" name="nome"
-                                            placeholder="Ex. Auditório 1" required>
-                                    </div>
-
-                                    <div class="form-group col-md-6">
-                                        <label for="numero">
-                                            Número:
-                                        </label>
-                                        <input type="number" class="form-control" id="numero" name="numero" min="0"
-                                            max='10000' placeholder="Ex. 12">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group col-md-6 ">
-                                        <label for="andar">
-                                            <font color="#FF0000">*</font> Andar:
-                                        </label>
-                                        <input type="number" class="form-control" id="andar" name="andar" min="1"
-                                            max='3' value="1">
-
-                                    </div>
-
-                                    <div class="form-group col-md-6">
-                                        <label for="capacidade">
-                                            <font color="#FF0000"></font> Capacidade:
-                                        </label>
-                                        <input type="number" class="form-control" id="capacidade" name="capacidade"
-                                            min="0" max='200' placeholder="Ex. 30">
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group ">
-                                    <label for="bloco">
-                                        <font color="#FF0000">*</font> Bloco:
-                                    </label>
-                                    <select class="form-control" id="bloco" name="bloco" required>
-                                        <option value="Icomp Tech">Icomp Tech</option>
-                                        <option value="Icomp 1">Icomp 1</option>
-                                        <option value="Icomp 2">Icomp 2</option>
-                                        <option value="CPD">CPD</option>
-                                    </select>
-
-                                </div>
-                            </div>
-                            <!-- /.card-body -->
-                            <div class="card-footer pr-0">
-                                <div style="margin-right: auto;" class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-success float-right">
-                                        Adicionar Sala
-                                    </button>
-
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="d-flex flex-row w-full mb-3 align-items-center flex-wrap justify-content-between" style="gap: 8px; white-space: nowrap;">
+        <div>
+          <h1>Adicionar Sala</h1>
         </div>
-        <!-- /.card -->
-    </section>
+        <div>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Página inicial</a></li>
+            <li class="breadcrumb-item"><a href="/salas/gerenciar">Listagem de salas</a></li>
+            <li class="breadcrumb-item active">Adicionar</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-4 col-md-3 col-lg-1 min-width-button">
+          <a type="button" class="btn btn-warning color-white" href="/salas/gerenciar">
+            <i class="fa fa-arrow-left color-white"></i>
+            Voltar
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="row">
+      <div class="col">
+        <div class="card card-primary" style="width: 50%;">
+          <div class="card-header">
+            <h3 class="card-title"><b>Dados da Sala</b></h3>
+            <button
+              type="button"
+              class="expand-btn"
+              style="color:white; position: absolute; top: 10px; right: 10px; background: none; border: none; outline: none;"
+            >
+              <i class="fas fa-expand" style="color:white"></i>
+            </button>
+          </div>
+
+          <div class="container-fluid">
+            <form id="formAdicionarSala" method="POST" action="/salas/adicionar">
+              <div class="card-body">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="nome">
+                      <span style="color: #FF0000;">*</span> Nome:
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nome"
+                      name="nome"
+                      placeholder="Ex. Auditório 1"
+                      required
+                    >
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="numero">
+                      Número:
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="numero"
+                      name="numero"
+                      min="0"
+                      max="10000"
+                      placeholder="Ex. 12"
+                    >
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="andar">
+                      <span style="color: #FF0000;">*</span> Andar:
+                    </label>
+                    <select class="form-control" id="andar" name="andar" required>
+                      <option value="Térreo">Térreo</option>
+                      <option value="1° andar">1° andar</option>
+                      <option value="2° andar">2° andar</option>
+                      <option value="3° andar">3° andar</option>
+                      <option value="outro">Outro</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6 d-none" id="andarOutroGroup">
+                    <label for="andarOutro">
+                      <span style="color: #FF0000;">*</span> Especifique o andar:
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="andarOutro"
+                      name="andarOutro"
+                      placeholder="Ex. Subsolo, Mezanino, 4° andar"
+                    >
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="capacidade">
+                      Capacidade:
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="capacidade"
+                      name="capacidade"
+                      min="0"
+                      max="200"
+                      placeholder="Ex. 30"
+                    >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="bloco">
+                    <span style="color: #FF0000;">*</span> Bloco:
+                  </label>
+                  <select class="form-control" id="bloco" name="bloco" required>
+                    <option value="Icomp Tec">Icomp Tec</option>
+                    <option value="Icomp 1">Icomp 1</option>
+                    <option value="Icomp 2">Icomp 2</option>
+                    <option value="Icomp 3">Icomp 3</option>
+
+                    <option value="CPD">CPD</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="card-footer pr-0">
+                <div style="margin-right: auto;" class="d-flex justify-content-end">
+                  <button type="submit" id="btnSubmitSala" class="btn btn-success float-right">
+                    Adicionar Sala
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
+    const card = document.querySelector('.card');
+    const expandBtn = document.querySelector('.expand-btn');
+    const $form = $('#formAdicionarSala');
+    const $btnSubmit = $('#btnSubmitSala');
 
-        const card = document.querySelector('.card');
-        const expandBtn = document.querySelector('.expand-btn');
-        const formAdicionarSala = document.getElementById('formAdicionarSala');
+    const $andar = $('#andar');
+    const $andarOutroGroup = $('#andarOutroGroup');
+    const $andarOutro = $('#andarOutro');
 
-        // Adicione este listener para o evento 'submit' do formulário
-        formAdicionarSala.addEventListener('submit', function (event) {
-            event.preventDefault(); // Previna o comportamento padrão do formulário
+    function toggleAndarOutroField() {
+      const isOutro = $andar.val() === 'outro';
 
-            // Mostre a notificação
+      if (isOutro) {
+        $andarOutroGroup.removeClass('d-none');
+        $andarOutro.prop('required', true);
+      } else {
+        $andarOutroGroup.addClass('d-none');
+        $andarOutro.prop('required', false);
+        $andarOutro.val('');
+        $andarOutro.removeClass('is-invalid is-valid');
+        $andarOutro.siblings('span.error, span.invalid-feedback').remove();
+      }
+    }
+
+    toggleAndarOutroField();
+
+    $andar.on('change', function () {
+      toggleAndarOutroField();
+    });
+
+    expandBtn.addEventListener('click', function () {
+      if (card.style.width === '100%') {
+        card.style.width = '50%';
+      } else {
+        card.style.width = '100%';
+      }
+    });
+
+    $form.validate({
+      ignore: [],
+      rules: {
+        nome: {
+          required: true,
+          minlength: 3,
+          maxlength: 100
+        },
+        numero: {
+          number: true,
+          min: 0,
+          max: 10000
+        },
+        andar: {
+          required: true
+        },
+        andarOutro: {
+          required: function () {
+            return $('#andar').val() === 'outro';
+          },
+          minlength: 2,
+          maxlength: 50
+        },
+        capacidade: {
+          number: true,
+          min: 0,
+          max: 200
+        },
+        bloco: {
+          required: true
+        }
+      },
+      messages: {
+        nome: {
+          required: 'Informe o nome da sala.',
+          minlength: 'O nome deve ter pelo menos 3 caracteres.',
+          maxlength: 'O nome deve ter no máximo 100 caracteres.'
+        },
+        numero: {
+          number: 'Informe um número válido.',
+          min: 'O número não pode ser menor que 0.',
+          max: 'O número não pode ser maior que 10000.'
+        },
+        andar: {
+          required: 'Selecione o andar.'
+        },
+        andarOutro: {
+          required: 'Especifique o andar.',
+          minlength: 'Informe pelo menos 2 caracteres.',
+          maxlength: 'Informe no máximo 50 caracteres.'
+        },
+        capacidade: {
+          number: 'Informe uma capacidade válida.',
+          min: 'A capacidade não pode ser menor que 0.',
+          max: 'A capacidade não pode ser maior que 200.'
+        },
+        bloco: {
+          required: 'Selecione o bloco.'
+        }
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+      submitHandler: function (form, event) {
+        event.preventDefault();
+
+        const formData = $(form).serialize();
+
+        $btnSubmit.prop('disabled', true).html('Adicionando...');
+
+        $.ajax({
+          url: $(form).attr('action'),
+          type: 'POST',
+          data: formData,
+          success: function () {
             localStorage.setItem('toastMessage', 'Sala adicionada com sucesso!');
             localStorage.setItem('toastType', 'success');
-            // Aguarde um pouco antes de realmente enviar o formulário para que a notificação seja vista pelo usuário
 
-            formAdicionarSala.submit();  // Envie o formulário depois de um delay
-            // 2 segundos de delay
-        });
+            window.location.href = '/salas/gerenciar';
+          },
+          error: function (xhr) {
+            let errorMessage = 'Erro ao adicionar sala.';
 
-        expandBtn.addEventListener('click', function () {
-            if (card.style.width === '100%') {
-                card.style.width = '50%';
-                //expandBtn.innerText = '<bExpandir';
-            } else {
-                card.style.width = '100%';
-                // expandBtn.innerText = 'Reduzir';
+            if (xhr.responseJSON) {
+              errorMessage =
+                xhr.responseJSON.message ||
+                xhr.responseJSON.error ||
+                errorMessage;
+            } else if (xhr.responseText) {
+              errorMessage = xhr.responseText;
             }
+
+            localStorage.setItem('toastMessage', errorMessage);
+            localStorage.setItem('toastType', 'error');
+
+            if (typeof toastr !== 'undefined') {
+              toastr.error(errorMessage);
+            } else {
+              alert(errorMessage);
+            }
+          },
+          complete: function () {
+            $btnSubmit.prop('disabled', false).html('Adicionar Sala');
+          }
         });
+
+        return false;
+      }
     });
+  });
 </script>
 
 {{> footer}}

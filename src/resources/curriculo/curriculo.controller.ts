@@ -17,10 +17,13 @@ import {
   PublicacaoParsed,
 } from '../projetos/projetos.types';
 import CurriculoService from '@resources/curriculo/curriculo.service';
+import gerarPlanilhaNumerosLattes from '@utils/gerarPlanilha/gerarPlanilhaLattes';
+import { getCompleteFormDataFromFile } from '@resources/curriculo/extractorLattes';
 
 function resolveView(viewName: string): string {
   return path.resolve(__dirname, 'views', viewName);
 }
+
 async function viewData(req: Request, res: Response) {
   try {
     const { message, type, messageTitle } = req.query;
@@ -118,6 +121,15 @@ const carregar = (req, res: Response, next: NextFunction) => {
       const orientacoesParsed = JSON.parse(orientacoes)
         .orientacoes as OrientacaoParsed[];
 
+      const curriculoFile = req.files?.curriculoXML?.[0];
+
+      if (curriculoFile) {
+        const xmlPath = curriculoFile.path;
+        // const resultado = await getCompleteFormDataFromFile(xmlPath);
+        // console.log(resultado.projetos.projetos.length);
+        await CurriculoService.importarLattes(xmlPath, professorIdParsed);
+      }
+
       // Transformação dos projetos para o formato esperado pelo service
       const projetosTransformed: ProjetoTransformed = {
         projetos: projetosParsed.map((p) => ({
@@ -128,13 +140,19 @@ const carregar = (req, res: Response, next: NextFunction) => {
           integrantes: p.integrantes || '',
           inicio: p.inicio || 0,
           fim: p.fim || 0,
+          isUfam: p.isUfam,
+          natureza: p.natureza,
         })),
       };
 
-      // Chamadas aos services com validação de tipos
+      // console.log(projetosTransformed.projetos.length);
+      // Chamadas aos servi  ces com validação de tipos
       await Promise.all([
         OrientacaoService.adicionarVarios(professorIdParsed, orientacoesParsed),
-        ProjetoService.adicionarVarios(professorIdParsed, projetosTransformed),
+        ProjetoService.adicionarVarios(
+          professorIdParsed,
+          projetosTransformed as any,
+        ),
         UsuarioService.alterarInfo(professorIdParsed, infoParsed),
         PremioService.adicionarVarios(professorIdParsed, premiosParsed),
         PublicacaoService.adicionarVarios(professorIdParsed, publicacoesParsed),
@@ -157,4 +175,71 @@ const carregar = (req, res: Response, next: NextFunction) => {
   });
 };
 
-export default { visualizarCurriculo, verificarAvatar, viewData, carregar };
+const geraPlanilha = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const toNumber = (v: unknown): number | undefined => {
+      const raw = Array.isArray(v) ? v[0] : v;
+      if (raw == null) return undefined;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : undefined;
+    };
+
+    const yearStart = toNumber(req.query?.yearStart);
+    const yearEnd = toNumber(req.query?.yearEnd);
+
+    const buffer = await gerarPlanilhaNumerosLattes({
+      yearStart,
+      yearEnd,
+    });
+    let nameFile = `numero-lattes.xlsx`;
+
+    if (yearStart && yearEnd) {
+      nameFile = `numero-lattes-${yearStart}-${yearEnd}.xlsx`;
+    } else if (yearStart) {
+      nameFile = `numero-lattes-${yearStart}-____.xlsx`;
+    } else if (yearEnd) {
+      nameFile = `numero-lattes-____-${yearEnd}.xlsx`;
+    }
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename="${nameFile}"`);
+    res.end(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const reprocessarTodos = async (req: Request, res: Response) => {
+  try {
+    // opcional: limitar concorrência via query (?concurrency=3)
+    const concurrency = Math.max(
+      1,
+      Math.min(10, Number(req.query.concurrency ?? 1)),
+    );
+
+    const result = await CurriculoService.reprocessarTodosOsXmls({
+      concurrency,
+    });
+
+    return res.json(result);
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Erro ao reprocessar currículos',
+      error: err?.message ?? String(err),
+    });
+  }
+};
+export default {
+  visualizarCurriculo,
+  verificarAvatar,
+  viewData,
+  carregar,
+  geraPlanilha,
+  reprocessarTodos,
+};

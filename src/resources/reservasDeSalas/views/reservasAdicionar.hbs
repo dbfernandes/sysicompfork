@@ -76,7 +76,7 @@
                     </label>
                     <select class="form-control" id="salaId" name="salaId" required >
                       {{#each salas}}
-                        <option value="{{id}}"  {{#if (eq id ../salaId)}}selected{{/if}}>{{nome}} - {{bloco}} - {{andar}}° andar</option>
+                        <option value="{{id}}"  {{#if (eq id ../salaId)}}selected{{/if}}>{{nome}} - {{bloco}} - {{andar}}</option>
                         <di>{{salas}}</di>
                       {{/each}}
                     </select>

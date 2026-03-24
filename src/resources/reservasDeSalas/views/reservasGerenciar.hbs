@@ -16,6 +16,7 @@
     .dataTables_info{ padding: 0 !important; margin-right: 8px; }
     .gap-table{ gap: 8px; } /* NOVO */
     .min-width-button{ min-width: 210px; }
+
   </style>
 {{/section}}
 
@@ -68,13 +69,15 @@
             </div>
             <!-- Filtro de Sala (sempre visível) -->
             <div class="col-12 col-md-8 col-lg-4">
-              <label for="filtroSalas" class="mb-1">Filtrar por Sala(s)</label>
-              <select id="filtroSalas" class="form-control" multiple>
+              <label for="filtroSalas" class="mb-1">Filtrar por Sala</label>
+              <select id="filtroSalas" >
+                <option value="" >
+                </option>
                 {{#each salasGrouped}}
                   <optgroup label="{{@key}}">
                     {{#each this}}
                       <option value="{{id}}" {{#if (eq ../../salaId id)}}selected{{/if}}>
-                        {{nome}} - {{bloco}} - {{andar}}º andar
+                        {{nome}} - {{bloco}} - {{andar}}
                       </option>
                     {{/each}}
                   </optgroup>
@@ -183,7 +186,7 @@
                       data-sala-id="{{sala.id}}"
                       data-inicio-iso="{{dataInicio}}T{{horaInicio}}"
                       data-fim-iso="{{dataFim}}T{{horaFim}}">
-                    <td>{{sala.nome}} - {{sala.bloco}} - {{sala.andar}} andar</td>
+                    <td>{{sala.nome}} - {{sala.bloco}} - {{sala.andar}}</td>
                     <td>{{usuario.nomeCompleto}}</td>
                     <td>{{atividade}}</td>
                     <td>{{tipo}}</td>
@@ -455,14 +458,14 @@
     // Select2 do filtro de Salas
     $('#filtroSalas').select2({
       theme: 'bootstrap4',
-      placeholder: 'Selecione uma ou mais salas',
+      placeholder: 'Selecione uma sala',
       width: '100%',
       allowClear: true,
     });
 
     // Propaga sala selecionada
     $('#filtroSalas').on('change', function () {
-      filtros.salaIds = ($(this).val() || []).map(String);
+      filtros.salaIds = ($(this).val() || '');
       datatable.draw();
     });
 

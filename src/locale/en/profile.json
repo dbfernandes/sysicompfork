@@ -6,6 +6,8 @@
   "graduacao": "Undergraduate",
   "mestrado": "Master's",
   "doutorado": "Doctorate",
+  "iniciacao": "Scientific Initiation",
+
   "premios": "Awards",
   "formacao": "Education",
   "local": "Location",
@@ -27,9 +29,13 @@
   "projetos": "Projects",
   "naoHaProjetos": "No projects registered for",
   "naoHaPremios": "No awards registered for",
+  "orientacoesDeIniciacaoEmAndamento": "Ongoing Scientific Initiation Projects",
+
   "orientacoesDeGraduacaoEmAndamento": "Ongoing Undergraduate Supervisions",
   "orientacoesDeMestradoEmAndamento": "Ongoing Masters Supervisions",
   "orientacoesDeDoutoradoEmAndamento": "Ongoing Doctorate Supervisions",
+  "orientacoesDeIniciacaoConcluidas": "Concluded Scientific Initiation Projects",
+
   "orientacoesDeGraduacaoConcluidas": "Concluded Undergraduate Supervisions",
   "orientacoesDeMestradoConcluidas": "Concluded Masters Supervisions",
   "orientacoesDeDoutoradoConcluidas": "Concluded Doctorate Supervisions",

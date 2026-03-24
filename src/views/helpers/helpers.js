@@ -76,6 +76,8 @@ const guidencesOnGoing = (course, lng) => {
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
+    case 'Iniciacao':
+      return i18n.t('profile.orientacoesDeIniciacaoEmAndamento');
     case 'Graduação':
       return i18n.t('profile.orientacoesDeGraduacaoEmAndamento');
     case 'Mestrado':
@@ -89,6 +91,8 @@ const guidencesEnded = (course, lng) => {
   const i18n = language.i18next;
   i18n.changeLanguage(lng);
   switch (course) {
+    case 'Iniciacao':
+      return i18n.t('profile.orientacoesDeIniciacaoConcluidas');
     case 'Graduação':
       return i18n.t('profile.orientacoesDeGraduacaoConcluidas');
     case 'Mestrado':
@@ -214,6 +218,7 @@ const formataFormacao = (formacao, lng) => {
 };
 
 const formataFormacaoTitulo = (formacao, lng) => {
+  if (!formacao) return '-';
   const arr = formacao.split(';');
   const prep = lng === 'en' ? ' in ' : ' em ';
   return arr[0] + prep + arr[1];

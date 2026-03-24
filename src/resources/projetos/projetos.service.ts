@@ -17,6 +17,8 @@ class ProjetoService {
         papel: p.papel,
         financiadores: p.financiadores,
         integrantes: p.integrantes,
+        isUfam: p.isUfam,
+        natureza: p.natureza,
       }));
       await prisma.$transaction([
         prisma.projeto.deleteMany({
@@ -43,6 +45,8 @@ class ProjetoService {
         id: true,
         titulo: true,
         descricao: true,
+        financiadores: true,
+        integrantes: true,
       },
     });
 

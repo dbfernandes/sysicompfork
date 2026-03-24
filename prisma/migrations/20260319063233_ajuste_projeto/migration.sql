@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Projeto` ADD COLUMN `isUfam` BOOLEAN NOT NULL DEFAULT true;

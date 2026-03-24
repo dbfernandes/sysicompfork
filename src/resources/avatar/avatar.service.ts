@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { Avatar, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -33,27 +31,26 @@ class AvatarService {
   }
 
   async remover(usuarioId: number): Promise<void | null> {
-    const avatar = await prisma.avatar.findFirst({
-      where: {
-        usuarioId,
-      },
-    });
-
-    if (avatar) {
-      const caminho = path.join(__dirname, '..', 'uploads', avatar.nome);
-      //   __dirname + '/../uploads/' + avatar.nome
-      fs.unlink(caminho, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        prisma.avatar.delete({
-          where: {
-            id: avatar.id,
-          },
-        });
-      });
-    }
+    // const avatar = await prisma.avatar.findFirst({
+    //   where: {
+    //     usuarioId,
+    //   },
+    // });
+    // if (avatar) {
+    //   const caminho = path.join(__dirname, '..', 'uploads', avatar.nome);
+    //   //   __dirname + '/../uploads/' + avatar.nome
+    //   fs.unlink(caminho, (err) => {
+    //     if (err) {
+    //       console.error(err);
+    //       return;
+    //     }
+    //     prisma.avatar.delete({
+    //       where: {
+    //         id: avatar.id,
+    //       },
+    //     });
+    //   });
+    // }
   }
 }
 
