@@ -123,14 +123,16 @@
     // vem do servidor (handlebars). Se estiver PRESENCIAL, não exige URL.
     const modalidade = '{{defesa.modalidade}}';
     const isOnline = modalidade === 'ONLINE';
-
     let hasTriedSubmit = false;
 
-    // Método de URL simples (http/https). Aceita meet/teams/etc.
     $.validator.addMethod(
       'urlHttp',
       function (value, element) {
         const v = (value || '').trim();
+
+        // se não for online, não valida URL
+        if (!isOnline) return true;
+
         if (this.optional(element)) return true;
         return /^https?:\/\/\S+$/i.test(v);
       },
@@ -143,10 +145,8 @@
       rules: {
         local: {
           required: true,
-          maxlength: 500,
-          urlHttp: function () {
-            return isOnline; // só valida URL se for ONLINE
-          }
+          maxlength: 191,
+          urlHttp: true
         }
       },
 
@@ -155,7 +155,7 @@
           required: isOnline
             ? 'Informe o link da reunião.'
             : 'Informe o local da defesa.',
-          maxlength: 'O campo pode ter no máximo 500 caracteres.'
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
         }
       },
 

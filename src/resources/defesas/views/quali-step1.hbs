@@ -1,6 +1,9 @@
 {{> header}}
 {{> sidebar module='defesas' page='defesas-listar'}}
-
+{{#section "head"}}
+  <!-- Select2 -->
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+{{/section}}
 <div class="content-wrapper">
   <!-- Cabeçalho -->
   <section class="content-header">
@@ -81,7 +84,7 @@
                     class="form-control"
                     id="tituloTrabalho"
                     name="tituloTrabalho"
-                    maxlength="500"
+                    maxlength="191"
                     placeholder="Digite o título do trabalho"
                     value="{{defesa.tituloTrabalho}}"
                   >
@@ -116,16 +119,15 @@
 
                   <!-- radio-group para o errorPlacement funcionar -->
                   <div class="radio-group">
-                    <div class="custom-control custom-radio d-inline-block mr-3">
-                      <input class="custom-control-input" type="radio" id="modalPres" name="modalidade" value="PRESENCIAL"
+                    <div class="icheck-primary">
+                      <input type="radio" id="modalPres" name="modalidade" value="PRESENCIAL"
                              {{#ifEqual defesa.modalidade 'PRESENCIAL'}}checked{{/ifEqual}}>
-                      <label for="modalPres" class="custom-control-label">Presencial</label>
+                      <label for="modalPres" >Presencial</label>
                     </div>
-
-                    <div class="custom-control custom-radio d-inline-block">
-                      <input class="custom-control-input" type="radio" id="modalOn" name="modalidade" value="ONLINE"
+                    <div class="icheck-primary">
+                      <input  type="radio" id="modalOn" name="modalidade" value="ONLINE"
                              {{#ifEqual defesa.modalidade 'ONLINE'}}checked{{/ifEqual}}>
-                      <label for="modalOn" class="custom-control-label">Online</label>
+                      <label for="modalOn">Online</label>
                     </div>
                   </div>
                 </div>
@@ -160,23 +162,26 @@
                 <div class="form-group">
                   <label class="d-block">Coorientador(a) (se houver)</label>
 
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorNenhum" value="NENHUM"
-                      {{#unless defesa.coorientadorId}}{{#unless defesa.coorientadorExternoNome}}checked{{/unless}}{{/unless}}>
-                    <label class="form-check-label" for="coorientadorNenhum">Nenhum</label>
+                  <div class="d-flex" style="flex-wrap: wrap; gap: 16px;">
+                    <div class="icheck-primary">
+                      <input type="radio" name="coorientadorTipo" id="coorientadorNenhum" value="NENHUM"
+                        {{#unless defesa.coorientadorId}}{{#unless defesa.coorientadorExternoNome}}checked{{/unless}}{{/unless}}>
+                      <label for="coorientadorNenhum">Nenhum</label>
+                    </div>
+
+                    <div class="icheck-primary">
+                      <input type="radio" name="coorientadorTipo" id="coorientadorInterno" value="INTERNO"
+                             {{#if defesa.coorientadorId}}checked{{/if}}>
+                      <label for="coorientadorInterno">Interno (UFAM)</label>
+                    </div>
+
+                    <div class="icheck-primary">
+                      <input type="radio" name="coorientadorTipo" id="coorientadorExterno" value="EXTERNO"
+                             {{#if defesa.coorientadorExternoNome}}checked{{/if}}>
+                      <label for="coorientadorExterno">Externo</label>
+                    </div>
                   </div>
 
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorInterno" value="INTERNO"
-                           {{#if defesa.coorientadorId}}checked{{/if}}>
-                    <label class="form-check-label" for="coorientadorInterno">Interno (UFAM)</label>
-                  </div>
-
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="coorientadorTipo" id="coorientadorExterno" value="EXTERNO"
-                           {{#if defesa.coorientadorExternoNome}}checked{{/if}}>
-                    <label class="form-check-label" for="coorientadorExterno">Externo</label>
-                  </div>
                 </div>
 
                 <div id="coorientadorInternoDiv" class="form-group" style="display: none;">
@@ -200,6 +205,7 @@
                       id="coorientadorExternoNome"
                       name="coorientadorExternoNome"
                       placeholder="Nome completo"
+                      maxlength="191"
                       value="{{defesa.coorientadorExternoNome}}"
                     >
                   </div>
@@ -212,6 +218,7 @@
                       id="coorientadorExternoInstituicao"
                       name="coorientadorExternoInstituicao"
                       placeholder="Nome da instituição de origem"
+                      maxlength="191"
                       value="{{defesa.coorientadorExternoInstituicao}}"
                     >
                   </div>
@@ -319,7 +326,7 @@
       ignore: ':hidden:not(#dataHora)',
 
       rules: {
-        tituloTrabalho: { required: true, minlength: 3, maxlength: 500 },
+        tituloTrabalho: { required: true, minlength: 3, maxlength: 191 },
         dataHoraLocal: { required: true },
         modalidade: { required: true },
         candidatoNome: { required: true, minlength: 3, maxlength: 200 },
@@ -335,14 +342,14 @@
             return $('input[name="coorientadorTipo"]:checked').val() === 'EXTERNO';
           },
           minlength: 3,
-          maxlength: 200
+          maxlength: 191
         },
         coorientadorExternoInstituicao: {
           required: function () {
             return $('input[name="coorientadorTipo"]:checked').val() === 'EXTERNO';
           },
           minlength: 2,
-          maxlength: 200
+          maxlength: 191
         }
       },
 
@@ -350,7 +357,7 @@
         tituloTrabalho: {
           required: 'Informe o título do trabalho.',
           minlength: 'O título deve ter pelo menos 3 caracteres.',
-          maxlength: 'O título pode ter no máximo 500 caracteres.'
+          maxlength: 'O título pode ter no máximo 191 caracteres.'
         },
         dataHoraLocal: { required: 'Informe a data e hora da qualificação.' },
         modalidade: { required: 'Selecione a modalidade (Presencial/Online).' },
@@ -364,12 +371,12 @@
         coorientadorExternoNome: {
           required: 'Informe o nome do(a) coorientador(a) externo.',
           minlength: 'O nome deve ter pelo menos 3 caracteres.',
-          maxlength: 'O nome pode ter no máximo 200 caracteres.'
+          maxlength: 'O nome pode ter no máximo 191 caracteres.'
         },
         coorientadorExternoInstituicao: {
           required: 'Informe a instituição do(a) coorientador(a) externo.',
           minlength: 'A instituição deve ter pelo menos 2 caracteres.',
-          maxlength: 'A instituição pode ter no máximo 200 caracteres.'
+          maxlength: 'A instituição pode ter no máximo 191 caracteres.'
         }
       },
 

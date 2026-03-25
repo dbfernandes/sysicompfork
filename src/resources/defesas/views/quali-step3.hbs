@@ -1,6 +1,11 @@
 {{> header}}
 {{> sidebar module='defesas' page='defesas-listar'}}
 
+{{#section "head"}}
+  <!-- Select2 -->
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+{{/section}}
+
 <div class="content-wrapper">
   <section class="content-header">
     <div class="container-fluid">
@@ -81,21 +86,22 @@
 
                 <div class="form-group">
                   <label class="d-block">O candidato já possui a quantidade mínima de créditos para qualificar? <span class="text-danger">*</span></label>
-                  <div class="custom-control custom-radio">
-                    <input class="custom-control-input" type="radio" id="creditosSim" name="creditosMinimosOk" value="true" 
-                            {{#ifEqual defesa.quali.creditosMinimosOk true}}checked{{/ifEqual}}>
-                    <label for="creditosSim" class="custom-control-label">Sim</label>
+
+                  <div class="icheck-primary">
+                    <input type="radio" id="creditosSim" name="creditosMinimosOk" value="true"
+                           {{#ifEqual defesa.quali.creditosMinimosOk true}}checked{{/ifEqual}}>
+                    <label for="creditosSim">Sim</label>
                   </div>
-                  <div class="custom-control custom-radio">
-                    <input class="custom-control-input" type="radio" id="creditosNao" name="creditosMinimosOk" value="false"
-                            {{#ifEqual defesa.quali.creditosMinimosOk false}}checked{{/ifEqual}}>
-                    <label for="creditosNao" class="custom-control-label">Não</label>
+                  <div class="icheck-primary">
+                    <input type="radio" id="creditosNao" name="creditosMinimosOk" value="false"
+                           {{#ifEqual defesa.quali.creditosMinimosOk false}}checked{{/ifEqual}}>
+                    <label for="creditosNao">Não</label>
                   </div>
+
                   <small class="form-text text-muted">
                     São desejáveis 12 créditos para mestrado e 16 créditos para doutorado, incluindo as disciplinas obrigatórias.
                   </small>
-                  </div>
-
+                </div>
               </div><div class="card-footer d-flex justify-content-between">
                 <a href="/defesas/editar/{{defesa.id}}/qualificacao/step2" class="btn btn-default">
                   <i class="fas fa-chevron-left"></i> Voltar
