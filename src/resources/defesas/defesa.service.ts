@@ -532,12 +532,12 @@ export const DefesaService = {
       )
         throw new Error('Preencha o passo 3 (resumo/abstract/idioma).');
 
-      if (d.nivel === 'MESTRADO' && d.final.creditosExigidos !== 16)
-        throw new Error('Créditos do mestrado devem ser 16.');
-      if (d.nivel === 'DOUTORADO' && d.final.creditosExigidos !== 36)
-        throw new Error('Créditos do doutorado devem ser 36.');
-      if (d.final.creditosOk !== true)
-        throw new Error('Confirme os créditos (Defesa Final).');
+      // if (d.nivel === 'MESTRADO' && d.final.creditosExigidos !== 16)
+      //   throw new Error('Créditos do mestrado devem ser 16.');
+      // if (d.nivel === 'DOUTORADO' && d.final.creditosExigidos !== 36)
+      //   throw new Error('Créditos do doutorado devem ser 36.');
+      // if (d.final.creditosOk !== true)
+      //   throw new Error('Confirme os créditos (Defesa Final).');
 
       const titulares = d.membros.filter((m) => !m.suplente).length;
       const internos = d.membros.filter(

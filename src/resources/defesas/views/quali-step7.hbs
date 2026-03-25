@@ -1,6 +1,9 @@
 {{> header}}
 {{> sidebar module='defesas' page='defesas-listar'}}
-
+{{#section "head"}}
+  <!-- Select2 -->
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+{{/section}}
 <div class="content-wrapper">
   <section class="content-header">
     <div class="container-fluid">
@@ -21,7 +24,7 @@
     <div class="container-fluid">
       {{#if errors}}<div class="alert alert-danger"><ul class="mb-0">{{#each errors}}<li>{{this}}</li>{{/each}}</ul></div>{{/if}}
       {{#if defesa.correcaoSolicitada}}
-      <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning" role="alert">
           <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Correção Solicitada pela Secretaria</h5>
           <p>A sua solicitação de defesa foi retornada para correção. Por favor, revise os itens abaixo, faça os ajustes necessários e submeta novamente (na última etapa):</p>
           <hr>
@@ -32,12 +35,12 @@
         <div class="col-md-8">
           <div class="card card-primary">
             <div class="card-header"><h3 class="card-title">Proposta e Documentação Final</h3></div>
-            <form id="formStep7" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step7" enctype="multipart/form-data"> {{!-- NECESSÁRIO para upload --}}
+            <form id="formStep7" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step7" enctype="multipart/form-data">
               <div class="card-body">
 
                 <div class="form-group">
                   <label for="propostaPdf">Anexar o arquivo da proposta em .pdf (tamanho máximo 100MB) <span class="text-danger">*</span></label>
-                  <input type="file" class="form-control-file" id="propostaPdf" name="propostaPdf" accept=".pdf">
+                  <input type="file" class="form-control-file" id="propostaPdf" name="propostaPdf"                   accept="application/pdf">
                   {{#if propostaAnexada}}
                     <small class="form-text text-success">
                       Arquivo atual: {{propostaAnexada.originalName}} ({{formatBytes propostaAnexada.size}})
@@ -51,27 +54,31 @@
 
                 {{#ifEqual defesa.nivel 'DOUTORADO'}}
                   <h4>Documentação de Doutorado</h4>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" class="custom-control-input" id="doutoradoArtigoComprovado" name="doutoradoArtigoComprovado" value="true" {{#if defesa.quali.doutoradoArtigoComprovado}}checked{{/if}}>
-                    <label class="custom-control-label" for="doutoradoArtigoComprovado">Declaro que o aluno tem pelo menos um journal de estrato superior submetido ou aceito (A1, A2, A3, A4) como primeiro autor.</label>
+                  <div class="icheck-primary">
+                    <input type="checkbox" id="doutoradoArtigoComprovado" name="doutoradoArtigoComprovado" value="true" {{#if defesa.quali.doutoradoArtigoComprovado}}checked{{/if}}>
+                    <label for="doutoradoArtigoComprovado">Declaro que o aluno tem pelo menos um journal de estrato superior submetido ou aceito (A1, A2, A3, A4) como primeiro autor.</label>
                     <small class="form-text text-muted">Consulte as regras em <a href="https://drive.google.com/file/d/1Mn4R5cyw1v1DWKIHAFwh7v2yhpQKeqqn/view?usp=sharing" target="_blank" rel="noopener noreferrer">Qualis 2017-2020</a>.</small>
+
                   </div>
+
                   <div class="form-group">
                     <label for="artigoTitulo">Título do artigo</label>
-                    <input type="text" class="form-control" id="artigoTitulo" name="artigoTitulo" value="{{defesa.quali.artigoTitulo}}">
+                    <input type="text" class="form-control" id="artigoTitulo" name="artigoTitulo" value="{{defesa.quali.artigoTitulo}}" maxlength="191">
                   </div>
                   <div class="form-group">
                     <label for="artigoVeiculoOuDoi">Veículo de publicação (link) ou DOI</label>
-                    <input type="text" class="form-control" id="artigoVeiculoOuDoi" name="artigoVeiculoOuDoi" value="{{defesa.quali.artigoVeiculoOuDoi}}">
+                    <input type="text" class="form-control" id="artigoVeiculoOuDoi" name="artigoVeiculoOuDoi" value="{{defesa.quali.artigoVeiculoOuDoi}}" maxlength="191">
                   </div>
                   <hr>
                 {{/ifEqual}}
 
                 <h4>Declaração de Autoavaliação <span class="text-danger">*</span></h4>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="autoavaliacaoPreenchida" name="autoavaliacaoPreenchida" value="true" {{#if defesa.quali.autoavaliacaoPreenchida}}checked{{/if}}>
-                  <label class="custom-control-label" for="autoavaliacaoPreenchida">Declaro que o(a) orientador(a) e o(a) discente preenchemos o formulário de autoavaliação do programa do ano 2024.</label>
+                <div class="icheck-primary">
+                  <input type="checkbox" id="autoavaliacaoPreenchida" name="autoavaliacaoPreenchida" value="true" {{#if defesa.quali.autoavaliacaoPreenchida}}checked{{/if}}>
+                  <label  for="autoavaliacaoPreenchida">Declaro que o(a) orientador(a) e o(a) discente preenchemos o formulário de autoavaliação do programa do ano 2024.</label>
+
                 </div>
+
                 <div class="mt-2">
                   <p class="mb-1 small text-muted">Se ainda não preencheu, utilize sua conta @icomp nos links abaixo:</p>
                   <ul class="list-unstyled small">
@@ -92,8 +99,7 @@
             </form>
           </div>
         </div>
-        
-        {{!-- Caixa de informações lateral --}}
+
         <div class="col-md-4">
           <div class="card card-outline card-info">
             <div class="card-header"><h3 class="card-title">Requisitos desta etapa</h3></div>
@@ -101,8 +107,8 @@
               <ul class="mb-0">
                 <li>Anexar o arquivo da proposta em PDF.</li>
                 {{#ifEqual defesa.nivel 'DOUTORADO'}}
-                <li>Declarar o artigo submetido/aceito (Doutorado).</li>
-                <li>Preencher os dados do artigo (Doutorado).</li>
+                  <li>Declarar o artigo submetido/aceito (Doutorado).</li>
+                  <li>Preencher os dados do artigo (Doutorado).</li>
                 {{/ifEqual}}
                 <li>Confirmar o preenchimento da autoavaliação.</li>
               </ul>
@@ -116,55 +122,233 @@
   </section>
 </div>
 {{> footer}}
-
 <script>
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-  
-  $(document).ready(function() {
-    const propostaInput = $('#propostaPdf');
-    const autoavaliacaoCheck = $('#autoavaliacaoPreenchida');
-    const btnSubmit = $('#btnSubmitFinal');
-    
-    const isDoutorado = {{#ifEqual defesa.nivel 'DOUTOROADO'}}true{{else}}false{{/ifEqual}};
-    const artigoCheck = $('#doutoradoArtigoComprovado');
-    const artigoTituloInput = $('#artigoTitulo');
-    const artigoVeiculoInput = $('#artigoVeiculoOuDoi');
+  $(document).ready(function () {
+    const $form = $('#formStep7');
+    const $btnSubmit = $('#btnSubmitFinal');
+    const $propostaInput = $('#propostaPdf');
+    const $autoavaliacaoCheck = $('#autoavaliacaoPreenchida');
+
+    const isDoutorado = {{#ifEqual defesa.nivel 'DOUTORADO'}}true{{else}}false{{/ifEqual}};
+    const $artigoCheck = $('#doutoradoArtigoComprovado');
+    const $artigoTituloInput = $('#artigoTitulo');
+    const $artigoVeiculoInput = $('#artigoVeiculoOuDoi');
 
     const hasExistingFile = {{#if propostaAnexada}}true{{else}}false{{/if}};
+    const MAX_FILE_SIZE = 100 * 1024 * 1024;
 
-    function checkFormValidity() {
-      const fileSelected = (propostaInput[0].files && propostaInput[0].files.length > 0) || hasExistingFile;
-      const autoavaliacaoChecked = autoavaliacaoCheck.is(':checked');
-      
-      let doutoradoFieldsOk = true;
-      if (isDoutorado) {
-        doutoradoFieldsOk = artigoCheck.is(':checked') && 
-                            (artigoTituloInput.val()?.trim() ?? '') !== '' &&
-                            (artigoVeiculoInput.val()?.trim() ?? '') !== '';
+    let hasTriedSubmit = false;
+
+    $.validator.addMethod(
+      'pdfFile',
+      function (value, element) {
+        const files = element.files;
+
+        if (!files || files.length === 0) {
+          return true;
+        }
+
+        const file = files[0];
+        const fileName = (file.name || '').toLowerCase();
+        const fileType = (file.type || '').toLowerCase();
+
+        return fileName.endsWith('.pdf') || fileType === 'application/pdf';
+      },
+      'Envie um arquivo PDF válido.'
+    );
+
+    $.validator.addMethod(
+      'maxFileSize',
+      function (value, element, param) {
+        const files = element.files;
+
+        if (!files || files.length === 0) {
+          return true;
+        }
+
+        const file = files[0];
+        return file.size <= param;
+      },
+      'O arquivo deve ter no máximo 100 MB.'
+    );
+
+    $.validator.addMethod(
+      'linkOuDoi',
+      function (value, element) {
+        const v = (value || '').trim();
+
+        if (this.optional(element)) return true;
+
+        const isHttpUrl = /^https?:\/\/\S+$/i.test(v);
+        const isDoi = /^(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)$/i.test(v);
+
+        return isHttpUrl || isDoi || v.length > 0;
+      },
+      'Informe um link válido (http/https), DOI ou texto identificador do veículo.'
+    );
+
+    const validator = $form.validate({
+      ignore: ':hidden',
+
+      rules: {
+        propostaPdf: {
+          required: function () {
+            const files = $propostaInput[0]?.files;
+            return !hasExistingFile && (!files || files.length === 0);
+          },
+          pdfFile: true,
+          maxFileSize: MAX_FILE_SIZE
+        },
+
+        autoavaliacaoPreenchida: {
+          required: true
+        },
+
+        artigoTitulo: {
+          required: {
+            depends: function () {
+              return isDoutorado;
+            }
+          },
+          maxlength: 191
+        },
+
+        artigoVeiculoOuDoi: {
+          required: {
+            depends: function () {
+              return isDoutorado;
+            }
+          },
+          maxlength: 191,
+          linkOuDoi: {
+            depends: function () {
+              return isDoutorado;
+            }
+          }
+        },
+
+        doutoradoArtigoComprovado: {
+          required: {
+            depends: function () {
+              return isDoutorado;
+            }
+          }
+        }
+      },
+
+      messages: {
+        propostaPdf: {
+          required: 'Anexe o arquivo da proposta em PDF.',
+          pdfFile: 'Envie um arquivo PDF válido.',
+          maxFileSize: 'O arquivo deve ter no máximo 100 MB.'
+        },
+        autoavaliacaoPreenchida: {
+          required: 'Confirme o preenchimento da autoavaliação.'
+        },
+        artigoTitulo: {
+          required: 'Informe o título do artigo.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        artigoVeiculoOuDoi: {
+          required: 'Informe o veículo de publicação, link ou DOI.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.',
+          linkOuDoi: 'Informe um link válido (http/https), DOI ou texto identificador do veículo.'
+        },
+        doutoradoArtigoComprovado: {
+          required: 'Confirme a declaração do artigo para doutorado.'
+        }
+      },
+
+      errorElement: 'span',
+
+      errorPlacement: function (error, element) {
+        if (
+          element.is(':checkbox') &&
+          (element.closest('.custom-control').length || element.closest('.icheck-primary').length)
+        ) {
+          error.addClass('invalid-feedback d-block');
+          element.parent().append(error);
+          return;
+        }
+
+        if (element.attr('type') === 'file') {
+          error.addClass('invalid-feedback d-block');
+          element.closest('.form-group').append(error);
+          return;
+        }
+
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+
+      onkeyup: false,
+      onfocusout: false,
+      onclick: false,
+
+      showErrors: function () {
+        if (!hasTriedSubmit) return;
+        this.defaultShowErrors();
+      },
+
+      invalidHandler: function () {
+        hasTriedSubmit = true;
+        updateButtonState();
+      },
+
+      submitHandler: function (form) {
+        hasTriedSubmit = true;
+        $btnSubmit.prop('disabled', true);
+        form.submit();
       }
-      
-      return fileSelected && autoavaliacaoChecked && doutoradoFieldsOk;
-    }
+    });
 
     function updateButtonState() {
-      btnSubmit.prop('disabled', !checkFormValidity());
+      const isValid = validator.checkForm();
+
+      if (hasTriedSubmit) {
+        validator.showErrors();
+      }
+
+      $btnSubmit.prop('disabled', !isValid);
     }
 
-    propostaInput.on('change', updateButtonState);
-    autoavaliacaoCheck.on('change', updateButtonState);
-    if (isDoutorado) {
-      artigoCheck.on('change', updateButtonState);
-      artigoTituloInput.on('input keyup', updateButtonState);
-      artigoVeiculoInput.on('input keyup', updateButtonState);
+    function validateFieldAndRefresh(element) {
+      if (hasTriedSubmit) {
+        validator.element(element);
+      }
+      updateButtonState();
     }
-    
-    updateButtonState(); 
+
+    $propostaInput.on('change', function () {
+      validateFieldAndRefresh(this);
+    });
+
+    $autoavaliacaoCheck.on('change', function () {
+      validateFieldAndRefresh(this);
+    });
+
+    if (isDoutorado) {
+      $artigoCheck.on('change', function () {
+        validateFieldAndRefresh(this);
+      });
+
+      $artigoTituloInput.on('input change', function () {
+        validateFieldAndRefresh(this);
+      });
+
+      $artigoVeiculoInput.on('input change', function () {
+        validateFieldAndRefresh(this);
+      });
+    }
+
+    updateButtonState();
   });
 </script>

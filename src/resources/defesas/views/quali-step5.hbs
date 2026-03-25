@@ -29,8 +29,7 @@
         </div>
       {{/if}}
       <div class="row">
-        
-        {{!-- Coluna Principal (Formulário) --}}
+
         <div class="col-md-8">
           <div class="card card-primary">
             <div class="card-header">
@@ -40,45 +39,69 @@
             <form id="formStep5" method="POST" action="/defesas/editar/{{defesa.id}}/qualificacao/step5">
               <div class="card-body">
                 <p class="text-muted">Informe os dados para os membros titulares da banca. Os 2 primeiros são obrigatórios.</p>
-                
-                {{!-- Membro 1 (Obrigatório) --}}
+
                 <div class="card card-primary">
                   <div class="card-header"><h3 class="card-title">1º Membro Titular <span class="text-danger">*</span></h3></div>
                   <div class="card-body">
                     <div class="form-row">
-                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[0][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[0].nome}}"></div>
-                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[0][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[0].email}}"></div>
-                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[0][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[0].instituicao}}"></div>
+                      <div class="form-group col-md-12">
+                        <label>Nome</label>
+                        <input type="text" name="membrosTitulares[0][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[0].nome}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>E-mail</label>
+                        <input type="email" name="membrosTitulares[0][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[0].email}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Instituição</label>
+                        <input type="text" name="membrosTitulares[0][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[0].instituicao}}">
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {{!-- Membro 2 (Obrigatório) --}}
                 <div class="card card-primary">
                   <div class="card-header"><h3 class="card-title">2º Membro Titular <span class="text-danger">*</span></h3></div>
                   <div class="card-body">
-                     <div class="form-row">
-                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[1][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[1].nome}}"></div>
-                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[1][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[1].email}}"></div>
-                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[1][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[1].instituicao}}"></div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label>Nome</label>
+                        <input type="text" name="membrosTitulares[1][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[1].nome}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>E-mail</label>
+                        <input type="email" name="membrosTitulares[1][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[1].email}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Instituição</label>
+                        <input type="text" name="membrosTitulares[1][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[1].instituicao}}">
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {{!-- Membro 3 (Opcional) --}}
                 <div class="card card-primary">
                   <div class="card-header"><h3 class="card-title">3º Membro Titular (Opcional)</h3></div>
                   <div class="card-body">
-                     <div class="form-row">
-                      <div class="form-group col-md-12"><label>Nome</label><input type="text" name="membrosTitulares[2][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[2].nome}}"></div>
-                      <div class="form-group col-md-6"><label>E-mail</label><input type="email" name="membrosTitulares[2][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[2].email}}"></div>
-                      <div class="form-group col-md-6"><label>Instituição</label><input type="text" name="membrosTitulares[2][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[2].instituicao}}"></div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label>Nome</label>
+                        <input type="text" name="membrosTitulares[2][nome]" class="form-control" placeholder="Nome completo do membro" value="{{membrosTitulares.[2].nome}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>E-mail</label>
+                        <input type="email" name="membrosTitulares[2][email]" class="form-control" placeholder="E-mail para contato" value="{{membrosTitulares.[2].email}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Instituição</label>
+                        <input type="text" name="membrosTitulares[2][instituicao]" class="form-control" placeholder="ICOMP/UFAM, Outro PPGI/UFAM, Externa" value="{{membrosTitulares.[2].instituicao}}">
+                      </div>
                     </div>
                   </div>
                 </div>
 
               </div>
-              
+
               <div class="card-footer d-flex justify-content-between">
                 <a href="/defesas/editar/{{defesa.id}}/qualificacao/step4" class="btn btn-default"><i class="fas fa-chevron-left"></i> Voltar</a>
                 <div>
@@ -89,10 +112,9 @@
                 </div>
               </div>
             </form>
-          </div> 
-        </div> 
+          </div>
+        </div>
 
-        {{!-- Coluna Lateral (Informações) --}}
         <div class="col-md-4">
           <div class="card card-outline card-info">
             <div class="card-header">
@@ -115,30 +137,175 @@
             </div>
           </div>
         </div>
-        
+
       </div>
-    </div> 
+    </div>
   </section>
 </div>
 
 <script>
-  $(document).ready(function() {
-    const membro1Nome = $('input[name="membrosTitulares[0][nome]"]');
-    const membro2Nome = $('input[name="membrosTitulares[1][nome]"]');
-    const btnContinuar = $('#btnContinuarStep5');
+  $(document).ready(function () {
+    const $form = $('#formStep5');
+    const $btnContinuar = $('#btnContinuarStep5');
 
-    function checkFormValidity() {
-      const nome1Val = membro1Nome.val()?.trim() ?? '';
-      const nome2Val = membro2Nome.val()?.trim() ?? '';
-      return nome1Val !== '' && nome2Val !== '';
-    }
+    let hasTriedSubmit = false;
+
+    const validator = $form.validate({
+      ignore: ':hidden',
+
+      rules: {
+        'membrosTitulares[0][nome]': {
+          required: true,
+          maxlength: 191
+        },
+        'membrosTitulares[0][email]': {
+          email: true,
+          maxlength: 191
+        },
+        'membrosTitulares[0][instituicao]': {
+          maxlength: 191
+        },
+
+        'membrosTitulares[1][nome]': {
+          required: true,
+          maxlength: 191
+        },
+        'membrosTitulares[1][email]': {
+          email: true,
+          maxlength: 191
+        },
+        'membrosTitulares[1][instituicao]': {
+          maxlength: 191
+        },
+
+        'membrosTitulares[2][nome]': {
+          maxlength: 191
+        },
+        'membrosTitulares[2][email]': {
+          email: true,
+          maxlength: 191
+        },
+        'membrosTitulares[2][instituicao]': {
+          maxlength: 191
+        }
+      },
+
+      messages: {
+        'membrosTitulares[0][nome]': {
+          required: 'Informe o nome do 1º membro titular.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[0][email]': {
+          email: 'Informe um e-mail válido.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[0][instituicao]': {
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+
+        'membrosTitulares[1][nome]': {
+          required: 'Informe o nome do 2º membro titular.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[1][email]': {
+          email: 'Informe um e-mail válido.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[1][instituicao]': {
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+
+        'membrosTitulares[2][nome]': {
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[2][email]': {
+          email: 'Informe um e-mail válido.',
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        },
+        'membrosTitulares[2][instituicao]': {
+          maxlength: 'O campo pode ter no máximo 191 caracteres.'
+        }
+      },
+
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      },
+
+      onkeyup: false,
+      onfocusout: false,
+      onclick: false,
+
+      showErrors: function () {
+        if (!hasTriedSubmit) return;
+        this.defaultShowErrors();
+      },
+
+      invalidHandler: function () {
+        if (!hasTriedSubmit) {
+          hasTriedSubmit = true;
+
+          validator.settings.onkeyup = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+
+          validator.settings.onfocusout = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+
+          validator.settings.onclick = function (element) {
+            $(element).valid();
+            updateButtonState();
+          };
+        }
+
+        updateButtonState();
+      },
+
+      submitHandler: function (form, e) {
+        const actionValue =
+          $(document.activeElement).attr('name') === 'action'
+            ? $(document.activeElement).val()
+            : null;
+
+        if (actionValue === 'save') {
+          form.submit();
+          return;
+        }
+
+        e.preventDefault();
+
+        if (!hasTriedSubmit) hasTriedSubmit = true;
+
+        if (!validator.form()) {
+          updateButtonState();
+          return;
+        }
+
+        form.submit();
+      }
+    });
 
     function updateButtonState() {
-      btnContinuar.prop('disabled', !checkFormValidity());
+      const isValid = validator.checkForm();
+      $btnContinuar.prop('disabled', !isValid);
     }
 
-    $('input[name^="membrosTitulares[0]"], input[name^="membrosTitulares[1]"]').on('input keyup change', updateButtonState);
-    updateButtonState(); 
+    $form.find('input').on('input keyup change', updateButtonState);
+
+    updateButtonState();
   });
 </script>
+
 {{> footer}}
