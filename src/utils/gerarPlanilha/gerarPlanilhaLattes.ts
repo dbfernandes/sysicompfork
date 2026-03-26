@@ -239,8 +239,8 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
       atualizado: formatDateBR(p.ultimaAtualizacao),
       lattes_atualizado: p.dataAtualizacaoFormatted ?? '-',
 
-      projetos_col: projetosCoord.length,
-      projetos_cord: projetosColab.length,
+      projetos_col: projetosColab.length,
+      projetos_cord: projetosCoord.length,
 
       con: countByTipo(p.publicacoes, 1),
       per: countByTipo(p.publicacoes, 2),
