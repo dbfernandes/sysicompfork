@@ -1,5 +1,9 @@
 {{> header}}
 {{> sidebar module='defesas' page='defesas-listar'}}
+{{#section "head"}}
+  <!-- Select2 -->
+  <link rel="stylesheet" type="text/css" href="/script-adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+{{/section}}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -62,30 +66,29 @@
               <div class="card-body">
                 <div class="form-group">
                   <label>Selecione o presidente da banca <span class="text-danger">*</span></label>
-                  
-                  <div class="custom-control custom-radio">
-                    <input class="custom-control-input" type="radio" id="presidenteOrientador" name="presidenteOrigem" value="ORIENTADOR"
+                  <div class="icheck-primary">
+                    <input type="radio" id="presidenteOrientador" name="presidenteOrigem" value="ORIENTADOR"
                            {{#ifEqual defesa.quali.presidenteOrigem 'ORIENTADOR'}}checked{{/ifEqual}}>
-                    <label for="presidenteOrientador" class="custom-control-label">
+                    <label for="presidenteOrientador">
                       Orientador(a): {{orientadorNome}}
                     </label>
                   </div>
-
                   {{#if coorientadorNome}}
-                  <div class="custom-control custom-radio">
-                    <input class="custom-control-input" type="radio" id="presidenteCoorientador" name="presidenteOrigem" value="COORIENTADOR"
-                           {{#ifEqual defesa.quali.presidenteOrigem 'COORIENTADOR'}}checked{{/ifEqual}}>
-                    <label for="presidenteCoorientador" class="custom-control-label">
-                      Coorientador(a): {{coorientadorNome}}
-                    </label>
-                  </div>
+                    <div class="icheck-primary">
+                      <input type="radio" id="presidenteCoorientador" name="presidenteOrigem" value="COORIENTADOR"
+                             {{#ifEqual defesa.quali.presidenteOrigem 'COORIENTADOR'}}checked{{/ifEqual}}>
+                      <label for="presidenteCoorientador">
+                        Coorientador(a): {{coorientadorNome}}
+                      </label>
+                    </div>
                   {{else}}
-                  <div class="custom-control custom-radio">
-                    <input class="custom-control-input" type="radio" id="presidenteCoorientador" disabled>
-                    <label for="presidenteCoorientador" class="custom-control-label text-muted">
-                      Coorientador(a): Não há coorientador definido nesta defesa.
-                    </label>
-                  </div>
+                    <div class="icheck-primary">
+                      <input type="radio" id="presidenteCoorientador" disabled>
+                      <label for="presidenteCoorientador">
+                        Coorientador(a): Não há coorientador definido nesta defesa.
+                      </label>
+                    </div>
+
                   {{/if}}
                 </div>
               </div><div class="card-footer d-flex justify-content-between">

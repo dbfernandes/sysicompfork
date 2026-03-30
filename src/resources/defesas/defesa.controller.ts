@@ -20,10 +20,10 @@ function resolveView(viewName: string): string {
 function canAccess(req: Request): boolean {
   return Boolean(
     req.session &&
-    req.session.tipoUsuario &&
-    (!!req.session.tipoUsuario.professor ||
-      !!req.session.tipoUsuario.administrador ||
-      !!req.session.tipoUsuario.secretaria),
+      req.session.tipoUsuario &&
+      (!!req.session.tipoUsuario.professor ||
+        !!req.session.tipoUsuario.administrador ||
+        !!req.session.tipoUsuario.secretaria),
   );
 }
 
@@ -1089,11 +1089,7 @@ const viewFinalStep6 = async (
 };
 
 /** DEFESA FINAL — STEP 6 (POST) - Final Submission */
-const saveFinalStep6 = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const saveFinalStep6 = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     if (!canAccess(req)) {
