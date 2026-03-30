@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import app from './appSelecao';
-import validateEnv from './utils/validateEnv';
+import validateEnv from '@utils/validateEnv';
 
 dotenv.config({
   path: `.env.${process.env.NODE_ENV || 'development'}`,

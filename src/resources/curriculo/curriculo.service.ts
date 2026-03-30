@@ -183,6 +183,7 @@ class CurriculoService {
             dataInicio: true,
             dataFim: true,
             papel: true,
+            natureza: true,
           },
         },
         orientacoes: {
@@ -210,13 +211,15 @@ class CurriculoService {
           }))
           .filter((p) => p.tipo !== 1 || p.natureza === 'COMPLETO')
           .filter((pub) => compYears(pub.ano, query.yearStart, query.yearEnd));
-        const projetos = p.projetos.filter((proj) =>
-          overlapsYearsOngoing(
-            proj.dataInicio,
-            proj.dataFim,
-            query.yearStart,
-            query.yearEnd,
-          ),
+        const projetos = p.projetos.filter(
+          (proj) =>
+            proj.natureza === 'PESQUISA' &&
+            overlapsYearsOngoing(
+              proj.dataInicio,
+              proj.dataFim,
+              query.yearStart,
+              query.yearEnd,
+            ),
         );
         const orientacoes = p.orientacoes.filter((orie) =>
           compYears(orie.ano, query.yearStart, query.yearEnd),

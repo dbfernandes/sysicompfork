@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import helpers from './views/helpers/helpers';
+import helpers from '../views/helpers/helpers';
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -10,12 +10,12 @@ import session from 'express-session';
 
 import { engine } from 'express-handlebars';
 
-import router from './routes/routesSelecao';
-import { errorHandler } from './middlewares/errorHandler';
+import router from '../routes/routesSelecao';
+import { errorHandler } from '@/middlewares/errorHandler';
 import morgan from 'morgan';
 import logger from '@utils/logger';
 
-import redisClient from '@/client/redisClient';
+import redisClient from '@client/redisClient';
 import { RedisStore } from 'connect-redis';
 import { logRequestResponse } from '@utils/loggerResponse';
 import { STATIC_SKIP } from '@utils/constantes';
@@ -53,13 +53,13 @@ app.engine(
   engine({
     defaultLayout: 'main',
     extname: '.hbs',
-    partialsDir: path.join(__dirname, 'views', 'partials'),
+    partialsDir: path.join(__dirname, '..', 'views', 'partials'),
     helpers: helpers,
   }),
 );
 
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, '..', '/views'));
 app.set('trust proxy', 1);
 
 app.use(cookieParser());

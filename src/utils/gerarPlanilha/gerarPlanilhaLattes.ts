@@ -106,7 +106,7 @@ export default async function gerarPlanilhaNumerosLattes(query: QuerySearch) {
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)
   ws.mergeCells(1, iniPro, 1, iniPro + tamPro - 1);
-  ws.getCell(1, iniPro).value = 'Projetos';
+  ws.getCell(1, iniPro).value = 'Projetos de Pesquisa';
 
   // Mescla e escreve os títulos dos grupos
   // Publicações: colunas 4..9 (D..I)

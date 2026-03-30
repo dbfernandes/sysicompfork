@@ -57,7 +57,7 @@ services:
     mem_limit: 4096m
     build:
       context: .
-    command: 'node build/serverSelecao.js'
+    command: 'node build/app/serverSelecao.js'
     restart: unless-stopped
     ports:
       - '${PORT_SELECAO:-4000}:${PORT_SELECAO:-4000}'

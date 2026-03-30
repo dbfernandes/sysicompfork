@@ -105,7 +105,7 @@ class PublicacaoService {
           Math.max(1, Math.floor(Math.max(alvoLocal.length, 1) * 0.15)),
         );
 
-        let best: { id: number; dTitulo: number; dLocal: number } | null = null;
+        let best: any | null = null;
 
         for (const c of candidatos) {
           const candTitulo = normTitle(c.titulo);
@@ -126,7 +126,7 @@ class PublicacaoService {
             dTitulo < best.dTitulo ||
             (dTitulo === best.dTitulo && dLocal < best.dLocal)
           ) {
-            best = { id: c.id, dTitulo, dLocal };
+            best = { id: c.id, dTitulo, dLocal, alvoTitulo, candTitulo };
           }
 
           // match perfeito (título igual e, se houver local, local igual)
@@ -135,6 +135,7 @@ class PublicacaoService {
 
         let publicacaoId: number;
         if (best) {
+          console.log(best);
           publicacaoId = best.id;
         } else {
           const criada = await tx.publicacao.create({

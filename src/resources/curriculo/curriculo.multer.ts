@@ -33,7 +33,10 @@ const storage = multer.diskStorage({
 
     // Currículo XML
     if (file.fieldname === 'curriculoXML') {
-      const userId = req.session?.uid;
+      const userId =
+        req.body && req.body.professorId
+          ? req.body.professorId
+          : `guest_${new Date().getTime()}`;
 
       if (!userId) {
         return callback(new Error('Usuário não autenticado'), '');
