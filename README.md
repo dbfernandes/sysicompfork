@@ -52,7 +52,7 @@ Tenha o NodeJs instalado preferencialmente na versão 14.15.3 para frente. Recom
 #### Clone Git Repository
 
 ```
-git clone https://github.com/dbfernandes/sysicomp
+git clone https://github.com/dbfernandes/sysicompfork
 ```
 
 #### Arquivo .env
